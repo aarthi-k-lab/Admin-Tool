@@ -1,0 +1,30 @@
+{
+  "extends": "airbnb",
+  "globals": {
+    "document": true,
+    "describe": true,
+    "beforeEach": true,
+    "context": true,
+    "expect": true,
+    "it": true,
+    "React": true
+  },
+  "rules": {
+    "react/sort-prop-types": 2,
+    "react/jsx-sort-props": 2
+  },
+  "plugins": [
+    "react"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    }
+  },
+  "env": {
+    "es6": true
+  }
+}
