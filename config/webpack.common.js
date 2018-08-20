@@ -20,7 +20,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: 'static/[name].[hash].js',// '[name].[hash].js',
+    filename: 'static/[name].[hash].js',
     publicPath,
   },
   resolve: {
