@@ -24,3 +24,13 @@ $ npm start
 ```
 3) Go to http://127.0.0.1:8100/ to see the project in action.
 - _Please note that the webpack dev server proxies all requests, except the bundle files, to http://127.0.0.1:7400/. So run your server/ API gateway on this port to receive the proxied requests._
+
+## Commit Message Guidelines
+1) Install [Pivotal Git Scripts](https://github.com/pivotal-legacy/git_scripts) to use `git-pair` to commit as more than one author
+
+2) Install [Commitizen](https://github.com/commitizen/cz-cli) to use the standard commit message format. Use `git cz` instead of `git commit` and you will find the `commitizen` prompt.
+```
+$ npm install -g commitizen
+$ npm install -g cz-conventional-changelog
+$ echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
+``` 
