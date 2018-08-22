@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const devMode = process.env.NODE_ENV !== 'production';
 
@@ -11,6 +12,7 @@ const publicPath = '/';
 
 module.exports = {
   cache: false,
+  context: path.resolve(__dirname, '../src'),
   entry: [
     'babel-polyfill',
     path.join(__dirname, '../src/index'),
@@ -56,12 +58,21 @@ module.exports = {
         test: /\.css$/,
         use: [
           devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              localIdentName: '[path][name]__[local]--[hash:base64:5]',
+              modules: true,
+            },
+          },
           {
             loader: 'postcss-loader',
             options: {
-              config: path.join(__dirname, './postcss.config.js'),
-            }
+              config: {
+                path: __dirname,
+              },
+            },
           },
         ],
       },
@@ -116,6 +127,12 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin('dist', { root: path.join(__dirname, '../') }),
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, '../public/'),
+        to: path.join(__dirname, '../dist/'),
+      },
+    ]),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       title: 'CMOD',

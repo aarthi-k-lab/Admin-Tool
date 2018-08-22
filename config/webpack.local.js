@@ -1,8 +1,7 @@
-const path = require('path');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.common');
 
-const port = 8100;
+const port = 8080;
 
 const config = merge(
   baseConfig,
@@ -12,7 +11,6 @@ const config = merge(
     devtool: 'eval-source-map',
     devServer: {
       compress: true,
-      contentBase: path.join(__dirname, '../dist'),
       historyApiFallback: true,
       hot: true,
       port,
