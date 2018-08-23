@@ -3,16 +3,17 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const StyleLintPlugin = require('stylelint-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 
-const srcPath = path.join(__dirname, '/../src');
+const srcPath = path.join(__dirname, '../src');
 const publicPath = '/';
 
 module.exports = {
   cache: false,
-  context: path.resolve(__dirname, '../src'),
+  context: srcPath,
   entry: [
     'babel-polyfill',
     path.join(__dirname, '../src/index'),
@@ -51,8 +52,27 @@ module.exports = {
       },
       {
         test: /\.(js|jsx)$/,
-        loader: 'babel-loader',
-        include: path.join(__dirname, '/../src'),
+        exclude: /node_modules/,
+        include: srcPath,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            presets: ['babel-preset-env', 'babel-preset-react'],
+            plugins: [
+              'react-hot-loader/babel',
+              [
+                'babel-plugin-react-css-modules',
+                {
+                  context: srcPath,
+                  generateScopedName: '[path][name]__[local]--[hash:base64:5]',
+                  handleMissingStyleName: 'throw',
+                  webpackHotModuleReloading: true,
+                },
+              ],
+            ],
+          },
+        },
       },
       {
         test: /\.css$/,
@@ -70,7 +90,7 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               config: {
-                path: __dirname,
+                path: path.resolve(__dirname),
               },
             },
           },
@@ -140,6 +160,14 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'static/[name].[hash].css',
+    }),
+    new StyleLintPlugin({
+      configFile: path.resolve(__dirname, '../.stylelintrc'),
+      context: srcPath,
+      emitErrors: false,
+      files: '**/*.css',
+      failOnError: true,
+      quiet: false,
     }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],
