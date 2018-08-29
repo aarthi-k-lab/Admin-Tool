@@ -15,7 +15,7 @@ module.exports = {
   cache: false,
   context: srcPath,
   entry: [
-    'babel-polyfill',
+    '@babel/polyfill',
     path.join(__dirname, '../src/index'),
   ],
   node: {
@@ -54,25 +54,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         include: srcPath,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            babelrc: false,
-            presets: ['babel-preset-env', 'babel-preset-react'],
-            plugins: [
-              'react-hot-loader/babel',
-              [
-                'babel-plugin-react-css-modules',
-                {
-                  context: srcPath,
-                  generateScopedName: '[path][name]__[local]--[hash:base64:5]',
-                  handleMissingStyleName: 'throw',
-                  webpackHotModuleReloading: true,
-                },
-              ],
-            ],
-          },
-        },
+        loader: 'babel-loader',
       },
       {
         test: /\.css$/,
