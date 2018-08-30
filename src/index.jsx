@@ -1,8 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/SampleApp';
+import GlobalStore from './store/GlobalStore';
 
+const Shadow = ({ onClick, username }) => {
+  return (
+    <span onClick={onClick}>{ username }</span>
+  )
+};
+
+const renderProp = data => <Shadow onClick={data.handleClick} username={data.username} />;
 ReactDOM.render(
-  <App />,
+  <GlobalStore.Provider>
+    <App />
+    <GlobalStore.Consumer>
+      {renderProp}
+    </GlobalStore.Consumer>
+  </GlobalStore.Provider>,
   document.getElementById('app'),
 );
