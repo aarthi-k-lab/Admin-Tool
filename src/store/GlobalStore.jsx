@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Global from './Global';
+import Global from '../models/Global';
 
 const GlobalContext = React.createContext();
 

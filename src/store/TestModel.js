@@ -24,8 +24,9 @@ TestModel.NAME = Symbol('name');
 
 
 const t = new TestModel();
-// t.addEventListener('change', (value) => {
-//   console.log(value.name);
-// });
+t.addEventListener('change', (value) => {
+  console.log(value.name);
+});
 t.name = 'Tony Stark';
-console.log(t.name);
+t.name = ''
+// console.log(t.name);

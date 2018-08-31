@@ -16,6 +16,7 @@ function Global() {
   }());
 }
 
+
 Global.prototype.addEventListener = function addEventListener(eventName, callback) {
   this.eventListeners[eventName].push(callback);
 };
@@ -27,7 +28,12 @@ Global.prototype.dispatchEvent = function dispatchEvent(eventName, value) {
 Global.prototype.setUsername = function setUsername(username) {
   // const newGlobal = R.merge(this, { username });
   // this.username = username;
+  const newobj = Object.assign(Object.create(Global.prototype), { ...this }, { });
   this.dispatchEvent('change', { username });
+};
+
+Global.prototype.setPassword = function setPassword() {
+  this.dispatchEvent();
 };
 
 export default Global;

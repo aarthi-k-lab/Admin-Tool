@@ -6,7 +6,7 @@
       "babel-plugin-react-css-modules",
       {
         "context": "./src",
-        "generateScopedName": "[name]",
+        "generateScopedName": "[path][name]__[local]--[hash:base64:5]",
         "handleMissingStyleName": "throw",
         "webpackHotModuleReloading": true
       }
