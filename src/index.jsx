@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/SampleApp';
-import GlobalStore from './store/GlobalStore';
+import App from './components/App';
 
 const Shadow = ({ onClick, username }) => {
   return (
