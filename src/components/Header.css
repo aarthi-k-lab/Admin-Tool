@@ -1,0 +1,26 @@
+.header {
+  background-color: rgb(0, 187, 215);
+  min-height: 55px;
+  margin: -8px;
+  width: 100vw;
+  position: relative;
+}
+
+.header-h1 {
+  position: absolute;
+  top: 14px;
+  margin-left: 15px;
+}
+
+.header-logo {
+  float: right;
+  margin-right: 41px;
+  margin-top: 4px;
+}
+
+.header-search {
+  float: right;
+  margin-right: 41px;
+  margin-top: 15px;
+}
+
