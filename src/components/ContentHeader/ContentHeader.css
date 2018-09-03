@@ -1,0 +1,22 @@
+.content-header {
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  min-height: 3.75em;
+}
+
+.content-header > * {
+  margin: 0;
+  margin-left: 1em;
+}
+
+.title {
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 1.25em;
+}
+
+.spacer {
+  flex-grow: 1;
+}

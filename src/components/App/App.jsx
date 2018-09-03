@@ -1,11 +1,12 @@
 import React from 'react';
 import { hot } from 'react-hot-loader';
-import Header from '../Header';
-
-import './App.css';
+import Header from '../AppHeader';
 import Body from '../Body';
 import LeftNav from '../LeftNav';
-// import GetNext from '../GetNext';
+import MainContent from '../MainContent';
+import ContentHeader from '../ContentHeader';
+
+import './App.css';
 
 function App() {
   return (
@@ -13,9 +14,9 @@ function App() {
       <Header />
       <Body>
         <LeftNav />
-        <section>
-          Random
-        </section>
+        <MainContent>
+          <ContentHeader />
+        </MainContent>
       </Body>
     </div>
   );
