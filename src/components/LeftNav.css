@@ -1,13 +1,19 @@
-.leftmenubar {
-  list-style-type: none;
-  margin: -8px;
-  padding: 0;
-  width: 60px;
-  height: 100vh;
+.left-nav-bar {
+  align-items: center;
   background-color: Black;
+  display: inline-flex;
+  flex-direction: column;
+  height: 100%;
+  list-style-type: none;
+  width: 4em;
 }
 
-.leftmenu {
-  margin-left: 10px;
-  margin-top: 18px;
+.left-nav-bar > * {
+  cursor: pointer;
+  margin-top: 1em;
+}
+
+.stretch-column {
+  display: flex;
+  flex-direction: column;
 }

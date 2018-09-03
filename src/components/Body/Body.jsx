@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import './Body.css';
 
 const Body = ({ children }) => (
-  <section styleName="body">
-    { children }
-  </section>
+  <div styleName="body-container">
+    <section styleName="body">
+      { children }
+    </section>
+  </div>
 );
 
 Body.propTypes = {

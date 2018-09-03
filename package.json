@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack-cli --config=\"./config/webpack.config.js\" --env.NODE_ENV=\"production\"",
     "jsdoc": "jsdoc -c ./config/jsdoc.config.json",
-    "start": "webpack-dev-server --config=\"./config/webpack.config.js\" --hot --env.NODE_ENV=\"local\"",
+    "start": "webpack-dev-server --config=\"./config/webpack.config.js\" --hot --env.NODE_ENV=\"local\" --host 127.0.0.1 --port 8080",
     "test": "jest -c \"./config/jest.config.js\"",
     "webpack": "webpack --config=\"./config/webpack.config.js\""
   },

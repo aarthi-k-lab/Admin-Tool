@@ -1,12 +1,13 @@
 import React from 'react';
 
 import './LeftNav.css';
-import Dashboard from '../images/Dashboard.png';
 
 function LeftNav() {
   return (
-    <div id="cmod_leftnav" styleName="leftmenubar">
-      <img alt="menu" src={Dashboard} styleName="leftmenu" />
+    <div styleName="stretch-column">
+      <nav id="cmod_leftnav" styleName="left-nav-bar">
+        <img alt="dashboard" src="/static/images/icon-dashboard.png" />
+      </nav>
     </div>
   );
 }

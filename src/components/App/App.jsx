@@ -4,7 +4,7 @@ import Header from '../Header';
 
 import './App.css';
 import Body from '../Body';
-// import LeftNav from '../LeftNav';
+import LeftNav from '../LeftNav';
 // import GetNext from '../GetNext';
 
 function App() {
@@ -12,9 +12,10 @@ function App() {
     <div styleName="app">
       <Header />
       <Body>
-        Random
-        {/* <GetNext />
-        <LeftNav /> */}
+        <LeftNav />
+        <section>
+          Random
+        </section>
       </Body>
     </div>
   );

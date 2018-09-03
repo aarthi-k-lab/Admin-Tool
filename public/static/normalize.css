@@ -10,6 +10,7 @@
 
 html {
   line-height: 1.15; /* 1 */
+  height: 100%;
   -webkit-text-size-adjust: 100%; /* 2 */
 }
 
@@ -22,6 +23,7 @@ html {
 
 body {
   margin: 0;
+  height: 100%;
 }
 
 /**
@@ -340,4 +342,8 @@ template {
 
 [hidden] {
   display: none;
+}
+
+#app {
+  height: 100%;
 }
