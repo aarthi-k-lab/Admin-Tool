@@ -15,7 +15,7 @@ const config = merge(
       hot: true,
       port,
       proxy: {
-        '*': 'http://localhost:7400',
+        '/api': 'http://localhost:7400',
       },
       publicPath: '/',
       noInfo: false,

@@ -6,7 +6,7 @@ function LeftNav() {
   return (
     <div styleName="stretch-column">
       <nav id="cmod_leftnav" styleName="left-nav-bar">
-        <img alt="dashboard" src="/static/images/icon-dashboard.png" />
+        <img alt="dashboard" src="/static/img/icon-dashboard.png" />
       </nav>
     </div>
   );

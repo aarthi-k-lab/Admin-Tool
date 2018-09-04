@@ -23,7 +23,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: 'static/[name].[hash].js',
+    filename: 'static/js/[name].[hash].js',
     publicPath,
   },
   resolve: {
@@ -141,7 +141,7 @@ module.exports = {
       template: path.join(__dirname, '../src/assets/template.html'),
     }),
     new MiniCssExtractPlugin({
-      filename: 'static/[name].[hash].css',
+      filename: 'static/css/[name].[hash].css',
     }),
     new StyleLintPlugin({
       configFile: path.resolve(__dirname, '../.stylelintrc'),
