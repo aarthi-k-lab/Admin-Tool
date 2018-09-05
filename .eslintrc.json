@@ -6,8 +6,12 @@
     "beforeEach": true,
     "context": true,
     "expect": true,
+    "fetch": true,
+    "Headers": true,
     "it": true,
-    "React": true
+    "React": true,
+    "Request": true,
+    "window": true
   },
   "rules": {
     "react/sort-prop-types": 2,

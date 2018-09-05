@@ -15,7 +15,12 @@ const config = merge(
       hot: true,
       port,
       proxy: {
-        '/api': 'http://localhost:7400',
+        '/api/auth': {
+          target: 'http://127.0.0.1:7600',
+          pathRewrite: {
+            '^/api/auth': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,
