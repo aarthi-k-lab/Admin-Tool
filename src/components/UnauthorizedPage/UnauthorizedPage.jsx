@@ -1,10 +1,13 @@
 import React from 'react';
-import AppLayout from '../AppLayout';
+import ErrorIcon from '@material-ui/icons/Error';
+import AppCenterDisplay from '../AppCenterDisplay';
+
+import './UnauthorizedPage.css';
 
 const UnauthorizedPage = () => (
-  <AppLayout>
-    You know nothing, Jon Snow.
-  </AppLayout>
+  <AppCenterDisplay>
+    <ErrorIcon styleName="error-icon" />
+  </AppCenterDisplay>
 );
 
 export default UnauthorizedPage;

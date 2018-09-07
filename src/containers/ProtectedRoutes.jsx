@@ -1,12 +1,9 @@
 /* eslint-disable */
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Auth from '../lib/Auth';
-import AppContainer from '../components/AppContainer';
-import Body from '../components/Body';
-import AppLayout from '../components/AppLayout';
 import Center from '../components/Center';
 import SignInLoader from '../components/SignInLoader';
+import App from '../components/App';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -14,39 +11,38 @@ class ProtectedRoutes extends React.Component {
     this.state = {
       loading: true,
     };
+    this.auth = null;
+  }
+
+  componentDidMount() {
     Auth.login()
       .then((auth) => {
+        this.auth = auth;
         if (auth.sessionValid) {
           this.setState({ loading: false });
         }
       });
   }
 
-  componentDidMount() {
-    // setTimeout(() => this.setState({ loading: false }), 3000);
-  }
-
   render() {
+    const { loading } = this.state;
+    if (loading) {
+      return <SignInLoader />;
+    }
+    const userDetails = this.auth.getUserDetails();
     return (
-      <SignInLoader />
+      <App>
+        <Center>
+          {userDetails.name}
+          <br />
+          {userDetails.email}
+          <br />
+          {userDetails.jobTitle}
+          <br />
+          {JSON.stringify(this.auth.getGroups())}
+        </Center>
+      </App>
     );
-    // const { loading } = this.state;
-    // if (loading) {
-    //   return (
-    //     <AppContainer>
-    //       <Center>
-    //         <CircularProgress size={50} />
-    //       </Center>
-    //     </AppContainer>
-    //   );
-    // }
-    // return (
-    //   <AppLayout>
-    //     <Center>
-    //       asdhfjksldfjkas
-    //     </Center>
-    //   </AppLayout>
-    // );
   }
 }
 

@@ -1,21 +1,15 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import AppContainer from '../AppContainer';
-import Body from '../Body';
-import Center from '../Center';
+import AppCenterDisplay from '../AppCenterDisplay';
+
+import './SignInLoader.css';
 
 const SignInLoader = () => (
-  <AppContainer>
-    <Body>
-      <Center>
-        <div>
-          <CircularProgress size={50} />
-          <br />
-          Signing In...
-        </div>
-      </Center>
-    </Body>
-  </AppContainer>
+  <AppCenterDisplay>
+    <CircularProgress size={50} />
+    <br />
+    Signing In...
+  </AppCenterDisplay>
 );
 
 export default SignInLoader;

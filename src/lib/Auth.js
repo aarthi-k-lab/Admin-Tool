@@ -1,11 +1,35 @@
 import UniversalCookie from 'universal-cookie';
 
-function Auth(sessionValid) {
+function Auth(sessionValid, jwtPayload) {
   if (!(this instanceof Auth)) {
     return new Auth(sessionValid);
   }
   this.sessionValid = sessionValid;
+  this.jwtPayload = jwtPayload;
 }
+
+Auth.prototype.getGroups = function getGroups() {
+  return [];
+  // if (this.jwtPayload === null) {
+  //   return [];
+  // }
+  // return this.jwtPayload.data.groups.map(group => group.displayName);
+};
+
+Auth.prototype.getUserDetails = function getUserDetails() {
+  if (this.jwtPayload === null) {
+    return {
+      email: '',
+      jobTitle: '',
+      name: '',
+    };
+  }
+  return {
+    email: this.jwtPayload.data.user.userPrincipalName,
+    jobTitle: this.jwtPayload.data.user.jobTitle,
+    name: this.jwtPayload.data.user.displayName,
+  };
+};
 
 Auth.COOKIE_NAME = 'ad-auth-jwt-token';
 
@@ -50,10 +74,24 @@ Auth.hasAccess = async function hasAccess() {
 Auth.login = async function login() {
   const hasAccess = await this.hasAccess();
   if (!hasAccess) {
-    window.location = '/api/auth/login?clientId=cc6a88e7-dfd9-4248-ad7d-92da47fc6727&clientSecret=V9PezpvSAkULy3KA2HFC8Po6SX9od9zyAolvj4z3t24=&adAppName=cmod-dev&redirectSuccessUrl=/&redirectFailureUrl=/unauthorized';
-    return new Auth(false); // this will never be executed
+    window.location = '/api/auth/login?redirectSuccessUrl=/&redirectFailureUrl=/unauthorized';
+    return new Auth(false, null); // this will never be executed
   }
-  return new Auth(true);
+  return new Auth(true, this.getJwtPayload());
+};
+
+Auth.getJwtPayload = function getJwtPayload() {
+  const NULL = null;
+  if (this.isTokenPresent()) {
+    const token = this.getToken();
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      console.error(e);
+      return NULL;
+    }
+  }
+  return NULL;
 };
 
 Auth.getToken = function getToken() {

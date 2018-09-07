@@ -1,6 +1,7 @@
 {
   "extends": "airbnb",
   "globals": {
+    "atob": true,
     "document": true,
     "describe": true,
     "beforeEach": true,
