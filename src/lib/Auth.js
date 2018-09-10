@@ -1,19 +1,19 @@
 import UniversalCookie from 'universal-cookie';
 
-function Auth(sessionValid, jwtPayload) {
+function Auth(sessionValid, jwtPayload, groups) {
   if (!(this instanceof Auth)) {
     return new Auth(sessionValid);
   }
   this.sessionValid = sessionValid;
   this.jwtPayload = jwtPayload;
+  this.groups = groups;
 }
 
 Auth.prototype.getGroups = function getGroups() {
-  return [];
-  // if (this.jwtPayload === null) {
-  //   return [];
-  // }
-  // return this.jwtPayload.data.groups.map(group => group.displayName);
+  if (this.groups === null) {
+    return [];
+  }
+  return this.groups.map(group => group.displayName);
 };
 
 Auth.prototype.getUserDetails = function getUserDetails() {
@@ -77,11 +77,19 @@ Auth.login = async function login() {
     window.location = '/api/auth/login?redirectSuccessUrl=/&redirectFailureUrl=/unauthorized';
     return new Auth(false, null); // this will never be executed
   }
-  return new Auth(true, this.getJwtPayload());
+  const jwtPayload = this.getJwtPayload();
+  const userDetails = Auth.prototype.getUserDetails.call({ jwtPayload });
+  const userEmail = userDetails.email;
+  const userGroup = await this.getUserGroups(userEmail);
+  if (userGroup === null) {
+    window.location = '/unauthorized';
+    return new Auth(false, null, null);
+  }
+  return new Auth(true, jwtPayload, userGroup);
 };
 
-Auth.getGroupsForUser = async function getGroupsForUser(userPrincipalName) {
-  const request = new Request(`/api/auth/ad/app/users/${userPrincipalName}`, {
+Auth.getUserGroups = async function getGroupsForUser(email) {
+  const request = new Request(`/api/auth/ad/app/users/${email}/groups`, {
     method: 'GET',
   });
   try {
@@ -90,7 +98,7 @@ Auth.getGroupsForUser = async function getGroupsForUser(userPrincipalName) {
       return null;
     }
     if (response.status === 200) {
-      return response;
+      return await response.json();
     }
     return null;
   } catch (err) {
