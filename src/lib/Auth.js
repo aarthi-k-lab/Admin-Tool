@@ -1,3 +1,4 @@
+import * as qs from 'qs';
 import UniversalCookie from 'universal-cookie';
 
 function Auth(sessionValid, jwtPayload, groups) {
@@ -128,6 +129,32 @@ Auth.getToken = function getToken() {
 Auth.removeToken = function removeToken() {
   const cookie = new UniversalCookie(document.cookie);
   return cookie.remove(this.COOKIE_NAME);
+};
+
+Auth.getErrorMessage = function getErrorMessage(location) {
+  const params = qs.parse(location.search, { ignoreQueryPrefix: true });
+  if (params.error) {
+    const failureMessage = this.failureMessages[params.error];
+    if (failureMessage) {
+      return {
+        text: failureMessage,
+        code: `ERRCODE: ${params.error}`,
+      };
+    }
+  }
+  return {
+    text: this.failureMessages.USER_UNAUTHORIZED,
+    code: null,
+  };
+};
+
+const GENERAL_ERROR_MESSAGE = 'Authentication service failed, kindly contact the support team.';
+Auth.failureMessages = {
+  AD_REDIRECT_FAILED: GENERAL_ERROR_MESSAGE,
+  USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
+  AD_TOKEN_GENERATION_FAILED: GENERAL_ERROR_MESSAGE,
+  USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
+  AD_AUTH_SERVICE_FAILURE: GENERAL_ERROR_MESSAGE,
 };
 
 export default Auth;

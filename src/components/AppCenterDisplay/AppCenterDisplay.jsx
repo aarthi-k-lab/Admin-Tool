@@ -6,8 +6,9 @@ import Center from '../Center';
 
 import './AppCenterDisplay.css';
 
-const AppCenterDisplay = ({ children }) => (
+const AppCenterDisplay = ({ header, children }) => (
   <AppContainer>
+    { header }
     <Body>
       <Center>
         <div styleName="app-center-display">
@@ -18,8 +19,13 @@ const AppCenterDisplay = ({ children }) => (
   </AppContainer>
 );
 
+AppCenterDisplay.defaultProps = {
+  header: null,
+};
+
 AppCenterDisplay.propTypes = {
   children: PropTypes.node.isRequired,
+  header: PropTypes.node,
 };
 
 export default AppCenterDisplay;

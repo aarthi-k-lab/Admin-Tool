@@ -5,21 +5,15 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-// import UnauthorizedPage from '../components/UnauthorizedPage';
+import UnauthorizedPage from '../components/UnauthorizedPage';
 import ProtectedRoutes from './ProtectedRoutes';
-// import FullHeightColumn from '../components/FullHeightColumn';
-import Dashboard from '../components/Dashboard';
-// import App from '../components/App';
 
 const AppContainer = () => (
   <Router>
     <React.Fragment>
       <Switch>
         <Route
-          // component={UnauthorizedPage}
-          // component={App}
-          // component={FullHeightColumn}
-          component={Dashboard}
+          component={UnauthorizedPage}
           exact
           path="/unauthorized"
         />
