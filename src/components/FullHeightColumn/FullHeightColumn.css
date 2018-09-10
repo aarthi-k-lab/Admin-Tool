@@ -1,0 +1,11 @@
+.stretch-column {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.stretch-row {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}

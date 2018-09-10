@@ -80,6 +80,24 @@ Auth.login = async function login() {
   return new Auth(true, this.getJwtPayload());
 };
 
+Auth.getGroupsForUser = async function getGroupsForUser(userPrincipalName) {
+  const request = new Request(`/api/auth/ad/app/users/${userPrincipalName}`, {
+    method: 'GET',
+  });
+  try {
+    const response = await fetch(request);
+    if (response.status === 401) {
+      return null;
+    }
+    if (response.status === 200) {
+      return response;
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+};
+
 Auth.getJwtPayload = function getJwtPayload() {
   const NULL = null;
   if (this.isTokenPresent()) {

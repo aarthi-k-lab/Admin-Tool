@@ -1,0 +1,13 @@
+.collapse-icon-container {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  white-space: nowrap;
+  width: 30px;
+}
+
+.shift-left {
+  position: absolute;
+  left: 6px;
+}
