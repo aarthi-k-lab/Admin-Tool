@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React from 'react';
+import PropTypes from 'prop-types';
 import Auth from '../lib/Auth';
 import Center from '../components/Center';
 import SignInLoader from '../components/SignInLoader';
@@ -17,7 +18,7 @@ class ProtectedRoutes extends React.Component {
   }
 
   componentDidMount() {
-    Auth.login()
+    Auth.login(this.props.location.pathname)
       .then((auth) => {
         this.auth = auth;
         if (auth.sessionValid) {
@@ -39,6 +40,12 @@ class ProtectedRoutes extends React.Component {
       </App>
     );
   }
+}
+
+ProtectedRoutes.propTypes = {
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }).isRequired,
 }
 
 export default ProtectedRoutes;

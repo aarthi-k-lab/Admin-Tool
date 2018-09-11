@@ -89,14 +89,14 @@ Auth.hasAccess = async function hasAccess() {
   return false;
 };
 
-Auth.login = async function login() {
+Auth.login = async function login(successRedirectUrl = '/') {
   const hasAccess = await this.hasAccess();
   const auth = this.getInstance();
   auth.sessionValid = false;
   auth.jwtPayload = null;
   auth.groups = null;
   if (!hasAccess) {
-    window.location = '/api/auth/login?redirectSuccessUrl=/&redirectFailureUrl=/unauthorized';
+    window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
     return auth; // this will never be executed
   }
   const jwtPayload = this.getJwtPayload();
@@ -148,11 +148,6 @@ Auth.getJwtPayload = function getJwtPayload() {
 Auth.getToken = function getToken() {
   const cookie = new UniversalCookie(document.cookie);
   return cookie.get(this.COOKIE_NAME);
-};
-
-Auth.removeToken = function removeToken() {
-  const cookie = new UniversalCookie(document.cookie);
-  return cookie.remove(this.COOKIE_NAME);
 };
 
 Auth.getErrorMessage = function getErrorMessage(location) {

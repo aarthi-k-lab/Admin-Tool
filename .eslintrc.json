@@ -12,6 +12,7 @@
     "it": true,
     "React": true,
     "Request": true,
+    "test": true,
     "window": true
   },
   "rules": {
