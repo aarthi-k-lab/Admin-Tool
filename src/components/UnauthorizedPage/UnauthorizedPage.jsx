@@ -27,8 +27,9 @@ const UnauthorizedPage = ({ location }) => {
 };
 
 UnauthorizedPage.propTypes = {
-  /* eslint-disable-next-line */
-  location: PropTypes.object,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default UnauthorizedPage;

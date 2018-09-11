@@ -11,7 +11,7 @@ function Auth(sessionValid, jwtPayload, groups) {
 }
 
 Auth.prototype.hasGroup = function hasGroup(groupName) {
-  const foundGroup = this.groups.find(group => group.displayName === groupName);
+  const foundGroup = this.groups.find(group => group.groupName === groupName);
   if (foundGroup) {
     return true;
   }
@@ -22,7 +22,7 @@ Auth.prototype.getGroups = function getGroups() {
   if (this.groups === null) {
     return [];
   }
-  return this.groups.map(group => group.displayName);
+  return this.groups.map(group => group.groupName);
 };
 
 Auth.prototype.getUserDetails = function getUserDetails() {
@@ -173,6 +173,7 @@ Auth.getErrorMessage = function getErrorMessage(location) {
 };
 
 const GENERAL_ERROR_MESSAGE = 'Authentication service failed, kindly contact the support team.';
+
 Auth.failureMessages = {
   AD_REDIRECT_FAILED: GENERAL_ERROR_MESSAGE,
   USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
