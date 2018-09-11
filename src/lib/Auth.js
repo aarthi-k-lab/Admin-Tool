@@ -10,6 +10,14 @@ function Auth(sessionValid, jwtPayload, groups) {
   this.groups = groups;
 }
 
+Auth.prototype.hasGroup = function hasGroup(groupName) {
+  const foundGroup = this.groups.find(group => group.displayName === groupName);
+  if (foundGroup) {
+    return true;
+  }
+  return false;
+};
+
 Auth.prototype.getGroups = function getGroups() {
   if (this.groups === null) {
     return [];
@@ -33,6 +41,15 @@ Auth.prototype.getUserDetails = function getUserDetails() {
 };
 
 Auth.COOKIE_NAME = 'ad-auth-jwt-token';
+
+Auth.singletonInstance = null;
+
+Auth.getInstance = function getInstance() {
+  if (!this.singletonInstance) {
+    this.singletonInstance = new Auth(false, null, null);
+  }
+  return this.singletonInstance;
+};
 
 Auth.isTokenPresent = function isTokenPresent() {
   if (this.getToken()) {
@@ -74,19 +91,26 @@ Auth.hasAccess = async function hasAccess() {
 
 Auth.login = async function login() {
   const hasAccess = await this.hasAccess();
+  const auth = this.getInstance();
+  auth.sessionValid = false;
+  auth.jwtPayload = null;
+  auth.groups = null;
   if (!hasAccess) {
     window.location = '/api/auth/login?redirectSuccessUrl=/&redirectFailureUrl=/unauthorized';
-    return new Auth(false, null); // this will never be executed
+    return auth; // this will never be executed
   }
   const jwtPayload = this.getJwtPayload();
   const userDetails = Auth.prototype.getUserDetails.call({ jwtPayload });
   const userEmail = userDetails.email;
-  const userGroup = await this.getUserGroups(userEmail);
-  if (userGroup === null) {
+  const userGroups = await this.getUserGroups(userEmail);
+  if (userGroups === null) {
     window.location = '/unauthorized';
-    return new Auth(false, null, null);
+    return auth;
   }
-  return new Auth(true, jwtPayload, userGroup);
+  auth.sessionValid = true;
+  auth.jwtPayload = jwtPayload;
+  auth.groups = userGroups;
+  return auth;
 };
 
 Auth.getUserGroups = async function getGroupsForUser(email) {
