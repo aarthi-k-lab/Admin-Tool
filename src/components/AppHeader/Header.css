@@ -4,8 +4,13 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
-  padding: 0.5em 1em;
+  padding: 0 1em;
   width: 100%;
+}
+
+.name.name {
+  color: white;
+  margin-right: 1em;
 }
 
 .spacer {

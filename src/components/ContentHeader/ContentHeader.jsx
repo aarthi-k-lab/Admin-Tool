@@ -11,7 +11,7 @@ const ContentHeader = ({ title }) => (
 );
 
 ContentHeader.defaultProps = {
-  title: 'Document Verification',
+  title: 'FE Underwriter',
 };
 
 ContentHeader.propTypes = {

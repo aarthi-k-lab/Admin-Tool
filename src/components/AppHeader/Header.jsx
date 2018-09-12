@@ -1,7 +1,8 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
-import Profile from '../Profile';
+import Auth from '../../lib/Auth';
+import Profile from './Profile';
 import './Header.css';
 
 class Header extends React.Component {
@@ -12,6 +13,14 @@ class Header extends React.Component {
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
+  }
+
+  static renderName() {
+    const auth = Auth.getInstance();
+    const { name } = auth.getUserDetails();
+    return (
+      <span styleName="name">{name}</span>
+    );
   }
 
   handleClick() {
@@ -41,6 +50,7 @@ class Header extends React.Component {
         <img alt="logo" src="/static/img/logo.png" />
         <span styleName="spacer" />
         <img alt="search" src="/static/img/search.png" styleName="search" />
+        {this.constructor.renderName()}
         <IconButton aria-label="Profile" onClick={this.handleClick}>
           <img alt="profile" src="/static/img/profile.png" />
         </IconButton>
