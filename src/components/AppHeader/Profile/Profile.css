@@ -2,9 +2,16 @@
   align-items: flex-start;
   display: flex;
   flex-direction: column;
-  height: 8em;
   justify-content: space-between;
   padding: 1em;
+}
+
+.container.container > * {
+  margin-bottom: 0.5em;
+}
+
+.container.container > :last-child {
+  margin: 0;
 }
 
 .field-title.field-title {
