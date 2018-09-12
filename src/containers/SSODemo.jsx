@@ -29,13 +29,7 @@ function SSODemo() {
   const userDetails = auth.getUserDetails();
   return (
     <section>
-      {userDetails.name}
-      <br />
-      {userDetails.email}
-      <br />
-      {userDetails.jobTitle}
-      <br />
-      {JSON.stringify(auth.getGroups())}
+      {`Welcome ${userDetails.name}`}
       <br />
       {renderAdminButton(auth)}
       <br />

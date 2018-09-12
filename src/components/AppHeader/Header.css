@@ -15,3 +15,9 @@
 .search {
   margin-right: 1em;
 }
+
+.modal {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
