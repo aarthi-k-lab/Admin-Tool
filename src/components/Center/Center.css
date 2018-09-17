@@ -1,6 +1,15 @@
 .center {
   display: flex;
   align-self: center;
-  flex-grow: 1;
   justify-content: center;
+}
+
+.center--expand {
+  composes: center;
+  flex-grow: 1;
+}
+
+.center--no-expand {
+  composes: center;
+  flex-grow: 0;
 }

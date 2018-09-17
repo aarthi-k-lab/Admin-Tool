@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Item /> snapshot test 1`] = `
+<div
+  className="components-Tombstone-Item-Item__item--3NjOZ"
+>
+  <span
+    className="components-Tombstone-Item-Item__title--1Ulu3"
+  >
+    title
+  </span>
+  <span
+    className="components-Tombstone-Item-Item__content--3V4CW"
+  >
+    content
+  </span>
+</div>
+`;

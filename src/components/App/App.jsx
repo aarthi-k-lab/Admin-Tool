@@ -6,7 +6,6 @@ import Header from '../AppHeader';
 import Body from '../Body';
 import LeftNav from '../LeftNav';
 import MainContent from '../MainContent';
-import ContentHeader from '../ContentHeader';
 
 function App({ children }) {
   return (
@@ -15,7 +14,6 @@ function App({ children }) {
       <Body>
         <LeftNav />
         <MainContent>
-          <ContentHeader />
           { children }
         </MainContent>
       </Body>

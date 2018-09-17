@@ -1,0 +1,23 @@
+.item {
+  border-right: dashed 1px #d6d7d8;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0 20px;
+  padding-bottom: 13px;
+  padding-top: 12px;
+}
+
+.title {
+  color: #707479;
+  font-size: 12px;
+  height: 15px;
+}
+
+.content {
+  color: #333940;
+  font-size: 14px;
+  font-weight: bold;
+  height: 17px;
+  text-transform: uppercase;
+}

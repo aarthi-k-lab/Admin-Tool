@@ -39,6 +39,12 @@ const config = merge(
           target: 'http://127.0.0.1:7600',
           pathRewrite: authPathRewrite,
         },
+        '/api/ods-gateway': {
+          target: 'http://127.0.0.1:7700',
+          pathRewrite: {
+            '^/api/ods-gateway': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

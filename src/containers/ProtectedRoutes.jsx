@@ -1,12 +1,9 @@
-/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Route, Switch } from 'react-router-dom';
 import Auth from '../lib/Auth';
-import Center from '../components/Center';
 import SignInLoader from '../components/SignInLoader';
-import App from '../components/App';
-import SSODemo from 'containers/SSODemo';
-import { Route } from 'react-router-dom';
+import Dashboard from './Dashboard';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -18,7 +15,8 @@ class ProtectedRoutes extends React.Component {
   }
 
   componentDidMount() {
-    Auth.login(this.props.location.pathname)
+    const { location } = this.props;
+    Auth.login(location.pathname)
       .then((auth) => {
         this.auth = auth;
         if (auth.sessionValid) {
@@ -33,11 +31,9 @@ class ProtectedRoutes extends React.Component {
       return <SignInLoader />;
     }
     return (
-      <App>
-        <Center>
-          <Route component={SSODemo} />
-        </Center>
-      </App>
+      <Switch>
+        <Route component={Dashboard} />
+      </Switch>
     );
   }
 }
@@ -46,6 +42,6 @@ ProtectedRoutes.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
-}
+};
 
 export default ProtectedRoutes;

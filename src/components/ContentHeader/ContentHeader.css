@@ -19,3 +19,12 @@
 .spacer {
   flex-grow: 1;
 }
+
+.get-next.get-next {
+  background-color: #01579b;
+  margin-right: 1em;
+}
+
+.get-next.get-next:hover {
+  background-color: #002f6c;
+}

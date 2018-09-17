@@ -9,7 +9,7 @@ function Profile() {
   const { email, name } = auth.getUserDetails();
   const groups = auth.getGroups();
   return (
-    <Paper styleName="container">
+    <Paper styleName="container" tabIndex={-1}>
       <Typography variant="title">User Profile</Typography>
       <div styleName="row">
         <Typography styleName="field-title" variant="body1">Email: </Typography>
