@@ -1,4 +1,4 @@
-# React Boilerplate
+# CMOD UI
 
 Things included out of the box:
  - React 16.4
