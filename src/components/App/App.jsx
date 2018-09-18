@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
-import AppContainer from '../AppContainer';
-import Header from '../AppHeader';
-import Body from '../Body';
-import LeftNav from '../LeftNav';
-import MainContent from '../MainContent';
+import AppContainer from 'components/AppContainer';
+import Header from 'components/AppHeader';
+import Body from 'components/Body';
+import LeftNav from 'components/LeftNav';
+import MainContent from 'components/MainContent';
 
 function App({ children }) {
   return (

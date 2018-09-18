@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
-import Auth from '../../lib/Auth';
+import Auth from 'lib/Auth';
 import Profile from './Profile';
 import './Header.css';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Header from '../AppHeader';
-import Body from '../Body';
+import Header from 'components/AppHeader';
+import Body from 'components/Body';
 
 import './AppLayout.css';
 

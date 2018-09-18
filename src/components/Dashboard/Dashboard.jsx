@@ -1,7 +1,7 @@
 import React from 'react';
-import FullHeightColumn from '../FullHeightColumn';
-import App from '../App';
-import Tasks from '../Tasks';
+import FullHeightColumn from 'components/FullHeightColumn';
+import App from 'components/App';
+import Tasks from 'components/Tasks';
 
 const Dashboard = () => (
   <App>

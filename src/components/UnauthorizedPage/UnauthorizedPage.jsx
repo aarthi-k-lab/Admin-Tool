@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorIcon from '@material-ui/icons/Error';
-import AppCenterDisplay from '../AppCenterDisplay';
-import UnauthorizedAppHeader from '../UnauthorizedAppHeader';
+import AppCenterDisplay from 'components/AppCenterDisplay';
+import UnauthorizedAppHeader from 'components/UnauthorizedAppHeader';
 import './UnauthorizedPage.css';
-import Auth from '../../lib/Auth';
+import Auth from 'lib/Auth';
 
 const UnauthorizedPage = ({ location }) => {
   const message = Auth.getErrorMessage(location);

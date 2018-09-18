@@ -5,7 +5,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import UnauthorizedPage from '../components/UnauthorizedPage';
+import UnauthorizedPage from 'components/UnauthorizedPage';
 import ProtectedRoutes from './ProtectedRoutes';
 
 const AppContainer = () => (

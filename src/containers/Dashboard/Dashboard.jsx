@@ -1,10 +1,10 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import App from '../../components/App';
-import Center from '../../components/Center';
-import Tombstone from '../../components/Tombstone';
-import ContentHeader from '../../components/ContentHeader';
-import LoanTombstone from '../../models/LoanTombstone';
+import App from 'components/App';
+import Center from 'components/Center';
+import Tombstone from 'components/Tombstone';
+import ContentHeader from 'components/ContentHeader';
+import LoanTombstone from 'models/LoanTombstone';
 
 class Dashboard extends React.PureComponent {
   constructor(props) {

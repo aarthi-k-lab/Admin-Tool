@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import { FRONTEND_UNDERWRITER, ADMIN, BACKEND_UNDERWRITER } from '../lib/Groups';
-import Auth from '../lib/Auth';
+import { FRONTEND_UNDERWRITER, ADMIN, BACKEND_UNDERWRITER } from 'lib/Groups';
+import Auth from 'lib/Auth';
 
 function renderAdminButton(auth) {
   if (auth.hasGroup(ADMIN)) {

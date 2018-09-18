@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
-import Auth from '../lib/Auth';
-import SignInLoader from '../components/SignInLoader';
+import Auth from 'lib/Auth';
+import SignInLoader from 'components/SignInLoader';
 import Dashboard from './Dashboard';
 
 class ProtectedRoutes extends React.Component {

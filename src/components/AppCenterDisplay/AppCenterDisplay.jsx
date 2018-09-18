@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AppContainer from '../AppContainer';
-import Body from '../Body';
-import Center from '../Center';
+import AppContainer from 'components/AppContainer';
+import Body from 'components/Body';
+import Center from 'components/Center';
 
 import './AppCenterDisplay.css';
 

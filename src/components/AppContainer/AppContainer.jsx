@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './AppContainer.css';
-import Footer from '../Footer';
+import Footer from 'components/Footer';
 
 const AppContainer = ({ children }) => (
   <div styleName="app">

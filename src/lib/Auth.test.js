@@ -148,7 +148,6 @@ describe('lib/Auth.js', () => {
       expect(Auth.getJwtPayload()).toBeNull();
     });
     test('returns null on error', () => {
-      // global.atob = undefined;
       const { atob } = global;
       global.atob = null;
       expect(Auth.getJwtPayload()).toEqual(null);

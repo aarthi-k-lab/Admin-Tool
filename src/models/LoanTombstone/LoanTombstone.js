@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import Validators from '../../lib/Validators';
+import Validators from 'lib/Validators';
 
 const NA = 'NA';
 
