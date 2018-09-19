@@ -5,6 +5,7 @@ import Center from 'components/Center';
 import Tombstone from 'components/Tombstone';
 import ContentHeader from 'components/ContentHeader';
 import LoanTombstone from 'models/LoanTombstone';
+import SSODemo from 'containers/SSODemo';
 
 class Dashboard extends React.PureComponent {
   constructor(props) {
@@ -54,11 +55,11 @@ class Dashboard extends React.PureComponent {
       <App>
         <ContentHeader
           onGetNext={this.handleGetNext}
-          title="FE Underwriter"
+          title="Document Verification"
         />
         {tombstone}
         <Center>
-          <span>#TODO content goes here</span>
+          <SSODemo />
         </Center>
       </App>
     );
