@@ -1,8 +1,7 @@
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import App from 'components/App';
 import Center from 'components/Center';
-import Tombstone from 'components/Tombstone';
+import Tombstone, { TombstoneLoader } from 'components/Tombstone';
 import ContentHeader from 'components/ContentHeader';
 import LoanTombstone from 'models/LoanTombstone';
 import SSODemo from 'containers/SSODemo';
@@ -43,14 +42,16 @@ class Dashboard extends React.PureComponent {
     this.fetchLoanTombstoneData(this.sampleLoans[this.loansIndex]);
   }
 
-  render() {
+  renderTombstone() {
     const { loadingTombstoneData, tombstoneData } = this.state;
-    let tombstone;
-    if (loadingTombstoneData) {
-      tombstone = <Center disableExpand><CircularProgress size={40} /></Center>;
-    } else {
-      tombstone = <Tombstone items={tombstoneData} />;
-    }
+    const tombstone = loadingTombstoneData
+      ? <TombstoneLoader />
+      : <Tombstone items={tombstoneData} />;
+    return tombstone;
+  }
+
+  render() {
+    const tombstone = this.renderTombstone();
     return (
       <App>
         <ContentHeader

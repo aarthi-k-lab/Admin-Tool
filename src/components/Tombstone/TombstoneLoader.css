@@ -1,0 +1,8 @@
+.tombstone-loader {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 58px;
+}
