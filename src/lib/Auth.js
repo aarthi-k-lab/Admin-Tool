@@ -1,5 +1,7 @@
 import * as qs from 'qs';
 import UniversalCookie from 'universal-cookie';
+import * as R from 'ramda';
+import { MANAGER } from './Groups';
 
 function Auth(sessionValid, jwtPayload, groups) {
   if (!(this instanceof Auth)) {
@@ -40,7 +42,9 @@ Auth.prototype.getUserDetails = function getUserDetails() {
   };
 };
 
-Auth.COOKIE_NAME = 'ad-auth-jwt-token';
+Auth.JWT_TOKEN_COOKIE_NAME = 'app-session-jwt-token';
+Auth.AD_TOKEN_COOKIE_NAME = 'ad-access-token';
+Auth.AD_REFRESH_TOKEN_COOKIE_NAME = 'ad-refresh-token';
 
 Auth.singletonInstance = null;
 
@@ -52,7 +56,7 @@ Auth.getInstance = function getInstance() {
 };
 
 Auth.isTokenPresent = function isTokenPresent() {
-  if (this.getToken()) {
+  if (this.fetchCookie(this.JWT_TOKEN_COOKIE_NAME)) {
     return true;
   }
   return false;
@@ -82,11 +86,28 @@ Auth.isTokenValid = async function isTokenValid(token) {
 
 Auth.hasAccess = async function hasAccess() {
   if (this.isTokenPresent()) {
-    const token = this.getToken();
+    const token = this.fetchCookie(this.JWT_TOKEN_COOKIE_NAME);
     const isTokenValid = await this.isTokenValid(token);
     return isTokenValid;
   }
   return false;
+};
+
+Auth.getGroupHomePage = function getGroupHomePage(groups) {
+  const groups1 = R.map(R.prop(['groupName']), groups);
+  if (groups.length === 0 || groups1.length === 0) {
+    return '/unauthorized';
+  }
+  const redirectUrl = R.compose(
+    R.ifElse(
+      R.isNil,
+      R.always('/'),
+      R.prop('path'),
+    ),
+    R.head,
+    R.filter(homeGroup => R.contains(homeGroup.groupName, groups1)),
+  )(this.homePage);
+  return redirectUrl;
 };
 
 Auth.login = async function login(successRedirectUrl = '/') {
@@ -98,6 +119,9 @@ Auth.login = async function login(successRedirectUrl = '/') {
   if (!hasAccess) {
     window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
     return auth; // this will never be executed
+  }
+  if (!this.fetchCookie(this.AD_TOKEN_COOKIE_NAME)) {
+    await this.refreshADTokenCookie(successRedirectUrl);
   }
   const jwtPayload = this.getJwtPayload();
   const userDetails = Auth.prototype.getUserDetails.call({ jwtPayload });
@@ -111,6 +135,32 @@ Auth.login = async function login(successRedirectUrl = '/') {
   auth.jwtPayload = jwtPayload;
   auth.groups = userGroups;
   return auth;
+};
+
+
+// Refreshes AD Token Cookie (NOT App JWT Cookie) using it's refresh token
+Auth.refreshADTokenCookie = async function refreshADTokenCookie(successRedirectUrl) {
+  const refreshToken = this.fetchCookie(this.AD_REFRESH_TOKEN_COOKIE_NAME);
+  if (refreshToken) {
+    const request = new Request('/api/auth/refreshtoken/ad', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken }),
+    });
+    try {
+      const response = await fetch(request);
+      if (response.status === 200) {
+        const newAccessToken = await response.json();
+        const cookie = new UniversalCookie(document.cookie);
+        cookie.set(this.AD_TOKEN_COOKIE_NAME, R.get(newAccessToken, 'access_token'), { maxAge: 3550 * 1000 });
+        cookie.set(this.AD_REFRESH_TOKEN_COOKIE_NAME, R.get(newAccessToken, 'refresh_token'));
+        return true;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
+  return false;
 };
 
 Auth.getUserGroups = async function getGroupsForUser(email) {
@@ -134,7 +184,7 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
 Auth.getJwtPayload = function getJwtPayload() {
   const NULL = null;
   if (this.isTokenPresent()) {
-    const token = this.getToken();
+    const token = this.fetchCookie(this.JWT_TOKEN_COOKIE_NAME);
     try {
       return JSON.parse(atob(token.split('.')[1]));
     } catch (e) {
@@ -145,9 +195,9 @@ Auth.getJwtPayload = function getJwtPayload() {
   return NULL;
 };
 
-Auth.getToken = function getToken() {
+Auth.fetchCookie = function fetchCookie(cookieName) {
   const cookie = new UniversalCookie(document.cookie);
-  return cookie.get(this.COOKIE_NAME);
+  return cookie.get(cookieName);
 };
 
 Auth.getErrorMessage = function getErrorMessage(location) {
@@ -176,5 +226,10 @@ Auth.failureMessages = {
   USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   AD_AUTH_SERVICE_FAILURE: GENERAL_ERROR_MESSAGE,
 };
+
+Auth.homePage = [{
+  groupName: MANAGER,
+  path: '/reports',
+}];
 
 export default Auth;

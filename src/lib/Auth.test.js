@@ -29,7 +29,7 @@ const getAuth = () => (
 
 describe('lib/Auth.js', () => {
   beforeEach(() => {
-    document.cookie = 'ad-auth-jwt-token=' + token + '; ad-auth-refresh-token=kjflsadnkflaskdfjoiqu09idmfasdfasdkfl; authstate=asdfaskdfknsdmfaskjdflh23i4up123masdfasdf; clientId=sdfasdfklasjdflkj123k4j123kmasdfaksdfj; clientSecret=faksdflmasdfaksdlfmsvskdfj234781923ksdfjasdkf; adAppName=kasdjflkasdjflkasjdfalksdfjsldnm; redirectSuccessUrl=%2Fsuccess; redirectFailureUrl=%2Funauthorized';
+    document.cookie = Auth.JWT_TOKEN_COOKIE_NAME + '=' + token + '; ad-auth-refresh-token=kjflsadnkflaskdfjoiqu09idmfasdfasdkfl; authstate=asdfaskdfknsdmfaskjdflh23i4up123masdfasdf; clientId=sdfasdfklasjdflkj123k4j123kmasdfaksdfj; clientSecret=faksdflmasdfaksdlfmsvskdfj234781923ksdfjasdkf; adAppName=kasdjflkasdjflkasjdfalksdfjsldnm; redirectSuccessUrl=%2Fsuccess; redirectFailureUrl=%2Funauthorized';
   });
 
   test('instanceof Auth', () => {
@@ -60,8 +60,8 @@ describe('lib/Auth.js', () => {
     });
   });
 
-  test('getToken :: returns correct JWT token', () => {
-    expect(Auth.getToken()).toEqual(token);
+  test('fetchCookie :: returns correct JWT token', () => {
+    expect(Auth.fetchCookie(Auth.JWT_TOKEN_COOKIE_NAME)).toEqual(token);
   });
 
   describe('isTokenPresent', () => {
@@ -69,7 +69,7 @@ describe('lib/Auth.js', () => {
       expect(Auth.isTokenPresent()).toBe(true);
     });
     test('returns false', () => {
-      document.cookie = `${Auth.COOKIE_NAME}=; expires=${new Date(0).toGMTString()}`;
+      document.cookie = `${Auth.JWT_TOKEN_COOKIE_NAME}=; expires=${new Date(0).toGMTString()}`;
       expect(Auth.isTokenPresent()).toBe(false);
     });
   });
@@ -144,7 +144,7 @@ describe('lib/Auth.js', () => {
 
   describe('getJwtPayload', () => {
     test('returns null', () => {
-      document.cookie = `${Auth.COOKIE_NAME}=; expires=${new Date(0).toGMTString()}`;
+      document.cookie = `${Auth.JWT_TOKEN_COOKIE_NAME}=; expires=${new Date(0).toGMTString()}`;
       expect(Auth.getJwtPayload()).toBeNull();
     });
     test('returns null on error', () => {
@@ -155,6 +155,46 @@ describe('lib/Auth.js', () => {
     });
     test('returns the payload', () => {
       expect(Auth.getJwtPayload()).toEqual(tokenPayload);
+    });
+  });
+
+  describe('fetchCookie', () => {
+    test('returns null for incorrect cookie name', () => {
+      document.cookie = `${Auth.JWT_TOKEN_COOKIE_NAME}=; expires=${new Date(0).toGMTString()}`;
+      expect(Auth.fetchCookie('test')).toBeUndefined();
+    });
+    test('returns proper value for correct cookie name', () => {
+      document.cookie = `${Auth.JWT_TOKEN_COOKIE_NAME}=test`;
+      expect(Auth.fetchCookie(Auth.JWT_TOKEN_COOKIE_NAME)).toEqual('test');
+    });
+  });
+
+  describe('getGroupHomePage', () => {
+    test('returns /reports for admin', () => {
+      const groups = [{groupName: 'admin'}];
+      expect(Auth.getGroupHomePage(groups)).toEqual('/reports');
+    });
+    test('returns / for any other group', () => {
+      const groups = [{groupName: 'other-groups'}];
+      expect(Auth.getGroupHomePage(groups)).toEqual('/');
+    });
+    test('returns /unauthorized for no groups', () => {
+      const groups = [];
+      expect(Auth.getGroupHomePage(groups)).toEqual('/unauthorized');
+    });
+  });
+
+  describe('refreshADTokenCookie', () => {
+    test('returns false for no refresh token', async () => {
+      const didTokenRefresh = await Auth.refreshADTokenCookie('/');
+      console.log(didTokenRefresh);
+      expect(didTokenRefresh).toEqual(false);
+    });
+    test('returns false for incorrect refresh token', async () => {
+      document.cookie = `${Auth.AD_REFRESH_TOKEN_COOKIE_NAME}=test`;
+      const didTokenRefresh = await Auth.refreshADTokenCookie('/');
+      console.log(didTokenRefresh);
+      expect(didTokenRefresh).toEqual(false);
     });
   });
 });

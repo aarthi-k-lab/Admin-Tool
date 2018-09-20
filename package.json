@@ -21,6 +21,7 @@
     "react-dom": "^16.5.1",
     "react-hot-loader": "^4.3.8",
     "react-router-dom": "^4.3.1",
+    "powerbi-report-component": "^1.1.0",
     "react-test-renderer": "^16.5.1",
     "universal-cookie": "^3.0.4"
   },

@@ -8,6 +8,8 @@ const LOGIN_REGEX = /^\/login\?/;
 const LOGIN_REWRITE = '/login?clientId=adf76078-9e8b-4076-8758-87ecca63ee29&clientSecret=Y9Oi4kPtSWfDlP8r74Oe10AZyrXpQRDSZkG/ZwPilo0=&adAppName=cmod-dev&';
 const GROUPS_REGEX = /^\/ad\/app\//;
 const GROUPS_REWRITE = '/ad/cmod-dev/';
+const REFRESH_TOKEN_REGEX = /^\/refreshtoken\/ad/;
+const REFRESH_TOKEN_REWRITE = '/refreshtoken/ad?clientId=adf76078-9e8b-4076-8758-87ecca63ee29&clientSecret=Y9Oi4kPtSWfDlP8r74Oe10AZyrXpQRDSZkG/ZwPilo0=';
 
 const authPathRewrite = (req) => {
   let baseRewrite = req;
@@ -19,6 +21,9 @@ const authPathRewrite = (req) => {
   }
   if (baseRewrite.match(GROUPS_REGEX)) {
     return baseRewrite.replace(GROUPS_REGEX, GROUPS_REWRITE);
+  }
+  if (baseRewrite.match(REFRESH_TOKEN_REGEX)) {
+    return baseRewrite.replace(REFRESH_TOKEN_REGEX, REFRESH_TOKEN_REWRITE);
   }
   return baseRewrite;
 };
