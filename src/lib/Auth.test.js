@@ -29,7 +29,7 @@ const getAuth = () => (
 
 describe('lib/Auth.js', () => {
   beforeEach(() => {
-    document.cookie = Auth.JWT_TOKEN_COOKIE_NAME + '=' + token + '; ad-auth-refresh-token=kjflsadnkflaskdfjoiqu09idmfasdfasdkfl; authstate=asdfaskdfknsdmfaskjdflh23i4up123masdfasdf; clientId=sdfasdfklasjdflkj123k4j123kmasdfaksdfj; clientSecret=faksdflmasdfaksdlfmsvskdfj234781923ksdfjasdkf; adAppName=kasdjflkasdjflkasjdfalksdfjsldnm; redirectSuccessUrl=%2Fsuccess; redirectFailureUrl=%2Funauthorized';
+    document.cookie = `${Auth.JWT_TOKEN_COOKIE_NAME  }=${  token  }; ad-auth-refresh-token=kjflsadnkflaskdfjoiqu09idmfasdfasdkfl; authstate=asdfaskdfknsdmfaskjdflh23i4up123masdfasdf; clientId=sdfasdfklasjdflkj123k4j123kmasdfaksdfj; clientSecret=faksdflmasdfaksdlfmsvskdfj234781923ksdfjasdkf; adAppName=kasdjflkasdjflkasjdfalksdfjsldnm; redirectSuccessUrl=%2Fsuccess; redirectFailureUrl=%2Funauthorized`;
   });
 
   test('instanceof Auth', () => {
@@ -171,11 +171,11 @@ describe('lib/Auth.js', () => {
 
   describe('getGroupHomePage', () => {
     test('returns /reports for admin', () => {
-      const groups = [{groupName: 'admin'}];
+      const groups = [{ groupName: 'manager' }];
       expect(Auth.getGroupHomePage(groups)).toEqual('/reports');
     });
     test('returns / for any other group', () => {
-      const groups = [{groupName: 'other-groups'}];
+      const groups = [{ groupName: 'other-groups' }];
       expect(Auth.getGroupHomePage(groups)).toEqual('/');
     });
     test('returns /unauthorized for no groups', () => {
