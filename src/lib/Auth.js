@@ -120,7 +120,7 @@ Auth.login = async function login(successRedirectUrl = '/') {
     window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
     return auth; // this will never be executed
   }
-  if (!this.fetchCookie(this.AD_TOKEN_COOKIE_NAME)) {
+  if (!this.fetchCookie(this.AD_TOKEN_COOKIE_NAME) && this.isTokenPresent()) {
     await this.refreshADTokenCookie(successRedirectUrl);
   }
   const jwtPayload = this.getJwtPayload();
