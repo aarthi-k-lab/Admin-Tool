@@ -12,16 +12,16 @@ function Profile() {
     <Paper styleName="container" tabIndex={-1}>
       <Typography variant="title">User Profile</Typography>
       <div styleName="row">
+        <Typography styleName="field-title" variant="body1">Name: </Typography>
+        <Typography variant="body1">{name}</Typography>
+      </div>
+      <div styleName="row">
         <Typography styleName="field-title" variant="body1">Email: </Typography>
         <Typography variant="body1">{email}</Typography>
       </div>
       <div styleName="row">
         <Typography styleName="field-title" variant="body1">Groups: </Typography>
         <ol styleName="group-list">{Profile.renderGroups(groups)}</ol>
-      </div>
-      <div styleName="row">
-        <Typography styleName="field-title" variant="body1">Name: </Typography>
-        <Typography variant="body1">{name}</Typography>
       </div>
     </Paper>
   );

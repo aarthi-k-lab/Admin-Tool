@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
 import Auth from 'lib/Auth';
+import { Link } from 'react-router-dom';
 import Profile from './Profile';
 import './Header.css';
 
@@ -47,7 +48,7 @@ class Header extends React.Component {
   render() {
     return (
       <header styleName="header">
-        <img alt="logo" src="/static/img/logo.png" />
+        <Link to="/"><img alt="logo" src="/static/img/logo.png" /></Link>
         <span styleName="spacer" />
         <img alt="search" src="/static/img/search.png" styleName="search" />
         {this.constructor.renderName()}
