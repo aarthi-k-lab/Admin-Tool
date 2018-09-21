@@ -183,18 +183,4 @@ describe('lib/Auth.js', () => {
       expect(Auth.getGroupHomePage(groups)).toEqual('/unauthorized');
     });
   });
-
-  // describe('refreshADTokenCookie', () => {
-  //   test('returns false for no refresh token', async () => {
-  //     const didTokenRefresh = await Auth.refreshADTokenCookie('/');
-  //     console.log(didTokenRefresh);
-  //     expect(didTokenRefresh).toEqual(false);
-  //   });
-  //   test('returns false for incorrect refresh token', async () => {
-  //     document.cookie = `${Auth.AD_REFRESH_TOKEN_COOKIE_NAME}=test`;
-  //     const didTokenRefresh = await Auth.refreshADTokenCookie('/');
-  //     console.log(didTokenRefresh);
-  //     expect(didTokenRefresh).toEqual(false);
-  //   });
-  // });
 });

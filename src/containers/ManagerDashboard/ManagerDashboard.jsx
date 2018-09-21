@@ -5,13 +5,14 @@ import ContentHeader from 'components/ContentHeader';
 import App from 'components/App';
 import AppCenterDisplay from 'components/AppCenterDisplay';
 import './ManagerDashboard.css';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class ManagerDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = { };
+    this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };
-    this.accessToken = Auth.fetchCookie(Auth.AD_TOKEN_COOKIE_NAME);
     this.renderReport = this.renderReport.bind(this);
   }
 
@@ -31,7 +32,8 @@ class ManagerDashboard extends Component {
       : (
         <AppCenterDisplay>
           <span styleName="message">
-            {'PowerBI Report could not be loaded due to system error. Please refresh the page and try again!'}
+            <CircularProgress size={30} />
+            Authenticating with PowerBI...
           </span>
         </AppCenterDisplay>
       );

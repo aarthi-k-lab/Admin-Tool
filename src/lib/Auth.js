@@ -43,8 +43,7 @@ Auth.prototype.getUserDetails = function getUserDetails() {
 };
 
 Auth.JWT_TOKEN_COOKIE_NAME = 'app-session-jwt-token';
-Auth.AD_TOKEN_COOKIE_NAME = 'ad-access-token';
-Auth.AD_REFRESH_TOKEN_COOKIE_NAME = 'ad-refresh-token';
+Auth.POWERBI_TOKEN_COOKIE_NAME = 'powerbi-access-token';
 
 Auth.singletonInstance = null;
 
@@ -120,9 +119,6 @@ Auth.login = async function login(successRedirectUrl = '/') {
     window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
     return auth; // this will never be executed
   }
-  if (!this.fetchCookie(this.AD_TOKEN_COOKIE_NAME) && this.isTokenPresent()) {
-    await this.refreshADTokenCookie(successRedirectUrl);
-  }
   const jwtPayload = this.getJwtPayload();
   const userDetails = Auth.prototype.getUserDetails.call({ jwtPayload });
   const userEmail = userDetails.email;
@@ -137,29 +133,12 @@ Auth.login = async function login(successRedirectUrl = '/') {
   return auth;
 };
 
-
-// Refreshes AD Token Cookie (NOT App JWT Cookie) using it's refresh token
-Auth.refreshADTokenCookie = async function refreshADTokenCookie(successRedirectUrl) {
-  const refreshToken = this.fetchCookie(this.AD_REFRESH_TOKEN_COOKIE_NAME);
-  if (refreshToken) {
-    const request = new Request('/api/auth/refreshtoken/ad', {
-      method: 'POST',
-      body: JSON.stringify({ refreshToken }),
-    });
-    try {
-      const response = await fetch(request);
-      if (response.status === 200) {
-        const newAccessToken = await response.json();
-        const cookie = new UniversalCookie(document.cookie);
-        cookie.set(this.AD_TOKEN_COOKIE_NAME, R.get(newAccessToken, 'access_token'), { maxAge: 3550 * 1000 });
-        cookie.set(this.AD_REFRESH_TOKEN_COOKIE_NAME, R.get(newAccessToken, 'refresh_token'));
-        return true;
-      }
-    } catch (err) {
-      console.error(err);
-    }
+Auth.getPowerBIAccessToken = function getPowerBIAccessToken(successRedirectUrl = '/reports') {
+  const accessToken = this.fetchCookie(this.POWERBI_TOKEN_COOKIE_NAME);
+  if (accessToken) {
+    return accessToken;
   }
-  window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
+  window.location = `/api/auth/powerbi?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/`;
   return false;
 };
 
