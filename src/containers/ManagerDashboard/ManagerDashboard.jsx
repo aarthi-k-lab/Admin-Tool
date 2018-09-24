@@ -6,12 +6,15 @@ import App from 'components/App';
 import AppCenterDisplay from 'components/AppCenterDisplay';
 import './ManagerDashboard.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Redirect } from 'react-router-dom';
 
 class ManagerDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = { };
     this.accessToken = Auth.getPowerBIAccessToken();
+    const auth = Auth.getInstance();
+    this.groups = auth.getGroups();
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
   }
@@ -40,6 +43,9 @@ class ManagerDashboard extends Component {
   }
 
   render() {
+    if (!this.groups.includes('manager')) {
+      return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
+    }
     return (
       <App>
         <ContentHeader
