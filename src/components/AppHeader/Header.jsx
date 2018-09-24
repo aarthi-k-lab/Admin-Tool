@@ -52,7 +52,11 @@ class Header extends React.Component {
         <span styleName="spacer" />
         <img alt="search" src="/static/img/search.png" styleName="search" />
         {this.constructor.renderName()}
-        <IconButton aria-label="Profile" onClick={this.handleClick}>
+        <IconButton
+          aria-label="Profile"
+          onClick={this.handleClick}
+          styleName="profile-button"
+        >
           <img alt="profile" src="/static/img/profile.png" />
         </IconButton>
         {this.renderProfileDetails()}
