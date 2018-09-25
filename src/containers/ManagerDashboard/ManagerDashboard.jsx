@@ -24,9 +24,9 @@ class ManagerDashboard extends Component {
       ? (
         <Report
           accessToken={this.accessToken}
-          embedId="8abb8a35-dbbd-4ca5-ab18-1fcd866af863"
+          embedId="b167ee03-5641-42dc-9fa7-873382b46ec0"
           embedType="report"
-          embedUrl="https://app.powerbi.com/reportEmbed?reportId=8abb8a35-dbbd-4ca5-ab18-1fcd866af863&groupId=fba9bb0f-22b1-42c8-b361-df6d18f2fbf5"
+          embedUrl="https://app.powerbi.com/reportEmbed?reportId=b167ee03-5641-42dc-9fa7-873382b46ec0&groupId=4aa8e155-b2fa-4034-9c19-261c4d80da5b"
           permissions="All"
           style={this.reportStyle}
           tokenType="Aad"
