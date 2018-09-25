@@ -43,7 +43,7 @@ class ManagerDashboard extends Component {
   }
 
   render() {
-    if (!this.groups.includes('manager')) {
+    if (!this.groups.includes('feuw-mgr')) {
       return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
     }
     return (

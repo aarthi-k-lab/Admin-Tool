@@ -1,7 +1,7 @@
 import * as qs from 'qs';
 import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
-import { MANAGER } from './Groups';
+import { FRONTEND_MANAGER } from './Groups';
 
 function Auth(sessionValid, jwtPayload, groups) {
   if (!(this instanceof Auth)) {
@@ -208,7 +208,7 @@ Auth.failureMessages = {
 };
 
 Auth.homePage = [{
-  groupName: MANAGER,
+  groupName: FRONTEND_MANAGER,
   path: '/reports',
 }];
 

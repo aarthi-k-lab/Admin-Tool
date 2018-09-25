@@ -171,7 +171,7 @@ describe('lib/Auth.js', () => {
 
   describe('getGroupHomePage', () => {
     test('returns /reports for admin', () => {
-      const groups = [{ groupName: 'manager' }];
+      const groups = [{ groupName: 'feuw-mgr' }];
       expect(Auth.getGroupHomePage(groups)).toEqual('/reports');
     });
     test('returns / for any other group', () => {
