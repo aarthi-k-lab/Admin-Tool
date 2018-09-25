@@ -4,7 +4,7 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
-  padding: 0 1em;
+  padding: 0.25em 1em;
   width: 100%;
 }
 
@@ -25,4 +25,8 @@
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+.profile-button.profile-button {
+  padding: 0;
 }
