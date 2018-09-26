@@ -6,26 +6,30 @@ import './ContentHeader.css';
 
 const ContentHeader = ({
   disableGetNext, onGetNext, title, showGetNext,
-}) => (
-  <header styleName="content-header">
-    <h3 styleName="title">{title}</h3>
-    <span styleName="spacer" />
-    {
-      showGetNext
-        ? (
-          <Button
-            color="primary"
-            disabled={disableGetNext}
-            onClick={onGetNext}
-            styleName="get-next"
-            variant="contained"
-          >
-      Get Next
-          </Button>
-        ) : null
-    }
-  </header>
-);
+}) => {
+  let getNextButton = null;
+  if (showGetNext) {
+    getNextButton = (
+      <Button
+        className="material-ui-button"
+        color="primary"
+        disabled={disableGetNext}
+        onClick={onGetNext}
+        styleName="get-next"
+        variant="contained"
+      >
+        Get Next
+      </Button>
+    );
+  }
+  return (
+    <header styleName="content-header">
+      <h3 styleName="title">{title}</h3>
+      <span styleName="spacer" />
+      {getNextButton}
+    </header>
+  );
+};
 
 ContentHeader.defaultProps = {
   disableGetNext: false,

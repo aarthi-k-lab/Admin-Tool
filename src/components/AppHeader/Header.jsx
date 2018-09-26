@@ -48,7 +48,9 @@ class Header extends React.Component {
   render() {
     return (
       <header styleName="header">
-        <Link to="/"><img alt="logo" src="/static/img/logo.png" /></Link>
+        <Link to="/">
+          <img alt="logo" src="/static/img/logo.png" styleName="logo" />
+        </Link>
         <span styleName="spacer" />
         <img alt="search" src="/static/img/search.png" styleName="search" />
         {this.constructor.renderName()}
@@ -57,7 +59,7 @@ class Header extends React.Component {
           onClick={this.handleClick}
           styleName="profile-button"
         >
-          <img alt="profile" src="/static/img/profile.png" />
+          <img alt="profile" src="/static/img/profile.png" styleName="profile" />
         </IconButton>
         {this.renderProfileDetails()}
       </header>

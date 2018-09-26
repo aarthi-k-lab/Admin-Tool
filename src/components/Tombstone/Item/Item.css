@@ -1,23 +1,23 @@
 .item {
-  border-right: dashed 1px #d6d7d8;
+  border-right: dashed 0.0625rem #d6d7d8;
   box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
-  padding: 0 20px;
-  padding-bottom: 13px;
-  padding-top: 12px;
+  padding: 0 1.25rem;
+  padding-bottom: 0.8125rem;
+  padding-top: 0.75rem;
 }
 
 .title {
   color: #707479;
-  font-size: 12px;
-  height: 15px;
+  font-size: 0.75rem;
+  height: 0.9375rem;
 }
 
 .content {
   color: #333940;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: bold;
-  height: 17px;
+  height: 1.0625rem;
   text-transform: uppercase;
 }

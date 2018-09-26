@@ -4,5 +4,5 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  min-height: 58px;
+  min-height: 3.625rem;
 }

@@ -3,3 +3,8 @@
   flex-direction: column;
   height: 100%;
 }
+
+:global(.material-ui-button.material-ui-button) {
+  min-height: 2.25rem;
+  min-width: 4rem;
+}

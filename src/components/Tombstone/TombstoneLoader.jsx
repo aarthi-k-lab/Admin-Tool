@@ -5,7 +5,7 @@ import './TombstoneLoader.css';
 function TombstoneLoader() {
   return (
     <section styleName="tombstone-loader">
-      <CircularProgress size={40} />
+      <CircularProgress size="3rem" />
     </section>
   );
 }

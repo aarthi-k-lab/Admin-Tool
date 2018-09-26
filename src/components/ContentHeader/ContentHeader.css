@@ -2,18 +2,18 @@
   align-items: center;
   display: flex;
   flex-wrap: nowrap;
-  min-height: 3.75em;
+  min-height: 3.75rem;
 }
 
 .content-header > * {
   margin: 0;
-  margin-left: 1em;
+  margin-left: 1rem;
 }
 
 .title {
   text-transform: uppercase;
   font-weight: 500;
-  font-size: 1.25em;
+  font-size: 1.25rem;
 }
 
 .spacer {
@@ -22,7 +22,7 @@
 
 .get-next.get-next {
   background-color: #01579b;
-  margin-right: 1em;
+  margin-right: 1rem;
 }
 
 .get-next.get-next:hover {

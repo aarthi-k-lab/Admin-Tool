@@ -4,13 +4,22 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
-  padding: 0.25em 1em;
+  padding: 0.5rem 1rem;
   width: 100%;
+}
+
+.logo {
+  height: 1.5rem;
+  max-height: 23px;
 }
 
 .name.name {
   color: white;
-  margin-right: 1em;
+  margin-right: 1rem;
+}
+
+.profile {
+  max-height: 38px;
 }
 
 .spacer {
@@ -18,7 +27,13 @@
 }
 
 .search {
-  margin-right: 1em;
+  margin-right: 1rem;
+  max-height: 24px;
+}
+
+.profile,
+.search {
+  height: 2rem;
 }
 
 .modal {
