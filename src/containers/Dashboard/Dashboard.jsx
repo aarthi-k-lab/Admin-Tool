@@ -56,11 +56,8 @@ class Dashboard extends React.PureComponent {
     const tombstone = this.renderTombstone();
     const { user } = this.props;
 
-    const getUserDetails = R.propOr({}, 'userDetails');
-    const getUserGroups = R.propOr({}, 'groupList');
-
-    const userDetails = getUserDetails(user);
-    const groups = getUserGroups(user);
+    const userDetails = R.propOr({}, 'userDetails', user);
+    const groups = R.propOr([], 'groupList', user);
 
     return (
       <App user={user}>
