@@ -2,12 +2,16 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import './Profile.css';
-import Auth from 'lib/Auth';
+import PropTypes from 'prop-types';
+import * as R from 'ramda';
 
-function Profile() {
-  const auth = Auth.getInstance();
-  const { email, name } = auth.getUserDetails();
-  const groups = auth.getGroups();
+function Profile({ userDetails, groups }) {
+  const getEmail = R.propOr('', 'email');
+  const getName = R.propOr('', 'name');
+
+  const email = getEmail(userDetails);
+  const name = getName(userDetails);
+
   return (
     <Paper styleName="container" tabIndex={-1}>
       <Typography variant="title">User Profile</Typography>
@@ -35,6 +39,15 @@ Profile.renderGroups = function renderGroups(groups) {
       </li>
     ),
   );
+};
+
+Profile.propTypes = {
+  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  userDetails: PropTypes.shape({
+    email: PropTypes.string,
+    jobTitle: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
 };
 
 export default Profile;

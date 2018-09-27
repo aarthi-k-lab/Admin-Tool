@@ -4,17 +4,12 @@
     "allowSyntheticDefaultImports": false,
     "baseUrl": "./",
     "paths": {
-      "actions": ["src/actions/*"],
-      "appconstants": ["src/appconstants/*"],
+      "constants": ["src/constants/*"],
       "components": ["src/components/*"],
       "containers": ["src/containers/*"],
-      "ducks": ["src/ducks/*"],
+      "ducks": ["src/state/ducks/*"],
       "lib": ["src/lib/*"],
       "models": ["src/models/*"],
-      "selectors": ["src/selectors/*"],
-      "stores": ["src/stores/*"],
-      "helpers": ["src/helpers/*"],
-      "reducers": ["src/reducers/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

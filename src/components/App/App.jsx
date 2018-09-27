@@ -7,10 +7,10 @@ import Body from 'components/Body';
 import LeftNav from 'components/LeftNav';
 import MainContent from 'components/MainContent';
 
-function App({ children }) {
+function App({ user, children }) {
   return (
     <AppContainer>
-      <Header />
+      <Header user={user} />
       <Body>
         <LeftNav />
         <MainContent>
@@ -23,6 +23,14 @@ function App({ children }) {
 
 App.propTypes = {
   children: PropTypes.node.isRequired,
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
 export default hot(module)(App);

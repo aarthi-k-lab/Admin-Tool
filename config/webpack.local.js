@@ -55,6 +55,12 @@ const config = merge(
             '^/api/ods-gateway': '',
           },
         },
+        '/api/config': {
+          target: 'http://127.0.0.1:9307',
+          pathRewrite: {
+            '^/api/config': 'cmod-dev-ui.json',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

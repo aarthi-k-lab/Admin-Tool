@@ -123,13 +123,20 @@ Auth.login = async function login(successRedirectUrl = '/') {
   const userDetails = Auth.prototype.getUserDetails.call({ jwtPayload });
   const userEmail = userDetails.email;
   const userGroups = await this.getUserGroups(userEmail);
+  auth.groups = userGroups;
+  const groupList = auth.getGroups();
+  const user = {
+    userDetails,
+    userGroups,
+    groupList,
+  };
   if (userGroups === null) {
     window.location = '/unauthorized';
     return auth;
   }
   auth.sessionValid = true;
   auth.jwtPayload = jwtPayload;
-  auth.groups = userGroups;
+  auth.user = user;
   return auth;
 };
 

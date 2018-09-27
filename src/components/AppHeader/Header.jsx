@@ -1,8 +1,8 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
-import Auth from 'lib/Auth';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Profile from './Profile';
 import './Header.css';
 
@@ -16,14 +16,6 @@ class Header extends React.Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  static renderName() {
-    const auth = Auth.getInstance();
-    const { name } = auth.getUserDetails();
-    return (
-      <span styleName="name">{name}</span>
-    );
-  }
-
   handleClick() {
     this.setState({ showProfileDetails: true });
   }
@@ -32,7 +24,13 @@ class Header extends React.Component {
     this.setState({ showProfileDetails: false });
   }
 
-  renderProfileDetails() {
+  static renderName(userDetails) {
+    return (
+      <span styleName="name">{userDetails && userDetails.name}</span>
+    );
+  }
+
+  renderProfileDetails(user) {
     const { showProfileDetails } = this.state;
     return (
       <Modal
@@ -40,12 +38,14 @@ class Header extends React.Component {
         open={showProfileDetails}
         styleName="modal"
       >
-        <Profile email="Jon.Snow@mrcooper.com" groups={['beuw', 'feuw']} name="Jon Snow" />
+        <Profile email="Jon.Snow@mrcooper.com" groups={user && user.groupList} name="Jon Snow" />
       </Modal>
     );
   }
 
   render() {
+    const { user } = this.props;
+    const userDetails = user && user.userDetails;
     return (
       <header styleName="header">
         <Link to="/">
@@ -53,7 +53,7 @@ class Header extends React.Component {
         </Link>
         <span styleName="spacer" />
         <img alt="search" src="/static/img/search.png" styleName="search" />
-        {this.constructor.renderName()}
+        {this.constructor.renderName(userDetails)}
         <IconButton
           aria-label="Profile"
           onClick={this.handleClick}
@@ -61,10 +61,21 @@ class Header extends React.Component {
         >
           <img alt="profile" src="/static/img/profile.png" styleName="profile" />
         </IconButton>
-        {this.renderProfileDetails()}
+        {this.renderProfileDetails(user)}
       </header>
     );
   }
 }
+
+Header.propTypes = {
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
+};
 
 export default Header;

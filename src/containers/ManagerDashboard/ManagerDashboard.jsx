@@ -3,47 +3,58 @@ import Report from 'powerbi-report-component';
 import Auth from 'lib/Auth';
 import ContentHeader from 'components/ContentHeader';
 import App from 'components/App';
-import AppCenterDisplay from 'components/AppCenterDisplay';
+import Center from 'components/Center';
 import './ManagerDashboard.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as config from 'ducks/config';
+import PropTypes from 'prop-types';
+import { selectors as configSelectors } from 'ducks/config';
 
 class ManagerDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = { };
     this.accessToken = Auth.getPowerBIAccessToken();
-    const auth = Auth.getInstance();
-    this.groups = auth.getGroups();
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
   }
 
-  renderReport() {
+  componentDidMount() {
+    const { fetchPowerBIConstants } = this.props;
+    fetchPowerBIConstants();
+  }
+
+  // Currently rendering report in 0th index as we have only one group.
+  // Will be expanded later after we get more info on report groups
+  renderReport(powerBIConstants) {
     return this.accessToken
       ? (
         <Report
           accessToken={this.accessToken}
-          embedId="b167ee03-5641-42dc-9fa7-873382b46ec0"
+          embedId={powerBIConstants[0] ? powerBIConstants[0].reportId : ''}
           embedType="report"
-          embedUrl="https://app.powerbi.com/reportEmbed?reportId=b167ee03-5641-42dc-9fa7-873382b46ec0&groupId=4aa8e155-b2fa-4034-9c19-261c4d80da5b"
+          embedUrl={powerBIConstants[0] ? powerBIConstants[0].reportUrl : ''}
           permissions="All"
           style={this.reportStyle}
           tokenType="Aad"
         />
       )
       : (
-        <AppCenterDisplay>
+        <Center>
           <span styleName="message">
             <CircularProgress size={30} />
             Authenticating with PowerBI...
           </span>
-        </AppCenterDisplay>
+        </Center>
       );
   }
 
   render() {
-    if (!this.groups.includes('feuw-mgr')) {
+    const { groups } = this.props;
+    const { powerBIConstants } = this.props;
+    if (groups && !groups.includes('feuw-mgr')) {
       return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
     }
     return (
@@ -54,11 +65,46 @@ class ManagerDashboard extends Component {
           title="Manager Dashboard"
         />
         <div styleName="reportsDiv">
-          { this.renderReport() }
+          { this.renderReport(powerBIConstants) }
         </div>
       </App>
     );
   }
 }
 
-export default ManagerDashboard;
+ManagerDashboard.propTypes = {
+  fetchPowerBIConstants: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  powerBIConstants: configSelectors.powerBIConstants(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchPowerBIConstants: config.operations.fetchPowerBIConstants(dispatch),
+});
+
+ManagerDashboard.defaultProps = {
+  powerBIConstants: [
+    {
+      groupId: 'Loan #',
+      reportId: '67845985',
+      reportName: '',
+      reportUrl: '',
+    },
+  ],
+};
+
+ManagerDashboard.propTypes = {
+  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  powerBIConstants: PropTypes.arrayOf(
+    PropTypes.shape({
+      groupId: PropTypes.string.isRequired,
+      reportId: PropTypes.string.isRequired,
+      reportName: PropTypes.string.isRequired,
+      reportUrl: PropTypes.string.isRequired,
+    }),
+  ),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ManagerDashboard);

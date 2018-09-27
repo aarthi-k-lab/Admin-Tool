@@ -1,43 +1,50 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { FRONTEND_UNDERWRITER, ADMIN, BACKEND_UNDERWRITER } from 'lib/Groups';
-import Auth from 'lib/Auth';
+import PropTypes from 'prop-types';
 
-function renderAdminButton(auth) {
-  if (auth.hasGroup(ADMIN)) {
+function renderAdminButton(groups) {
+  if (groups && groups.includes(ADMIN)) {
     return <Button className="material-ui-button" variant="contained">Admin</Button>;
   }
   return null;
 }
 
-function renderFeuwButton(auth) {
-  if (auth.hasGroup(FRONTEND_UNDERWRITER)) {
+function renderFeuwButton(groups) {
+  if (groups && groups.includes(FRONTEND_UNDERWRITER)) {
     return <Button className="material-ui-button" variant="contained">FEUW</Button>;
   }
   return null;
 }
 
-function renderBeuwButton(auth) {
-  if (auth.hasGroup(BACKEND_UNDERWRITER)) {
+function renderBeuwButton(groups) {
+  if (groups && groups.includes(BACKEND_UNDERWRITER)) {
     return <Button className="material-ui-button" variant="contained">Beuw</Button>;
   }
   return null;
 }
 
-function SSODemo() {
-  const auth = Auth.getInstance();
-  const userDetails = auth.getUserDetails();
+function SSODemo({ groups, userDetails }) {
   return (
     <section>
-      {`Welcome ${userDetails.name}`}
+      {`Welcome ${userDetails && userDetails.name}`}
       <br />
-      {renderAdminButton(auth)}
+      {renderAdminButton(groups)}
       <br />
-      {renderFeuwButton(auth)}
+      {renderFeuwButton(groups)}
       <br />
-      {renderBeuwButton(auth)}
+      {renderBeuwButton(groups)}
     </section>
   );
 }
+
+SSODemo.propTypes = {
+  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  userDetails: PropTypes.shape({
+    email: PropTypes.string,
+    jobTitle: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
+};
 
 export default SSODemo;

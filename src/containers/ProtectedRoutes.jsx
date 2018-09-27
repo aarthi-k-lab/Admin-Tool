@@ -6,6 +6,11 @@ import {
 import Auth from 'lib/Auth';
 import SignInLoader from 'components/SignInLoader';
 import ManagerDashboard from 'containers/ManagerDashboard';
+import {
+  operations as loginOperations,
+  selectors as loginSelectors,
+} from 'ducks/login';
+import { connect } from 'react-redux';
 import Dashboard from './Dashboard';
 
 class ProtectedRoutes extends React.Component {
@@ -20,7 +25,7 @@ class ProtectedRoutes extends React.Component {
   }
 
   componentDidMount() {
-    const { location } = this.props;
+    const { location, setUserSchemaTrigger } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
         this.auth = auth;
@@ -29,6 +34,7 @@ class ProtectedRoutes extends React.Component {
           if (auth.groups && auth.groups.length > 0) {
             const redirectPath = Auth.getGroupHomePage(auth.groups);
             this.shouldRedirect = location.pathname === '/' && redirectPath !== location.pathname;
+            setUserSchemaTrigger(auth.user);
             this.setState({
               loading: false,
               redirectPath,
@@ -40,6 +46,8 @@ class ProtectedRoutes extends React.Component {
 
   render() {
     const { loading, redirectPath } = this.state;
+    const { user } = this.props;
+    const groups = user && user.groupList;
     if (loading) {
       return <SignInLoader />;
     }
@@ -49,17 +57,34 @@ class ProtectedRoutes extends React.Component {
     }
     return (
       <Switch>
-        <Route component={ManagerDashboard} exact path="/reports" />
-        <Route component={Dashboard} />
+        <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
+        <Route render={() => <Dashboard user={user} />} />
       </Switch>
     );
   }
 }
 
+const mapStateToProps = state => ({
+  user: loginSelectors.getUser(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  setUserSchemaTrigger: loginOperations.setUserSchemaTrigger(dispatch),
+});
+
 ProtectedRoutes.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
+  setUserSchemaTrigger: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
-export default ProtectedRoutes;
+export default connect(mapStateToProps, mapDispatchToProps)(ProtectedRoutes);

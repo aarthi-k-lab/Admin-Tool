@@ -5,6 +5,8 @@ import Tombstone, { TombstoneLoader } from 'components/Tombstone';
 import ContentHeader from 'components/ContentHeader';
 import LoanTombstone from 'models/LoanTombstone';
 import SSODemo from 'containers/SSODemo';
+import PropTypes from 'prop-types';
+import * as R from 'ramda';
 
 class Dashboard extends React.PureComponent {
   constructor(props) {
@@ -52,19 +54,38 @@ class Dashboard extends React.PureComponent {
 
   render() {
     const tombstone = this.renderTombstone();
+    const { user } = this.props;
+
+    const getUserDetails = R.propOr({}, 'userDetails');
+    const getUserGroups = R.propOr({}, 'groupList');
+
+    const userDetails = getUserDetails(user);
+    const groups = getUserGroups(user);
+
     return (
-      <App>
+      <App user={user}>
         <ContentHeader
           onGetNext={this.handleGetNext}
           title="Document Verification"
         />
         {tombstone}
         <Center>
-          <SSODemo />
+          <SSODemo groups={groups} userDetails={userDetails} />
         </Center>
       </App>
     );
   }
 }
+
+Dashboard.propTypes = {
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
+};
 
 export default Dashboard;
