@@ -9,6 +9,7 @@
  */
 
 html {
+  box-sizing: border-box;
   line-height: 1.15; /* 1 */
   height: 100%;
   -webkit-text-size-adjust: 100%; /* 2 */
@@ -347,6 +348,12 @@ template {
 
 #app {
   height: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 @media (max-width: 1200px) {
