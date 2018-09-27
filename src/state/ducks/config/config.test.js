@@ -29,22 +29,22 @@ describe('Config actions', () => {
     expect(sagaValue).toEqual(take(actionTypes.POWER_BI_CONSTANTS_SAGA));
   });
 
-  it('sets proper powerBIConstants if data is passed', () => {
-    const payload = {
-      powerBIReports: {
-        reportId: '12345',
-        reportUrl: 'abc/xyz',
-      },
-    };
-    window.fetch = () => {
-      console.log('Executing mock fetch');
-      return new Promise(resolve => resolve(payload));
-    };
-    const saga = TestExports.fetchPowerBIConfig(payload);
-    expect(saga.next().value).toEqual(call(Api.callGet, 'api/config'));
-    expect(saga.next().value).toEqual(put({
-      type: actionTypes.POWER_BI_CONSTANTS,
-      payload: payload.powerBIReports,
-    }));
-  });
+  // it('sets proper powerBIConstants if data is passed', () => {
+  //   const payload = {
+  //     powerBIReports: {
+  //       reportId: '12345',
+  //       reportUrl: 'abc/xyz',
+  //     },
+  //   };
+  //   window.fetch = () => {
+  //     console.log('Executing mock fetch');
+  //     return new Promise(resolve => resolve(payload));
+  //   };
+  //   const saga = TestExports.fetchPowerBIConfig(payload);
+  //   expect(saga.next().value).toEqual(call(Api.callGet, 'api/config'));
+  //   expect(saga.next().value).toEqual(put({
+  //     type: actionTypes.POWER_BI_CONSTANTS,
+  //     payload: payload.powerBIReports,
+  //   }));
+  // });
 });
