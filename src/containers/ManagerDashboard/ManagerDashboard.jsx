@@ -29,7 +29,7 @@ class ManagerDashboard extends Component {
   // Currently rendering report in 0th index as we have only one group.
   // Will be expanded later after we get more info on report groups
   renderReport(powerBIConstants) {
-    return this.accessToken
+    return (this.accessToken && powerBIConstants && powerBIConstants.length > 0)
       ? (
         <Report
           accessToken={this.accessToken}
