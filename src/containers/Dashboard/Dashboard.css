@@ -1,6 +1,4 @@
 .disposition-section-container {
-  --grey-200: #eee;
-
   align-items: flex-start;
   background-color: var(--grey-200);
   justify-content: center;

@@ -62,6 +62,8 @@ class Dashboard extends React.PureComponent {
       <App user={user}>
         <ContentHeader
           onGetNext={this.handleGetNext}
+          showEndShift
+          showGetNext
           title="Document Verification"
         />
         {tombstone}

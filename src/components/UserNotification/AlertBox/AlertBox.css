@@ -8,25 +8,21 @@
 
 .alert-box--error {
   composes: alert-box;
-  background-color: #ffebee;
-  border: solid 0.125rem #e53935;
+  background-color: var(--red-50);
+  border: solid 0.125rem var(--red-600);
 }
 
 .alert-box--success {
   composes: alert-box;
-  background-color: #f1f8e9;
-  border: solid 0.125rem #8bc34a;
+  background-color: var(--light-green-50);
+  border: solid 0.125rem var(--light-green-500);
 }
 
 .error-icon.error-icon {
-  --red-a700: #d50000;
-
   color: var(--red-a700);
 }
 
 .success-icon.success-icon {
-  --light-green-a700: #64dd17;
-
   color: var(--light-green-a700);
 }
 

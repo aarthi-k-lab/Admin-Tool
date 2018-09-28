@@ -61,7 +61,6 @@ class ManagerDashboard extends Component {
       <App>
         <ContentHeader
           onGetNext={this.handleGetNext}
-          showGetNext={false}
           title="Manager Dashboard"
         />
         <div styleName="reportsDiv">
