@@ -19,8 +19,8 @@ class ProtectedRoutes extends React.Component {
     this.state = {
       loading: true,
       redirectPath: null,
-      shouldRedirect: false,
     };
+    this.shouldRedirect = false;
     this.auth = null;
   }
 
@@ -33,26 +33,26 @@ class ProtectedRoutes extends React.Component {
           this.setState({ loading: false });
           if (auth.groups && auth.groups.length > 0) {
             const redirectPath = Auth.getGroupHomePage(auth.groups);
-            setUserSchemaTrigger(auth.user);
+            this.shouldRedirect = location.pathname === '/' && redirectPath !== location.pathname;
             this.setState({
               loading: false,
               redirectPath,
-              shouldRedirect: location.pathname === '/' && redirectPath !== location.pathname,
             });
+            setUserSchemaTrigger(auth.user);
           }
         }
       });
   }
 
   render() {
-    const { loading, redirectPath, shouldRedirect } = this.state;
+    const { loading, redirectPath } = this.state;
     const { user } = this.props;
     const groups = user && user.groupList;
     if (loading) {
       return <SignInLoader />;
     }
-    if (shouldRedirect) {
-      this.setState({ shouldRedirect: false });
+    if (this.shouldRedirect) {
+      this.shouldRedirect = false;
       return <Redirect to={redirectPath} />;
     }
     return (
