@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import './Center.css';
 
-const Center = ({ children, disableExpand }) => (
-  <div styleName={Center.getStyles(disableExpand)}>
+const Center = ({ children, className, disableExpand }) => (
+  <div className={className} styleName={Center.getStyles(disableExpand)}>
     { children }
   </div>
 );
@@ -17,11 +17,13 @@ Center.getStyles = (disableExpand) => {
 };
 
 Center.defaultProps = {
+  className: '',
   disableExpand: false,
 };
 
 Center.propTypes = {
   children: PropTypes.node.isRequired,
+  className: PropTypes.string,
   disableExpand: PropTypes.bool,
 };
 

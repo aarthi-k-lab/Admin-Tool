@@ -50,15 +50,19 @@ const config = merge(
           pathRewrite: authPathRewrite,
         },
         '/api/ods-gateway': {
-          target: 'http://127.0.0.1:7700',
+          target: 'https://cmodgatewaydev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
           pathRewrite: {
             '^/api/ods-gateway': '',
           },
         },
         '/api/config': {
-          target: 'http://127.0.0.1:9307',
+          target: 'https://cmodspringconfigdev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
           pathRewrite: {
-            '^/api/config': 'cmod-dev-ui.json',
+            '^/api/config': '/cmod-dev-ui.json',
           },
         },
       },

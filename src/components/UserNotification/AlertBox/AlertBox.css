@@ -1,0 +1,35 @@
+.alert-box {
+  align-items: center;
+  border-radius: 0.2rem;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0.5rem 0.5rem;
+}
+
+.alert-box--error {
+  composes: alert-box;
+  background-color: #ffebee;
+  border: solid 0.125rem #e53935;
+}
+
+.alert-box--success {
+  composes: alert-box;
+  background-color: #f1f8e9;
+  border: solid 0.125rem #8bc34a;
+}
+
+.error-icon.error-icon {
+  --red-a700: #d50000;
+
+  color: var(--red-a700);
+}
+
+.success-icon.success-icon {
+  --light-green-a700: #64dd17;
+
+  color: var(--light-green-a700);
+}
+
+.message {
+  padding-left: 0.5rem;
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Tombstone from '.';
 import Item from './Item';
+
 jest.mock('./Item');
 
 describe('<Tombstone />', () => {

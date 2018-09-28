@@ -1,0 +1,17 @@
+.disposition-section-container {
+  --grey-200: #eee;
+
+  align-items: flex-start;
+  background-color: var(--grey-200);
+  justify-content: center;
+}
+
+.disposition-section > * {
+  margin-top: 1.25rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: normal;
+  margin-top: 1.25rem;
+}

@@ -23,7 +23,6 @@ html {
  */
 
 body {
-  font-family: 'Lato', sans-serif;
   height: 100%;
   margin: 0;
 }
@@ -354,6 +353,7 @@ template {
 *::before,
 *::after {
   box-sizing: inherit;
+  font-family: 'Lato', sans-serif;
 }
 
 @media (max-width: 1200px) {

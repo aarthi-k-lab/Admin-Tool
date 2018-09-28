@@ -1,12 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import App from 'components/App';
-import Center from 'components/Center';
 import Tombstone, { TombstoneLoader } from 'components/Tombstone';
 import ContentHeader from 'components/ContentHeader';
+import RadioButtonGroup from 'components/RadioButtonGroup';
 import LoanTombstone from 'models/LoanTombstone';
-import SSODemo from 'containers/SSODemo';
-import PropTypes from 'prop-types';
-import * as R from 'ramda';
+import FullHeightColumn from 'components/FullHeightColumn/FullHeightColumn';
+import dispositionOptions from 'constants/dispositionOptions';
+import UserNotification from 'components/UserNotification/UserNotification';
+import './Dashboard.css';
 
 class Dashboard extends React.PureComponent {
   constructor(props) {
@@ -56,9 +58,6 @@ class Dashboard extends React.PureComponent {
     const tombstone = this.renderTombstone();
     const { user } = this.props;
 
-    const userDetails = R.propOr({}, 'userDetails', user);
-    const groups = R.propOr([], 'groupList', user);
-
     return (
       <App user={user}>
         <ContentHeader
@@ -66,9 +65,13 @@ class Dashboard extends React.PureComponent {
           title="Document Verification"
         />
         {tombstone}
-        <Center>
-          <SSODemo groups={groups} userDetails={userDetails} />
-        </Center>
+        <FullHeightColumn styleName="disposition-section-container">
+          <section styleName="disposition-section">
+            <header styleName="title">Choose Disposition Type</header>
+            <UserNotification level="error" message="CMOD rocks!" type="alert-box" />
+            <RadioButtonGroup items={dispositionOptions} name="disposition-options" />
+          </section>
+        </FullHeightColumn>
       </App>
     );
   }
