@@ -69,7 +69,7 @@ class Dashboard extends React.PureComponent {
         {tombstone}
         <FullHeightColumn styleName="disposition-section-container">
           <section styleName="disposition-section">
-            <header styleName="title">Choose Disposition Type</header>
+            <header styleName="title">Please Select the Outcome Of Your Review</header>
             <UserNotification level="error" message="This is a error message!" type="alert-box" />
             <RadioButtonGroup items={dispositionOptions} name="disposition-options" />
           </section>
