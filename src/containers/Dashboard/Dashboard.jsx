@@ -70,7 +70,7 @@ class Dashboard extends React.PureComponent {
         <FullHeightColumn styleName="disposition-section-container">
           <section styleName="disposition-section">
             <header styleName="title">Choose Disposition Type</header>
-            <UserNotification level="error" message="CMOD rocks!" type="alert-box" />
+            <UserNotification level="error" message="This is a error message!" type="alert-box" />
             <RadioButtonGroup items={dispositionOptions} name="disposition-options" />
           </section>
         </FullHeightColumn>
