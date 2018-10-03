@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import StopIcon from '@material-ui/icons/Stop';
-import ZoomOut from '@material-ui/icons/ZoomOutMap';
-
+import GetNext from './GetNext';
+import EndShift from './EndShift';
 import './ContentHeader.css';
-import { IconButton } from '@material-ui/core';
+import Expand from './Expand';
 
 const ContentHeader = ({
   disableGetNext,
@@ -16,39 +14,16 @@ const ContentHeader = ({
   showGetNext,
   title,
 }) => {
-  const getNextButton = (
-    <Button
-      className="material-ui-button"
-      color="primary"
-      disabled={disableGetNext}
-      onClick={onGetNext}
-      styleName="get-next"
-      variant="contained"
-    >
-      Get Next
-    </Button>
-  );
-  const endShift = (
-    <Button
-      color="primary"
-      onClick={onEndShift}
-      styleName="end-shift"
-      variant="outlined"
-    >
-      <StopIcon />
-      End Shift
-    </Button>
-  );
-
+  const getNext = <GetNext disabled={disableGetNext} onClick={onGetNext} />;
+  const endShift = <EndShift onClick={onEndShift} />;
+  const expand = <Expand onClick={onExpand} />;
   return (
     <header styleName="content-header">
       <h3 styleName="title">{title}</h3>
       <span styleName="spacer" />
       {showEndShift ? endShift : null}
-      {showGetNext ? getNextButton : null}
-      <IconButton onClick={onExpand}>
-        <ZoomOut />
-      </IconButton>
+      {showGetNext ? getNext : null}
+      {expand}
     </header>
   );
 };

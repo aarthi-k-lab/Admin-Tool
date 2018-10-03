@@ -7,12 +7,12 @@ import Body from 'components/Body';
 import LeftNav from 'components/LeftNav';
 import MainContent from 'components/MainContent';
 
-function App({ user, children }) {
+function App({ user, children, expandView }) {
   return (
-    <AppContainer>
-      <Header user={user} />
+    <AppContainer hideFooter={expandView}>
+      { expandView ? null : <Header user={user} />}
       <Body>
-        <LeftNav />
+        { expandView ? null : <LeftNav />}
         <MainContent>
           { children }
         </MainContent>
@@ -21,8 +21,13 @@ function App({ user, children }) {
   );
 }
 
+App.defaultProps = {
+  expandView: false,
+};
+
 App.propTypes = {
   children: PropTypes.node.isRequired,
+  expandView: PropTypes.bool,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({
       email: PropTypes.string,

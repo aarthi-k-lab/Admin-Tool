@@ -5,6 +5,11 @@ import Tombstone, { TombstoneLoader } from 'components/Tombstone';
 import ContentHeader from 'components/ContentHeader';
 import RadioButtonGroup from 'components/RadioButtonGroup';
 import LoanTombstone from 'models/LoanTombstone';
+import {
+  operations as dashboardOperations,
+  selectors as dashboardSelectors,
+} from 'ducks/dashboard';
+import { connect } from 'react-redux';
 import FullHeightColumn from 'components/FullHeightColumn/FullHeightColumn';
 import dispositionOptions from 'constants/dispositionOptions';
 import UserNotification from 'components/UserNotification/UserNotification';
@@ -56,11 +61,12 @@ class Dashboard extends React.PureComponent {
 
   render() {
     const tombstone = this.renderTombstone();
-    const { user } = this.props;
+    const { user, onExpandTrigger, expandView } = this.props;
 
     return (
-      <App user={user}>
+      <App expandView={expandView} user={user}>
         <ContentHeader
+          onExpand={onExpandTrigger}
           onGetNext={this.handleGetNext}
           showEndShift
           showGetNext
@@ -79,7 +85,17 @@ class Dashboard extends React.PureComponent {
   }
 }
 
+const mapStateToProps = state => ({
+  expandView: dashboardSelectors.expandView(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onExpandTrigger: dashboardOperations.onExpand(dispatch),
+});
+
 Dashboard.propTypes = {
+  expandView: PropTypes.bool.isRequired,
+  onExpandTrigger: PropTypes.func.isRequired,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({
       email: PropTypes.string,
@@ -90,4 +106,4 @@ Dashboard.propTypes = {
   }).isRequired,
 };
 
-export default Dashboard;
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -19,19 +19,3 @@
 .spacer {
   flex-grow: 1;
 }
-
-.get-next.get-next {
-  background-color: var(--light-blue-900);
-  margin-right: 0.5rem;
-}
-
-.get-next.get-next:hover {
-  background-color: var(--blue-900);
-}
-
-.end-shift.end-shift {
-  color: var(--light-blue-900);
-  border-color: var(--light-blue-900);
-  padding: 0 0.5rem;
-  margin-right: 1rem;
-}

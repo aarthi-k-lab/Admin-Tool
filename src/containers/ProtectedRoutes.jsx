@@ -58,7 +58,11 @@ class ProtectedRoutes extends React.Component {
     return (
       <Switch>
         <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
-        <Route render={() => <Dashboard user={user} />} />
+        <Route render={() => (
+          <Dashboard
+            user={user}
+          />)}
+        />
       </Switch>
     );
   }
