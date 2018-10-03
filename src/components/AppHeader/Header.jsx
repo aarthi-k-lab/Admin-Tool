@@ -38,7 +38,7 @@ class Header extends React.Component {
         open={showProfileDetails}
         styleName="modal"
       >
-        <Profile email="Jon.Snow@mrcooper.com" groups={user && user.groupList} name="Jon Snow" />
+        <Profile groups={user && user.groupList} userDetails={user && user.userDetails} />
       </Modal>
     );
   }

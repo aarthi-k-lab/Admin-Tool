@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Report from 'powerbi-report-component';
 import Auth from 'lib/Auth';
 import ContentHeader from 'components/ContentHeader';
-import App from 'components/App';
 import Center from 'components/Center';
 import './ManagerDashboard.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -10,6 +9,9 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as config from 'ducks/config';
 import PropTypes from 'prop-types';
+import {
+  operations as dashboardOperations,
+} from 'ducks/dashboard';
 import { selectors as configSelectors } from 'ducks/config';
 
 class ManagerDashboard extends Component {
@@ -53,20 +55,21 @@ class ManagerDashboard extends Component {
 
   render() {
     const { groups } = this.props;
-    const { powerBIConstants } = this.props;
+    const { powerBIConstants, onExpandTrigger } = this.props;
     if (groups && !groups.includes('feuw-mgr')) {
       return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
     }
     return (
-      <App>
+      <>
         <ContentHeader
+          onExpand={onExpandTrigger}
           onGetNext={this.handleGetNext}
           title="Manager Dashboard"
         />
         <div styleName="reportsDiv">
           { this.renderReport(powerBIConstants) }
         </div>
-      </App>
+      </>
     );
   }
 }
@@ -81,6 +84,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchPowerBIConstants: config.operations.fetchPowerBIConstants(dispatch),
+  onExpandTrigger: dashboardOperations.onExpand(dispatch),
 });
 
 ManagerDashboard.defaultProps = {
@@ -96,6 +100,7 @@ ManagerDashboard.defaultProps = {
 
 ManagerDashboard.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onExpandTrigger: PropTypes.func.isRequired,
   powerBIConstants: PropTypes.arrayOf(
     PropTypes.shape({
       groupId: PropTypes.string.isRequired,

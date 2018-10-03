@@ -1,19 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import App from 'components/App';
 import Tombstone, { TombstoneLoader } from 'components/Tombstone';
 import ContentHeader from 'components/ContentHeader';
 import RadioButtonGroup from 'components/RadioButtonGroup';
 import LoanTombstone from 'models/LoanTombstone';
-import {
-  operations as dashboardOperations,
-  selectors as dashboardSelectors,
-} from 'ducks/dashboard';
 import { connect } from 'react-redux';
 import FullHeightColumn from 'components/FullHeightColumn/FullHeightColumn';
 import dispositionOptions from 'constants/dispositionOptions';
 import UserNotification from 'components/UserNotification/UserNotification';
 import './Dashboard.css';
+import {
+  operations as dashboardOperations,
+  selectors as dashboardSelectors,
+} from 'ducks/dashboard';
+import PropTypes from 'prop-types';
 
 class Dashboard extends React.PureComponent {
   constructor(props) {
@@ -61,10 +60,9 @@ class Dashboard extends React.PureComponent {
 
   render() {
     const tombstone = this.renderTombstone();
-    const { user, onExpandTrigger, expandView } = this.props;
-
+    const { onExpandTrigger } = this.props;
     return (
-      <App expandView={expandView} user={user}>
+      <>
         <ContentHeader
           onExpand={onExpandTrigger}
           onGetNext={this.handleGetNext}
@@ -80,7 +78,7 @@ class Dashboard extends React.PureComponent {
             <RadioButtonGroup items={dispositionOptions} name="disposition-options" />
           </section>
         </FullHeightColumn>
-      </App>
+      </>
     );
   }
 }
@@ -94,7 +92,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 Dashboard.propTypes = {
-  expandView: PropTypes.bool.isRequired,
   onExpandTrigger: PropTypes.func.isRequired,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({

@@ -11,6 +11,11 @@ import {
   selectors as loginSelectors,
 } from 'ducks/login';
 import { connect } from 'react-redux';
+import App from 'components/App';
+import {
+  operations as dashboardOperations,
+  selectors as dashboardSelectors,
+} from 'ducks/dashboard';
 import Dashboard from './Dashboard';
 
 class ProtectedRoutes extends React.Component {
@@ -46,7 +51,7 @@ class ProtectedRoutes extends React.Component {
 
   render() {
     const { loading, redirectPath } = this.state;
-    const { user } = this.props;
+    const { expandView, user } = this.props;
     const groups = user && user.groupList;
     if (loading) {
       return <SignInLoader />;
@@ -56,27 +61,32 @@ class ProtectedRoutes extends React.Component {
       return <Redirect to={redirectPath} />;
     }
     return (
-      <Switch>
-        <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
-        <Route render={() => (
-          <Dashboard
-            user={user}
-          />)}
-        />
-      </Switch>
+      <App expandView={expandView} user={user}>
+        <Switch>
+          <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
+          <Route render={() => (
+            <Dashboard
+              user={user}
+            />)}
+          />
+        </Switch>
+      </App>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  expandView: dashboardSelectors.expandView(state),
   user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
+  onExpandTrigger: dashboardOperations.onExpand(dispatch),
   setUserSchemaTrigger: loginOperations.setUserSchemaTrigger(dispatch),
 });
 
 ProtectedRoutes.propTypes = {
+  expandView: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
