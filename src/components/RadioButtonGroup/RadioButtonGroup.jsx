@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
+import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
+import SaveIcon from '@material-ui/icons/Save';
 import styles from './RadioButtonGroup.css';
 
 class RadioButtonGroup extends React.PureComponent {
@@ -13,6 +15,7 @@ class RadioButtonGroup extends React.PureComponent {
       selected: '',
     };
     this.handleChange = this.handleChange.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
   handleChange(event) {
@@ -21,7 +24,27 @@ class RadioButtonGroup extends React.PureComponent {
     onChange(event.target.value);
   }
 
-  static renderItem(item) {
+  renderItem(item) {
+    const { selected: selectedValue } = this.state;
+    const isSelected = item.key === selectedValue;
+    const saveIcon = (
+      <Tooltip
+        disableFocusListener
+        disableHoverListener={!isSelected}
+        disableTouchListener
+        title="Save"
+      >
+        <SaveIcon styleName={isSelected ? 'save-icon' : 'save-icon--disabled'} />
+      </Tooltip>
+    );
+    const label = (
+      <>
+        <span>{item.value}</span>
+        <br />
+        {saveIcon}
+        <span styleName="addtional-info">{item.additionalInfo}</span>
+      </>
+    );
     return (
       <FormControlLabel
         key={item.key}
@@ -29,7 +52,8 @@ class RadioButtonGroup extends React.PureComponent {
           label: styles.label,
         }}
         control={<Radio />}
-        label={item.value}
+        label={label}
+        styleName="form-control"
         value={item.key}
       />
     );
@@ -46,7 +70,7 @@ class RadioButtonGroup extends React.PureComponent {
           styleName="radio-buttons"
           value={selected}
         >
-          {items.map(this.constructor.renderItem)}
+          {items.map(this.renderItem)}
         </RadioGroup>
       </Paper>
     );
@@ -59,6 +83,7 @@ RadioButtonGroup.defaultProps = {
 
 RadioButtonGroup.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({
+    additionalInfo: PropTypes.string.isRequired,
     key: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
   })).isRequired,

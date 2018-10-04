@@ -25,7 +25,6 @@ describe('<RadioButtonGroup />', () => {
 
   it('should render the radio buttons', () => {
     expect(wrapper.find('RadioGroup').children()).toHaveLength(items.length);
-    expect(wrapper.find('RadioGroup').children().at(0).prop('label')).toBe('T1');
   });
 
   it('should trigger OnChange on click of a radio button', () => {

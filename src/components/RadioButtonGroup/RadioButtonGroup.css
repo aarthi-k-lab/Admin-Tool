@@ -4,8 +4,58 @@
 
 .paper-sheet {
   height: 100%;
+  min-width: 32rem;
 }
 
 .label.label {
   font-size: 1rem;
+}
+
+.form-control.form-control {
+  border: 0.1rem solid transparent;
+  margin-left: -16px;
+  margin-right: 0;
+  padding-bottom: 0.75rem;
+  position: relative;
+  transition: background-color 0.5s, box-shadow 0.5s, width 0.5s, border 0.5s;
+}
+
+.form-control.form-control:hover {
+  background-color: var(--grey-50);
+  border-radius: 0.25rem;
+  border: 0.1rem solid var(--grey-300);
+  box-shadow: 0 0.25rem 1rem var(--grey-300);
+  transition: background-color 0.5s, box-shadow 0.5s, width 0.5s, border 0.5s;
+  left: -0.25rem;
+  padding-left: 0.25rem;
+  width: calc(100% + 16px + 0.5rem);
+}
+
+.addtional-info {
+  position: absolute;
+  color: var(--grey-500);
+  font-size: 0.75rem;
+  visibility: hidden;
+}
+
+.form-control.form-control:hover .addtional-info {
+  visibility: visible;
+  transition: visibility 0.5s;
+}
+
+.save-icon {
+  position: absolute;
+  right: 1.5rem;
+  top: 25%;
+  visibility: hidden;
+}
+
+.save-icon--disabled {
+  composes: save-icon;
+  color: var(--grey-500);
+  cursor: not-allowed;
+}
+
+.form-control.form-control:hover .save-icon {
+  visibility: visible;
 }

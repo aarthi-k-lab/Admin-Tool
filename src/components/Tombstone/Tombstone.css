@@ -8,6 +8,19 @@
   min-height: 3.5625rem;
 }
 
+.more-icon-button {
+  border-right: dashed 0.0625rem var(--grey-350);
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 3.5625rem;
+}
+
+.more-icon {
+  color: var(--grey-850);
+}
+
 .spacer {
   flex-grow: 1;
 }
