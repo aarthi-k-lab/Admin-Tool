@@ -6,6 +6,7 @@ import LoanTombstone from 'models/LoanTombstone';
 import { connect } from 'react-redux';
 import FullHeightColumn from 'components/FullHeightColumn/FullHeightColumn';
 import dispositionOptions from 'constants/dispositionOptions';
+import LeftTaskPane from 'components/LeftTaskPane';
 import UserNotification from 'components/UserNotification/UserNotification';
 import './Dashboard.css';
 import {
@@ -13,6 +14,7 @@ import {
   selectors as dashboardSelectors,
 } from 'ducks/dashboard';
 import PropTypes from 'prop-types';
+import isFeatureEnabled from 'lib/FeatureUtils';
 
 class Dashboard extends React.PureComponent {
   constructor(props) {
@@ -60,7 +62,7 @@ class Dashboard extends React.PureComponent {
 
   render() {
     const tombstone = this.renderTombstone();
-    const { onExpandTrigger } = this.props;
+    const { features, onExpandTrigger } = this.props;
     return (
       <>
         <ContentHeader
@@ -72,6 +74,7 @@ class Dashboard extends React.PureComponent {
         />
         {tombstone}
         <FullHeightColumn styleName="disposition-section-container">
+          {isFeatureEnabled('taskPane', features) ? <LeftTaskPane /> : null}
           <section styleName="disposition-section">
             <header styleName="title">Please Select the Outcome Of Your Review</header>
             <UserNotification level="error" message="This is a error message!" type="alert-box" />
@@ -92,6 +95,9 @@ const mapDispatchToProps = dispatch => ({
 });
 
 Dashboard.propTypes = {
+  features: PropTypes.shape({
+    taskPane: PropTypes.bool,
+  }).isRequired,
   onExpandTrigger: PropTypes.func.isRequired,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({

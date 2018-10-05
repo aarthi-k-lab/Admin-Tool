@@ -1,4 +1,4 @@
-import { POWER_BI_CONSTANTS, POWER_BI_CONSTANTS_FAILURE } from './types';
+import { POWER_BI_CONSTANTS, POWER_BI_CONSTANTS_FAILURE, SET_FEATURES } from './types';
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
@@ -10,6 +10,15 @@ const reducer = (state = {}, action) => {
         powerBIConstants,
       };
     }
+
+    case SET_FEATURES: {
+      const features = action.payload ? action.payload : {};
+      return {
+        ...state,
+        features,
+      };
+    }
+
     default:
       return state;
   }

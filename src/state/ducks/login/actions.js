@@ -1,4 +1,8 @@
-import { SET_USER_SCHEMA_SAGA, SET_USER_SCHEMA_SUCCESS, SET_USER_SCHEMA_FAILED } from './types';
+import {
+  SET_USER_SCHEMA_SAGA,
+  SET_USER_SCHEMA_SUCCESS,
+  SET_USER_SCHEMA_FAILED,
+} from './types';
 
 const setUserSchemaTrigger = userPayload => ({
   type: SET_USER_SCHEMA_SAGA,

@@ -1,7 +1,11 @@
 .disposition-section-container {
   align-items: flex-start;
   background-color: var(--grey-200);
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+.disposition-section {
+  margin: 0 auto;
 }
 
 .disposition-section > * {
@@ -13,3 +17,8 @@
   font-weight: normal;
   margin-top: 1.25rem;
 }
+
+.left-task-pane {
+  align-items: flex-start;
+}
+

@@ -16,6 +16,7 @@ import {
   operations as dashboardOperations,
   selectors as dashboardSelectors,
 } from 'ducks/dashboard';
+import * as config from 'ducks/config';
 import Dashboard from './Dashboard';
 
 class ProtectedRoutes extends React.Component {
@@ -30,7 +31,7 @@ class ProtectedRoutes extends React.Component {
   }
 
   componentDidMount() {
-    const { location, setUserSchemaTrigger } = this.props;
+    const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
         this.auth = auth;
@@ -47,11 +48,12 @@ class ProtectedRoutes extends React.Component {
           }
         }
       });
+    getFeaturesTrigger();
   }
 
   render() {
     const { loading, redirectPath } = this.state;
-    const { expandView, user } = this.props;
+    const { expandView, features, user } = this.props;
     const groups = user && user.groupList;
     if (loading) {
       return <SignInLoader />;
@@ -66,6 +68,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route render={() => (
             <Dashboard
+              features={features}
               user={user}
             />)}
           />
@@ -77,16 +80,22 @@ class ProtectedRoutes extends React.Component {
 
 const mapStateToProps = state => ({
   expandView: dashboardSelectors.expandView(state),
+  features: config && config.selectors.getFeatures(state),
   user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onExpandTrigger: dashboardOperations.onExpand(dispatch),
   setUserSchemaTrigger: loginOperations.setUserSchemaTrigger(dispatch),
+  getFeaturesTrigger: config.operations.getFeaturesTrigger(dispatch),
 });
 
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
+  features: PropTypes.shape({
+    taskPane: PropTypes.bool,
+  }).isRequired,
+  getFeaturesTrigger: PropTypes.func.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,

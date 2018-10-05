@@ -1,9 +1,8 @@
 // import { put } from 'redux-saga/effects';
-import { take, put, call } from 'redux-saga/effects';
+import { take } from 'redux-saga/effects';
 import * as actionTypes from './types';
-import { fetchPowerBIConfig, fetchAppConfig } from './actions';
+import { fetchPowerBIConfig, fetchAppConfig, getFeaturesTrigger } from './actions';
 import { TestExports } from './sagas';
-import * as Api from 'lib/Api';
 
 describe('Config actions', () => {
   it('should trigger the POWERBI_CONSTANTS action', () => {
@@ -21,12 +20,25 @@ describe('Config actions', () => {
     expect(response.type).toEqual(actionTypes.FETCHCONFIG_SAGA);
   });
 
+  it('should trigger the GET_FEATURES_SAGA action', () => {
+    const response = getFeaturesTrigger();
+    expect(response.type).toEqual(actionTypes.GET_FEATURES_SAGA);
+  });
+
   it('watchFetchPowerBIConfig saga receives POWER_BI_CONSTANTS_SAGA dispatch', () => {
     const saga = TestExports.watchFetchPowerBIConfig({
       type: actionTypes.POWER_BI_CONSTANTS_SAGA,
     });
     const sagaValue = saga.next().value;
     expect(sagaValue).toEqual(take(actionTypes.POWER_BI_CONSTANTS_SAGA));
+  });
+
+  it('watchGetFeatures saga receives GET_FEATURES_SAGA dispatch', () => {
+    const saga = TestExports.watchGetFeatures({
+      type: actionTypes.GET_FEATURES_SAGA,
+    });
+    const sagaValue = saga.next().value;
+    expect(sagaValue).toEqual(take(actionTypes.GET_FEATURES_SAGA));
   });
 
   // it('sets proper powerBIConstants if data is passed', () => {

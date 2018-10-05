@@ -1,0 +1,856 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Task Components /> CollapseIcon renders correctly 1`] = `
+<span
+  className="components-Tasks-CollapseIcon__collapse-icon-container--ZVWlv"
+>
+  <svg
+    aria-hidden="true"
+    className="MuiSvgIcon-root-1 components-Tasks-CollapseIcon__shift-left--1JFxF"
+    focusable="false"
+    role="presentation"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
+    />
+    <path
+      d="M0 0h24v24H0z"
+      fill="none"
+    />
+  </svg>
+</span>
+`;
+
+exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`] = `
+<div
+  className="components-Tasks-LeftParentTasks__left-parent-tasks--2qJrn"
+>
+  <div
+    className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div--1H8Wu"
+  >
+    <div>
+      <div
+        className="MuiGrid-container-55"
+      >
+        <div
+          className="MuiGrid-item-56"
+        >
+          <span
+            placement="right"
+            title="Document and Income Type Verification"
+          >
+            <span
+              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-167"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-161"
+                  data-indeterminate={false}
+                  id="taskStatusIcon"
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-171"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        className="MuiGrid-container-55"
+      >
+        <div
+          className="MuiGrid-item-56"
+        >
+          <span
+            placement="right"
+            title="Tax Transcript Review"
+          >
+            <span
+              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-167"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_selected_green.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-161"
+                  data-indeterminate={false}
+                  id="taskStatusIcon"
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-171"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        className="MuiGrid-container-55"
+      >
+        <div
+          className="MuiGrid-item-56"
+        >
+          <span
+            placement="right"
+            title="Application Review"
+          >
+            <span
+              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-167"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_error.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-161"
+                  data-indeterminate={false}
+                  id="taskStatusIcon"
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-171"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`] = `
+<div
+  className="components-Tasks-LeftParentTasks__left-parent-tasks--2qJrn"
+>
+  <span
+    className="components-Tasks-LeftParentTasks__status-select-field-span--CWvvu"
+  >
+    <div
+      className="MuiFormControl-root-10 status-select-field"
+    >
+      <div
+        className="MuiInputBase-root-34 MuiInput-root-21 MuiInputBase-formControl-35 MuiInput-formControl-22"
+        onClick={[Function]}
+      >
+        <div
+          className="MuiSelect-root-14"
+        >
+          <div
+            aria-haspopup="true"
+            aria-owns={null}
+            aria-pressed="false"
+            className="MuiSelect-select-15 MuiSelect-selectMenu-18 MuiInputBase-input-44 MuiInput-input-29 status-select-field-text"
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            role="button"
+            tabIndex={0}
+          >
+            All
+          </div>
+          <input
+            id="status-selector"
+            type="hidden"
+            value="All"
+          />
+          <svg
+            aria-hidden="true"
+            className="MuiSvgIcon-root-1 MuiSelect-icon-20"
+            focusable="false"
+            role="presentation"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M7 10l5 5 5-5z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <span
+      className="components-Tasks-LeftParentTasks__status-text--xzygc"
+    >
+      Status
+    </span>
+  </span>
+  <div
+    className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div--1H8Wu"
+  >
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-55 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-56"
+          >
+            <span
+              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-167"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-161"
+                  data-indeterminate={false}
+                  id="taskStatusIcon"
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-171"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Document and Income Type Verification
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            />
+          </div>
+        </div>
+        <div
+          className="MuiGrid-container-55 MuiGrid-direction-xs-column-58"
+        >
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_unselected.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
+              >
+                Document Review
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              />
+            </div>
+          </div>
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_selected_green_small.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
+              >
+                Choose income type
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              />
+            </div>
+          </div>
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_unselected.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
+              >
+                Suspicious Activity Review
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              />
+            </div>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-55 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-56"
+          >
+            <span
+              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-167"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_selected_green.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-161"
+                  data-indeterminate={false}
+                  id="taskStatusIcon"
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-171"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Tax Transcript Review
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            />
+          </div>
+        </div>
+        <div
+          className="MuiGrid-container-55 MuiGrid-direction-xs-column-58"
+        >
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_selected_green_small.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
+              >
+                Order Tax Transcript
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              />
+            </div>
+          </div>
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_selected_green_small.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
+              >
+                Receive Tax Transcript
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              />
+            </div>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-55 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-56"
+          >
+            <span
+              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-167"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_error.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-161"
+                  data-indeterminate={false}
+                  id="taskStatusIcon"
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-171"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Application Review
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            >
+              Error in Subtask
+            </span>
+          </div>
+        </div>
+        <div
+          className="MuiGrid-container-55 MuiGrid-direction-xs-column-58"
+        >
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_unselected.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
+              >
+                Reason for Delinquency
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              />
+            </div>
+          </div>
+          <div
+            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+          >
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            />
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+            >
+              <span
+                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                onBlur={[Function]}
+                onFocus={[Function]}
+                onKeyDown={[Function]}
+                onKeyUp={[Function]}
+                onMouseDown={[Function]}
+                onMouseLeave={[Function]}
+                onMouseUp={[Function]}
+                onTouchEnd={[Function]}
+                onTouchMove={[Function]}
+                onTouchStart={[Function]}
+                tabIndex={null}
+              >
+                <span
+                  className="MuiIconButton-label-167"
+                >
+                  <img
+                    alt="task_pane_icon"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2w_D0"
+                    src="/static/img/default_error_small.svg"
+                  />
+                  <input
+                    checked={false}
+                    className="MuiSwitchBase-input-161"
+                    data-indeterminate={false}
+                    id="taskStatusIcon"
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                </span>
+                <span
+                  className="MuiTouchRipple-root-171"
+                />
+              </span>
+            </div>
+            <div
+              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            >
+              <span
+                className="components-Tasks-LeftParentTasks__failure-subtask-name--2LF5j"
+              >
+                Property Occupancy Status
+              </span>
+              <br />
+              <span
+                className="components-Tasks-LeftParentTasks__error-text-subtask--2of2E"
+              >
+                Documents not found!
+              </span>
+            </div>
+          </div>
+        </div>
+      </span>
+    </div>
+  </div>
+</div>
+`;
