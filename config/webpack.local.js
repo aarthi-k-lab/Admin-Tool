@@ -65,6 +65,14 @@ const config = merge(
             '^/api/config': '/cmod-dev-ui.json',
           },
         },
+        '/api/disposition': {
+          target: 'https://cmoddispositiondev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/disposition': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

@@ -1,12 +1,19 @@
 import {
   take,
   all,
+  call,
   fork,
   put,
 } from 'redux-saga/effects';
-import { SET_EXPAND_VIEW, SET_EXPAND_VIEW_SAGA } from './types';
+import * as R from 'ramda';
+import * as Api from 'lib/Api';
+import {
+  SET_EXPAND_VIEW, SET_EXPAND_VIEW_SAGA,
+  SAVE_DISPOSITION_SAGA, SAVE_DISPOSITION,
+} from './types';
 
-const setExpandView = function* setUserSchema() {
+
+const setExpandView = function* setExpand() {
   yield put({
     type: SET_EXPAND_VIEW,
   });
@@ -18,12 +25,35 @@ function* watchSetExpandView() {
   }
 }
 
+const saveDisposition = function* setDiposition(dispositionPayload) {
+  const disposition = R.propOr({}, 'payload', dispositionPayload);
+  const evalId = 1883281;
+  const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}`, {});
+  yield put({
+    type: SAVE_DISPOSITION,
+    payload: response,
+  });
+};
+
+function* watchDispositionSave() {
+  let payload;
+  while (true) {
+    payload = yield take(SAVE_DISPOSITION_SAGA);
+    if (payload) {
+      yield fork(saveDisposition, payload);
+    }
+  }
+}
+
+
 export const TestExports = {
+  saveDisposition,
   setExpandView,
 };
 
 export const combinedSaga = function* combinedSaga() {
   yield all([
     watchSetExpandView(),
+    watchDispositionSave(),
   ]);
 };

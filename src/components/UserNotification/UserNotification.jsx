@@ -33,7 +33,7 @@ UserNotification.components = {
 
 UserNotification.propTypes = {
   level: PropTypes.oneOf(['error', 'success']).isRequired,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.node.isRequired,
   type: PropTypes.oneOf([
     UserNotification.ALERT_BOX,
   ]).isRequired,

@@ -1,5 +1,5 @@
 .radio-buttons {
-  margin-left: 1rem;
+  margin-left: 14px;
 }
 
 .paper-sheet {
@@ -13,9 +13,7 @@
 
 .form-control.form-control {
   border: 0.1rem solid transparent;
-  margin-left: -16px;
   margin-right: 0;
-  padding-bottom: 0.75rem;
   position: relative;
   transition: background-color 0.5s, box-shadow 0.5s, width 0.5s, border 0.5s;
 }
@@ -28,7 +26,7 @@
   transition: background-color 0.5s, box-shadow 0.5s, width 0.5s, border 0.5s;
   left: -0.25rem;
   padding-left: 0.25rem;
-  width: calc(100% + 16px + 0.5rem);
+  width: calc(100% + 14px + 0.5rem);
 }
 
 .addtional-info {
@@ -58,4 +56,8 @@
 
 .form-control.form-control:hover .save-icon {
   visibility: visible;
+}
+
+.tooltip.tooltip {
+  font-size: 0.8rem;
 }

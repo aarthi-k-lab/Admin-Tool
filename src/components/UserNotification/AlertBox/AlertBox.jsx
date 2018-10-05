@@ -44,7 +44,7 @@ AlertBox.SUCCESS = 'success';
 
 AlertBox.propTypes = {
   level: PropTypes.oneOf([AlertBox.ERROR, AlertBox.SUCCESS]).isRequired,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.node.isRequired,
 };
 
 export default AlertBox;

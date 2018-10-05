@@ -6,10 +6,12 @@ describe('<RadioButtonGroup />', () => {
   let wrapper;
   const items = [
     {
+      additionalInfo: 'tooltip1',
       key: 'C1',
       value: 'T1',
     },
     {
+      additionalInfo: 'tooltip2',
       key: 'C2',
       value: 'T2',
     },

@@ -5,6 +5,8 @@
 }
 
 .disposition-section {
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
 }
 
@@ -18,7 +20,11 @@
   margin-top: 1.25rem;
 }
 
+.save-button.save-button {
+  align-self: center;
+  margin-top: 1.25rem;
+}
+
 .left-task-pane {
   align-items: flex-start;
 }
-

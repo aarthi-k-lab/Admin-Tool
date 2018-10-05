@@ -5,8 +5,26 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
-import SaveIcon from '@material-ui/icons/Save';
 import styles from './RadioButtonGroup.css';
+
+class FormControlWithTooltip extends FormControlLabel {
+  render() {
+    const { tooltip } = this.props;
+    return (
+      <Tooltip
+        classes={{
+          tooltip: styles.tooltip,
+        }}
+        disableFocusListener
+        disableTouchListener
+        placement="right"
+        title={tooltip}
+      >
+        {super.render()}
+      </Tooltip>
+    );
+  }
+}
 
 class RadioButtonGroup extends React.PureComponent {
   constructor(props) {
@@ -20,33 +38,15 @@ class RadioButtonGroup extends React.PureComponent {
 
   handleChange(event) {
     const { onChange } = this.props;
-    this.setState({ selected: event.target.value });
-    onChange(event.target.value);
+    const selected = event.target.value;
+    this.setState({ selected });
+    onChange(selected);
   }
 
-  renderItem(item) {
-    const { selected: selectedValue } = this.state;
-    const isSelected = item.key === selectedValue;
-    const saveIcon = (
-      <Tooltip
-        disableFocusListener
-        disableHoverListener={!isSelected}
-        disableTouchListener
-        title="Save"
-      >
-        <SaveIcon styleName={isSelected ? 'save-icon' : 'save-icon--disabled'} />
-      </Tooltip>
-    );
-    const label = (
-      <>
-        <span>{item.value}</span>
-        <br />
-        {saveIcon}
-        <span styleName="addtional-info">{item.additionalInfo}</span>
-      </>
-    );
+  static renderItem(item) {
+    const label = <span>{item.value}</span>;
     return (
-      <FormControlLabel
+      <FormControlWithTooltip
         key={item.key}
         classes={{
           label: styles.label,
@@ -54,6 +54,7 @@ class RadioButtonGroup extends React.PureComponent {
         control={<Radio />}
         label={label}
         styleName="form-control"
+        tooltip={item.additionalInfo}
         value={item.key}
       />
     );

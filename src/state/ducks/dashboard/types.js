@@ -1,8 +1,13 @@
-const SET_EXPAND_VIEW_SAGA = 'app/dashboard/SET_EXPAND_VIEW_SAGA';
+const CLEAR_DISPOSITION = 'app/dashboard/CLEAR_DISPOSITION';
+const SET_EXPAND_VIEW_SAGA = 'app/dashboard/set_expand_view_saga';
 const SET_EXPAND_VIEW = 'app/dashboard/SET_EXPAND_VIEW';
+const SAVE_DISPOSITION_SAGA = 'app/dashboard/SAVE_DISPOSITION_SAGA';
+const SAVE_DISPOSITION = 'app/dashboard/SAVE_DISPOSITION';
 
 export {
-  /* eslint-disable */
+  CLEAR_DISPOSITION,
   SET_EXPAND_VIEW,
-  SET_EXPAND_VIEW_SAGA
-}
+  SET_EXPAND_VIEW_SAGA,
+  SAVE_DISPOSITION_SAGA,
+  SAVE_DISPOSITION,
+};

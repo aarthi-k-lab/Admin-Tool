@@ -6,7 +6,7 @@ import './ContentHeader.css';
 import Expand from './Expand';
 
 const ContentHeader = ({
-  disableGetNext,
+  enableGetNext,
   onEndShift,
   onExpand,
   onGetNext,
@@ -14,7 +14,7 @@ const ContentHeader = ({
   showGetNext,
   title,
 }) => {
-  const getNext = <GetNext disabled={disableGetNext} onClick={onGetNext} />;
+  const getNext = <GetNext disabled={!enableGetNext} onClick={onGetNext} />;
   const endShift = <EndShift onClick={onEndShift} />;
   const expand = <Expand onClick={onExpand} />;
   return (
@@ -29,7 +29,7 @@ const ContentHeader = ({
 };
 
 ContentHeader.defaultProps = {
-  disableGetNext: false,
+  enableGetNext: false,
   onEndShift: () => {},
   onExpand: () => {},
   onGetNext: () => {},
@@ -39,7 +39,7 @@ ContentHeader.defaultProps = {
 };
 
 ContentHeader.propTypes = {
-  disableGetNext: PropTypes.bool,
+  enableGetNext: PropTypes.bool,
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
