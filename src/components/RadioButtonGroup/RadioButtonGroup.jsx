@@ -33,7 +33,6 @@ class RadioButtonGroup extends React.PureComponent {
       selected: '',
     };
     this.handleChange = this.handleChange.bind(this);
-    this.renderItem = this.renderItem.bind(this);
   }
 
   handleChange(event) {
@@ -71,7 +70,7 @@ class RadioButtonGroup extends React.PureComponent {
           styleName="radio-buttons"
           value={selected}
         >
-          {items.map(this.renderItem)}
+          {items.map(this.constructor.renderItem)}
         </RadioGroup>
       </Paper>
     );
