@@ -125,7 +125,7 @@ class Dashboard extends React.PureComponent {
         <FullHeightColumn styleName="disposition-section-container">
           {isFeatureEnabled('taskPane', features) ? <LeftTaskPane /> : null}
           <section styleName="disposition-section">
-            <header styleName="title">Please Select the Outcome Of Your Review</header>
+            <header styleName="title">Please select the outcome of your review</header>
             {this.renderErrorNotification()}
             <RadioButtonGroup
               items={dispositionOptions}
