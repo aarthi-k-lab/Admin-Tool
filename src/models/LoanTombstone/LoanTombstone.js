@@ -61,7 +61,8 @@ function getInvestorItem(loanDetails) {
 }
 
 function getUPBItem(loanDetails) {
-  const upbAmount = `${getOr('upbAmount', loanDetails, NA)}`;
+  const amount = getOr('upbAmount', loanDetails, NA);
+  const upbAmount = amount === NA ? `${amount}` : `$${amount.toLocaleString('en-US')}`;
   return generateTombstoneItem('UPB', upbAmount);
 }
 
