@@ -15,10 +15,7 @@ const callGet = function callGet(endpoint, params = {}) {
         return response.json();
       }
       return null;
-    })
-    .then(
-      response => (response),
-    );
+    });
 };
 
 const callPost = function callPost(endpoint, body, params = {}) {
@@ -37,10 +34,7 @@ const callPost = function callPost(endpoint, body, params = {}) {
         return response.json();
       }
       return null;
-    })
-    .then(
-      response => (response),
-    );
+    });
 };
 
 export {
