@@ -2,13 +2,13 @@
   align-items: flex-start;
   background-color: var(--grey-200);
   justify-content: flex-start;
-  overflow: auto;
 }
 
 .disposition-section {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  padding: 0 0.75rem;
 }
 
 .disposition-section > * {
@@ -28,4 +28,10 @@
 
 .left-task-pane {
   align-items: flex-start;
+}
+
+.scrollable-block {
+  align-self: stretch;
+  margin: 0 auto;
+  overflow: auto;
 }

@@ -52,7 +52,7 @@ const output1 = [
   },
   {
     title: 'UPB',
-    content: '162910.83',
+    content: '$162,910.83',
   },
   {
     title: 'Next Payment Due Date',

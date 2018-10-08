@@ -124,25 +124,27 @@ class Dashboard extends React.PureComponent {
         {tombstone}
         <FullHeightColumn styleName="disposition-section-container">
           {isFeatureEnabled('taskPane', features) ? <LeftTaskPane /> : null}
-          <section styleName="disposition-section">
-            <header styleName="title">Please select the outcome of your review</header>
-            {this.renderErrorNotification()}
-            <RadioButtonGroup
-              items={dispositionOptions}
-              name="disposition-options"
-              onChange={this.handleDispositionSelection}
-            />
-            <Button
-              className="material-ui-button"
-              color="primary"
-              disabled={!dispositionReason}
-              onClick={this.handleSave}
-              styleName="save-button"
-              variant="contained"
-            >
-              {dispositionErrorMessages.length ? 'Retry' : 'Save'}
-            </Button>
-          </section>
+          <div styleName="scrollable-block">
+            <section styleName="disposition-section">
+              <header styleName="title">Please select the outcome of your review</header>
+              {this.renderErrorNotification()}
+              <RadioButtonGroup
+                items={dispositionOptions}
+                name="disposition-options"
+                onChange={this.handleDispositionSelection}
+              />
+              <Button
+                className="material-ui-button"
+                color="primary"
+                disabled={!dispositionReason}
+                onClick={this.handleSave}
+                styleName="save-button"
+                variant="contained"
+              >
+                {dispositionErrorMessages.length ? 'Retry' : 'Save'}
+              </Button>
+            </section>
+          </div>
         </FullHeightColumn>
       </>
     );
