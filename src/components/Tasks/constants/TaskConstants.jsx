@@ -43,6 +43,18 @@ const tasksObj = [
       },
     ],
   },
+  {
+    taskName: 'Income Verification',
+  },
+  {
+    taskName: 'Expense Verification',
+  },
+  {
+    taskName: 'Review Unemployment Plan',
+  },
+  {
+    taskName: 'Rejection Review',
+  },
 ];
 
 export default tasksObj;
