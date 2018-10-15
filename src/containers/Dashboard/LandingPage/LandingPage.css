@@ -1,0 +1,12 @@
+.landing-page {
+  align-items: center;
+  background-color: var(--grey-200);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing-page span {
+  color: var(--grey-500);
+  margin-top: 1rem;
+  font-weight: 700;
+}

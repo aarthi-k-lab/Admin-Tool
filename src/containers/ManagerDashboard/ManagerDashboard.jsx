@@ -3,16 +3,16 @@ import Report from 'powerbi-report-component';
 import Auth from 'lib/Auth';
 import ContentHeader from 'components/ContentHeader';
 import Center from 'components/Center';
+import Controls from 'containers/Controls';
 import './ManagerDashboard.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as config from 'ducks/config';
 import PropTypes from 'prop-types';
 import {
   operations as dashboardOperations,
 } from 'ducks/dashboard';
-import { selectors as configSelectors } from 'ducks/config';
+import { operations, selectors } from 'ducks/config';
 
 class ManagerDashboard extends Component {
   constructor(props) {
@@ -55,17 +55,15 @@ class ManagerDashboard extends Component {
 
   render() {
     const { groups } = this.props;
-    const { powerBIConstants, onExpandTrigger } = this.props;
+    const { powerBIConstants } = this.props;
     if (groups && !groups.includes('feuw-mgr')) {
       return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
     }
     return (
       <>
-        <ContentHeader
-          onExpand={onExpandTrigger}
-          onGetNext={this.handleGetNext}
-          title="Manager Dashboard"
-        />
+        <ContentHeader title="Manager Dashboard">
+          <Controls />
+        </ContentHeader>
         <div styleName="reportsDiv">
           { this.renderReport(powerBIConstants) }
         </div>
@@ -79,11 +77,11 @@ ManagerDashboard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  powerBIConstants: configSelectors.powerBIConstants(state),
+  powerBIConstants: selectors.powerBIConstants(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchPowerBIConstants: config.operations.fetchPowerBIConstants(dispatch),
+  fetchPowerBIConstants: operations.fetchPowerBIConstants(dispatch),
   onExpandTrigger: dashboardOperations.onExpand(dispatch),
 });
 
@@ -100,7 +98,6 @@ ManagerDashboard.defaultProps = {
 
 ManagerDashboard.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onExpandTrigger: PropTypes.func.isRequired,
   powerBIConstants: PropTypes.arrayOf(
     PropTypes.shape({
       groupId: PropTypes.string.isRequired,

@@ -1,5 +1,6 @@
 import {
   take,
+  takeEvery,
   all,
   call,
   fork,
@@ -7,9 +8,13 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import {
-  SET_EXPAND_VIEW, SET_EXPAND_VIEW_SAGA,
-  SAVE_DISPOSITION_SAGA, SAVE_DISPOSITION,
+  GET_NEXT,
+  SET_EXPAND_VIEW,
+  SET_EXPAND_VIEW_SAGA,
+  SAVE_DISPOSITION_SAGA,
+  SAVE_DISPOSITION,
 } from './types';
 
 
@@ -45,6 +50,19 @@ function* watchDispositionSave() {
   }
 }
 
+// eslint-disable-next-line
+function* getNext(action) {
+  /*
+    Call the endpoint for get next -> Response contains evalId, loanNumber, etc
+    -> Use loanNumber to dispatch an action which fetches loanInformation
+  */
+  const loanNumber = 596400243; // R.path(['payload', 'loanNumber'], action);
+  yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+}
+
+function* watchGetNext() {
+  yield takeEvery(GET_NEXT, getNext);
+}
 
 export const TestExports = {
   saveDisposition,
@@ -53,7 +71,8 @@ export const TestExports = {
 
 export const combinedSaga = function* combinedSaga() {
   yield all([
-    watchSetExpandView(),
     watchDispositionSave(),
+    watchGetNext(),
+    watchSetExpandView(),
   ]);
 };

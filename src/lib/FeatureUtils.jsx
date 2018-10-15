@@ -5,4 +5,11 @@ const isFeatureEnabled = (featureName, featureSet) => {
   return false;
 };
 
+const TASK_PANE = 'taskPane';
+
+const features = {
+  TASK_PANE,
+};
+
 export default isFeatureEnabled;
+export { features };

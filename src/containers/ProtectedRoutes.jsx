@@ -53,7 +53,7 @@ class ProtectedRoutes extends React.Component {
 
   render() {
     const { loading, redirectPath } = this.state;
-    const { expandView, features, user } = this.props;
+    const { expandView, user } = this.props;
     const groups = user && user.groupList;
     if (loading) {
       return <SignInLoader />;
@@ -66,12 +66,8 @@ class ProtectedRoutes extends React.Component {
       <App expandView={expandView} user={user}>
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
-          <Route render={() => (
-            <Dashboard
-              features={features}
-              user={user}
-            />)}
-          />
+          <Route component={Dashboard} path="/loan-evaluation" />
+          <Route render={() => <Redirect to="/loan-evaluation" />} />
         </Switch>
       </App>
     );
@@ -80,7 +76,7 @@ class ProtectedRoutes extends React.Component {
 
 const mapStateToProps = state => ({
   expandView: dashboardSelectors.expandView(state),
-  features: config && config.selectors.getFeatures(state),
+  features: config.selectors.getFeatures(state),
   user: loginSelectors.getUser(state),
 });
 

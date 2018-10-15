@@ -1,4 +1,6 @@
 const CLEAR_DISPOSITION = 'app/dashboard/CLEAR_DISPOSITION';
+const CLEAR_FIRST_VISIT = 'app/dashboard/CLEAR_FIRST_VISIT';
+const GET_NEXT = 'app/dashboard/GET_NEXT';
 const SET_EXPAND_VIEW_SAGA = 'app/dashboard/set_expand_view_saga';
 const SET_EXPAND_VIEW = 'app/dashboard/SET_EXPAND_VIEW';
 const SAVE_DISPOSITION_SAGA = 'app/dashboard/SAVE_DISPOSITION_SAGA';
@@ -6,6 +8,8 @@ const SAVE_DISPOSITION = 'app/dashboard/SAVE_DISPOSITION';
 
 export {
   CLEAR_DISPOSITION,
+  CLEAR_FIRST_VISIT,
+  GET_NEXT,
   SET_EXPAND_VIEW,
   SET_EXPAND_VIEW_SAGA,
   SAVE_DISPOSITION_SAGA,

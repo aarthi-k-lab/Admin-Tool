@@ -9,9 +9,19 @@
 }
 
 .left-nav-bar > * {
+  color: #fff;
   cursor: pointer;
-  margin-top: 1rem;
+  font-size: 2rem;
+  padding: 1rem;
+  width: 4rem;
+}
+
+.left-nav-bar > * > * {
   width: 2rem;
+}
+
+.left-nav-bar > *:hover {
+  background-color: var(--grey-850);
 }
 
 .stretch-column {

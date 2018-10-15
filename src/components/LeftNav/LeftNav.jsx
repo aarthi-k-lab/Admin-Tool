@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import AgentLoanView from '@material-ui/icons/FeaturedPlayListOutlined';
 
 import './LeftNav.css';
 
@@ -6,7 +8,12 @@ function LeftNav() {
   return (
     <div styleName="stretch-column">
       <nav id="cmod_leftnav" styleName="left-nav-bar">
-        <img alt="dashboard" src="/static/img/icon-dashboard.png" />
+        <Link to="/reports">
+          <img alt="dashboard" src="/static/img/icon-dashboard.png" />
+        </Link>
+        <Link to="/loan-evaluation">
+          <AgentLoanView fontSize="inherit" />
+        </Link>
       </nav>
     </div>
   );

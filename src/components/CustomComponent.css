@@ -1,7 +1,0 @@
-.custom-component {
-  transition: color 0.5s;
-}
-
-.custom-component:hover {
-  color: red;
-}

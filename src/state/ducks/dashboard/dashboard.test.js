@@ -1,9 +1,9 @@
 import { put, call } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
+import * as Api from 'lib/Api';
 import * as actionTypes from './types';
 import { onExpandView, dispositionSave } from './actions';
 import { TestExports } from './sagas';
-import * as Api from 'lib/Api';
 
 describe('expand view ', () => {
   it('should toggle expandView State', () => {
@@ -22,15 +22,16 @@ describe('expand view ', () => {
     expect(response.type).toEqual(actionTypes.SET_EXPAND_VIEW_SAGA);
   });
 
-describe('saveDisposition ', () => {
-  it('should trigger the SET_EXPAND action', () => {
-    const response = dispositionSave(actionTypes.SAVE_DISPOSITION_SAGA);
-    expect(response.type).toEqual(actionTypes.SAVE_DISPOSITION_SAGA);
+  describe('saveDisposition ', () => {
+    it('should trigger the SET_EXPAND action', () => {
+      const response = dispositionSave(actionTypes.SAVE_DISPOSITION_SAGA);
+      expect(response.type).toEqual(actionTypes.SAVE_DISPOSITION_SAGA);
+    });
   });
-});
+
   describe('saveDisposition saga ', () => {
     const dispositionPayload = {
-      payload : 'missingDocs',
+      payload: 'missingDocs',
     };
     const mockResponse = {
       enableGetNext: true,
