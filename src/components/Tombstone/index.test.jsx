@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Tombstone from '.';
+import renderer from 'react-test-renderer';
+import Tombstone, { TombstoneLoader, TombstoneError } from '.';
 import Item from './Item';
 
 jest.mock('./Item');
@@ -35,5 +36,23 @@ describe('<Tombstone />', () => {
     const wrapper = shallow(<Tombstone onOpenWindow={handleOnOpenWindow} />);
     wrapper.find('WithStyles(IconButton)').at(1).simulate('Click');
     expect(handleOnOpenWindow.mock.calls).toHaveLength(1);
+  });
+});
+
+describe('<TombstoneLoader />', () => {
+  test('snapshot test', () => {
+    const tree = renderer
+      .create(<TombstoneLoader />)
+      .toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+});
+
+describe('<TombstoneError />', () => {
+  test('snapshot test', () => {
+    const tree = renderer
+      .create(<TombstoneError />)
+      .toJSON();
+    expect(tree).toMatchSnapshot();
   });
 });

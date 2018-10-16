@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Body /> snapshot test 1`] = `
+<div
+  className="components-Body-Body__body-container--3kT6M"
+>
+  <section
+    className="components-Body-Body__body--20HKG"
+  >
+    content
+  </section>
+</div>
+`;

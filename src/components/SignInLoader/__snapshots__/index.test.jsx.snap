@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SignInLoader /> snapshot test 1`] = `
+<div
+  className="components-AppContainer-AppContainer__app--1zlOg"
+>
+  <div
+    className="components-Body-Body__body-container--3kT6M"
+  >
+    <section
+      className="components-Body-Body__body--20HKG"
+    >
+      <div
+        className="components-Center-Center__center--expand--EoCZl components-Center-Center__center--YoOAM"
+      >
+        <div
+          className="components-AppCenterDisplay-AppCenterDisplay__app-center-display--2gh5J"
+        >
+          <div
+            className="MuiCircularProgress-root-1 MuiCircularProgress-colorPrimary-4 MuiCircularProgress-indeterminate-3"
+            role="progressbar"
+            style={
+              Object {
+                "height": 50,
+                "width": 50,
+              }
+            }
+          >
+            <svg
+              className="MuiCircularProgress-svg-6"
+              viewBox="22 22 44 44"
+            >
+              <circle
+                className="MuiCircularProgress-circle-7 MuiCircularProgress-circleIndeterminate-9"
+                cx={44}
+                cy={44}
+                fill="none"
+                r={20.2}
+                strokeWidth={3.6}
+                style={Object {}}
+              />
+            </svg>
+          </div>
+          <br />
+          Signing In...
+        </div>
+      </div>
+    </section>
+  </div>
+  <footer
+    className="components-Footer-Footer__footer--HJlsB"
+  >
+    © Nationstar Mortgage LLC, All rights reserved
+  </footer>
+</div>
+`;

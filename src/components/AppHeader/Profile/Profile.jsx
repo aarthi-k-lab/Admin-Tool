@@ -45,7 +45,6 @@ Profile.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   userDetails: PropTypes.shape({
     email: PropTypes.string,
-    jobTitle: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
 };

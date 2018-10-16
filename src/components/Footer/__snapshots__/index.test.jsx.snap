@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Footer /> snapshot test 1`] = `
+<footer
+  className="components-Footer-Footer__footer--HJlsB"
+>
+  © Nationstar Mortgage LLC, All rights reserved
+</footer>
+`;

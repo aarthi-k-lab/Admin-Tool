@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Profile /> snapshot test 1`] = `
+<div
+  className="MuiPaper-root-1 MuiPaper-elevation2-5 MuiPaper-rounded-2 components-AppHeader-Profile-Profile__container--3sj5b"
+  tabIndex={-1}
+>
+  <h2
+    className="MuiTypography-root-28 MuiTypography-title-34"
+  >
+    User Profile
+  </h2>
+  <div
+    className="components-AppHeader-Profile-Profile__row--3EfAD"
+  >
+    <p
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+    >
+      Name: 
+    </p>
+    <p
+      className="MuiTypography-root-28 MuiTypography-body1-37"
+    >
+      name
+    </p>
+  </div>
+  <div
+    className="components-AppHeader-Profile-Profile__row--3EfAD"
+  >
+    <p
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+    >
+      Email: 
+    </p>
+    <p
+      className="MuiTypography-root-28 MuiTypography-body1-37"
+    >
+      email
+    </p>
+  </div>
+  <div
+    className="components-AppHeader-Profile-Profile__row--3EfAD"
+  >
+    <p
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+    >
+      Groups: 
+    </p>
+    <ol
+      className="components-AppHeader-Profile-Profile__group-list--1vsZF"
+    >
+      <li>
+        <p
+          className="MuiTypography-root-28 MuiTypography-body1-37"
+        >
+          group1
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root-28 MuiTypography-body1-37"
+        >
+          group2
+        </p>
+      </li>
+    </ol>
+  </div>
+</div>
+`;
