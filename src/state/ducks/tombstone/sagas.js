@@ -34,8 +34,8 @@ function* watchTombstone() {
 }
 
 export const TestExports = {
-fetchTombstoneData,
-watchTombstone,
+  fetchTombstoneData,
+  watchTombstone,
 };
 
 // eslint-disable-next-line

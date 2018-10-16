@@ -70,7 +70,7 @@ export const TestExports = {
   watchSetExpandView,
   watchGetNext,
   getNext,
-  watchDispositionSave
+  watchDispositionSave,
 };
 
 export const combinedSaga = function* combinedSaga() {
