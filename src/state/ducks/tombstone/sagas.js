@@ -33,6 +33,11 @@ function* watchTombstone() {
   yield takeEvery(FETCH_TOMBSTONE_DATA, fetchTombstoneData);
 }
 
+export const TestExports = {
+fetchTombstoneData,
+watchTombstone,
+};
+
 // eslint-disable-next-line
 export const combinedSaga = function* combinedSaga() {
   yield all([

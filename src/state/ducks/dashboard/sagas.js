@@ -67,6 +67,10 @@ function* watchGetNext() {
 export const TestExports = {
   saveDisposition,
   setExpandView,
+  watchSetExpandView,
+  watchGetNext,
+  getNext,
+  watchDispositionSave
 };
 
 export const combinedSaga = function* combinedSaga() {
