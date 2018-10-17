@@ -1,4 +1,4 @@
-import { put, call,takeEvery } from 'redux-saga/effects';
+import { select, put, call,takeEvery } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import {
   LOADING_TOMBSTONE_DATA,
@@ -7,6 +7,7 @@ import {
   FETCH_TOMBSTONE_DATA,
 } from './types';
 import { TestExports } from './sagas';
+import { selectors as dashboardSelectors } from '../dashboard';
 import LoanTombstone from 'models/LoanTombstone';
 
 
@@ -22,6 +23,7 @@ describe('tombstone watcher ', () => {
 });
 
   describe('fetchTombstoneData', () => {
+    const loanNumber = 596400243;
     const saga = cloneableGenerator(TestExports.fetchTombstoneData)();
     const loanDetails = {
    "loanNumber": "596400243",
@@ -52,8 +54,12 @@ describe('tombstone watcher ', () => {
             .toEqual(put({
               type: LOADING_TOMBSTONE_DATA}));
     });
+    it('should select loanNumber from store', () => {
+      expect(saga.next().value)
+        .toEqual(select(dashboardSelectors.loanNumber));
+    });
     it('should call sods api to fetch loan details', () => {
-          expect(saga.next().value)
+          expect(saga.next(loanNumber).value)
             .toEqual(call(LoanTombstone.fetchData, 596400243));
     });
     it('should update loandetails in store', () => {
@@ -64,13 +70,20 @@ describe('tombstone watcher ', () => {
 
   describe('fetchTombStoneData should throw error on error to fetch data',() => {
     const saga = cloneableGenerator(TestExports.fetchTombstoneData)();
+    const loanNumber = 596400243;
     it('should update LOADING DATA in store', () => {
           expect(saga.next().value)
             .toEqual(put({
               type: LOADING_TOMBSTONE_DATA}));
     });
+
+    it('should select loanNumber from store', () => {
+      expect(saga.next().value)
+        .toEqual(select(dashboardSelectors.loanNumber));
+    });
+
     it('should call sods api to fetch loan details', () => {
-          expect(saga.next().value)
+          expect(saga.next(loanNumber).value)
             .toEqual(call(LoanTombstone.fetchData, 596400243));
     });
 

@@ -1,4 +1,5 @@
 import {
+  select,
   take,
   takeEvery,
   all,
@@ -9,12 +10,16 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
+import selectors from './selectors';
 import {
   GET_NEXT,
   SET_EXPAND_VIEW,
   SET_EXPAND_VIEW_SAGA,
   SAVE_DISPOSITION_SAGA,
   SAVE_DISPOSITION,
+  SAVE_EVALID_LOANNUMBER,
+  AUTO_SAVE_OPERATIONS,
+  AUTO_SAVE_TRIGGER,
 } from './types';
 
 
@@ -30,9 +35,20 @@ function* watchSetExpandView() {
   }
 }
 
+const autoSaveOnClose = function* autoSaveOnClose() {
+  /* todo : call to service to autosave disposition in db */
+  yield put({
+    type: AUTO_SAVE_OPERATIONS,
+  });
+};
+
+function* watchAutoSave() {
+    yield takeEvery(AUTO_SAVE_TRIGGER, autoSaveOnClose);
+}
+
 const saveDisposition = function* setDiposition(dispositionPayload) {
   const disposition = R.propOr({}, 'payload', dispositionPayload);
-  const evalId = 1883281;
+  const evalId = yield select(selectors.evalId);
   const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}`, {});
   yield put({
     type: SAVE_DISPOSITION,
@@ -57,6 +73,8 @@ function* getNext(action) {
     -> Use loanNumber to dispatch an action which fetches loanInformation
   */
   const loanNumber = 596400243; // R.path(['payload', 'loanNumber'], action);
+  const evalId = 1883281;
+  yield put({ type: SAVE_EVALID_LOANNUMBER, payload: { loanNumber, evalId } });
   yield put(tombstoneActions.fetchTombstoneData(loanNumber));
 }
 
@@ -65,8 +83,10 @@ function* watchGetNext() {
 }
 
 export const TestExports = {
+  autoSaveOnClose,
   saveDisposition,
   setExpandView,
+  watchAutoSave,
   watchSetExpandView,
   watchGetNext,
   getNext,
@@ -75,6 +95,7 @@ export const TestExports = {
 
 export const combinedSaga = function* combinedSaga() {
   yield all([
+    watchAutoSave(),
     watchDispositionSave(),
     watchGetNext(),
     watchSetExpandView(),

@@ -1,9 +1,11 @@
-import { put, call, takeEvery, take, fork } from 'redux-saga/effects';
+import { put, call, takeEvery, take, fork, select } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import * as actionTypes from './types';
 import { onExpandView, dispositionSave, clearDisposition, clearFirstVisit } from './actions';
 import { TestExports } from './sagas';
+import selectors from './selectors';
+
 
 describe('expand view ', () => {
   it('should toggle expandView State', () => {
@@ -16,6 +18,22 @@ describe('expand view ', () => {
   });
 });
 
+describe('watch autoSave ', () => {
+  it('should trigger autoSaveOnClose worker', () => {
+    const saga = cloneableGenerator(TestExports.watchAutoSave)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.AUTO_SAVE_TRIGGER,TestExports.autoSaveOnClose));
+  });
+});
+
+describe('autoSaveOnClose ', () => {
+  it('should update AUTO_SAVE_OPERATIONS', () => {
+    const saga = cloneableGenerator(TestExports.autoSaveOnClose)();
+    expect(saga.next().value)
+      .toEqual(put({type: actionTypes.AUTO_SAVE_OPERATIONS}));
+  });
+});
+
 describe('watch getnext ', () => {
   it('should trigger getnext worker', () => {
     const saga = cloneableGenerator(TestExports.watchGetNext)();
@@ -25,8 +43,12 @@ describe('watch getnext ', () => {
 });
 
 describe('getnext ', () => {
+  const saga = cloneableGenerator(TestExports.getNext)();
+  it('should update evalid and loannumber in store', () => {
+    expect(saga.next().value)
+    .toEqual(put({type: actionTypes.SAVE_EVALID_LOANNUMBER, payload: {loanNumber: 596400243, evalId: 1883281}}));
+  });
   it('getnext worker should trigger fetchtombstone action', () => {
-    const saga = cloneableGenerator(TestExports.getNext)();
     const actionDispatched = {
         "payload":  {
             "loanNumber": 596400243,
@@ -93,10 +115,17 @@ describe('expand view ', () => {
       enableGetNext: true,
     };
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
-    it('should call validation service', () => {
+
+    it('should call select evalId from store', () => {
       expect(saga.next().value)
+        .toEqual(select(selectors.evalId));
+    });
+
+    it('should call validation service', () => {
+      expect(saga.next(1883281).value)
         .toEqual(call(Api.callPost,'/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs',{}));
     });
+
     it('should update getNextResponse state', () => {
       expect(saga.next(mockResponse).value)
         .toEqual(put({

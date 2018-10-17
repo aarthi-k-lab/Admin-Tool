@@ -1,8 +1,10 @@
 import {
   SET_EXPAND_VIEW,
   SAVE_DISPOSITION,
+  SAVE_SELECTED_DISPOSITION,
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
+  SAVE_EVALID_LOANNUMBER,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -10,6 +12,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case CLEAR_DISPOSITION: {
       const newState = {
         ...state,
+        selectedDisposition: '',
       };
       delete newState.getNextResponse;
       return newState;
@@ -36,6 +39,24 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         getNextResponse,
       };
+    }
+    case SAVE_SELECTED_DISPOSITION: {
+      let selectedDisposition = '';
+      if (action.payload) {
+        selectedDisposition = action.payload;
+      }
+      return {
+        ...state,
+        selectedDisposition,
+      };
+    }
+    case SAVE_EVALID_LOANNUMBER: {
+      const newState = {
+        ...state,
+        evalId: action.payload.evalId,
+        loanNumber: action.payload.loanNumber,
+      };
+      return newState;
     }
     default:
       return state;
