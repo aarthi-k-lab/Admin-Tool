@@ -1,5 +1,5 @@
 import {
-  // take,
+  select,
   takeEvery,
   all,
   call,
@@ -16,10 +16,11 @@ import {
   SUCCESS_LOADING_TOMBSTONE_DATA,
   FETCH_TOMBSTONE_DATA,
 } from './types';
+import { selectors as dashboardSelectors } from '../dashboard';
 
 function* fetchTombstoneData() {
   yield put({ type: LOADING_TOMBSTONE_DATA });
-  const loanNumber = 596400243;
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
   try {
     const data = yield call(LoanTombstone.fetchData, loanNumber);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });

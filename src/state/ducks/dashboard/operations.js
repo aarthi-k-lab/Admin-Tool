@@ -1,5 +1,7 @@
 import {
+  autoSave,
   dispositionSave,
+  dispositionSelect,
   onExpandView,
   clearDisposition,
   clearFirstVisit,
@@ -12,17 +14,26 @@ const onDispositionSave = dispatch => (dispositionPayload) => {
   dispatch(dispositionSave(dispositionPayload));
 };
 
+const onDispositionSelect = dispatch => (dispositionPayload) => {
+  dispatch(dispositionSelect(dispositionPayload));
+};
+
 const onClearDisposition = dispatch => () => dispatch(clearDisposition());
+
+const onAutoSave = dispatch => () => dispatch(autoSave());
 
 const onGetNext = dispatch => () => {
   dispatch(clearFirstVisit());
+  dispatch(clearDisposition());
   dispatch(getNext());
 };
 
 const operations = {
+  onAutoSave,
   onClearDisposition,
   onExpand,
   onDispositionSave,
+  onDispositionSelect,
   onGetNext,
 };
 

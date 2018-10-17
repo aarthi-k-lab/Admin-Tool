@@ -61,14 +61,15 @@ class RadioButtonGroup extends React.PureComponent {
 
   render() {
     const { selected } = this.state;
-    const { items, name } = this.props;
+    const { clearSelectedDisposition, items, name } = this.props;
+    const selectedDisposition = clearSelectedDisposition ? '' : selected;
     return (
       <Paper styleName="paper-sheet">
         <RadioGroup
           name={name}
           onChange={this.handleChange}
           styleName="radio-buttons"
-          value={selected}
+          value={selectedDisposition}
         >
           {items.map(this.constructor.renderItem)}
         </RadioGroup>
@@ -78,10 +79,12 @@ class RadioButtonGroup extends React.PureComponent {
 }
 
 RadioButtonGroup.defaultProps = {
+  clearSelectedDisposition: false,
   onChange: () => {},
 };
 
 RadioButtonGroup.propTypes = {
+  clearSelectedDisposition: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.shape({
     additionalInfo: PropTypes.string.isRequired,
     key: PropTypes.string.isRequired,
