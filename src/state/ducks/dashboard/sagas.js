@@ -43,7 +43,7 @@ const autoSaveOnClose = function* autoSaveOnClose() {
 };
 
 function* watchAutoSave() {
-    yield takeEvery(AUTO_SAVE_TRIGGER, autoSaveOnClose);
+  yield takeEvery(AUTO_SAVE_TRIGGER, autoSaveOnClose);
 }
 
 const saveDisposition = function* setDiposition(dispositionPayload) {
