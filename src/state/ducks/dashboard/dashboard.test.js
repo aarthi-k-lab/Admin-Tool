@@ -4,6 +4,7 @@ import * as Api from 'lib/Api';
 import * as actionTypes from './types';
 import { onExpandView, dispositionSave, clearDisposition, clearFirstVisit } from './actions';
 import { TestExports } from './sagas';
+import { selectors as loginSelectors } from 'ducks/login/index';
 import selectors from './selectors';
 
 
@@ -114,6 +115,11 @@ describe('expand view ', () => {
     const mockResponse = {
       enableGetNext: true,
     };
+    const mockUser = {
+      userDetails: {
+        email: 'bren@mrcooper.com',
+      }
+    };
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 
     it('should call select evalId from store', () => {
@@ -121,9 +127,14 @@ describe('expand view ', () => {
         .toEqual(select(selectors.evalId));
     });
 
-    it('should call validation service', () => {
+    it('should call select user from store', () => {
       expect(saga.next(1883281).value)
-        .toEqual(call(Api.callPost,'/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs',{}));
+        .toEqual(select(loginSelectors.getUser));
+    });
+
+    it('should call validation service', () => {
+      expect(saga.next(mockUser).value)
+        .toEqual(call(Api.callPost,'/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com',{}));
     });
 
     it('should update getNextResponse state', () => {

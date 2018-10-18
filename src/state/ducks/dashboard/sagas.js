@@ -10,6 +10,7 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
+import { selectors as loginSelectors } from 'ducks/login/index';
 import selectors from './selectors';
 import {
   GET_NEXT,
@@ -49,7 +50,9 @@ function* watchAutoSave() {
 const saveDisposition = function* setDiposition(dispositionPayload) {
   const disposition = R.propOr({}, 'payload', dispositionPayload);
   const evalId = yield select(selectors.evalId);
-  const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}`, {});
+  const user = yield select(loginSelectors.getUser);
+  const userPrincipalName = R.path(['userDetails', 'email'], user);
+  const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}`, {});
   yield put({
     type: SAVE_DISPOSITION,
     payload: response,
