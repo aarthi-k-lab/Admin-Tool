@@ -1,5 +1,6 @@
 import {
   AUTO_SAVE_TRIGGER,
+  END_SHIFT,
   GET_NEXT,
   SET_EXPAND_VIEW_SAGA,
   SAVE_DISPOSITION_SAGA,
@@ -31,6 +32,10 @@ const getNext = () => ({
   type: GET_NEXT,
 });
 
+const endShift = () => ({
+  type: END_SHIFT,
+});
+
 const clearDisposition = () => ({
   type: CLEAR_DISPOSITION,
 });
@@ -45,6 +50,7 @@ export {
   clearFirstVisit,
   dispositionSave,
   dispositionSelect,
+  endShift,
   getNext,
   onExpandView,
 };

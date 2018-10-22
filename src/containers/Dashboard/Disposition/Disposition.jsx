@@ -79,30 +79,42 @@ class Disposition extends React.PureComponent {
     return null;
   }
 
+  renderTaskErrorMessage() {
+    const { noTasksFound } = this.props;
+    const warningMessage = 'No tasks assigned.Please contact your manager';
+    if (noTasksFound) {
+      return (
+        <UserNotification level="error" message={warningMessage} type="alert-box" />
+      );
+    }
+    return null;
+  }
+
   render() {
-    const { dispositionErrorMessages } = this.props;
-    const { dispositionReason } = this.props;
+    const { dispositionErrorMessages, noTasksFound, dispositionReason } = this.props;
     return (
       <div styleName="scrollable-block">
         <section styleName="disposition-section">
           <header styleName="title">Please select the outcome of your review</header>
           {this.renderErrorNotification()}
-          <RadioButtonGroup
-            clearSelectedDisposition={R.isEmpty(dispositionReason)}
-            items={dispositionOptions}
-            name="disposition-options"
-            onChange={this.handleDispositionSelection}
-          />
-          <Button
-            className="material-ui-button"
-            color="primary"
-            disabled={!dispositionReason}
-            onClick={this.handleSave}
-            styleName="save-button"
-            variant="contained"
-          >
-            {dispositionErrorMessages.length ? 'Retry' : 'Save'}
-          </Button>
+          {
+            noTasksFound ? this.renderTaskErrorMessage() : (<><RadioButtonGroup
+              clearSelectedDisposition={R.isEmpty(dispositionReason)}
+              items={dispositionOptions}
+              name="disposition-options"
+              onChange={this.handleDispositionSelection}
+            />
+              <Button
+                className="material-ui-button"
+                color="primary"
+                disabled={!dispositionReason}
+                onClick={this.handleSave}
+                styleName="save-button"
+                variant="contained"
+              >
+                {dispositionErrorMessages.length ? 'Retry' : 'Save'}
+              </Button></>)
+          }
         </section>
       </div>
     );
@@ -111,12 +123,14 @@ class Disposition extends React.PureComponent {
 
 Disposition.defaultProps = {
   enableGetNext: false,
+  noTasksFound: false,
 };
 
 Disposition.propTypes = {
   dispositionErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
+  noTasksFound: PropTypes.bool,
   onAutoSave: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
@@ -129,6 +143,7 @@ const mapStateToProps = state => ({
   ),
   dispositionReason: selectors.getDisposition(state),
   enableGetNext: selectors.enableGetNext(state),
+  noTasksFound: selectors.noTasksFound(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -5,6 +5,8 @@ import {
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
   SAVE_EVALID_LOANNUMBER,
+  SUCCESS_END_SHIFT,
+  TASKS_NOT_FOUND,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -40,6 +42,22 @@ const reducer = (state = { firstVisit: true }, action) => {
         getNextResponse,
       };
     }
+    case SUCCESS_END_SHIFT: {
+      return {
+        ...state,
+        firstVisit: true,
+      };
+    }
+    case TASKS_NOT_FOUND: {
+      let noTasksFound;
+      if (action.payload) {
+        noTasksFound = action.payload.notasksFound;
+      }
+      return {
+        ...state,
+        noTasksFound,
+      };
+    }
     case SAVE_SELECTED_DISPOSITION: {
       let selectedDisposition = '';
       if (action.payload) {
@@ -55,6 +73,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
+        taskId: action.payload.taskId,
       };
       return newState;
     }

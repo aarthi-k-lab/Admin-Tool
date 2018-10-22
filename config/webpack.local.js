@@ -73,6 +73,14 @@ const config = merge(
             '^/api/disposition': '',
           },
         },
+        '/api/workassign': {
+          target: 'https://cmodworkassigndev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/workassign': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

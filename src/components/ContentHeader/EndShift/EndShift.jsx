@@ -4,10 +4,11 @@ import Button from '@material-ui/core/Button';
 import StopIcon from '@material-ui/icons/Stop';
 import './EndShift.css';
 
-const EndShift = ({ onClick }) => (
+const EndShift = ({ disabled, onClick }) => (
   <Button
     className="material-ui-button"
     color="primary"
+    disabled={disabled}
     onClick={onClick}
     styleName="end-shift"
     variant="outlined"
@@ -18,10 +19,12 @@ const EndShift = ({ onClick }) => (
 );
 
 EndShift.defaultProps = {
+  disabled: false,
   onClick: () => {},
 };
 
 EndShift.propTypes = {
+  disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
 

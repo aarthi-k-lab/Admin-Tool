@@ -2,6 +2,7 @@ import {
   autoSave,
   dispositionSave,
   dispositionSelect,
+  endShift,
   onExpandView,
   clearDisposition,
   clearFirstVisit,
@@ -28,10 +29,15 @@ const onGetNext = dispatch => () => {
   dispatch(getNext());
 };
 
+const onEndShift = dispatch => () => {
+  dispatch(endShift());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
   onExpand,
+  onEndShift,
   onDispositionSave,
   onDispositionSelect,
   onGetNext,

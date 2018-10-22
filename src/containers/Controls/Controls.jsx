@@ -10,6 +10,7 @@ import {
 class Controls extends React.PureComponent {
   render() {
     const {
+      enableEndShift,
       enableGetNext,
       onEndShift,
       onExpand,
@@ -18,7 +19,8 @@ class Controls extends React.PureComponent {
       showGetNext,
     } = this.props;
     const getNext = showGetNext ? <GetNext disabled={!enableGetNext} onClick={onGetNext} /> : null;
-    const endShift = showEndShift ? <EndShift onClick={onEndShift} /> : null;
+    const endShift = showEndShift ? <EndShift disabled={!enableEndShift} onClick={onEndShift} />
+      : null;
     const expand = <Expand onClick={onExpand} />;
     return (
       <>
@@ -31,15 +33,17 @@ class Controls extends React.PureComponent {
 }
 
 Controls.defaultProps = {
+  enableEndShift: false,
   enableGetNext: false,
-  onEndShift: () => {},
-  onExpand: () => {},
-  onGetNext: () => {},
+  onEndShift: () => { },
+  onExpand: () => { },
+  onGetNext: () => { },
   showEndShift: false,
   showGetNext: false,
 };
 
 Controls.propTypes = {
+  enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
@@ -49,12 +53,14 @@ Controls.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  enableEndShift: selectors.enableEndShift(state),
   enableGetNext: selectors.enableGetNext(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onExpand: operations.onExpand(dispatch),
   onGetNext: operations.onGetNext(dispatch),
+  onEndShift: operations.onEndShift(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);
