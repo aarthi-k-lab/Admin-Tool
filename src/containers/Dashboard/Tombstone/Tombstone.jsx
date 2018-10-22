@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Tombstone, { TombstoneError, TombstoneLoader } from 'components/Tombstone';
+import Tombstone from 'components/Tombstone';
 import { selectors } from 'ducks/tombstone';
 
 class TombstoneWrapper extends React.PureComponent {
   render() {
-    const { loading, error, data } = this.props;
-    if (loading) {
-      return <TombstoneLoader />;
-    }
-    if (error) {
-      return <TombstoneError />;
-    }
+    const { data } = this.props;
+    // if (loading) {
+    //   return <TombstoneLoader />;
+    // }
+    // if (error) {
+    //   return <TombstoneError />;
+    // }
     return <Tombstone items={data} />;
   }
 }
 
 TombstoneWrapper.propTypes = {
   data: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
