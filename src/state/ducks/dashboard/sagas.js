@@ -11,6 +11,7 @@ import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import selectors from './selectors';
 import {
   CLEAR_DISPOSITION,
@@ -63,7 +64,6 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
-    // const taskId = 1161415;
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}`, {});
     yield put({
@@ -96,22 +96,34 @@ function* getNext(action) {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
-    // const taskId = 1161415;
     if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
       const loanNumber = R.path(['taskData', 'data', 'loanNumber'], taskDetails); // R.path(['payload', 'loanNumber'], action);
       const evalId = R.path(['taskData', 'data', 'applicationId'], taskDetails);
       const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: { loanNumber, evalId, taskId } });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: false } });
       yield put({ type: HIDE_LOADER });
-    } else {
+    } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
       yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
-      yield put({ type: HIDE_LOADER });
+      yield put({
+        type: ERROR_LOADING_TOMBSTONE_DATA,
+        payload: { data: [], error: true, loading: false },
+      });
+    } else {
+      yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
+      yield put({
+        type: ERROR_LOADING_TOMBSTONE_DATA,
+        payload: { data: [], error: true, loading: false },
+      });
     }
+    yield put({ type: HIDE_LOADER });
   } catch (e) {
     console.log(e);
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
+    yield put({
+      type: ERROR_LOADING_TOMBSTONE_DATA,
+      payload: { data: [], error: true, loading: false },
+    });
     yield put({ type: HIDE_LOADER });
   }
 }

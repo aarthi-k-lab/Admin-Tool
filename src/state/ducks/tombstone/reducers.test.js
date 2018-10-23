@@ -7,12 +7,16 @@ import {
 
 const errorAction = {
   type: ERROR_LOADING_TOMBSTONE_DATA,
-  payload: [
-    {
-      title: 'title1',
-      content: 'content1',
-    },
-  ],
+  payload: {
+    data: [
+      {
+        title: 'title1',
+        content: 'content1',
+      },
+    ],
+    loading: false,
+    error: false,
+  },
 };
 const loadingAction = { type: LOADING_TOMBSTONE_DATA };
 const successAction = {
@@ -40,7 +44,7 @@ describe('Ducks :: tombstone -> reducer', () => {
     const expectedState = {
       loading: false,
       error: false,
-      data: successAction.payload,
+      data: errorAction.payload.data,
     };
     expect(reducer(state, errorAction)).toEqual(expectedState);
   });

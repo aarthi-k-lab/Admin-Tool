@@ -63,7 +63,11 @@ class Disposition extends React.PureComponent {
   }
 
   renderErrorNotification() {
-    const { dispositionErrorMessages: errorMessages } = this.props;
+    const {
+      dispositionErrorMessages: errorMessages,
+      enableGetNext,
+      dispositionReason,
+    } = this.props;
     if (errorMessages.length > 0) {
       const errorsNode = errorMessages.reduce(
         (acc, message) => {
@@ -77,11 +81,19 @@ class Disposition extends React.PureComponent {
         <UserNotification level="error" message={errorsNode} type="alert-box" />
       );
     }
+    if (enableGetNext) {
+      const dispositionSuccessMessage = `The task has been dispositioned successfully with disposition ${dispositionReason}`;
+      return (
+        <UserNotification level="success" message={dispositionSuccessMessage} type="alert-box" />
+      );
+    }
     return null;
   }
 
   renderSave() {
-    const { dispositionErrorMessages, dispositionReason, saveInProgress } = this.props;
+    const {
+      dispositionErrorMessages, dispositionReason, saveInProgress, enableGetNext,
+    } = this.props;
     if (saveInProgress) {
       return (
         <Loader />
@@ -91,7 +103,7 @@ class Disposition extends React.PureComponent {
       <Button
         className="material-ui-button"
         color="primary"
-        disabled={!dispositionReason}
+        disabled={!dispositionReason || enableGetNext}
         onClick={this.handleSave}
         styleName="save-button"
         variant="contained"
@@ -120,7 +132,7 @@ class Disposition extends React.PureComponent {
 
   render() {
     const {
-      noTasksFound, dispositionReason, inProgress, enableGetNext,
+      noTasksFound, dispositionReason, inProgress, enableGetNext, taskFetchError,
     } = this.props;
     if (inProgress) {
       return (
@@ -130,20 +142,24 @@ class Disposition extends React.PureComponent {
     return (
       <div styleName="scrollable-block">
         <section styleName="disposition-section">
-          <header styleName="title">Please select the outcome of your review</header>
-          {this.renderErrorNotification()}
           {
-            noTasksFound ? this.renderTaskErrorMessage() : (
+            (noTasksFound || taskFetchError) ? this.renderTaskErrorMessage() : (
               <>
-                <RadioButtonGroup
-                  clearSelectedDisposition={R.isEmpty(dispositionReason)}
-                  disableDisposition={enableGetNext}
-                  items={dispositionOptions}
-                  name="disposition-options"
-                  onChange={this.handleDispositionSelection}
-                />
-                {this.renderSave()}
-              </>)
+                <header styleName="title">Please select the outcome of your review</header>
+                {this.renderErrorNotification()}
+
+                <>
+                  <RadioButtonGroup
+                    clearSelectedDisposition={R.isEmpty(dispositionReason)}
+                    disableDisposition={enableGetNext}
+                    items={dispositionOptions}
+                    name="disposition-options"
+                    onChange={this.handleDispositionSelection}
+                  />
+                  {this.renderSave()}
+                </>
+              </>
+            )
           }
         </section>
       </div>

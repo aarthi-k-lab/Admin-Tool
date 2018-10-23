@@ -29,9 +29,9 @@ const reducer = (state = loadingState, action) => {
     case ERROR_LOADING_TOMBSTONE_DATA: {
       return {
         ...state,
-        loading: false,
-        error: false,
-        data: action.payload,
+        loading: action.payload.loading,
+        error: action.payload.error,
+        data: action.payload.data,
       };
     }
     case SUCCESS_LOADING_TOMBSTONE_DATA: {

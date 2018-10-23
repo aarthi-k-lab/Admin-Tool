@@ -85,6 +85,9 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         noTasksFound,
+        evalId: null,
+        loanNumber: null,
+        taskId: null,
       };
     }
     case TASKS_FETCH_ERROR: {
@@ -95,6 +98,9 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         taskFetchError,
+        evalId: null,
+        loanNumber: null,
+        taskId: null,
       };
     }
     case SAVE_SELECTED_DISPOSITION: {
@@ -114,6 +120,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
         taskFetchError: false,
+        notasksFound: false,
       };
       return newState;
     }

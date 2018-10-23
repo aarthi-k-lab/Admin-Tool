@@ -6,7 +6,7 @@ import {
   // fork,
   put,
 } from 'redux-saga/effects';
-// import * as R from 'ramda';
+import * as R from 'ramda';
 // import * as Api from 'lib/Api';
 // import { actions as tombstoneActions } from 'ducks/tombstone';
 import LoanTombstone from 'models/LoanTombstone';
@@ -27,11 +27,21 @@ function* fetchTombstoneData() {
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
     console.error(e);
-    const defaultData = [
-      LoanTombstone.generateTombstoneItem('Loan #', loanNumber),
-      LoanTombstone.generateTombstoneItem('EvalId', evalId),
-    ];
-    yield put({ type: ERROR_LOADING_TOMBSTONE_DATA, payload: defaultData });
+    if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
+      const defaultData = [
+        LoanTombstone.generateTombstoneItem('Loan #', loanNumber),
+        LoanTombstone.generateTombstoneItem('EvalId', evalId),
+      ];
+      yield put({
+        type: ERROR_LOADING_TOMBSTONE_DATA,
+        payload: { data: defaultData, error: false, loading: false },
+      });
+    } else {
+      yield put({
+        type: ERROR_LOADING_TOMBSTONE_DATA,
+        payload: { data: [], error: true, loading: false },
+      });
+    }
   }
 }
 
