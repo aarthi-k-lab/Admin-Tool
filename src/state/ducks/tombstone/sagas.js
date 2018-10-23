@@ -21,12 +21,17 @@ import { selectors as dashboardSelectors } from '../dashboard';
 function* fetchTombstoneData() {
   yield put({ type: LOADING_TOMBSTONE_DATA });
   const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const evalId = yield select(dashboardSelectors.evalId);
   try {
     const data = yield call(LoanTombstone.fetchData, loanNumber);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
     console.error(e);
-    yield put({ type: ERROR_LOADING_TOMBSTONE_DATA });
+    const defaultData = [
+      LoanTombstone.generateTombstoneItem('Loan #', loanNumber),
+      LoanTombstone.generateTombstoneItem('EvalId', evalId),
+    ];
+    yield put({ type: ERROR_LOADING_TOMBSTONE_DATA, payload: defaultData });
   }
 }
 

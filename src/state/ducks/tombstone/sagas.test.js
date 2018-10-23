@@ -58,8 +58,13 @@ describe('tombstone watcher ', () => {
       expect(saga.next().value)
         .toEqual(select(dashboardSelectors.loanNumber));
     });
+    it('should select evalId from store', () => {
+      expect(saga.next(loanNumber).value)
+        .toEqual(select(dashboardSelectors.evalId));
+    });
+
     it('should call sods api to fetch loan details', () => {
-          expect(saga.next(loanNumber).value)
+          expect(saga.next(1161415).value)
             .toEqual(call(LoanTombstone.fetchData, 596400243));
     });
     it('should update loandetails in store', () => {
@@ -82,13 +87,18 @@ describe('tombstone watcher ', () => {
         .toEqual(select(dashboardSelectors.loanNumber));
     });
 
+    it('should select evalId from store', () => {
+      expect(saga.next(loanNumber).value)
+        .toEqual(select(dashboardSelectors.evalId));
+    });
+
     it('should call sods api to fetch loan details', () => {
-          expect(saga.next(loanNumber).value)
+          expect(saga.next(1161415).value)
             .toEqual(call(LoanTombstone.fetchData, 596400243));
     });
 
     it('should update store with ERROR_LOADING_TOMBSTONE_DATA on error',() => {
       expect(saga.throw(new Error('loan fetch failed')).value)
-        .toEqual(put({type: ERROR_LOADING_TOMBSTONE_DATA }));
+        .toEqual(put({type: ERROR_LOADING_TOMBSTONE_DATA, payload : [{title: 'Loan #', content: loanNumber}, {title:'EvalId', content: 1161415}] }));
     });
   }) ;

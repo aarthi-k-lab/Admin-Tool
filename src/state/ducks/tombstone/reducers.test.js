@@ -5,7 +5,15 @@ import {
   SUCCESS_LOADING_TOMBSTONE_DATA,
 } from './types';
 
-const errorAction = { type: ERROR_LOADING_TOMBSTONE_DATA };
+const errorAction = {
+  type: ERROR_LOADING_TOMBSTONE_DATA,
+  payload: [
+    {
+      title: 'title1',
+      content: 'content1',
+    },
+  ],
+};
 const loadingAction = { type: LOADING_TOMBSTONE_DATA };
 const successAction = {
   type: SUCCESS_LOADING_TOMBSTONE_DATA,
@@ -29,7 +37,12 @@ describe('Ducks :: tombstone -> reducer', () => {
   });
 
   it('error action', () => {
-    expect(reducer(state, errorAction)).toEqual(TestHooks.errorState);
+    const expectedState = {
+      loading: false,
+      error: false,
+      data: successAction.payload,
+    };
+    expect(reducer(state, errorAction)).toEqual(expectedState);
   });
 
   it('loading action', () => {

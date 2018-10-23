@@ -94,6 +94,7 @@ async function fetchData(loanNumber) {
 }
 
 const LoanTombstone = {
+  generateTombstoneItem,
   getTombstoneItems,
   getUrl,
   fetchData,
