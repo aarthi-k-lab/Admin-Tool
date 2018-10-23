@@ -23,7 +23,7 @@ describe('watch autoSave ', () => {
   it('should trigger autoSaveOnClose worker', () => {
     const saga = cloneableGenerator(TestExports.watchAutoSave)();
     expect(saga.next().value)
-      .toEqual(takeEvery(actionTypes.AUTO_SAVE_TRIGGER,TestExports.autoSaveOnClose));
+      .toEqual(takeEvery(actionTypes.AUTO_SAVE_TRIGGER, TestExports.autoSaveOnClose));
   });
 });
 
@@ -31,7 +31,7 @@ describe('autoSaveOnClose ', () => {
   it('should update AUTO_SAVE_OPERATIONS', () => {
     const saga = cloneableGenerator(TestExports.autoSaveOnClose)();
     expect(saga.next().value)
-      .toEqual(put({type: actionTypes.AUTO_SAVE_OPERATIONS}));
+      .toEqual(put({ type: actionTypes.AUTO_SAVE_OPERATIONS }));
   });
 });
 
@@ -39,7 +39,7 @@ describe('watch getnext ', () => {
   it('should trigger getnext worker', () => {
     const saga = cloneableGenerator(TestExports.watchGetNext)();
     expect(saga.next().value)
-      .toEqual(takeEvery(actionTypes.GET_NEXT,TestExports.getNext));
+      .toEqual(takeEvery(actionTypes.GET_NEXT, TestExports.getNext));
   });
 });
 
@@ -75,9 +75,9 @@ describe('watch dispositionsave ', () => {
   it('should trigger savedisposition worker', () => {
     const saga = cloneableGenerator(TestExports.watchDispositionSave)();
     expect(saga.next().value)
-      .toEqual(take(actionTypes.SAVE_DISPOSITION_SAGA,TestExports.saveDisposition));
+      .toEqual(take(actionTypes.SAVE_DISPOSITION_SAGA, TestExports.saveDisposition));
     expect(saga.next('missingDocuments').value)
-      .toEqual(fork(TestExports.saveDisposition,'missingDocuments'));
+      .toEqual(fork(TestExports.saveDisposition, 'missingDocuments'));
   });
 });
 
@@ -122,6 +122,11 @@ describe('expand view ', () => {
     };
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 
+    it('should call SHOW_SAVING_LOADER', () => {
+      expect(saga.next().value)
+        .toEqual(put({ type: actionTypes.SHOW_SAVING_LOADER }));
+    });
+
     it('should call select evalId from store', () => {
       expect(saga.next().value)
         .toEqual(select(selectors.evalId));
@@ -139,7 +144,7 @@ describe('expand view ', () => {
 
     it('should call validation service', () => {
       expect(saga.next(1161415).value)
-        .toEqual(call(Api.callPost,'/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415',{}));
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415', {}));
     });
 
     it('should update getNextResponse state', () => {
@@ -148,6 +153,10 @@ describe('expand view ', () => {
           type: actionTypes.SAVE_DISPOSITION,
           payload: mockResponse,
         }));
+    });
+    it('should call HIDE_SAVING_LOADER', () => {
+      expect(saga.next().value)
+        .toEqual(put({ type: actionTypes.HIDE_SAVING_LOADER }));
     });
   });
 });

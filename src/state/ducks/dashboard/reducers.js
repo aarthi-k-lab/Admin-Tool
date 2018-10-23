@@ -4,9 +4,14 @@ import {
   SAVE_SELECTED_DISPOSITION,
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
+  HIDE_LOADER,
   SAVE_EVALID_LOANNUMBER,
   SUCCESS_END_SHIFT,
+  SHOW_LOADER,
+  SHOW_SAVING_LOADER,
+  HIDE_SAVING_LOADER,
   TASKS_NOT_FOUND,
+  TASKS_FETCH_ERROR,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -42,6 +47,30 @@ const reducer = (state = { firstVisit: true }, action) => {
         getNextResponse,
       };
     }
+    case SHOW_LOADER: {
+      return {
+        ...state,
+        inProgress: true,
+      };
+    }
+    case HIDE_LOADER: {
+      return {
+        ...state,
+        inProgress: false,
+      };
+    }
+    case SHOW_SAVING_LOADER: {
+      return {
+        ...state,
+        saveInProgress: true,
+      };
+    }
+    case HIDE_SAVING_LOADER: {
+      return {
+        ...state,
+        saveInProgress: false,
+      };
+    }
     case SUCCESS_END_SHIFT: {
       return {
         ...state,
@@ -56,6 +85,16 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         noTasksFound,
+      };
+    }
+    case TASKS_FETCH_ERROR: {
+      let taskFetchError;
+      if (action.payload) {
+        taskFetchError = action.payload.taskfetchError;
+      }
+      return {
+        ...state,
+        taskFetchError,
       };
     }
     case SAVE_SELECTED_DISPOSITION: {
@@ -74,6 +113,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
+        taskFetchError: false,
       };
       return newState;
     }

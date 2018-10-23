@@ -33,6 +33,7 @@ class RadioButtonGroup extends React.PureComponent {
       selected: '',
     };
     this.handleChange = this.handleChange.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
   handleChange(event) {
@@ -42,7 +43,8 @@ class RadioButtonGroup extends React.PureComponent {
     onChange(selected);
   }
 
-  static renderItem(item) {
+  renderItem(item) {
+    const { disableDisposition } = this.props;
     const label = <span>{item.value}</span>;
     return (
       <FormControlWithTooltip
@@ -51,6 +53,7 @@ class RadioButtonGroup extends React.PureComponent {
           label: styles.label,
         }}
         control={<Radio />}
+        disabled={disableDisposition}
         label={label}
         styleName="form-control"
         tooltip={item.additionalInfo}
@@ -71,7 +74,7 @@ class RadioButtonGroup extends React.PureComponent {
           styleName="radio-buttons"
           value={selectedDisposition}
         >
-          {items.map(this.constructor.renderItem)}
+          {items.map(this.renderItem)}
         </RadioGroup>
       </Paper>
     );
@@ -80,11 +83,13 @@ class RadioButtonGroup extends React.PureComponent {
 
 RadioButtonGroup.defaultProps = {
   clearSelectedDisposition: false,
-  onChange: () => {},
+  disableDisposition: false,
+  onChange: () => { },
 };
 
 RadioButtonGroup.propTypes = {
   clearSelectedDisposition: PropTypes.bool,
+  disableDisposition: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.shape({
     additionalInfo: PropTypes.string.isRequired,
     key: PropTypes.string.isRequired,

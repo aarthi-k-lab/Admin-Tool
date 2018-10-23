@@ -4,6 +4,7 @@ const CLEAR_DISPOSITION = 'app/dashboard/CLEAR_DISPOSITION';
 const CLEAR_FIRST_VISIT = 'app/dashboard/CLEAR_FIRST_VISIT';
 const END_SHIFT = 'app/dashboard/END_SHIFT';
 const TASKS_NOT_FOUND = 'app/dashboard/TASKS_NOT_FOUND';
+const TASKS_FETCH_ERROR = 'app/dashboard/TASKS_FETCH_ERROR';
 const GET_NEXT = 'app/dashboard/GET_NEXT';
 const SET_EXPAND_VIEW_SAGA = 'app/dashboard/set_expand_view_saga';
 const SET_EXPAND_VIEW = 'app/dashboard/SET_EXPAND_VIEW';
@@ -12,6 +13,10 @@ const SAVE_DISPOSITION_SAGA = 'app/dashboard/SAVE_DISPOSITION_SAGA';
 const SAVE_DISPOSITION = 'app/dashboard/SAVE_DISPOSITION';
 const SAVE_EVALID_LOANNUMBER = 'app/dashboard/SAVE_EVALID_LOANNUMBER';
 const SAVE_SELECTED_DISPOSITION = 'app/dashboard/SAVE_SELECTED_DISPOSITION';
+const SHOW_LOADER = 'app/dasboard/SHOW_LOADER';
+const SHOW_SAVING_LOADER = 'app/dashboard/SHOW_SAVING_LOADER';
+const HIDE_SAVING_LOADER = 'app/dashboard/HIDE_SAVING_LOADER';
+const HIDE_LOADER = 'app/dashboard/HIDE_LOADER';
 
 export {
   AUTO_SAVE_TRIGGER,
@@ -27,5 +32,10 @@ export {
   SAVE_DISPOSITION,
   SAVE_EVALID_LOANNUMBER,
   SAVE_SELECTED_DISPOSITION,
+  SHOW_SAVING_LOADER,
+  HIDE_SAVING_LOADER,
+  TASKS_FETCH_ERROR,
   SUCCESS_END_SHIFT,
+  SHOW_LOADER,
+  HIDE_LOADER,
 };

@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import * as R from 'ramda';
 import RadioButtonGroup from 'components/RadioButtonGroup';
 import UserNotification from 'components/UserNotification/UserNotification';
+import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
 import { confirmationNavigation } from 'constants/messages';
 import DispositionModel from 'models/Disposition';
@@ -79,9 +80,36 @@ class Disposition extends React.PureComponent {
     return null;
   }
 
+  renderSave() {
+    const { dispositionErrorMessages, dispositionReason, saveInProgress } = this.props;
+    if (saveInProgress) {
+      return (
+        <Loader />
+      );
+    }
+    return (
+      <Button
+        className="material-ui-button"
+        color="primary"
+        disabled={!dispositionReason}
+        onClick={this.handleSave}
+        styleName="save-button"
+        variant="contained"
+      >
+        {dispositionErrorMessages.length ? 'Retry' : 'Save'}
+      </Button>
+    );
+  }
+
   renderTaskErrorMessage() {
-    const { noTasksFound } = this.props;
+    const { noTasksFound, taskFetchError } = this.props;
     const warningMessage = 'No tasks assigned.Please contact your manager';
+    if (taskFetchError) {
+      const errorMessage = 'Task Fetch Failed.Please try again Later';
+      return (
+        <UserNotification level="error" message={errorMessage} type="alert-box" />
+      );
+    }
     if (noTasksFound) {
       return (
         <UserNotification level="error" message={warningMessage} type="alert-box" />
@@ -91,29 +119,31 @@ class Disposition extends React.PureComponent {
   }
 
   render() {
-    const { dispositionErrorMessages, noTasksFound, dispositionReason } = this.props;
+    const {
+      noTasksFound, dispositionReason, inProgress, enableGetNext,
+    } = this.props;
+    if (inProgress) {
+      return (
+        <Loader message="Please Wait" />
+      );
+    }
     return (
       <div styleName="scrollable-block">
         <section styleName="disposition-section">
           <header styleName="title">Please select the outcome of your review</header>
           {this.renderErrorNotification()}
           {
-            noTasksFound ? this.renderTaskErrorMessage() : (<><RadioButtonGroup
-              clearSelectedDisposition={R.isEmpty(dispositionReason)}
-              items={dispositionOptions}
-              name="disposition-options"
-              onChange={this.handleDispositionSelection}
-            />
-              <Button
-                className="material-ui-button"
-                color="primary"
-                disabled={!dispositionReason}
-                onClick={this.handleSave}
-                styleName="save-button"
-                variant="contained"
-              >
-                {dispositionErrorMessages.length ? 'Retry' : 'Save'}
-              </Button></>)
+            noTasksFound ? this.renderTaskErrorMessage() : (
+              <>
+                <RadioButtonGroup
+                  clearSelectedDisposition={R.isEmpty(dispositionReason)}
+                  disableDisposition={enableGetNext}
+                  items={dispositionOptions}
+                  name="disposition-options"
+                  onChange={this.handleDispositionSelection}
+                />
+                {this.renderSave()}
+              </>)
           }
         </section>
       </div>
@@ -124,17 +154,23 @@ class Disposition extends React.PureComponent {
 Disposition.defaultProps = {
   enableGetNext: false,
   noTasksFound: false,
+  taskFetchError: false,
+  inProgress: false,
+  saveInProgress: false,
 };
 
 Disposition.propTypes = {
   dispositionErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
+  inProgress: PropTypes.bool,
   noTasksFound: PropTypes.bool,
   onAutoSave: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   onDispositionSelect: PropTypes.func.isRequired,
+  saveInProgress: PropTypes.bool,
+  taskFetchError: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
@@ -143,7 +179,10 @@ const mapStateToProps = state => ({
   ),
   dispositionReason: selectors.getDisposition(state),
   enableGetNext: selectors.enableGetNext(state),
+  inProgress: selectors.inProgress(state),
   noTasksFound: selectors.noTasksFound(state),
+  saveInProgress: selectors.saveInProgress(state),
+  taskFetchError: selectors.taskFetchError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
