@@ -5,6 +5,7 @@ import * as actionTypes from './types';
 import { onExpandView, dispositionSave, clearDisposition, clearFirstVisit } from './actions';
 import { TestExports } from './sagas';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import selectors from './selectors';
 
 
@@ -43,23 +44,159 @@ describe('watch getnext ', () => {
   });
 });
 
-// describe('getnext ', () => {
-//   const saga = cloneableGenerator(TestExports.getNext)();
-//   it('should update evalid and loannumber in store', () => {
-//     expect(saga.next().value)
-//     .toEqual(put({type: actionTypes.SAVE_EVALID_LOANNUMBER, payload: {loanNumber: 596400243, evalId: 1883281}}));
-//   });
-//   it('getnext worker should trigger fetchtombstone action', () => {
-//     const actionDispatched = {
-//         "payload":  {
-//             "loanNumber": 596400243,
-//          },
-//           "type": "app/tombstone/FETCH_TOMBSTONE_DATA",
-//         };
-//     expect(saga.next().value)
-//       .toEqual(put(actionDispatched));
-//   });
-// });
+describe('getnext Success', () => {
+  const saga = cloneableGenerator(TestExports.getNext)();
+  const userDetails = {
+    userDetails: {
+      email: 'brent@mrcooper.com',
+    },
+  };
+
+  const mockTaskDetails = {
+    taskData: {
+      data: {
+        id: '1234',
+        applicationId: '34567',
+        loanNumber: '12345',
+      },
+    },
+  };
+  it('should dispatch action SHOW_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should select userDetails from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call workassignment service to fetch taskDetails', () => {
+    expect(saga.next(userDetails).value)
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+
+  });
+
+  it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: actionTypes.SAVE_EVALID_LOANNUMBER,
+        payload: { loanNumber: '12345', evalId: '34567', taskId: '1234' }
+      }));
+
+  });
+  it('getnext worker should trigger fetchtombstone action', () => {
+    const actionDispatched = {
+      "payload": {
+        "loanNumber": '12345',
+      },
+      "type": "app/tombstone/FETCH_TOMBSTONE_DATA",
+    };
+    expect(saga.next().value)
+      .toEqual(put(actionDispatched));
+  });
+
+  it('should dispatch action HIDE_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('getnext Failure -  no tasks found', () => {
+  const saga = cloneableGenerator(TestExports.getNext)();
+  const userDetails = {
+    userDetails: {
+      email: 'brent@mrcooper.com',
+    },
+  };
+
+  const mockTaskDetails = {
+    messsage: 'No Tasks Found',
+  };
+  it('should dispatch action SHOW_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should select userDetails from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call workassignment service to fetch taskDetails', () => {
+    expect(saga.next(userDetails).value)
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+
+  });
+
+  it('should dispatch NO_TASKS_FOUND', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: actionTypes.TASKS_NOT_FOUND,
+        payload: { notasksFound: true }
+      }));
+
+  });
+  it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
+    expect(saga.next().value)
+      .toEqual(put({
+        type: ERROR_LOADING_TOMBSTONE_DATA,
+        payload: { data: [], error: true, loading: false }
+      }));
+  });
+
+  it('should dispatch action HIDE_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('getnext Failure -  task fetch failure', () => {
+  const saga = cloneableGenerator(TestExports.getNext)();
+  const userDetails = {
+    userDetails: {
+      email: 'brent@mrcooper.com',
+    },
+  };
+
+  const mockTaskDetails = null;
+  it('should dispatch action SHOW_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should select userDetails from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call workassignment service to fetch taskDetails', () => {
+    expect(saga.next(userDetails).value)
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+
+  });
+
+  it('should dispatch TASK_FETCH_ERROR', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: actionTypes.TASKS_FETCH_ERROR,
+        payload: { taskfetchError: true },
+      }));
+
+  });
+  it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
+    expect(saga.next().value)
+      .toEqual(put({
+        type: ERROR_LOADING_TOMBSTONE_DATA,
+        payload: { data: [], error: true, loading: false }
+      }));
+  });
+
+  it('should dispatch action HIDE_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
 
 describe('watch expandView ', () => {
   it('should trigger setexpandview worker', () => {
@@ -78,6 +215,27 @@ describe('watch dispositionsave ', () => {
       .toEqual(take(actionTypes.SAVE_DISPOSITION_SAGA, TestExports.saveDisposition));
     expect(saga.next('missingDocuments').value)
       .toEqual(fork(TestExports.saveDisposition, 'missingDocuments'));
+  });
+});
+
+describe('watch endShift ', () => {
+  it('should trigger endShift worker', () => {
+    const saga = cloneableGenerator(TestExports.watchEndShift)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.END_SHIFT, TestExports.endShift));
+  });
+});
+
+describe('endShift worker', () => {
+  const saga = cloneableGenerator(TestExports.endShift)();
+  it('should dispatch SUCCESS_END_SHIFT', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SUCCESS_END_SHIFT }));
+  });
+
+  it('should dispatch CLEAR_DISPOSITION', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.CLEAR_DISPOSITION }));
   });
 });
 
@@ -118,7 +276,7 @@ describe('expand view ', () => {
     const mockUser = {
       userDetails: {
         email: 'bren@mrcooper.com',
-      }
+      },
     };
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 

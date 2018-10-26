@@ -143,6 +143,7 @@ function* watchEndShift() {
 }
 export const TestExports = {
   autoSaveOnClose,
+  endShift,
   saveDisposition,
   setExpandView,
   watchAutoSave,
