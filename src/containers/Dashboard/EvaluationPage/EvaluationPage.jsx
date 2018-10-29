@@ -11,7 +11,7 @@ class EvaluationPage extends React.PureComponent {
   render() {
     return (
       <>
-        <ContentHeader title="Document Verification">
+        <ContentHeader title="Income Calculation">
           <Controls
             showEndShift
             showGetNext

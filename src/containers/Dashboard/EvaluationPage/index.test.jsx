@@ -8,7 +8,7 @@ describe('<EvaluationPage />', () => {
   it('<ContentHeader /> shows title', () => {
     const contentHeader = wrapper.find('ContentHeader');
     expect(contentHeader).toHaveLength(1);
-    expect(contentHeader.at(0).prop('title')).toEqual('Document Verification');
+    expect(contentHeader.at(0).prop('title')).toEqual('Income Calculation');
   });
 
   it('<Controls /> shows GetNext and EndShift', () => {
