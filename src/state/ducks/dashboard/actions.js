@@ -1,3 +1,4 @@
+import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import {
   AUTO_SAVE_TRIGGER,
   END_SHIFT,
@@ -8,6 +9,7 @@ import {
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
 } from './types';
+
 
 const onExpandView = userPayload => ({
   type: SET_EXPAND_VIEW_SAGA,
@@ -27,6 +29,12 @@ const dispositionSelect = dispositionPayload => ({
   type: SAVE_SELECTED_DISPOSITION,
   payload: dispositionPayload,
 });
+
+const errorTombstoneFetch = () => (
+  {
+    type: ERROR_LOADING_TOMBSTONE_DATA,
+    payload: { data: [], error: true, loading: false },
+  });
 
 const getNext = () => ({
   type: GET_NEXT,
@@ -51,6 +59,7 @@ export {
   dispositionSave,
   dispositionSelect,
   endShift,
+  errorTombstoneFetch,
   getNext,
   onExpandView,
 };

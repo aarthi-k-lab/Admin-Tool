@@ -11,7 +11,6 @@ import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
-import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import selectors from './selectors';
 import {
   CLEAR_DISPOSITION,
@@ -32,6 +31,7 @@ import {
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
 } from './types';
+import { errorTombstoneFetch } from './actions';
 
 
 const setExpandView = function* setExpand() {
@@ -87,6 +87,16 @@ function* watchDispositionSave() {
   }
 }
 
+function getLoanNumber(taskDetails) {
+  return R.path(['taskData', 'data', 'loanNumber'], taskDetails);
+}
+
+function getEvalPayload(taskDetails) {
+  const loanNumber = getLoanNumber(taskDetails);
+  const evalId = R.path(['taskData', 'data', 'applicationId'], taskDetails);
+  const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
+  return { loanNumber, evalId, taskId };
+}
 // eslint-disable-next-line
 function* getNext(action) {
 
@@ -97,33 +107,24 @@ function* getNext(action) {
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
     if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
-      const loanNumber = R.path(['taskData', 'data', 'loanNumber'], taskDetails); // R.path(['payload', 'loanNumber'], action);
-      const evalId = R.path(['taskData', 'data', 'applicationId'], taskDetails);
-      const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-      yield put({ type: SAVE_EVALID_LOANNUMBER, payload: { loanNumber, evalId, taskId } });
+      const loanNumber = getLoanNumber(taskDetails);
+      const evalPayload = getEvalPayload(taskDetails);
+      console.log('evalPayload', evalPayload);
+      yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
       yield put({ type: HIDE_LOADER });
     } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
       yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
-      yield put({
-        type: ERROR_LOADING_TOMBSTONE_DATA,
-        payload: { data: [], error: true, loading: false },
-      });
+      yield put(errorTombstoneFetch());
     } else {
       yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-      yield put({
-        type: ERROR_LOADING_TOMBSTONE_DATA,
-        payload: { data: [], error: true, loading: false },
-      });
+      yield put(errorTombstoneFetch());
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     console.log(e);
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-    yield put({
-      type: ERROR_LOADING_TOMBSTONE_DATA,
-      payload: { data: [], error: true, loading: false },
-    });
+    yield put(errorTombstoneFetch());
     yield put({ type: HIDE_LOADER });
   }
 }
