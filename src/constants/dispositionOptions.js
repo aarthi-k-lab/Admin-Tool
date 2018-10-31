@@ -1,26 +1,26 @@
 const dispositionOptions = [
   {
-    additionalInfo: 'Please verify that the evalStatus and subStatus are in Missing Documents.',
+    additionalInfo: 'Please verify that the EvalStatus and SubStatus are in Missing Documents.',
     key: 'missingDocuments',
     value: 'Missing Documents',
   },
   {
-    additionalInfo: 'Please ensure resolutionSubstatus is Transcript Ordered.',
+    additionalInfo: 'Please ensure ResolutionSubstatus is Transcript Ordered.',
     key: 'taxTranscriptOrdered',
     value: 'Tax Transcript Ordered',
   },
   {
-    additionalInfo: 'Please ensure that the case substatus is in Transcript Ordered.',
+    additionalInfo: 'Please ensure that the case Substatus is in Transcript Ordered.',
     key: 'taxTranscriptPending',
     value: 'Tax Transcript Pending',
   },
   {
-    additionalInfo: 'Please ensure resolutionSubstatus is Referral.',
+    additionalInfo: 'Please ensure ResolutionSubstatus is Referral.',
     key: 'suspiciousActivityReview',
     value: 'Suspicious Activity Review',
   },
   {
-    additionalInfo: 'Please ensure that the case substatus is in Referral.',
+    additionalInfo: 'Please ensure that the case Substatus is in Referral.',
     key: 'suspiciousActivityReviewPending',
     value: 'Suspicious Activity Review Pending',
   },
@@ -30,17 +30,17 @@ const dispositionOptions = [
     value: 'Unemployment Approval',
   },
   {
-    additionalInfo: 'Please ensure all cases are in a Rejected status and eval substatus is in Sent for Reject.',
+    additionalInfo: 'Please ensure all cases are in a Rejected status and eval Substatus is in Sent for Reject.',
     key: 'reject',
     value: 'Reject',
   },
   {
-    additionalInfo: 'Please ensure resolutionSubstatus is Referral or Referral KB.',
+    additionalInfo: 'Please ensure ResolutionSubstatus is Referral or Referral KB.',
     key: 'wait',
     value: 'Wait',
   },
   {
-    additionalInfo: 'Please ensure resolutionSubstatus is Income Calculated.',
+    additionalInfo: 'Please ensure ResolutionSubstatus is Income Calculated.',
     key: 'allTasksCompleted',
     value: 'All Tasks Completed',
   },
