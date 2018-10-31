@@ -14,10 +14,14 @@ describe('Model :: Disposition', () => {
         resolutionSubStatus: {
           expected: ['first', 'second'],
         },
+        evalStatus: {
+          expected: ['first'],
+        },
       };
       const errors = [
-        '\'evalSubStatus\' should be in \'Missing Docs\'',
-        '\'resolutionSubStatus\' should be one of \'first\', \'second\'',
+        '\'EvalSubStatus\' should be \'Missing Docs\'',
+        '\'ResolutionSubStatus\' should be \'First\' or \'Second\'',
+        '\'EvalStatus\' should be \'First\'',
       ];
       expect(Disposition.getErrorMessages(discrepancies)).toEqual(errors);
     });

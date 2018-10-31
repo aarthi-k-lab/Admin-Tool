@@ -8,6 +8,7 @@ import UserNotification from 'components/UserNotification/UserNotification';
 import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
 import { confirmationNavigation } from 'constants/messages';
+import { arrayToString } from 'lib/ArrayUtils';
 import DispositionModel from 'models/Disposition';
 import {
   operations,
@@ -82,7 +83,7 @@ class Disposition extends React.PureComponent {
       );
     }
     if (enableGetNext) {
-      const dispositionSuccessMessage = `The task has been dispositioned successfully with disposition ${dispositionReason}`;
+      const dispositionSuccessMessage = `The task has been dispositioned successfully with disposition ${arrayToString([dispositionReason])}`;
       return (
         <UserNotification level="success" message={dispositionSuccessMessage} type="alert-box" />
       );
@@ -147,17 +148,14 @@ class Disposition extends React.PureComponent {
               <>
                 <header styleName="title">Please select the outcome of your review</header>
                 {this.renderErrorNotification()}
-
-                <>
-                  <RadioButtonGroup
-                    clearSelectedDisposition={R.isEmpty(dispositionReason)}
-                    disableDisposition={enableGetNext}
-                    items={dispositionOptions}
-                    name="disposition-options"
-                    onChange={this.handleDispositionSelection}
-                  />
-                  {this.renderSave()}
-                </>
+                <RadioButtonGroup
+                  clearSelectedDisposition={R.isEmpty(dispositionReason)}
+                  disableDisposition={enableGetNext}
+                  items={dispositionOptions}
+                  name="disposition-options"
+                  onChange={this.handleDispositionSelection}
+                />
+                {this.renderSave()}
               </>
             )
           }

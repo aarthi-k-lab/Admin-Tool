@@ -7,12 +7,12 @@ const dispositionOptions = [
   {
     additionalInfo: '',
     key: 'taxTranscriptOrdered',
-    value: 'Tax Transcipt Ordered',
+    value: 'Tax Transcript Ordered',
   },
   {
     additionalInfo: 'Please ensure that the case substatus is in Transcript Ordered',
     key: 'taxTranscriptPending',
-    value: 'Tax Transcipt Pending',
+    value: 'Tax Transcript Pending',
   },
   {
     additionalInfo: '',

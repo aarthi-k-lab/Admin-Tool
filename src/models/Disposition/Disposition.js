@@ -1,13 +1,11 @@
 import * as R from 'ramda';
-
-const arrayToString = arr => arr.map(m => `'${m}'`).join(', ');
+import { arrayToString } from 'lib/ArrayUtils';
 
 const generateErrorMessagesFromDiscrepancy = R.compose(
   R.map(([fieldName, discrepancy]) => {
-    if (R.is(Array, discrepancy.expected)) {
-      return `'${fieldName}' should be one of ${arrayToString(discrepancy.expected)}`;
-    }
-    return `'${fieldName}' should be in '${discrepancy.expected}'`;
+    const expected = R.is(Array, discrepancy.expected)
+      ? discrepancy.expected : [discrepancy.expected];
+    return `${arrayToString([fieldName])} should be ${arrayToString(expected)}`;
   }),
   R.toPairs,
 );
