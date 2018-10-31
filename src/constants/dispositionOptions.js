@@ -1,21 +1,21 @@
 const dispositionOptions = [
   {
-    additionalInfo: 'Please verify that the evalStatus and subStatus are in Missing Documents',
+    additionalInfo: 'Please verify that the evalStatus and subStatus are in Missing Documents.',
     key: 'missingDocuments',
     value: 'Missing Documents',
   },
   {
-    additionalInfo: '',
+    additionalInfo: 'Please ensure resolutionSubstatus is Transcript Ordered.',
     key: 'taxTranscriptOrdered',
     value: 'Tax Transcript Ordered',
   },
   {
-    additionalInfo: 'Please ensure that the case substatus is in Transcript Ordered',
+    additionalInfo: 'Please ensure that the case substatus is in Transcript Ordered.',
     key: 'taxTranscriptPending',
     value: 'Tax Transcript Pending',
   },
   {
-    additionalInfo: '',
+    additionalInfo: 'Please ensure resolutionSubstatus is Referral.',
     key: 'suspiciousActivityReview',
     value: 'Suspicious Activity Review',
   },
@@ -35,12 +35,12 @@ const dispositionOptions = [
     value: 'Reject',
   },
   {
-    additionalInfo: '',
+    additionalInfo: 'Please ensure resolutionSubstatus is Referral or Referral KB.',
     key: 'wait',
     value: 'Wait',
   },
   {
-    additionalInfo: '',
+    additionalInfo: 'Please ensure resolutionSubstatus is Income Calculated.',
     key: 'allTasksCompleted',
     value: 'All Tasks Completed',
   },
