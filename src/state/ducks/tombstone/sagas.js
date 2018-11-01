@@ -23,7 +23,7 @@ function* fetchTombstoneData() {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const evalId = yield select(dashboardSelectors.evalId);
   try {
-    const data = yield call(LoanTombstone.fetchData, loanNumber);
+    const data = yield call(LoanTombstone.fetchData, loanNumber, evalId);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
     console.error(e);

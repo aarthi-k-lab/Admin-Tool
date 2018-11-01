@@ -72,7 +72,7 @@ function getNextPaymentDueDateItem(loanDetails) {
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
 
-function getTombstoneItems(loanDetails) {
+function getTombstoneItems(loanDetails, evalId = null) {
   const dataGenerator = [
     getLoanItem,
     getInvestorLoanItem,
@@ -83,14 +83,18 @@ function getTombstoneItems(loanDetails) {
     getNextPaymentDueDateItem,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails));
+  if (evalId) {
+    const evalIdObj = generateTombstoneItem('Eval Id', evalId);
+    data.splice(1, 0, evalIdObj);
+  }
   return data;
 }
 
-async function fetchData(loanNumber) {
+async function fetchData(loanNumber, evalId) {
   const url = getUrl(loanNumber);
   const response = await fetch(url);
   const loanDetails = await response.json();
-  return getTombstoneItems(loanDetails);
+  return getTombstoneItems(loanDetails, evalId);
 }
 
 const LoanTombstone = {
