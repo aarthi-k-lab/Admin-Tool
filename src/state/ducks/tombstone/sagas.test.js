@@ -68,7 +68,7 @@ describe('fetchTombstoneData', () => {
 
   it('should call sods api to fetch loan details', () => {
     expect(saga.next(1161415).value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243));
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415));
   });
   it('should update loandetails in store', () => {
     expect(saga.next(loanDetails).value)
@@ -98,7 +98,7 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
 
   it('should call sods api to fetch loan details', () => {
     expect(saga.next(1161415).value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243));
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415));
   });
 
   it('should update store with ERROR_LOADING_TOMBSTONE_DATA on error', () => {
