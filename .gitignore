@@ -2,6 +2,7 @@
 docs
 test-report.html
 coverage
+automation/reports
 
 # Logs
 logs
