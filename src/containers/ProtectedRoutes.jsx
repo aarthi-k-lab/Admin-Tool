@@ -18,6 +18,7 @@ import {
 } from 'ducks/dashboard';
 import * as config from 'ducks/config';
 import Dashboard from './Dashboard';
+import StagerDashboard from './StagerDashboard';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -67,6 +68,7 @@ class ProtectedRoutes extends React.Component {
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route component={Dashboard} path="/loan-evaluation" />
+          <Route component={StagerDashboard} path="/stager" />
           <Route render={() => <Redirect to="/loan-evaluation" />} />
         </Switch>
       </App>
