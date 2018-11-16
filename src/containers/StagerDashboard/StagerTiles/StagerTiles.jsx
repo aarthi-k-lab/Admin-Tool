@@ -22,7 +22,7 @@ class StagerTiles extends React.PureComponent {
       {
         documentType: 'Attorney Fees',
         status: 'toorder',
-        slaBreached: false,
+        slaBreached: true,
         slaToBeBreached: true,
       },
       ],
@@ -37,6 +37,15 @@ class StagerTiles extends React.PureComponent {
         </Grid>
         <Grid item xs={12}>
           <Grid container direction="row" spacing={24} styleName="tiles-grid">
+            <Grid item xs={4}>
+              <StagerDocumentStatusCard data={documentData} />
+            </Grid>
+            <Grid item xs={4}>
+              <StagerDocumentStatusCard data={documentData} />
+            </Grid>
+            <Grid item xs={4}>
+              <StagerDocumentStatusCard data={documentData} />
+            </Grid>
             <Grid item xs={4}>
               <StagerDocumentStatusCard data={documentData} />
             </Grid>
