@@ -56,7 +56,7 @@ const output1 = [
   },
   {
     title: 'Next Payment Due Date',
-    content: '08/31/2018',
+    content: '09/01/2018',
   },
 ];
 
