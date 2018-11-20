@@ -5,7 +5,7 @@ import './Profile.css';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 
-function Profile({ userDetails, groups }) {
+function Profile({ userDetails, groups, skills }) {
   const getEmail = R.propOr('', 'email');
   const getName = R.propOr('', 'name');
 
@@ -27,6 +27,10 @@ function Profile({ userDetails, groups }) {
         <Typography styleName="field-title" variant="body1">Groups: </Typography>
         <ol styleName="group-list">{Profile.renderGroups(groups)}</ol>
       </div>
+      <div styleName="row">
+        <Typography styleName="field-title" variant="body1">Skills: </Typography>
+        <ol styleName="group-list">{Profile.renderSkills(skills)}</ol>
+      </div>
     </Paper>
   );
 }
@@ -41,8 +45,19 @@ Profile.renderGroups = function renderGroups(groups) {
   );
 };
 
+Profile.renderSkills = function renderSkills(skills) {
+  return skills.map(
+    skill => (
+      <li key={skill}>
+        <Typography variant="body1">{skill}</Typography>
+      </li>
+    ),
+  );
+};
+
 Profile.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  skills: PropTypes.arrayOf(PropTypes.string).isRequired,
   userDetails: PropTypes.shape({
     email: PropTypes.string,
     name: PropTypes.string,

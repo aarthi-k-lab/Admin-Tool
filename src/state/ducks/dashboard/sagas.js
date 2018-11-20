@@ -72,7 +72,6 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
     });
     yield put({ type: HIDE_SAVING_LOADER });
   } catch (e) {
-    console.log(e);
     yield put({ type: HIDE_SAVING_LOADER });
   }
 };
@@ -122,7 +121,6 @@ function* getNext(action) {
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
-    console.log(e);
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
     yield put(errorTombstoneFetch());
     yield put({ type: HIDE_LOADER });
