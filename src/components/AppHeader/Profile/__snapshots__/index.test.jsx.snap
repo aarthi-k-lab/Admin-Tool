@@ -65,5 +65,46 @@ exports[`<Profile /> snapshot test 1`] = `
       </li>
     </ol>
   </div>
+  <div
+    className="components-AppHeader-Profile-Profile__row--3EfAD"
+  >
+    <p
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+    >
+      Skills: 
+    </p>
+    <ol
+      className="components-AppHeader-Profile-Profile__group-list--1vsZF"
+    >
+      <li>
+        <p
+          className="MuiTypography-root-28 MuiTypography-body1-37"
+        >
+          Skill14
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root-28 MuiTypography-body1-37"
+        >
+          Skill19
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root-28 MuiTypography-body1-37"
+        >
+          Skill1
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root-28 MuiTypography-body1-37"
+        >
+          Skill2
+        </p>
+      </li>
+    </ol>
+  </div>
 </div>
 `;
