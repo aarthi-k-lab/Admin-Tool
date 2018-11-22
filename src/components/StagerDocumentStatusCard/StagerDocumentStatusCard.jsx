@@ -17,8 +17,8 @@ const StagerDocumentStatusCard = ({ data }) => {
           </span>
         </Grid>
         <Grid item>
-          <Grid container direction="row" spacing={12}>
-            <Grid item xs={4}>
+          <Grid container spacing={12}>
+            <Grid item xs={6}>
               <span styleName="document-type-count">
                 {
                   (`0${data.documents.length}`).slice(-2)
@@ -26,23 +26,13 @@ const StagerDocumentStatusCard = ({ data }) => {
               </span>
             </Grid>
             <Grid item styleName="info-items" xs={6}>
-              { slaBreachedCount
-                ? (
-                  <span styleName="sla-breached-chip info-chip">
-                    {`${(`0${slaBreachedCount}`).slice(-2)} SLA BREACHED`}
-                  </span>
-                )
-                : null
-              }
+              <span styleName={slaBreachedCount ? 'sla-breached-chip info-chip' : 'info-chip info-chip-0-count'}>
+                {`${(`0${slaBreachedCount}`).slice(-2)} SLA BREACHED`}
+              </span>
               <br />
-              { slaToBeBreachedCount
-                ? (
-                  <span styleName="info-chip">
-                    {`${(`0${slaToBeBreachedCount}`).slice(-2)} SLA ABOUT TO BREACH`}
-                  </span>
-                )
-                : null
-              }
+              <span styleName={slaToBeBreachedCount ? 'info-chip' : 'info-chip info-chip-0-count'}>
+                {`${(`0${slaToBeBreachedCount}`).slice(-2)} SLA ABOUT TO BREACH`}
+              </span>
             </Grid>
           </Grid>
         </Grid>

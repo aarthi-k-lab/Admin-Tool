@@ -20,3 +20,7 @@
 .tiles-grid {
   padding: 1.5rem;
 }
+
+.stager-tiles-main-container {
+  overflow-y: auto;
+}

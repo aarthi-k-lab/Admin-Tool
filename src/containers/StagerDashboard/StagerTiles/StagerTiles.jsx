@@ -28,7 +28,7 @@ class StagerTiles extends React.PureComponent {
       ],
     };
     return (
-      <Grid container spacing={8}>
+      <Grid container spacing={8} styleName="stager-tiles-main-container">
         <Grid item xs={12}>
           {/* SHOULD BE RENDERED DYNAMICALLY */}
           <div styleName="document-status-bar">
@@ -37,16 +37,16 @@ class StagerTiles extends React.PureComponent {
         </Grid>
         <Grid item xs={12}>
           <Grid container direction="row" spacing={24} styleName="tiles-grid">
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <StagerDocumentStatusCard data={documentData} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <StagerDocumentStatusCard data={documentData} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <StagerDocumentStatusCard data={documentData} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <StagerDocumentStatusCard data={documentData} />
             </Grid>
           </Grid>

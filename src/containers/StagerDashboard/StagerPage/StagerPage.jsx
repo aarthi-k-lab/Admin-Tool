@@ -6,7 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 // import FullHeightColumn from 'components/FullHeightColumn';
 import StagerTiles from '../StagerTiles';
-// import StagerDetailsTable from '../StagerDetailsTable';
+import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
 class EvaluationPage extends React.PureComponent {
@@ -15,6 +15,7 @@ class EvaluationPage extends React.PureComponent {
       <>
         <ContentHeader title={(
           <Select
+            disabled
             value="UNDERWRITER"
           >
             <MenuItem value="UNDERWRITER">UNDERWRITER STAGER</MenuItem>
@@ -24,12 +25,12 @@ class EvaluationPage extends React.PureComponent {
           <Controls />
         </ContentHeader>
         <Grid contianer>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <StagerTiles />
           </Grid>
-          {/* <Grid item xs={6}>
+          <Grid item xs={8}>
             <StagerDetailsTable />
-          </Grid> */}
+          </Grid>
         </Grid>
       </>
     );
