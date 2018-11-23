@@ -38,6 +38,7 @@ module.exports = {
         .pause(3000);
     });
   },
+
   getNextValidation: function getNextValidation(browser) {
     const homePage = browser.page.homepage();
     homePage.waitForElementVisible('@agentHomePageText');
@@ -50,6 +51,19 @@ module.exports = {
     homePage.waitForElementVisible('@loanNbr');
     homePage.verify.visible('@loanNbr');
   },
+  loanTombstoneValidation: function loanTombstoneValidation(browser) {
+    const homePage = browser.page.homepage();
+    homePage.waitForElementVisible('@loanNbr');
+    homePage.verify.visible('@loanNbr');
+    homePage.verify.visible('@evalId');
+    // homePage.verify.visible('@investorloan');
+    // homePage.verify.visible('@brandname');
+    // homePage.verify.visible('@borrowercoborrower');
+    // homePage.verify.visible('@investor');
+    // homePage.verify.visible('@upb');
+    // homePage.verify.visible('@upb');
+    // homePage.verify.visible('@nextpaymentduedate');
+  },
   dispositionCheck: function dispositionCheck(browser) {
     const homePage = browser.page.homepage();
     homePage.waitForElementVisible('@loanNbr');
@@ -59,5 +73,9 @@ module.exports = {
     homePage.waitForElementVisible('@missingDocsErrorMessage2');
     homePage.waitForElementVisible('@retryDisp');
     homePage.verify.visible('@retryDisp');
+    // eslint-disable-next-line no-unused-expressions
+    homePage.expect.element('@endshiftdisbaled').to.not.be.enabled;
+    // eslint-disable-next-line no-unused-expressions
+    homePage.expect.element('@getnextdisabled').to.not.be.enabled;
   },
 };

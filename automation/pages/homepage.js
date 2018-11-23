@@ -22,12 +22,44 @@ module.exports = {
       selector: '//span[text()="We have something more to show here...still baking!!!"]',
       locateStrategy: 'xpath',
     },
+    endshiftdisbaled: {
+      selector: '//button[@disabled and contains(@class,"EndShift")]',
+      locateStrategy: 'xpath',
+    },
+    getnextdisabled: {
+      selector: '//button[@disabled and contains(@class,"GetNext")]',
+      locateStrategy: 'xpath',
+    },
     loanNbr: {
       selector: '//span[text()="Loan #"]',
       locateStrategy: 'xpath',
     },
     evalId: {
       selector: '//span[text()="EvalId"]',
+      locateStrategy: 'xpath',
+    },
+    investorloan: {
+      selector: '//span[text()="Investor Loan #"]/following-sibling::span',
+      locateStrategy: 'xpath',
+    },
+    brandname: {
+      selector: '//span[text()="Brand Name"]/following-sibling::span',
+      locateStrategy: 'xpath',
+    },
+    borrowercoborrower: {
+      selector: '//span[text()="Borrower/Co-Borrower"]/following-sibling::span',
+      locateStrategy: 'xpath',
+    },
+    investor: {
+      selector: '//span[text()="Investor"]/following-sibling::span',
+      locateStrategy: 'xpath',
+    },
+    upb: {
+      selector: '//span[text()="UPB"]/following-sibling::span',
+      locateStrategy: 'xpath',
+    },
+    nextpaymentduedate: {
+      selector: '//span[text()="Next Payment Due Date"]/following-sibling::span',
       locateStrategy: 'xpath',
     },
     missingDocumentDisp: {
