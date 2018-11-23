@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import React from 'react';
 import './StagerDetailsTable.css';
 import Grid from '@material-ui/core/Grid';
@@ -10,15 +11,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 // import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import * as R from 'ramda';
+import ListIcon from '@material-ui/icons/List';
 
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { };
     this.renderDataTable = this.renderDataTable.bind(this);
+    this.renderUnselectedMessage = this.renderUnselectedMessage.bind(this);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   renderDataTable(data) {
     return (
       <Grid container>
@@ -52,6 +55,25 @@ class StagerDetailsTable extends React.PureComponent {
     );
   }
 
+  renderUnselectedMessage() {
+    return (
+      <Grid
+        alignItems="center"
+        container
+        direction="column"
+        justify="center"
+        spacing={0}
+        styleName="center-grid"
+      >
+        <Grid item xs={3}>
+          <ListIcon styleName="no-preview-icon" />
+          <br />
+          <span styleName="no-preview-message">No list selected to preview</span>
+        </Grid>
+      </Grid>
+    );
+  }
+
   render() {
     const data = {
       stagerTaskType: 'Attorney Fees',
@@ -66,22 +88,26 @@ class StagerDetailsTable extends React.PureComponent {
         },
       ],
     };
+    // const data = {};
     return (
     <>
-      <Grid
-        alignItems="flex-end"
-        container
-        justify="space-between"
-        styleName="stager-details-table-top-div"
-      >
-        <Grid item xs={4}>
-          <span styleName="details-table-document-type">{data.stagerTaskType && data.stagerTaskType.toUpperCase()}</span>
-          <br />
-          <span styleName="details-table-document-status">{data.stagerTaskStatus && data.stagerTaskStatus.toUpperCase()}</span>
-        </Grid>
-        <Grid item xs={4} />
-        <Grid item xs={4}>
-          {
+      {
+        !R.isEmpty(data)
+          ? (
+            <Grid
+              alignItems="flex-end"
+              container
+              justify="space-between"
+              styleName="stager-details-table-top-div"
+            >
+              <Grid item xs={4}>
+                <span styleName="details-table-document-type">{data.stagerTaskType && data.stagerTaskType.toUpperCase()}</span>
+                <br />
+                <span styleName="details-table-document-status">{data.stagerTaskStatus && data.stagerTaskStatus.toUpperCase()}</span>
+              </Grid>
+              <Grid item xs={4} />
+              <Grid item xs={4}>
+                {
               data.isManualOrder
                 ? (
                   <Button styleName="details-table-order-btn" variant="contained">
@@ -89,12 +115,17 @@ class StagerDetailsTable extends React.PureComponent {
                   </Button>
                 ) : null
             }
-          <Button styleName="details-table-download-btn">
-            <DownloadIcon />
-            { ' DOWNLOAD' }
-          </Button>
-        </Grid>
-      </Grid>
+                <Button styleName="details-table-download-btn">
+                  <DownloadIcon styleName="details-table-download-icon" />
+                  { ' DOWNLOAD' }
+                </Button>
+              </Grid>
+            </Grid>
+          ) : null
+      }
+      {
+        R.isEmpty(data) ? this.renderUnselectedMessage() : null
+      }
       {
         data.tableData && data.tableData.length ? (
           this.renderDataTable(data)
