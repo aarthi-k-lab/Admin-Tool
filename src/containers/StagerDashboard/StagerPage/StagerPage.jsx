@@ -5,12 +5,11 @@ import Controls from 'containers/Controls';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
-// import FullHeightColumn from 'components/FullHeightColumn';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
-class EvaluationPage extends React.PureComponent {
+class StagerPage extends React.PureComponent {
   render() {
     const { counts, onStatusCardClick } = this.props;
     return (
@@ -26,11 +25,11 @@ class EvaluationPage extends React.PureComponent {
         >
           <Controls />
         </ContentHeader>
-        <Grid contianer>
-          <Grid item xs={4}>
+        <Grid container>
+          <Grid item lg={4} xs={4}>
             <StagerTiles counts={counts} onStatusCardClick={onStatusCardClick} />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item lg={8} xs={8}>
             <StagerDetailsTable />
           </Grid>
         </Grid>
@@ -39,7 +38,7 @@ class EvaluationPage extends React.PureComponent {
   }
 }
 
-EvaluationPage.propTypes = {
+StagerPage.propTypes = {
   counts: PropTypes.arrayOf(
     PropTypes.shape({
       data: PropTypes.arrayOf(
@@ -57,4 +56,4 @@ EvaluationPage.propTypes = {
   onStatusCardClick: PropTypes.func.isRequired,
 };
 
-export default EvaluationPage;
+export default StagerPage;

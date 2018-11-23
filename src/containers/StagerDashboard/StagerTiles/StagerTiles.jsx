@@ -13,7 +13,7 @@ class StagerTiles extends React.PureComponent {
   render() {
     const { counts, onStatusCardClick } = this.props;
     return (
-      <Grid container spacing={8} styleName="stager-tiles-main-container">
+      <Grid container styleName="stager-tiles-main-container">
         {counts && counts.map(stagerTaskData => (
           <Grid item xs={12}>
             <div styleName="document-status-bar">
@@ -23,7 +23,7 @@ class StagerTiles extends React.PureComponent {
               <Grid container direction="row" spacing={24} styleName="tiles-grid">
                 {stagerTaskData.data.map(tileData => (
                   <Grid item xs={6}>
-                    <StagerDocumentStatusCard data={tileData} onClick={onStatusCardClick()} />
+                    <StagerDocumentStatusCard data={tileData} onClick={onStatusCardClick} />
                   </Grid>
                 ))}
               </Grid>

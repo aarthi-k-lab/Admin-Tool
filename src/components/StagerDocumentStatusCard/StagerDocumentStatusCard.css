@@ -6,23 +6,24 @@
 
 .document-type-name {
   margin-top: 2rem;
+  color: #707479;
 }
 
 .document-type-count {
   font-size: 4rem;
-  color: #055c6b;
+  color: #1b6c92;
 }
 
 .sla-breached-chip {
-  background-color: #f44336 !important;
+  background-color: #e20e34 !important;
 }
 
 .info-chip-0-count {
-  background-color: #dad9d9 !important;
+  background-color: #d6d7d8 !important;
 }
 
 .info-chip {
-  background-color: #807d7d;
+  background-color: #707479;
   color: #fff;
   font-size: 0.8rem;
   padding: 0.2rem;

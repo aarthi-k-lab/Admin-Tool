@@ -6,7 +6,7 @@
 
 .document-status-bar {
   height: 2rem;
-  background-color: #e5e5e5;
+  background-color: #d6d7d8;
   display: flex;
   align-items: center;
 }
@@ -23,4 +23,6 @@
 
 .stager-tiles-main-container {
   overflow-y: auto;
+  background-color: #eaeaea;
+  min-height: calc(100vh - 8rem);
 }

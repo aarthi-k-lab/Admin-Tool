@@ -12,13 +12,16 @@ class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = { };
-    const { getDashboardCounts } = props;
+  }
+
+  componentDidMount() {
+    const { getDashboardCounts } = this.props;
     getDashboardCounts();
   }
 
   render() {
     const { counts, isFirstVisit } = this.props;
-    return <StagerPage counts={counts} isFirstVisit={isFirstVisit} />;
+    return <StagerPage counts={counts} isFirstVisit={isFirstVisit} onStatusCardClick={() => 1} />;
   }
 }
 
@@ -45,9 +48,13 @@ StagerDashboard.propTypes = {
       ),
       displayName: PropTypes.string,
     }),
-  ).isRequired,
+  ),
   getDashboardCounts: PropTypes.func.isRequired,
   isFirstVisit: PropTypes.bool.isRequired,
+};
+
+StagerDashboard.defaultProps = {
+  counts: [],
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDashboard);
