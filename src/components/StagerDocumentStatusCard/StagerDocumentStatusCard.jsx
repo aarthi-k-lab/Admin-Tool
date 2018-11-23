@@ -3,17 +3,16 @@ import PropTypes from 'prop-types';
 import './StagerDocumentStatusCard.css';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import * as R from 'ramda';
 
 const StagerDocumentStatusCard = ({ data }) => {
-  const slaBreachedCount = R.length(data.documents.filter(d => d.slaBreached));
-  const slaToBeBreachedCount = R.length(data.documents.filter(d => d.slaToBeBreached));
+  const slaBreachedCount = data.slaBreached;
+  const slaToBeBreachedCount = data.aboutToBreach;
   return (
     <Paper styleName="document-type-card-main-div">
       <Grid container direction="column" spacing={24}>
         <Grid item>
           <span styleName="document-type-name">
-            {data.documentType && data.documentType.toUpperCase()}
+            {data.displayName}
           </span>
         </Grid>
         <Grid item>
@@ -21,7 +20,7 @@ const StagerDocumentStatusCard = ({ data }) => {
             <Grid item xs={6}>
               <span styleName="document-type-count">
                 {
-                  (`0${data.documents.length}`).slice(-2)
+                  (`0${data.total}`).slice(-2)
                 }
               </span>
             </Grid>

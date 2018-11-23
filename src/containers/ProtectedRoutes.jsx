@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Route, Switch, Redirect,
 } from 'react-router-dom';
-import Auth from 'lib/Auth';
+// import Auth from 'lib/Auth';
 import SignInLoader from 'components/SignInLoader';
 import ManagerDashboard from 'containers/ManagerDashboard';
 import {
@@ -24,33 +24,34 @@ class ProtectedRoutes extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
+      loading: false,
       redirectPath: null,
     };
     this.shouldRedirect = false;
     this.auth = null;
   }
 
-  componentDidMount() {
-    const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
-    Auth.login(location.pathname)
-      .then((auth) => {
-        this.auth = auth;
-        if (auth.sessionValid) {
-          this.setState({ loading: false });
-          if (auth.groups && auth.groups.length > 0) {
-            const redirectPath = Auth.getGroupHomePage(auth.groups);
-            this.shouldRedirect = location.pathname === '/' && redirectPath !== location.pathname;
-            this.setState({
-              loading: false,
-              redirectPath,
-            });
-            setUserSchemaTrigger(auth.user);
-          }
-        }
-      });
-    getFeaturesTrigger();
-  }
+  // componentDidMount() {
+  //   const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
+  //   Auth.login(location.pathname)
+  //     .then((auth) => {
+  //       this.auth = auth;
+  //       if (auth.sessionValid) {
+  //         this.setState({ loading: false });
+  //         if (auth.groups && auth.groups.length > 0) {
+  //           const redirectPath = Auth.getGroupHomePage(auth.groups);
+  //           this.shouldRedirect = location.pathname === '/'
+  // && redirectPath !== location.pathname;
+  //           this.setState({
+  //             loading: false,
+  //             redirectPath,
+  //           });
+  //           setUserSchemaTrigger(auth.user);
+  //         }
+  //       }
+  //     });
+  //   getFeaturesTrigger();
+  // }
 
   render() {
     const { loading, redirectPath } = this.state;
@@ -93,11 +94,11 @@ ProtectedRoutes.propTypes = {
   features: PropTypes.shape({
     taskPane: PropTypes.bool,
   }).isRequired,
-  getFeaturesTrigger: PropTypes.func.isRequired,
+  // getFeaturesTrigger: PropTypes.func.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
-  setUserSchemaTrigger: PropTypes.func.isRequired,
+  // setUserSchemaTrigger: PropTypes.func.isRequired,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({
       email: PropTypes.string,

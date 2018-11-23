@@ -65,6 +65,14 @@ const config = merge(
             '^/api/config': '/cmod-dev-ui.json',
           },
         },
+        '/api/stager': {
+          target: 'http://localhost:7700',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/stager': '',
+          },
+        },
         '/api/disposition': {
           target: 'https://cmoddispositiondev.int.mrcooper.io',
           secure: false,
