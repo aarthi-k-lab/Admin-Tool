@@ -20,8 +20,8 @@ class StagerDashboard extends React.Component {
   }
 
   render() {
-    const { counts, isFirstVisit } = this.props;
-    return <StagerPage counts={counts} isFirstVisit={isFirstVisit} onStatusCardClick={() => 1} />;
+    const { counts } = this.props;
+    return <StagerPage counts={counts} onStatusCardClick={() => 1} />;
   }
 }
 
@@ -50,7 +50,6 @@ StagerDashboard.propTypes = {
     }),
   ),
   getDashboardCounts: PropTypes.func.isRequired,
-  isFirstVisit: PropTypes.bool.isRequired,
 };
 
 StagerDashboard.defaultProps = {

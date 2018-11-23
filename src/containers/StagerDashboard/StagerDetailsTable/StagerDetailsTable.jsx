@@ -18,7 +18,7 @@ class StagerDetailsTable extends React.PureComponent {
     this.renderDataTable = this.renderDataTable.bind(this);
   }
 
-  /* eslint-disable class-methods-use-this */
+  // eslint-disable-next-line class-methods-use-this
   renderDataTable(data) {
     return (
       <Grid container>
@@ -54,28 +54,10 @@ class StagerDetailsTable extends React.PureComponent {
 
   render() {
     const data = {
-      documentType: 'Attorney Fees',
-      documentStatus: 'To Order',
+      stagerTaskType: 'Attorney Fees',
+      stagerTaskStatus: 'To Order',
       isManualOrder: true,
       tableData: [
-        {
-          'Loan#': '1323234',
-          'Borrower Name': 'Aditya',
-          Investor: 'ABS',
-          'Days until SLA': -2,
-        },
-        {
-          'Loan#': '1323234',
-          'Borrower Name': 'Aditya',
-          Investor: 'ABS',
-          'Days until SLA': -2,
-        },
-        {
-          'Loan#': '1323234',
-          'Borrower Name': 'Aditya',
-          Investor: 'ABS',
-          'Days until SLA': -2,
-        },
         {
           'Loan#': '1323234',
           'Borrower Name': 'Aditya',
@@ -93,9 +75,9 @@ class StagerDetailsTable extends React.PureComponent {
         styleName="stager-details-table-top-div"
       >
         <Grid item xs={4}>
-          <span styleName="details-table-document-type">{data.documentType && data.documentType.toUpperCase()}</span>
+          <span styleName="details-table-document-type">{data.stagerTaskType && data.stagerTaskType.toUpperCase()}</span>
           <br />
-          <span styleName="details-table-document-status">{data.documentStatus && data.documentStatus.toUpperCase()}</span>
+          <span styleName="details-table-document-status">{data.stagerTaskStatus && data.stagerTaskStatus.toUpperCase()}</span>
         </Grid>
         <Grid item xs={4} />
         <Grid item xs={4}>

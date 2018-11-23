@@ -3,6 +3,7 @@ import './StagerTiles.css';
 import Grid from '@material-ui/core/Grid';
 import StagerDocumentStatusCard from 'components/StagerDocumentStatusCard';
 import PropTypes from 'prop-types';
+import Loader from 'components/Loader/Loader';
 
 class StagerTiles extends React.PureComponent {
   constructor(props) {
@@ -14,6 +15,9 @@ class StagerTiles extends React.PureComponent {
     const { counts, onStatusCardClick } = this.props;
     return (
       <Grid container styleName="stager-tiles-main-container">
+        {
+          !counts.length ? <Loader /> : null
+        }
         {counts && counts.map(stagerTaskData => (
           <Grid item xs={12}>
             <div styleName="document-status-bar">
