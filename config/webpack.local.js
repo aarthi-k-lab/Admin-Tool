@@ -81,8 +81,8 @@ const config = merge(
             '^/api/workassign': '',
           },
         },
-        '/api/user/skills': {
-          target: 'https://mrcooperdev.azure-api.net/cmod/userskills/getUserSkills/',
+        '/api/userskills': {
+          target: 'https://mrcooperdev.azure-api.net',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
