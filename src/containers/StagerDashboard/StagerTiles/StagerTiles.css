@@ -24,5 +24,6 @@
 .stager-tiles-main-container {
   overflow-y: auto;
   background-color: #eaeaea;
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100vh - 8.2rem);
+  max-height: calc(100vh - 8.2rem);
 }

@@ -12,7 +12,7 @@
 .document-type-card-main-div-active {
   padding: 1rem;
   display: flex;
-  background-color: #f09916 !important;
+  background-color: #e67300 !important;
 }
 
 .document-type-name {
@@ -20,7 +20,7 @@
   color: #707479;
 }
 
-.document-type-selected {
+.document-type-name-selected {
   margin-top: 2rem;
   color: #fff;
 }

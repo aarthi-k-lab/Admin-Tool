@@ -13,14 +13,14 @@ const StagerDocumentStatusCard = ({
     <Paper onClick={() => onStatusCardClick(data.searchTerm, data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
       <Grid container direction="column" spacing={24}>
         <Grid item>
-          <span styleName="document-type-name">
+          <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>
             {data.displayName}
           </span>
         </Grid>
         <Grid item>
           <Grid container spacing={12}>
             <Grid item xs={6}>
-              <span styleName="document-type-count">
+              <span styleName={active ? 'document-type-count-selected' : 'document-type-count'}>
                 {
                   (`0${data.total}`).slice(-2)
                 }

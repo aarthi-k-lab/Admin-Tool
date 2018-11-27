@@ -66,7 +66,7 @@ const config = merge(
           },
         },
         '/api/stager': {
-          target: 'http://localhost:7700',
+          target: 'http://127.0.0.1:7799',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

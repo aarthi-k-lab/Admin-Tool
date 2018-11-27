@@ -36,10 +36,12 @@
   background-color: rgba(234, 234, 234, 0.3);
 }
 
-.table-cell-right-border {
+.table-cell-right-border.table-cell-right-border {
   border-right: #d6d7d8;
   border-right-style: dotted;
   border-right-width: 1px;
+  padding: 0.2rem;
+  word-wrap: break-word;
 }
 
 .details-table-download-icon.details-table-download-icon {
@@ -62,5 +64,10 @@
   margin: 3rem;
   height: 100%;
   opacity: 0.5;
+}
+
+.main-table.main-table {
+  table-layout: fixed;
+  width: 100%;
 }
 
