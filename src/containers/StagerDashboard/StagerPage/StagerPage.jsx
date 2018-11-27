@@ -11,7 +11,10 @@ import './StagerPage.css';
 
 class StagerPage extends React.PureComponent {
   render() {
-    const { counts, onStatusCardClick } = this.props;
+    const {
+      activeTab, activeTile,
+      counts, loading, onStatusCardClick,
+    } = this.props;
     return (
       <>
         <ContentHeader title={(
@@ -27,10 +30,15 @@ class StagerPage extends React.PureComponent {
         </ContentHeader>
         <Grid container>
           <Grid item lg={4} xs={4}>
-            <StagerTiles counts={counts} onStatusCardClick={onStatusCardClick} />
+            <StagerTiles
+              activeTab={activeTab}
+              activeTile={activeTile}
+              counts={counts}
+              onStatusCardClick={onStatusCardClick}
+            />
           </Grid>
           <Grid item lg={8} xs={8}>
-            <StagerDetailsTable />
+            <StagerDetailsTable loading={loading} />
           </Grid>
         </Grid>
       </>
@@ -38,7 +46,13 @@ class StagerPage extends React.PureComponent {
   }
 }
 
+StagerPage.defaultProps = {
+  loading: true,
+};
+
 StagerPage.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  activeTile: PropTypes.string.isRequired,
   counts: PropTypes.arrayOf(
     PropTypes.shape({
       data: PropTypes.arrayOf(
@@ -53,6 +67,7 @@ StagerPage.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
+  loading: PropTypes.bool,
   onStatusCardClick: PropTypes.func.isRequired,
 };
 

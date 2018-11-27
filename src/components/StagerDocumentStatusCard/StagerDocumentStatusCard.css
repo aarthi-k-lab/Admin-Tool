@@ -4,6 +4,12 @@
   display: flex;
 }
 
+.document-type-card-main-div-active {
+  padding: 1rem;
+  display: flex;
+  background-color: #f09916 !important;
+}
+
 .document-type-name {
   margin-top: 2rem;
   color: #707479;

@@ -10,6 +10,14 @@ class StagerTiles extends React.PureComponent {
     this.state = { };
   }
 
+  isActiveCard(tileName, tabName) {
+    const { activeTab, activeTile } = this.props;
+    if (tileName === activeTile && tabName === activeTab) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const { counts, onStatusCardClick } = this.props;
     return (
@@ -23,7 +31,12 @@ class StagerTiles extends React.PureComponent {
               <Grid container direction="row" spacing={24} styleName="tiles-grid">
                 {stagerTaskData.data.map(tileData => (
                   <Grid item xs={6}>
-                    <StagerDocumentStatusCard data={tileData} onClick={onStatusCardClick} />
+                    <StagerDocumentStatusCard
+                      active={this.isActiveCard(tileData.displayName, stagerTaskData.displayName)}
+                      data={tileData}
+                      onStatusCardClick={onStatusCardClick}
+                      tabName={stagerTaskData.displayName}
+                    />
                   </Grid>
                 ))}
               </Grid>
@@ -36,6 +49,8 @@ class StagerTiles extends React.PureComponent {
 }
 
 StagerTiles.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  activeTile: PropTypes.string.isRequired,
   counts: PropTypes.arrayOf(
     PropTypes.shape({
       data: PropTypes.arrayOf(

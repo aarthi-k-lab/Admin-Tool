@@ -3,6 +3,8 @@ import './StagerDetailsTable.css';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DownloadIcon from '@material-ui/icons/SaveAlt';
+import Loader from 'components/Loader/Loader';
+import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -53,6 +55,7 @@ class StagerDetailsTable extends React.PureComponent {
   }
 
   render() {
+    const { loading } = this.props;
     const data = {
       documentType: 'Attorney Fees',
       documentStatus: 'To Order',
@@ -84,43 +87,50 @@ class StagerDetailsTable extends React.PureComponent {
         },
       ],
     };
-    return (
-    <>
-      <Grid
-        alignItems="flex-end"
-        container
-        justify="space-between"
-        styleName="stager-details-table-top-div"
-      >
-        <Grid item xs={4}>
-          <span styleName="details-table-document-type">{data.documentType && data.documentType.toUpperCase()}</span>
-          <br />
-          <span styleName="details-table-document-status">{data.documentStatus && data.documentStatus.toUpperCase()}</span>
-        </Grid>
-        <Grid item xs={4} />
-        <Grid item xs={4}>
+    if (!loading) {
+      return (
+        <>
+          <Grid
+            alignItems="flex-end"
+            container
+            justify="space-between"
+            styleName="stager-details-table-top-div"
+          >
+            <Grid item xs={4}>
+              <span styleName="details-table-document-type">{data.documentType && data.documentType.toUpperCase()}</span>
+              <br />
+              <span styleName="details-table-document-status">{data.documentStatus && data.documentStatus.toUpperCase()}</span>
+            </Grid>
+            <Grid item xs={4} />
+            <Grid item xs={4}>
+              {
+                  data.isManualOrder
+                    ? (
+                      <Button styleName="details-table-order-btn" variant="contained">
+                        { 'ORDER' }
+                      </Button>
+                    ) : null
+                }
+              <Button styleName="details-table-download-btn">
+                <DownloadIcon />
+                { ' DOWNLOAD' }
+              </Button>
+            </Grid>
+          </Grid>
           {
-              data.isManualOrder
-                ? (
-                  <Button styleName="details-table-order-btn" variant="contained">
-                    { 'ORDER' }
-                  </Button>
-                ) : null
-            }
-          <Button styleName="details-table-download-btn">
-            <DownloadIcon />
-            { ' DOWNLOAD' }
-          </Button>
-        </Grid>
-      </Grid>
-      {
-        data.tableData && data.tableData.length ? (
-          this.renderDataTable(data)
-        ) : null
-      }
-      </>
-    );
+            data.tableData && data.tableData.length ? (
+              this.renderDataTable(data)
+            ) : null
+          }
+          </>
+      );
+    }
+    return <Loader message="Fetching data. Please wait..." />;
   }
 }
+
+StagerDetailsTable.propTypes = {
+  loading: PropTypes.bool.isRequired,
+};
 
 export default StagerDetailsTable;

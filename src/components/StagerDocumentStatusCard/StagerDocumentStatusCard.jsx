@@ -4,11 +4,13 @@ import './StagerDocumentStatusCard.css';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
-const StagerDocumentStatusCard = ({ data }) => {
+const StagerDocumentStatusCard = ({
+  active, data, onStatusCardClick, tabName,
+}) => {
   const slaBreachedCount = data.slaBreached;
   const slaToBeBreachedCount = data.aboutToBreach;
   return (
-    <Paper styleName="document-type-card-main-div">
+    <Paper onClick={() => onStatusCardClick(data.searchTerm, data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
       <Grid container direction="column" spacing={24}>
         <Grid item>
           <span styleName="document-type-name">
@@ -41,10 +43,14 @@ const StagerDocumentStatusCard = ({ data }) => {
 };
 
 StagerDocumentStatusCard.defaultProps = {
+  active: false,
   data: {},
 };
 StagerDocumentStatusCard.propTypes = {
+  active: PropTypes.bool,
   data: PropTypes.node,
+  onStatusCardClick: PropTypes.func.isRequired,
+  tabName: PropTypes.func.isRequired,
 };
 
 export default StagerDocumentStatusCard;

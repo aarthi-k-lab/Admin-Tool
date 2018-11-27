@@ -1,4 +1,4 @@
-import { SET_STAGER_DATA_COUNTS } from './types';
+import { SET_STAGER_DATA_COUNTS, SET_STAGER_DATA } from './types';
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
@@ -7,6 +7,15 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         counts,
+      };
+    }
+
+    case SET_STAGER_DATA: {
+      const data = action.payload.data ? action.payload.data : action.payload.error;
+      return {
+        ...state,
+        data,
+        loading: false,
       };
     }
 
