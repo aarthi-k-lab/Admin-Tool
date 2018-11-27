@@ -173,14 +173,14 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
   try {
     const response = await fetch(request);
     if (response.status === 401) {
-      return null;
+      return [];
     }
     if (response.status === 200) {
       return await response.json();
     }
-    return null;
+    return [];
   } catch (err) {
-    return null;
+    return [];
   }
 };
 
