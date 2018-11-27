@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AgentLoanView from '@material-ui/icons/FeaturedPlayListOutlined';
-import StagerIcon from '@material-ui/icons/Send';
+// import AgentLoanView from '@material-ui/icons/FeaturedPlayListOutlined';
+// import StagerIcon from '@material-ui/icons/Send';
 
 import './LeftNav.css';
 
@@ -13,10 +13,10 @@ function LeftNav() {
           <img alt="dashboard" src="/static/img/icon-dashboard.png" />
         </Link>
         <Link to="/loan-evaluation">
-          <AgentLoanView fontSize="inherit" />
+          <img alt="loan-evaluation" src="/static/img/frontend.svg" />
         </Link>
         <Link to="/stager">
-          <StagerIcon fontSize="inherit" />
+          <img alt="stager" src="/static/img/stager.svg" />
         </Link>
       </nav>
     </div>

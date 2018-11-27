@@ -2,6 +2,11 @@
 .document-type-card-main-div {
   padding: 1rem;
   display: flex;
+  cursor: pointer;
+}
+
+.document-type-card-main-div-selected {
+  background-color: #e67300;
 }
 
 .document-type-card-main-div-active {
@@ -15,9 +20,19 @@
   color: #707479;
 }
 
+.document-type-selected {
+  margin-top: 2rem;
+  color: #fff;
+}
+
 .document-type-count {
   font-size: 4rem;
   color: #1b6c92;
+}
+
+.document-type-count-selected {
+  font-size: 4rem;
+  color: #fff;
 }
 
 .sla-breached-chip {
