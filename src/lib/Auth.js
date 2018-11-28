@@ -250,6 +250,7 @@ Auth.failureMessages = {
   USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   AD_AUTH_SERVICE_FAILURE: GENERAL_ERROR_MESSAGE,
   MANAGER_ACCESS_NEEDED: 'Manager Group Access is needed to view the Manager Dashboard.',
+  STAGER_DASHBOARD_ACCESS_NEEDED: 'Stager Dashboard Access is needed to view the Stager Dashboard',
 };
 
 Auth.homePage = [{
