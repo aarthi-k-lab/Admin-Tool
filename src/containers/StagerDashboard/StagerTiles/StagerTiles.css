@@ -1,0 +1,29 @@
+.columns-container {
+  align-items: flex-start;
+  background-color: var(--grey-200);
+  justify-content: flex-start;
+}
+
+.document-status-bar {
+  height: 2rem;
+  background-color: #d6d7d8;
+  display: flex;
+  align-items: center;
+}
+
+.document-status-header {
+  margin: 1rem 2rem;
+  font-size: 1rem;
+  color: #5f5e5e;
+}
+
+.tiles-grid {
+  padding: 1.5rem;
+}
+
+.stager-tiles-main-container {
+  overflow-y: auto;
+  background-color: #eaeaea;
+  min-height: calc(100vh - 8.2rem);
+  max-height: calc(100vh - 8.2rem);
+}

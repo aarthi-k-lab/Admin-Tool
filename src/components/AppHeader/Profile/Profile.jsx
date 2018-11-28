@@ -46,7 +46,7 @@ Profile.renderGroups = function renderGroups(groups) {
 };
 
 Profile.renderSkills = function renderSkills(skills) {
-  return skills.map(
+  return skills && skills.map(
     skill => (
       <li key={skill}>
         <Typography variant="body1">{skill}</Typography>

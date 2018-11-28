@@ -1,0 +1,58 @@
+
+.document-type-card-main-div {
+  padding: 1rem;
+  display: flex;
+  cursor: pointer;
+}
+
+.document-type-card-main-div-selected {
+  background-color: #e67300;
+}
+
+.document-type-card-main-div-active {
+  padding: 1rem;
+  display: flex;
+  background-color: #e67300 !important;
+}
+
+.document-type-name {
+  margin-top: 2rem;
+  color: #707479;
+}
+
+.document-type-name-selected {
+  margin-top: 2rem;
+  color: #fff;
+}
+
+.document-type-count {
+  font-size: 4rem;
+  color: #1b6c92;
+}
+
+.document-type-count-selected {
+  font-size: 4rem;
+  color: #fff;
+}
+
+.sla-breached-chip {
+  background-color: #e20e34 !important;
+}
+
+.info-chip-0-count {
+  background-color: #d6d7d8 !important;
+}
+
+.info-chip {
+  background-color: #707479;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0.2rem;
+  border-radius: 5px;
+  display: table-cell;
+  font-weight: 400;
+}
+
+.info-items {
+  margin-top: 0.5rem !important;
+}

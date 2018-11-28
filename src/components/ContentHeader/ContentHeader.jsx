@@ -20,7 +20,7 @@ ContentHeader.defaultProps = {
 
 ContentHeader.propTypes = {
   children: PropTypes.node,
-  title: PropTypes.string,
+  title: PropTypes.node,
 };
 
 export default ContentHeader;

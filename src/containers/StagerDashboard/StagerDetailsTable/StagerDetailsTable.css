@@ -1,0 +1,80 @@
+.details-table-document-type {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333940;
+}
+
+.details-table-order-btn.details-table-order-btn {
+  background-color: #1b6c92;
+  color: #fff;
+  box-shadow: none;
+  width: 8rem;
+  height: 2rem;
+  font-size: 14px;
+  border-radius: 0;
+  float: right;
+}
+
+.details-table-order-btn.details-table-order-btn:hover {
+  background-color: #e67300;
+}
+
+.details-table-download-btn.details-table-download-btn {
+  float: right;
+  font-size: 14px;
+}
+
+.details-table-document-status {
+  margin-top: 1rem;
+  font-size: 14px;
+  color: #707479;
+}
+
+.stager-details-table-top-div {
+  padding: 2rem;
+  width: 100%;
+  background-color: rgba(234, 234, 234, 0.3);
+}
+
+.table-cell-right-border.table-cell-right-border {
+  border-right: #d6d7d8;
+  border-right-style: dotted;
+  border-right-width: 1px;
+  padding: 0.2rem;
+  word-wrap: break-word;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.details-table-download-icon.details-table-download-icon {
+  width: 1.2rem;
+  margin-right: 4px;
+}
+
+.center-grid {
+  min-height: 75vh;
+}
+
+.no-preview-message {
+  color: #d6d7d8;
+  font-size: 1.5rem;
+}
+
+.no-preview-icon.no-preview-icon {
+  color: #d6d7d8;
+  width: 10rem;
+  margin: 3rem;
+  height: 100%;
+  opacity: 0.5;
+}
+
+.main-table.main-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.days-until-sla-red {
+  color: #e10c32;
+  font-weight: 700;
+}
+
