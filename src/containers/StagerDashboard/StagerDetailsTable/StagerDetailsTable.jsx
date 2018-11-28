@@ -15,13 +15,26 @@ import Checkbox from '@material-ui/core/Checkbox';
 import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
 // import Loader from 'components/Loader/Loader';
-import Skeleton from 'react-loading-skeleton';
+import renderSkeletonLoader from './TableSkeletonLoader';
 
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { };
     this.renderDataTable = this.renderDataTable.bind(this);
+  }
+
+  static renderRow(rowKey, rowValue) {
+    switch (rowKey) {
+      case 'Days Until SLA':
+        return (
+          <span styleName={rowValue < 0 ? 'days-until-sla-red' : ''}>
+            {`${rowValue} ${rowValue > 1 ? 'DAYS' : 'DAY'}`}
+          </span>
+        );
+      default:
+        return rowValue;
+    }
   }
 
   renderDataTable(data) {
@@ -32,7 +45,7 @@ class StagerDetailsTable extends React.PureComponent {
           <Table styleName="main-table">
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox" styleName="table-cell-right-border" />
+                {data.isManualOrder ? (<TableCell padding="checkbox" styleName="table-cell-right-border" />) : null}
                 {Object.keys(data.tableData[0]).map(key => (<TableCell styleName="table-cell-right-border">{key}</TableCell>))}
               </TableRow>
             </TableHead>
@@ -41,15 +54,17 @@ class StagerDetailsTable extends React.PureComponent {
                 const isSelected = selectedData.find(o => o.TKIID === row.TKIID) || false;
                 return (
                   <TableRow key={row.evalId} role="checkbox">
-                    <TableCell padding="checkbox" styleName="table-cell-right-border">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={e => onCheckBoxClick(e.target.checked, row)}
-                      />
-                    </TableCell>
+                    {data.isManualOrder ? (
+                      <TableCell padding="checkbox" styleName="table-cell-right-border">
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={e => onCheckBoxClick(e.target.checked, row)}
+                        />
+                      </TableCell>
+                    ) : null}
                     {Object.keys(row).map(key => (
                       <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                        {row[key]}
+                        {this.constructor.renderRow(key, row[key])}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -62,7 +77,7 @@ class StagerDetailsTable extends React.PureComponent {
     );
   }
 
-  static renderUnselectedMessage() {
+  static renderUnselectedMessage(noTableData = false) {
     return (
       <Grid
         alignItems="center"
@@ -73,84 +88,11 @@ class StagerDetailsTable extends React.PureComponent {
         styleName="center-grid"
       >
         <Grid item xs={3}>
-          <ListIcon styleName="no-preview-icon" />
-          <br />
-          <span styleName="no-preview-message">No list selected to preview</span>
+          {noTableData ? null : (<><ListIcon styleName="no-preview-icon" />
+            <br /></>)}
+          <span styleName="no-preview-message">{ noTableData ? 'No Loans Present' : 'No list selected to preview' }</span>
         </Grid>
       </Grid>
-    );
-  }
-
-  static renderSkeletonLoader() {
-    return (
-      <>
-        <Grid
-          alignItems="flex-end"
-          container
-          justify="space-between"
-          styleName="stager-details-table-top-div"
-        >
-          <Grid item xs={4}>
-            <span styleName="details-table-document-type"><Skeleton /></span>
-            <br />
-            <span styleName="details-table-document-status"><Skeleton /></span>
-          </Grid>
-          <Grid item xs={4} />
-          <Grid item xs={4}>
-            <Skeleton />
-          </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12}>
-            <Table styleName="main-table">
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox" styleName="table-cell-right-border"><Skeleton /></TableCell>
-                  <TableCell styleName="table-cell-right-border"><Skeleton /></TableCell>
-                  <TableCell styleName="table-cell-right-border"><Skeleton /></TableCell>
-                  <TableCell styleName="table-cell-right-border"><Skeleton /></TableCell>
-                  <TableCell styleName="table-cell-right-border"><Skeleton /></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow role="checkbox">
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                </TableRow>
-                <TableRow role="checkbox">
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                  <TableCell component="th" scope="row" styleName="table-cell-right-border">
-                    <Skeleton />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Grid>
-        </Grid></>
     );
   }
 
@@ -191,10 +133,11 @@ class StagerDetailsTable extends React.PureComponent {
             ) : null
         }
         {
-          R.isEmpty(data) && !loading ? this.constructor.renderUnselectedMessage() : null
+          (R.isEmpty(data) || R.isEmpty(data.tableData)) && !loading
+            ? this.constructor.renderUnselectedMessage(R.isEmpty(data.tableData)) : null
         }
         {
-          loading ? this.constructor.renderSkeletonLoader() : null
+          loading ? renderSkeletonLoader() : null
         }
         {
           data.tableData && data.tableData.length && !loading ? (

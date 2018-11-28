@@ -42,6 +42,8 @@
   border-right-width: 1px;
   padding: 0.2rem;
   word-wrap: break-word;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .details-table-download-icon.details-table-download-icon {
@@ -69,5 +71,10 @@
 .main-table.main-table {
   table-layout: fixed;
   width: 100%;
+}
+
+.days-until-sla-red {
+  color: #e10c32;
+  font-weight: 700;
 }
 
