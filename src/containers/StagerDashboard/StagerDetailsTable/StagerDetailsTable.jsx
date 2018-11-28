@@ -46,7 +46,7 @@ class StagerDetailsTable extends React.PureComponent {
             <TableHead>
               <TableRow>
                 {data.isManualOrder ? (<TableCell padding="checkbox" styleName="table-cell-right-border" />) : null}
-                {Object.keys(data.tableData[0]).map(key => (<TableCell styleName="table-cell-right-border">{key}</TableCell>))}
+                {Object.keys(data.tableData[0]).map(key => (!['TKIID'].includes(key) ? (<TableCell styleName="table-cell-right-border">{key}</TableCell>) : null))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -62,11 +62,11 @@ class StagerDetailsTable extends React.PureComponent {
                         />
                       </TableCell>
                     ) : null}
-                    {Object.keys(row).map(key => (
+                    {Object.keys(row).map(key => (!['TKIID'].includes(key) ? (
                       <TableCell component="th" scope="row" styleName="table-cell-right-border">
                         {this.constructor.renderRow(key, row[key])}
                       </TableCell>
-                    ))}
+                    ) : null))}
                   </TableRow>
                 );
               })}
