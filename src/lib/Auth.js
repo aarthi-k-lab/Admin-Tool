@@ -2,6 +2,7 @@ import * as qs from 'qs';
 import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
 import { FRONTEND_MANAGER } from './Groups';
+import Redirect from './Redirect';
 
 function Auth(sessionValid, jwtPayload, groups) {
   if (!(this instanceof Auth)) {
@@ -92,6 +93,19 @@ Auth.hasAccess = async function hasAccess() {
   return false;
 };
 
+Auth.unauthorized = (auth) => {
+  window.location = '/unauthorized';
+  return auth;
+};
+
+Auth.authorized = (auth, user, jwtPayload) => {
+  const sessionAuth = auth;
+  sessionAuth.sessionValid = true;
+  sessionAuth.jwtPayload = jwtPayload;
+  sessionAuth.user = user;
+  return sessionAuth;
+};
+
 Auth.getGroupHomePage = function getGroupHomePage(groups) {
   const groups1 = R.map(R.prop(['groupName']), groups);
   if (groups.length === 0 || groups1.length === 0) {
@@ -112,32 +126,35 @@ Auth.getGroupHomePage = function getGroupHomePage(groups) {
 Auth.login = async function login(successRedirectUrl = '/') {
   const hasAccess = await this.hasAccess();
   const auth = this.getInstance();
+
   auth.sessionValid = false;
   auth.jwtPayload = null;
   auth.groups = null;
+
   if (!hasAccess) {
-    window.location = `/api/auth/login?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/unauthorized`;
+    Redirect.toLogin(successRedirectUrl);
     return auth; // this will never be executed
   }
+
   const jwtPayload = this.getJwtPayload();
   const userDetails = Auth.prototype.getUserDetails.call({ jwtPayload });
-  const userEmail = userDetails.email;
-  const userGroups = await this.getUserGroups(userEmail);
+  const { email } = userDetails;
+  const userGroups = await this.getUserGroups(email);
+  const skills = await this.getUserSkills(email);
   auth.groups = userGroups;
   const groupList = auth.getGroups();
+
   const user = {
     userDetails,
     userGroups,
     groupList,
+    skills,
   };
   if (userGroups === null) {
-    window.location = '/unauthorized';
-    return auth;
+    return this.unauthorized(auth);
   }
-  auth.sessionValid = true;
-  auth.jwtPayload = jwtPayload;
-  auth.user = user;
-  return auth;
+
+  return this.authorized(auth, user, jwtPayload);
 };
 
 Auth.getPowerBIAccessToken = function getPowerBIAccessToken(successRedirectUrl = '/reports') {
@@ -145,13 +162,34 @@ Auth.getPowerBIAccessToken = function getPowerBIAccessToken(successRedirectUrl =
   if (accessToken) {
     return accessToken;
   }
-  window.location = `/api/auth/powerbi?redirectSuccessUrl=${successRedirectUrl}&redirectFailureUrl=/`;
+  Redirect.toReport(successRedirectUrl);
   return false;
 };
 
 Auth.getUserGroups = async function getGroupsForUser(email) {
   const request = new Request(`/api/auth/ad/app/users/${email}/groups`, {
     method: 'GET',
+  });
+  try {
+    const response = await fetch(request);
+    if (response.status === 401) {
+      return null;
+    }
+    if (response.status === 200) {
+      return await response.json();
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+};
+
+Auth.getUserSkills = async (email) => {
+  const headers = new Headers();
+  headers.append('Ocp-Apim-Subscription-Key', 'd4a602747f6f455aaa925cc356e180b7');
+  const request = new Request(`/api/userskills/cmod/userskills/getUserSkills/${email}`, {
+    method: 'GET',
+    headers,
   });
   try {
     const response = await fetch(request);

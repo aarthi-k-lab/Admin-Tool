@@ -38,7 +38,11 @@ class Header extends React.Component {
         open={showProfileDetails}
         styleName="modal"
       >
-        <Profile groups={user && user.groupList} userDetails={user && user.userDetails} />
+        <Profile
+          groups={user && user.groupList}
+          skills={user && user.skills}
+          userDetails={user && user.userDetails}
+        />
       </Modal>
     );
   }
@@ -69,6 +73,7 @@ class Header extends React.Component {
 
 Header.propTypes = {
   user: PropTypes.shape({
+    skills: PropTypes.array,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

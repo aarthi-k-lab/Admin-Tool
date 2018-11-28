@@ -1,0 +1,25 @@
+{
+  "name": "framework",
+  "version": "1.0.0",
+  "description": "CMOD Framework",
+  "main": "nightwatch.js",
+  "scripts": {
+    "test": "node nightwatch -e chrome -a",
+    "test_specific": "node nightwatch -e chrome",
+    "cmod_xmlreport": "npm run test_specific tests/cmod.js",
+    "cmod_htmlreport": "npm run test_specific tests/cmod.js -- --reporter html-reporter.js"
+  },
+  "author": "RC",
+  "license": "ISC",
+  "dependencies": {
+    "chromedriver": "^2.38.0",
+    "exceljs": "^1.6.2",
+    "geckodriver": "^1.10.0",
+    "handlebars": "^4.0.12",
+    "iedriver": "3.9.2",
+    "nightwatch": "^0.9.20",
+    "rest-assured": "^0.1.0",
+    "save": "^2.3.2",
+    "selenium-server": "^3.14.0"
+  }
+}
