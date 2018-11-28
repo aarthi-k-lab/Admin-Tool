@@ -38,6 +38,7 @@
                   "disable-web-security",
                  "ignore-certificate-errors",
                  "--start-maximized",
+                 "--headless",
                  "disable-infobars",
                  "--test-type"
                 ]
