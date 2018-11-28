@@ -1,5 +1,4 @@
 import {
-  take,
   takeEvery,
   all,
   call,
@@ -77,10 +76,7 @@ function* onCheckboxSelect(data) {
 }
 
 function* watchDashboardCountsFetch() {
-  const payload = yield take(GET_DASHBOARD_COUNTS_SAGA);
-  if (payload != null) {
-    yield fetchDashboardCounts();
-  }
+  yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
 }
 
 function* watchDashboardDataFetch() {

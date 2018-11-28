@@ -17,9 +17,10 @@ class StagerDashboard extends React.Component {
   }
 
   onStatusCardClick(searchTerm, activeTile, activeTab) {
-    const { getDashboardData, onCheckBoxClick } = this.props;
+    const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
     this.setState({ activeTab, activeTile });
     getDashboardData(searchTerm);
+    getDashboardCounts();
     onCheckBoxClick([]);
   }
 
