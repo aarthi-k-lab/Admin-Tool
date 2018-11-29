@@ -2,7 +2,7 @@ module.exports = {
   signIn: function signIn(browser) {
     const signInPage = browser.page.signInPage();
     browser
-      .url('https://cmodqa.int.mrcooper.io/reports')
+      .url('https://cmoddev.int.mrcooper.io/reports')
       .waitForElementVisible('body');
     signInPage.assert.title('Sign in to your account');
     signInPage.waitForElementVisible('@signInAccount');

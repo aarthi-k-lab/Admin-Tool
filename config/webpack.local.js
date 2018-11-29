@@ -94,7 +94,7 @@ const config = merge(
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/user/skills': '',
+            '^/api/userskills': '',
           },
         },
       },

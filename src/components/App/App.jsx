@@ -12,7 +12,7 @@ function App({ user, children, expandView }) {
     <AppContainer hideFooter={expandView}>
       { expandView ? null : <Header user={user} />}
       <Body>
-        { expandView ? null : <LeftNav />}
+        { expandView ? null : <LeftNav user={user} />}
         <MainContent>
           { children }
         </MainContent>

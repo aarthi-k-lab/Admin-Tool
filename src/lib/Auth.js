@@ -173,21 +173,21 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
   try {
     const response = await fetch(request);
     if (response.status === 401) {
-      return null;
+      return [];
     }
     if (response.status === 200) {
       return await response.json();
     }
-    return null;
+    return [];
   } catch (err) {
-    return null;
+    return [];
   }
 };
 
 Auth.getUserSkills = async (email) => {
   const headers = new Headers();
   headers.append('Ocp-Apim-Subscription-Key', 'd4a602747f6f455aaa925cc356e180b7');
-  const request = new Request(`/api/userskills/cmod/userskills/getUserSkills/${email}`, {
+  const request = new Request(`/api/userskills/getUserSkills/${email}`, {
     method: 'GET',
     headers,
   });
@@ -250,6 +250,7 @@ Auth.failureMessages = {
   USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   AD_AUTH_SERVICE_FAILURE: GENERAL_ERROR_MESSAGE,
   MANAGER_ACCESS_NEEDED: 'Manager Group Access is needed to view the Manager Dashboard.',
+  STAGER_DASHBOARD_ACCESS_NEEDED: 'Stager Dashboard Access is needed to view the Stager Dashboard',
 };
 
 Auth.homePage = [{
