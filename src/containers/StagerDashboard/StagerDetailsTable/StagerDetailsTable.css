@@ -1,5 +1,5 @@
 .details-table-document-type {
-  font-size: 18px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #333940;
 }
@@ -26,7 +26,7 @@
 
 .details-table-document-status {
   margin-top: 1rem;
-  font-size: 14px;
+  font-size: 1rem;
   color: #707479;
 }
 
@@ -71,6 +71,8 @@
 .main-table.main-table {
   table-layout: fixed;
   width: 100%;
+  max-height: calc(90vh - 8rem);
+  overflow-y: auto;
 }
 
 .days-until-sla-red {
@@ -79,7 +81,7 @@
 }
 
 .table-header-cell.table-header-cell {
-  color: #1b6c92;
+  color: #333940;
   font-weight: 700;
   font-size: 110%
 }

@@ -24,12 +24,21 @@ class StagerDetailsTable extends React.PureComponent {
     this.renderDataTable = this.renderDataTable.bind(this);
   }
 
-  static renderRow(rowKey, rowValue) {
+  static renderRow(rowKey, rowValue, rowData) {
     switch (rowKey) {
       case 'Days Until SLA':
         return (
           <span styleName={rowValue < 0 ? 'days-until-sla-red' : ''}>
             {`${rowValue} ${rowValue > 1 ? 'DAYS' : 'DAY'}`}
+          </span>
+        );
+      case 'Loan Number':
+        return (
+          <span styleName={rowData['Days Until SLA'] < 0 ? 'days-until-sla-red' : ''}>
+            { rowData['Days Until SLA'] < 0
+              ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
+            }
+            {`  ${rowValue}`}
           </span>
         );
       default:
@@ -64,7 +73,7 @@ class StagerDetailsTable extends React.PureComponent {
                     ) : null}
                     {Object.keys(row).map(key => (!['TKIID'].includes(key) ? (
                       <TableCell component="th" scope="row" styleName="table-cell-right-border table-row-cell">
-                        {this.constructor.renderRow(key, row[key])}
+                        {this.constructor.renderRow(key, row[key], row)}
                       </TableCell>
                     ) : null))}
                   </TableRow>
