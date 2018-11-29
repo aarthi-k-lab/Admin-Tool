@@ -30,7 +30,7 @@ class StagerPage extends React.PureComponent {
           <Controls />
         </ContentHeader>
         <Grid container>
-          <Grid item lg={4} xs={4}>
+          <Grid item lg={2} xs={2}>
             <StagerTiles
               activeTab={activeTab}
               activeTile={activeTile}
@@ -38,7 +38,7 @@ class StagerPage extends React.PureComponent {
               onStatusCardClick={onStatusCardClick}
             />
           </Grid>
-          <Grid item lg={8} xs={8}>
+          <Grid item lg={10} xs={10}>
             <StagerDetailsTable
               data={tableData}
               loading={loading}

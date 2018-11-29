@@ -78,3 +78,13 @@
   font-weight: 700;
 }
 
+.table-header-cell.table-header-cell {
+  color: #1b6c92;
+  font-weight: 700;
+  font-size: 110%
+}
+
+.table-row-cell.table-row-cell {
+    font-size: 100%
+  }
+

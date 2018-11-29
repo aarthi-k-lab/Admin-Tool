@@ -27,3 +27,12 @@
   min-height: calc(100vh - 8.2rem);
   max-height: calc(100vh - 8.2rem);
 }
+
+.stager-tiles-status-select.stager-tiles-status-select {
+  min-width: 100%;
+  min-height: 3rem;
+  background-color: #fff;
+  border-top: #eaeaea;
+  border-top-width: 0.1rem;
+  border-top-style: solid;
+}
