@@ -29,15 +29,14 @@ class StagerDetailsTable extends React.PureComponent {
       case 'Days Until SLA':
         return (
           <span styleName={rowValue < 0 ? 'days-until-sla-red' : ''}>
-            {`${rowValue} ${rowValue > 1 ? 'DAYS' : 'DAY'}`}
+            {`${rowValue} ${Math.abs(rowValue) > 1 ? 'DAYS' : 'DAY'}`}
           </span>
         );
       case 'Loan Number':
         return (
           <span styleName={rowData['Days Until SLA'] < 0 ? 'days-until-sla-red' : ''}>
-            {
-             rowData['Days Until SLA'] < 0
-               ? <img alt="sla-due-icon" src="/static/img/esclamation.svg" /> : null
+            { rowData['Days Until SLA'] < 0
+              ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
             }
             {`  ${rowValue}`}
           </span>
@@ -56,7 +55,7 @@ class StagerDetailsTable extends React.PureComponent {
             <TableHead>
               <TableRow>
                 {data.isManualOrder ? (<TableCell padding="checkbox" styleName="table-cell-right-border" />) : null}
-                {Object.keys(data.tableData[0]).map(key => (!['TKIID'].includes(key) ? (<TableCell styleName="table-cell-right-border">{key}</TableCell>) : null))}
+                {Object.keys(data.tableData[0]).map(key => (!['TKIID'].includes(key) ? (<TableCell styleName="table-cell-right-border table-header-cell">{key}</TableCell>) : null))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -73,7 +72,7 @@ class StagerDetailsTable extends React.PureComponent {
                       </TableCell>
                     ) : null}
                     {Object.keys(row).map(key => (!['TKIID'].includes(key) ? (
-                      <TableCell component="th" scope="row" styleName="table-cell-right-border">
+                      <TableCell component="th" scope="row" styleName="table-cell-right-border table-row-cell">
                         {this.constructor.renderRow(key, row[key], row)}
                       </TableCell>
                     ) : null))}

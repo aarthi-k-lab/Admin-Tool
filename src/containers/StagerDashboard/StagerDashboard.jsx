@@ -8,7 +8,7 @@ import StagerPage from './StagerPage';
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { selectedData: [] };
+    this.state = { selectedData: [], activeSearchTerm: '' };
   }
 
   componentDidMount() {
@@ -17,8 +17,8 @@ class StagerDashboard extends React.Component {
   }
 
   onStatusCardClick(searchTerm, activeTile, activeTab) {
-    const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
-    this.setState({ activeTab, activeTile });
+    const { getDashboardData, onCheckBoxClick, getDashboardCounts } = this.props;
+    this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     getDashboardData(searchTerm);
     getDashboardCounts();
     onCheckBoxClick([]);
@@ -34,6 +34,16 @@ class StagerDashboard extends React.Component {
     }
     this.setState({ selectedData });
     onCheckBoxClick(selectedData);
+  }
+
+  refreshDashboard() {
+    const { activeSearchTerm } = this.state;
+    const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
+    if (activeSearchTerm) {
+      getDashboardData(activeSearchTerm);
+    }
+    getDashboardCounts();
+    onCheckBoxClick([]);
   }
 
   render() {
@@ -56,6 +66,7 @@ class StagerDashboard extends React.Component {
             tileName,
             tabName) => this.onStatusCardClick(searchTerm, tileName, tabName)
         }
+        refreshDashboard={() => this.refreshDashboard()}
         selectedData={selectedData}
         tableData={tableData}
       />
