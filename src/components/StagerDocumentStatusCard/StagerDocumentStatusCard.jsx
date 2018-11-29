@@ -4,6 +4,8 @@ import './StagerDocumentStatusCard.css';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
+const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}K` : num);
+
 const StagerDocumentStatusCard = ({
   active, data, onStatusCardClick, tabName,
 }) => {
@@ -22,7 +24,7 @@ const StagerDocumentStatusCard = ({
             <Grid item xs={6}>
               <span styleName={active ? 'document-type-count-selected' : 'document-type-count'}>
                 {
-                  (`0${data.total}`).slice(-2)
+                  (data.total < 10 ? `0${data.total}` : `${kFormatter(data.total)}`)
                 }
               </span>
             </Grid>
