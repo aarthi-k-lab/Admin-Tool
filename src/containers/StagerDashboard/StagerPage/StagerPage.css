@@ -11,3 +11,8 @@
   align-items: center;
   padding-left: 2rem;
 }
+
+.refresh-button.refresh-button {
+  margin-left: 0.5rem;
+}
+

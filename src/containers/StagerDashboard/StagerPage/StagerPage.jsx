@@ -3,8 +3,10 @@ import ContentHeader from 'components/ContentHeader';
 import Grid from '@material-ui/core/Grid';
 import Controls from 'containers/Controls';
 import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
@@ -15,16 +17,20 @@ class StagerPage extends React.PureComponent {
       activeTab, activeTile,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, selectedData,
+      refreshDashboard,
     } = this.props;
     return (
       <>
-        <ContentHeader title={(
+        <ContentHeader title={(<>
           <Select
             disabled
             value="UNDERWRITER"
           >
             <MenuItem value="UNDERWRITER">UNDERWRITER STAGER</MenuItem>
           </Select>
+          <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
+            <RefreshIcon />
+          </IconButton></>
         )}
         >
           <Controls />
@@ -76,6 +82,7 @@ StagerPage.propTypes = {
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
+  refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   tableData: PropTypes.node.isRequired,
 };

@@ -54,7 +54,7 @@ class StagerTiles extends React.PureComponent {
             <Grid item xs={12}>
               <Grid container direction="row" spacing={16} styleName="tiles-grid">
                 {stagerTaskData.data.map(tileData => (
-                  <Grid item xs={12}>
+                  <Grid item styleName="status-tile" xs={12}>
                     <StagerDocumentStatusCard
                       active={this.isActiveCard(tileData.displayName, stagerTaskData.displayName)}
                       data={tileData}

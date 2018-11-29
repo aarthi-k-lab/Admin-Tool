@@ -29,7 +29,7 @@ class StagerDetailsTable extends React.PureComponent {
       case 'Days Until SLA':
         return (
           <span styleName={rowValue < 0 ? 'days-until-sla-red' : ''}>
-            {`${rowValue} ${rowValue > 1 ? 'DAYS' : 'DAY'}`}
+            {`${rowValue} ${Math.abs(rowValue) > 1 ? 'DAYS' : 'DAY'}`}
           </span>
         );
       case 'Loan Number':
