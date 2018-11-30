@@ -52,7 +52,7 @@ class StagerTiles extends React.PureComponent {
         )
           .map(stagerTaskData => (
             <Grid item xs={12}>
-              <Grid container direction="row" spacing={16} styleName="tiles-grid">
+              <Grid container direction="row" spacing={8} styleName="tiles-grid">
                 {stagerTaskData.data.map(tileData => (
                   <Grid item styleName="status-tile" xs={12}>
                     <StagerDocumentStatusCard

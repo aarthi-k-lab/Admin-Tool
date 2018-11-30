@@ -18,7 +18,7 @@
 }
 
 .tiles-grid {
-  padding: 1.5rem;
+  padding: 0.5rem;
 }
 
 .stager-tiles-main-container {
@@ -39,6 +39,7 @@
 
 .stager-tiles-status-select.stager-tiles-status-select > div > div {
   margin-left: 1rem;
+  font-size: 0.9rem;
 }
 
 @keyframes fadein {
