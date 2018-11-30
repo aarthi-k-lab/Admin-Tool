@@ -1,6 +1,6 @@
 
 .document-type-card-main-div {
-  padding: 1rem;
+  padding: 0.8rem;
   display: flex;
   cursor: pointer;
 }
@@ -16,22 +16,22 @@
 }
 
 .document-type-name {
-  margin-top: 2rem;
+  margin-top: 0.5rem;
   color: #707479;
 }
 
 .document-type-name-selected {
-  margin-top: 2rem;
+  margin-top: 0.5rem;
   color: #fff;
 }
 
 .document-type-count {
-  font-size: 4rem;
+  font-size: 2.5rem;
   color: #1b6c92;
 }
 
 .document-type-count-selected {
-  font-size: 4rem;
+  font-size: 2.5rem;
   color: #fff;
 }
 
@@ -54,5 +54,5 @@
 }
 
 .info-items {
-  margin-top: 0.5rem !important;
+  margin-top: 0.2rem !important;
 }
