@@ -30,11 +30,8 @@ class StagerTiles extends React.PureComponent {
     const { counts, onStatusCardClick } = this.props;
     const { stagerStatus } = this.state;
     return (
-      <Grid container direction="column" styleName="stager-tiles-main-container">
-        {
-          !counts.length ? <Loader /> : null
-        }
-        <Grid item>
+      <>
+        <Grid item xs={12}>
           <Select
             onChange={this.handleChange}
             styleName="stager-tiles-status-select"
@@ -47,26 +44,31 @@ class StagerTiles extends React.PureComponent {
             ))}
           </Select>
         </Grid>
-        {counts && counts.filter(
-          statusObj => statusObj.displayName === stagerStatus,
-        )
-          .map(stagerTaskData => (
-            <Grid item xs={12}>
-              <Grid container direction="row" spacing={8} styleName="tiles-grid">
-                {stagerTaskData.data.map(tileData => (
-                  <Grid item styleName="status-tile" xs={12}>
-                    <StagerDocumentStatusCard
-                      active={this.isActiveCard(tileData.displayName, stagerTaskData.displayName)}
-                      data={tileData}
-                      onStatusCardClick={onStatusCardClick}
-                      tabName={stagerTaskData.displayName}
-                    />
-                  </Grid>
-                ))}
+        <Grid container styleName="stager-tiles-main-container">
+          {
+          !counts.length ? <Loader /> : null
+        }
+          {counts && counts.filter(
+            statusObj => statusObj.displayName === stagerStatus,
+          )
+            .map(stagerTaskData => (
+              <Grid item xs={12}>
+                <Grid container direction="row" spacing={8} styleName="tiles-grid">
+                  {stagerTaskData.data.map(tileData => (
+                    <Grid item styleName="status-tile" xs={12}>
+                      <StagerDocumentStatusCard
+                        active={this.isActiveCard(tileData.displayName, stagerTaskData.displayName)}
+                        data={tileData}
+                        onStatusCardClick={onStatusCardClick}
+                        tabName={stagerTaskData.displayName}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
               </Grid>
-            </Grid>
-          ))}
-      </Grid>
+            ))}
+        </Grid>
+      </>
     );
   }
 }
