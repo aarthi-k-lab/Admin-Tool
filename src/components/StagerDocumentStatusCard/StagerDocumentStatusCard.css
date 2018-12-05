@@ -6,13 +6,13 @@
 }
 
 .document-type-card-main-div-selected {
-  background-color: #1b6c92;
+  background-color: #e67300;
 }
 
 .document-type-card-main-div-active {
   padding: 1rem;
   display: flex;
-  background-color: #1b6c92 !important;
+  background-color: #e67300 !important;
 }
 
 .document-type-name {
