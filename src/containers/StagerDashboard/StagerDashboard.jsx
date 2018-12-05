@@ -11,7 +11,7 @@ import StagerPage from './StagerPage';
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { selectedData: [], activeSearchTerm: '' };
+    this.state = { activeSearchTerm: '' };
   }
 
   componentDidMount() {
@@ -39,13 +39,13 @@ class StagerDashboard extends React.Component {
   onCheckBoxClick(isChecked, data) {
     const { onCheckBoxClick, selectedData } = this.props;
     const foundData = selectedData.find(obj => data.TKIID === obj.TKIID);
+    const selectedDataCopy = [...selectedData];
     if (isChecked && !foundData) {
-      selectedData.push(data);
+      selectedDataCopy.push(data);
     } else if (!isChecked && foundData) {
-      selectedData.splice(selectedData.findIndex(i => i.TKIID === data.TKIID), 1);
+      selectedDataCopy.splice(selectedDataCopy.findIndex(i => i.TKIID === data.TKIID), 1);
     }
-    this.setState({ selectedData });
-    onCheckBoxClick(selectedData);
+    onCheckBoxClick(selectedDataCopy);
   }
 
   refreshDashboard() {
@@ -61,11 +61,10 @@ class StagerDashboard extends React.Component {
   render() {
     const {
       closeSnackBar, counts, tableData,
-      loading, snackBarData,
+      loading, snackBarData, selectedData,
     } = this.props;
     const {
       activeTab, activeTile,
-      selectedData,
     } = this.state;
     return (
       <div>
