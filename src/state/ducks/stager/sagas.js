@@ -16,6 +16,7 @@ import {
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
+  SET_STAGER_DOWNLOAD_CSV_URI,
 } from './types';
 import selectors from './selectors';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
@@ -51,6 +52,11 @@ function* fetchDashboardData(payload) {
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
+    });
+    const downloadCSVUri = `api/stager/dashboard/downloadData/${searchTerm}`;
+    yield put({
+      type: SET_STAGER_DOWNLOAD_CSV_URI,
+      payload: downloadCSVUri,
     });
     if (newPayload != null) {
       yield put({

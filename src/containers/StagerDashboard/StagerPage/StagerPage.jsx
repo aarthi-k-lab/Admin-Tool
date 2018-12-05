@@ -15,7 +15,7 @@ import './StagerPage.css';
 class StagerPage extends React.PureComponent {
   render() {
     const {
-      activeTab, activeTile,
+      activeTab, activeTile, downloadCSVUri,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, onOrderClick, selectedData,
       refreshDashboard,
@@ -49,6 +49,7 @@ class StagerPage extends React.PureComponent {
             <Grid item lg={10} xs={10}>
               <StagerDetailsTable
                 data={tableData}
+                downloadCSVUri={downloadCSVUri}
                 loading={loading}
                 onCheckBoxClick={onCheckBoxClick}
                 onOrderClick={onOrderClick}
@@ -83,6 +84,7 @@ StagerPage.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
+  downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,

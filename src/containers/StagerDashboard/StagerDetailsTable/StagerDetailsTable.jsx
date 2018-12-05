@@ -107,7 +107,7 @@ class StagerDetailsTable extends React.PureComponent {
 
   render() {
     const {
-      data, loading,
+      data, loading, downloadCSVUri,
       onOrderClick, selectedData,
     } = this.props;
     return (
@@ -136,10 +136,12 @@ class StagerDetailsTable extends React.PureComponent {
                     </Button>
                   ) : null
               }
-                  <Button styleName="details-table-download-btn">
-                    <DownloadIcon styleName="details-table-download-icon" />
-                    { ' DOWNLOAD' }
-                  </Button>
+                  <a download href={downloadCSVUri}>
+                    <Button disabled={R.isNil(data.tableData) || (R.isEmpty(data.tableData))} styleName="details-table-download-btn">
+                      <DownloadIcon styleName="details-table-download-icon" />
+                      { ' DOWNLOAD' }
+                    </Button>
+                  </a>
                 </Grid>
               </Grid>
             ) : null
@@ -163,6 +165,7 @@ class StagerDetailsTable extends React.PureComponent {
 
 StagerDetailsTable.propTypes = {
   data: PropTypes.node.isRequired,
+  downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,

@@ -1,5 +1,5 @@
 import {
-  SET_STAGER_DATA_COUNTS, SET_STAGER_DATA,
+  SET_STAGER_DATA_COUNTS, SET_STAGER_DATA, SET_STAGER_DOWNLOAD_CSV_URI,
   SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT, SET_STAGER_ACTIVE_SEARCH_TERM,
 } from './types';
 
@@ -43,6 +43,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         activeSearchTerm: action.payload,
+      };
+    }
+
+    case SET_STAGER_DOWNLOAD_CSV_URI: {
+      return {
+        ...state,
+        downloadCSVUri: action.payload,
       };
     }
 
