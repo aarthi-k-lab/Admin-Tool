@@ -1,6 +1,7 @@
 import {
   takeEvery,
   all,
+  select,
   call,
   put,
 } from 'redux-saga/effects';
@@ -13,8 +14,11 @@ import {
   SET_STAGER_DATA_LOADING,
   TABLE_CHECKBOX_SELECT,
   TABLE_CHECKBOX_SELECT_TRIGGER,
+  TRIGGER_ORDER_SAGA,
+  SET_STAGER_ACTIVE_SEARCH_TERM,
 } from './types';
-
+import selectors from './selectors';
+import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
 function* fetchDashboardCounts() {
   try {
@@ -44,6 +48,10 @@ function* fetchDashboardData(payload) {
       },
     });
     const newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
+    yield put({
+      type: SET_STAGER_ACTIVE_SEARCH_TERM,
+      payload: searchTerm,
+    });
     if (newPayload != null) {
       yield put({
         type: SET_STAGER_DATA,
@@ -75,8 +83,37 @@ function* onCheckboxSelect(data) {
   });
 }
 
+function* fireSnackBar(snackBarData) {
+  yield put({
+    type: SET_SNACK_BAR_VALUES_SAGA,
+    payload: snackBarData,
+  });
+}
+
+function* makeOrderBpmCall(payload) {
+  const response = yield call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload);
+  const failedResponse = response.filter(data => data.error === true);
+  yield call(fetchDashboardCounts);
+  const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
+  yield call(fetchDashboardData, { payload: activeSearchTerm });
+  yield call(onCheckboxSelect, { payload: [] });
+  if (failedResponse && failedResponse.length > 0) {
+    const snackBarData = {};
+    snackBarData.message = 'Order call failed for Eval IDs: ';
+    snackBarData.type = 'error';
+    snackBarData.open = true;
+    const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
+    snackBarData.message += failedEvalIds.toString();
+    yield call(fireSnackBar, snackBarData);
+  }
+}
+
 function* watchDashboardCountsFetch() {
   yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
+}
+
+function* watchOrderCall() {
+  yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
 
 function* watchDashboardDataFetch() {
@@ -92,6 +129,7 @@ export const TestExports = {
   fetchDashboardCounts,
   watchDashboardDataFetch,
   watchTableCheckboxSelect,
+  watchOrderCall,
 };
 
 export function* combinedSaga() {
@@ -99,5 +137,6 @@ export function* combinedSaga() {
     watchDashboardCountsFetch(),
     watchDashboardDataFetch(),
     watchTableCheckboxSelect(),
+    watchOrderCall(),
   ]);
 }

@@ -36,7 +36,7 @@ const StagerDocumentStatusCard = ({
                     {`${(`0${slaBreachedCount}`).slice(-2)} SLA BREACHED`}
                   </span>
                 ) : null }
-              <br />
+              <div styleName="line_break" />
               { !R.isNil(slaToBeBreachedCount)
                 ? (
                   <span styleName={slaToBeBreachedCount ? 'info-chip' : 'info-chip info-chip-0-count'}>

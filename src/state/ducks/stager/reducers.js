@@ -1,6 +1,6 @@
 import {
   SET_STAGER_DATA_COUNTS, SET_STAGER_DATA,
-  SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT,
+  SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT, SET_STAGER_ACTIVE_SEARCH_TERM,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -36,6 +36,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         selectedData,
+      };
+    }
+
+    case SET_STAGER_ACTIVE_SEARCH_TERM: {
+      return {
+        ...state,
+        activeSearchTerm: action.payload,
       };
     }
 

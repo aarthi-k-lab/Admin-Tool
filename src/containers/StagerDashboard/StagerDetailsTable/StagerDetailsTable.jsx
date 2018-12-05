@@ -106,7 +106,10 @@ class StagerDetailsTable extends React.PureComponent {
   }
 
   render() {
-    const { data, loading } = this.props;
+    const {
+      data, loading,
+      onOrderClick, selectedData,
+    } = this.props;
     return (
       <>
         {
@@ -128,7 +131,7 @@ class StagerDetailsTable extends React.PureComponent {
                   {
                 data.isManualOrder
                   ? (
-                    <Button styleName="details-table-order-btn" variant="contained">
+                    <Button onClick={() => onOrderClick(selectedData)} styleName="details-table-order-btn" variant="contained">
                       { 'ORDER' }
                     </Button>
                   ) : null
@@ -162,6 +165,7 @@ StagerDetailsTable.propTypes = {
   data: PropTypes.node.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onOrderClick: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
 };
 

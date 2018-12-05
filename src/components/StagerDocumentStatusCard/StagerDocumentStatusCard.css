@@ -6,13 +6,13 @@
 }
 
 .document-type-card-main-div-selected {
-  background-color: #e67300;
+  background-color: #1b6c92;
 }
 
 .document-type-card-main-div-active {
   padding: 1rem;
   display: flex;
-  background-color: #e67300 !important;
+  background-color: #1b6c92 !important;
 }
 
 .document-type-name {
@@ -48,11 +48,15 @@
   color: #fff;
   font-size: 0.8rem;
   padding: 0.2rem;
-  border-radius: 5px;
+  border-radius: 3px;
   display: table-cell;
   font-weight: 400;
 }
 
+.line_break{
+  height: 0.2rem;
+}
+
 .info-items {
-  margin-top: 0.2rem !important;
+  margin-top: 0.5rem !important;
 }

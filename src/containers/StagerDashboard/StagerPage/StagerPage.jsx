@@ -16,7 +16,7 @@ class StagerPage extends React.PureComponent {
     const {
       activeTab, activeTile,
       counts, loading, onStatusCardClick,
-      tableData, onCheckBoxClick, selectedData,
+      tableData, onCheckBoxClick, onOrderClick, selectedData,
       refreshDashboard,
     } = this.props;
     return (
@@ -49,6 +49,7 @@ class StagerPage extends React.PureComponent {
               data={tableData}
               loading={loading}
               onCheckBoxClick={onCheckBoxClick}
+              onOrderClick={onOrderClick}
               selectedData={selectedData}
             />
           </Grid>
@@ -81,6 +82,7 @@ StagerPage.propTypes = {
   ).isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onOrderClick: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,

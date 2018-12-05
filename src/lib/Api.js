@@ -19,9 +19,11 @@ const callGet = function callGet(endpoint, params = {}) {
 };
 
 const callPost = function callPost(endpoint, body, params = {}) {
-  let headers = {};
+  const headers = {
+    'Content-Type': 'application/json',
+  };
   if (!R.isEmpty(params)) {
-    headers = params;
+    Object.assign(headers, params);
   }
   return fetch(endpoint,
     {

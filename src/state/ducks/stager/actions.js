@@ -1,4 +1,7 @@
-import { GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA, TABLE_CHECKBOX_SELECT_TRIGGER } from './types';
+import {
+  GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
+  TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
+} from './types';
 
 const triggerDashboardCounts = () => ({
   type: GET_DASHBOARD_COUNTS_SAGA,
@@ -14,9 +17,15 @@ const triggerCheckboxSelect = selectedData => ({
   payload: selectedData,
 });
 
+const triggerOrderCallAction = payload => ({
+  type: TRIGGER_ORDER_SAGA,
+  payload,
+});
+
 export {
   // eslint-disable-next-line
   triggerDashboardCounts,
   triggerDashboardDataFetch,
   triggerCheckboxSelect,
+  triggerOrderCallAction,
 };
