@@ -22,6 +22,12 @@ const links = [
     img: '/static/img/stager.svg',
     groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'],
   },
+  {
+    path: '/move-forward',
+    name: 'move-forward',
+    img: '/static/img/move_forward.svg',
+    groups: ['feuw-mgr', 'beuw-mgr'],
+  },
 ];
 
 function LeftNav({ user }) {
