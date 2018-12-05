@@ -67,7 +67,7 @@ class StagerDashboard extends React.Component {
       activeTab, activeTile,
     } = this.state;
     return (
-      <div>
+      <>
         <CustomSnackBar
           message={snackBarData && snackBarData.message}
           onClose={closeSnackBar}
@@ -90,7 +90,7 @@ class StagerDashboard extends React.Component {
           selectedData={selectedData}
           tableData={tableData}
         />
-      </div>
+      </>
     );
   }
 }

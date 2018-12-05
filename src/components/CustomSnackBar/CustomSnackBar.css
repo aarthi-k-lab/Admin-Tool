@@ -1,0 +1,34 @@
+.errorSnackTheme.errorSnackTheme {
+  background-color: #e4153c;
+  color: #fff;
+  text-align: center;
+  align-items: center;
+  font-size: 18px;
+}
+
+.successSnackTheme.successSnackTheme {
+  background-color: #00ab84;
+  color: #fff;
+  text-align: center;
+  align-items: center;
+  align-self: center;
+  font-size: 18px;
+}
+
+.messageSnackTheme.messageSnackTheme {
+  background-color: #1b6c92;
+  color: #fff;
+  align-items: center;
+  text-align: center;
+  align-self: center;
+  font-size: 18px;
+}
+
+.warningSnackTheme.warningSnackTheme {
+  background-color: #f5821f;
+  color: #fff;
+  text-align: center;
+  align-self: center;
+  align-items: center;
+  font-size: 18px;
+}
