@@ -1,0 +1,12 @@
+.ReactTable .rt-thead {
+  overflow-y: scroll;
+}
+
+.filterDropDown {
+  width: 100%;
+  text-align: center;
+}
+
+.stagerTable {
+  height: 62rem;
+}
