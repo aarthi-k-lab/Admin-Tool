@@ -1,3 +1,4 @@
+import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
 import ReactTable from 'react-table';
 import PropTypes from 'prop-types';
@@ -5,7 +6,35 @@ import * as R from 'ramda';
 import './CustomReactTable.css';
 
 class CustomReactTable extends React.PureComponent {
-  static getColumnData(stagerTaskType, stagerTaskStatus, data) {
+  constructor(props) {
+    super(props);
+    this.state = { };
+    this.getCheckBox = this.getCheckBox.bind(this);
+  }
+
+  getCheckBox(data) {
+    const { onCheckBoxClick, onSelectAll, selectedData } = this.props;
+    return {
+      accessor: '',
+      Cell: ({ original }) => {
+        const isSelected = selectedData.find(o => o.TKIID === original.TKIID) || false;
+        return (
+          <Checkbox
+            checked={isSelected}
+            onChange={e => onCheckBoxClick(e.target.checked, original)}
+          />
+        );
+      },
+      Header: () => (
+        <Checkbox onChange={e => onSelectAll(e.target.checked, data)} />
+      ),
+      sortable: false,
+      filterable: false,
+      width: 50,
+    };
+  }
+
+  getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
     const columnData = [];
     const columnObject = {};
     // columnObject.Header = `${stagerTaskType} - ${stagerTaskStatus}`;
@@ -29,11 +58,12 @@ class CustomReactTable extends React.PureComponent {
             </select>);
           return columnObj;
         }),
-        R.without(['', null, '_id']),
+        R.without(['', null]),
         R.keys(),
       )(data[0]);
     }
-    columnObject.columns = columns;
+    columnObject.columns = isManualOrder ? [this.getCheckBox(data),
+      ...columns] : columns;
     columnData.push(columnObject);
     return columnData;
   }
@@ -44,8 +74,8 @@ class CustomReactTable extends React.PureComponent {
       <div>
         <ReactTable
           className="-highlight"
-          columns={this.constructor.getColumnData(data.stagerTaskType,
-            data.stagerTaskStatus, data.tableData)}
+          columns={this.getColumnData(data.stagerTaskType,
+            data.stagerTaskStatus, data.isManualOrder, data.tableData)}
           data={data.tableData}
           defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
           defaultPageSize={10}
@@ -60,6 +90,9 @@ class CustomReactTable extends React.PureComponent {
 
 CustomReactTable.propTypes = {
   data: PropTypes.node.isRequired,
+  onCheckBoxClick: PropTypes.func.isRequired,
+  onSelectAll: PropTypes.func.isRequired,
+  selectedData: PropTypes.node.isRequired,
 };
 
 export default CustomReactTable;
