@@ -1,5 +1,6 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
 class MoveForwardDashboard extends React.Component {
@@ -30,9 +31,20 @@ class MoveForwardDashboard extends React.Component {
               id="pids"
               label="Enter PIDs"
               margin="normal"
+              multiline
               onChange={this.handleChange}
+              rows="8"
               value={pids}
             />
+
+            <Button
+              className="material-ui-button"
+              color="primary"
+              onClick={this.moveForward}
+              variant="contained"
+            >
+              Move Forward
+            </Button>
           </Grid>
         </Grid>
       </>
