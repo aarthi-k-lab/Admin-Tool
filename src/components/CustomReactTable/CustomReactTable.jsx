@@ -12,8 +12,13 @@ class CustomReactTable extends React.PureComponent {
     this.getCheckBox = this.getCheckBox.bind(this);
   }
 
-  getCheckBox(data) {
-    const { onCheckBoxClick, onSelectAll, selectedData } = this.props;
+  onSelectAllOption(checked) {
+    const { onSelectAll } = this.props;
+    onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
+  }
+
+  getCheckBox() {
+    const { onCheckBoxClick, selectedData } = this.props;
     return {
       accessor: '',
       Cell: ({ original }) => {
@@ -26,7 +31,7 @@ class CustomReactTable extends React.PureComponent {
         );
       },
       Header: () => (
-        <Checkbox onChange={e => onSelectAll(e.target.checked, data)} />
+        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} />
       ),
       sortable: false,
       filterable: false,
@@ -58,7 +63,7 @@ class CustomReactTable extends React.PureComponent {
             </select>);
           return columnObj;
         }),
-        R.without(['', null]),
+        R.without(['', null, 'TKIID']),
         R.keys(),
       )(data[0]);
     }
@@ -73,6 +78,9 @@ class CustomReactTable extends React.PureComponent {
     return (
       <div>
         <ReactTable
+          ref={(reactTable) => {
+            this.table = reactTable;
+          }}
           className="-highlight"
           columns={this.getColumnData(data.stagerTaskType,
             data.stagerTaskStatus, data.isManualOrder, data.tableData)}

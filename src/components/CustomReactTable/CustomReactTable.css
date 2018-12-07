@@ -2,9 +2,15 @@
   overflow-y: scroll;
 }
 
+.tableRow {
+  align-items: center;
+}
+
 .filterDropDown {
   width: 100%;
   text-align: center;
+  height: 2.25rem;
+  overflow-y: auto;
 }
 
 .stagerTable {
