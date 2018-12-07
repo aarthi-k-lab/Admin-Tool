@@ -31,18 +31,18 @@ const links = [
   },
 ];
 
-function getSafeGroups(groups) {
-  return R.is(Array, groups) ? groups : [];
-}
-
 function hasManagerDashboardAccess(groups) {
-  const safeGroups = getSafeGroups(groups);
-  return managerDashboard.groups.some(managerGroup => safeGroups.includes(managerGroup));
+  if (!R.is(Array, groups)) {
+    return true;
+  }
+  return managerDashboard.groups.some(managerGroup => groups.includes(managerGroup));
 }
 
 function hasStagerDashboardAccess(groups) {
-  const safeGroups = getSafeGroups(groups);
-  return stager.groups.some(stagerGroup => safeGroups.includes(stagerGroup));
+  if (!R.is(Array, groups)) {
+    return true;
+  }
+  return stager.groups.some(stagerGroup => groups.includes(stagerGroup));
 }
 
 module.exports = {
