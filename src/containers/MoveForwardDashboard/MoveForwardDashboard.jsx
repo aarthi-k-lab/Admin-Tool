@@ -2,6 +2,7 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import axios from 'axios';
 
 class MoveForwardDashboard extends React.Component {
   constructor(props) {
@@ -18,7 +19,20 @@ class MoveForwardDashboard extends React.Component {
 
   moveForward() {
     const { pids } = this.state;
-    console.log(pids);
+    const pidsList = pids.split(',');
+    const requestURL = 'https://mrcooperdev.azure-api.net/enterprise/wq/activate/api/process/release';
+    const requestBody = {
+      pids: pidsList,
+    };
+    const headers = {
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': 'a5e8c5b61283443793321b3aac39a877',
+    };
+
+    axios.post(requestURL, requestBody, { headers })
+      .then((res) => {
+        console.log(res);
+      });
   }
 
   render() {
@@ -26,17 +40,19 @@ class MoveForwardDashboard extends React.Component {
     return (
       <>
         <Grid container>
-          <Grid item lg={2} xs={2}>
-            <TextField
-              id="pids"
-              label="Enter PIDs"
-              margin="normal"
-              multiline
-              onChange={this.handleChange}
-              rows="8"
-              value={pids}
-            />
-
+          <Grid item lg={3} xs={3}>
+            <Grid xs={12}>
+              <TextField
+                id="pids"
+                label="Enter PIDs"
+                margin="normal"
+                multiline
+                onChange={this.handleChange}
+                rows="4"
+                style={{ width: '100%' }}
+                value={pids}
+              />
+            </Grid>
             <Button
               className="material-ui-button"
               color="primary"
