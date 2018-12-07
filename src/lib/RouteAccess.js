@@ -1,3 +1,4 @@
+const R = require('ramda');
 
 const managerDashboard = {
   path: '/reports',
@@ -30,12 +31,18 @@ const links = [
   },
 ];
 
+function getSafeGroups(groups) {
+  return R.is(Array, groups) ? groups : [];
+}
+
 function hasManagerDashboardAccess(groups) {
-  return managerDashboard.groups.some(managerGroup => groups.includes(managerGroup));
+  const safeGroups = getSafeGroups(groups);
+  return managerDashboard.groups.some(managerGroup => safeGroups.includes(managerGroup));
 }
 
 function hasStagerDashboardAccess(groups) {
-  return stager.groups.some(stagerGroup => groups.includes(stagerGroup));
+  const safeGroups = getSafeGroups(groups);
+  return stager.groups.some(stagerGroup => safeGroups.includes(stagerGroup));
 }
 
 module.exports = {
