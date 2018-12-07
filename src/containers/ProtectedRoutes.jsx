@@ -70,7 +70,6 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
           <Route component={Dashboard} path="/loan-evaluation" />
-          <Route component={StagerDashboard} path="/stager" />
           <Route component={MoveForwardDashboard} path="/move-forward" />
           <Route render={() => <Redirect to="/loan-evaluation" />} />
         </Switch>

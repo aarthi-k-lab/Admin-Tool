@@ -9,6 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import RouteAccess from 'lib/RouteAccess';
 import {
   operations as dashboardOperations,
 } from 'ducks/dashboard';
@@ -56,7 +57,7 @@ class ManagerDashboard extends Component {
   render() {
     const { groups } = this.props;
     const { powerBIConstants } = this.props;
-    if (groups && !groups.includes('feuw-mgr')) {
+    if (!RouteAccess.hasManagerDashboardAccess(groups)) {
       return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
     }
     return (

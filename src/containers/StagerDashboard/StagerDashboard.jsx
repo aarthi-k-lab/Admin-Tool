@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import * as R from 'ramda';
 import CustomSnackBar from 'components/CustomSnackBar';
+import RouteAccess from 'lib/RouteAccess';
 import StagerPage from './StagerPage';
 
 class StagerDashboard extends React.Component {
@@ -59,6 +61,10 @@ class StagerDashboard extends React.Component {
   }
 
   render() {
+    const { groups } = this.props;
+    if (!RouteAccess.hasStagerDashboardAccess(groups)) {
+      return <Redirect to="/unauthorized?error=STAGER_DASHBOARD_ACCESS_NEEDED" />;
+    }
     const {
       closeSnackBar, counts, tableData, downloadCSVUri,
       loading, snackBarData, selectedData,
@@ -133,6 +139,7 @@ StagerDashboard.propTypes = {
   downloadCSVUri: PropTypes.string,
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
