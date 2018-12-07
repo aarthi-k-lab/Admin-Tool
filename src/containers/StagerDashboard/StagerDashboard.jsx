@@ -50,6 +50,17 @@ class StagerDashboard extends React.Component {
     onCheckBoxClick(selectedDataCopy);
   }
 
+  onSelectAll(isChecked, data) {
+    const { onCheckBoxClick, selectedData } = this.props;
+    let selectedDataCopy = [...selectedData];
+    if (isChecked) {
+      selectedDataCopy = data;
+    } else if (!isChecked) {
+      selectedDataCopy = [];
+    }
+    onCheckBoxClick(selectedDataCopy);
+  }
+
   refreshDashboard() {
     const { activeSearchTerm } = this.state;
     const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
@@ -88,6 +99,7 @@ class StagerDashboard extends React.Component {
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
           onOrderClick={data => this.onOrderClick(data)}
+          onSelectAll={(isChecked, data) => this.onSelectAll(isChecked, data)}
           onStatusCardClick={
             (searchTerm,
               tileName,

@@ -5,16 +5,10 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DownloadIcon from '@material-ui/icons/SaveAlt';
 import PropTypes from 'prop-types';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-// import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
 import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
 // import Loader from 'components/Loader/Loader';
+import CustomReactTable from 'components/CustomReactTable';
 import renderSkeletonLoader from './TableSkeletonLoader';
 
 class StagerDetailsTable extends React.PureComponent {
@@ -46,43 +40,16 @@ class StagerDetailsTable extends React.PureComponent {
     }
   }
 
-  renderDataTable(data) {
-    const { onCheckBoxClick, selectedData } = this.props;
+  renderDataTable() {
+    const { data } = this.props;
+    const { onCheckBoxClick, onSelectAll, selectedData } = this.props;
     return (
-      <Grid container>
-        <Grid item xs={12}>
-          <Table styleName="main-table">
-            <TableHead>
-              <TableRow>
-                {data.isManualOrder ? (<TableCell padding="checkbox" styleName="table-cell-right-border" />) : null}
-                {Object.keys(data.tableData[0]).map(key => (!['TKIID'].includes(key) ? (<TableCell styleName="table-cell-right-border table-header-cell">{key}</TableCell>) : null))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.tableData.map((row) => {
-                const isSelected = selectedData.find(o => o.TKIID === row.TKIID) || false;
-                return (
-                  <TableRow key={row.evalId} role="checkbox">
-                    {data.isManualOrder ? (
-                      <TableCell padding="checkbox" styleName="table-cell-right-border">
-                        <Checkbox
-                          checked={isSelected}
-                          onChange={e => onCheckBoxClick(e.target.checked, row)}
-                        />
-                      </TableCell>
-                    ) : null}
-                    {Object.keys(row).map(key => (!['TKIID'].includes(key) ? (
-                      <TableCell component="th" scope="row" styleName="table-cell-right-border table-row-cell">
-                        {this.constructor.renderRow(key, row[key], row)}
-                      </TableCell>
-                    ) : null))}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </Grid>
-      </Grid>
+      <CustomReactTable
+        data={data}
+        onCheckBoxClick={onCheckBoxClick}
+        onSelectAll={onSelectAll}
+        selectedData={selectedData}
+      />
     );
   }
 
@@ -155,7 +122,7 @@ class StagerDetailsTable extends React.PureComponent {
         }
         {
           data.tableData && data.tableData.length && !loading ? (
-            this.renderDataTable(data)
+            this.renderDataTable()
           ) : null
         }
         </>
@@ -169,6 +136,7 @@ StagerDetailsTable.propTypes = {
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
+  onSelectAll: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
 };
 
