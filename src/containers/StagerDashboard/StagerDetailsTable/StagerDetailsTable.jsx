@@ -18,28 +18,6 @@ class StagerDetailsTable extends React.PureComponent {
     this.renderDataTable = this.renderDataTable.bind(this);
   }
 
-  static renderRow(rowKey, rowValue, rowData) {
-    switch (rowKey) {
-      case 'Days Until SLA':
-        return (
-          <span styleName={rowValue < 0 ? 'days-until-sla-red' : ''}>
-            {`${rowValue} ${Math.abs(rowValue) > 1 ? 'DAYS' : 'DAY'}`}
-          </span>
-        );
-      case 'Loan Number':
-        return (
-          <span styleName={rowData['Days Until SLA'] < 0 ? 'days-until-sla-red' : ''}>
-            { rowData['Days Until SLA'] < 0
-              ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
-            }
-            {`  ${rowValue}`}
-          </span>
-        );
-      default:
-        return rowValue;
-    }
-  }
-
   renderDataTable() {
     const { data } = this.props;
     const { onCheckBoxClick, onSelectAll, selectedData } = this.props;

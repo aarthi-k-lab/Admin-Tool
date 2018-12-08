@@ -17,6 +17,32 @@ class CustomReactTable extends React.PureComponent {
     onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
   }
 
+  static getCellContent(row) {
+    switch (row.column.id) {
+      case 'Days Until SLA':
+        return (
+          <div styleName={row.value < 0 ? 'days-until-sla-red' : 'tableRow'}>
+            {`${row.value} ${Math.abs(row.value) > 1 ? 'DAYS' : 'DAY'}`}
+          </div>
+        );
+      case 'Loan Number':
+        return (
+          <div styleName={row.original['Days Until SLA'] < 0 ? 'days-until-sla-red' : 'tableRow'}>
+            { row.original['Days Until SLA'] < 0
+              ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
+            }
+            {`  ${row.value}`}
+          </div>
+        );
+      default:
+        return (
+          <div styleName="tableRow">
+            { row.value }
+          </div>
+        );
+    }
+  }
+
   getCheckBox() {
     const { onCheckBoxClick, selectedData } = this.props;
     return {
@@ -50,7 +76,8 @@ class CustomReactTable extends React.PureComponent {
           const columnObj = {};
           columnObj.Header = columnName.toUpperCase();
           columnObj.accessor = columnName;
-          columnObj.filterMethod = (filter, row) => (row[filter.id] === filter.value);
+          columnObj.Cell = row => this.constructor.getCellContent(row);
+          columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
           columnObj.Filter = ({ filter, onChange }) => (
             <select
@@ -85,7 +112,7 @@ class CustomReactTable extends React.PureComponent {
           columns={this.getColumnData(data.stagerTaskType,
             data.stagerTaskStatus, data.isManualOrder, data.tableData)}
           data={data.tableData}
-          defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
+         // defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
           defaultPageSize={10}
           filterable
           styleName="stagerTable"

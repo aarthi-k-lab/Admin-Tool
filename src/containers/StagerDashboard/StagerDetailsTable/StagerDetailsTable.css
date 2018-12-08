@@ -75,11 +75,6 @@
   overflow-y: auto;
 }
 
-.days-until-sla-red {
-  color: #e10c32;
-  font-weight: 700;
-}
-
 .table-header-cell.table-header-cell {
   color: #333940;
   font-weight: 700;
