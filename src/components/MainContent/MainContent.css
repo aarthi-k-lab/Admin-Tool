@@ -3,4 +3,13 @@
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  max-width: 96%;
+}
+
+.main-content-expanded {
+  align-items: stretch;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  max-width: 100%;
 }
