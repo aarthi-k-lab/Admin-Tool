@@ -17,19 +17,32 @@ class CustomReactTable extends React.PureComponent {
     onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
   }
 
+  static getRowStyleName(value) {
+    if (value < 0) {
+      return 'days-until-sla-red';
+    }
+    if (value === 0) {
+      return 'days-until-sla-gray';
+    }
+    return 'tableRow';
+  }
+
   static getCellContent(row) {
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
-          <div styleName={row.value < 0 ? 'days-until-sla-red' : 'tableRow'}>
+          <div styleName={this.getRowStyleName(row.value)}>
             {`${row.value} ${Math.abs(row.value) > 1 ? 'DAYS' : 'DAY'}`}
           </div>
         );
       case 'Loan Number':
         return (
-          <div styleName={row.original['Days Until SLA'] < 0 ? 'days-until-sla-red' : 'tableRow'}>
-            { row.original['Days Until SLA'] < 0
+          <div styleName={this.getRowStyleName(row.original['Days Until SLA'])}>
+            { this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-red'
               ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
+            }
+            { this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-gray'
+              ? <img alt="alert-icon" src="/static/img/warning.svg" /> : null
             }
             {`  ${row.value}`}
           </div>
@@ -74,7 +87,12 @@ class CustomReactTable extends React.PureComponent {
       columns = R.compose(
         R.map((columnName) => {
           const columnObj = {};
-          columnObj.Header = columnName.toUpperCase();
+          columnObj.Header = (
+            <div styleName="tableHeader">
+              { columnName.toUpperCase() }
+            </div>
+          );
+          columnObj.minWidth = 150;
           columnObj.accessor = columnName;
           columnObj.Cell = row => this.constructor.getCellContent(row);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
@@ -108,7 +126,7 @@ class CustomReactTable extends React.PureComponent {
           ref={(reactTable) => {
             this.table = reactTable;
           }}
-          className="-highlight"
+          className="-striped -highlight"
           columns={this.getColumnData(data.stagerTaskType,
             data.stagerTaskStatus, data.isManualOrder, data.tableData)}
           data={data.tableData}

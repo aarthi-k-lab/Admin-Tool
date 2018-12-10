@@ -1,5 +1,5 @@
 .tableRow {
-  margin-top: 1.4rem;
+  margin-top: 1.2rem;
 }
 
 .filterDropDown {
@@ -12,9 +12,22 @@
 .days-until-sla-red {
   color: #e10c32;
   font-weight: 700;
-  margin-top: 1.4rem;
+  margin-top: 1.2rem;
+}
+
+.days-until-sla-gray {
+  color: #707479;
+  font-weight: 700;
+  margin-top: 1.2rem;
 }
 
 .stagerTable {
-  height: 62rem;
+  height: 51rem;
+  max-width: 82rem;
+}
+
+.tableHeader.tableHeader {
+  font-style: bold;
+  font-weight: 700;
+  margin-top: 0.8rem;
 }
