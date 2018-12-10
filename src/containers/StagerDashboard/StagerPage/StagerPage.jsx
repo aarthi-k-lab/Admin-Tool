@@ -46,7 +46,7 @@ class StagerPage extends React.PureComponent {
                 onStatusCardClick={onStatusCardClick}
               />
             </Grid>
-            <Grid item lg={10} styleName="stager-table" xs={10}>
+            <Grid item lg={10} xs={10}>
               <StagerDetailsTable
                 data={tableData}
                 downloadCSVUri={downloadCSVUri}
