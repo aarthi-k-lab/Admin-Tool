@@ -27,7 +27,7 @@ const links = [
     path: '/move-forward',
     name: 'move-forward',
     img: '/static/img/move_forward.svg',
-    groups: ['feuw-mgr', 'beuw-mgr'],
+    groups: ['cmod-prod-util-mgr', 'cmod-uat-util-mgr', 'cmod-qa-util-mgr', 'cmod-dev-util-mgr'],
   },
 ];
 
