@@ -12,7 +12,7 @@ import axios from 'axios';
 class MoveForwardDashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { pids: '', pidsStatus: {} };
+    this.state = { pids: '', pidsStatus: {}, pidsCount: 0 };
 
     this.handleChange = this.handleChange.bind(this);
     this.moveForward = this.moveForward.bind(this);
@@ -26,6 +26,8 @@ class MoveForwardDashboard extends React.Component {
     const { pids } = this.state;
     const pidsStatus = {};
     const pidsList = pids.split(',');
+    const pidsCount = pidsList.length;
+    this.setState({ pidsCount });
     const requestURL = 'https://mrcooperdev.azure-api.net/enterprise/wq/activate/api/process/release';
     const requestBody = {
       pids: pidsList,
@@ -51,6 +53,7 @@ class MoveForwardDashboard extends React.Component {
   render() {
     const { pids } = this.state;
     const { pidsStatus } = this.state;
+    const { pidsCount } = this.state;
     return (
       <>
         <Grid container>
@@ -62,7 +65,7 @@ class MoveForwardDashboard extends React.Component {
                 margin="normal"
                 multiline
                 onChange={this.handleChange}
-                rows="8"
+                rows="4"
                 style={{ width: '100%' }}
                 value={pids}
               />
@@ -78,6 +81,10 @@ class MoveForwardDashboard extends React.Component {
             </Button>
           </Grid>
           <Grid item lg={9} xs={9}>
+            <p>
+              {pidsCount}
+              &nbsp; pids have been moved forward.
+            </p>
             <Table>
               <TableHead>
                 <TableRow>
