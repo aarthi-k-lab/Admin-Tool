@@ -108,7 +108,6 @@ function* getNext(action) {
     if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
       const loanNumber = getLoanNumber(taskDetails);
       const evalPayload = getEvalPayload(taskDetails);
-      console.log('evalPayload', evalPayload);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
       yield put({ type: HIDE_LOADER });
