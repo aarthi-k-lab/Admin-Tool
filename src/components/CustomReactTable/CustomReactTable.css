@@ -22,8 +22,9 @@
 }
 
 .stagerTable {
-  height: 51rem;
-  max-width: 82rem;
+  height: 46rem;
+  max-width: 83rem;
+  margin-left: 0.5rem;
 }
 
 .tableHeader.tableHeader {
