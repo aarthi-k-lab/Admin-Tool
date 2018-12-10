@@ -31,17 +31,17 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
   >
     <div>
       <div
-        className="MuiGrid-container-55"
+        className="MuiGrid-container-69"
       >
         <div
-          className="MuiGrid-item-56"
+          className="MuiGrid-item-70"
         >
           <span
             placement="right"
             title="Document and Income Type Verification"
           >
             <span
-              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
@@ -55,7 +55,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               tabIndex={null}
             >
               <span
-                className="MuiIconButton-label-167"
+                className="MuiIconButton-label-181"
               >
                 <img
                   alt="task_pane_icon"
@@ -64,15 +64,14 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
                 />
                 <input
                   checked={false}
-                  className="MuiSwitchBase-input-161"
+                  className="MuiSwitchBase-input-175"
                   data-indeterminate={false}
-                  id="taskStatusIcon"
                   onChange={[Function]}
                   type="checkbox"
                 />
               </span>
               <span
-                className="MuiTouchRipple-root-171"
+                className="MuiTouchRipple-root-185"
               />
             </span>
           </span>
@@ -81,17 +80,17 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
     </div>
     <div>
       <div
-        className="MuiGrid-container-55"
+        className="MuiGrid-container-69"
       >
         <div
-          className="MuiGrid-item-56"
+          className="MuiGrid-item-70"
         >
           <span
             placement="right"
             title="Tax Transcript Review"
           >
             <span
-              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
@@ -105,7 +104,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               tabIndex={null}
             >
               <span
-                className="MuiIconButton-label-167"
+                className="MuiIconButton-label-181"
               >
                 <img
                   alt="task_pane_icon"
@@ -114,15 +113,14 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
                 />
                 <input
                   checked={false}
-                  className="MuiSwitchBase-input-161"
+                  className="MuiSwitchBase-input-175"
                   data-indeterminate={false}
-                  id="taskStatusIcon"
                   onChange={[Function]}
                   type="checkbox"
                 />
               </span>
               <span
-                className="MuiTouchRipple-root-171"
+                className="MuiTouchRipple-root-185"
               />
             </span>
           </span>
@@ -131,17 +129,17 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
     </div>
     <div>
       <div
-        className="MuiGrid-container-55"
+        className="MuiGrid-container-69"
       >
         <div
-          className="MuiGrid-item-56"
+          className="MuiGrid-item-70"
         >
           <span
             placement="right"
             title="Application Review"
           >
             <span
-              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
@@ -155,7 +153,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               tabIndex={null}
             >
               <span
-                className="MuiIconButton-label-167"
+                className="MuiIconButton-label-181"
               >
                 <img
                   alt="task_pane_icon"
@@ -164,15 +162,210 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
                 />
                 <input
                   checked={false}
-                  className="MuiSwitchBase-input-161"
+                  className="MuiSwitchBase-input-175"
                   data-indeterminate={false}
-                  id="taskStatusIcon"
                   onChange={[Function]}
                   type="checkbox"
                 />
               </span>
               <span
-                className="MuiTouchRipple-root-171"
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        className="MuiGrid-container-69"
+      >
+        <div
+          className="MuiGrid-item-70"
+        >
+          <span
+            placement="right"
+            title="Income Verification"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        className="MuiGrid-container-69"
+      >
+        <div
+          className="MuiGrid-item-70"
+        >
+          <span
+            placement="right"
+            title="Expense Verification"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        className="MuiGrid-container-69"
+      >
+        <div
+          className="MuiGrid-item-70"
+        >
+          <span
+            placement="right"
+            title="Review Unemployment Plan"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div
+        className="MuiGrid-container-69"
+      >
+        <div
+          className="MuiGrid-item-70"
+        >
+          <span
+            placement="right"
+            title="Rejection Review"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
               />
             </span>
           </span>
@@ -193,18 +386,25 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div
       className="MuiFormControl-root-10 status-select-field"
     >
+      <label
+        className="MuiFormLabel-root-21 MuiFormLabel-filled-25 MuiInputLabel-root-14 MuiInputLabel-formControl-15 MuiInputLabel-animated-18 MuiInputLabel-shrink-17"
+        data-shrink={true}
+        htmlFor="status-selector"
+      >
+        Status
+      </label>
       <div
-        className="MuiInputBase-root-34 MuiInput-root-21 MuiInputBase-formControl-35 MuiInput-formControl-22"
+        className="MuiInputBase-root-48 MuiInput-root-35 MuiInputBase-formControl-49 MuiInput-formControl-36"
         onClick={[Function]}
       >
         <div
-          className="MuiSelect-root-14"
+          className="MuiSelect-root-28"
         >
           <div
             aria-haspopup="true"
             aria-owns={null}
             aria-pressed="false"
-            className="MuiSelect-select-15 MuiSelect-selectMenu-18 MuiInputBase-input-44 MuiInput-input-29 status-select-field-text"
+            className="MuiSelect-select-29 MuiSelect-selectMenu-32 MuiInputBase-input-58 MuiInput-input-43 status-select-field-text"
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}
@@ -221,7 +421,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           />
           <svg
             aria-hidden="true"
-            className="MuiSvgIcon-root-1 MuiSelect-icon-20"
+            className="MuiSvgIcon-root-1 MuiSelect-icon-34"
             focusable="false"
             role="presentation"
             viewBox="0 0 24 24"
@@ -233,11 +433,6 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
         </div>
       </div>
     </div>
-    <span
-      className="components-Tasks-LeftParentTasks__status-text--xzygc"
-    >
-      Status
-    </span>
   </span>
   <div
     className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div--1H8Wu"
@@ -245,13 +440,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-55 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
         >
           <div
-            className="MuiGrid-item-56"
+            className="MuiGrid-item-70"
           >
             <span
-              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
@@ -265,7 +460,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               tabIndex={null}
             >
               <span
-                className="MuiIconButton-label-167"
+                className="MuiIconButton-label-181"
               >
                 <img
                   alt="task_pane_icon"
@@ -274,20 +469,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 />
                 <input
                   checked={false}
-                  className="MuiSwitchBase-input-161"
+                  className="MuiSwitchBase-input-175"
                   data-indeterminate={false}
-                  id="taskStatusIcon"
                   onChange={[Function]}
                   type="checkbox"
                 />
               </span>
               <span
-                className="MuiTouchRipple-root-171"
+                className="MuiTouchRipple-root-185"
               />
             </span>
           </div>
           <div
-            className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
               className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
@@ -301,19 +495,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           </div>
         </div>
         <div
-          className="MuiGrid-container-55 MuiGrid-direction-xs-column-58"
+          className="MuiGrid-container-69 MuiGrid-direction-xs-column-72"
         >
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -327,7 +521,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -336,20 +530,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
@@ -363,16 +556,16 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             </div>
           </div>
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -386,7 +579,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -395,20 +588,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
@@ -422,16 +614,16 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             </div>
           </div>
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -445,7 +637,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -454,20 +646,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
@@ -486,13 +677,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-55 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
         >
           <div
-            className="MuiGrid-item-56"
+            className="MuiGrid-item-70"
           >
             <span
-              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
@@ -506,7 +697,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               tabIndex={null}
             >
               <span
-                className="MuiIconButton-label-167"
+                className="MuiIconButton-label-181"
               >
                 <img
                   alt="task_pane_icon"
@@ -515,20 +706,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 />
                 <input
                   checked={false}
-                  className="MuiSwitchBase-input-161"
+                  className="MuiSwitchBase-input-175"
                   data-indeterminate={false}
-                  id="taskStatusIcon"
                   onChange={[Function]}
                   type="checkbox"
                 />
               </span>
               <span
-                className="MuiTouchRipple-root-171"
+                className="MuiTouchRipple-root-185"
               />
             </span>
           </div>
           <div
-            className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
               className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
@@ -542,19 +732,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           </div>
         </div>
         <div
-          className="MuiGrid-container-55 MuiGrid-direction-xs-column-58"
+          className="MuiGrid-container-69 MuiGrid-direction-xs-column-72"
         >
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -568,7 +758,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -577,20 +767,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
@@ -604,16 +793,16 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             </div>
           </div>
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -627,7 +816,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -636,20 +825,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
@@ -668,13 +856,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-55 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
         >
           <div
-            className="MuiGrid-item-56"
+            className="MuiGrid-item-70"
           >
             <span
-              className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
@@ -688,7 +876,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               tabIndex={null}
             >
               <span
-                className="MuiIconButton-label-167"
+                className="MuiIconButton-label-181"
               >
                 <img
                   alt="task_pane_icon"
@@ -697,20 +885,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 />
                 <input
                   checked={false}
-                  className="MuiSwitchBase-input-161"
+                  className="MuiSwitchBase-input-175"
                   data-indeterminate={false}
-                  id="taskStatusIcon"
                   onChange={[Function]}
                   type="checkbox"
                 />
               </span>
               <span
-                className="MuiTouchRipple-root-171"
+                className="MuiTouchRipple-root-185"
               />
             </span>
           </div>
           <div
-            className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
               className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
@@ -726,19 +913,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           </div>
         </div>
         <div
-          className="MuiGrid-container-55 MuiGrid-direction-xs-column-58"
+          className="MuiGrid-container-69 MuiGrid-direction-xs-column-72"
         >
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -752,7 +939,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -761,20 +948,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__subtask-name--2QtSv"
@@ -788,16 +974,16 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             </div>
           </div>
           <div
-            className="MuiGrid-container-55 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--WsBbk"
           >
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             />
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-2-85"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
             >
               <span
-                className="MuiButtonBase-root-168 MuiIconButton-root-162 MuiSwitchBase-root-158 MuiCheckbox-root-152 MuiCheckbox-colorSecondary-157"
+                className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
                 onBlur={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
@@ -811,7 +997,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 tabIndex={null}
               >
                 <span
-                  className="MuiIconButton-label-167"
+                  className="MuiIconButton-label-181"
                 >
                   <img
                     alt="task_pane_icon"
@@ -820,20 +1006,19 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                   />
                   <input
                     checked={false}
-                    className="MuiSwitchBase-input-161"
+                    className="MuiSwitchBase-input-175"
                     data-indeterminate={false}
-                    id="taskStatusIcon"
                     onChange={[Function]}
                     type="checkbox"
                   />
                 </span>
                 <span
-                  className="MuiTouchRipple-root-171"
+                  className="MuiTouchRipple-root-185"
                 />
               </span>
             </div>
             <div
-              className="MuiGrid-item-56 MuiGrid-grid-xs-8-91"
+              className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
                 className="components-Tasks-LeftParentTasks__failure-subtask-name--2LF5j"
@@ -847,6 +1032,242 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 Documents not found!
               </span>
             </div>
+          </div>
+        </div>
+      </span>
+    </div>
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-70"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Income Verification
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            />
+          </div>
+        </div>
+      </span>
+    </div>
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-70"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Expense Verification
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            />
+          </div>
+        </div>
+      </span>
+    </div>
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-70"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Review Unemployment Plan
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            />
+          </div>
+        </div>
+      </span>
+    </div>
+    <div>
+      <span>
+        <div
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--H10DL"
+        >
+          <div
+            className="MuiGrid-item-70"
+          >
+            <span
+              className="MuiButtonBase-root-182 MuiIconButton-root-176 MuiSwitchBase-root-172 MuiCheckbox-root-166 MuiCheckbox-colorSecondary-171"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onKeyUp={[Function]}
+              onMouseDown={[Function]}
+              onMouseLeave={[Function]}
+              onMouseUp={[Function]}
+              onTouchEnd={[Function]}
+              onTouchMove={[Function]}
+              onTouchStart={[Function]}
+              tabIndex={null}
+            >
+              <span
+                className="MuiIconButton-label-181"
+              >
+                <img
+                  alt="task_pane_icon"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2g5vW"
+                  src="/static/img/default_unselected.svg"
+                />
+                <input
+                  checked={false}
+                  className="MuiSwitchBase-input-175"
+                  data-indeterminate={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </span>
+              <span
+                className="MuiTouchRipple-root-185"
+              />
+            </span>
+          </div>
+          <div
+            className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
+          >
+            <span
+              className="components-Tasks-LeftParentTasks__parent-task-name--2rtwD"
+            >
+              Rejection Review
+            </span>
+            <br />
+            <span
+              className="components-Tasks-LeftParentTasks__error-text-parent--2F0se"
+            />
           </div>
         </div>
       </span>

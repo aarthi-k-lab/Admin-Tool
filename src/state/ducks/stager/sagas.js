@@ -150,9 +150,13 @@ function* watchTableCheckboxSelect() {
 export const TestExports = {
   watchDashboardCountsFetch,
   fetchDashboardCounts,
+  fetchDashboardData,
+  fireSnackBar,
   watchDashboardDataFetch,
   watchTableCheckboxSelect,
   watchOrderCall,
+  makeOrderBpmCall,
+  onCheckboxSelect,
 };
 
 export function* combinedSaga() {

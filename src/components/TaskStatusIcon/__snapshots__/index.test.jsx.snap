@@ -27,7 +27,6 @@ exports[`<TaskStatusIcon /> TaskStatusIcon renders correctly 1`] = `
       checked={false}
       className="MuiSwitchBase-input-10"
       data-indeterminate={false}
-      id="taskStatusIcon"
       onChange={[Function]}
       type="checkbox"
     />

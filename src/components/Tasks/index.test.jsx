@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 import CollapseIcon from './CollapseIcon';
 import LeftParentTasks from './LeftParentTasks';
 
-xdescribe('<Task Components />', () => {
+describe('<Task Components />', () => {
   it('CollapseIcon renders correctly', () => {
     const tree = renderer
       .create(<CollapseIcon direction="left" />)
