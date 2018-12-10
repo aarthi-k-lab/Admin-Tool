@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
+  "jest-junit": {
+    "outputDirectory": "./coverage",
+    "outputName": "junit.xml"
+  },
   "scripts": {
     "build": "webpack-cli --config=\"./config/webpack.config.js\" --env.NODE_ENV=\"production\"",
     "jsdoc": "jsdoc -c ./config/jsdoc.config.json",
@@ -63,6 +67,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.6.0",
     "jest-html-reporter": "^2.4.2",
+    "jest-junit": "^5.2.0",
     "jsdoc": "^3.5.5",
     "mini-css-extract-plugin": "^0.4.2",
     "postcss-import": "^12.0.0",
