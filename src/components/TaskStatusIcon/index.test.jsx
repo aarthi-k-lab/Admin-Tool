@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import TaskStatusIcon from './TaskStatusIcon';
 
-xdescribe('<TaskStatusIcon />', () => {
+describe('<TaskStatusIcon />', () => {
   const task = {
     taskName: 'Document and Income Type Verification',
     subTasks: [

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Center /> snapshot test when disabled is false 1`] = `
+<div
+  className="components-Center-Center__center--expand--EoCZl components-Center-Center__center--YoOAM"
+/>
+`;
+
+exports[`<Center /> snapshot test when disabled is true 1`] = `
+<div
+  className="components-Center-Center__center--no-expand--2f9LK components-Center-Center__center--YoOAM"
+/>
+`;
