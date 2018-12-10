@@ -33,5 +33,6 @@ module.exports = {
   ],
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['lcov'],
+  reporters: ['default', 'jest-junit'],
   setupFiles: ['<rootDir>/config/enzyme.setup.js'],
 };
