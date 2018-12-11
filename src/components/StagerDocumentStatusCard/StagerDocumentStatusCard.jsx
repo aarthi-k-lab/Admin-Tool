@@ -12,12 +12,13 @@ const StagerDocumentStatusCard = ({
 }) => {
   const slaBreachedCount = data.slaBreached;
   const slaToBeBreachedCount = data.aboutToBreach;
+  const { slaDays } = data;
   return (
     <Paper onClick={() => onStatusCardClick(data.searchTerm, data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
-      <Grid container direction="column" spacing={8}>
+      <Grid container direction="column" spacing={4} xs={12}>
         <Grid item>
           <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>
-            {data.displayName}
+            {data.displayName.toUpperCase()}
           </span>
         </Grid>
         <Grid item>
@@ -45,6 +46,17 @@ const StagerDocumentStatusCard = ({
                 ) : null }
             </Grid>
           </Grid>
+          { slaDays ? (
+            <>
+              <hr />
+              <div styleName="slaDaysFooter">
+                {'SLA '}
+                <span styleName="slaDays">
+                  {slaDays > 1 ? `${slaDays} BUSINESS DAYS` : `${slaDays} BUSINESS DAY`}
+                </span>
+              </div>
+            </>
+          ) : null}
         </Grid>
       </Grid>
     </Paper>

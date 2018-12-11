@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import FullHeightColumn from 'components/FullHeightColumn';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
@@ -36,29 +35,27 @@ class StagerPage extends React.PureComponent {
         >
           <Controls />
         </ContentHeader>
-        <FullHeightColumn>
-          <Grid container styleName="scroll-area">
-            <Grid item lg={2} xs={2}>
-              <StagerTiles
-                activeTab={activeTab}
-                activeTile={activeTile}
-                counts={counts}
-                onStatusCardClick={onStatusCardClick}
-              />
-            </Grid>
-            <Grid item lg={10} xs={10}>
-              <StagerDetailsTable
-                data={tableData}
-                downloadCSVUri={downloadCSVUri}
-                loading={loading}
-                onCheckBoxClick={onCheckBoxClick}
-                onOrderClick={onOrderClick}
-                onSelectAll={onSelectAll}
-                selectedData={selectedData}
-              />
-            </Grid>
+        <Grid container direction="row">
+          <Grid container item styleName="scroll-area" xs={4}>
+            <StagerTiles
+              activeTab={activeTab}
+              activeTile={activeTile}
+              counts={counts}
+              onStatusCardClick={onStatusCardClick}
+            />
           </Grid>
-        </FullHeightColumn>
+          <Grid container direction="column" item xs={8}>
+            <StagerDetailsTable
+              data={tableData}
+              downloadCSVUri={downloadCSVUri}
+              loading={loading}
+              onCheckBoxClick={onCheckBoxClick}
+              onOrderClick={onOrderClick}
+              onSelectAll={onSelectAll}
+              selectedData={selectedData}
+            />
+          </Grid>
+        </Grid>
       </>
     );
   }

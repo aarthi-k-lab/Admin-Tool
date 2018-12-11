@@ -41,7 +41,7 @@ class StagerDetailsTable extends React.PureComponent {
         spacing={0}
         styleName="center-grid"
       >
-        <Grid item xs={3}>
+        <Grid item xs={8}>
           {noTableData ? null : (<><ListIcon styleName="no-preview-icon" />
             <br /></>)}
           <span styleName="no-preview-message">{ noTableData ? 'No Loans Present' : 'No list selected to preview' }</span>
@@ -63,6 +63,7 @@ class StagerDetailsTable extends React.PureComponent {
               <Grid
                 alignItems="flex-end"
                 container
+                item
                 justify="space-between"
                 styleName="stager-details-table-top-div"
               >

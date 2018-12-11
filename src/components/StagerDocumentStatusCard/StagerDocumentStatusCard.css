@@ -53,6 +53,15 @@
   font-weight: 400;
 }
 
+.slaDaysFooter {
+  font-weight: 300;
+  margin-left: 2%;
+}
+
+.slaDays {
+  font-weight: 600;
+}
+
 .line_break {
   height: 0.2rem;
 }

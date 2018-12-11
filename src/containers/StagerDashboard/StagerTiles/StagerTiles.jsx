@@ -4,16 +4,9 @@ import Grid from '@material-ui/core/Grid';
 import StagerDocumentStatusCard from 'components/StagerDocumentStatusCard';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import * as R from 'ramda';
 
 class StagerTiles extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = { stagerStatus: 'TO ORDER' };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
   isActiveCard(tileName, tabName) {
     const { activeTab, activeTile } = this.props;
     if (tileName === activeTile && tabName === activeTab) {
@@ -22,51 +15,36 @@ class StagerTiles extends React.PureComponent {
     return false;
   }
 
-  handleChange(e) {
-    this.setState({ stagerStatus: e.target.value });
-  }
-
   render() {
     const { counts, onStatusCardClick } = this.props;
-    const { stagerStatus } = this.state;
+    const countsData = R.sort(R.descend(R.prop('displayName')), counts);
     return (
       <>
-        <Grid item xs={12}>
-          <Select
-            onChange={this.handleChange}
-            styleName="stager-tiles-status-select"
-            value={stagerStatus}
-          >
-            {counts && counts.map(stagerTaskData => (
-              <MenuItem key={stagerTaskData.displayName} value={stagerTaskData.displayName}>
-                {stagerTaskData.displayName}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-        <Grid container styleName="stager-tiles-main-container">
-          {
-          !counts.length ? <Loader /> : null
-        }
-          {counts && counts.filter(
-            statusObj => statusObj.displayName === stagerStatus,
-          )
-            .map(stagerTaskData => (
-              <Grid item xs={12}>
+        <Grid container styleName="stager-tiles-main-container" xs={12}>
+          {!countsData.length ? <Loader /> : null}
+          {countsData.map(stagerTaskGroupData => (
+            <>
+              <Grid item styleName="taskStatusTitle" xs={12}>
+                {stagerTaskGroupData.displayName}
+              </Grid>
+              <Grid item styleName="stagerGroupItem">
                 <Grid container direction="row" spacing={8} styleName="tiles-grid">
-                  {stagerTaskData.data.map(tileData => (
-                    <Grid item styleName="status-tile" xs={12}>
+                  {stagerTaskGroupData.data.map(tileData => (
+                    <Grid item styleName="status-tile" xs={6}>
                       <StagerDocumentStatusCard
-                        active={this.isActiveCard(tileData.displayName, stagerTaskData.displayName)}
+                        active={this.isActiveCard(
+                          tileData.displayName, stagerTaskGroupData.displayName,
+                        )}
                         data={tileData}
                         onStatusCardClick={onStatusCardClick}
-                        tabName={stagerTaskData.displayName}
+                        tabName={stagerTaskGroupData.displayName}
                       />
                     </Grid>
                   ))}
                 </Grid>
               </Grid>
-            ))}
+            </>
+          ))}
         </Grid>
       </>
     );

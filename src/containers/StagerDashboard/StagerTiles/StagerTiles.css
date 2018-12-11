@@ -17,8 +17,18 @@
   color: #5f5e5e;
 }
 
+.taskStatusTitle.taskStatusTitle {
+  margin-left: 1rem;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
 .tiles-grid {
   padding: 0.5rem;
+}
+
+.stagerGroupItem {
+  flex-grow: 1;
 }
 
 .stager-tiles-main-container {
