@@ -4,9 +4,10 @@ import { TestExports } from './StagerDocumentStatusCard';
 
 describe('<StagerDocumentStatusCard />', () => {
   const onStatusCardClick = jest.fn();
+  const data = { displayName: 'LegalFee' };
   it('shows StagerDocumentStatusCard', () => {
     const wrapper = shallow(
-      <TestExports.StagerDocumentStatusCard onStatusCardClick={onStatusCardClick} />,
+      <TestExports.StagerDocumentStatusCard data={data} onStatusCardClick={onStatusCardClick} />,
     );
     expect(wrapper.find('WithStyles(Paper)')).toHaveLength(1);
     expect(wrapper.find('WithStyles(Grid)')).toHaveLength(6);
