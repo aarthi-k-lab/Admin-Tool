@@ -1,8 +1,16 @@
 // import { put } from 'redux-saga/effects';
-import { take } from 'redux-saga/effects';
+import { take, call, put } from 'redux-saga/effects';
+import { cloneableGenerator } from 'redux-saga/utils';
+import * as Api from 'lib/Api';
 import * as actionTypes from './types';
 import { fetchPowerBIConfig, fetchAppConfig, getFeaturesTrigger } from './actions';
 import { TestExports } from './sagas';
+import {
+  POWER_BI_CONSTANTS_SAGA,
+  POWER_BI_CONSTANTS,
+  GET_FEATURES_SAGA,
+  SET_FEATURES,
+} from './types';
 
 describe('Config actions', () => {
   it('should trigger the POWERBI_CONSTANTS action', () => {
@@ -41,22 +49,64 @@ describe('Config actions', () => {
     expect(sagaValue).toEqual(take(actionTypes.GET_FEATURES_SAGA));
   });
 
-  // it('sets proper powerBIConstants if data is passed', () => {
-  //   const payload = {
-  //     powerBIReports: {
-  //       reportId: '12345',
-  //       reportUrl: 'abc/xyz',
-  //     },
-  //   };
-  //   window.fetch = () => {
-  //     console.log('Executing mock fetch');
-  //     return new Promise(resolve => resolve(payload));
-  //   };
-  //   const saga = TestExports.fetchPowerBIConfig(payload);
-  //   expect(saga.next().value).toEqual(call(Api.callGet, 'api/config'));
-  //   expect(saga.next().value).toEqual(put({
-  //     type: actionTypes.POWER_BI_CONSTANTS,
-  //     payload: payload.powerBIReports,
-  //   }));
-  // });
+  describe('watchGetFeatures', () => {
+    const saga = cloneableGenerator(TestExports.watchGetFeatures)();
+    it('watchGetFeatures should be triggered', () => {
+      expect(saga.next().value)
+        .toEqual(take(GET_FEATURES_SAGA));
+    });
+    it('fetchFeatureConfig should be triggered', () => {
+      expect(saga.next({}).value)
+        .toEqual(TestExports.fetchFeatureConfig({}));
+    });
+  });
+
+  describe('watchFetchPowerBiConfig', () => {
+    const saga = cloneableGenerator(TestExports.watchFetchPowerBIConfig)();
+    it('watchFetchPowerBIConfig should be triggered', () => {
+      expect(saga.next().value)
+        .toEqual(take(POWER_BI_CONSTANTS_SAGA));
+    });
+    it('fetchPowerBIConfig should be triggered', () => {
+      expect(saga.next({}).value)
+        .toEqual(TestExports.fetchPowerBIConfig({}));
+    });
+  });
+
+  describe('sets proper powerBIConstants if data is passed', () => {
+    const payload = {
+      powerBIReports: {
+        reportId: '12345',
+        reportUrl: 'abc/xyz',
+      },
+    };
+    const saga = cloneableGenerator(TestExports.fetchPowerBIConfig)(payload);
+    it('should call config service', () => {
+      expect(saga.next().value).toEqual(call(Api.callGet, 'api/config'));
+    });
+    it('should update powerBiconfig state', () => {
+      expect(saga.next(payload).value).toEqual(put({
+        type: actionTypes.POWER_BI_CONSTANTS,
+        payload: payload.powerBIReports,
+      }));
+    });
+  });
+
+  describe('sets proper config features if data is passed', () => {
+    const payload = {
+      features: {
+        taskPane: true,
+      },
+    };
+    const saga = cloneableGenerator(TestExports.fetchFeatureConfig)(payload);
+    it('should call config service', () => {
+      expect(saga.next().value).toEqual(call(Api.callGet, 'api/config'));
+    });
+    it('should update features state', () => {
+      expect(saga.next(payload).value).toEqual(put({
+        type: actionTypes.SET_FEATURES,
+        payload: payload.features,
+      }));
+    });
+  });
 });

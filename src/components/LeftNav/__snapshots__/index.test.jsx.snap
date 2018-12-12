@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LeftNav Components /> LeftNav renders correctly 1`] = `
+<div
+  className="components-LeftNav-LeftNav__stretch-column--2Cozo"
+>
+  <nav
+    className="components-LeftNav-LeftNav__left-nav-bar--3fFXS"
+    id="cmod_leftnav"
+  />
+</div>
+`;
