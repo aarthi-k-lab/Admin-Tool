@@ -97,6 +97,14 @@ const config = merge(
             '^/api/userskills': '',
           },
         },
+        '/api/release': {
+          target: 'https://cmodactivateservdev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/release': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,
