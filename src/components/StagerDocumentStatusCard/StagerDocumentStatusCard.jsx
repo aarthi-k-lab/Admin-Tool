@@ -62,6 +62,10 @@ const StagerDocumentStatusCard = ({
   );
 };
 
+const TestExports = {
+  StagerDocumentStatusCard,
+};
+
 StagerDocumentStatusCard.defaultProps = {
   active: false,
   data: {},
@@ -74,3 +78,4 @@ StagerDocumentStatusCard.propTypes = {
 };
 
 export default StagerDocumentStatusCard;
+export { TestExports };

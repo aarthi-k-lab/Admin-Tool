@@ -36,6 +36,10 @@ class CustomSnackbar extends Component {
   }
 }
 
+const TestHooks = {
+  CustomSnackbar,
+};
+
 CustomSnackbar.defaultProps = {
   open: false,
   timeout: 4000,
@@ -51,3 +55,4 @@ CustomSnackbar.propTypes = {
 };
 
 export default CustomSnackbar;
+export { TestHooks };
