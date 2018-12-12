@@ -23,7 +23,7 @@ const StagerDocumentStatusCard = ({
         </Grid>
         <Grid item>
           <Grid container spacing={4}>
-            <Grid item xs={4}>
+            <Grid alignItems="center" container item xs={4}>
               <span styleName={active ? 'document-type-count-selected' : 'document-type-count'}>
                 {
                   (data.total < 10 ? `0${data.total}` : `${kFormatter(data.total)}`)
@@ -46,9 +46,9 @@ const StagerDocumentStatusCard = ({
                 ) : null }
             </Grid>
           </Grid>
-          { slaDays ? (
+        </Grid>
+        { slaDays ? (
             <>
-              <hr />
               <div styleName="slaDaysFooter">
                 {'SLA '}
                 <span styleName="slaDays">
@@ -56,8 +56,7 @@ const StagerDocumentStatusCard = ({
                 </span>
               </div>
             </>
-          ) : null}
-        </Grid>
+        ) : null}
       </Grid>
     </Paper>
   );
