@@ -8,7 +8,7 @@ describe('<StagerTiles />', () => {
     const wrapper = shallow(
       <TestExports.StagerTiles counts={counts} />,
     );
-    expect(wrapper.find('WithStyles(Select)')).toHaveLength(1);
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(2);
+    expect(wrapper.find('Loader')).toHaveLength(1);
+    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(1);
   });
 });
