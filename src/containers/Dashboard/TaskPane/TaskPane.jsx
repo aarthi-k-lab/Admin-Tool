@@ -11,6 +11,10 @@ class TaskPane extends React.PureComponent {
   }
 }
 
+const TestHooks = {
+  TaskPane,
+};
+
 TaskPane.defaultProps = {
   isAccessible: false,
 };
@@ -26,3 +30,4 @@ const mapStateToProps = state => ({
 const TaskPaneContainer = connect(mapStateToProps)(TaskPane);
 
 export default TaskPaneContainer;
+export { TestHooks };

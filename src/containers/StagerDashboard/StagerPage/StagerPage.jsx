@@ -64,6 +64,10 @@ class StagerPage extends React.PureComponent {
   }
 }
 
+const TestExports = {
+  StagerPage,
+};
+
 StagerPage.defaultProps = {
   loading: true,
 };
@@ -97,3 +101,4 @@ StagerPage.propTypes = {
 };
 
 export default StagerPage;
+export { TestExports };

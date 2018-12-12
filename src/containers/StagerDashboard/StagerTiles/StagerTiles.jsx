@@ -72,6 +72,9 @@ class StagerTiles extends React.PureComponent {
     );
   }
 }
+const TestExports = {
+  StagerTiles,
+};
 
 StagerTiles.propTypes = {
   activeTab: PropTypes.string.isRequired,
@@ -94,3 +97,4 @@ StagerTiles.propTypes = {
 };
 
 export default StagerTiles;
+export { TestExports };
