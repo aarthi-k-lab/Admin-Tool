@@ -1,9 +1,22 @@
-import { put } from 'redux-saga/effects';
+import { put, take } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as actionTypes from './types';
 import { setUserSchemaSuccess, setUserSchemaFailure, setUserSchemaTrigger } from './actions';
 import { TestExports } from './sagas';
-// import * as UserActions from './actions';
+import { SET_USER_SCHEMA_SAGA } from './types';
+
+
+describe('WatchSetUserSchema', () => {
+  const saga = cloneableGenerator(TestExports.watchSetUserSchema)();
+  it('watchSetUserSchema should be triggered', () => {
+    expect(saga.next().value)
+      .toEqual(take(SET_USER_SCHEMA_SAGA));
+  });
+  it('SetUserSchema should be triggered', () => {
+    expect(saga.next({}).value)
+      .toEqual(TestExports.setUserSchema({}));
+  });
+});
 
 describe('User object Save on Login actions', () => {
   it('fails if userObject is not passed', () => {

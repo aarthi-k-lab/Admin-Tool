@@ -35,6 +35,7 @@ function* watchSetUserSchema() {
 
 export const TestExports = {
   setUserSchema,
+  watchSetUserSchema,
 };
 
 export const combinedSaga = function* combinedSaga() {

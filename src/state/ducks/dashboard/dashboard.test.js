@@ -317,4 +317,49 @@ describe('expand view ', () => {
         .toEqual(put({ type: actionTypes.HIDE_SAVING_LOADER }));
     });
   });
+
+  describe('saveDisposition saga ', () => {
+    const dispositionPayload = {
+      payload: 'missingDocs',
+    };
+    const mockResponse = {
+      enableGetNext: true,
+    };
+    const mockUser = {
+      userDetails: {
+        email: 'bren@mrcooper.com',
+      },
+    };
+    const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
+
+    it('should call SHOW_SAVING_LOADER', () => {
+      expect(saga.next().value)
+        .toEqual(put({ type: actionTypes.SHOW_SAVING_LOADER }));
+    });
+
+    it('should call select evalId from store', () => {
+      expect(saga.next().value)
+        .toEqual(select(selectors.evalId));
+    });
+
+    it('should call select user from store', () => {
+      expect(saga.next(1883281).value)
+        .toEqual(select(loginSelectors.getUser));
+    });
+
+    it('should call select taskid from store', () => {
+      expect(saga.next(mockUser).value)
+        .toEqual(select(selectors.taskId));
+    });
+
+    it('should call validation service', () => {
+      expect(saga.next(1161415).value)
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415', {}));
+    });
+
+    it('should call HIDE_SAVING_LOADER', () => {
+      expect(saga.throw(new Error('disposition fetch failed')).value)
+        .toEqual(put({ type: actionTypes.HIDE_SAVING_LOADER }));
+    });
+  });
 });
