@@ -36,7 +36,7 @@ class StagerPage extends React.PureComponent {
           <Controls />
         </ContentHeader>
         <Grid container direction="row">
-          <Grid container item styleName="scroll-area" xs={4}>
+          <Grid container item styleName="scroll-area" xs={3}>
             <StagerTiles
               activeTab={activeTab}
               activeTile={activeTile}
@@ -44,7 +44,7 @@ class StagerPage extends React.PureComponent {
               onStatusCardClick={onStatusCardClick}
             />
           </Grid>
-          <Grid container direction="column" item xs={8}>
+          <Grid container direction="column" item xs={9}>
             <StagerDetailsTable
               data={tableData}
               downloadCSVUri={downloadCSVUri}

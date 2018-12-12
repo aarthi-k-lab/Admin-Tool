@@ -29,7 +29,7 @@ class StagerTiles extends React.PureComponent {
               </Grid>
               <Grid item styleName="stagerGroupItem">
                 <Grid container direction="row" spacing={8} styleName="tiles-grid">
-                  {stagerTaskGroupData.data.map(tileData => (
+                  {R.sort(R.ascend(R.prop('displayName')), stagerTaskGroupData.data).map(tileData => (
                     <Grid item styleName="status-tile" xs={6}>
                       <StagerDocumentStatusCard
                         active={this.isActiveCard(

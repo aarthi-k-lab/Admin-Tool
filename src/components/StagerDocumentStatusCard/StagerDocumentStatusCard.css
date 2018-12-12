@@ -1,6 +1,6 @@
 
 .document-type-card-main-div {
-  padding: 0.8rem;
+  padding: 0.8rem 0.8rem 2% 0.8rem;
   display: flex;
   cursor: pointer;
 }
@@ -10,7 +10,7 @@
 }
 
 .document-type-card-main-div-active {
-  padding: 0.8rem;
+  padding: 0.8rem 0.8rem 2% 0.8rem;
   display: flex;
   background-color: #e67300 !important;
 }
@@ -19,14 +19,14 @@
   margin-top: 0.5rem;
   color: #707479;
   font-weight: 520;
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 
 .document-type-name-selected {
   margin-top: 0.5rem;
   font-weight: 520;
   color: #fff;
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 
 .document-type-count {
@@ -60,13 +60,15 @@
 .slaDaysFooter {
   font-weight: 350;
   margin-left: 2%;
-  margin-top: 2%;
+  font-size: 0.7rem;
+  margin-top: 3%;
   padding-top: 2%;
   border-top-style: ridge;
 }
 
 .slaDays {
   font-weight: 400;
+  font-size: 0.7rem;
 }
 
 .line_break {
