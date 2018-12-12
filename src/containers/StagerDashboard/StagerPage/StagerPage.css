@@ -17,6 +17,6 @@
 }
 
 .scroll-area {
-  overflow-x: none;
+  overflow-x: hidden;
   max-width: 100%;
 }
