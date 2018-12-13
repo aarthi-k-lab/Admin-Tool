@@ -90,7 +90,7 @@ const config = merge(
           },
         },
         '/api/userskills': {
-          target: 'https://mrcooperdev.azure-api.net',
+          target: 'https://cmoduserskilldev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

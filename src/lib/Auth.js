@@ -185,11 +185,8 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
 };
 
 Auth.getUserSkills = async (email) => {
-  const headers = new Headers();
-  headers.append('Ocp-Apim-Subscription-Key', 'd4a602747f6f455aaa925cc356e180b7');
   const request = new Request(`/api/userskills/getUserSkills/${email}`, {
     method: 'GET',
-    headers,
   });
   try {
     const response = await fetch(request);

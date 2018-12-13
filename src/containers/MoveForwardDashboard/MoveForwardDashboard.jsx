@@ -34,7 +34,6 @@ class MoveForwardDashboard extends React.Component {
     };
     const headers = {
       'Content-Type': 'application/json',
-      'Ocp-Apim-Subscription-Key': 'a5e8c5b61283443793321b3aac39a877',
     };
 
     axios.post(requestURL, requestBody, { headers })
