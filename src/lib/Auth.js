@@ -248,6 +248,7 @@ Auth.failureMessages = {
   AD_AUTH_SERVICE_FAILURE: GENERAL_ERROR_MESSAGE,
   MANAGER_ACCESS_NEEDED: 'Manager Group Access is needed to view the Manager Dashboard.',
   STAGER_DASHBOARD_ACCESS_NEEDED: 'Stager Dashboard Access is needed to view the Stager Dashboard',
+  MOVE_FORWARD_ACCESS_NEEDED: 'Move Forward Group Access is needed to view the Move Forward Dashboard.',
 };
 
 Auth.homePage = [{

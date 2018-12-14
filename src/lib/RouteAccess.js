@@ -14,6 +14,13 @@ const stager = {
   groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'],
 };
 
+const moveForward = {
+  path: '/move-forward',
+  name: 'move-forward',
+  img: '/static/img/move_forward.svg',
+  groups: ['util-mgr'],
+};
+
 const links = [
   managerDashboard,
   {
@@ -23,12 +30,7 @@ const links = [
     groups: ['feuw', 'feuw-mgr'],
   },
   stager,
-  {
-    path: '/move-forward',
-    name: 'move-forward',
-    img: '/static/img/move_forward.svg',
-    groups: ['util-mgr'],
-  },
+  moveForward,
 ];
 
 function hasManagerDashboardAccess(groups) {
@@ -45,8 +47,16 @@ function hasStagerDashboardAccess(groups) {
   return stager.groups.some(stagerGroup => groups.includes(stagerGroup));
 }
 
+function hasMoveForwardAccess(groups) {
+  if (!R.is(Array, groups)) {
+    return true;
+  }
+  return moveForward.groups.some(moveForwardGroup => groups.includes(moveForwardGroup));
+}
+
 module.exports = {
   links,
   hasManagerDashboardAccess,
+  hasMoveForwardAccess,
   hasStagerDashboardAccess,
 };

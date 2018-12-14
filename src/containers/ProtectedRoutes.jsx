@@ -17,9 +17,10 @@ import {
   selectors as dashboardSelectors,
 } from 'ducks/dashboard';
 import * as config from 'ducks/config';
+import RouteAccess from 'lib/RouteAccess';
 import Dashboard from './Dashboard';
 import StagerDashboard from './StagerDashboard';
-import MoveForwardDashboard from './MoveForwardDashboard';
+import MoveForward from './MoveForward';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -70,7 +71,11 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
           <Route component={Dashboard} path="/loan-evaluation" />
-          <Route component={MoveForwardDashboard} path="/move-forward" />
+          {
+            RouteAccess.hasMoveForwardAccess(groups)
+              ? <Route component={MoveForward} path="/move-forward" />
+              : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
+          }
           <Route render={() => <Redirect to="/loan-evaluation" />} />
         </Switch>
       </App>
