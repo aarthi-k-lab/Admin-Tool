@@ -208,4 +208,12 @@ const mapDispatchToProps = dispatch => ({
 
 const DispositionContainer = connect(mapStateToProps, mapDispatchToProps)(Disposition);
 
+const TestHooks = {
+  Disposition,
+};
+
 export default DispositionContainer;
+
+export {
+  TestHooks,
+};

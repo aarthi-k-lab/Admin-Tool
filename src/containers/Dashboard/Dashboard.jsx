@@ -10,6 +10,10 @@ function Dashboard(props) {
   return isFirstVisit ? <LandingPage /> : <EvaluationPage />;
 }
 
+const TestExports = {
+  Dashboard,
+};
+
 const mapStateToProps = state => ({
   isFirstVisit: dashboardSelectors.isFirstVisit(state),
 });
@@ -19,3 +23,4 @@ Dashboard.propTypes = {
 };
 
 export default connect(mapStateToProps)(Dashboard);
+export { TestExports };

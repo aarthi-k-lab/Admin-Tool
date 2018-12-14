@@ -109,6 +109,10 @@ class StagerDetailsTable extends React.PureComponent {
   }
 }
 
+const TestExports = {
+  StagerDetailsTable,
+};
+
 StagerDetailsTable.propTypes = {
   data: PropTypes.node.isRequired,
   downloadCSVUri: PropTypes.string.isRequired,
@@ -120,3 +124,4 @@ StagerDetailsTable.propTypes = {
 };
 
 export default StagerDetailsTable;
+export { TestExports };

@@ -120,25 +120,25 @@ class CustomReactTable extends React.PureComponent {
 
   render() {
     const { data } = this.props;
-    return (
-      <div styleName="stager-table-container">
-        <div styleName="stager-table-height-limiter">
-          <ReactTable
-            ref={(reactTable) => {
-              this.table = reactTable;
-            }}
-            className="-striped -highlight"
-            columns={this.getColumnData(data.stagerTaskType,
-              data.stagerTaskStatus, data.isManualOrder, data.tableData)}
-            data={data.tableData}
-          // defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
-            defaultPageSize={10}
-            filterable
-            styleName="stagerTable"
-          />
-        </div>
+    const returnVal = data ? (
+      <div>
+        <ReactTable
+          ref={(reactTable) => {
+            this.table = reactTable;
+          }}
+          className="-highlight"
+          columns={this.getColumnData(data.stagerTaskType,
+            data.stagerTaskStatus, data.isManualOrder, data.tableData)}
+          data={data.tableData}
+         // defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
+          defaultPageSize={10}
+          filterable
+          styleName="stagerTable"
+        />
+        <br />
       </div>
-    );
+    ) : null;
+    return returnVal;
   }
 }
 
