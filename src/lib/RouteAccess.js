@@ -18,7 +18,7 @@ const moveForward = {
   path: '/move-forward',
   name: 'move-forward',
   img: '/static/img/move_forward.svg',
-  groups: ['util-mgr'],
+  groups: ['util-mgr', 'allaccess'],
 };
 
 const links = [
