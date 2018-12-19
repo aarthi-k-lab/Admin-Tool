@@ -77,7 +77,7 @@ class StagerDetailsTable extends React.PureComponent {
                   {
                 data.isManualOrder
                   ? (
-                    <Button onClick={() => onOrderClick(selectedData)} styleName="details-table-order-btn" variant="contained">
+                    <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-order-btn" variant="contained">
                       { 'ORDER' }
                     </Button>
                   ) : null

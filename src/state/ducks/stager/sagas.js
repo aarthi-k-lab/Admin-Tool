@@ -97,37 +97,46 @@ function* fireSnackBar(snackBarData) {
 }
 
 function* makeOrderBpmCall(payload) {
-  const snackBar = {};
-  snackBar.message = 'Ordering. Please wait... ';
-  snackBar.type = 'message';
-  snackBar.open = true;
-  yield call(fireSnackBar, snackBar);
-  const response = yield call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload);
-  const failedResponse = response.filter(data => data.error === true);
-  yield call(fetchDashboardCounts);
-  const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
-  yield call(fetchDashboardData, { payload: activeSearchTerm });
-  yield call(onCheckboxSelect, { payload: [] });
-  if (failedResponse && failedResponse.length > 0) {
-    const snackBarData = {};
-    if (failedResponse.length > 5) {
-      snackBarData.message = 'Order call failed for more than 5 Eval ID(s): Contact Admin!';
-      snackBarData.type = 'error';
-      snackBarData.open = true;
+  try {
+    const snackBar = {};
+    snackBar.message = 'Ordering. Please wait... ';
+    snackBar.type = 'message';
+    snackBar.open = true;
+    yield call(fireSnackBar, snackBar);
+    const response = yield call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload);
+    const failedResponse = response ? response.filter(data => data.error === true) : [];
+    yield call(fetchDashboardCounts);
+    const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
+    yield call(fetchDashboardData, { payload: activeSearchTerm });
+    yield call(onCheckboxSelect, { payload: [] });
+    if (failedResponse && failedResponse.length > 0) {
+      const snackBarData = {};
+      if (failedResponse.length > 5) {
+        snackBarData.message = 'Order call failed for more than 5 Eval ID(s): Contact Admin!';
+        snackBarData.type = 'error';
+        snackBarData.open = true;
+      } else {
+        snackBarData.message = 'Order call failed for Eval ID(s): ';
+        snackBarData.type = 'error';
+        snackBarData.open = true;
+        const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
+        snackBarData.message += failedEvalIds.toString();
+      }
+      yield call(fireSnackBar, snackBarData);
     } else {
-      snackBarData.message = 'Order call failed for Eval ID(s): ';
-      snackBarData.type = 'error';
+      const snackBarData = {};
+      snackBarData.message = 'Ordered Successfully!';
+      snackBarData.type = 'success';
       snackBarData.open = true;
-      const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
-      snackBarData.message += failedEvalIds.toString();
+      yield call(fireSnackBar, snackBarData);
     }
-    yield call(fireSnackBar, snackBarData);
-  } else {
+  } catch (e) {
     const snackBarData = {};
-    snackBarData.message = 'Ordered Successfully!';
-    snackBarData.type = 'success';
+    snackBarData.message = 'Something went wrong!!';
+    snackBarData.type = 'error';
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
+    console.log('Make Order BPM Call error:', e);
   }
 }
 
