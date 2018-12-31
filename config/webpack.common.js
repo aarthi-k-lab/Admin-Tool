@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const { DefinePlugin } = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -10,6 +11,9 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 const srcPath = path.join(__dirname, '../src');
 const publicPath = '/';
+const {
+  AIRBRAKE_PROJECT_ID, AIRBRAKE_PROJECT_KEY,
+} = process.env;
 
 module.exports = {
   cache: false,
@@ -148,6 +152,12 @@ module.exports = {
       files: '**/*.css',
       failOnError: true,
       quiet: false,
+    }),
+    new DefinePlugin({
+      'process.env': {
+        'AIRBRAKE_PROJECT_ID': JSON.stringify(AIRBRAKE_PROJECT_ID),
+        'AIRBRAKE_PROJECT_KEY': JSON.stringify(AIRBRAKE_PROJECT_KEY),
+      },
     }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],

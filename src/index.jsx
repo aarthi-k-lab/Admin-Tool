@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './state';
 import App from './containers/App';
+import ErrorBoundary from './ErrorBoundary';
 
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line
@@ -15,7 +16,9 @@ const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </Provider>,
   document.getElementById('app'),
 );
