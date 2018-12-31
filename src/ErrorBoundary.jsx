@@ -9,6 +9,7 @@ class ErrorBoundary extends React.Component {
       projectId: process.env.AIRBRAKE_PROJECT_ID,
       projectKey: process.env.AIRBRAKE_PROJECT_KEY,
     });
+    this.sessionValue = { session: (Math.random() * 1e20).toString(36) };
   }
 
   componentDidCatch(error, info) {
@@ -16,6 +17,7 @@ class ErrorBoundary extends React.Component {
     this.airbrake.notify({
       error,
       params: { info },
+      session: this.sessionValue,
     });
   }
 

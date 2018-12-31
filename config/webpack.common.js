@@ -154,10 +154,8 @@ module.exports = {
       quiet: false,
     }),
     new DefinePlugin({
-      'process.env': {
-        'AIRBRAKE_PROJECT_ID': JSON.stringify(AIRBRAKE_PROJECT_ID),
-        'AIRBRAKE_PROJECT_KEY': JSON.stringify(AIRBRAKE_PROJECT_KEY),
-      },
+      'process.env.AIRBRAKE_PROJECT_ID': JSON.stringify(AIRBRAKE_PROJECT_ID),
+      'process.env.AIRBRAKE_PROJECT_KEY': JSON.stringify(AIRBRAKE_PROJECT_KEY),
     }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],

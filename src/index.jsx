@@ -15,10 +15,10 @@ if (process.env.NODE_ENV !== 'production') {
 const store = configureStore();
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ErrorBoundary>
+  <ErrorBoundary>
+    <Provider store={store}>
       <App />
-    </ErrorBoundary>
-  </Provider>,
+    </Provider>
+  </ErrorBoundary>,
   document.getElementById('app'),
 );
