@@ -131,8 +131,13 @@ class CustomReactTable extends React.PureComponent {
             columns={this.getColumnData(data.stagerTaskType,
               data.stagerTaskStatus, data.isManualOrder, data.tableData)}
             data={data.tableData}
-// defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
             defaultPageSize={10}
+            defaultSorted={data.defaultSorted ? [
+              {
+                id: data.defaultSorted,
+                asc: true,
+              },
+            ] : []}
             filterable
             styleName="stagerTable"
           />
