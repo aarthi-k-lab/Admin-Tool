@@ -46,18 +46,16 @@ Profile.renderGroups = function renderGroups(groups) {
 };
 
 Profile.renderSkills = function renderSkills(skills) {
-  return skills && skills.map(
-    skill => (
-      <li key={skill}>
-        <Typography variant="body1">{skill}</Typography>
-      </li>
-    ),
-  );
+  return skills && Object.keys(skills).map(skill => (
+    <li key={skill}>
+      <Typography variant="body1">{ `${skill} - ${skills[skill]}` }</Typography>
+    </li>
+  ));
 };
 
 Profile.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
-  skills: PropTypes.arrayOf(PropTypes.string).isRequired,
+  skills: PropTypes.objectOf(PropTypes.string).isRequired,
   userDetails: PropTypes.shape({
     email: PropTypes.string,
     name: PropTypes.string,
