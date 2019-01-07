@@ -55,7 +55,7 @@ Profile.renderSkills = function renderSkills(skills) {
 
 Profile.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
-  skills: PropTypes.node.isRequired,
+  skills: PropTypes.objectOf(PropTypes.string).isRequired,
   userDetails: PropTypes.shape({
     email: PropTypes.string,
     name: PropTypes.string,

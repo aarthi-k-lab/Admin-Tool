@@ -73,7 +73,7 @@ class Header extends React.Component {
 
 Header.propTypes = {
   user: PropTypes.shape({
-    skills: PropTypes.node,
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,
