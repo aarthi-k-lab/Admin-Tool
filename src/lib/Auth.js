@@ -185,7 +185,7 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
 };
 
 Auth.getUserSkills = async (email) => {
-  const request = new Request(`/api/userskills/getUserSkills/${email}`, {
+  const request = new Request(`/api/userskills/getUserSkillDefinitions/${email}`, {
     method: 'GET',
   });
   try {

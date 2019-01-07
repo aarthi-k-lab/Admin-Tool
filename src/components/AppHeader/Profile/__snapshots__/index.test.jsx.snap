@@ -80,28 +80,28 @@ exports[`<Profile /> snapshot test 1`] = `
         <p
           className="MuiTypography-root-28 MuiTypography-body1-37"
         >
-          Skill14
+          0 - Skill14
         </p>
       </li>
       <li>
         <p
           className="MuiTypography-root-28 MuiTypography-body1-37"
         >
-          Skill19
+          1 - Skill19
         </p>
       </li>
       <li>
         <p
           className="MuiTypography-root-28 MuiTypography-body1-37"
         >
-          Skill1
+          2 - Skill1
         </p>
       </li>
       <li>
         <p
           className="MuiTypography-root-28 MuiTypography-body1-37"
         >
-          Skill2
+          3 - Skill2
         </p>
       </li>
     </ol>
