@@ -2,7 +2,7 @@
 
 exports[`<TombstoneError /> snapshot test 1`] = `
 <section
-  className="components-Tombstone-TombstoneLoader__tombstone-loader--1CnGs"
+  className="components-Tombstone-TombstoneLoader__tombstone-loader--Ij6aQ"
 >
   <svg
     aria-hidden="true"
@@ -24,7 +24,7 @@ exports[`<TombstoneError /> snapshot test 1`] = `
 
 exports[`<TombstoneLoader /> snapshot test 1`] = `
 <section
-  className="components-Tombstone-TombstoneLoader__tombstone-loader--1CnGs"
+  className="components-Tombstone-TombstoneLoader__tombstone-loader--Ij6aQ"
 >
   <div
     className="MuiCircularProgress-root-1 MuiCircularProgress-colorPrimary-4 MuiCircularProgress-indeterminate-3"

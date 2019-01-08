@@ -2,20 +2,20 @@
 
 exports[`<AppCenterDisplay /> snapshot test 1`] = `
 <div
-  className="components-AppContainer-AppContainer__app--1zlOg"
+  className="components-AppContainer-AppContainer__app--_pvE9"
 >
   header
   <div
-    className="components-Body-Body__body-container--3kT6M"
+    className="components-Body-Body__body-container--3Iujq"
   >
     <section
-      className="components-Body-Body__body--20HKG"
+      className="components-Body-Body__body--3PVBY"
     >
       <div
-        className="components-Center-Center__center--expand--EoCZl components-Center-Center__center--YoOAM"
+        className="components-Center-Center__center--expand--1OMMm components-Center-Center__center--QKyYo"
       >
         <div
-          className="components-AppCenterDisplay-AppCenterDisplay__app-center-display--2gh5J"
+          className="components-AppCenterDisplay-AppCenterDisplay__app-center-display--2ZCSr"
         >
           content
         </div>
@@ -23,7 +23,7 @@ exports[`<AppCenterDisplay /> snapshot test 1`] = `
     </section>
   </div>
   <footer
-    className="components-Footer-Footer__footer--HJlsB"
+    className="components-Footer-Footer__footer--2oWe5"
   >
     © Nationstar Mortgage LLC, All rights reserved
   </footer>

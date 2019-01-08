@@ -2,7 +2,7 @@
 
 exports[`<MainContent /> snapshot test 1`] = `
 <article
-  className="components-MainContent-MainContent__main-content--2hsfZ"
+  className="components-MainContent-MainContent__main-content--1n-eS"
 >
   content
 </article>

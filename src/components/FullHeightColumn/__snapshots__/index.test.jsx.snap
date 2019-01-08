@@ -2,10 +2,10 @@
 
 exports[`<FullHeightColumn /> snapshot test 1`] = `
 <div
-  className="components-FullHeightColumn-FullHeightColumn__stretch-column--3jKIT"
+  className="components-FullHeightColumn-FullHeightColumn__stretch-column--zbg8L"
 >
   <section
-    className="class1 class2 components-FullHeightColumn-FullHeightColumn__stretch-row--1GpNn"
+    className="class1 class2 components-FullHeightColumn-FullHeightColumn__stretch-row--2CW1h"
   >
     content
   </section>

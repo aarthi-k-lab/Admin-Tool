@@ -2,37 +2,37 @@
 
 exports[`<UnauthorizedPage /> snapshot test 1`] = `
 <div
-  className="components-AppContainer-AppContainer__app--1zlOg"
+  className="components-AppContainer-AppContainer__app--_pvE9"
 >
   <header
-    className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__header--333_T"
+    className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__header--1Qm9B"
   >
     <img
       alt="logo"
       src="/static/img/logo.png"
     />
     <span
-      className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__spacer--36rYH"
+      className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__spacer--1Ryki"
     />
   </header>
   <div
-    className="components-Body-Body__body-container--3kT6M"
+    className="components-Body-Body__body-container--3Iujq"
   >
     <section
-      className="components-Body-Body__body--20HKG"
+      className="components-Body-Body__body--3PVBY"
     >
       <div
-        className="components-Center-Center__center--expand--EoCZl components-Center-Center__center--YoOAM"
+        className="components-Center-Center__center--expand--1OMMm components-Center-Center__center--QKyYo"
       >
         <div
-          className="components-AppCenterDisplay-AppCenterDisplay__app-center-display--2gh5J"
+          className="components-AppCenterDisplay-AppCenterDisplay__app-center-display--2ZCSr"
         >
           <div
-            className="components-UnauthorizedPage-UnauthorizedPage__column--2PjEh"
+            className="components-UnauthorizedPage-UnauthorizedPage__column--3kePm"
           >
             <svg
               aria-hidden="true"
-              className="MuiSvgIcon-root-1 components-UnauthorizedPage-UnauthorizedPage__error-icon--2V6ON"
+              className="MuiSvgIcon-root-1 components-UnauthorizedPage-UnauthorizedPage__error-icon--16Mc8"
               focusable="false"
               role="presentation"
               viewBox="0 0 24 24"
@@ -46,7 +46,7 @@ exports[`<UnauthorizedPage /> snapshot test 1`] = `
               />
             </svg>
             <span
-              className="components-UnauthorizedPage-UnauthorizedPage__message--1yBS2"
+              className="components-UnauthorizedPage-UnauthorizedPage__message--1FvYH"
             >
               <span>
                 You have not been assigned to the app. Kindly contact the support team.
@@ -60,7 +60,7 @@ exports[`<UnauthorizedPage /> snapshot test 1`] = `
     </section>
   </div>
   <footer
-    className="components-Footer-Footer__footer--HJlsB"
+    className="components-Footer-Footer__footer--2oWe5"
   >
     © Nationstar Mortgage LLC, All rights reserved
   </footer>

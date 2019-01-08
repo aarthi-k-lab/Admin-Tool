@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   select,
   take,
@@ -46,15 +47,28 @@ function* watchSetExpandView() {
   }
 }
 
-const autoSaveOnClose = function* autoSaveOnClose() {
-  /* todo : call to service to autosave disposition in db */
-  yield put({
-    type: AUTO_SAVE_OPERATIONS,
-  });
+const autoSaveOnClose = function* autoSaveOnClose(taskStatus) {
+  try {
+    const taskStatusUpdate = R.propOr({}, 'payload', taskStatus);
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    if (evalId) {
+      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}`, {});
+      if (response === 'Accepted') {
+        yield put({
+          type: AUTO_SAVE_TRIGGER,
+          payload: 'Task Status Update Success',
+        });
+      }
+    }
+  } catch (e) {
+    yield put({ type: AUTO_SAVE_TRIGGER });
+  }
 };
 
 function* watchAutoSave() {
-  yield takeEvery(AUTO_SAVE_TRIGGER, autoSaveOnClose);
+  yield takeEvery(AUTO_SAVE_OPERATIONS, autoSaveOnClose);
 }
 
 const saveDisposition = function* setDiposition(dispositionPayload) {

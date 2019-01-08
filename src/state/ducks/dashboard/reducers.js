@@ -12,6 +12,7 @@ import {
   HIDE_SAVING_LOADER,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
+  AUTO_SAVE_TRIGGER,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -101,6 +102,16 @@ const reducer = (state = { firstVisit: true }, action) => {
         evalId: null,
         loanNumber: null,
         taskId: null,
+      };
+    }
+    case AUTO_SAVE_TRIGGER: {
+      let taskStatusUpdate;
+      if (action.payload) {
+        taskStatusUpdate = action.payload;
+      }
+      return {
+        ...state,
+        taskStatusUpdate,
       };
     }
     case SAVE_SELECTED_DISPOSITION: {

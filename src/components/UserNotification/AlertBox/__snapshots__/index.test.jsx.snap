@@ -2,11 +2,11 @@
 
 exports[`<AlertBox /> snapshot test for error level 1`] = `
 <div
-  className="components-UserNotification-AlertBox-AlertBox__alert-box--error--1vj_S components-UserNotification-AlertBox-AlertBox__alert-box--2OI8g"
+  className="components-UserNotification-AlertBox-AlertBox__alert-box--error--1aOFR components-UserNotification-AlertBox-AlertBox__alert-box--cNmYG"
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-1 components-UserNotification-AlertBox-AlertBox__error-icon--1depC"
+    className="MuiSvgIcon-root-1 components-UserNotification-AlertBox-AlertBox__error-icon--1Nupt"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
@@ -20,7 +20,7 @@ exports[`<AlertBox /> snapshot test for error level 1`] = `
     />
   </svg>
   <span
-    className="components-UserNotification-AlertBox-AlertBox__message--211_p"
+    className="components-UserNotification-AlertBox-AlertBox__message--J2alF"
   >
     Please retry
   </span>
@@ -29,10 +29,10 @@ exports[`<AlertBox /> snapshot test for error level 1`] = `
 
 exports[`<AlertBox /> snapshot test for other levels 1`] = `
 <div
-  className="components-UserNotification-AlertBox-AlertBox__alert-box--2OI8g"
+  className="components-UserNotification-AlertBox-AlertBox__alert-box--cNmYG"
 >
   <span
-    className="components-UserNotification-AlertBox-AlertBox__message--211_p"
+    className="components-UserNotification-AlertBox-AlertBox__message--J2alF"
   >
     Informational message
   </span>
@@ -41,11 +41,11 @@ exports[`<AlertBox /> snapshot test for other levels 1`] = `
 
 exports[`<AlertBox /> snapshot test for success level 1`] = `
 <div
-  className="components-UserNotification-AlertBox-AlertBox__alert-box--success--3aPSU components-UserNotification-AlertBox-AlertBox__alert-box--2OI8g"
+  className="components-UserNotification-AlertBox-AlertBox__alert-box--success--24cUu components-UserNotification-AlertBox-AlertBox__alert-box--cNmYG"
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-1 components-UserNotification-AlertBox-AlertBox__success-icon--1AzFl"
+    className="MuiSvgIcon-root-1 components-UserNotification-AlertBox-AlertBox__success-icon--ySD2I"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
@@ -59,7 +59,7 @@ exports[`<AlertBox /> snapshot test for success level 1`] = `
     />
   </svg>
   <span
-    className="components-UserNotification-AlertBox-AlertBox__message--211_p"
+    className="components-UserNotification-AlertBox-AlertBox__message--J2alF"
   >
     Enjoy your cupcake!
   </span>

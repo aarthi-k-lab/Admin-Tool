@@ -21,7 +21,9 @@ const onDispositionSelect = dispatch => (dispositionPayload) => {
 
 const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
-const onAutoSave = dispatch => () => dispatch(autoSave());
+const onAutoSave = dispatch => (taskStatus) => {
+  dispatch(autoSave(taskStatus));
+};
 
 const onGetNext = dispatch => () => {
   dispatch(clearFirstVisit());

@@ -2,7 +2,7 @@
 
 exports[`<Profile /> snapshot test 1`] = `
 <div
-  className="MuiPaper-root-1 MuiPaper-elevation2-5 MuiPaper-rounded-2 components-AppHeader-Profile-Profile__container--3sj5b"
+  className="MuiPaper-root-1 MuiPaper-elevation2-5 MuiPaper-rounded-2 components-AppHeader-Profile-Profile__container--1TFjh"
   tabIndex={-1}
 >
   <h2
@@ -11,10 +11,10 @@ exports[`<Profile /> snapshot test 1`] = `
     User Profile
   </h2>
   <div
-    className="components-AppHeader-Profile-Profile__row--3EfAD"
+    className="components-AppHeader-Profile-Profile__row--JHk8C"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--26HIE"
     >
       Name: 
     </p>
@@ -25,10 +25,10 @@ exports[`<Profile /> snapshot test 1`] = `
     </p>
   </div>
   <div
-    className="components-AppHeader-Profile-Profile__row--3EfAD"
+    className="components-AppHeader-Profile-Profile__row--JHk8C"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--26HIE"
     >
       Email: 
     </p>
@@ -39,15 +39,15 @@ exports[`<Profile /> snapshot test 1`] = `
     </p>
   </div>
   <div
-    className="components-AppHeader-Profile-Profile__row--3EfAD"
+    className="components-AppHeader-Profile-Profile__row--JHk8C"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--26HIE"
     >
       Groups: 
     </p>
     <ol
-      className="components-AppHeader-Profile-Profile__group-list--1vsZF"
+      className="components-AppHeader-Profile-Profile__group-list--1Mxdl"
     >
       <li>
         <p
@@ -66,15 +66,15 @@ exports[`<Profile /> snapshot test 1`] = `
     </ol>
   </div>
   <div
-    className="components-AppHeader-Profile-Profile__row--3EfAD"
+    className="components-AppHeader-Profile-Profile__row--JHk8C"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--25ARv"
+      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title--26HIE"
     >
       Skills: 
     </p>
     <ol
-      className="components-AppHeader-Profile-Profile__group-list--1vsZF"
+      className="components-AppHeader-Profile-Profile__group-list--1Mxdl"
     >
       <li>
         <p

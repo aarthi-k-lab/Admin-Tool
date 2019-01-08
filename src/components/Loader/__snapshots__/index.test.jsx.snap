@@ -2,10 +2,10 @@
 
 exports[`<Loader /> snapshot test 1`] = `
 <div
-  className="components-Center-Center__center--expand--EoCZl components-Center-Center__center--YoOAM"
+  className="components-Center-Center__center--expand--1OMMm components-Center-Center__center--QKyYo"
 >
   <span
-    className="components-Loader-Loader__message--2062I"
+    className="components-Loader-Loader__message--fhm4A"
   >
     <div
       className="MuiCircularProgress-root-1 MuiCircularProgress-colorPrimary-4 MuiCircularProgress-indeterminate-3"

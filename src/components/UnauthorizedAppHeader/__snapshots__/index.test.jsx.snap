@@ -2,14 +2,14 @@
 
 exports[`<UnauthorizedAppHeader /> snapshot test 1`] = `
 <header
-  className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__header--333_T"
+  className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__header--1Qm9B"
 >
   <img
     alt="logo"
     src="/static/img/logo.png"
   />
   <span
-    className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__spacer--36rYH"
+    className="components-UnauthorizedAppHeader-UnauthorizedAppHeader__spacer--1Ryki"
   />
 </header>
 `;

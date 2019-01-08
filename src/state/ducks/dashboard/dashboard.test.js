@@ -1,11 +1,13 @@
-import { put, call, takeEvery, take, fork, select } from 'redux-saga/effects';
+import {
+  put, call, takeEvery, take, fork, select,
+} from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
+import { selectors as loginSelectors } from 'ducks/login/index';
+import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import * as actionTypes from './types';
 import { onExpandView, dispositionSave, clearDisposition, clearFirstVisit } from './actions';
 import { TestExports } from './sagas';
-import { selectors as loginSelectors } from 'ducks/login/index';
-import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import selectors from './selectors';
 
 
@@ -24,15 +26,39 @@ describe('watch autoSave ', () => {
   it('should trigger autoSaveOnClose worker', () => {
     const saga = cloneableGenerator(TestExports.watchAutoSave)();
     expect(saga.next().value)
-      .toEqual(takeEvery(actionTypes.AUTO_SAVE_TRIGGER, TestExports.autoSaveOnClose));
+      .toEqual(takeEvery(actionTypes.AUTO_SAVE_OPERATIONS, TestExports.autoSaveOnClose));
   });
 });
 
-describe('autoSaveOnClose ', () => {
-  it('should update AUTO_SAVE_OPERATIONS', () => {
-    const saga = cloneableGenerator(TestExports.autoSaveOnClose)();
-    expect(saga.next().value)
-      .toEqual(put({ type: actionTypes.AUTO_SAVE_OPERATIONS }));
+describe('autoSaveOnClose saga ', () => {
+  const handleBrowserEventPayload = {
+    payload: 'Paused',
+  };
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+  };
+  const saga = cloneableGenerator(TestExports.autoSaveOnClose)(handleBrowserEventPayload);
+
+  it('should call select evalId from store', () => {
+    expect(saga.next(handleBrowserEventPayload.payload).value)
+      .toEqual(select(selectors.evalId));
+  });
+
+  it('should call select user from store', () => {
+    expect(saga.next(1883281).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call validation service', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/workassign/updateTaskStatus?evalId=1883281&assignedTo=bren@mrcooper.com&taskStatus=Paused', {}));
+  });
+
+  it('should call AUTO_SAVE_TRIGGER', () => {
+    expect(saga.next('Accepted').value)
+      .toEqual(put({ type: actionTypes.AUTO_SAVE_TRIGGER, payload: 'Task Status Update Success' }));
   });
 });
 
@@ -74,23 +100,21 @@ describe('getnext Success', () => {
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
-
   });
 
   it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(put({
         type: actionTypes.SAVE_EVALID_LOANNUMBER,
-        payload: { loanNumber: '12345', evalId: '34567', taskId: '1234' }
+        payload: { loanNumber: '12345', evalId: '34567', taskId: '1234' },
       }));
-
   });
   it('getnext worker should trigger fetchtombstone action', () => {
     const actionDispatched = {
-      "payload": {
-        "loanNumber": '12345',
+      payload: {
+        loanNumber: '12345',
       },
-      "type": "app/tombstone/FETCH_TOMBSTONE_DATA",
+      type: 'app/tombstone/FETCH_TOMBSTONE_DATA',
     };
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
@@ -126,22 +150,20 @@ describe('getnext Failure -  no tasks found', () => {
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
-
   });
 
   it('should dispatch NO_TASKS_FOUND', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(put({
         type: actionTypes.TASKS_NOT_FOUND,
-        payload: { notasksFound: true }
+        payload: { notasksFound: true },
       }));
-
   });
   it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: ERROR_LOADING_TOMBSTONE_DATA,
-        payload: { data: [], error: true, loading: false }
+        payload: { data: [], error: true, loading: false },
       }));
   });
 
@@ -173,7 +195,6 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
-
   });
 
   it('should dispatch TASK_FETCH_ERROR', () => {
@@ -182,13 +203,12 @@ describe('getnext Failure -  task fetch failure', () => {
         type: actionTypes.TASKS_FETCH_ERROR,
         payload: { taskfetchError: true },
       }));
-
   });
   it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: ERROR_LOADING_TOMBSTONE_DATA,
-        payload: { data: [], error: true, loading: false }
+        payload: { data: [], error: true, loading: false },
       }));
   });
 

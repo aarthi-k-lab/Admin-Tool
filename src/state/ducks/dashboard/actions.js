@@ -1,6 +1,6 @@
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import {
-  AUTO_SAVE_TRIGGER,
+  AUTO_SAVE_OPERATIONS,
   END_SHIFT,
   GET_NEXT,
   SET_EXPAND_VIEW_SAGA,
@@ -16,8 +16,9 @@ const onExpandView = userPayload => ({
   payload: userPayload,
 });
 
-const autoSave = () => ({
-  type: AUTO_SAVE_TRIGGER,
+const autoSave = taskStatus => ({
+  type: AUTO_SAVE_OPERATIONS,
+  payload: taskStatus,
 });
 
 const dispositionSave = dispositionPayload => ({

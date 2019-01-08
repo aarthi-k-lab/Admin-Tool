@@ -2,7 +2,7 @@
 
 exports[`<EndShift /> snapshot test 1`] = `
 <button
-  className="MuiButtonBase-root-27 MuiButton-root-1 MuiButton-text-3 MuiButton-textPrimary-4 MuiButton-outlined-9 MuiButton-outlinedPrimary-10 material-ui-button components-ContentHeader-EndShift-EndShift__end-shift--3z0X7"
+  className="MuiButtonBase-root-27 MuiButton-root-1 MuiButton-text-3 MuiButton-textPrimary-4 MuiButton-outlined-9 MuiButton-outlinedPrimary-10 material-ui-button components-ContentHeader-EndShift-EndShift__end-shift--2UamN"
   disabled={false}
   onBlur={[Function]}
   onClick={[Function]}
