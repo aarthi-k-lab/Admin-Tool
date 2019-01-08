@@ -105,6 +105,14 @@ const config = merge(
             '^/api/release': '',
           },
         },
+        '/api/tkams': {
+          target: 'https://cmodtkamsdev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/tkams': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

@@ -14,25 +14,38 @@ const inputJson1 = {
     firstName: 'ELLEN',
     lastName: 'DOE',
     borrowerType: 'Borrower',
+    ssn: 'xx-xxx-5421',
   },
   coBorrowers: [
     {
       firstName: 'LEOCADIA',
       lastName: 'DOE',
       borrowerType: 'Co-Borrower',
+      ssn: 'xx-xxx-5422',
     },
     {
       firstName: 'JON',
       lastName: 'SNOW',
       borrowerType: 'Co-Borrower',
+      ssn: 'xx-xxx-5423',
     },
   ],
+};
+
+const inputJson12 = {
+  evalId: 646515,
+  waterfallId: null,
+  resolutionChoiceType: 'HAMP-PRA Alternate Waterfall',
 };
 
 const output1 = [
   {
     title: 'Loan #',
     content: '596401265',
+  },
+  {
+    title: 'Eval Id',
+    content: '646515',
   },
   {
     title: 'Investor Loan #',
@@ -47,6 +60,10 @@ const output1 = [
     content: 'ELLEN DOE/LEOCADIA DOE, JON SNOW',
   },
   {
+    title: 'Borrower SSN/Co-Borrower SSN',
+    content: 'xx-xxx-5421/xx-xxx-5422, xx-xxx-5423',
+  },
+  {
     title: 'Investor',
     content: '135 - HELT 2007-FRE1                ',
   },
@@ -57,6 +74,14 @@ const output1 = [
   {
     title: 'Next Payment Due Date',
     content: '09/01/2018',
+  },
+  {
+    title: 'Waterfall ID',
+    content: 'NA',
+  },
+  {
+    title: 'Modification Type',
+    content: 'HAMP-PRA Alternate Waterfall',
   },
 ];
 
@@ -79,6 +104,10 @@ const output2 = [
     content: '596401265',
   },
   {
+    title: 'Eval Id',
+    content: '646515',
+  },
+  {
     title: 'Investor Loan #',
     content: 'NA',
   },
@@ -88,6 +117,10 @@ const output2 = [
   },
   {
     title: 'Borrower/Co-Borrower',
+    content: 'NA/NA',
+  },
+  {
+    title: 'Borrower SSN/Co-Borrower SSN',
     content: 'NA/NA',
   },
   {
@@ -102,6 +135,14 @@ const output2 = [
     title: 'Next Payment Due Date',
     content: 'NA',
   },
+  {
+    title: 'Waterfall ID',
+    content: 'NA',
+  },
+  {
+    title: 'Modification Type',
+    content: 'HAMP-PRA Alternate Waterfall',
+  },
 ];
 
 describe('models/LoanTombstone', () => {
@@ -112,8 +153,8 @@ describe('models/LoanTombstone', () => {
   });
   describe('getTombstoneItems', () => {
     it('returns the data complying to Tombstone UI schema', () => {
-      expect(LoanTombstone.getTombstoneItems(inputJson1)).toEqual(output1);
-      expect(LoanTombstone.getTombstoneItems(inputJson2)).toEqual(output2);
+      expect(LoanTombstone.getTombstoneItems(inputJson1, inputJson12)).toEqual(output1);
+      expect(LoanTombstone.getTombstoneItems(inputJson2, inputJson12)).toEqual(output2);
     });
   });
 });

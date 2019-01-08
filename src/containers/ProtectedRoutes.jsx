@@ -71,11 +71,15 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
           <Route component={Dashboard} path="/loan-evaluation" />
-          {
-            RouteAccess.hasMoveForwardAccess(groups)
-              ? <Route component={MoveForward} path="/move-forward" />
-              : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
-          }
+          <Route
+            exact
+            path="/move-forward"
+            render={() => (
+              RouteAccess.hasMoveForwardAccess(groups)
+                ? <Route component={MoveForward} path="/move-forward" />
+                : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
+            )}
+          />
           <Route render={() => <Redirect to="/loan-evaluation" />} />
         </Switch>
       </App>
