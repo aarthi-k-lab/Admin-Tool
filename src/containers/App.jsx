@@ -9,10 +9,12 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import UnauthorizedPage from 'components/UnauthorizedPage';
 import theme from 'lib/Theme';
 import ProtectedRoutes from './ProtectedRoutes';
+import IdleUserHandle from './IdleUserHandler';
 import HandleBrowserEventContainer from './HandleBrowserEvent';
 
 const AppContainer = () => (
   <React.StrictMode>
+    <IdleUserHandle />
     <MuiThemeProvider theme={theme}>
       <Router>
         <Switch>
