@@ -2,10 +2,10 @@
 
 exports[`<LeftNav Components /> LeftNav renders correctly 1`] = `
 <div
-  className="components-LeftNav-LeftNav__stretch-column--3ZErN"
+  className="components-LeftNav-LeftNav__stretch-column"
 >
   <nav
-    className="components-LeftNav-LeftNav__left-nav-bar--IYXwq"
+    className="components-LeftNav-LeftNav__left-nav-bar"
     id="cmod_leftnav"
   />
 </div>

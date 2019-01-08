@@ -12,6 +12,7 @@
     "jsdoc": "jsdoc -c ./config/jsdoc.config.json",
     "start": "webpack-dev-server --config=\"./config/webpack.config.js\" --hot --env.NODE_ENV=\"local\" --host 127.0.0.1 --port 8080",
     "test": "jest -c \"./config/jest.config.js\"",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest -c \"./config/jest.config.js\" --runInBand --detectOpenHandles",
     "webpack": "webpack --config=\"./config/webpack.config.js\""
   },
   "dependencies": {

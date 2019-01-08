@@ -2,7 +2,7 @@
 
 exports[`<Footer /> snapshot test 1`] = `
 <footer
-  className="components-Footer-Footer__footer--2oWe5"
+  className="components-Footer-Footer__footer"
 >
   © Nationstar Mortgage LLC, All rights reserved
 </footer>

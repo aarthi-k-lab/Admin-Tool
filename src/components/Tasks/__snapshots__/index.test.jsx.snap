@@ -2,11 +2,11 @@
 
 exports[`<Task Components /> CollapseIcon renders correctly 1`] = `
 <span
-  className="components-Tasks-CollapseIcon__collapse-icon-container--1D952"
+  className="components-Tasks-CollapseIcon__collapse-icon-container"
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-1 components-Tasks-CollapseIcon__shift-left--2lfs3"
+    className="MuiSvgIcon-root-1 components-Tasks-CollapseIcon__shift-left"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
@@ -24,10 +24,10 @@ exports[`<Task Components /> CollapseIcon renders correctly 1`] = `
 
 exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`] = `
 <div
-  className="components-Tasks-LeftParentTasks__left-parent-tasks--3DXXN"
+  className="components-Tasks-LeftParentTasks__left-parent-tasks"
 >
   <div
-    className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div--1vamD"
+    className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div"
   >
     <div>
       <div
@@ -59,7 +59,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -108,7 +108,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_selected_green.svg"
                 />
                 <input
@@ -157,7 +157,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_error.svg"
                 />
                 <input
@@ -206,7 +206,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -255,7 +255,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -304,7 +304,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -353,7 +353,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -378,10 +378,10 @@ exports[`<Task Components /> LeftParentTasks renders correctly when collapsed 1`
 
 exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`] = `
 <div
-  className="components-Tasks-LeftParentTasks__left-parent-tasks--3DXXN"
+  className="components-Tasks-LeftParentTasks__left-parent-tasks"
 >
   <span
-    className="components-Tasks-LeftParentTasks__status-select-field-span--2c9C6"
+    className="components-Tasks-LeftParentTasks__status-select-field-span"
   >
     <div
       className="MuiFormControl-root-10 status-select-field"
@@ -435,12 +435,12 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     </div>
   </span>
   <div
-    className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div--1vamD"
+    className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div"
   >
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -464,7 +464,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -484,13 +484,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Document and Income Type Verification
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             />
           </div>
         </div>
@@ -498,7 +498,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           className="MuiGrid-container-69 MuiGrid-direction-xs-column-72"
         >
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -525,7 +525,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_unselected.svg"
                   />
                   <input
@@ -545,18 +545,18 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__subtask-name--18T4d"
+                className="components-Tasks-LeftParentTasks__subtask-name"
               >
                 Document Review
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               />
             </div>
           </div>
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -583,7 +583,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_selected_green_small.svg"
                   />
                   <input
@@ -603,18 +603,18 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__subtask-name--18T4d"
+                className="components-Tasks-LeftParentTasks__subtask-name"
               >
                 Choose income type
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               />
             </div>
           </div>
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -641,7 +641,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_unselected.svg"
                   />
                   <input
@@ -661,13 +661,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__subtask-name--18T4d"
+                className="components-Tasks-LeftParentTasks__subtask-name"
               >
                 Suspicious Activity Review
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               />
             </div>
           </div>
@@ -677,7 +677,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -701,7 +701,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_selected_green.svg"
                 />
                 <input
@@ -721,13 +721,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Tax Transcript Review
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             />
           </div>
         </div>
@@ -735,7 +735,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           className="MuiGrid-container-69 MuiGrid-direction-xs-column-72"
         >
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -762,7 +762,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_selected_green_small.svg"
                   />
                   <input
@@ -782,18 +782,18 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__subtask-name--18T4d"
+                className="components-Tasks-LeftParentTasks__subtask-name"
               >
                 Order Tax Transcript
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               />
             </div>
           </div>
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -820,7 +820,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_selected_green_small.svg"
                   />
                   <input
@@ -840,13 +840,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__subtask-name--18T4d"
+                className="components-Tasks-LeftParentTasks__subtask-name"
               >
                 Receive Tax Transcript
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               />
             </div>
           </div>
@@ -856,7 +856,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -880,7 +880,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_error.svg"
                 />
                 <input
@@ -900,13 +900,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Application Review
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             >
               Error in Subtask
             </span>
@@ -916,7 +916,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
           className="MuiGrid-container-69 MuiGrid-direction-xs-column-72"
         >
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -943,7 +943,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_unselected.svg"
                   />
                   <input
@@ -963,18 +963,18 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__subtask-name--18T4d"
+                className="components-Tasks-LeftParentTasks__subtask-name"
               >
                 Reason for Delinquency
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               />
             </div>
           </div>
           <div
-            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid--nApZ0"
+            className="MuiGrid-container-69 components-Tasks-LeftParentTasks__subtask-grid"
           >
             <div
               className="MuiGrid-item-70 MuiGrid-grid-xs-2-99"
@@ -1001,7 +1001,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
                 >
                   <img
                     alt="task_pane_icon"
-                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon--2-bMT"
+                    className="components-TaskStatusIcon-TaskStatusIcon__smallIcon"
                     src="/static/img/default_error_small.svg"
                   />
                   <input
@@ -1021,13 +1021,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
             >
               <span
-                className="components-Tasks-LeftParentTasks__failure-subtask-name--1ESy-"
+                className="components-Tasks-LeftParentTasks__failure-subtask-name"
               >
                 Property Occupancy Status
               </span>
               <br />
               <span
-                className="components-Tasks-LeftParentTasks__error-text-subtask--2itmQ"
+                className="components-Tasks-LeftParentTasks__error-text-subtask"
               >
                 Documents not found!
               </span>
@@ -1039,7 +1039,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -1063,7 +1063,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -1083,13 +1083,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Income Verification
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             />
           </div>
         </div>
@@ -1098,7 +1098,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -1122,7 +1122,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -1142,13 +1142,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Expense Verification
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             />
           </div>
         </div>
@@ -1157,7 +1157,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -1181,7 +1181,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -1201,13 +1201,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Review Unemployment Plan
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             />
           </div>
         </div>
@@ -1216,7 +1216,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
     <div>
       <span>
         <div
-          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div--2n9FD"
+          className="MuiGrid-container-69 components-Tasks-LeftParentTasks__parent-task-grid-div"
         >
           <div
             className="MuiGrid-item-70"
@@ -1240,7 +1240,7 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
               >
                 <img
                   alt="task_pane_icon"
-                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+                  className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
                   src="/static/img/default_unselected.svg"
                 />
                 <input
@@ -1260,13 +1260,13 @@ exports[`<Task Components /> LeftParentTasks renders correctly when expanded 1`]
             className="MuiGrid-item-70 MuiGrid-grid-xs-8-105"
           >
             <span
-              className="components-Tasks-LeftParentTasks__parent-task-name--1dVx7"
+              className="components-Tasks-LeftParentTasks__parent-task-name"
             >
               Rejection Review
             </span>
             <br />
             <span
-              className="components-Tasks-LeftParentTasks__error-text-parent--vHiY2"
+              className="components-Tasks-LeftParentTasks__error-text-parent"
             />
           </div>
         </div>

@@ -20,7 +20,7 @@ exports[`<TaskStatusIcon /> TaskStatusIcon renders correctly 1`] = `
   >
     <img
       alt="task_pane_icon"
-      className="components-TaskStatusIcon-TaskStatusIcon__largeIcon--2IdiI"
+      className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
       src="/static/img/default_unselected.svg"
     />
     <input

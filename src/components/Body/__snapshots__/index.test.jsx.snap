@@ -2,10 +2,10 @@
 
 exports[`<Body /> snapshot test 1`] = `
 <div
-  className="components-Body-Body__body-container--3Iujq"
+  className="components-Body-Body__body-container"
 >
   <section
-    className="components-Body-Body__body--3PVBY"
+    className="components-Body-Body__body"
   >
     content
   </section>

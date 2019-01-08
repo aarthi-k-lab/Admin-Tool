@@ -2,7 +2,7 @@
 
 exports[`<GetNext /> snapshot test 1`] = `
 <button
-  className="MuiButtonBase-root-27 MuiButton-root-1 MuiButton-contained-12 MuiButton-containedPrimary-13 MuiButton-raised-15 MuiButton-raisedPrimary-16 material-ui-button components-ContentHeader-GetNext-GetNext__get-next--3Ea6D"
+  className="MuiButtonBase-root-27 MuiButton-root-1 MuiButton-contained-12 MuiButton-containedPrimary-13 MuiButton-raised-15 MuiButton-raisedPrimary-16 material-ui-button components-ContentHeader-GetNext-GetNext__get-next"
   disabled={false}
   onBlur={[Function]}
   onClick={[Function]}

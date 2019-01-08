@@ -2,12 +2,12 @@
 
 exports[`<Center /> snapshot test when disabled is false 1`] = `
 <div
-  className="components-Center-Center__center--expand--1OMMm components-Center-Center__center--QKyYo"
+  className="components-Center-Center__center--expand components-Center-Center__center"
 />
 `;
 
 exports[`<Center /> snapshot test when disabled is true 1`] = `
 <div
-  className="components-Center-Center__center--no-expand--3rwv7 components-Center-Center__center--QKyYo"
+  className="components-Center-Center__center--no-expand components-Center-Center__center"
 />
 `;

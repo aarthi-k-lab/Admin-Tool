@@ -21,5 +21,32 @@
         "webpackHotModuleReloading": true
       }
     ]
-  ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "chrome": "55"
+            }
+          }
+        ],
+        "@babel/preset-react"
+      ],
+      "plugins": [
+        "react-hot-loader/babel",
+        [
+          "babel-plugin-react-css-modules",
+          {
+            "context": "./src",
+            "generateScopedName": "[path][name]__[local]",
+            "handleMissingStyleName": "throw",
+            "webpackHotModuleReloading": true
+          }
+        ]
+      ]
+    }
+  }
 }
