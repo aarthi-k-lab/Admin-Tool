@@ -46,9 +46,20 @@ Profile.renderGroups = function renderGroups(groups) {
 };
 
 Profile.renderSkills = function renderSkills(skills) {
-  return skills && Object.keys(skills).map(skill => (
+  const sortedSkillsWithDefinitions = {};
+  const sortedSkills = !R.isNil(skills) && !R.isEmpty(skills)
+    ? Object.keys(skills).sort((skill1, skill2) => {
+      const skillNo1 = skill1.split(' ');
+      const skillNo2 = skill2.split(' ');
+      return parseInt(skillNo1[1], 10) - parseInt(skillNo2[1], 10);
+    }) : [];
+  sortedSkills.forEach((key) => {
+    sortedSkillsWithDefinitions[key] = skills[key];
+  });
+
+  return sortedSkillsWithDefinitions && sortedSkills && sortedSkills.map(skill => (
     <li key={skill}>
-      <Typography variant="body1">{ `${skill} - ${skills[skill]}` }</Typography>
+      <Typography variant="body1">{ `${skill} - ${sortedSkillsWithDefinitions[skill]}` }</Typography>
     </li>
   ));
 };
