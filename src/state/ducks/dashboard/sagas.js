@@ -14,7 +14,6 @@ import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import selectors from './selectors';
 import {
-  CLEAR_DISPOSITION,
   END_SHIFT,
   GET_NEXT,
   SET_EXPAND_VIEW,
@@ -147,7 +146,6 @@ function* watchGetNext() {
 // eslint-disable-next-line
 function* endShift(action) {
   yield put({ type: SUCCESS_END_SHIFT });
-  yield put({ type: CLEAR_DISPOSITION });
 }
 
 function* watchEndShift() {

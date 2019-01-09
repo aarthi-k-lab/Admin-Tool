@@ -74,7 +74,6 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
     case SUCCESS_END_SHIFT: {
       return {
-        ...state,
         firstVisit: true,
       };
     }
