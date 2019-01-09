@@ -74,12 +74,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
     case SUCCESS_END_SHIFT: {
       return {
-        ...state,
         firstVisit: true,
-        evalId: null,
-        loanNumber: null,
-        taskId: null,
-        selectedDisposition: '',
       };
     }
     case TASKS_NOT_FOUND: {
