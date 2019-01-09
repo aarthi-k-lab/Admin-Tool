@@ -257,6 +257,10 @@ describe('endShift worker', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.CLEAR_DISPOSITION }));
   });
+  it('should dispatch CLEAR_TASK_DETAILS', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.CLEAR_TASK_DETAILS }));
+  });
 });
 
 describe('expand view ', () => {

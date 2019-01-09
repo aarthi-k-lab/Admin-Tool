@@ -17,6 +17,7 @@ const SHOW_LOADER = 'app/dasboard/SHOW_LOADER';
 const SHOW_SAVING_LOADER = 'app/dashboard/SHOW_SAVING_LOADER';
 const HIDE_SAVING_LOADER = 'app/dashboard/HIDE_SAVING_LOADER';
 const HIDE_LOADER = 'app/dashboard/HIDE_LOADER';
+const CLEAR_TASK_DETAILS = 'app/dashboard/CLEAR_TASK_DETAILS';
 
 export {
   AUTO_SAVE_TRIGGER,
@@ -38,4 +39,5 @@ export {
   SUCCESS_END_SHIFT,
   SHOW_LOADER,
   HIDE_LOADER,
+  CLEAR_TASK_DETAILS,
 };

@@ -31,6 +31,7 @@ import {
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
+  CLEAR_TASK_DETAILS,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 
@@ -148,6 +149,7 @@ function* watchGetNext() {
 function* endShift(action) {
   yield put({ type: SUCCESS_END_SHIFT });
   yield put({ type: CLEAR_DISPOSITION });
+  yield put({ type: CLEAR_TASK_DETAILS });
 }
 
 function* watchEndShift() {
