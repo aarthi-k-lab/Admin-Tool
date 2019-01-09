@@ -13,7 +13,6 @@ import {
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
-  CLEAR_TASK_DETAILS,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -77,6 +76,10 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         firstVisit: true,
+        evalId: null,
+        loanNumber: null,
+        taskId: null,
+        selectedDisposition: '',
       };
     }
     case TASKS_NOT_FOUND: {
@@ -87,14 +90,6 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         noTasksFound,
-        evalId: null,
-        loanNumber: null,
-        taskId: null,
-      };
-    }
-    case CLEAR_TASK_DETAILS: {
-      return {
-        ...state,
         evalId: null,
         loanNumber: null,
         taskId: null,

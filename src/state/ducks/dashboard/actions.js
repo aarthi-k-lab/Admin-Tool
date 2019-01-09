@@ -8,7 +8,6 @@ import {
   SAVE_SELECTED_DISPOSITION,
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
-  CLEAR_TASK_DETAILS,
 } from './types';
 
 
@@ -50,10 +49,6 @@ const clearDisposition = () => ({
   type: CLEAR_DISPOSITION,
 });
 
-const clearTaskDetails = () => ({
-  type: CLEAR_TASK_DETAILS,
-});
-
 const clearFirstVisit = () => ({
   type: CLEAR_FIRST_VISIT,
 });
@@ -68,5 +63,4 @@ export {
   errorTombstoneFetch,
   getNext,
   onExpandView,
-  clearTaskDetails,
 };
