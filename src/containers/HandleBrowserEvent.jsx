@@ -28,8 +28,8 @@ class HandleBrowserEvent extends React.PureComponent {
     event.returnValue = '';
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
       onAutoSave('Paused');
-      onEndShift();
     }
+    setTimeout(() => onEndShift(), 0);
   }
 
   render() {

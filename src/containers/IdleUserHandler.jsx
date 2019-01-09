@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -9,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import IdleTimer from 'react-idle-timer';
 import { connect } from 'react-redux';
 import {
-  operations as dashboardOperations,
+  operations as dashboardOperations, selectors,
 } from 'ducks/dashboard';
 
 class IdleUserHandler extends Component {
@@ -50,9 +51,13 @@ class IdleUserHandler extends Component {
   }
 
   redirectToLogout() {
-    const { onEndShift, onAutoSave } = this.props;
-    onAutoSave('Paused');
-    onEndShift();
+    const {
+      onEndShift, onAutoSave, enableGetNext, evalId,
+    } = this.props;
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+      onAutoSave('Paused');
+      onEndShift();
+    }
   }
 
   render() {
@@ -93,16 +98,23 @@ class IdleUserHandler extends Component {
     );
   }
 }
-
+IdleUserHandler.defaultProps = {
+  enableGetNext: false,
+};
 IdleUserHandler.propTypes = {
+  enableGetNext: PropTypes.bool,
+  evalId: PropTypes.func.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
 };
-
+const mapStateToProps = state => ({
+  enableGetNext: selectors.enableGetNext(state),
+  evalId: selectors.evalId(state),
+});
 const mapDispatchToProps = dispatch => ({
   onEndShift: dashboardOperations.onEndShift(dispatch),
   onAutoSave: dashboardOperations.onAutoSave(dispatch),
 
 });
 
-export default connect(null, mapDispatchToProps)(IdleUserHandler);
+export default connect(mapStateToProps, mapDispatchToProps)(IdleUserHandler);

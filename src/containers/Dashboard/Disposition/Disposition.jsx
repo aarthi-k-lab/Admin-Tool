@@ -7,7 +7,6 @@ import RadioButtonGroup from 'components/RadioButtonGroup';
 import UserNotification from 'components/UserNotification/UserNotification';
 import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
-import { confirmationNavigation } from 'constants/messages';
 import { arrayToString } from 'lib/ArrayUtils';
 import DispositionModel from 'models/Disposition';
 import {
@@ -22,29 +21,7 @@ class Disposition extends React.PureComponent {
 
     this.handleDispositionSelection = this.handleDispositionSelection.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.confirmNavigation = this.confirmNavigation.bind(this);
   }
-
-  componentWillMount() {
-    window.addEventListener('beforeunload', this.confirmNavigation);
-  }
-
-  componentWillUnmount() {
-    /* istanbul ignore next */
-    window.removeEventListener('beforeunload', this.confirmNavigation);
-  }
-
-  // eslint-disable-next-line
-  confirmNavigation(event) {
-    const { enableGetNext, onAutoSave } = this.props;
-    /* istanbul ignore else */
-    if (!enableGetNext) {
-      // eslint-disable-next-line
-      event.returnValue = confirmationNavigation;
-      onAutoSave();
-    }
-  }
-
 
   handleDispositionSelection(option) {
     const { dispositionReason, onDispositionSelect } = this.props;
@@ -179,7 +156,6 @@ Disposition.propTypes = {
   enableGetNext: PropTypes.bool,
   inProgress: PropTypes.bool,
   noTasksFound: PropTypes.bool,
-  onAutoSave: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   onDispositionSelect: PropTypes.func.isRequired,
@@ -200,7 +176,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onAutoSave: operations.onAutoSave(dispatch),
   onClear: operations.onClearDisposition(dispatch),
   onDispositionSaveTrigger: operations.onDispositionSave(dispatch),
   onDispositionSelect: operations.onDispositionSelect(dispatch),
