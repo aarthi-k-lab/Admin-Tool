@@ -8,7 +8,9 @@ describe('<Profile />', () => {
       .create(
         <Profile
           groups={['group1', 'group2']}
-          skills={['Skill14', 'Skill19', 'Skill1', 'Skill2']}
+          skills={{
+            Skill14: 'InVESTOR', Skill19: 'MRC Onshore', Skill1: 'something', Skill2: 'nothing',
+          }}
           userDetails={{
             email: 'email',
             name: 'name',
