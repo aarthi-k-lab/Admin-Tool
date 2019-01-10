@@ -49,8 +49,8 @@ Profile.renderSkills = function renderSkills(skills) {
   const sortedSkillsWithDefinitions = {};
   const sortedSkills = !R.isNil(skills) && !R.isEmpty(skills)
     ? Object.keys(skills).sort((skill1, skill2) => {
-      const skillNo1 = skill1.split(' ');
-      const skillNo2 = skill2.split(' ');
+      const skillNo1 = skill1.replace(/\s/g, '').match(/Skill(.*)/);
+      const skillNo2 = skill2.replace(/\s/g, '').match(/Skill(.*)/);
       return parseInt(skillNo1[1], 10) - parseInt(skillNo2[1], 10);
     }) : [];
   sortedSkills.forEach((key) => {
