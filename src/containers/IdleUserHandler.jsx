@@ -82,7 +82,7 @@ class IdleUserHandler extends Component {
           <DialogTitle id="alert-dialog-title">Idle logout?</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Session has been expired. Do you want to stayback?
+              Session has been expired. Would you like to continue working in this application?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
