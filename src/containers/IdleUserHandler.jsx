@@ -71,7 +71,7 @@ class IdleUserHandler extends Component {
           onAction={this.onAction}
           onActive={this.onActive}
           onIdle={this.onIdle}
-          timeout={300000}
+          timeout={7200000}
         />
         <Dialog
           aria-describedby="alert-dialog-description"
