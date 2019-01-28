@@ -14,6 +14,7 @@ class SearchLoan extends React.PureComponent {
   constructor(props) {
     super(props);
     this.renderSearchResults = this.renderSearchResults.bind(this);
+    this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
   }
 
@@ -41,11 +42,17 @@ class SearchLoan extends React.PureComponent {
     }
   }
 
+
   getParamsValue() {
     const { location } = this.props;
     const params = location.search;
     const loanNumberSearch = new URLSearchParams(params);
     return loanNumberSearch.get('loanNumber');
+  }
+
+  handleBackButton() {
+    const { onEndShift } = this.props;
+    onEndShift();
   }
 
   renderSearchResults() {
@@ -96,7 +103,7 @@ class SearchLoan extends React.PureComponent {
   render() {
     return (
       <>
-        <span styleName="backButton"><Link to="/loan-evaluation">&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/loan-evaluation">&lt; BACK</Link></span>
         { this.renderSearchResults() }
       </>
     );
@@ -152,6 +159,7 @@ SearchLoan.propTypes = {
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
+  onEndShift: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
 
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
@@ -167,6 +175,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
+  onEndShift: operations.onEndShift(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),
 
 });
