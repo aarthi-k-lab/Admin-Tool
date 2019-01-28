@@ -166,6 +166,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onAutoSave: operations.onAutoSave(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),
 
 });
