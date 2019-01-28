@@ -6,7 +6,9 @@ import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import * as actionTypes from './types';
-import { onExpandView, dispositionSave, clearDisposition, clearFirstVisit } from './actions';
+import {
+  onExpandView, dispositionSave, clearDisposition, clearFirstVisit,
+} from './actions';
 import { TestExports } from './sagas';
 import selectors from './selectors';
 
@@ -390,15 +392,15 @@ describe('watch search Loan ', () => {
 
 describe('search Loan Failure - Invalid Loan Number', () => {
   const mockResponse = {
-    "loanNumber": 18008401081,
-    "unAssigned": null,
-    "assigned": null,
-    "valid": false
+    loanNumber: 18008401081,
+    unAssigned: null,
+    assigned: null,
+    valid: false,
   };
 
   const loanNumber = {
     payload: '18008401081',
-  }
+  };
 
   const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
 
@@ -409,21 +411,21 @@ describe('search Loan Failure - Invalid Loan Number', () => {
 
   it('should call SEARCH_LOAN_RESULT', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: {...mockResponse },}));
+      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: { ...mockResponse } }));
   });
 });
 
 describe('search Loan Failure - No Eval cases', () => {
   const mockResponse = {
-    "loanNumber": 18008401081,
-    "unAssigned": null,
-    "assigned": null,
-    "valid": true
+    loanNumber: 18008401081,
+    unAssigned: null,
+    assigned: null,
+    valid: true,
   };
 
   const loanNumber = {
     payload: '18008401081',
-  }
+  };
 
   const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
 
@@ -434,40 +436,40 @@ describe('search Loan Failure - No Eval cases', () => {
 
   it('should call SEARCH_LOAN_RESULT', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: {...mockResponse },}));
+      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: { ...mockResponse } }));
   });
 });
 
 describe('search Loan Success', () => {
   const mockResponse = {
-    "loanNumber": 18008401081,
-    "unAssigned": null,
-    "assigned": [
+    loanNumber: 18008401081,
+    unAssigned: null,
+    assigned: [
       {
-      "evalId": 1889000,
-      "taskId": 2323243,
-      "piid": 35345345,
-      "status": '',
-      "statusDate": '01-22-2019',
-      "taskName": "FrontEnd Review",
-      "assignee": "bren@mrcooper.com"
+        evalId: 1889000,
+        taskId: 2323243,
+        piid: 35345345,
+        status: '',
+        statusDate: '01-22-2019',
+        taskName: 'FrontEnd Review',
+        assignee: 'bren@mrcooper.com',
       }],
-    "valid": true
+    valid: true,
   };
 
   const loanNumber = {
     payload: '18008401081',
-  }
+  };
 
   const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
 
   it('should call search Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, 'api/searchengine/search/loan/18008401081', {}));
+      .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
   });
 
   it('should call SEARCH_LOAN_RESULT', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: {...mockResponse },}));
+      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: { ...mockResponse } }));
   });
 });
