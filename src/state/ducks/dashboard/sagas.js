@@ -73,15 +73,15 @@ function* watchAutoSave() {
 }
 
 const searchLoan = function* searchLoan(loanNumber) {
+  const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
   try {
-    const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
     const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
     yield put({
       type: SEARCH_LOAN_RESULT,
       payload: response,
     });
   } catch (e) {
-    yield put({ type: SEARCH_LOAN_RESULT, payload: { loanNumber, valid: false } });
+    yield put({ type: SEARCH_LOAN_RESULT, payload: { loanNumber: searchLoanNumber, valid: false } });
   }
 };
 
