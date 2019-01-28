@@ -1,7 +1,9 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import Profile from './Profile';
 import './Header.css';
@@ -11,16 +13,43 @@ class Header extends React.Component {
     super(props);
     this.state = {
       showProfileDetails: false,
+      refreshHook: true,
+      searchText: '',
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.shouldSearchLoan = false;
+    this.handleProfileClick = this.handleProfileClick.bind(this);
+    this.handleProfileClose = this.handleProfileClose.bind(this);
+    this.handleSearchLoan = this.handleSearchLoan.bind(this);
+    this.onSearchTextChange = this.onSearchTextChange.bind(this);
+    this.handleSearchLoanClick = this.handleSearchLoanClick.bind(this);
   }
 
-  handleClick() {
+  onSearchTextChange(event) {
+    const re = /^[0-9\b]+$/;
+    if (event.target.value === '' || re.test(event.target.value)) {
+      this.setState({ searchText: event.target.value });
+    }
+  }
+
+  handleSearchLoan(event) {
+    if (event.charCode === 13 || event.key === 'Enter') {
+      this.handleSearchLoanClick();
+    }
+  }
+
+  handleSearchLoanClick() {
+    const { refreshHook, searchText } = this.state;
+    if (searchText) {
+      this.shouldSearchLoan = true;
+      this.setState({ refreshHook: !refreshHook });
+    }
+  }
+
+  handleProfileClick() {
     this.setState({ showProfileDetails: true });
   }
 
-  handleClose() {
+  handleProfileClose() {
     this.setState({ showProfileDetails: false });
   }
 
@@ -34,7 +63,7 @@ class Header extends React.Component {
     const { showProfileDetails } = this.state;
     return (
       <Modal
-        onClose={this.handleClose}
+        onClose={this.handleProfileClose}
         open={showProfileDetails}
         styleName="modal"
       >
@@ -49,18 +78,41 @@ class Header extends React.Component {
 
   render() {
     const { user } = this.props;
-    const userDetails = user && user.userDetails;
+    const { searchText } = this.state;
+    let redirectComponent = null;
+    if (this.shouldSearchLoan) {
+      this.shouldSearchLoan = false;
+      redirectComponent = <Redirect params={searchText} to={`/search?loanNumber=${searchText}`} />;
+    }
     return (
       <header styleName="header">
+        {redirectComponent}
         <Link to="/">
           <img alt="logo" src="/static/img/logo.png" styleName="logo" />
         </Link>
         <span styleName="spacer" />
-        <img alt="search" src="/static/img/search.png" styleName="search" />
-        {this.constructor.renderName(userDetails)}
+        <TextField
+          InputProps={{
+            inputProps: { maxLength: 10 },
+            disableUnderline: true,
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton onClick={this.handleSearchLoanClick}>
+                  <img alt="search" src="/static/img/search.png" styleName="searchIcon" />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          onChange={this.onSearchTextChange}
+          onKeyPress={this.handleSearchLoan}
+          placeholder="Search (Loan No)"
+          styleName="searchStyle"
+          value={searchText}
+          varirant="filled"
+        />
         <IconButton
           aria-label="Profile"
-          onClick={this.handleClick}
+          onClick={this.handleProfileClick}
           styleName="profile-button"
         >
           <img alt="profile" src="/static/img/profile.png" styleName="profile" />
@@ -82,5 +134,6 @@ Header.propTypes = {
     userGroups: PropTypes.array,
   }).isRequired,
 };
+
 
 export default Header;

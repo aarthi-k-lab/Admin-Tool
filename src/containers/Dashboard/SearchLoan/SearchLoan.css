@@ -1,0 +1,27 @@
+.resultText {
+  margin-left: 15px;
+}
+
+.searchResutlText {
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
+.evalTable {
+  text-align: center !important;
+  max-height: 500px;
+}
+
+.unassigned {
+  text-decoration: none !important;
+}
+
+.backButton {
+  margin: 15px;
+  font-size: 14px;
+}
+
+.backButton a {
+  color: rgb(50, 148, 185) !important;
+  text-decoration: none;
+}

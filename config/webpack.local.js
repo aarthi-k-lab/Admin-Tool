@@ -89,6 +89,14 @@ const config = merge(
             '^/api/workassign': '',
           },
         },
+        '/api/search-svc': {
+          target: 'https://cmodsearchenginedev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/search-svc': '',
+          },
+        },
         '/api/userskills': {
           target: 'https://cmoduserskilldev.int.mrcooper.io',
           secure: false,

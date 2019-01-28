@@ -13,6 +13,7 @@ import {
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
+  SEARCH_LOAN_RESULT,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -46,6 +47,16 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         getNextResponse,
+      };
+    }
+    case SEARCH_LOAN_RESULT: {
+      let getSearchLoanResponse = {};
+      if (action.payload) {
+        getSearchLoanResponse = action.payload;
+      }
+      return {
+        ...state,
+        getSearchLoanResponse,
       };
     }
     case SHOW_LOADER: {

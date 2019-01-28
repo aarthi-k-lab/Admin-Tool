@@ -21,6 +21,8 @@ const taskId = state => R.pathOr(null, ['dashboard', 'taskId'], state);
 
 const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'], state);
 
+const searchLoanResult = state => R.pathOr({}, ['dashboard', 'getSearchLoanResponse'], state);
+
 const enableGetNext = state => (
   isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state)
@@ -48,6 +50,7 @@ const selectors = {
   loanNumber,
   saveInProgress,
   taskFetchError,
+  searchLoanResult,
 };
 
 export default selectors;

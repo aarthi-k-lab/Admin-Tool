@@ -1,0 +1,12 @@
+.redText {
+  color: red;
+}
+
+.blackText {
+  color: black;
+}
+
+.redText,
+.blackText {
+  text-decoration: none !important;
+}

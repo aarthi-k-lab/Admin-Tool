@@ -19,6 +19,7 @@ import {
 import * as config from 'ducks/config';
 import RouteAccess from 'lib/RouteAccess';
 import Dashboard from './Dashboard';
+import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
 
@@ -80,6 +81,7 @@ class ProtectedRoutes extends React.Component {
                 : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
             )}
           />
+          <Route component={SearchLoan} path="/search" />
           <Route render={() => <Redirect to="/loan-evaluation" />} />
         </Switch>
       </App>

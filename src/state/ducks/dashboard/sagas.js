@@ -30,6 +30,8 @@ import {
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
+  SEARCH_LOAN_RESULT,
+  SEARCH_LOAN_TRIGGER,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 
@@ -70,6 +72,22 @@ function* watchAutoSave() {
   yield takeEvery(AUTO_SAVE_OPERATIONS, autoSaveOnClose);
 }
 
+const searchLoan = function* searchLoan(loanNumber) {
+  try {
+    const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
+    const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
+    yield put({
+      type: SEARCH_LOAN_RESULT,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({ type: SEARCH_LOAN_RESULT, payload: { loanNumber, valid: false } });
+  }
+};
+
+function* watchSearchLoan() {
+  yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
+}
 const saveDisposition = function* setDiposition(dispositionPayload) {
   try {
     yield put({ type: SHOW_SAVING_LOADER });
@@ -156,12 +174,14 @@ export const TestExports = {
   endShift,
   saveDisposition,
   setExpandView,
+  searchLoan,
   watchAutoSave,
   watchEndShift,
   watchSetExpandView,
   watchGetNext,
   getNext,
   watchDispositionSave,
+  watchSearchLoan,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -171,5 +191,6 @@ export const combinedSaga = function* combinedSaga() {
     watchGetNext(),
     watchSetExpandView(),
     watchEndShift(),
+    watchSearchLoan(),
   ]);
 };

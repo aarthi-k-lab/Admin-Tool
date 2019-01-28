@@ -20,6 +20,7 @@
 
 .profile {
   max-height: 38px;
+  margin-left: 1.5rem;
 }
 
 .spacer {
@@ -44,4 +45,22 @@
 
 .profile-button.profile-button {
   padding: 0;
+}
+
+.searchIcon {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  height: 10px;
+  color: white !important;
+}
+
+.searchStyle {
+  background-color: rgb(50, 148, 185);
+  height: 2rem;
+  width: 180px;
+  margin-right: 5.5rem;
+}
+
+.searchStyle input {
+  color: white !important;
 }

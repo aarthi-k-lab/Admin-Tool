@@ -7,6 +7,7 @@ import {
   clearDisposition,
   clearFirstVisit,
   getNext,
+  searchLoan,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -35,6 +36,10 @@ const onEndShift = dispatch => () => {
   dispatch(endShift());
 };
 
+const onSearchLoan = dispatch => (loanNumber) => {
+  dispatch(searchLoan(loanNumber));
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -43,6 +48,7 @@ const operations = {
   onDispositionSave,
   onDispositionSelect,
   onGetNext,
+  onSearchLoan,
 };
 
 export default operations;

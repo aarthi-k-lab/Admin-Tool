@@ -4,6 +4,7 @@ import {
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   SAVE_EVALID_LOANNUMBER,
+  SEARCH_LOAN_RESULT,
 } from './types';
 
 const saveDispositionAction = {
@@ -33,6 +34,16 @@ const taskFetchErrorAction = {
   type: TASKS_FETCH_ERROR,
   payload: {
     taskfetchError: true,
+  },
+};
+
+const searchLoanAction = {
+  type: SEARCH_LOAN_RESULT,
+  payload: {
+      loanNumber: '1800840108',
+      unAssigned: null,
+      assigned: null,
+      valid: true,
   },
 };
 const state = {};
@@ -81,5 +92,17 @@ describe('Ducks :: dashboard -> reducer', () => {
       taskId: null,
     };
     expect(reducer(state, taskFetchErrorAction)).toEqual(expectedState);
+  });
+
+  it('searchLoan Result action', () => {
+    const expectedState = {
+      getSearchLoanResponse: {
+        loanNumber: '1800840108',
+        unAssigned: null,
+        assigned: null,
+        valid: true,
+      }
+    };
+    expect(reducer(state, searchLoanAction)).toEqual(expectedState);
   });
 });

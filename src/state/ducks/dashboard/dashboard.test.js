@@ -378,3 +378,96 @@ describe('expand view ', () => {
     });
   });
 });
+
+describe('watch search Loan ', () => {
+  it('should trigger searchLoan worker', () => {
+    const saga = cloneableGenerator(TestExports.watchSearchLoan)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.SEARCH_LOAN_TRIGGER, TestExports.searchLoan));
+  });
+});
+
+
+describe('search Loan Failure - Invalid Loan Number', () => {
+  const mockResponse = {
+    "loanNumber": 18008401081,
+    "unAssigned": null,
+    "assigned": null,
+    "valid": false
+  };
+
+  const loanNumber = {
+    payload: '18008401081',
+  }
+
+  const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
+
+  it('should call search Api', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
+  });
+
+  it('should call SEARCH_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: {...mockResponse },}));
+  });
+});
+
+describe('search Loan Failure - No Eval cases', () => {
+  const mockResponse = {
+    "loanNumber": 18008401081,
+    "unAssigned": null,
+    "assigned": null,
+    "valid": true
+  };
+
+  const loanNumber = {
+    payload: '18008401081',
+  }
+
+  const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
+
+  it('should call search Api', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
+  });
+
+  it('should call SEARCH_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: {...mockResponse },}));
+  });
+});
+
+describe('search Loan Success', () => {
+  const mockResponse = {
+    "loanNumber": 18008401081,
+    "unAssigned": null,
+    "assigned": [
+      {
+      "evalId": 1889000,
+      "taskId": 2323243,
+      "piid": 35345345,
+      "status": '',
+      "statusDate": '01-22-2019',
+      "taskName": "FrontEnd Review",
+      "assignee": "bren@mrcooper.com"
+      }],
+    "valid": true
+  };
+
+  const loanNumber = {
+    payload: '18008401081',
+  }
+
+  const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
+
+  it('should call search Api', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, 'api/searchengine/search/loan/18008401081', {}));
+  });
+
+  it('should call SEARCH_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: {...mockResponse },}));
+  });
+});

@@ -8,6 +8,7 @@ import {
   SAVE_SELECTED_DISPOSITION,
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
+  SEARCH_LOAN_TRIGGER,
 } from './types';
 
 
@@ -53,6 +54,12 @@ const clearFirstVisit = () => ({
   type: CLEAR_FIRST_VISIT,
 });
 
+const searchLoan = loanNumber => ({
+  type: SEARCH_LOAN_TRIGGER,
+  payload: loanNumber,
+});
+
+
 export {
   autoSave,
   clearDisposition,
@@ -63,4 +70,5 @@ export {
   errorTombstoneFetch,
   getNext,
   onExpandView,
+  searchLoan,
 };
