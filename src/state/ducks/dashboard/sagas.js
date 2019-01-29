@@ -53,9 +53,10 @@ const autoSaveOnClose = function* autoSaveOnClose(taskStatus) {
     const taskStatusUpdate = R.propOr({}, 'payload', taskStatus);
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    if (evalId) {
-      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}`, {});
+    if (taskId) {
+      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}`, {});
       if (response === 'Accepted') {
         yield put({
           type: AUTO_SAVE_TRIGGER,
