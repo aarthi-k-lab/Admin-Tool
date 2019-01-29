@@ -53,9 +53,14 @@ describe('autoSaveOnClose saga ', () => {
       .toEqual(select(loginSelectors.getUser));
   });
 
-  it('should call validation service', () => {
+  it('should call select taskId from store', () => {
     expect(saga.next(mockUser).value)
-      .toEqual(call(Api.callPost, '/api/workassign/updateTaskStatus?evalId=1883281&assignedTo=bren@mrcooper.com&taskStatus=Paused', {}));
+      .toEqual(select(selectors.taskId));
+  });
+
+  it('should call validation service', () => {
+    expect(saga.next(123456).value)
+      .toEqual(call(Api.callPost, '/api/workassign/updateTaskStatus?evalId=1883281&assignedTo=bren@mrcooper.com&taskStatus=Paused&taskId=123456', {}));
   });
 
   it('should call AUTO_SAVE_TRIGGER', () => {
