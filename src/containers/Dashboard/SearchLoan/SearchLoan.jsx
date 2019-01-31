@@ -74,24 +74,28 @@ class SearchLoan extends React.PureComponent {
         }
         const searchResultCount = data.length;
         return (
-          <div>
-            <h3 styleName="resultText">
-              <span styleName="searchResutlText">{ searchResultCount }</span>
-                      &nbsp;search results found for Loan &nbsp; &quot;
-              <span styleName="searchResutlText">{ loanNumber }</span>
-              &quot;
-            </h3>
-            <ReactTable
-              className="-highlight"
-              columns={SearchLoan.COLUMN_DATA}
-              data={data}
-              defaultPageSize={15}
-              getPaginationProps={() => ({ style: { height: '30px' } })}
-              getTheadThProps={() => ({ style: { 'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E' } })}
-              minRows={15}
-              pageSizeOptions={[5, 10, 15, 20, 25, 50, 100]}
-              styleName="evalTable"
-            />
+          <div styleName="eval-table-container">
+            <div styleName="eval-table-height-limiter">
+              <h3 styleName="resultText">
+                <span styleName="searchResutlText">{ searchResultCount }</span>
+                        &nbsp;search results found for Loan &nbsp; &quot;
+                <span styleName="searchResutlText">{ loanNumber }</span>
+                &quot;
+              </h3>
+              <ReactTable
+                className="-striped -highlight"
+                columns={SearchLoan.COLUMN_DATA}
+                data={data}
+                getPaginationProps={() => ({ style: { height: '30px' } })}
+                getTheadThProps={() => ({
+                  style: {
+                    'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
+                  },
+                })}
+                minRows={20}
+                styleName="evalTable"
+              />
+            </div>
           </div>
         );
       }
@@ -125,7 +129,7 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'TASK NAME',
   accessor: 'taskName',
-  maxWidth: 150,
+  maxWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -143,7 +147,6 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'ASSIGNEE',
   accessor: 'assignee',
-  maxWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 }];
 

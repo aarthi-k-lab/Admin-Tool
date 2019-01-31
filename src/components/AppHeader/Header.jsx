@@ -93,7 +93,6 @@ class Header extends React.Component {
         <span styleName="spacer" />
         <TextField
           InputProps={{
-            inputProps: { maxLength: 10 },
             disableUnderline: true,
             startAdornment: (
               <InputAdornment position="start">
