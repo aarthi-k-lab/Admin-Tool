@@ -1,29 +1,24 @@
 import React from 'react';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import EvalTableCell from './EvalTableCell';
+
+const getDate = (value) => {
+  const date = moment(parseFloat(value));
+  return date.isValid() ? date.format('MM/DD/YYYY') : '';
+};
 
 const EvalTableRow = ({ row }) => {
   let cellData = null;
   switch (row.column.Header) {
     case 'ASSIGNEE':
-      cellData = row.value
-        ? (
-          <EvalTableCell addLink={false} styleProps="blackText" value={row.value} />
-        )
-        : (
-          <EvalTableCell addLink styleProps="redText" value="Unassigned" />
-        );
+      cellData = <EvalTableCell addLink={!row.value} styleProps={row.value ? 'blackText' : 'redText'} value={row.value ? row.value : 'Unassigned'} />;
+      break;
+    case 'STATUS DATE':
+      cellData = <EvalTableCell addLink={!row.original.assignee} styleProps="blackText" value={getDate(row.value)} />;
       break;
     default:
-      cellData = (
-        row.original.assignee
-          ? (
-            <EvalTableCell addLink={false} styleProps="blackText" value={row.value} />
-          )
-          : (
-            <EvalTableCell addLink styleProps="blackText" value={row.value} />
-          )
-      );
+      cellData = <EvalTableCell addLink={!row.original.assignee} styleProps="blackText" value={row.value} />;
   }
   return (
     <div>

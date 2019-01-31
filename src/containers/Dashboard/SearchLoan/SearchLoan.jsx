@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../../../components/EvalTable';
@@ -13,6 +13,7 @@ import './SearchLoan.css';
 class SearchLoan extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
@@ -28,6 +29,7 @@ class SearchLoan extends React.PureComponent {
       onAutoSave('Paused');
     }
     onSearchLoan(loanNumber);
+    this.canRedirect = true;
   }
 
   componentDidUpdate() {
@@ -101,7 +103,9 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return null;
+    return (this.canRedirect
+      ? <Redirect to="/loan-evaluation" /> : null
+    );
   }
 
   render() {
