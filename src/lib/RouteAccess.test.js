@@ -1,4 +1,4 @@
-import { hasManagerDashboardAccess, hasStagerDashboardAccess } from './RouteAccess';
+import { hasManagerDashboardAccess, hasStagerDashboardAccess, links } from './RouteAccess';
 
 describe('hasManagerDashboardAccess should return appropriate access', () => {
   it('hasManagerDashboardAccess should return true', () => {
@@ -23,5 +23,12 @@ describe('hasStagerDashboardAccess should return appropriate access', () => {
     const groups = ['stager'];
     const result = hasStagerDashboardAccess(groups);
     expect(result).toEqual(true);
+  });
+});
+
+
+describe('All personas exists', () => {
+  it('Backendunderwriter feature icon exists', () => {
+    expect(links[2].groups[0]).toEqual('beuw');
   });
 });

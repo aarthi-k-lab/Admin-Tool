@@ -21,6 +21,13 @@ const moveForward = {
   groups: ['util-mgr', 'allaccess'],
 };
 
+const backendUnderwriter = {
+  path: '/backendProcessing',
+  name: 'backend-processing',
+  img: '/static/img/backend.svg',
+  groups: ['beuw', 'beuw-mgr'],
+};
+
 const links = [
   managerDashboard,
   {
@@ -29,6 +36,7 @@ const links = [
     img: '/static/img/frontend.svg',
     groups: ['feuw', 'feuw-mgr'],
   },
+  backendUnderwriter,
   stager,
   moveForward,
 ];
