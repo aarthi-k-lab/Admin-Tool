@@ -22,8 +22,8 @@ const moveForward = {
 };
 
 const backendUnderwriter = {
-  path: '/backendProcessing',
-  name: 'backend-processing',
+  path: '/backend-evaluation',
+  name: 'backend-evaluation',
   img: '/static/img/backend.svg',
   groups: ['beuw', 'beuw-mgr'],
 };
@@ -31,8 +31,8 @@ const backendUnderwriter = {
 const links = [
   managerDashboard,
   {
-    path: '/loan-evaluation',
-    name: 'loan-evaluation',
+    path: '/frontend-evaluation',
+    name: 'frontend-evaluation',
     img: '/static/img/frontend.svg',
     groups: ['feuw', 'feuw-mgr'],
   },
