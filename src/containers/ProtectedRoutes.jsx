@@ -71,7 +71,7 @@ class ProtectedRoutes extends React.Component {
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
-          <Route component={Dashboard} path="/loan-evaluation" />
+          <Route component={Dashboard} path="/frontend-evaluation" />
           <Route
             exact
             path="/move-forward"
@@ -82,7 +82,7 @@ class ProtectedRoutes extends React.Component {
             )}
           />
           <Route component={SearchLoan} path="/search" />
-          <Route render={() => <Redirect to="/loan-evaluation" />} />
+          <Route render={() => <Redirect to="/frontend-evaluation" />} />
         </Switch>
       </App>
     );

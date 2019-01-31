@@ -107,7 +107,7 @@ class SearchLoan extends React.PureComponent {
   render() {
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/loan-evaluation">&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/frontend-evaluation">&lt; BACK</Link></span>
         { this.renderSearchResults() }
       </>
     );

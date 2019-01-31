@@ -5,7 +5,7 @@ import './EvalTableCell.css';
 
 const EvalTableCell = ({ value, styleProps, addLink }) => {
   const linkedSpan = (
-    <Link styleName={styleProps} to="/loan-evaluation">
+    <Link styleName={styleProps} to="/frontend-evaluation">
       <span>{ value }</span>
     </Link>
   );
