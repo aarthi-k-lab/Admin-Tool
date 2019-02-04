@@ -1,6 +1,6 @@
 {
-  "name": "react-boilerplate",
-  "version": "1.0.0",
+  "name": "CMOD",
+  "version": "1.0.4",
   "main": "index.js",
   "private": true,
   "jest-junit": {
