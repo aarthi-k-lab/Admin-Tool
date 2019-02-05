@@ -17,6 +17,7 @@ class SearchLoan extends React.PureComponent {
     this.renderSearchResults = this.renderSearchResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
+    this.validateLoanNumber = this.validateLoanNumber.bind(this);
   }
 
 
@@ -29,21 +30,17 @@ class SearchLoan extends React.PureComponent {
       onAutoSave('Paused');
     }
     onSearchLoan(loanNumber);
-    this.canRedirect = true;
   }
 
   componentDidUpdate() {
-    const {
-      searchLoanResult, onSearchLoan,
-    } = this.props;
+    const { onSearchLoan } = this.props;
     const loanNumber = this.getParamsValue();
-    if (searchLoanResult && searchLoanResult.loanNumber) {
-      if (loanNumber !== searchLoanResult.loanNumber.toString()) {
-        onSearchLoan(loanNumber);
-      }
+    const validLoanNumber = this.validateLoanNumber();
+    if (validLoanNumber) {
+      onSearchLoan(loanNumber);
     }
+    this.canRedirect = true;
   }
-
 
   getParamsValue() {
     const { location } = this.props;
@@ -55,6 +52,15 @@ class SearchLoan extends React.PureComponent {
   handleBackButton() {
     const { onEndShift } = this.props;
     onEndShift();
+  }
+
+  validateLoanNumber() {
+    const { searchLoanResult } = this.props;
+    const loanNumber = this.getParamsValue();
+    return !searchLoanResult
+      || (searchLoanResult
+      && searchLoanResult.loanNumber
+      && loanNumber !== searchLoanResult.loanNumber.toString());
   }
 
   renderSearchResults() {
