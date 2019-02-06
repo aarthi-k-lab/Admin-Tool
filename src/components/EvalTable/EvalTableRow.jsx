@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import EvalTableCell from './EvalTableCell';
 
 const getDate = (value) => {
-  const date = moment(parseFloat(value));
+  const date = moment(value);
   return date.isValid() ? date.format('MM/DD/YYYY') : '';
 };
 
