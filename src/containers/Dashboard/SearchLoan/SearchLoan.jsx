@@ -65,6 +65,11 @@ class SearchLoan extends React.PureComponent {
 
   renderSearchResults() {
     const { searchLoanResult } = this.props;
+    if (searchLoanResult.statusCode) {
+      return (
+        <InvalidLoanPage loanNumber={searchLoanResult.statusCode} />
+      );
+    }
     if (searchLoanResult.loanNumber) {
       const {
         loanNumber, unAssigned, assigned, valid,
@@ -128,35 +133,73 @@ SearchLoan.COLUMN_DATA = [{
   Header: 'EVAL ID',
   accessor: 'evalId',
   maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'PROCESS ID',
   accessor: 'piid',
   maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
-
-
-}, {
-  Header: 'TASK NAME',
-  accessor: 'taskName',
-  maxWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-
 }, {
   Header: 'STATUS',
-  accessor: 'status',
+  accessor: 'pstatus',
   maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'STATUS REASON',
+  accessor: 'statusReason',
+  maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
   Header: 'STATUS DATE',
-  accessor: 'statusDate',
+  accessor: 'pstatusDate',
   maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'ASSIGNEE',
+  Header: 'MILESTONE',
+  accessor: 'milestone',
+  maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK NAME',
+  accessor: 'taskName',
+  maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK STATUS',
+  accessor: 'tstatus',
+  maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK STATUS DATE',
+  accessor: 'tstatusDate',
+  maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'ASSIGNED TO',
   accessor: 'assignee',
+  minWidth: 200,
+  Cell: row => <EvalTableRow row={row} />,
+}, {
+  Header: 'ASSIGNED DATE',
+  accessor: 'assignedDate',
+  maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 }];
 

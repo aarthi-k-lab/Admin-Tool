@@ -77,10 +77,17 @@ const searchLoan = function* searchLoan(loanNumber) {
   const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
   try {
     const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
-    yield put({
-      type: SEARCH_LOAN_RESULT,
-      payload: response,
-    });
+    if (response !== null) {
+      yield put({
+        type: SEARCH_LOAN_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SEARCH_LOAN_RESULT,
+        payload: { statusCode: 404 },
+      });
+    }
   } catch (e) {
     yield put({ type: SEARCH_LOAN_RESULT, payload: { loanNumber: searchLoanNumber, valid: false } });
   }
