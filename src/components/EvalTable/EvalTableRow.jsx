@@ -6,7 +6,7 @@ import EvalTableCell from './EvalTableCell';
 const EvalTableRow = ({ row }) => {
   let cellData = null;
   switch (row.column.Header) {
-    case 'ASSIGNEE':
+    case 'ASSIGNED TO':
       cellData = <EvalTableCell addLink={!row.value} styleProps={row.value ? 'blackText' : 'redText'} value={row.value ? row.value : 'Unassigned'} />;
       break;
     default:
