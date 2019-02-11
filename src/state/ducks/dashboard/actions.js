@@ -9,6 +9,7 @@ import {
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
   SEARCH_LOAN_TRIGGER,
+  SAVE_SELECTED_BE_DISPOSITION,
 } from './types';
 
 
@@ -30,6 +31,11 @@ const dispositionSave = dispositionPayload => ({
 const dispositionSelect = dispositionPayload => ({
   type: SAVE_SELECTED_DISPOSITION,
   payload: dispositionPayload,
+});
+
+const beDispositionSelect = beDispositionPayload => ({
+  type: SAVE_SELECTED_BE_DISPOSITION,
+  payload: beDispositionPayload,
 });
 
 const errorTombstoneFetch = () => (
@@ -62,6 +68,7 @@ const searchLoan = loanNumber => ({
 
 export {
   autoSave,
+  beDispositionSelect,
   clearDisposition,
   clearFirstVisit,
   dispositionSave,

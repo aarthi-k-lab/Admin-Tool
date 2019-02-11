@@ -8,6 +8,7 @@ import {
   clearFirstVisit,
   getNext,
   searchLoan,
+  beDispositionSelect,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -24,6 +25,10 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
+};
+
+const onSelectDisposition = dispatch => (payload) => {
+  dispatch(beDispositionSelect(payload));
 };
 
 const onGetNext = dispatch => () => {
@@ -49,6 +54,7 @@ const operations = {
   onDispositionSelect,
   onGetNext,
   onSearchLoan,
+  onSelectDisposition,
 };
 
 export default operations;

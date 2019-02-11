@@ -6,8 +6,8 @@ import LandingPage from './LandingPage';
 import EvaluationPage from './EvaluationPage';
 
 function Dashboard(props) {
-  const { isFirstVisit } = props;
-  return isFirstVisit ? <LandingPage /> : <EvaluationPage />;
+  const { isFirstVisit, group } = props;
+  return isFirstVisit ? <LandingPage /> : <EvaluationPage group={group} />;
 }
 
 const TestExports = {
@@ -18,7 +18,11 @@ const mapStateToProps = state => ({
   isFirstVisit: dashboardSelectors.isFirstVisit(state),
 });
 
+Dashboard.defaultProps = {
+  group: 'FEUW',
+};
 Dashboard.propTypes = {
+  group: PropTypes.string,
   isFirstVisit: PropTypes.bool.isRequired,
 };
 

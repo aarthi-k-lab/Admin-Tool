@@ -18,6 +18,7 @@ const evalId = state => R.pathOr(null, ['dashboard', 'evalId'], state);
 
 const taskId = state => R.pathOr(null, ['dashboard', 'taskId'], state);
 
+const selectedDisposition = state => R.pathOr(null, ['dashboard', 'selectedDisposition'], state);
 
 const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'], state);
 
@@ -51,6 +52,7 @@ const selectors = {
   saveInProgress,
   taskFetchError,
   searchLoanResult,
+  selectedDisposition,
 };
 
 export default selectors;

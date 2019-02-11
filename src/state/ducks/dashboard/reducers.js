@@ -14,6 +14,7 @@ import {
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
   SEARCH_LOAN_RESULT,
+  SAVE_SELECTED_BE_DISPOSITION,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -134,6 +135,18 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition,
       };
     }
+
+    case SAVE_SELECTED_BE_DISPOSITION: {
+      let selectedDisposition = '';
+      if (action.payload) {
+        selectedDisposition = action.payload;
+      }
+      return {
+        ...state,
+        selectedDisposition,
+      };
+    }
+
     case SAVE_EVALID_LOANNUMBER: {
       const newState = {
         ...state,

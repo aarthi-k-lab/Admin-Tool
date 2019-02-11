@@ -13,7 +13,7 @@ import {
   operations,
   selectors,
 } from 'ducks/dashboard';
-import './Disposition.css';
+import './FrontEndDisposition.css';
 
 class Disposition extends React.PureComponent {
   constructor(props) {
