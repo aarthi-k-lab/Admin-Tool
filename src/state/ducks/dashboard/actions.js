@@ -9,6 +9,9 @@ import {
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
   SEARCH_LOAN_TRIGGER,
+  SAVE_EVALID_LOANNUMBER,
+  UNASSIGN_LOAN,
+  ASSIGN_LOAN,
   SAVE_SELECTED_BE_DISPOSITION,
 } from './types';
 
@@ -48,8 +51,21 @@ const getNext = () => ({
   type: GET_NEXT,
 });
 
+const selectEval = payload => ({
+  type: SAVE_EVALID_LOANNUMBER,
+  payload,
+});
+
 const endShift = () => ({
   type: END_SHIFT,
+});
+
+const unassignLoan = () => ({
+  type: UNASSIGN_LOAN,
+});
+
+const assignLoan = () => ({
+  type: ASSIGN_LOAN,
 });
 
 const clearDisposition = () => ({
@@ -78,4 +94,7 @@ export {
   getNext,
   onExpandView,
   searchLoan,
+  selectEval,
+  unassignLoan,
+  assignLoan,
 };

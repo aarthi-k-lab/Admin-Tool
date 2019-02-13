@@ -14,6 +14,8 @@ import {
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
   SEARCH_LOAN_RESULT,
+  UNASSIGN_LOAN_RESULT,
+  ASSIGN_LOAN_RESULT,
   SAVE_SELECTED_BE_DISPOSITION,
 } from './types';
 
@@ -58,6 +60,27 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         getSearchLoanResponse,
+      };
+    }
+
+    case UNASSIGN_LOAN_RESULT: {
+      let unassignLoanResponse = {};
+      if (action.payload) {
+        unassignLoanResponse = action.payload;
+      }
+      return {
+        ...state,
+        unassignLoanResponse,
+      };
+    }
+    case ASSIGN_LOAN_RESULT: {
+      let assignLoanResponse = {};
+      if (action.payload) {
+        assignLoanResponse = action.payload;
+      }
+      return {
+        ...state,
+        assignLoanResponse,
       };
     }
     case SHOW_LOADER: {
@@ -153,6 +176,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
+        showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         notasksFound: false,
       };

@@ -8,6 +8,9 @@ import {
   clearFirstVisit,
   getNext,
   searchLoan,
+  selectEval,
+  unassignLoan,
+  assignLoan,
   beDispositionSelect,
 } from './actions';
 
@@ -37,8 +40,22 @@ const onGetNext = dispatch => () => {
   dispatch(getNext());
 };
 
+const onSelectEval = dispatch => (payload) => {
+  dispatch(clearFirstVisit());
+  dispatch(clearDisposition());
+  dispatch(selectEval(payload));
+};
+
 const onEndShift = dispatch => () => {
   dispatch(endShift());
+};
+
+const onUnassignLoan = dispatch => () => {
+  dispatch(unassignLoan());
+};
+
+const onAssignLoan = dispatch => () => {
+  dispatch(assignLoan());
 };
 
 const onSearchLoan = dispatch => (loanNumber) => {
@@ -54,6 +71,9 @@ const operations = {
   onDispositionSelect,
   onGetNext,
   onSearchLoan,
+  onSelectEval,
+  onUnassignLoan,
+  onAssignLoan,
   onSelectDisposition,
 };
 

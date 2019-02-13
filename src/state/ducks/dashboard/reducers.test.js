@@ -5,6 +5,7 @@ import {
   TASKS_FETCH_ERROR,
   SAVE_EVALID_LOANNUMBER,
   SEARCH_LOAN_RESULT,
+  UNASSIGN_LOAN_RESULT,
 } from './types';
 
 const saveDispositionAction = {
@@ -40,10 +41,37 @@ const taskFetchErrorAction = {
 const searchLoanAction = {
   type: SEARCH_LOAN_RESULT,
   payload: {
-      loanNumber: '1800840108',
-      unAssigned: null,
-      assigned: null,
-      valid: true,
+    loanNumber: '1800840108',
+    unAssigned: null,
+    assigned: null,
+    valid: true,
+  },
+};
+
+const unAssignLoanPausedAction = {
+  type: UNASSIGN_LOAN_RESULT,
+  payload: {
+    cmodProcess: {
+      taskStatus: 'Paused',
+    },
+  },
+};
+
+const unAssignLoanAssignedAction = {
+  type: UNASSIGN_LOAN_RESULT,
+  payload: {
+    cmodProcess: {
+      taskStatus: 'Assigned',
+    },
+  },
+};
+
+const unAssignLoanErrorAction = {
+  type: UNASSIGN_LOAN_RESULT,
+  payload: {
+    cmodProcess: {
+      taskStatus: 'Error',
+    },
   },
 };
 const state = {};
@@ -53,7 +81,38 @@ describe('Ducks :: dashboard -> reducer', () => {
     expect(reducer(undefined, { type: 'init' })).toEqual({ firstVisit: true });
   });
 
+  it('Success unAssignLoan action', () => {
+    const expectedState = {
+      unassignLoanResponse: {
+        cmodProcess: {
+          taskStatus: 'Paused',
+        },
+      },
+    };
+    expect(reducer(state, unAssignLoanPausedAction)).toEqual(expectedState);
+  });
 
+  it('Failure unAssignLoan action', () => {
+    const expectedState = {
+      unassignLoanResponse: {
+        cmodProcess: {
+          taskStatus: 'Assigned',
+        },
+      },
+    };
+    expect(reducer(state, unAssignLoanAssignedAction)).toEqual(expectedState);
+  });
+
+  it('Failure unAssignLoan action', () => {
+    const expectedState = {
+      unassignLoanResponse: {
+        cmodProcess: {
+          taskStatus: 'Error',
+        },
+      },
+    };
+    expect(reducer(state, unAssignLoanErrorAction)).toEqual(expectedState);
+  });
   it('saveDisposition action', () => {
     const expectedState = {
       getNextResponse: {
@@ -70,6 +129,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       taskId: '1234',
       taskFetchError: false,
       notasksFound: false,
+      showAssign: null,
     };
     expect(reducer(state, saveEvalIdLoanNumberAction)).toEqual(expectedState);
   });
@@ -101,7 +161,7 @@ describe('Ducks :: dashboard -> reducer', () => {
         unAssigned: null,
         assigned: null,
         valid: true,
-      }
+      },
     };
     expect(reducer(state, searchLoanAction)).toEqual(expectedState);
   });

@@ -94,8 +94,8 @@ class Header extends React.Component {
         <TextField
           InputProps={{
             disableUnderline: true,
-            startAdornment: (
-              <InputAdornment position="start">
+            endAdornment: (
+              <InputAdornment position="end">
                 <IconButton onClick={this.handleSearchLoanClick}>
                   <img alt="search" src="/static/img/search.png" styleName="searchIcon" />
                 </IconButton>

@@ -478,3 +478,112 @@ describe('search Loan Success', () => {
       .toEqual(put({ type: actionTypes.SEARCH_LOAN_RESULT, payload: { ...mockResponse } }));
   });
 });
+
+describe('watch unassign Loan ', () => {
+  it('should trigger unassignLoan worker', () => {
+    const saga = cloneableGenerator(TestExports.watchUnassignLoan)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.UNASSIGN_LOAN, TestExports.unassignLoan));
+  });
+});
+
+describe('unassign Loan', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+  };
+
+  const mockResponse = {
+    cmodProcess: {
+      taskStatus: 'Paused',
+    },
+  };
+
+  const saga = cloneableGenerator(TestExports.unassignLoan)();
+
+  it('should call select evalId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.evalId));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(3565247).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call select taskId from store', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(select(selectors.taskId));
+  });
+
+  it('should call select loanNumber from store', () => {
+    expect(saga.next(74365847).value)
+      .toEqual(select(selectors.loanNumber));
+  });
+
+  it('should call unassign Api', () => {
+    expect(saga.next(18008401081).value)
+      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847', {}));
+  });
+
+  it('should call UNASSIGN_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.UNASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
+  });
+});
+
+describe('watch assign Loan ', () => {
+  it('should trigger assignLoan worker', () => {
+    const saga = cloneableGenerator(TestExports.watchAssignLoan)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.ASSIGN_LOAN, TestExports.assignLoan));
+  });
+});
+
+describe('assign Loan', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+  };
+
+  const mockResponse = {
+    cmodProcess: {
+      evalId: 3565247,
+    },
+    status: 'Loan Assignment Successful',
+  };
+
+  const saga = cloneableGenerator(TestExports.assignLoan)();
+
+  it('should call select evalId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.evalId));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(3565247).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call select taskId from store', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(select(selectors.taskId));
+  });
+
+  it('should call select loanNumber from store', () => {
+    expect(saga.next(74365847).value)
+      .toEqual(select(selectors.loanNumber));
+  });
+
+  it('should call assign Api', () => {
+    expect(saga.next(18008401081).value)
+      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847', {}));
+  });
+
+  it('should call ASSIGN_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
+  });
+});

@@ -6,17 +6,21 @@ import * as R from 'ramda';
 import { Link, Redirect } from 'react-router-dom';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
-import { EvalTableRow } from '../../../components/EvalTable';
+import { EvalTableRow } from '../EvalTable';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 import './SearchLoan.css';
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      isRedirect: false,
+    };
     this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
     this.validateLoanNumber = this.validateLoanNumber.bind(this);
   }
 
@@ -54,6 +58,14 @@ class SearchLoan extends React.PureComponent {
     onEndShift();
   }
 
+  handleRowClick(payload) {
+    const { onSelectEval } = this.props;
+    if (payload.assignee !== 'In Queue') {
+      onSelectEval(payload);
+      this.setState({ isRedirect: true });
+    }
+  }
+
   validateLoanNumber() {
     const { searchLoanResult } = this.props;
     const loanNumber = this.getParamsValue();
@@ -65,6 +77,12 @@ class SearchLoan extends React.PureComponent {
 
   renderSearchResults() {
     const { searchLoanResult } = this.props;
+    const { isRedirect } = this.state;
+    if (isRedirect) {
+      return (
+        <Redirect to="/frontend-evaluation" />
+      );
+    }
     if (searchLoanResult.statusCode) {
       return (
         <InvalidLoanPage loanNumber={searchLoanResult.statusCode} />
@@ -105,6 +123,12 @@ class SearchLoan extends React.PureComponent {
                     'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
                   },
                 })}
+                getTrProps={(state, rowInfo) => ({
+                  onClick: () => {
+                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                    this.handleRowClick(payload);
+                  },
+                })}
                 minRows={20}
                 styleName="evalTable"
               />
@@ -115,7 +139,7 @@ class SearchLoan extends React.PureComponent {
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
     return (this.canRedirect
-      ? <Redirect to="/loan-evaluation" /> : null
+      ? <Redirect to="/frontend-evaluation" /> : null
     );
   }
 
@@ -158,8 +182,9 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'STATUS DATE',
   accessor: 'pstatusDate',
-  maxWidth: 90,
-  minWidth: 90,
+  maxWidth: 85,
+  minWidth: 85,
+
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -194,6 +219,7 @@ SearchLoan.COLUMN_DATA = [{
   Header: 'ASSIGNED TO',
   accessor: 'assignee',
   minWidth: 200,
+  maxWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'ASSIGNED DATE',
@@ -210,14 +236,14 @@ SearchLoan.defaultProps = {
 
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.func.isRequired,
+  evalId: PropTypes.string.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
-
+  onSelectEval: PropTypes.func.isRequired,
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
@@ -233,7 +259,7 @@ const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),
-
+  onSelectEval: operations.onSelectEval(dispatch),
 });
 
 const SearchLoanContainer = connect(

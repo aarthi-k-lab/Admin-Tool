@@ -1,9 +1,9 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
-import LeftNav from './LeftNav';
+import { shallow } from 'enzyme';
+import { TestExports } from './LeftNav';
 
-describe('<LeftNav Components />', () => {
-  it('LeftNav renders correctly', () => {
+describe('<LeftNav />', () => {
+  it('shows LeftNavButtons', () => {
     const user = {
       userDetails: {
         email: 'bernt@mrcooper.com',
@@ -11,9 +11,9 @@ describe('<LeftNav Components />', () => {
         name: 'brent',
       },
     };
-    const tree = renderer
-      .create(<LeftNav user={user} />)
-      .toJSON();
-    expect(tree).toMatchSnapshot();
+    const wrapper = shallow(
+      <TestExports.LeftNav user={user} />,
+    );
+    expect(wrapper.find('nav')).toHaveLength(1);
   });
 });

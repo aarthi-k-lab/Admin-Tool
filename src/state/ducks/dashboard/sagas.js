@@ -32,6 +32,10 @@ import {
   AUTO_SAVE_TRIGGER,
   SEARCH_LOAN_RESULT,
   SEARCH_LOAN_TRIGGER,
+  ASSIGN_LOAN,
+  UNASSIGN_LOAN,
+  UNASSIGN_LOAN_RESULT,
+  ASSIGN_LOAN_RESULT,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 
@@ -95,6 +99,19 @@ const searchLoan = function* searchLoan(loanNumber) {
 
 function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
+}
+
+const selectEval = function* selectEval(loanNumber) {
+  const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
+  try {
+    yield put(tombstoneActions.fetchTombstoneData(searchLoanNumber));
+  } catch (e) {
+    yield put({ type: HIDE_LOADER });
+  }
+};
+
+function* watchTombstoneLoan() {
+  yield takeEvery(SAVE_EVALID_LOANNUMBER, selectEval);
 }
 const saveDisposition = function* setDiposition(dispositionPayload) {
   try {
@@ -177,12 +194,72 @@ function* endShift(action) {
 function* watchEndShift() {
   yield takeEvery(END_SHIFT, endShift);
 }
+
+function* unassignLoan() {
+  try {
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const taskId = yield select(selectors.taskId);
+    const loanNumber = yield select(selectors.loanNumber);
+    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}`, {});
+    if (response !== null) {
+      yield put({
+        type: UNASSIGN_LOAN_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: UNASSIGN_LOAN_RESULT,
+        payload: { status: 'ERROR' },
+      });
+    }
+  } catch (e) {
+    yield put({ type: UNASSIGN_LOAN_RESULT, payload: { status: 'ERROR' } });
+  }
+}
+
+function* watchUnassignLoan() {
+  yield takeEvery(UNASSIGN_LOAN, unassignLoan);
+}
+
+function* assignLoan() {
+  try {
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const taskId = yield select(selectors.taskId);
+    const loanNumber = yield select(selectors.loanNumber);
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}`, {});
+    if (response !== null) {
+      yield put({
+        type: ASSIGN_LOAN_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: ASSIGN_LOAN_RESULT,
+        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+      });
+    }
+  } catch (e) {
+    yield put({ type: ASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });
+  }
+}
+
+function* watchAssignLoan() {
+  yield takeEvery(ASSIGN_LOAN, assignLoan);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   endShift,
   saveDisposition,
   setExpandView,
   searchLoan,
+  selectEval,
+  unassignLoan,
+  assignLoan,
   watchAutoSave,
   watchEndShift,
   watchSetExpandView,
@@ -190,6 +267,9 @@ export const TestExports = {
   getNext,
   watchDispositionSave,
   watchSearchLoan,
+  watchTombstoneLoan,
+  watchUnassignLoan,
+  watchAssignLoan,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -200,5 +280,8 @@ export const combinedSaga = function* combinedSaga() {
     watchSetExpandView(),
     watchEndShift(),
     watchSearchLoan(),
+    watchTombstoneLoan(),
+    watchUnassignLoan(),
+    watchAssignLoan(),
   ]);
 };

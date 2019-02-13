@@ -24,6 +24,11 @@ const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'
 
 const searchLoanResult = state => R.pathOr({}, ['dashboard', 'getSearchLoanResponse'], state);
 
+const unassignResult = state => R.pathOr({}, ['dashboard', 'unassignLoanResponse'], state);
+
+const assignResult = state => R.pathOr({}, ['dashboard', 'assignLoanResponse'], state);
+
+
 const enableGetNext = state => (
   isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state)
@@ -34,6 +39,8 @@ const enableEndShift = state => (
   isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state)
 );
+
+const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
 
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
 
@@ -52,6 +59,9 @@ const selectors = {
   saveInProgress,
   taskFetchError,
   searchLoanResult,
+  showAssign,
+  unassignResult,
+  assignResult,
   selectedDisposition,
 };
 
