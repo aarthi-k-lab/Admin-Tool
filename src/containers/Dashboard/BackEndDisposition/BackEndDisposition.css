@@ -1,5 +1,5 @@
 .label.label {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .disposition-section {
@@ -31,6 +31,7 @@
 
 .tooltip.tooltip {
   font-size: 1rem;
+  margin-left: 220px;
 }
 
 .label-true {
@@ -60,13 +61,15 @@
 }
 
 .para-title {
-  font-size: 20px;
+  font-size: 17px;
   margin: 30px 41rem 0px;
 }
 
 .OperateButton {
-  margin-left: 84.5rem;
+  font-size: 11px;
+  margin-left: 86.2rem;
   border-color: transparent;
+  outline: none;
 }
 
 .CardStyle.CardStyle,
@@ -82,32 +85,30 @@
 }
 
 .CardActionsStyle {
-  height: 2vw;
+  height: 3rem;
 }
 
 .GroupNames {
   width: 150rem;
-  font-size: 14px;
+  font-size: 11px;
   margin-left: 5px;
   margin-top: 2px;
 }
 
 .CardContentStyle {
-  margin-top: -2vw;
-  margin-bottom: -0.8vw;
+  margin-top: -2.5rem;
 }
 
 .RadioButtonStyle {
   color: #2d2d86;
 }
 
-.radio-label.radio-label {
-  font-size: 4rem;
-}
 
 .radio-button-gap {
   width: 468px;
-  height: 2vw;
+   height: 1.75rem;
+   margin-top: 8px;
+   margin-left: -4px !important;
 }
 
 .scrollable-block {

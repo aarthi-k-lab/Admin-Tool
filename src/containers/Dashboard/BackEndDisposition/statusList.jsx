@@ -15,7 +15,7 @@ const status = [
     activities: [
       { id: 'jasjfoisawdeddsoij', activityName: 'Approval', verbiage: 'If the modification is approved then ensure the Eval Status is Approved and the resolution status is Closed. Please note for a Loan Modification and Forgiveness Modification case(s) ensure the resolution status is in Sent for Approval.' },
       { id: 'ajsoidwedjasoajejc', activityName: 'Reject', verbiage: 'The Eval status should be Active and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.' },
-      { id: 'ajsoidwenewdendjasoajejc', activityName: 'Send For QC Review', verbiage: 'If the review results in a potential approval, then select this option to handoff for final QC and approval review. Ensure the status of Remedy is in either a Sent for Approval or Closed resolution status with an Active Eval. Please note for Loan Modification and Forgiveness Modification the resolution cases should be in a Locked Resolution Status.' },
+      { id: 'ajsoidwenewdendjasoajejc', activityName: 'Send For QC Review', verbiage: 'If the review results in a potential approval, then select this option to handoff for final QC and approval review. Ensure the status of Remedy is in either a Sent for Approval resolution status with an Active Eval. Please note for Loan Modification and Forgiveness Modification the resolution cases should be in a Locked Resolution Status and for Government Trial the Resolution Status should be Closed.' },
     ],
     labelDisplay: 'none',
     expanded: false,
@@ -28,7 +28,7 @@ const status = [
       {
         id: 'ajsoidjasjdwidjoajejc',
         activityName: 'Non-Delegated Review Required',
-        verbiage: 'Choose this option if you submitted the file for a non-delegated review and requires a response from the investor. The resolution status should be open and the substatus should be "Nondelegated Pending".',
+        verbiage: 'Choose this option if you submitted the file for a non-delegated review and requires a response from the investor. The resolution status should be either open or locked and the substatus should be "Nondelegated Pending".',
       },
       {
         id: 'ajsosdfidjasjdwidjoajejc',

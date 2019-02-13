@@ -41,11 +41,13 @@ class CardCreator extends React.Component {
     };
 
     const payload = {
-      statusName: changedStatus.name,
+      cardStatus: {
+        Name: changedStatus.name,
+        isExpanded: changedStatus.expanded,
+      },
       id: status.id,
       isActivitySelected: false,
       activityName: selectedActivity,
-      isExpanded: changedStatus.expanded,
     };
     onSelectDisposition(payload);
     this.setState({ status: changedStatus });
@@ -89,7 +91,6 @@ class CardCreator extends React.Component {
             label={item.activityName}
             onClick={() => this.handleRadioClick(m.name, item.activityName)
           }
-            styleName="radio-label"
             value={item.activityName}
           />
         </div>

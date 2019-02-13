@@ -19,44 +19,41 @@ class BackEndDisposition extends Component {
     this.state = {
       status: getStatus(),
       operate: 'ExpandAll',
-      selectedStatus: '',
+      selectedStatus: {
+        Name: '',
+        isExpanded: false,
+      },
       selectedActivity: '',
       disableSubmit: true,
     };
   }
 
-  componentWillReceiveProps(props) {
-    const { selectedDisposition } = props;
-    if (!selectedDisposition.isExpanded) this.setState({ operate: 'ExpandAll' });
-  }
-
-  setSelectionLabel(id, statusName, activityName) {
+  setSelectionLabel(id, cardStatus, activityName) {
     this.setState({
-      selectedStatus: statusName,
+      selectedStatus: cardStatus,
       selectedActivity: activityName,
       disableSubmit: false,
     });
     const { status } = this.state;
     const changedStatus = status.map((item) => {
-      let tempStatus = {};
-      tempStatus = {
+      const tempStatus = {
         ...item,
         labelDisplay: (item.id !== id) ? 'none' : 'block',
       };
-      return { ...tempStatus };
+      return tempStatus;
     });
     this.setState({ status: changedStatus });
   }
 
-  collapseOthers(id, statusName, activityName, isExpanded) {
-    this.setState({ selectedStatus: statusName, selectedActivity: activityName });
+  collapseOthers(id, cardStatus, activityName) {
+    this.setState({ selectedStatus: cardStatus, selectedActivity: activityName });
     const { status } = this.state;
     let changedStatus = null;
 
     changedStatus = status.map((item) => {
       const tempStatus = {
         ...item,
-        expanded: shouldExpand(isExpanded, item, id),
+        expanded: shouldExpand(cardStatus.isExpanded, item, id),
       };
       return tempStatus;
     });
@@ -70,8 +67,8 @@ class BackEndDisposition extends Component {
 
     const { selectedDisposition } = this.props;
     if (selectedDisposition) {
-      const { statusName } = selectedDisposition;
-      this.setState({ selectedStatus: statusName });
+      const { cardStatus } = selectedDisposition;
+      this.setState({ selectedStatus: cardStatus });
     }
     const statuses = status.map(m => ({
       ...m,
@@ -92,22 +89,20 @@ class BackEndDisposition extends Component {
         <Loader message="Please Wait" />
       );
     }
-    const sameDispositionSelected = selectedDisposition
-    && (selectedDisposition.statusName !== selectedStatus
+    const sameDispositionNotSelected = selectedDisposition
+    && (selectedDisposition.cardStatus !== selectedStatus
     || selectedDisposition.activityName !== selectedActivity);
-
-    if (sameDispositionSelected) {
+    if (sameDispositionNotSelected) {
       const {
         id,
-        statusName,
+        cardStatus,
         isActivitySelected,
         activityName,
-        isExpanded,
       } = selectedDisposition;
       if (isActivitySelected) {
-        this.setSelectionLabel(id, statusName, activityName);
+        this.setSelectionLabel(id, cardStatus, activityName);
       } else {
-        this.collapseOthers(id, statusName, activityName, isExpanded);
+        this.collapseOthers(id, cardStatus, activityName);
       }
     }
 
@@ -150,7 +145,10 @@ BackEndDisposition.defaultProps = {
   inProgress: false,
   selectedDisposition: {
     disableSubmit: true,
-    statusName: '',
+    cardStatus: {
+      Name: '',
+      isExpanded: false,
+    },
   },
 };
 
@@ -158,11 +156,14 @@ BackEndDisposition.propTypes = {
   inProgress: PropTypes.bool,
   selectedDisposition: PropTypes.shape({
     activityName: PropTypes.string,
+    cardStatus: PropTypes.shape({
+      isExpanded: PropTypes.bool,
+      Name: PropTypes.string,
+    }),
     disableSubmit: PropTypes.bool,
     id: PropTypes.string,
     isActivitySelected: PropTypes.bool,
     isExpanded: PropTypes.bool,
-    statusName: PropTypes.string,
   }),
 };
 
