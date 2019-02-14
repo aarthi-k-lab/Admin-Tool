@@ -517,14 +517,24 @@ describe('unassign Loan', () => {
       .toEqual(select(selectors.taskId));
   });
 
-  it('should call select loanNumber from store', () => {
+  it('should call select ProcessId from store', () => {
     expect(saga.next(74365847).value)
+      .toEqual(select(selectors.processId));
+  });
+
+  it('should call select Process Status from store', () => {
+    expect(saga.next(23456).value)
+      .toEqual(select(selectors.processStatus));
+  });
+
+  it('should call select loanNumber from store', () => {
+    expect(saga.next('Active').value)
       .toEqual(select(selectors.loanNumber));
   });
 
   it('should call unassign Api', () => {
     expect(saga.next(18008401081).value)
-      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847', {}));
+      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active', {}));
   });
 
   it('should call UNASSIGN_LOAN_RESULT', () => {
@@ -572,14 +582,23 @@ describe('assign Loan', () => {
       .toEqual(select(selectors.taskId));
   });
 
-  it('should call select loanNumber from store', () => {
+  it('should call select ProcessId from store', () => {
     expect(saga.next(74365847).value)
-      .toEqual(select(selectors.loanNumber));
+      .toEqual(select(selectors.processId));
   });
 
+  it('should call select Process Status from store', () => {
+    expect(saga.next(23456).value)
+      .toEqual(select(selectors.processStatus));
+  });
+
+  it('should call select loanNumber from store', () => {
+    expect(saga.next('Active').value)
+      .toEqual(select(selectors.loanNumber));
+  });
   it('should call assign Api', () => {
     expect(saga.next(18008401081).value)
-      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847', {}));
+      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active', {}));
   });
 
   it('should call ASSIGN_LOAN_RESULT', () => {

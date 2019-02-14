@@ -201,8 +201,10 @@ function* unassignLoan() {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskId = yield select(selectors.taskId);
+    const processId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}`, {});
+    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}`, {});
     if (response !== null) {
       yield put({
         type: UNASSIGN_LOAN_RESULT,
@@ -229,8 +231,10 @@ function* assignLoan() {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskId = yield select(selectors.taskId);
+    const processId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}`, {});
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}`, {});
     if (response !== null) {
       yield put({
         type: ASSIGN_LOAN_RESULT,
