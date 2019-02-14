@@ -143,7 +143,7 @@ function getModificationType(_, evalDetails) {
 function getLastDocumentReceivedDate(_, evalDetails) {
   const date = moment(evalDetails.lastDocumentReceivedDate);
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('Last Document Received Date', dateString);
+  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
 }
 
 function getFLDD(_, evalDetails) {
