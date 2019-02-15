@@ -156,6 +156,8 @@ describe('Ducks :: dashboard -> reducer', () => {
 
   it('searchLoan Result action', () => {
     const expectedState = {
+      assignLoanResponse: {},
+      unassignLoanResponse: {},
       getSearchLoanResponse: {
         loanNumber: '1800840108',
         unAssigned: null,

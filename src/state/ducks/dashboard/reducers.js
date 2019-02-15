@@ -17,6 +17,7 @@ import {
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
   SAVE_SELECTED_BE_DISPOSITION,
+  HIDE_ASSIGN_UNASSIGN,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -60,6 +61,8 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         getSearchLoanResponse,
+        assignLoanResponse: {},
+        unassignLoanResponse: {},
       };
     }
 
@@ -183,6 +186,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         notasksFound: false,
       };
       return newState;
+    }
+
+    case HIDE_ASSIGN_UNASSIGN: {
+      return {
+        ...state,
+        showAssign: null,
+      };
     }
     default:
       return state;

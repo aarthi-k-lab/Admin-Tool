@@ -243,11 +243,11 @@ function* assignLoan() {
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
-        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+        payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' },
       });
     }
   } catch (e) {
-    yield put({ type: ASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });
+    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
   }
 }
 

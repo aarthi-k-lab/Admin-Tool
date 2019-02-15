@@ -13,6 +13,7 @@ import {
   UNASSIGN_LOAN,
   ASSIGN_LOAN,
   SAVE_SELECTED_BE_DISPOSITION,
+  HIDE_ASSIGN_UNASSIGN,
 } from './types';
 
 
@@ -81,6 +82,10 @@ const searchLoan = loanNumber => ({
   payload: loanNumber,
 });
 
+const hideAssignUnassign = () => ({
+  type: HIDE_ASSIGN_UNASSIGN,
+});
+
 
 export {
   autoSave,
@@ -97,4 +102,5 @@ export {
   selectEval,
   unassignLoan,
   assignLoan,
+  hideAssignUnassign,
 };
