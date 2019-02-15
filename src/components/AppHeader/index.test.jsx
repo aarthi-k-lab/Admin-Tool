@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Header from './Header';
+import { TestExports } from './Header';
+
 
 describe('<Header />', () => {
   const user = {
@@ -13,7 +14,7 @@ describe('<Header />', () => {
 
   it('shows Header', () => {
     const wrapper = shallow(
-      <Header user={user} />,
+      <TestExports.Header user={user} />,
     );
     expect(wrapper.find('Link')).toHaveLength(1);
     expect(wrapper.find('WithStyles(IconButton)')).toHaveLength(1);

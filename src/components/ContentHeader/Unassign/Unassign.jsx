@@ -13,9 +13,16 @@ class Unassign extends React.Component {
   constructor(props) {
     super(props);
     this.isDialogOpen = false;
-    this.isShowDialog = false;
+    this.state = {
+      isOpen: true,
+    };
     this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.getStatus = this.getStatus.bind(this);
+  }
+
+  componentWillReceiveProps() {
+    this.setState({ isOpen: true });
   }
 
   getStatus() {
@@ -24,14 +31,14 @@ class Unassign extends React.Component {
     if (unassignResult && unassignResult.cmodProcess) {
       switch (unassignResult.cmodProcess.taskStatus) {
         case 'Paused':
-          return 'Loan unassignment was successful';
-        case 'Assigned':
-          return 'Sorry, somebody is working on it currently';
+          return 'Eval has been unassigned from the user.';
+        case 'Not Paused':
+          return 'Currently a user is actively working on this loan.';
         default:
-          return 'Loan unassignment was not successful, please try again';
+          return 'Currently one of the services is down. Please try again. If you still facing this issue, please reach to IT team.';
       }
     }
-    return 'Unassignment Unsuccessful. Please try again';
+    return 'Currently one of the services is down. Please try again. If you still facing this issue, please reach to IT team.';
   }
 
   handleClick() {
@@ -39,18 +46,31 @@ class Unassign extends React.Component {
     const groups = user && user.groupList;
     if (RouteAccess.hasManagerDashboardAccess(groups)) {
       onUnassignLoan();
-      this.isShowDialog = true;
+    }
+  }
+
+  handleClose() {
+    this.setState({ isOpen: false });
+    const { unassignResult, onDialogClose } = this.props;
+    if (unassignResult.cmodProcess.taskStatus === 'Paused') {
+      onDialogClose();
     }
   }
 
   render() {
     const { disabled, unassignResult } = this.props;
+    const { isOpen } = this.state;
     let RenderContent = null;
     let renderComponent = null;
-    if (unassignResult && unassignResult.cmodProcess && this.isShowDialog) {
+    if (unassignResult && unassignResult.cmodProcess) {
       RenderContent = this.getStatus();
-      renderComponent = <DialogBox isDialogOpen={this.isDialogOpen} message={RenderContent} />;
-      this.isShowDialog = false;
+      renderComponent = (
+        <DialogBox
+          isOpen={isOpen}
+          message={RenderContent}
+          onClose={this.handleClose}
+        />
+      );
     }
     return (
       <>
@@ -72,10 +92,12 @@ class Unassign extends React.Component {
 
 Unassign.defaultProps = {
   disabled: false,
+  onDialogClose: () => {},
 };
 
 Unassign.propTypes = {
   disabled: PropTypes.bool,
+  onDialogClose: PropTypes.func,
   onUnassignLoan: PropTypes.func.isRequired,
   unassignResult: PropTypes.shape({
     cmodProcess: PropTypes.shape({
@@ -95,6 +117,7 @@ Unassign.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   onUnassignLoan: operations.onUnassignLoan(dispatch),
+  onDialogClose: operations.onDialogClose(dispatch),
 });
 
 

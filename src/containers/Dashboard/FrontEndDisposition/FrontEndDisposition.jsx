@@ -70,18 +70,25 @@ class Disposition extends React.PureComponent {
 
   renderSave() {
     const {
-      dispositionErrorMessages, dispositionReason, saveInProgress, enableGetNext,
+      dispositionErrorMessages,
+      dispositionReason,
+      saveInProgress,
+      enableGetNext,
+      showAssign,
+      assignResult,
     } = this.props;
     if (saveInProgress) {
       return (
         <Loader />
       );
     }
+    const notAssigned = showAssign !== null
+      || (assignResult === null || assignResult.taskData === null);
     return (
       <Button
         className="material-ui-button"
         color="primary"
-        disabled={!dispositionReason || enableGetNext}
+        disabled={!dispositionReason || enableGetNext || notAssigned}
         onClick={this.handleSave}
         styleName="save-button"
         variant="contained"
@@ -148,9 +155,14 @@ Disposition.defaultProps = {
   taskFetchError: false,
   inProgress: false,
   saveInProgress: false,
+  assignResult: null,
+  showAssign: null,
 };
 
 Disposition.propTypes = {
+  assignResult: PropTypes.shape({
+    status: PropTypes.string,
+  }),
   dispositionErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
@@ -160,6 +172,7 @@ Disposition.propTypes = {
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   onDispositionSelect: PropTypes.func.isRequired,
   saveInProgress: PropTypes.bool,
+  showAssign: PropTypes.bool,
   taskFetchError: PropTypes.bool,
 };
 
@@ -172,6 +185,8 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   noTasksFound: selectors.noTasksFound(state),
   saveInProgress: selectors.saveInProgress(state),
+  showAssign: selectors.showAssign(state),
+  assignResult: selectors.assignResult(state),
   taskFetchError: selectors.taskFetchError(state),
 });
 
