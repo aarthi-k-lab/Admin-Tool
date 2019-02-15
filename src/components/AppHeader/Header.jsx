@@ -170,4 +170,10 @@ const HeaderContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Header);
+
+const TestExports = {
+  Header,
+};
+export { TestExports };
+
 export default HeaderContainer;
