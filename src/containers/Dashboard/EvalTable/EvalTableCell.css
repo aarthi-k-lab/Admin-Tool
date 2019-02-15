@@ -10,3 +10,7 @@
 .blackText {
   text-decoration: none !important;
 }
+
+.pointer {
+  cursor: pointer !important;
+}

@@ -103,7 +103,7 @@ IdleUserHandler.defaultProps = {
 };
 IdleUserHandler.propTypes = {
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.func.isRequired,
+  evalId: PropTypes.string.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
 };

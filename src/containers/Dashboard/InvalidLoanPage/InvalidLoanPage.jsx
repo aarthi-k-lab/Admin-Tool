@@ -8,11 +8,10 @@ const InvalidLoanPage = ({ loanNumber }) => (
     <img alt="no loan page placeholder" src="/static/img/invalid-loan.png" />
     <h3>Awww...Do not feel bad.</h3>
     <span>
-      {`We did not find any matches for "${loanNumber}". Try searching with a valid loan number.`}
+      {loanNumber === 404 ? 'Service Down. Please retry after sometime...!' : `We did not find any matches for "${loanNumber}". Try searching with a valid loan number.`}
     </span>
   </FullHeightColumn>
 );
-
 InvalidLoanPage.propTypes = {
   loanNumber: PropTypes.string.isRequired,
 };

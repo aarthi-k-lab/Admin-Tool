@@ -14,6 +14,10 @@ import {
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
   SEARCH_LOAN_RESULT,
+  UNASSIGN_LOAN_RESULT,
+  ASSIGN_LOAN_RESULT,
+  SAVE_SELECTED_BE_DISPOSITION,
+  HIDE_ASSIGN_UNASSIGN,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -57,6 +61,29 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         getSearchLoanResponse,
+        assignLoanResponse: {},
+        unassignLoanResponse: {},
+      };
+    }
+
+    case UNASSIGN_LOAN_RESULT: {
+      let unassignLoanResponse = {};
+      if (action.payload) {
+        unassignLoanResponse = action.payload;
+      }
+      return {
+        ...state,
+        unassignLoanResponse,
+      };
+    }
+    case ASSIGN_LOAN_RESULT: {
+      let assignLoanResponse = {};
+      if (action.payload) {
+        assignLoanResponse = action.payload;
+      }
+      return {
+        ...state,
+        assignLoanResponse,
       };
     }
     case SHOW_LOADER: {
@@ -134,16 +161,38 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition,
       };
     }
+
+    case SAVE_SELECTED_BE_DISPOSITION: {
+      let selectedDisposition = '';
+      if (action.payload) {
+        selectedDisposition = action.payload;
+      }
+      return {
+        ...state,
+        selectedDisposition,
+      };
+    }
+
     case SAVE_EVALID_LOANNUMBER: {
       const newState = {
         ...state,
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
+        processId: action.payload.piid,
+        processStatus: action.payload.pstatus,
+        showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         notasksFound: false,
       };
       return newState;
+    }
+
+    case HIDE_ASSIGN_UNASSIGN: {
+      return {
+        ...state,
+        showAssign: null,
+      };
     }
     default:
       return state;

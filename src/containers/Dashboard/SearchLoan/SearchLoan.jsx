@@ -6,17 +6,22 @@ import * as R from 'ramda';
 import { Link, Redirect } from 'react-router-dom';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
-import { EvalTableRow } from '../../../components/EvalTable';
+import { EvalTableRow } from '../EvalTable';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 import './SearchLoan.css';
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      isRedirect: false,
+    };
     this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
+    this.validateLoanNumber = this.validateLoanNumber.bind(this);
   }
 
 
@@ -29,21 +34,17 @@ class SearchLoan extends React.PureComponent {
       onAutoSave('Paused');
     }
     onSearchLoan(loanNumber);
-    this.canRedirect = true;
   }
 
   componentDidUpdate() {
-    const {
-      searchLoanResult, onSearchLoan,
-    } = this.props;
+    const { onSearchLoan } = this.props;
     const loanNumber = this.getParamsValue();
-    if (searchLoanResult && searchLoanResult.loanNumber) {
-      if (loanNumber !== searchLoanResult.loanNumber.toString()) {
-        onSearchLoan(loanNumber);
-      }
+    const validLoanNumber = this.validateLoanNumber();
+    if (validLoanNumber) {
+      onSearchLoan(loanNumber);
     }
+    this.canRedirect = true;
   }
-
 
   getParamsValue() {
     const { location } = this.props;
@@ -57,8 +58,36 @@ class SearchLoan extends React.PureComponent {
     onEndShift();
   }
 
+  handleRowClick(payload) {
+    const { onSelectEval } = this.props;
+    if (payload.assignee !== 'In Queue') {
+      onSelectEval(payload);
+      this.setState({ isRedirect: true });
+    }
+  }
+
+  validateLoanNumber() {
+    const { searchLoanResult } = this.props;
+    const loanNumber = this.getParamsValue();
+    return !searchLoanResult
+      || (searchLoanResult
+      && searchLoanResult.loanNumber
+      && loanNumber !== searchLoanResult.loanNumber.toString());
+  }
+
   renderSearchResults() {
     const { searchLoanResult } = this.props;
+    const { isRedirect } = this.state;
+    if (isRedirect) {
+      return (
+        <Redirect to="/frontend-evaluation" />
+      );
+    }
+    if (searchLoanResult.statusCode) {
+      return (
+        <InvalidLoanPage loanNumber={searchLoanResult.statusCode} />
+      );
+    }
     if (searchLoanResult.loanNumber) {
       const {
         loanNumber, unAssigned, assigned, valid,
@@ -94,6 +123,12 @@ class SearchLoan extends React.PureComponent {
                     'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
                   },
                 })}
+                getTrProps={(state, rowInfo) => ({
+                  onClick: () => {
+                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                    this.handleRowClick(payload);
+                  },
+                })}
                 minRows={20}
                 styleName="evalTable"
               />
@@ -104,7 +139,7 @@ class SearchLoan extends React.PureComponent {
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
     return (this.canRedirect
-      ? <Redirect to="/loan-evaluation" /> : null
+      ? <Redirect to="/frontend-evaluation" /> : null
     );
   }
 
@@ -121,36 +156,76 @@ class SearchLoan extends React.PureComponent {
 SearchLoan.COLUMN_DATA = [{
   Header: 'EVAL ID',
   accessor: 'evalId',
-  maxWidth: 150,
+  maxWidth: 80,
+  minWidth: 80,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'PROCESS ID',
   accessor: 'piid',
-  maxWidth: 150,
+  maxWidth: 80,
+  minWidth: 80,
   Cell: row => <EvalTableRow row={row} />,
-
-
-}, {
-  Header: 'TASK NAME',
-  accessor: 'taskName',
-  maxWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-
 }, {
   Header: 'STATUS',
-  accessor: 'status',
-  maxWidth: 150,
+  accessor: 'pstatus',
+  maxWidth: 70,
+  minWidth: 70,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'STATUS REASON',
+  accessor: 'statusReason',
+  maxWidth: 130,
+  minWidth: 130,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
   Header: 'STATUS DATE',
-  accessor: 'statusDate',
-  maxWidth: 150,
+  accessor: 'pstatusDate',
+  maxWidth: 85,
+  minWidth: 85,
+
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'ASSIGNEE',
+  Header: 'MILESTONE',
+  accessor: 'milestone',
+  maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK NAME',
+  accessor: 'taskName',
+  maxWidth: 150,
+  minWidth: 150,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK STATUS',
+  accessor: 'tstatus',
+  maxWidth: 90,
+  minWidth: 90,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK STATUS DATE',
+  accessor: 'tstatusDate',
+  maxWidth: 110,
+  minWidth: 110,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'ASSIGNED TO',
   accessor: 'assignee',
+  minWidth: 200,
+  maxWidth: 200,
+  Cell: row => <EvalTableRow row={row} />,
+}, {
+  Header: 'ASSIGNED DATE',
+  accessor: 'assignedDate',
+  maxWidth: 90,
+  minWidth: 90,
   Cell: row => <EvalTableRow row={row} />,
 }];
 
@@ -161,14 +236,14 @@ SearchLoan.defaultProps = {
 
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.func.isRequired,
+  evalId: PropTypes.string.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
-
+  onSelectEval: PropTypes.func.isRequired,
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
@@ -184,7 +259,7 @@ const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),
-
+  onSelectEval: operations.onSelectEval(dispatch),
 });
 
 const SearchLoanContainer = connect(

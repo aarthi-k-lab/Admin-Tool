@@ -9,6 +9,11 @@ import {
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
   SEARCH_LOAN_TRIGGER,
+  SAVE_EVALID_LOANNUMBER,
+  UNASSIGN_LOAN,
+  ASSIGN_LOAN,
+  SAVE_SELECTED_BE_DISPOSITION,
+  HIDE_ASSIGN_UNASSIGN,
 } from './types';
 
 
@@ -32,6 +37,11 @@ const dispositionSelect = dispositionPayload => ({
   payload: dispositionPayload,
 });
 
+const beDispositionSelect = beDispositionPayload => ({
+  type: SAVE_SELECTED_BE_DISPOSITION,
+  payload: beDispositionPayload,
+});
+
 const errorTombstoneFetch = () => (
   {
     type: ERROR_LOADING_TOMBSTONE_DATA,
@@ -42,8 +52,21 @@ const getNext = () => ({
   type: GET_NEXT,
 });
 
+const selectEval = payload => ({
+  type: SAVE_EVALID_LOANNUMBER,
+  payload,
+});
+
 const endShift = () => ({
   type: END_SHIFT,
+});
+
+const unassignLoan = () => ({
+  type: UNASSIGN_LOAN,
+});
+
+const assignLoan = () => ({
+  type: ASSIGN_LOAN,
 });
 
 const clearDisposition = () => ({
@@ -59,9 +82,14 @@ const searchLoan = loanNumber => ({
   payload: loanNumber,
 });
 
+const hideAssignUnassign = () => ({
+  type: HIDE_ASSIGN_UNASSIGN,
+});
+
 
 export {
   autoSave,
+  beDispositionSelect,
   clearDisposition,
   clearFirstVisit,
   dispositionSave,
@@ -71,4 +99,8 @@ export {
   getNext,
   onExpandView,
   searchLoan,
+  selectEval,
+  unassignLoan,
+  assignLoan,
+  hideAssignUnassign,
 };

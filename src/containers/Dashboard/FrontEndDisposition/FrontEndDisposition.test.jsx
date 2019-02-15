@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { TestHooks } from './Disposition';
+import { TestHooks } from './FrontEndDisposition';
 
-describe('<Disposition />', () => {
-  it('shows Disposition widget in Loading mode', () => {
+describe('<FrontEndDisposition />', () => {
+  it('shows FrontEndDisposition widget in Loading mode', () => {
     const { Disposition } = TestHooks;
     const wrapper = shallow(
       <Disposition inProgress noTasksFound />,

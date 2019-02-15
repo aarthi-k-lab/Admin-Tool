@@ -1,0 +1,118 @@
+.label.label {
+  font-size: 1.1rem;
+}
+
+.disposition-section {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0 0.75rem;
+}
+
+.disposition-section > * {
+  margin-top: 1.25rem;
+}
+
+.save.save {
+  background-color: var(--light-blue-900);
+  margin-left: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.save.save:hover {
+  background-color: var(--blue-900);
+}
+
+.saveArea {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+}
+
+.tooltip.tooltip {
+  font-size: 1rem;
+  margin-left: 220px;
+}
+
+.label-true {
+  display: block;
+  font-size: 1rem;
+  color: #2d2d86;
+  margin-top: 0.8 rem;
+  margin-left: 10rem;
+  border-style: solid;
+  font-weight:  800;
+  border-radius: 10%;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.label-false {
+  display: none;
+  font-size: 1rem;
+  color: #2d2d86;
+  margin-top: 0.8rem;
+  margin-left: 10rem;
+  border-style: solid;
+  font-weight:  800;
+  border-radius: 10%;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.para-title {
+  font-size: 17px;
+  margin: 30px 41rem 0px;
+}
+
+.OperateButton {
+  font-size: 11px;
+  margin-left: 86.2rem;
+  border-color: transparent;
+  outline: none;
+}
+
+.CardStyle.CardStyle,
+.CardBottomStyle.CardBottomStyle {
+  margin: 0px 40rem;
+  border-color: #dee2e6;
+  border-style: solid;
+  border-width: 1px;
+  border-bottom: 0px;
+  border-radius: 0%;
+  width: 50rem;
+  box-shadow: none;
+}
+
+.CardActionsStyle {
+  height: 3rem;
+}
+
+.GroupNames {
+  width: 150rem;
+  font-size: 11px;
+  margin-left: 5px;
+  margin-top: 2px;
+}
+
+.CardContentStyle {
+  margin-top: -2.5rem;
+}
+
+.RadioButtonStyle {
+  color: #2d2d86;
+}
+
+
+.radio-button-gap {
+  width: 468px;
+   height: 1.75rem;
+   margin-top: 8px;
+   margin-left: -4px !important;
+}
+
+.scrollable-block {
+  align-self: stretch;
+  margin: 0 auto;
+  overflow: auto;
+}
