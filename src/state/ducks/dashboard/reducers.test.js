@@ -130,7 +130,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       taskFetchError: false,
       notasksFound: false,
       showAssign: null,
-      isAssigned: false,
+      isAssigned: true,
     };
     expect(reducer(state, saveEvalIdLoanNumberAction)).toEqual(expectedState);
   });
