@@ -190,13 +190,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         notasksFound: false,
-        isAssigned: false,
+        isAssigned: !action.payload.isSearch,
       };
       return newState;
     }
 
     case HIDE_ASSIGN_UNASSIGN: {
-      const { assignLoanResponse } = this.state;
+      const { assignLoanResponse } = state;
       return {
         ...state,
         showAssign: null,
