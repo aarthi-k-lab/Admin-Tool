@@ -28,6 +28,13 @@ class Header extends React.Component {
     this.handleSearchLoanClick = this.handleSearchLoanClick.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { clearSearch } = nextProps;
+    if (clearSearch) {
+      this.setState({ searchText: '' });
+    }
+  }
+
   onSearchTextChange(event) {
     const re = /^[0-9\b]+$/;
     if (event.target.value === '' || re.test(event.target.value)) {
@@ -59,9 +66,9 @@ class Header extends React.Component {
 
   handleLandingpage() {
     const {
-      onAutoSave, onEndShift, enableGetNext, evalId,
+      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onEndShift();
@@ -141,8 +148,10 @@ Header.defaultProps = {
 };
 
 Header.propTypes = {
+  clearSearch: PropTypes.bool.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   user: PropTypes.shape({
@@ -159,6 +168,8 @@ Header.propTypes = {
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
+  clearSearch: selectors.clearSearch(state),
+  isAssigned: selectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({

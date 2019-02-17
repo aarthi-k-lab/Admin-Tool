@@ -16,9 +16,9 @@ class LeftNav extends React.PureComponent {
 
   handleLandingpage() {
     const {
-      onAutoSave, onEndShift, enableGetNext, evalId,
+      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onEndShift();
@@ -51,6 +51,7 @@ LeftNav.defaultProps = {
 LeftNav.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   user: PropTypes.shape({
@@ -66,6 +67,7 @@ LeftNav.propTypes = {
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
+  isAssigned: selectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({

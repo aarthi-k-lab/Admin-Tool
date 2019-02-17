@@ -213,11 +213,11 @@ function* unassignLoan() {
     } else {
       yield put({
         type: UNASSIGN_LOAN_RESULT,
-        payload: { status: 'ERROR' },
+        payload: { cmodProcess: { taskStatus: 'ERROR' } },
       });
     }
   } catch (e) {
-    yield put({ type: UNASSIGN_LOAN_RESULT, payload: { status: 'ERROR' } });
+    yield put({ type: UNASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });
   }
 }
 

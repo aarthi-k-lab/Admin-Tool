@@ -27,10 +27,10 @@ class SearchLoan extends React.PureComponent {
 
   componentDidMount() {
     const {
-      onSearchLoan, evalId, enableGetNext, onAutoSave,
+      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned,
     } = this.props;
     const loanNumber = this.getParamsValue();
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onSearchLoan(loanNumber);
@@ -237,6 +237,7 @@ SearchLoan.defaultProps = {
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
   }).isRequired,
@@ -252,6 +253,7 @@ SearchLoan.propTypes = {
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
+  isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
 });
 

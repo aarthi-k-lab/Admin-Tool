@@ -52,9 +52,9 @@ class IdleUserHandler extends Component {
 
   redirectToLogout() {
     const {
-      onEndShift, onAutoSave, enableGetNext, evalId,
+      onEndShift, onAutoSave, enableGetNext, evalId, isAssigned,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
       onEndShift();
     }
@@ -104,12 +104,14 @@ IdleUserHandler.defaultProps = {
 IdleUserHandler.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
 };
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
+  isAssigned: selectors.isAssigned(state),
 });
 const mapDispatchToProps = dispatch => ({
   onEndShift: dashboardOperations.onEndShift(dispatch),

@@ -130,6 +130,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       taskFetchError: false,
       notasksFound: false,
       showAssign: null,
+      isAssigned: false,
     };
     expect(reducer(state, saveEvalIdLoanNumberAction)).toEqual(expectedState);
   });
@@ -156,6 +157,7 @@ describe('Ducks :: dashboard -> reducer', () => {
 
   it('searchLoan Result action', () => {
     const expectedState = {
+      clearSearch: false,
       assignLoanResponse: {},
       unassignLoanResponse: {},
       getSearchLoanResponse: {

@@ -56,7 +56,7 @@ Controls.defaultProps = {
   onGetNext: () => { },
   showEndShift: false,
   showGetNext: false,
-  showAssign: false,
+  showAssign: null,
 };
 
 Controls.propTypes = {
