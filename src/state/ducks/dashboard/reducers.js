@@ -119,6 +119,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         firstVisit: true,
         isAssigned: true,
         clearSearch: true,
+        getSearchLoanResponse: {},
       };
     }
     case TASKS_NOT_FOUND: {

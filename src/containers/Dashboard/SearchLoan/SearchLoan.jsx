@@ -69,7 +69,7 @@ class SearchLoan extends React.PureComponent {
   validateLoanNumber() {
     const { searchLoanResult } = this.props;
     const loanNumber = this.getParamsValue();
-    return !searchLoanResult
+    return R.isEmpty(searchLoanResult)
       || (searchLoanResult
       && searchLoanResult.loanNumber
       && loanNumber !== searchLoanResult.loanNumber.toString());

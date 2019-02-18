@@ -61,7 +61,7 @@ class Disposition extends React.PureComponent {
     }
 
     if (!isAssigned) {
-      const message = 'Please get this assigned to you in order to choose a disposition';
+      const message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
       return (
         <UserNotification level="error" message={message} type="alert-box" />
       );
