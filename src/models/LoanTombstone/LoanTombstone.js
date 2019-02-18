@@ -69,20 +69,20 @@ function getCoBorrowersSSN(loanDetails) {
 }
 
 function getBorrowerItem(loanDetails) {
+  const coBorrowerName = getCoBorrowersName(loanDetails);
   const primaryBorrower = getPrimaryBorrowerName(loanDetails);
-  const primaryBorrowerSSN = getPrimaryBorrowerSSN(loanDetails);
   return generateTombstoneItem(
     'Borrower/Co-Borrower',
-    `${primaryBorrower}/${primaryBorrowerSSN}`,
+    `${primaryBorrower}/${coBorrowerName}`,
   );
 }
 
-function getCoBorrowerItem(loanDetails) {
-  const coBorrowers = getCoBorrowersName(loanDetails);
+function getSsnItem(loanDetails) {
+  const primaryBorrowerSSN = getPrimaryBorrowerSSN(loanDetails);
   const coBorrowersSSN = getCoBorrowersSSN(loanDetails);
   return generateTombstoneItem(
     'Borrower SSN/Co-Borrower SSN',
-    `${coBorrowers}/${coBorrowersSSN}`,
+    `${primaryBorrowerSSN}/${coBorrowersSSN}`,
   );
 }
 
@@ -143,7 +143,7 @@ function getTombstoneItems(loanDetails, evalDetails) {
     getEvalIdItem,
     getInvestorLoanItem,
     getBorrowerItem,
-    getCoBorrowerItem,
+    getSsnItem,
     getSuccessorInInterestStatus,
     getBrandNameItem,
     getInvestorItem,
