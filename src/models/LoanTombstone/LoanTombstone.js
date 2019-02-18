@@ -1,8 +1,9 @@
 import moment from 'moment-timezone';
 import Validators from 'lib/Validators';
 import Auth from 'lib/Auth';
+import waterfallLookup from './waterfallLookup';
 
-const NA = 'NA';
+export const NA = 'NA';
 
 const { getOr } = Validators;
 
@@ -19,28 +20,6 @@ function generateTombstoneItem(title, content) {
     title,
     content,
   };
-}
-
-function waterfallLookup(id) {
-  switch (id) {
-    case 1: return 'Non-GSE/Default Waterfall';
-    case 2: return 'FHA Waterfall';
-    case 3: return 'VA/USDA Waterfall';
-    case 4: return 'DHHL/PHA Waterfall';
-    case 5: return 'FNMA Waterfall';
-    case 6: return 'FHLMC Waterfall';
-    case 7: return 'HFS Waterfall';
-    case 8: return 'Special Servicing 1 Waterfall';
-    case 9: return 'Special Servicing 2 Waterfall';
-    case 10: return 'Non-GSE/Non-Delegated Waterfall';
-    case 11: return 'BoNY Waterfall';
-    case 12: return 'USAA Waterfall';
-    case 13: return 'Disaster Waterfall';
-    case 14: return 'State Alternative Review Waterfall';
-    case 15: return 'USAA HE Loan / HELOC';
-    case 16: return 'Z Deal Waterfall';
-    default: return NA;
-  }
 }
 
 function getLoanItem(loanDetails) {
@@ -91,19 +70,19 @@ function getCoBorrowersSSN(loanDetails) {
 
 function getBorrowerItem(loanDetails) {
   const primaryBorrower = getPrimaryBorrowerName(loanDetails);
-  const coBorrowers = getCoBorrowersName(loanDetails);
+  const primaryBorrowerSSN = getPrimaryBorrowerSSN(loanDetails);
   return generateTombstoneItem(
     'Borrower/Co-Borrower',
-    `${primaryBorrower}/${coBorrowers}`,
+    `${primaryBorrower}/${primaryBorrowerSSN}`,
   );
 }
 
-function getBorrowerSSNItem(loanDetails) {
-  const primaryBorrowerSSN = getPrimaryBorrowerSSN(loanDetails);
+function getCoBorrowerItem(loanDetails) {
+  const coBorrowers = getCoBorrowersName(loanDetails);
   const coBorrowersSSN = getCoBorrowersSSN(loanDetails);
   return generateTombstoneItem(
     'Borrower SSN/Co-Borrower SSN',
-    `${primaryBorrowerSSN}/${coBorrowersSSN}`,
+    `${coBorrowers}/${coBorrowersSSN}`,
   );
 }
 
@@ -125,6 +104,7 @@ function getNextPaymentDueDateItem(loanDetails) {
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
 
+// eslint-disable-next-line no-unused-vars
 function getWaterfallId(_, evalDetails) {
   const waterfallId = getOr('waterfallId', evalDetails, NA);
   return generateTombstoneItem('Waterfall ID', waterfallId);
@@ -140,7 +120,7 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getLastDocumentReceivedDate(_, evalDetails) {
+function getDaysUntilCFPB(_, evalDetails) {
   const date = moment(evalDetails.lastDocumentReceivedDate);
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
@@ -162,18 +142,17 @@ function getTombstoneItems(loanDetails, evalDetails) {
     getLoanItem,
     getEvalIdItem,
     getInvestorLoanItem,
-    getBrandNameItem,
     getBorrowerItem,
-    getBorrowerSSNItem,
+    getCoBorrowerItem,
+    getSuccessorInInterestStatus,
+    getBrandNameItem,
     getInvestorItem,
     getUPBItem,
     getNextPaymentDueDateItem,
-    getWaterfallId,
     getWaterfallName,
     getModificationType,
-    getSuccessorInInterestStatus,
-    getLastDocumentReceivedDate,
     getFLDD,
+    getDaysUntilCFPB,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails, evalDetails));
   return data;

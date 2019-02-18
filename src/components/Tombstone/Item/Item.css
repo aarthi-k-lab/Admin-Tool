@@ -6,9 +6,12 @@
   padding: 0 1.25rem;
   padding-bottom: 0.8125rem;
   padding-top: 0.75rem;
+  width: -webkit-fill-available;
+
 }
 
 .title {
+  align-self: auto;
   color: var(--grey-590);
   font-size: 0.75rem;
   height: 0.9375rem;
