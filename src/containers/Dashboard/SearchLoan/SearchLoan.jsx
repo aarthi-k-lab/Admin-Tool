@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -76,12 +76,10 @@ class SearchLoan extends React.PureComponent {
   }
 
   renderSearchResults() {
-    const { searchLoanResult } = this.props;
+    const { searchLoanResult, history } = this.props;
     const { isRedirect } = this.state;
     if (isRedirect) {
-      return (
-        <Redirect to="/frontend-evaluation" />
-      );
+      history.push('/frontend-evaluation');
     }
     if (searchLoanResult.statusCode) {
       return (
@@ -236,6 +234,7 @@ SearchLoan.defaultProps = {
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   isAssigned: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
@@ -268,4 +267,4 @@ const SearchLoanContainer = connect(
   mapDispatchToProps,
 )(SearchLoan);
 
-export default SearchLoanContainer;
+export default withRouter(SearchLoanContainer);
