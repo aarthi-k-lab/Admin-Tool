@@ -156,14 +156,14 @@ class SearchLoan extends React.PureComponent {
 SearchLoan.COLUMN_DATA = [{
   Header: 'EVAL ID',
   accessor: 'evalId',
-  maxWidth: 80,
-  minWidth: 80,
+  maxWidth: 65,
+  minWidth: 65,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'PROCESS ID',
   accessor: 'piid',
-  maxWidth: 80,
-  minWidth: 80,
+  maxWidth: 70,
+  minWidth: 70,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'STATUS',
@@ -182,9 +182,8 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'STATUS DATE',
   accessor: 'pstatusDate',
-  maxWidth: 85,
-  minWidth: 85,
-
+  maxWidth: 110,
+  minWidth: 110,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -216,16 +215,16 @@ SearchLoan.COLUMN_DATA = [{
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'ASSIGNED TO',
-  accessor: 'assignee',
-  minWidth: 200,
-  maxWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
   Header: 'ASSIGNED DATE',
   accessor: 'assignedDate',
-  maxWidth: 90,
-  minWidth: 90,
+  maxWidth: 110,
+  minWidth: 110,
+  Cell: row => <EvalTableRow row={row} />,
+}, {
+  Header: 'ASSIGNED TO',
+  accessor: 'assignee',
+  maxWidth: 200,
+  minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
 }];
 
