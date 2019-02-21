@@ -1,8 +1,9 @@
 import moment from 'moment-timezone';
 import Validators from 'lib/Validators';
 import Auth from 'lib/Auth';
+import waterfallLookup from './waterfallLookup';
 
-const NA = 'NA';
+export const NA = 'NA';
 
 const { getOr } = Validators;
 
@@ -68,15 +69,15 @@ function getCoBorrowersSSN(loanDetails) {
 }
 
 function getBorrowerItem(loanDetails) {
+  const coBorrowerName = getCoBorrowersName(loanDetails);
   const primaryBorrower = getPrimaryBorrowerName(loanDetails);
-  const coBorrowers = getCoBorrowersName(loanDetails);
   return generateTombstoneItem(
     'Borrower/Co-Borrower',
-    `${primaryBorrower}/${coBorrowers}`,
+    `${primaryBorrower}/${coBorrowerName}`,
   );
 }
 
-function getBorrowerSSNItem(loanDetails) {
+function getSsnItem(loanDetails) {
   const primaryBorrowerSSN = getPrimaryBorrowerSSN(loanDetails);
   const coBorrowersSSN = getCoBorrowersSSN(loanDetails);
   return generateTombstoneItem(
@@ -103,9 +104,15 @@ function getNextPaymentDueDateItem(loanDetails) {
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
 
+// eslint-disable-next-line no-unused-vars
 function getWaterfallId(_, evalDetails) {
   const waterfallId = getOr('waterfallId', evalDetails, NA);
   return generateTombstoneItem('Waterfall ID', waterfallId);
+}
+
+function getWaterfallName(_, evalDetails) {
+  const waterfallId = getOr('waterfallId', evalDetails, NA);
+  return generateTombstoneItem('Waterfall Name', waterfallLookup(waterfallId));
 }
 
 function getModificationType(_, evalDetails) {
@@ -113,19 +120,66 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
+function getDaysUntilCFPB(loanDetails) {
+  const moments = loanDetails.LossmitModPline.reduce((filteredArray, i) => {
+    if (i.lastDocRcvdDttm) {
+      const date = moment(i.lastDocRcvdDttm);
+      filteredArray.push(date);
+    }
+    return filteredArray;
+  }, []);
+
+  const date = moments.length > 0 ? moment.max(moments) : moment(null);
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
+}
+
+function getFLDD(loanDetails) {
+  const date = moment(loanDetails.LoanExtensionTable.fldd);
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('FLDD Date', dateString);
+}
+
+function getForeclosureSalesDate(loanDetails) {
+  const date = moment(loanDetails.foreclosureSalesDate);
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('Foreclosure Sale Date and Status', dateString);
+}
+
+function getSuccessorInInterestStatus(loanDetails) {
+  const successorInInterestStatus = getOr('successorInInterestStatus', loanDetails, NA);
+  return generateTombstoneItem('Successor in Interest Status', successorInInterestStatus);
+}
+
+function getLienPosition(loanDetails) {
+  const lienPosition = getOr('lienPosition', loanDetails, NA);
+  return generateTombstoneItem('Lien Position', lienPosition);
+}
+
+function getLoanTypeDescription(loanDetails) {
+  const loantypeDescription = getOr('loanTypeDescription', loanDetails, NA);
+  return generateTombstoneItem('Loan Type Description', loantypeDescription);
+}
+
 function getTombstoneItems(loanDetails, evalDetails) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
     getInvestorLoanItem,
-    getBrandNameItem,
     getBorrowerItem,
-    getBorrowerSSNItem,
+    getSsnItem,
+    getSuccessorInInterestStatus,
+    getBrandNameItem,
     getInvestorItem,
+    getLoanTypeDescription,
     getUPBItem,
     getNextPaymentDueDateItem,
-    getWaterfallId,
+    getWaterfallName,
     getModificationType,
+    getForeclosureSalesDate,
+    getFLDD,
+    getLienPosition,
+    getDaysUntilCFPB,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails, evalDetails));
   return data;
