@@ -9,24 +9,44 @@ import './Assign.css';
 class Assign extends React.Component {
   constructor(props) {
     super(props);
-    this.isShowDialog = false;
+    this.state = {
+      isOpen: true,
+    };
     this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  componentWillReceiveProps() {
+    this.setState({ isOpen: true });
   }
 
   handleClick() {
     const { onAssignLoan } = this.props;
     onAssignLoan();
-    this.isShowDialog = true;
+  }
+
+  handleClose() {
+    this.setState({ isOpen: false });
+    const { assignResult, onDialogClose } = this.props;
+    if (assignResult && assignResult.taskData) {
+      onDialogClose();
+    }
   }
 
   render() {
     const { disabled, assignResult } = this.props;
+    const { isOpen } = this.state;
     let RenderContent = null;
     let renderComponent = null;
-    if (assignResult && assignResult.status && this.isShowDialog) {
+    if (assignResult && assignResult.status) {
       RenderContent = assignResult.status;
-      renderComponent = <DialogBox isDialogOpen message={RenderContent} />;
-      this.isShowDialog = false;
+      renderComponent = (
+        <DialogBox
+          isOpen={isOpen}
+          message={RenderContent}
+          onClose={this.handleClose}
+        />
+      );
     }
     return (
       <>
@@ -49,6 +69,7 @@ class Assign extends React.Component {
 Assign.defaultProps = {
   disabled: false,
   onAssignLoan: () => {},
+  onDialogClose: () => {},
 };
 
 const mapStateToProps = state => ({
@@ -57,6 +78,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onAssignLoan: operations.onAssignLoan(dispatch),
+  onDialogClose: operations.onDialogClose(dispatch),
 });
 
 Assign.propTypes = {
@@ -67,6 +89,7 @@ Assign.propTypes = {
   }).isRequired,
   disabled: PropTypes.bool,
   onAssignLoan: PropTypes.func,
+  onDialogClose: PropTypes.func,
 };
 
 const AssignContainer = connect(mapStateToProps, mapDispatchToProps)(Assign);

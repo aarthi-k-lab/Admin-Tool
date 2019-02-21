@@ -82,7 +82,7 @@ class ProtectedRoutes extends React.Component {
                 : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
             )}
           />
-          <Route component={SearchLoan} path="/search" />
+          <Route component={SearchLoan} exact path="/search" />
           <Route render={() => <Redirect to="/frontend-evaluation" />} />
         </Switch>
       </App>
