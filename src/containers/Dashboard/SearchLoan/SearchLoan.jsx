@@ -60,7 +60,7 @@ class SearchLoan extends React.PureComponent {
 
   handleRowClick(payload) {
     const { onSelectEval } = this.props;
-    if (payload.assignee !== 'In Queue') {
+    if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
       this.setState({ isRedirect: true });
     }
