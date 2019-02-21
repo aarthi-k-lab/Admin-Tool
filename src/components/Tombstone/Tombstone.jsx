@@ -175,5 +175,9 @@ const TombstoneContainer = connect(
   null,
 )(Tombstone);
 
-// export default connect(mapStateToProps, null)(Tombstone);
+const TestHooks = {
+  Tombstone,
+};
+
 export default TombstoneContainer;
+export { TestHooks };

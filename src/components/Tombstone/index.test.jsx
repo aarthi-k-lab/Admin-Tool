@@ -1,8 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import renderer from 'react-test-renderer';
-import Tombstone, { TombstoneLoader, TombstoneError } from '.';
+import { TombstoneLoader, TombstoneError } from '.';
 import Item from './Item';
+import { TestHooks } from './Tombstone';
 
 jest.mock('./Item');
 
@@ -22,7 +23,7 @@ describe('<Tombstone />', () => {
         title: 'T2',
       },
     ];
-    const wrapper = shallow(<Tombstone items={items} />);
+    const wrapper = shallow(<TestHooks.Tombstone items={items} />);
     wrapper.find('WithStyles(IconButton)').at(0).simulate('Click');
     expect(wrapper.find(Item.name)).toHaveLength(items.length);
     expect(wrapper.find(Item.name).at(0).props().content).toBe(items[0].content);
@@ -33,9 +34,8 @@ describe('<Tombstone />', () => {
 
   test('calls the \'onOpenWindow\' prop', () => {
     const handleOnOpenWindow = jest.fn();
-    const wrapper = shallow(<Tombstone onOpenWindow={handleOnOpenWindow} />);
-    wrapper.find('WithStyles(IconButton)').at(1).simulate('Click');
-    expect(handleOnOpenWindow.mock.calls).toHaveLength(1);
+    const wrapper = shallow(<TestHooks.Tombstone onOpenWindow={handleOnOpenWindow} />);
+    expect(wrapper.find('WithStyles(IconButton)').at(0).prop('onClick')).toBe(handleOnOpenWindow);
   });
 });
 
