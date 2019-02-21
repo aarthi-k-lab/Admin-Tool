@@ -126,15 +126,31 @@ function getDaysUntilCFPB(_, evalDetails) {
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
 }
 
-function getFLDD(_, evalDetails) {
-  const date = moment(evalDetails.fldd);
+function getFLDD(loanDetails) {
+  const date = moment(loanDetails.LoanExtensionTable.fldd);
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('FLDD Date', dateString);
+}
+
+function getForeclosureSalesDate(loanDetails) {
+  const date = moment(loanDetails.foreclosureSalesDate);
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('Foreclosure Sale Date and Status', dateString);
 }
 
 function getSuccessorInInterestStatus(loanDetails) {
   const successorInInterestStatus = getOr('successorInInterestStatus', loanDetails, NA);
   return generateTombstoneItem('Successor in Interest Status', successorInInterestStatus);
+}
+
+function getLienPosition(loanDetails) {
+  const lienPosition = getOr('lienPosition', loanDetails, NA);
+  return generateTombstoneItem('Lien Position', lienPosition);
+}
+
+function getLoanTypeDescription(loanDetails) {
+  const loantypeDescription = getOr('loanTypeDescription', loanDetails, NA);
+  return generateTombstoneItem('Loan Type Description', loantypeDescription);
 }
 
 function getTombstoneItems(loanDetails, evalDetails) {
@@ -147,11 +163,14 @@ function getTombstoneItems(loanDetails, evalDetails) {
     getSuccessorInInterestStatus,
     getBrandNameItem,
     getInvestorItem,
+    getLoanTypeDescription,
     getUPBItem,
     getNextPaymentDueDateItem,
     getWaterfallName,
     getModificationType,
+    getForeclosureSalesDate,
     getFLDD,
+    getLienPosition,
     getDaysUntilCFPB,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails, evalDetails));
