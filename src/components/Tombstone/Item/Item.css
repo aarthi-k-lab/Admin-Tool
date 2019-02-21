@@ -7,21 +7,22 @@
   padding-bottom: 0.8125rem;
   padding-top: 0.75rem;
   width: -webkit-fill-available;
-
+  vertical-align: center;
 }
 
 .title {
   align-self: auto;
   color: var(--grey-590);
-  font-size: 1em;
-  height: 0.9375rem;
+  font-size: 0.9em;
+  height: 1em;
   display: contents;
 }
 
 .content {
   color: var(--grey-850);
-  font-size: 1em;
+  font-size: 0.9em;
   font-weight: bold;
-  height: 1.0625rem;
+  height: 1em;
   text-transform: uppercase;
+  display: block;
 }

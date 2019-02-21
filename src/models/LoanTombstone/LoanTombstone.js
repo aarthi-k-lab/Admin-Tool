@@ -120,8 +120,16 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getDaysUntilCFPB(_, evalDetails) {
-  const date = moment(evalDetails.lastDocumentReceivedDate);
+function getDaysUntilCFPB(loanDetails) {
+  const moments = loanDetails.LossmitModPline.reduce((filteredArray, i) => {
+    if (i.lastDocRcvdDttm) {
+      const date = moment(i.lastDocRcvdDttm);
+      filteredArray.push(date);
+    }
+    return filteredArray;
+  }, []);
+
+  const date = moments.length > 0 ? moment.max(moments) : moment(null);
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
 }
