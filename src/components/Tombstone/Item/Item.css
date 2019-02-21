@@ -13,13 +13,14 @@
 .title {
   align-self: auto;
   color: var(--grey-590);
-  font-size: 0.75rem;
+  font-size: 1em;
   height: 0.9375rem;
+  display: contents;
 }
 
 .content {
   color: var(--grey-850);
-  font-size: 0.875rem;
+  font-size: 1em;
   font-weight: bold;
   height: 1.0625rem;
   text-transform: uppercase;
