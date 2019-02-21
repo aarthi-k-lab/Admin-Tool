@@ -201,8 +201,10 @@ function* unassignLoan() {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskId = yield select(selectors.taskId);
+    const processId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}`, {});
+    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}`, {});
     if (response !== null) {
       yield put({
         type: UNASSIGN_LOAN_RESULT,
@@ -211,11 +213,11 @@ function* unassignLoan() {
     } else {
       yield put({
         type: UNASSIGN_LOAN_RESULT,
-        payload: { status: 'ERROR' },
+        payload: { cmodProcess: { taskStatus: 'ERROR' } },
       });
     }
   } catch (e) {
-    yield put({ type: UNASSIGN_LOAN_RESULT, payload: { status: 'ERROR' } });
+    yield put({ type: UNASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });
   }
 }
 
@@ -229,8 +231,10 @@ function* assignLoan() {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskId = yield select(selectors.taskId);
+    const processId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}`, {});
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}`, {});
     if (response !== null) {
       yield put({
         type: ASSIGN_LOAN_RESULT,
@@ -239,11 +243,11 @@ function* assignLoan() {
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
-        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+        payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' },
       });
     }
   } catch (e) {
-    yield put({ type: ASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });
+    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
   }
 }
 

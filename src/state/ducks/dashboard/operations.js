@@ -12,6 +12,7 @@ import {
   unassignLoan,
   assignLoan,
   beDispositionSelect,
+  hideAssignUnassign,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -62,6 +63,10 @@ const onSearchLoan = dispatch => (loanNumber) => {
   dispatch(searchLoan(loanNumber));
 };
 
+const onDialogClose = dispatch => () => {
+  dispatch(hideAssignUnassign());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -75,6 +80,7 @@ const operations = {
   onUnassignLoan,
   onAssignLoan,
   onSelectDisposition,
+  onDialogClose,
 };
 
 export default operations;
