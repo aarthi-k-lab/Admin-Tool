@@ -95,11 +95,17 @@ class Tombstone extends React.Component {
             }}
           >
             {menuItem.map(option => (
-              <MenuItem>
+              <MenuItem disabled style={{ cursor: 'default', opacity: 1 }}>
                 <div>
                   {option.title}
                   <br />
-                  <span style={{ fontWeight: 'bold', fontSize: '10px' }}>{option.content}</span>
+                  <span style={{
+                    fontWeight: 'bold', fontSize: '10px',
+                  }}
+                  >
+                    {option.content}
+
+                  </span>
                 </div>
               </MenuItem>
             ))}
@@ -160,7 +166,7 @@ Tombstone.propTypes = {
 
 Tombstone.getItems = function getItems(items) {
   return items.map(({ content, title }) => (
-    <td>
+    <td styleName="itemTd">
       <Item key={title} content={content} title={title} />
     </td>
   ));
