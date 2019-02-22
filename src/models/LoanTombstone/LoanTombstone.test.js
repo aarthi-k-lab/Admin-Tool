@@ -8,8 +8,49 @@ const inputJson1 = {
   nextPaymentDueDate: '2018-09-01T00:00:00.000Z',
   investorInformation: {
     investorCode: '135',
-    investorName: 'HELT 2007-FRE1                ',
+    investorName: 'HELT 2007-FRE1',
   },
+  successorInInterest: [],
+  loanTypeDescription: 'Conv/Unins',
+  LoanMilestoneDates: [
+    {
+      mlstnTypeNm: 'BalloonDate',
+      mlstnDttm: 'Mon Dec 01 2036 00:00:00 GMT+0000 (UTC)',
+    },
+    {
+      mlstnTypeNm: 'LoanClosingDate',
+      mlstnDttm: 'Tue Nov 28 2006 00:00:00 GMT+0000 (UTC)',
+    },
+    {
+      mlstnTypeNm: 'LoanFundedDate',
+      mlstnDttm: 'Mon Mar 05 2007 00:00:00 GMT+0000 (UTC)',
+    },
+    {
+      mlstnTypeNm: 'ServiceTransferInDate',
+      mlstnDttm: 'Fri Jul 06 2007 00:00:00 GMT+0000 (UTC)',
+    },
+  ],
+  LoanExtensionTable: {
+    fldd: 'Tue Nov 28 2006 00:00:00 GMT+0000 (UTC)',
+  },
+  LossmitModPline: [
+    {
+      lastDocRcvdDttm: null,
+      isStateRvw: null,
+    },
+    {
+      lastDocRcvdDttm: 'Wed Jul 18 2018 14:45:36 GMT+0000 (UTC)',
+      isStateRvw: null,
+    },
+    {
+      lastDocRcvdDttm: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
+      isStateRvw: null,
+    },
+    {
+      lastDocRcvdDttm: null,
+      isStateRvw: null,
+    },
+  ],
   primaryBorrower: {
     firstName: 'ELLEN',
     lastName: 'DOE',
@@ -30,6 +71,8 @@ const inputJson1 = {
       ssn: 'xx-xxx-5423',
     },
   ],
+  successorInInterestStatus: 'Pending',
+  foreclosureSalesDate: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
 };
 
 const inputJson12 = {
@@ -40,48 +83,72 @@ const inputJson12 = {
 
 const output1 = [
   {
-    title: 'Loan #',
     content: '596401265',
+    title: 'Loan #',
   },
   {
-    title: 'Eval Id',
     content: '646515',
+    title: 'Eval Id',
   },
   {
-    title: 'Investor Loan #',
     content: '0000000',
+    title: 'Investor Loan #',
   },
   {
-    title: 'Brand Name',
-    content: 'NSM',
-  },
-  {
-    title: 'Borrower/Co-Borrower',
     content: 'ELLEN DOE/LEOCADIA DOE, JON SNOW',
+    title: 'Borrower/Co-Borrower',
   },
   {
-    title: 'Borrower SSN/Co-Borrower SSN',
     content: 'xx-xxx-5421/xx-xxx-5422, xx-xxx-5423',
+    title: 'Borrower SSN/Co-Borrower SSN',
   },
   {
+    content: 'Pending',
+    title: 'Successor in Interest Status',
+  },
+  {
+    content: 'NSM',
+    title: 'Brand Name',
+  },
+  {
+    content: '135 - HELT 2007-FRE1',
     title: 'Investor',
-    content: '135 - HELT 2007-FRE1                ',
   },
   {
-    title: 'UPB',
+    content: 'Conv/Unins',
+    title: 'Loan Type Description',
+  },
+  {
     content: '$162,910.83',
+    title: 'UPB',
   },
   {
-    title: 'Next Payment Due Date',
     content: '09/01/2018',
+    title: 'Next Payment Due Date',
   },
   {
-    title: 'Waterfall ID',
     content: 'NA',
+    title: 'Waterfall Name',
   },
   {
-    title: 'Modification Type',
     content: 'HAMP-PRA Alternate Waterfall',
+    title: 'Modification Type',
+  },
+  {
+    content: '12/04/2018',
+    title: 'Foreclosure Sale Date and Status',
+  },
+  {
+    content: '11/28/2006',
+    title: 'FLDD Date',
+  },
+  {
+    content: 'NA',
+    title: 'Lien Position',
+  },
+  {
+    content: '12/04/2018',
+    title: 'Days Until CFPB Timeline Expiration',
   },
 ];
 
@@ -96,52 +163,98 @@ const inputJson2 = {
   primaryBorrower: {},
   coBorrowers: [
   ],
+  LoanExtensionTable: {
+    fldd: null,
+  },
+  successorInInterest: [],
+  foreclosureSalesDate: null,
+  loanTypeDescription: null,
+  LoanMilestoneDates: [
+    {
+      mlstnTypeNm: 'BalloonDate',
+      mlstnDttm: 'Mon Dec 01 2036 00:00:00 GMT+0000 (UTC)',
+    },
+  ],
+  LossmitModPline: [
+    {
+      lastDocRcvdDttm: null,
+      isStateRvw: null,
+    },
+    {
+      lastDocRcvdDttm: null,
+      isStateRvw: null,
+    },
+  ],
 };
 
 const output2 = [
   {
-    title: 'Loan #',
     content: '596401265',
+    title: 'Loan #',
   },
   {
-    title: 'Eval Id',
     content: '646515',
+    title: 'Eval Id',
   },
   {
+    content: 'NA',
     title: 'Investor Loan #',
-    content: 'NA',
   },
   {
-    title: 'Brand Name',
-    content: 'NA',
-  },
-  {
+    content: 'NA/NA',
     title: 'Borrower/Co-Borrower',
-    content: 'NA/NA',
   },
   {
+    content: 'NA/NA',
     title: 'Borrower SSN/Co-Borrower SSN',
-    content: 'NA/NA',
   },
   {
+    content: 'NA',
+    title: 'Successor in Interest Status',
+  },
+  {
+    content: 'NA',
+    title: 'Brand Name',
+  },
+  {
+    content: 'NA',
     title: 'Investor',
-    content: 'NA',
   },
   {
+    content: 'NA',
+    title: 'Loan Type Description',
+  },
+  {
+    content: 'NA',
     title: 'UPB',
-    content: 'NA',
   },
   {
+    content: 'NA',
     title: 'Next Payment Due Date',
-    content: 'NA',
   },
   {
-    title: 'Waterfall ID',
     content: 'NA',
+    title: 'Waterfall Name',
   },
   {
-    title: 'Modification Type',
     content: 'HAMP-PRA Alternate Waterfall',
+    title: 'Modification Type',
+  },
+  {
+    content: 'NA',
+    title: 'Foreclosure Sale Date and Status',
+  },
+  {
+    content: 'NA',
+    title: 'FLDD Date',
+  },
+  {
+    content: 'NA',
+    title: 'Lien Position',
+  },
+  {
+    content: 'NA',
+    title: 'Days Until CFPB Timeline Expiration',
   },
 ];
 
