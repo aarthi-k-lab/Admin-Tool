@@ -1,7 +1,7 @@
 .tombstone {
   align-items: center;
   background-color: var(--grey-100);
-  border-bottom: solid 0.0625rem var(--grey-400);
+  /* border-bottom: solid 0.0625rem var(--grey-400); */
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -9,13 +9,11 @@
 }
 
 .more-icon-button {
-  border-right: dashed 0.0625rem var(--grey-350);
   box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 3.5625rem;
-  height: 2rem;
+  min-height: 2rem;
 }
 
 .more-icon {
@@ -29,4 +27,9 @@
 .icon.icon {
   color: var(--grey-900);
   font-size: 1.125rem;
+}
+
+.menuItemRoot {
+top: 107.4304px!important;
+right: 0px!important;
 }
