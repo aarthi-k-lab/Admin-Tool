@@ -5,7 +5,7 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  min-height: 5rem;
+  height: 5rem !important;
 }
 
 .more-icon-button {
@@ -42,10 +42,14 @@ right: 0px!important;
   text-align: center;
   vertical-align: center;
   flex-direction: column;
-  border-collapse: collapse;
+  height: 100%;
 }
 
 MenuItem {
    cursor: 'default'; 
    opacity: 1 ;
+}
+
+table {
+  height: 5rem;
 }
