@@ -5,7 +5,6 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import MoreIcon from '@material-ui/icons/MoreHoriz';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-// import * as R from 'ramda';
 import { connect } from 'react-redux';
 import Item from './Item';
 import Selector from '../../state/ducks/tombstone/selectors';
@@ -96,11 +95,17 @@ class Tombstone extends React.Component {
             }}
           >
             {menuItem.map(option => (
-              <MenuItem>
+              <MenuItem disabled style={{ cursor: 'default', opacity: 1 }}>
                 <div>
                   {option.title}
                   <br />
-                  <span style={{ fontWeight: 'bold', fontSize: '10px' }}>{option.content}</span>
+                  <span style={{
+                    fontWeight: 'bold', fontSize: '10px',
+                  }}
+                  >
+                    {option.content}
+
+                  </span>
                 </div>
               </MenuItem>
             ))}
@@ -161,7 +166,7 @@ Tombstone.propTypes = {
 
 Tombstone.getItems = function getItems(items) {
   return items.map(({ content, title }) => (
-    <td>
+    <td styleName="itemTd">
       <Item key={title} content={content} title={title} />
     </td>
   ));

@@ -36,7 +36,8 @@ class Disposition extends React.PureComponent {
     const { onDispositionSaveTrigger } = this.props;
     const { dispositionReason } = this.props;
     if (dispositionReason) {
-      onDispositionSaveTrigger(dispositionReason);
+      const payload = { dispositionReason, group: 'FEUW' };
+      onDispositionSaveTrigger(payload);
     }
   }
 

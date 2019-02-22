@@ -1,11 +1,12 @@
 .tombstone {
   align-items: center;
   background-color: var(--grey-100);
-  /* border-bottom: solid 0.0625rem var(--grey-400); */
+  border-bottom: solid 0.0625rem var(--grey-400);
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  min-height: 3.5625rem;
+  min-height: 4rem;
+  height: 5rem;
 }
 
 .more-icon-button {
@@ -13,11 +14,13 @@
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 2rem;
+  height: fit-content;
+  vertical-align: inherit;
 }
 
 .more-icon {
   color: var(--grey-850);
+
 }
 
 .spacer {
@@ -32,4 +35,18 @@
 .menuItemRoot {
 top: 107.4304px!important;
 right: 0px!important;
+}
+
+
+.itemTd {
+  border-right: dashed 0.0625rem var(--grey-350);
+  text-align: center;
+  vertical-align: center;
+  flex-direction: column;
+  border-collapse: collapse;
+}
+
+MenuItem {
+   cursor: 'default'; 
+   opacity: 1 ;
 }

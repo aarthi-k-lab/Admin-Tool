@@ -290,7 +290,10 @@ describe('expand view ', () => {
 
   describe('saveDisposition saga ', () => {
     const dispositionPayload = {
-      payload: 'missingDocs',
+      payload: {
+        dispositionReason: 'missingDocs',
+        group: 'FEUW',
+      },
     };
     const mockResponse = {
       enableGetNext: true,
@@ -324,7 +327,7 @@ describe('expand view ', () => {
 
     it('should call validation service', () => {
       expect(saga.next(1161415).value)
-        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415', {}));
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW', {}));
     });
 
     it('should update getNextResponse state', () => {
@@ -342,7 +345,10 @@ describe('expand view ', () => {
 
   describe('saveDisposition saga ', () => {
     const dispositionPayload = {
-      payload: 'missingDocs',
+      payload: {
+        dispositionReason: 'missingDocs',
+        group: 'FEUW',
+      },
     };
     const mockResponse = {
       enableGetNext: true,
@@ -376,7 +382,7 @@ describe('expand view ', () => {
 
     it('should call validation service', () => {
       expect(saga.next(1161415).value)
-        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415', {}));
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW', {}));
     });
 
     it('should call HIDE_SAVING_LOADER', () => {

@@ -9,7 +9,7 @@ class EvalTableRow extends React.PureComponent {
       let styles = '';
       if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
         styles = 'redText pointer';
-      } else if (row.original.assignee && row.original.assignee === 'In Queue') {
+      } else if (row.original.assignee && (row.original.assignee === 'In Queue' || row.original.assignee === 'N/A')) {
         styles = 'blackText';
       } else {
         styles = 'blackText pointer';
