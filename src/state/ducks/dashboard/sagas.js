@@ -116,12 +116,14 @@ function* watchTombstoneLoan() {
 const saveDisposition = function* setDiposition(dispositionPayload) {
   try {
     yield put({ type: SHOW_SAVING_LOADER });
-    const disposition = R.propOr({}, 'payload', dispositionPayload);
+    const payload = R.propOr({}, 'payload', dispositionPayload);
+    const disposition = R.propOr({}, 'dispositionReason', payload);
+    const group = R.propOr({}, 'group', payload);
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}`, {});
+    const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
     yield put({
       type: SAVE_DISPOSITION,
       payload: response,

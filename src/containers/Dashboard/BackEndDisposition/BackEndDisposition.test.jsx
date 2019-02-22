@@ -17,7 +17,7 @@ describe('<BackEndDisposition />', () => {
       <BackEndDisposition inProgress={false} />,
     );
     expect(wrapper.find('Loader')).toHaveLength(0);
-    expect(wrapper.find('div')).toHaveLength(3);
+    expect(wrapper.find('div')).toHaveLength(1);
     expect(wrapper.find('section')).toHaveLength(1);
   });
 

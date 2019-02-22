@@ -101,9 +101,11 @@ class CardCreator extends React.Component {
   render() {
     const { selectedActivity } = this.state;
     const { status: m } = this.state;
+    const { disabled } = this.props;
     return (
       <Card
         key={m.id}
+        disabled
         styleName="CardStyle"
       >
         <CardActions disableActionSpacing styleName="CardActionsStyle">
@@ -115,7 +117,7 @@ class CardCreator extends React.Component {
           >
                 SELECTED
           </span>
-          <IconButton aria-expanded={m.expanded} aria-label="Show more" onClick={() => this.handleExpandClick(m)}>
+          <IconButton aria-expanded={m.expanded} aria-label="Show more" disabled={disabled} onClick={() => this.handleExpandClick(m)}>
             {m.expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </CardActions>
@@ -138,6 +140,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 CardCreator.propTypes = {
+  disabled: PropTypes.bool.isRequired,
   onSelectDisposition: PropTypes.func.isRequired,
   selectedActivity: PropTypes.string.isRequired,
   status: PropTypes.shape({
