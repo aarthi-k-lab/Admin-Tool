@@ -1,6 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import Tombstone from 'components/Tombstone';
 import { TestHooks } from './Tombstone';
+
+jest.mock('components/Tombstone');
+
 
 describe('<TombstoneWrapper />', () => {
   it('shows loader', () => {
@@ -25,14 +29,16 @@ describe('<TombstoneWrapper />', () => {
   });
   it('show tombstone data', () => {
     const data = [];
+
     const wrapper = shallow(
       <TestHooks.TombstoneWrapper
         data={data}
         error={false}
         loading={false}
       />,
+
     );
-    const tombstone = wrapper.find('Tombstone');
+    const tombstone = wrapper.find(Tombstone);
     expect(tombstone).toHaveLength(1);
     expect(tombstone.at(0).prop('items')).toBe(data);
   });

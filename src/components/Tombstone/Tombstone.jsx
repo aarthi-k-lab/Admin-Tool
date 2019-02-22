@@ -5,7 +5,6 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import MoreIcon from '@material-ui/icons/MoreHoriz';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-// import * as R from 'ramda';
 import { connect } from 'react-redux';
 import Item from './Item';
 import Selector from '../../state/ducks/tombstone/selectors';
@@ -175,5 +174,9 @@ const TombstoneContainer = connect(
   null,
 )(Tombstone);
 
-// export default connect(mapStateToProps, null)(Tombstone);
+const TestHooks = {
+  Tombstone,
+};
+
 export default TombstoneContainer;
+export { TestHooks };
