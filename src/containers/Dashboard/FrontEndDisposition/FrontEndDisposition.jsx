@@ -40,7 +40,7 @@ class Disposition extends React.PureComponent {
     }
   }
 
-  renderErrorNotification() {
+  renderErrorNotification(isAssigned) {
     const {
       dispositionErrorMessages: errorMessages,
       enableGetNext,
@@ -59,6 +59,14 @@ class Disposition extends React.PureComponent {
         <UserNotification level="error" message={errorsNode} type="alert-box" />
       );
     }
+
+    if (!isAssigned) {
+      const message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
+      return (
+        <UserNotification level="error" message={message} type="alert-box" />
+      );
+    }
+
     if (enableGetNext) {
       const dispositionSuccessMessage = `The task has been dispositioned successfully with disposition ${arrayToString([dispositionReason])}`;
       return (
@@ -68,27 +76,23 @@ class Disposition extends React.PureComponent {
     return null;
   }
 
-  renderSave() {
+  renderSave(isAssigned) {
     const {
       dispositionErrorMessages,
       dispositionReason,
       saveInProgress,
       enableGetNext,
-      showAssign,
-      assignResult,
     } = this.props;
     if (saveInProgress) {
       return (
         <Loader />
       );
     }
-    const notAssigned = showAssign !== null
-      || (assignResult === null || assignResult.taskData === null);
     return (
       <Button
         className="material-ui-button"
         color="primary"
-        disabled={!dispositionReason || enableGetNext || notAssigned}
+        disabled={!dispositionReason || enableGetNext || !isAssigned}
         onClick={this.handleSave}
         styleName="save-button"
         variant="contained"
@@ -117,7 +121,8 @@ class Disposition extends React.PureComponent {
 
   render() {
     const {
-      noTasksFound, dispositionReason, inProgress, enableGetNext, taskFetchError,
+      noTasksFound, dispositionReason, inProgress, enableGetNext,
+      taskFetchError, isAssigned,
     } = this.props;
     if (inProgress) {
       return (
@@ -131,15 +136,15 @@ class Disposition extends React.PureComponent {
             (noTasksFound || taskFetchError) ? this.renderTaskErrorMessage() : (
               <>
                 <header styleName="title">Please select the outcome of your review</header>
-                {this.renderErrorNotification()}
+                {this.renderErrorNotification(isAssigned)}
                 <RadioButtonGroup
                   clearSelectedDisposition={R.isEmpty(dispositionReason)}
-                  disableDisposition={enableGetNext}
+                  disableDisposition={enableGetNext || !isAssigned}
                   items={dispositionOptions}
                   name="disposition-options"
                   onChange={this.handleDispositionSelection}
                 />
-                {this.renderSave()}
+                {this.renderSave(isAssigned)}
               </>
             )
           }
@@ -155,24 +160,19 @@ Disposition.defaultProps = {
   taskFetchError: false,
   inProgress: false,
   saveInProgress: false,
-  assignResult: null,
-  showAssign: null,
 };
 
 Disposition.propTypes = {
-  assignResult: PropTypes.shape({
-    status: PropTypes.string,
-  }),
   dispositionErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
   inProgress: PropTypes.bool,
+  isAssigned: PropTypes.bool.isRequired,
   noTasksFound: PropTypes.bool,
   onClear: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   onDispositionSelect: PropTypes.func.isRequired,
   saveInProgress: PropTypes.bool,
-  showAssign: PropTypes.bool,
   taskFetchError: PropTypes.bool,
 };
 
@@ -185,8 +185,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   noTasksFound: selectors.noTasksFound(state),
   saveInProgress: selectors.saveInProgress(state),
-  showAssign: selectors.showAssign(state),
-  assignResult: selectors.assignResult(state),
+  isAssigned: selectors.isAssigned(state),
   taskFetchError: selectors.taskFetchError(state),
 });
 

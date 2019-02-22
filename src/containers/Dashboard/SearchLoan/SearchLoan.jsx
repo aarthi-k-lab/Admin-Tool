@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -27,10 +27,10 @@ class SearchLoan extends React.PureComponent {
 
   componentDidMount() {
     const {
-      onSearchLoan, evalId, enableGetNext, onAutoSave,
+      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned,
     } = this.props;
     const loanNumber = this.getParamsValue();
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onSearchLoan(loanNumber);
@@ -69,19 +69,17 @@ class SearchLoan extends React.PureComponent {
   validateLoanNumber() {
     const { searchLoanResult } = this.props;
     const loanNumber = this.getParamsValue();
-    return !searchLoanResult
+    return R.isEmpty(searchLoanResult)
       || (searchLoanResult
       && searchLoanResult.loanNumber
       && loanNumber !== searchLoanResult.loanNumber.toString());
   }
 
   renderSearchResults() {
-    const { searchLoanResult } = this.props;
+    const { searchLoanResult, history } = this.props;
     const { isRedirect } = this.state;
     if (isRedirect) {
-      return (
-        <Redirect to="/frontend-evaluation" />
-      );
+      history.push('/frontend-evaluation');
     }
     if (searchLoanResult.statusCode) {
       return (
@@ -156,14 +154,14 @@ class SearchLoan extends React.PureComponent {
 SearchLoan.COLUMN_DATA = [{
   Header: 'EVAL ID',
   accessor: 'evalId',
-  maxWidth: 80,
-  minWidth: 80,
+  maxWidth: 65,
+  minWidth: 65,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'PROCESS ID',
   accessor: 'piid',
-  maxWidth: 80,
-  minWidth: 80,
+  maxWidth: 70,
+  minWidth: 70,
   Cell: row => <EvalTableRow row={row} />,
 }, {
   Header: 'STATUS',
@@ -182,9 +180,8 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'STATUS DATE',
   accessor: 'pstatusDate',
-  maxWidth: 85,
-  minWidth: 85,
-
+  maxWidth: 110,
+  minWidth: 110,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -216,16 +213,16 @@ SearchLoan.COLUMN_DATA = [{
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'ASSIGNED TO',
-  accessor: 'assignee',
-  minWidth: 200,
-  maxWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
   Header: 'ASSIGNED DATE',
   accessor: 'assignedDate',
-  maxWidth: 90,
-  minWidth: 90,
+  maxWidth: 110,
+  minWidth: 110,
+  Cell: row => <EvalTableRow row={row} />,
+}, {
+  Header: 'ASSIGNED TO',
+  accessor: 'assignee',
+  maxWidth: 200,
+  minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
 }];
 
@@ -237,6 +234,8 @@ SearchLoan.defaultProps = {
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
   }).isRequired,
@@ -252,6 +251,7 @@ SearchLoan.propTypes = {
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
+  isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
 });
 
@@ -267,4 +267,4 @@ const SearchLoanContainer = connect(
   mapDispatchToProps,
 )(SearchLoan);
 
-export default SearchLoanContainer;
+export default withRouter(SearchLoanContainer);

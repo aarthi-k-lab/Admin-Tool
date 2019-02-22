@@ -22,52 +22,38 @@ class Tombstone extends React.Component {
       menuItem: dummy.slice(array.length, dummy.length),
       tombStoneArray: array,
     };
-    this.onWindowResize = this.onWindowResize.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.onLoadResize = this.onLoadResize.bind(this);
+    this.resize = this.resize.bind(this);
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.onWindowResize.bind(this));
-    this.onLoadResize();
+    window.addEventListener('resize', this.resize.bind(this));
+    this.resize();
   }
 
-  /**
-   * Remove event listener
-   */
   componentWillUnmount() {
-    window.removeEventListener('resize', this.onWindowResize.bind(this));
+    window.removeEventListener('resize', this.resize.bind(this));
   }
 
-  onLoadResize() {
-    console.log('loadSize-->');
+  resize() {
     const { items } = this.props;
     let { tombStoneArray } = this.state;
     const dummy = items;
     const screenWidth = window.innerWidth;
-    if (screenWidth < 500) tombStoneArray = items.slice(0, 4);
-    else if (screenWidth >= 501 && screenWidth <= 599) tombStoneArray = items.slice(0, 5);
-    else if (screenWidth >= 600 && screenWidth <= 750) tombStoneArray = items.slice(0, 6);
-    else if (screenWidth >= 751 && screenWidth <= 900) tombStoneArray = items.slice(0, 8);
-    else if (screenWidth > 901) tombStoneArray = items;
+    if (screenWidth < 300) tombStoneArray = items.slice(0, 2);
+    else if (screenWidth < 400) tombStoneArray = items.slice(0, 3);
+    else if (screenWidth < 500) tombStoneArray = items.slice(0, 4);
+    else if (screenWidth < 600) tombStoneArray = items.slice(0, 4);
+    else if (screenWidth < 700) tombStoneArray = items.slice(0, 5);
+    else if (screenWidth < 800) tombStoneArray = items.slice(0, 5);
+    else if (screenWidth < 900) tombStoneArray = items.slice(0, 6);
+    else if (screenWidth < 1000) tombStoneArray = items.slice(0, 7);
+    else if (screenWidth < 1100) tombStoneArray = items.slice(0, 8);
+    else if (screenWidth > 1100) tombStoneArray = items.slice(0, 9);
     this.setState({ tombStoneArray, menuItem: dummy.slice(tombStoneArray.length, dummy.length) });
   }
 
-  onWindowResize() {
-    // const { items } = this.props;
-    // const dummy = items;
-    // let array = [];
-    // const screenWidth = window.innerWidth;
-    // console.log('sizee ->', screenWidth);
-    // if (screenWidth < 500) array = items.slice(0, 4);
-    // else if (screenWidth >= 501 && screenWidth <= 599) array = items.slice(0, 5);
-    // else if (screenWidth >= 600 && screenWidth <= 750) array = items.slice(0, 6);
-    // else if (screenWidth >= 751 && screenWidth <= 900) array = items.slice(0, 8);
-    // else if (screenWidth > 901) array = items;
-    // this.setState({ tombStoneArray: array, menuItem: dummy.slice(array.length, dummy.length) });
-    this.onLoadResize();
-  }
 
   handleClose() {
     this.setState({ anchorEl: null });
@@ -86,10 +72,9 @@ class Tombstone extends React.Component {
     const { onOpenWindow } = this.props;
     const { tombStoneArray, anchorEl, menuItem } = this.state;
     const open = Boolean(anchorEl);
-    console.log('tombStoneArray render', tombStoneArray);
-    return (
-      <section id="container" styleName="tombstone">
-        {Tombstone.getItems(tombStoneArray)}
+    let menuDiv = <div />;
+    if (menuItem.length > 0) {
+      menuDiv = (
         <div styleName="more-icon-button">
           <IconButton onClick={this.handleClick}>
             <MoreIcon styleName="more-icon" />
@@ -121,11 +106,26 @@ class Tombstone extends React.Component {
             ))}
           </Menu>
         </div>
-        <div styleName="spacer" />
-        <IconButton onClick={onOpenWindow}>
-          <OpenInNewIcon styleName="icon" />
-        </IconButton>
+      );
+    }
+
+    const tableWidth = tombStoneArray.length > 2 ? '100%' : '20%';
+    return (
+      <section id="container" styleName="tombstone">
+        <table width={tableWidth}>
+          <tr>
+            {Tombstone.getItems(tombStoneArray)}
+            <td>{menuDiv}</td>
+            <td>
+              <div styleName="spacer" />
+              <IconButton onClick={onOpenWindow}>
+                <OpenInNewIcon styleName="icon" />
+              </IconButton>
+            </td>
+          </tr>
+        </table>
       </section>
+
     );
   }
 }
@@ -161,15 +161,12 @@ Tombstone.propTypes = {
 
 Tombstone.getItems = function getItems(items) {
   return items.map(({ content, title }) => (
-    <Item key={title} content={content} title={title} />
+    <td>
+      <Item key={title} content={content} title={title} />
+    </td>
   ));
 };
 
-// function mapStateToProps(state) {
-//   return {
-//     items: R.pathOr(false, ['tombstone', 'data'], state),
-//   };
-// }
 const mapStateToProps = state => ({
   items: Selector.getTombstoneData(state),
 });
@@ -178,5 +175,9 @@ const TombstoneContainer = connect(
   null,
 )(Tombstone);
 
-// export default connect(mapStateToProps, null)(Tombstone);
+const TestHooks = {
+  Tombstone,
+};
+
 export default TombstoneContainer;
+export { TestHooks };

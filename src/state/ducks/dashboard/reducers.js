@@ -1,3 +1,4 @@
+import * as R from 'ramda';
 import {
   SET_EXPAND_VIEW,
   SAVE_DISPOSITION,
@@ -63,6 +64,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         getSearchLoanResponse,
         assignLoanResponse: {},
         unassignLoanResponse: {},
+        clearSearch: false,
       };
     }
 
@@ -78,12 +80,14 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
     case ASSIGN_LOAN_RESULT: {
       let assignLoanResponse = {};
+      const { showAssign } = state;
       if (action.payload) {
         assignLoanResponse = action.payload;
       }
       return {
         ...state,
         assignLoanResponse,
+        isAssigned: R.isNil(showAssign) && !R.isEmpty(assignLoanResponse),
       };
     }
     case SHOW_LOADER: {
@@ -113,6 +117,9 @@ const reducer = (state = { firstVisit: true }, action) => {
     case SUCCESS_END_SHIFT: {
       return {
         firstVisit: true,
+        isAssigned: true,
+        clearSearch: true,
+        getSearchLoanResponse: {},
       };
     }
     case TASKS_NOT_FOUND: {
@@ -184,14 +191,17 @@ const reducer = (state = { firstVisit: true }, action) => {
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         notasksFound: false,
+        isAssigned: !action.payload.isSearch,
       };
       return newState;
     }
 
     case HIDE_ASSIGN_UNASSIGN: {
+      const { assignLoanResponse } = state;
       return {
         ...state,
         showAssign: null,
+        isAssigned: !R.isEmpty(assignLoanResponse),
       };
     }
     default:

@@ -10,6 +10,8 @@ const taskFetchError = state => R.pathOr(false, ['dashboard', 'taskFetchError'],
 
 const loanNumber = state => R.pathOr(null, ['dashboard', 'loanNumber'], state);
 
+const clearSearch = state => R.pathOr(false, ['dashboard', 'clearSearch'], state);
+
 const inProgress = state => R.pathOr(false, ['dashboard', 'inProgress'], state);
 
 const saveInProgress = state => R.pathOr(false, ['dashboard', 'saveInProgress'], state);
@@ -45,6 +47,8 @@ const enableEndShift = state => (
 
 const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
 
+const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
+
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
 
 const selectors = {
@@ -68,6 +72,8 @@ const selectors = {
   selectedDisposition,
   processId,
   processStatus,
+  isAssigned,
+  clearSearch,
 };
 
 export default selectors;

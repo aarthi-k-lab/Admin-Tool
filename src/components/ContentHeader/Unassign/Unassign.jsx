@@ -31,9 +31,9 @@ class Unassign extends React.Component {
     if (unassignResult && unassignResult.cmodProcess) {
       switch (unassignResult.cmodProcess.taskStatus) {
         case 'Paused':
-          return 'Eval has been unassigned from the user.';
+          return 'The task has been unassigned from the user.';
         case 'Not Paused':
-          return 'Currently a user is actively working on this loan.';
+          return 'A user is currently working on this task and is unable to be unassigned.';
         default:
           return 'Currently one of the services is down. Please try again. If you still facing this issue, please reach to IT team.';
       }

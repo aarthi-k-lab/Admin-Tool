@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
@@ -26,6 +26,13 @@ class Header extends React.Component {
     this.onSearchTextChange = this.onSearchTextChange.bind(this);
     this.handleLandingpage = this.handleLandingpage.bind(this);
     this.handleSearchLoanClick = this.handleSearchLoanClick.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { clearSearch } = nextProps;
+    if (clearSearch) {
+      this.setState({ searchText: '' });
+    }
   }
 
   onSearchTextChange(event) {
@@ -59,9 +66,9 @@ class Header extends React.Component {
 
   handleLandingpage() {
     const {
-      onAutoSave, onEndShift, enableGetNext, evalId,
+      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext)) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onEndShift();
@@ -91,16 +98,14 @@ class Header extends React.Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { user, history } = this.props;
     const { searchText } = this.state;
-    let redirectComponent = null;
     if (this.shouldSearchLoan) {
       this.shouldSearchLoan = false;
-      redirectComponent = <Redirect params={searchText} to={`/search?loanNumber=${searchText}`} />;
+      history.push(`/search?loanNumber=${searchText}`);
     }
     return (
       <header styleName="header">
-        {redirectComponent}
         <Link onClick={this.handleLandingpage} to="/">
           <img alt="logo" src="/static/img/logo.png" styleName="logo" />
         </Link>
@@ -141,8 +146,11 @@ Header.defaultProps = {
 };
 
 Header.propTypes = {
+  clearSearch: PropTypes.bool.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   user: PropTypes.shape({
@@ -159,6 +167,8 @@ Header.propTypes = {
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
+  clearSearch: selectors.clearSearch(state),
+  isAssigned: selectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -176,4 +186,4 @@ const TestExports = {
 };
 export { TestExports };
 
-export default HeaderContainer;
+export default withRouter(HeaderContainer);

@@ -84,7 +84,7 @@ describe('<FrontEndDisposition />', () => {
     expect(wrapper.find('div')).toHaveLength(1);
     expect(wrapper.find('section')).toHaveLength(1);
     expect(wrapper.find('header')).toHaveLength(1);
-    expect(wrapper.find('UserNotification')).toHaveLength(0);
+    expect(wrapper.find('UserNotification')).toHaveLength(1);
     expect(wrapper.find('RadioButtonGroup')).toHaveLength(1);
     expect(wrapper.find('WithStyles(Button)')).toHaveLength(1);
   });
