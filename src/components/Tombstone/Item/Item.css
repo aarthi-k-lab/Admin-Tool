@@ -1,28 +1,21 @@
 .item {
-  border-right: dashed 0.0625rem var(--grey-350);
   box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
-  padding: 0 1.25rem;
-  padding-bottom: 0.8125rem;
-  padding-top: 0.75rem;
-  width: -webkit-fill-available;
-  vertical-align: center;
+  text-align: left;
 }
 
 .title {
   align-self: auto;
   color: var(--grey-590);
-  font-size: 0.9em;
-  height: 1em;
+  font-size: 1em;
   display: contents;
 }
 
 .content {
   color: var(--grey-850);
-  font-size: 0.9em;
+  font-size: 1em;
   font-weight: bold;
-  height: 1em;
   text-transform: uppercase;
   display: block;
 }

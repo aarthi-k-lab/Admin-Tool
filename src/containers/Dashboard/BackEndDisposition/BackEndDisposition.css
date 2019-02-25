@@ -5,12 +5,17 @@
 .disposition-section {
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
-  padding: 0 0.75rem;
+  align-items: center;
+  max-width: 500px;
 }
 
 .disposition-section > * {
   margin-top: 1.25rem;
+}
+
+.user-notification {
+  align-self: center;
+  flex: 0 0 25em;
 }
 
 .save.save {
@@ -29,9 +34,8 @@
   justify-content: center;
 }
 
-.tooltip.tooltip {
-  font-size: 1rem;
-  margin-left: 220px;
+.tooltip {
+  font-size: 1rem !important;
 }
 
 .label-true {
@@ -61,17 +65,21 @@
 }
 
 .para-title {
-  font-size: 17px;
-  margin: 30px 41rem 0;
+  font-size: 1.25rem;
+  font-weight: normal;
+  margin-top: 1.25rem;
 }
 
 .OperateButton {
   font-size: 11px;
-  margin-left: 86.2rem;
+  margin-left: 40rem;
   border-color: transparent;
   outline: none;
+  width: 100px;
 }
-
+.NotificationBox > *{
+  width: 500px !important;
+}
 .CardStyle.CardStyle,
 .CardBottomStyle.CardBottomStyle {
   margin: 0 40rem;
@@ -114,4 +122,9 @@
   align-self: stretch;
   margin: 0 auto;
   overflow: auto;
+}
+
+.save-button.save-button {
+  align-self: center;
+  margin-top: 1.25rem;
 }
