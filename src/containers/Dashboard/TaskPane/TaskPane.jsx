@@ -14,14 +14,11 @@ class TaskPane extends React.PureComponent {
 
   render() {
     const {
-      isAccessible,
       onSubTaskClick,
       tasks,
     } = this.props;
     return (
-      isAccessible
-        ? <LeftTaskPane onSubTaskClick={onSubTaskClick} tasks={tasks} />
-        : null
+      <LeftTaskPane onSubTaskClick={onSubTaskClick} tasks={tasks} />
     );
   }
 }
@@ -31,13 +28,11 @@ const TestHooks = {
 };
 
 TaskPane.defaultProps = {
-  isAccessible: false,
   tasks: [],
 };
 
 TaskPane.propTypes = {
   getTasks: PropTypes.func.isRequired,
-  isAccessible: PropTypes.bool,
   onSubTaskClick: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel),
 };

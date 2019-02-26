@@ -9,10 +9,4 @@ describe('<TombstoneWrapper />', () => {
     );
     expect(wrapper.find('LeftTaskPane')).toHaveLength(1);
   });
-  it('does not show TaskPane', () => {
-    const wrapper = shallow(
-      <TestHooks.TaskPane getTasks={() => {}} />,
-    );
-    expect(wrapper.find('LeftTaskPane')).toHaveLength(0);
-  });
 });
