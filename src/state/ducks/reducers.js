@@ -5,6 +5,7 @@ import { reducers as dashboard } from './dashboard';
 import { reducers as tombstone } from './tombstone';
 import { reducers as stager } from './stager';
 import { reducers as notifs } from './notifications';
+import { reducers as feuwTasksAndChecklist } from './feuw-tasks-and-checklist';
 
 const rootReducer = combineReducers({
   appConfig,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   user,
   stager,
   notifs,
+  feuwTasksAndChecklist,
 });
 
 export default rootReducer;

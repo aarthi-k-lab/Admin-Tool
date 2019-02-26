@@ -6,6 +6,7 @@ exports[`<Expand /> snapshot test 1`] = `
   disabled={false}
   onBlur={[Function]}
   onClick={[Function]}
+  onContextMenu={[Function]}
   onFocus={[Function]}
   onKeyDown={[Function]}
   onKeyUp={[Function]}

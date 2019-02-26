@@ -121,6 +121,14 @@ const config = merge(
             '^/api/tkams': '',
           },
         },
+        '/api/task-engine': {
+          target: 'https://cmodtaskenginedev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/task-engine': '/api',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

@@ -6,21 +6,21 @@ import LeftParentTasks from './LeftParentTasks';
 describe('<Task Components />', () => {
   it('CollapseIcon renders correctly', () => {
     const tree = renderer
-      .create(<CollapseIcon direction="left" />)
+      .create(<CollapseIcon direction="left" tasks={[]} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('LeftParentTasks renders correctly when expanded', () => {
     const tree = renderer
-      .create(<LeftParentTasks isCollapsed={false} />)
+      .create(<LeftParentTasks isCollapsed={false} tasks={[]} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('LeftParentTasks renders correctly when collapsed', () => {
     const tree = renderer
-      .create(<LeftParentTasks isCollapsed />)
+      .create(<LeftParentTasks isCollapsed tasks={[]} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
