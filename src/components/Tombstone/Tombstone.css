@@ -19,7 +19,6 @@
 
 .more-icon {
   color: var(--grey-850);
-
 }
 
 .spacer {
@@ -32,10 +31,9 @@
 }
 
 .menuItemRoot {
-top: 107.4304px!important;
-right: 0px!important;
+  top: 107.4304px !important;
+  right: 0 !important;
 }
-
 
 .itemTd {
   border-right: dashed 0.0625rem var(--grey-350);
@@ -46,8 +44,8 @@ right: 0px!important;
 }
 
 MenuItem {
-   cursor: 'default'; 
-   opacity: 1 ;
+  cursor: 'default';
+  opacity: 1;
 }
 
 table {
