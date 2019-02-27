@@ -4,6 +4,7 @@ import {
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import * as actionTypes from './types';
 import {
@@ -312,6 +313,10 @@ describe('expand view ', () => {
         email: 'bren@mrcooper.com',
       },
     };
+    const tombstoneData = [{
+      content: 'Loan Modification',
+      title: 'Modification Type',
+    }];
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 
     it('should call SHOW_SAVING_LOADER', () => {
@@ -334,9 +339,14 @@ describe('expand view ', () => {
         .toEqual(select(selectors.taskId));
     });
 
-    it('should call validation service', () => {
+    it('should call select Modification Type from store', () => {
       expect(saga.next(1161415).value)
-        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW', {}));
+        .toEqual(select(tombstoneSelectors.getTombstoneData));
+    });
+
+    it('should call validation service', () => {
+      expect(saga.next(tombstoneData).value)
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW&workoutCaseType=Loan Modification', {}));
     });
 
     it('should update getNextResponse state', () => {
@@ -367,6 +377,11 @@ describe('expand view ', () => {
         email: 'bren@mrcooper.com',
       },
     };
+
+    const tombstoneData = [{
+      content: 'Loan Modification',
+      title: 'Modification Type',
+    }];
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 
     it('should call SHOW_SAVING_LOADER', () => {
@@ -389,9 +404,14 @@ describe('expand view ', () => {
         .toEqual(select(selectors.taskId));
     });
 
-    it('should call validation service', () => {
+    it('should call select Modification Type from store', () => {
       expect(saga.next(1161415).value)
-        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW', {}));
+        .toEqual(select(tombstoneSelectors.getTombstoneData));
+    });
+
+    it('should call validation service', () => {
+      expect(saga.next(tombstoneData).value)
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW&workoutCaseType=Loan Modification', {}));
     });
 
     it('should call HIDE_SAVING_LOADER', () => {
