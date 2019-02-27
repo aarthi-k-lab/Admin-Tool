@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { selectors } from 'ducks/config';
-import { operations as taskOperations, selectors as taskSelectors } from 'ducks/feuw-tasks-and-checklist';
+import { operations as taskOperations, selectors as taskSelectors } from 'ducks/tasks-and-checklist';
 import LeftTaskPane from 'components/LeftTaskPane';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 
