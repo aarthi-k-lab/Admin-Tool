@@ -15,6 +15,10 @@ function getEvaluationInfoUrl(evalId) {
   return `/api/tkams/stager/${evalId}`;
 }
 
+function getPreviousDispositionUrl() {
+  return '/api/bpm-audit/audit/disposition/_evalNumbers';
+}
+
 function generateTombstoneItem(title, content) {
   return {
     title,
@@ -135,9 +139,12 @@ function getDaysUntilCFPB(loanDetails) {
 }
 
 function getFLDD(loanDetails) {
-  const date = moment(loanDetails.LoanExtensionTable.fldd);
-  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('FLDD Date', dateString);
+  if (loanDetails.LoanExtension != null) {
+    const date = moment(loanDetails.LoanExtension.firstLegalDueDate);
+    const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+    return generateTombstoneItem('FLDD Date', dateString);
+  }
+  return generateTombstoneItem('FLDD Date', NA);
 }
 
 function getForeclosureSalesDate(loanDetails) {
@@ -161,10 +168,17 @@ function getLoanTypeDescription(loanDetails) {
   return generateTombstoneItem('Loan Type Description', loantypeDescription);
 }
 
-function getTombstoneItems(loanDetails, evalDetails) {
+function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
+  const previousDisposition = getOr('stsChangedCode', previousDispositionDetails[0], NA);
+  return generateTombstoneItem('Previous Disposition', previousDisposition);
+}
+
+
+function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
+    getPreviousDisposition,
     getInvestorLoanItem,
     getBorrowerItem,
     getSsnItem,
@@ -181,13 +195,15 @@ function getTombstoneItems(loanDetails, evalDetails) {
     getLienPosition,
     getDaysUntilCFPB,
   ];
-  const data = dataGenerator.map(fn => fn(loanDetails, evalDetails));
+  const data = dataGenerator.map(fn => fn(loanDetails, evalDetails, previousDispositionDetails));
   return data;
 }
 
 async function fetchData(loanNumber, evalId) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
+  const previousDispositionUrl = getPreviousDispositionUrl();
+
   const loanInfoResponseP = fetch(
     loanInfoUrl,
     {
@@ -196,17 +212,26 @@ async function fetchData(loanNumber, evalId) {
       },
     },
   );
+
+  const previousDispositionP = fetch(previousDispositionUrl, {
+    method: 'POST',
+    body: JSON.stringify([evalId]),
+    // body: JSON.stringify([1928799]),
+    headers: { 'content-type': 'application/json' },
+  });
+
   const evaluationInfoResponseP = fetch(evaluationInfoUrl);
-  const [loanInfoResponse, evaluationInfoResponse] = await Promise.all(
-    [loanInfoResponseP, evaluationInfoResponseP],
+  const [loanInfoResponse, evaluationInfoResponse, previousDispositionResponse] = await Promise.all(
+    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP],
   );
-  if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
+  if (!loanInfoResponse.ok || !evaluationInfoResponse.ok || !previousDispositionResponse.ok) {
     throw new RangeError('Tombstone API call failed');
   }
-  const [loanDetails, evalDetails] = await Promise.all(
-    [loanInfoResponse.json(), evaluationInfoResponse.json()],
+  const [loanDetails, evalDetails, previousDispositionDetails] = await Promise.all(
+    [loanInfoResponse.json(), evaluationInfoResponse.json(), previousDispositionResponse.json()],
   );
-  return [...getTombstoneItems(loanDetails, evalDetails)];
+
+  return [...getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)];
 }
 
 const LoanTombstone = {
