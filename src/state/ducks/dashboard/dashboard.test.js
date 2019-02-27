@@ -78,7 +78,10 @@ describe('watch getnext ', () => {
 });
 
 describe('getnext Success', () => {
-  const saga = cloneableGenerator(TestExports.getNext)();
+  const action = {
+    payload: 'FEUW',
+  };
+  const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
     userDetails: {
       email: 'brent@mrcooper.com',
@@ -134,7 +137,10 @@ describe('getnext Success', () => {
 });
 
 describe('getnext Failure -  no tasks found', () => {
-  const saga = cloneableGenerator(TestExports.getNext)();
+  const action = {
+    payload: 'FEUW',
+  };
+  const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
     userDetails: {
       email: 'brent@mrcooper.com',
@@ -181,7 +187,10 @@ describe('getnext Failure -  no tasks found', () => {
 });
 
 describe('getnext Failure -  task fetch failure', () => {
-  const saga = cloneableGenerator(TestExports.getNext)();
+  const action = {
+    payload: 'FEUW',
+  };
+  const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
     userDetails: {
       email: 'brent@mrcooper.com',

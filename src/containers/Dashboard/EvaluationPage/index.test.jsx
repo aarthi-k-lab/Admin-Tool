@@ -12,7 +12,7 @@ describe('<EvaluationPage />', () => {
   });
 
   it('<Controls /> shows GetNext and EndShift', () => {
-    const controls = wrapper.find('Connect(Controls)');
+    const controls = wrapper.find('withRouter(Connect(Controls))');
     expect(controls).toHaveLength(1);
     expect(controls.at(0).prop('showEndShift')).toBe(true);
     expect(controls.at(0).prop('showGetNext')).toBe(true);

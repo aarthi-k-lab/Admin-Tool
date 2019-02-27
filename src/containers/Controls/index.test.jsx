@@ -18,17 +18,14 @@ describe('<Controls />', () => {
   it('passes the props to the child components <GetNext />, <EndShift />, <Expand />', () => {
     const handleEndShift = jest.fn();
     const handleExpand = jest.fn();
-    const handleGetNext = jest.fn();
     const wrapper = shallow(
       <TestHooks.Controls
         onEndShift={handleEndShift}
         onExpand={handleExpand}
-        onGetNext={handleGetNext}
         showEndShift
         showGetNext
       />,
     );
-    expect(wrapper.find('GetNext').at(0).prop('onClick')).toBe(handleGetNext);
     expect(wrapper.find('GetNext').at(0).prop('disabled')).toBe(true);
     expect(wrapper.find('EndShift').at(0).prop('onClick')).toBe(handleEndShift);
     expect(wrapper.find('Expand').at(0).prop('onClick')).toBe(handleExpand);
