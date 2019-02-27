@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import {
   EndShift, Expand, GetNext, Assign, Unassign,
 } from 'components/ContentHeader';
+import { withRouter } from 'react-router-dom';
+
 import {
   operations,
   selectors,
@@ -13,20 +15,31 @@ import RouteAccess from 'lib/RouteAccess';
 
 
 class Controls extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.handlegetNext = this.handlegetNext.bind(this);
+  }
+
+  handlegetNext() {
+    const { location, onGetNext } = this.props;
+    const payload = location.pathname === '/frontend-evaluation' ? 'FEUW' : 'BEUW';
+    onGetNext(payload);
+  }
+
   render() {
     const {
       enableEndShift,
       enableGetNext,
       onEndShift,
       onExpand,
-      onGetNext,
       showEndShift,
       showGetNext,
       showAssign,
       user,
     } = this.props;
     let assign = null;
-    const getNext = showGetNext ? <GetNext disabled={!enableGetNext} onClick={onGetNext} /> : null;
+    const getNext = showGetNext
+      ? <GetNext disabled={!enableGetNext} onClick={this.handlegetNext} /> : null;
     const endShift = showEndShift ? <EndShift disabled={!enableEndShift} onClick={onEndShift} />
       : null;
     const expand = <Expand onClick={onExpand} />;
@@ -62,6 +75,9 @@ Controls.defaultProps = {
 Controls.propTypes = {
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
@@ -100,5 +116,5 @@ const TestHooks = {
   Controls,
 };
 
-export default ControlsContainer;
+export default withRouter(ControlsContainer);
 export { TestHooks };

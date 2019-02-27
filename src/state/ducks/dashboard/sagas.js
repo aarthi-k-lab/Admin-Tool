@@ -159,7 +159,7 @@ function* getNext(action) {
 
   try {
     yield put({ type: SHOW_LOADER });
-    const appGroupName = 'FEUW';
+    const appGroupName = action.payload;
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
