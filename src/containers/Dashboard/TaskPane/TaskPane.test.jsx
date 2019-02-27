@@ -5,14 +5,8 @@ import { TestHooks } from './TaskPane';
 describe('<TombstoneWrapper />', () => {
   it('shows TaskPane', () => {
     const wrapper = shallow(
-      <TestHooks.TaskPane isAccessible />,
+      <TestHooks.TaskPane getTasks={() => {}} isAccessible />,
     );
     expect(wrapper.find('LeftTaskPane')).toHaveLength(1);
-  });
-  it('does not show TaskPane', () => {
-    const wrapper = shallow(
-      <TestHooks.TaskPane />,
-    );
-    expect(wrapper.find('LeftTaskPane')).toHaveLength(0);
   });
 });

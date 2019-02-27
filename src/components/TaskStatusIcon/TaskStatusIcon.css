@@ -1,11 +1,7 @@
 .smallIcon {
   max-width: 1.5rem;
-  margin: 0 1rem 1rem 1rem;
-  display: flex;
 }
 
 .largeIcon {
   max-width: 2rem;
-  margin: 0 1rem 1rem 1rem;
-  display: flex;
 }

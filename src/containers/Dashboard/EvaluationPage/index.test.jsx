@@ -18,10 +18,8 @@ describe('<EvaluationPage />', () => {
     expect(controls.at(0).prop('showGetNext')).toBe(true);
   });
 
-  it('has <TaskPane /> and <Disposition />', () => {
-    const taskPane = wrapper.find('Connect(TaskPane)');
+  it('has <Disposition />', () => {
     const disposition = wrapper.find('Connect(Disposition)');
-    expect(taskPane).toHaveLength(1);
     expect(disposition).toHaveLength(1);
   });
 });

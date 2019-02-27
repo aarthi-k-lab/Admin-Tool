@@ -1,0 +1,12 @@
+.checklist {
+  margin: 0 auto;
+}
+
+.checklist-form-controls {
+  padding: 1.5rem;
+}
+
+.checklist-title.checklist-title {
+  color: var(--grey-650);
+  margin: 1rem 0;
+}

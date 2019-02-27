@@ -1,0 +1,22 @@
+.radio-control.radio-control {
+  margin: 0;
+}
+
+.radio-control-label.radio-control-label {
+  color: #000;
+  font-weight: 700;
+}
+
+.radio-control-bubble.radio-control-bubble {
+  padding: 0.5rem;
+}
+
+.radio-control-bubble.radio-control-bubble svg {
+  fill: var(--mr-navy);
+  height: 0.75em;
+  width: 0.75em;
+}
+
+.radio-control-option-label.radio-control-option-label {
+  color: var(--grey-650);
+}

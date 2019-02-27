@@ -1,17 +1,11 @@
 
 .left-parent-tasks {
-  width: 100%;
-  transition: width 250ms ease-in;
   animation: fadein 0.5s;
-}
-
-.status-select-field-span {
-  display: inline-flex;
-  margin-left: 1.5rem;
-}
-
-.status-select-field-text {
-  font-size: 4px !important;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  transition: width 250ms ease-in;
+  width: 100%;
 }
 
 .status-text {
@@ -22,26 +16,13 @@
   color: green !important;
 }
 
-.subtask-list {
-  margin-left: 2rem;
-}
-
 .parent-task-name {
   display: inline-block;
-  font-size: 16px;
-  font-weight: 600;
-  vertical-align: middle;
-  margin-top: 1rem;
+  font-weight: 500;
 }
 
 .parent-task-span {
   display: inline-block;
-}
-
-.subtask-name {
-  display: inline-block;
-  margin-top: 1rem;
-  font-size: 0.9rem;
 }
 
 .iconarea {
@@ -49,23 +30,21 @@
 }
 
 .left-pane-tasks-main-div {
-  margin-left: 0.5rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  align-self: flex-start;
-  display: inline-flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: calc(100vh - 15rem);
-  max-height: calc(100vh - 14.9rem);
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
 }
 
-.subtask-grid {
-  margin: -0.75rem 0 -1rem -0.8rem;
+.left-pane-scrollable-tasks {
+  align-self: stretch;
+  flex-grow: 1;
+  overflow: auto;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-.parent-task-grid-div {
-  margin-bottom: -0.5rem;
+.task-group {
+  margin-bottom: 0.5rem;
 }
 
 @-webkit-keyframes fadein {
@@ -73,21 +52,17 @@
   to { opacity: 1; }
 }
 
-.error-text-subtask {
-  font-size: 12px;
-  font-weight: 200;
-  color: var(--red-a700);
-}
-
 .error-text-parent {
-  font-size: 14px;
+  font-size: 0.9rem;
   font-weight: 200;
   color: var(--red-a700);
 }
 
-.failure-subtask-name {
-  display: inline-block;
-  padding-top: 0.5rem;
-  color: var(--red-a700);
-  font-size: 0.9rem;
+.fill-width.fill-width {
+  flex-grow: 1;
+  padding: 0.75rem 0;
+}
+
+.icon-padding.icon-padding {
+  padding: 0.75rem 1rem;
 }
