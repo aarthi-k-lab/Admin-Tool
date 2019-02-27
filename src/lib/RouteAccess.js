@@ -25,7 +25,7 @@ const backendUnderwriter = {
   path: '/backend-evaluation',
   name: 'backend-evaluation',
   img: '/static/img/backend.svg',
-  groups: ['beuw', 'beuw-mgr'],
+  groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
 const feuwTasksAndChecklist = {
