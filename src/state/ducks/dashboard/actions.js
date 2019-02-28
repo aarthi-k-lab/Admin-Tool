@@ -48,8 +48,9 @@ const errorTombstoneFetch = () => (
     payload: { data: [], error: true, loading: false },
   });
 
-const getNext = () => ({
+const getNext = payload => ({
   type: GET_NEXT,
+  payload,
 });
 
 const selectEval = payload => ({

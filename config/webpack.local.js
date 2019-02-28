@@ -121,6 +121,22 @@ const config = merge(
             '^/api/tkams': '',
           },
         },
+        '/api/bpm-audit': {
+          target: 'https://cmodauditbpmeventsdev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/bpm-audit': '',
+          },
+        },
+        '/api/task-engine': {
+          target: 'https://cmodtaskenginedev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/task-engine': '/api',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

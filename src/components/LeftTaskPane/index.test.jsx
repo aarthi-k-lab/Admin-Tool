@@ -5,7 +5,7 @@ import LeftTaskPane from './LeftTaskPane';
 describe('<LeftTaskPane Components />', () => {
   it('LeftTaskPane renders correctly', () => {
     const tree = renderer
-      .create(<LeftTaskPane />)
+      .create(<LeftTaskPane tasks={[]} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });

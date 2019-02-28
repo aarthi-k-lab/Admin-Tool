@@ -35,10 +35,10 @@ const onSelectDisposition = dispatch => (payload) => {
   dispatch(beDispositionSelect(payload));
 };
 
-const onGetNext = dispatch => () => {
+const onGetNext = dispatch => (payload) => {
   dispatch(clearFirstVisit());
   dispatch(clearDisposition());
-  dispatch(getNext());
+  dispatch(getNext(payload));
 };
 
 const onSelectEval = dispatch => (payload) => {

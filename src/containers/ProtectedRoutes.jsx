@@ -18,6 +18,7 @@ import {
 } from 'ducks/dashboard';
 import * as config from 'ducks/config';
 import RouteAccess from 'lib/RouteAccess';
+import DashboardModel from 'models/Dashboard';
 import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
@@ -72,6 +73,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
           <Route path="/backend-evaluation" render={() => <Dashboard group="BEUW" />} />
+          <Route path="/frontend-checklist" render={() => <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />} />
           <Route component={Dashboard} path="/frontend-evaluation" />
           <Route
             exact

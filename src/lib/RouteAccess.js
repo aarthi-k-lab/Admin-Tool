@@ -25,7 +25,14 @@ const backendUnderwriter = {
   path: '/backend-evaluation',
   name: 'backend-evaluation',
   img: '/static/img/backend.svg',
-  groups: ['beuw', 'beuw-mgr'],
+  groups: ['beuw', 'beuw-mgr', 'allaccess'],
+};
+
+const feuwTasksAndChecklist = {
+  path: '/frontend-checklist',
+  name: 'frontend-checklist',
+  img: '/static/img/frontend.svg',
+  groups: ['allaccess'],
 };
 
 const links = [
@@ -39,6 +46,7 @@ const links = [
   backendUnderwriter,
   stager,
   moveForward,
+  feuwTasksAndChecklist,
 ];
 
 function hasManagerDashboardAccess(groups) {

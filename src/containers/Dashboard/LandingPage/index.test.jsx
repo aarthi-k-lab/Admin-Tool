@@ -12,7 +12,7 @@ describe('<LandingPage />', () => {
 
   it('<Connect /> with GetNext enabled and visible & EndShift not visible', () => {
     const wrapper = shallow(<LandingPage />);
-    const controls = wrapper.find('Connect(Controls)');
+    const controls = wrapper.find('withRouter(Connect(Controls))');
     expect(controls).toHaveLength(1);
     expect(controls.at(0).prop('showGetNext')).toEqual(true);
     expect(controls.at(0).prop('showEndShift')).toEqual(undefined);

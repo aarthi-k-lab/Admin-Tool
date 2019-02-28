@@ -5,8 +5,7 @@ import { combinedSaga as dashboardSaga } from './dashboard/sagas';
 import { combinedSaga as tombstoneSaga } from './tombstone/sagas';
 import { combinedSaga as stagerSaga } from './stager/sagas';
 import { combinedSaga as notifSaga } from './notifications/sagas';
-
-console.log('hot reload v2');
+import { combinedSaga as tasksAndChecklistSaga } from './tasks-and-checklist/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -16,5 +15,6 @@ export default function* rootSaga() {
     tombstoneSaga(),
     stagerSaga(),
     notifSaga(),
+    tasksAndChecklistSaga(),
   ]);
 }

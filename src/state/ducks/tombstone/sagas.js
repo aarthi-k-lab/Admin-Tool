@@ -21,9 +21,12 @@ import { selectors as dashboardSelectors } from '../dashboard';
 function* fetchTombstoneData() {
   yield put({ type: LOADING_TOMBSTONE_DATA });
 
-  // const loanNumber = '596815091';
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const evalId = yield select(dashboardSelectors.evalId);
+
+  // const evalId = '1928799';
+  // const loanNumber = '596815091';
+
   try {
     const data = yield call(LoanTombstone.fetchData, loanNumber, evalId);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });

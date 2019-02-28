@@ -1,0 +1,25 @@
+.checklist.checklist {
+  cursor: pointer;
+}
+
+.error-text-subtask {
+  font-size: 0.8rem;
+  font-weight: 200;
+  color: var(--red-a700);
+}
+
+.failure-subtask-name {
+  display: inline-block;
+  color: var(--red-a700);
+  font-size: 0.9rem;
+}
+
+.fill-width.fill-width {
+  flex-grow: 1;
+  padding: 0.75rem 0;
+}
+
+.subtask-name {
+  display: inline-block;
+  font-size: 0.9rem;
+}

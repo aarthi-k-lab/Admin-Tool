@@ -26,5 +26,5 @@ Dashboard.propTypes = {
   isFirstVisit: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps, null)(Dashboard);
 export { TestExports };
