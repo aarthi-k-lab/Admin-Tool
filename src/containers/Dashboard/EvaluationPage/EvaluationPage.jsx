@@ -55,4 +55,10 @@ EvaluationPage.propTypes = {
   }).isRequired,
 };
 
+const TestHooks = {
+  EvaluationPage,
+};
+
 export default withRouter(EvaluationPage);
+
+export { TestHooks };
