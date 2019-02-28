@@ -1,14 +1,18 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import EvaluationPage from '.';
+import { TestHooks } from './EvaluationPage';
+
 
 describe('<EvaluationPage />', () => {
-  const wrapper = shallow(<EvaluationPage />);
+  const location = {
+    pathname: '/backend-evaluation',
+  };
+  const wrapper = shallow(<TestHooks.EvaluationPage location={location} />);
 
   it('<ContentHeader /> shows title', () => {
     const contentHeader = wrapper.find('ContentHeader');
     expect(contentHeader).toHaveLength(1);
-    expect(contentHeader.at(0).prop('title')).toEqual('Income Calculation');
+    expect(contentHeader.at(0).prop('title')).toEqual('UNDERWRITING');
   });
 
   it('<Controls /> shows GetNext and EndShift', () => {
@@ -19,7 +23,7 @@ describe('<EvaluationPage />', () => {
   });
 
   it('has <Disposition />', () => {
-    const disposition = wrapper.find('Connect(Disposition)');
+    const disposition = wrapper.find('FullHeightColumn');
     expect(disposition).toHaveLength(1);
   });
 });
