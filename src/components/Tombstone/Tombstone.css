@@ -5,7 +5,7 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  height: 5rem !important;
+  height: 5rem;
 }
 
 .more-icon-button {
@@ -30,9 +30,9 @@
   font-size: 1.125rem;
 }
 
-.menuItemRoot {
-  top: 107.4304px !important;
-  right: 0 !important;
+.menuItemRoot.menuItemRoot {
+  top: 107.4304px;
+  right: 0;
 }
 
 .itemTd {
@@ -43,11 +43,6 @@
   height: 100%;
 }
 
-MenuItem {
-  cursor: 'default';
-  opacity: 1;
-}
-
-table {
-  height: 5rem;
+.tombstone-table {
+  height: 100%;
 }

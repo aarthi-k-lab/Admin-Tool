@@ -23,21 +23,15 @@ class Checklist extends React.PureComponent {
     switch (type) {
       case RADIO_BUTTONS:
         return (
-          <>
-            <RadioButtons
-              onChange={this.handleChange}
-              options={options}
-              title={title}
-            />
-            <br />
-          </>
+          <RadioButtons
+            onChange={this.handleChange}
+            options={options}
+            title={title}
+          />
         );
       case MULTILINE_TEXT:
         return (
-          <>
-            <TextField label={title} maxRows={10} multiline rows={5} />
-            <br />
-          </>
+          <TextField label={title} maxRows={10} multiline rows={5} />
         );
       default:
         return (
@@ -54,9 +48,13 @@ class Checklist extends React.PureComponent {
     return (
       <section className={className}>
         <Typography styleName="checklist-title" variant="h5">{title}</Typography>
-        <Paper elevation={1} styleName="checklist-form-controls">
-          {checklistItems.map(this.renderChecklistItem)}
-        </Paper>
+        <div styleName="checklist-scroll-out">
+          <div styleName="checklist-scroll-in">
+            <Paper elevation={1} styleName="checklist-form-controls">
+              {checklistItems.map(this.renderChecklistItem)}
+            </Paper>
+          </div>
+        </div>
       </section>
     );
   }

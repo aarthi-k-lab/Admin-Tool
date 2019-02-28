@@ -6,7 +6,26 @@
   padding: 1.5rem;
 }
 
+.checklist-form-controls.checklist-form-controls > * {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.checklist-form-controls > *:last-child {
+  margin-bottom: 0;
+}
+
 .checklist-title.checklist-title {
   color: var(--grey-650);
   margin: 1rem 0;
+}
+
+.checklist-scroll-out {
+  display: flex;
+  flex-grow: 1;
+}
+
+.checklist-scroll-in {
+  align-self: stretch;
+  overflow-y: auto;
 }
