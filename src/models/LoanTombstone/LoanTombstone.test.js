@@ -1,6 +1,6 @@
 import LoanTombstone from '.';
 
-const inputJson1 = {
+const inputJsonLoanDetails1 = {
   loanNumber: '596401265',
   brandName: 'NSM',
   investorLoanNumber: '0000000',
@@ -30,8 +30,8 @@ const inputJson1 = {
       mlstnDttm: 'Fri Jul 06 2007 00:00:00 GMT+0000 (UTC)',
     },
   ],
-  LoanExtensionTable: {
-    fldd: 'Tue Nov 28 2006 00:00:00 GMT+0000 (UTC)',
+  LoanExtension: {
+    firstLegalDueDate: 'Tue Nov 28 2006 00:00:00 GMT+0000 (UTC)',
   },
   LossmitModPline: [
     {
@@ -75,11 +75,23 @@ const inputJson1 = {
   foreclosureSalesDate: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
 };
 
-const inputJson12 = {
+const inputJsonEvalDetails = {
   evalId: 646515,
   waterfallId: null,
   resolutionChoiceType: 'HAMP-PRA Alternate Waterfall',
 };
+
+const inputJsonPreviousDisposition = [
+  {
+    processId: '213453',
+    evalId: '1928799',
+    taskId: '1718961',
+    stsChangedCode: 'Freddie RPA Required',
+    status: 'Replied',
+    date: 1551166757000,
+    taskName: 'Underwriting',
+  },
+];
 
 const output1 = [
   {
@@ -89,6 +101,10 @@ const output1 = [
   {
     content: '646515',
     title: 'Eval Id',
+  },
+  {
+    content: 'Freddie RPA Required',
+    title: 'Previous Disposition',
   },
   {
     content: '0000000',
@@ -152,7 +168,7 @@ const output1 = [
   },
 ];
 
-const inputJson2 = {
+const inputJsonLoanDetails2 = {
   loanNumber: '596401265',
   investorLoanNumber: null,
   upbAmount: Number.NaN,
@@ -163,8 +179,8 @@ const inputJson2 = {
   primaryBorrower: {},
   coBorrowers: [
   ],
-  LoanExtensionTable: {
-    fldd: null,
+  LoanExtension: {
+    firstLegalDueDate: null,
   },
   successorInInterest: [],
   foreclosureSalesDate: null,
@@ -195,6 +211,10 @@ const output2 = [
   {
     content: '646515',
     title: 'Eval Id',
+  },
+  {
+    content: 'Freddie RPA Required',
+    title: 'Previous Disposition',
   },
   {
     content: 'NA',
@@ -266,8 +286,8 @@ describe('models/LoanTombstone', () => {
   });
   describe('getTombstoneItems', () => {
     it('returns the data complying to Tombstone UI schema', () => {
-      expect(LoanTombstone.getTombstoneItems(inputJson1, inputJson12)).toEqual(output1);
-      expect(LoanTombstone.getTombstoneItems(inputJson2, inputJson12)).toEqual(output2);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output1);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output2);
     });
   });
 });

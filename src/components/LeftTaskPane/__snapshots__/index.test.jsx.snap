@@ -23,24 +23,23 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           className="MuiFormControl-root-1 status-select-field"
         >
           <label
-            className="MuiFormLabel-root-12 MuiFormLabel-filled-16 MuiInputLabel-root-5 MuiInputLabel-formControl-6 MuiInputLabel-animated-9 MuiInputLabel-shrink-8"
+            className="MuiFormLabel-root-16 MuiFormLabel-filled-20 MuiInputLabel-root-5 MuiInputLabel-formControl-10 MuiInputLabel-animated-13 MuiInputLabel-shrink-12"
             data-shrink={true}
             htmlFor="status-selector"
           >
             Status
           </label>
           <div
-            className="MuiInputBase-root-39 MuiInput-root-26 MuiInputBase-formControl-40 MuiInput-formControl-27"
+            className="MuiInputBase-root-43 MuiInput-root-30 MuiInputBase-formControl-44 MuiInput-formControl-31"
             onClick={[Function]}
           >
             <div
-              className="MuiSelect-root-19"
+              className="MuiSelect-root-23"
             >
               <div
                 aria-haspopup="true"
-                aria-owns={null}
                 aria-pressed="false"
-                className="MuiSelect-select-20 MuiSelect-selectMenu-23 MuiInputBase-input-49 MuiInput-input-34 status-select-field-text"
+                className="MuiSelect-select-24 MuiSelect-selectMenu-27 MuiInputBase-input-53 MuiInput-input-38 status-select-field-text"
                 onBlur={[Function]}
                 onClick={[Function]}
                 onFocus={[Function]}
@@ -57,7 +56,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
               />
               <svg
                 aria-hidden="true"
-                className="MuiSvgIcon-root-56 MuiSelect-icon-25"
+                className="MuiSvgIcon-root-60 MuiSelect-icon-29"
                 focusable="false"
                 role="presentation"
                 viewBox="0 0 24 24"
@@ -79,7 +78,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
       >
         <svg
           aria-hidden="true"
-          className="MuiSvgIcon-root-56"
+          className="MuiSvgIcon-root-60"
           focusable="false"
           role="presentation"
           viewBox="0 0 24 24"

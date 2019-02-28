@@ -19,3 +19,11 @@
   text-transform: uppercase;
   display: block;
 }
+
+.qCReviewContent {
+  color: red;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: block;
+}
