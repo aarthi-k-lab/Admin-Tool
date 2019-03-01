@@ -14,6 +14,7 @@ import {
   ASSIGN_LOAN,
   SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
+  CLEAR_BE_DISPOSITION,
 } from './types';
 
 
@@ -74,6 +75,10 @@ const clearDisposition = () => ({
   type: CLEAR_DISPOSITION,
 });
 
+const clearBEDisposition = () => ({
+  type: CLEAR_BE_DISPOSITION,
+});
+
 const clearFirstVisit = () => ({
   type: CLEAR_FIRST_VISIT,
 });
@@ -104,4 +109,5 @@ export {
   unassignLoan,
   assignLoan,
   hideAssignUnassign,
+  clearBEDisposition,
 };

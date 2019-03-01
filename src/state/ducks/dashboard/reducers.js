@@ -19,6 +19,7 @@ import {
   ASSIGN_LOAN_RESULT,
   SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
+  CLEAR_BE_DISPOSITION,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -203,6 +204,22 @@ const reducer = (state = { firstVisit: true }, action) => {
         showAssign: null,
         isAssigned: !R.isEmpty(assignLoanResponse),
       };
+    }
+    case CLEAR_BE_DISPOSITION: {
+      const { selectedDisposition } = state;
+      const clearDisposition = {
+        ...selectedDisposition,
+        id: '',
+        statusName: '',
+        isActivitySelected: '',
+        activityName: '',
+        cardStatus: {},
+      };
+      const newState = {
+        ...state,
+        selectedDisposition: clearDisposition,
+      };
+      return newState;
     }
     default:
       return state;

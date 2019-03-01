@@ -3,9 +3,7 @@
   background-color: var(--grey-100);
   border-bottom: solid 0.0625rem var(--grey-400);
   box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  height: 5rem !important;
+  height: 5rem;
 }
 
 .more-icon-button {
@@ -30,9 +28,19 @@
   font-size: 1.125rem;
 }
 
-.menuItemRoot {
-  top: 107.4304px !important;
-  right: 0 !important;
+.menuItemRoot.menuItemRoot {
+  margin-top: 5rem;
+  right: 0;
+}
+
+.menuItemContent {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.menuItem.menuItem { 
+  cursor: default;
+  opacity: 1;
 }
 
 .itemTd {
@@ -43,11 +51,6 @@
   height: 100%;
 }
 
-MenuItem {
-  cursor: 'default';
-  opacity: 1;
-}
-
-table {
-  height: 5rem;
+.tombstone-table {
+  height: 100%;
 }

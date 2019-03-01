@@ -41,7 +41,7 @@ const status = [
         verbiage: 'If you notice suspicious activity on the documents provided, after you submit the loan for review then select this option to follow up after 3 business days.',
       },
       { id: 'ajsoidjasjf49837sidjoajejc', activityName: 'Wait', verbiage: 'If you are unable to move forward with your review do to unforeseen circumstance and you have your manager\'s permission then select this option to follow up after 24 hours.' },
-      { id: 'l9329uidjasjdwdfsidjoajejc', activityName: 'Ligitation Wait', verbiage: 'If you are a litigation specialist and the file is in litigation pending final resolution, then select this option to follow up after 4 business days. The resolution status should be open and the substatus should be Litigation Handling.' },
+      { id: 'l9329uidjasjdwdfsidjoajejc', activityName: 'Litigation Wait', verbiage: 'If you are a litigation specialist and the file is in litigation pending final resolution, then select this option to follow up after 4 business days. The resolution status should be open and the substatus should be Litigation Handling.' },
       { id: 'ajsoidk92349837sidjoajejc', activityName: 'Ticket Submitted', verbiage: 'If a ticket is needed to be submitted then choose this option to follow up after 24 hours.' },
     ],
     labelDisplay: 'none',

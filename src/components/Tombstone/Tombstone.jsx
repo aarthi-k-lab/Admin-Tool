@@ -95,16 +95,12 @@ class Tombstone extends React.Component {
             }}
           >
             {menuItem.map(option => (
-              <MenuItem disabled style={{ cursor: 'default', opacity: 1 }}>
+              <MenuItem styleName="menuItem">
                 <div>
                   {option.title}
                   <br />
-                  <span style={{
-                    fontWeight: 'bold', fontSize: '10px',
-                  }}
-                  >
+                  <span styleName="menuItemContent">
                     {option.content}
-
                   </span>
                 </div>
               </MenuItem>
@@ -117,7 +113,7 @@ class Tombstone extends React.Component {
     const tableWidth = tombStoneArray.length > 2 ? '100%' : '20%';
     return (
       <section id="container" styleName="tombstone">
-        <table width={tableWidth}>
+        <table styleName="tombstone-table" width={tableWidth}>
           <tr>
             {Tombstone.getItems(tombStoneArray)}
             <td>{menuDiv}</td>

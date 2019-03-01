@@ -13,6 +13,7 @@ import {
   assignLoan,
   beDispositionSelect,
   hideAssignUnassign,
+  clearBEDisposition,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -37,8 +38,13 @@ const onSelectDisposition = dispatch => (payload) => {
 
 const onGetNext = dispatch => (payload) => {
   dispatch(clearFirstVisit());
+  dispatch(clearBEDisposition());
   dispatch(clearDisposition());
   dispatch(getNext(payload));
+};
+
+const onClearBEDisposition = dispatch => () => {
+  dispatch(clearBEDisposition());
 };
 
 const onSelectEval = dispatch => (payload) => {
@@ -81,6 +87,7 @@ const operations = {
   onAssignLoan,
   onSelectDisposition,
   onDialogClose,
+  onClearBEDisposition,
 };
 
 export default operations;
