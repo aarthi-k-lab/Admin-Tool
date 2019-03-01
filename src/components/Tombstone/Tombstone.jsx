@@ -95,16 +95,12 @@ class Tombstone extends React.Component {
             }}
           >
             {menuItem.map(option => (
-              <MenuItem disabled style={{ cursor: 'default', opacity: 1 }}>
+              <MenuItem styleName="menuItem">
                 <div>
                   {option.title}
                   <br />
-                  <span style={{
-                    fontWeight: 'bold', fontSize: '10px',
-                  }}
-                  >
+                  <span styleName="menuItemContent">
                     {option.content}
-
                   </span>
                 </div>
               </MenuItem>
