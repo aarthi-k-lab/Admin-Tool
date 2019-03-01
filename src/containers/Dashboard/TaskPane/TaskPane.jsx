@@ -14,11 +14,12 @@ class TaskPane extends React.PureComponent {
 
   render() {
     const {
+      dataLoadStatus,
       onSubTaskClick,
       tasks,
     } = this.props;
     return (
-      <LeftTaskPane onSubTaskClick={onSubTaskClick} tasks={tasks} />
+      <LeftTaskPane dataLoadStatus={dataLoadStatus} onSubTaskClick={onSubTaskClick} tasks={tasks} />
     );
   }
 }
@@ -32,12 +33,14 @@ TaskPane.defaultProps = {
 };
 
 TaskPane.propTypes = {
+  dataLoadStatus: PropTypes.string.isRequired,
   getTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel),
 };
 
 const mapStateToProps = state => ({
+  dataLoadStatus: taskSelectors.getTaskLoadStatus(state),
   isAccessible: selectors.isTaskPaneAccessible(state),
   tasks: taskSelectors.getTaskTree(state).subTasks,
 });

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ErrorIcon from '@material-ui/icons/Error';
 import './LeftTaskPane.css';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
@@ -69,9 +71,55 @@ class LeftTaskPane extends React.Component {
     });
   }
 
+  renderContent() {
+    const { tasksStatus, isCollapsed } = this.state;
+    const { dataLoadStatus, onSubTaskClick, tasks } = this.props;
+    if (dataLoadStatus === 'failed') {
+      return (
+        <ErrorIcon fontSize="large" styleName="error-indicator" />
+      );
+    }
+    if (dataLoadStatus === 'loading') {
+      return (
+        <CircularProgress styleName="loader" />
+      );
+    }
+    return (
+      <>
+        <div styleName={isCollapsed ? 'task-pane-controls task-pane-controls-collapsed' : 'task-pane-controls'}>
+          {
+            !isCollapsed
+              ? (
+                <StatusMenu
+                  onChange={this.handleStatusChange}
+                  taskStatus={tasksStatus}
+                />
+              )
+              : null
+          }
+          <span
+            onClick={this.handleClick}
+            onKeyPress={() => null}
+            role="button"
+            styleName={isCollapsed ? 'collapse-icon-closed' : 'collapse-icon-open'}
+            tabIndex={0}
+          >
+            <CollapseIcon
+              direction={isCollapsed ? 'right' : 'left'}
+            />
+          </span>
+        </div>
+        <LeftParentTasks
+          isCollapsed={isCollapsed}
+          onSubTaskClick={onSubTaskClick}
+          tasks={tasks}
+        />
+      </>
+    );
+  }
+
   render() {
-    const { tasksStatus, width, isCollapsed } = this.state;
-    const { onSubTaskClick, tasks } = this.props;
+    const { width } = this.state;
     return (
       <div styleName="stretch-column">
         <div
@@ -79,34 +127,7 @@ class LeftTaskPane extends React.Component {
           style={{ width }}
           styleName="taskpane"
         >
-          <div styleName={isCollapsed ? 'task-pane-controls task-pane-controls-collapsed' : 'task-pane-controls'}>
-            {
-              !isCollapsed
-                ? (
-                  <StatusMenu
-                    onChange={this.handleStatusChange}
-                    taskStatus={tasksStatus}
-                  />
-                )
-                : null
-            }
-            <span
-              onClick={this.handleClick}
-              onKeyPress={() => null}
-              role="button"
-              styleName={isCollapsed ? 'collapse-icon-closed' : 'collapse-icon-open'}
-              tabIndex={0}
-            >
-              <CollapseIcon
-                direction={isCollapsed ? 'right' : 'left'}
-              />
-            </span>
-          </div>
-          <LeftParentTasks
-            isCollapsed={isCollapsed}
-            onSubTaskClick={onSubTaskClick}
-            tasks={tasks}
-          />
+          { this.renderContent() }
         </div>
       </div>
     );
@@ -115,6 +136,7 @@ class LeftTaskPane extends React.Component {
 
 LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
+  dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
@@ -123,6 +145,7 @@ LeftTaskPane.propTypes = {
 
 LeftTaskPane.defaultProps = {
   closedWidth: '4rem',
+  dataLoadStatus: 'completed',
   defaultState: 'open', // or 'closed'
   openWidth: '20rem',
 };

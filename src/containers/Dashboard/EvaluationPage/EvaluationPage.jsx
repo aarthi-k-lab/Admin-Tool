@@ -8,6 +8,7 @@ import { BackendDisposition } from 'containers/Dashboard/BackEndDisposition';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import DashboardModel from 'models/Dashboard';
+import { withRouter } from 'react-router-dom';
 import './EvaluationPage.css';
 
 class EvaluationPage extends React.PureComponent {
@@ -24,9 +25,11 @@ class EvaluationPage extends React.PureComponent {
   }
 
   render() {
+    const { location } = this.props;
+    const title = location.pathname === '/backend-evaluation' ? 'UNDERWRITING' : 'Income Calculation';
     return (
       <>
-        <ContentHeader title="Income Calculation">
+        <ContentHeader title={title}>
           <Controls
             showEndShift
             showGetNext
@@ -47,6 +50,15 @@ EvaluationPage.defaultProps = {
 
 EvaluationPage.propTypes = {
   group: PropTypes.string,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export default EvaluationPage;
+const TestHooks = {
+  EvaluationPage,
+};
+
+export default withRouter(EvaluationPage);
+
+export { TestHooks };

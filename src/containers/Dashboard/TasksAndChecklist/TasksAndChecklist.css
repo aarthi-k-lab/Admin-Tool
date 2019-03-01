@@ -1,3 +1,15 @@
 .checklist {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
+}
+
+.loader {
+  margin: auto;
+}
+
+.error-indicator {
+  color: var(--red-a700);
+  margin: auto;
 }

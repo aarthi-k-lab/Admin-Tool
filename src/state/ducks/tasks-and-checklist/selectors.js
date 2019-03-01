@@ -17,8 +17,14 @@ const getChecklistItems = state => R.compose(
   R.pathOr([], ['tasksAndChecklist', 'checklist', 'subTasks']),
 )(state);
 
+const getChecklistLoadStatus = state => R.path(['tasksAndChecklist', 'checklistLoadingStatus'], state);
+
+const getTaskLoadStatus = state => R.path(['tasksAndChecklist', 'taskLoadingStatus'], state);
+
 const selectors = {
   getChecklistItems,
+  getChecklistLoadStatus,
+  getTaskLoadStatus,
   getChecklistTitle,
   getTaskTree,
 };

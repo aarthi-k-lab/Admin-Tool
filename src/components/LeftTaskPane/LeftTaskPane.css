@@ -40,3 +40,12 @@
   display: flex;
   flex-direction: column;
 }
+
+.error-indicator {
+  color: var(--red-a700);
+  margin: auto;
+}
+
+.loader {
+  margin: auto;
+}

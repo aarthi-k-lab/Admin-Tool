@@ -5,6 +5,7 @@
 .radio-control-label.radio-control-label {
   color: #000;
   font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .radio-control-bubble.radio-control-bubble {

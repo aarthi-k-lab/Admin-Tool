@@ -16,6 +16,7 @@ class SearchLoan extends React.PureComponent {
     this.state = {
       isRedirect: false,
     };
+    this.redirectPath = '';
     this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
@@ -62,6 +63,7 @@ class SearchLoan extends React.PureComponent {
     const { onSelectEval } = this.props;
     if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
+      this.redirectPath = payload.taskName === 'Underwriting' ? '/backend-evaluation' : '/frontend-evaluation';
       this.setState({ isRedirect: true });
     }
   }
@@ -79,7 +81,7 @@ class SearchLoan extends React.PureComponent {
     const { searchLoanResult, history } = this.props;
     const { isRedirect } = this.state;
     if (isRedirect) {
-      history.push('/frontend-evaluation');
+      history.push(this.redirectPath);
     }
     if (searchLoanResult.statusCode) {
       return (

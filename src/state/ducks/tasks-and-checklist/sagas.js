@@ -8,6 +8,10 @@ import * as Api from 'lib/Api';
 import {
   GET_CHECKLIST_SAGA,
   GET_TASKS_SAGA,
+  ERROR_LOADING_CHECKLIST,
+  ERROR_LOADING_TASKS,
+  LOADING_CHECKLIST,
+  LOADING_TASKS,
   STORE_CHECKLIST,
   STORE_TASKS,
 } from './types';
@@ -19,6 +23,9 @@ function* getChecklist(action) {
   try {
     // eslint-disable-next-line
     const { payload: { taskId } } = action;
+    yield put({
+      type: LOADING_CHECKLIST,
+    });
     const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
@@ -29,6 +36,9 @@ function* getChecklist(action) {
       payload: response,
     });
   } catch (e) {
+    yield put({
+      type: ERROR_LOADING_CHECKLIST,
+    });
     const snackBar = {
       message: 'Checklist fetch failed.',
       type: 'error',
@@ -45,6 +55,9 @@ function* getTasks(action) {
   try {
     // eslint-disable-next-line
     const { payload: { taskId, depth } } = action;
+    yield put({
+      type: LOADING_TASKS,
+    });
     const response = yield call(Api.callGet, `/api/task-engine/task/${'5c7686abd41e60431a7fc578'}?depth=${depth}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
@@ -55,6 +68,9 @@ function* getTasks(action) {
       payload: response,
     });
   } catch (e) {
+    yield put({
+      type: ERROR_LOADING_TASKS,
+    });
     const snackBar = {};
     snackBar.message = 'Task/s fetch failed.';
     snackBar.type = 'error';
