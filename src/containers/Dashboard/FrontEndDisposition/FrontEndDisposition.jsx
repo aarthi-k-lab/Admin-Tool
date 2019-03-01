@@ -13,7 +13,9 @@ import {
   operations,
   selectors,
 } from 'ducks/dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
 import './FrontEndDisposition.css';
+import RouteAccess from 'lib/RouteAccess';
 
 class Disposition extends React.PureComponent {
   constructor(props) {
@@ -46,7 +48,10 @@ class Disposition extends React.PureComponent {
       dispositionErrorMessages: errorMessages,
       enableGetNext,
       dispositionReason,
+      showAssign,
+      user,
     } = this.props;
+    const groups = user && user.groupList;
     if (errorMessages.length > 0) {
       const errorsNode = errorMessages.reduce(
         (acc, message) => {
@@ -58,6 +63,20 @@ class Disposition extends React.PureComponent {
       );
       return (
         <UserNotification level="error" message={errorsNode} type="alert-box" />
+      );
+    }
+
+    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
+      const message = 'Please click Unassign to unassign the task from the user.';
+      return (
+        <UserNotification level="error" message={message} type="alert-box" />
+      );
+    }
+
+    if (showAssign) {
+      const message = 'Please note only Manager can unassign the task.';
+      return (
+        <UserNotification level="error" message={message} type="alert-box" />
       );
     }
 
@@ -174,7 +193,17 @@ Disposition.propTypes = {
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   onDispositionSelect: PropTypes.func.isRequired,
   saveInProgress: PropTypes.bool,
+  showAssign: PropTypes.bool.isRequired,
   taskFetchError: PropTypes.bool,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -188,6 +217,8 @@ const mapStateToProps = state => ({
   saveInProgress: selectors.saveInProgress(state),
   isAssigned: selectors.isAssigned(state),
   taskFetchError: selectors.taskFetchError(state),
+  showAssign: selectors.showAssign(state),
+  user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
