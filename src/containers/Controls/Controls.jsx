@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import {
   EndShift, Expand, GetNext, Assign, Unassign,
 } from 'components/ContentHeader';
-import { withRouter } from 'react-router-dom';
-
 import {
   operations,
   selectors,
@@ -21,9 +19,8 @@ class Controls extends React.PureComponent {
   }
 
   handlegetNext() {
-    const { location, onGetNext } = this.props;
-    const payload = location.pathname === '/frontend-evaluation' ? 'FEUW' : 'BEUW';
-    onGetNext(payload);
+    const { onGetNext, groupName } = this.props;
+    onGetNext(groupName);
   }
 
   render() {
@@ -75,6 +72,7 @@ Controls.defaultProps = {
 Controls.propTypes = {
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
+  groupName: PropTypes.string.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -101,6 +99,7 @@ const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   showAssign: selectors.showAssign(state),
   user: loginSelectors.getUser(state),
+  groupName: selectors.groupName(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -116,5 +115,5 @@ const TestHooks = {
   Controls,
 };
 
-export default withRouter(ControlsContainer);
+export default ControlsContainer;
 export { TestHooks };

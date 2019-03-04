@@ -124,7 +124,7 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
     const tombstoneData = yield select(tombstoneSelectors.getTombstoneData);
-    const workoutCaseType = R.propOr({}, 'content', R.filter(x => x.title === 'Modification Type', tombstoneData)[0]);
+    const workoutCaseType = R.propOr('', 'content', R.filter(x => x.title === 'Modification Type', tombstoneData)[0]);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}&workoutCaseType=${workoutCaseType}`, {});
     yield put({

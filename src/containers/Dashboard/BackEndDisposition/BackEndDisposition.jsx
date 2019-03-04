@@ -6,10 +6,13 @@ import Loader from 'components/Loader/Loader';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import { arrayToString } from 'lib/ArrayUtils';
+import { selectors as loginSelectors } from 'ducks/login';
+import RouteAccess from 'lib/RouteAccess';
 import CardCreator from './CardCreator';
 import getStatus from './statusList';
 import { selectors, operations } from '../../../state/ducks/dashboard';
 import './BackEndDisposition.css';
+
 
 const shouldExpand = (isExpanded, item, id) => {
   if (isExpanded) return item.id === id;
@@ -29,6 +32,22 @@ class BackEndDisposition extends Component {
       },
       selectedActivity: '',
     };
+  }
+
+  static getDerivedStateFromProps(props, prevState) {
+    const { enableGetNext, selectedDisposition } = props;
+    const { onClearBE } = props;
+    if (enableGetNext && selectedDisposition.activityName) {
+      const { status } = prevState;
+      const changedStatus = status.map(item => ({
+        ...item,
+        labelDisplay: 'none',
+        expanded: false,
+      }));
+      onClearBE();
+      return ({ operate: 'CollapseAll', status: changedStatus });
+    }
+    return prevState;
   }
 
   setSelectionLabel(id, cardStatus, activityName) {
@@ -93,8 +112,10 @@ class BackEndDisposition extends Component {
     const {
       beDispositionErrorMessages: errorMessages,
       enableGetNext,
+      showAssign,
+      user,
     } = this.props;
-
+    const groups = user && user.groupList;
     if (errorMessages.length > 0) {
       const errorsNode = errorMessages.reduce(
         (acc, message) => {
@@ -106,6 +127,20 @@ class BackEndDisposition extends Component {
       );
       return (
         <UserNotification level="error" message={errorsNode} type="alert-box" />
+      );
+    }
+
+    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
+      const message = 'Please click Unassign to unassign the task from the user.';
+      return (
+        <UserNotification level="error" message={message} type="alert-box" />
+      );
+    }
+
+    if (showAssign) {
+      const message = 'Please note only Manager can unassign the task.';
+      return (
+        <UserNotification level="error" message={message} type="alert-box" />
       );
     }
 
@@ -153,12 +188,30 @@ class BackEndDisposition extends Component {
     );
   }
 
+  renderTaskErrorMessage() {
+    const { noTasksFound, taskFetchError } = this.props;
+    const warningMessage = 'No tasks assigned.Please contact your manager';
+    if (taskFetchError) {
+      const errorMessage = 'Task Fetch Failed.Please try again Later';
+      return (
+        <UserNotification level="error" message={errorMessage} type="alert-box" />
+      );
+    }
+    if (noTasksFound) {
+      return (
+        <UserNotification level="error" message={warningMessage} type="alert-box" />
+      );
+    }
+    return null;
+  }
+
+
   render() {
     const {
       status, operate, selectedStatus, selectedActivity,
     } = this.state;
     const {
-      selectedDisposition, inProgress, enableGetNext, isAssigned,
+      selectedDisposition, inProgress, enableGetNext, isAssigned, noTasksFound, taskFetchError,
     } = this.props;
     if (inProgress) {
       return (
@@ -186,26 +239,32 @@ class BackEndDisposition extends Component {
     return (
       <div styleName="scrollable-block">
         <section styleName="disposition-section">
-          <header styleName="para-title">
+          {
+        (noTasksFound || taskFetchError) ? this.renderTaskErrorMessage() : (
+          <>
+            <header styleName="para-title">
           Select the outcome of your review
-          </header>
-          {this.renderErrorNotification(isAssigned, activityName)}
-          <button
-            disabled={enableGetNext || !isAssigned}
-            onClick={() => this.handleExpandAll()}
-            styleName="OperateButton"
-            type="submit"
-          >
-            {operate}
-          </button>
-          { status.map(m => (
-            <CardCreator
+            </header>
+            {this.renderErrorNotification(isAssigned, activityName)}
+            <button
               disabled={enableGetNext || !isAssigned}
-              selectedActivity={selectedActivity}
-              status={m}
-            />
-          ))}
-          {this.renderSave(isAssigned)}
+              onClick={() => this.handleExpandAll()}
+              styleName="OperateButton"
+              type="submit"
+            >
+              {operate}
+            </button>
+            { status.map(m => (
+              <CardCreator
+                disabled={enableGetNext || !isAssigned}
+                selectedActivity={selectedActivity}
+                status={m}
+              />
+            ))}
+            {this.renderSave(isAssigned)}
+          </>
+        )
+          }
         </section>
       </div>
     );
@@ -223,6 +282,8 @@ BackEndDisposition.defaultProps = {
   },
   saveInProgress: false,
   beDispositionErrorMessages: [],
+  noTasksFound: false,
+  taskFetchError: false,
 };
 
 BackEndDisposition.propTypes = {
@@ -231,6 +292,9 @@ BackEndDisposition.propTypes = {
   enableGetNext: PropTypes.bool,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  noTasksFound: PropTypes.bool,
+  // eslint-disable-next-line react/no-unused-prop-types
+  onClearBE: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   saveInProgress: PropTypes.bool,
   selectedDisposition: PropTypes.shape({
@@ -243,6 +307,17 @@ BackEndDisposition.propTypes = {
     isActivitySelected: PropTypes.bool,
     isExpanded: PropTypes.bool,
   }),
+  showAssign: PropTypes.bool.isRequired,
+  taskFetchError: PropTypes.bool,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -254,11 +329,15 @@ const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   isAssigned: selectors.isAssigned(state),
   saveInProgress: selectors.saveInProgress(state),
-
+  showAssign: selectors.showAssign(state),
+  noTasksFound: selectors.noTasksFound(state),
+  taskFetchError: selectors.taskFetchError(state),
+  user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onDispositionSaveTrigger: operations.onDispositionSave(dispatch),
+  onClearBE: operations.onClearBEDisposition(dispatch),
 });
 
 const BackendDisposition = connect(mapStateToProps, mapDispatchToProps)(BackEndDisposition);

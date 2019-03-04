@@ -14,6 +14,8 @@ import {
   ASSIGN_LOAN,
   SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
+  CLEAR_BE_DISPOSITION,
+  GROUP_NAME,
 } from './types';
 
 
@@ -58,6 +60,11 @@ const selectEval = payload => ({
   payload,
 });
 
+const getGroupName = payload => ({
+  type: GROUP_NAME,
+  payload,
+});
+
 const endShift = () => ({
   type: END_SHIFT,
 });
@@ -72,6 +79,10 @@ const assignLoan = () => ({
 
 const clearDisposition = () => ({
   type: CLEAR_DISPOSITION,
+});
+
+const clearBEDisposition = () => ({
+  type: CLEAR_BE_DISPOSITION,
 });
 
 const clearFirstVisit = () => ({
@@ -104,4 +115,6 @@ export {
   unassignLoan,
   assignLoan,
   hideAssignUnassign,
+  clearBEDisposition,
+  getGroupName,
 };

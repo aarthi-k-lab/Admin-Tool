@@ -34,6 +34,8 @@ const processId = state => R.pathOr(null, ['dashboard', 'processId'], state);
 
 const processStatus = state => R.pathOr(null, ['dashboard', 'processStatus'], state);
 
+const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
+
 const enableGetNext = state => (
   isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state)
@@ -74,6 +76,7 @@ const selectors = {
   processStatus,
   isAssigned,
   clearSearch,
+  groupName,
 };
 
 export default selectors;

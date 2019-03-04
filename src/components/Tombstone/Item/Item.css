@@ -8,13 +8,13 @@
 .title {
   align-self: auto;
   color: var(--grey-590);
-  font-size: 1em;
+  font-size: 0.9rem;
   display: contents;
 }
 
 .content {
   color: var(--grey-850);
-  font-size: 1em;
+  font-size: 1.1rem;
   font-weight: bold;
   text-transform: uppercase;
   display: block;
