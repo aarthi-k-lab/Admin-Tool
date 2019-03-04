@@ -20,6 +20,7 @@ import {
   SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
   CLEAR_BE_DISPOSITION,
+  GROUP_NAME,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -120,6 +121,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         firstVisit: true,
         isAssigned: true,
         clearSearch: true,
+        groupName: state.groupName,
         getSearchLoanResponse: {},
       };
     }
@@ -203,6 +205,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         showAssign: null,
         isAssigned: !R.isEmpty(assignLoanResponse),
+      };
+    }
+
+    case GROUP_NAME: {
+      return {
+        ...state,
+        groupName: action.payload,
       };
     }
     case CLEAR_BE_DISPOSITION: {

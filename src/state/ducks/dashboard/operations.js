@@ -14,6 +14,7 @@ import {
   beDispositionSelect,
   hideAssignUnassign,
   clearBEDisposition,
+  getGroupName,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -73,6 +74,10 @@ const onDialogClose = dispatch => () => {
   dispatch(hideAssignUnassign());
 };
 
+const onGetGroupName = dispatch => (payload) => {
+  dispatch(getGroupName(payload));
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -88,6 +93,7 @@ const operations = {
   onSelectDisposition,
   onDialogClose,
   onClearBEDisposition,
+  onGetGroupName,
 };
 
 export default operations;
