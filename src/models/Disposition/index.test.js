@@ -19,9 +19,9 @@ describe('Model :: Disposition', () => {
         },
       };
       const errors = [
-        '\'EvalSubStatus\' should be \'Missing Docs\'',
-        '\'ResolutionSubStatus\' should be \'First\' or \'Second\'',
-        '\'EvalStatus\' should be \'First\'',
+        '\'EvalSubStatus\' should not be \'Missing Docs\'',
+        '\'ResolutionSubStatus\' should not be \'First\' or \'Second\'',
+        '\'EvalStatus\' should not be \'First\'',
       ];
       expect(Disposition.getErrorMessages(discrepancies)).toEqual(errors);
     });
