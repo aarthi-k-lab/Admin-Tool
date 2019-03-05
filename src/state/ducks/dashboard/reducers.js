@@ -221,7 +221,6 @@ const reducer = (state = { firstVisit: true }, action) => {
         id: '',
         statusName: '',
         isActivitySelected: '',
-        activityName: '',
         cardStatus: {},
       };
       const newState = {

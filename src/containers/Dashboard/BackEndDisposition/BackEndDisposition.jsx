@@ -37,7 +37,7 @@ class BackEndDisposition extends Component {
   static getDerivedStateFromProps(props, prevState) {
     const { enableGetNext, selectedDisposition } = props;
     const { onClearBE } = props;
-    if (enableGetNext && selectedDisposition.activityName) {
+    if (enableGetNext && selectedDisposition.isActivitySelected) {
       const { status } = prevState;
       const changedStatus = status.map(item => ({
         ...item,
