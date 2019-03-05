@@ -23,8 +23,7 @@ class LeftNav extends React.PureComponent {
       isAssigned,
       onGetGroupName,
     } = this.props;
-    const payload = path === '/frontend-evaluation' ? 'FEUW' : 'BEUW';
-    onGetGroupName(payload);
+    onGetGroupName(path);
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }

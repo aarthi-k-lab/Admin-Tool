@@ -211,7 +211,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case GROUP_NAME: {
       return {
         ...state,
-        groupName: action.payload,
+        groupName: action.payload === '/frontend-evaluation' ? 'FEUW' : 'BEUW',
       };
     }
     case CLEAR_BE_DISPOSITION: {

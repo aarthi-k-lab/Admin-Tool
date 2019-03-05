@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { selectors, operations } from 'ducks/dashboard';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
+import { withRouter } from 'react-router-dom';
 import DialogBox from '../../DialogBox';
 import './Assign.css';
 
@@ -21,7 +22,8 @@ class Assign extends React.Component {
   }
 
   handleClick() {
-    const { onAssignLoan } = this.props;
+    const { onAssignLoan, location, onGetGroupName } = this.props;
+    onGetGroupName(location.pathname);
     onAssignLoan();
   }
 
@@ -79,6 +81,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAssignLoan: operations.onAssignLoan(dispatch),
   onDialogClose: operations.onDialogClose(dispatch),
+  onGetGroupName: operations.onGetGroupName(dispatch),
 });
 
 Assign.propTypes = {
@@ -88,10 +91,14 @@ Assign.propTypes = {
     }),
   }).isRequired,
   disabled: PropTypes.bool,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+  }).isRequired,
   onAssignLoan: PropTypes.func,
   onDialogClose: PropTypes.func,
+  onGetGroupName: PropTypes.func.isRequired,
 };
 
 const AssignContainer = connect(mapStateToProps, mapDispatchToProps)(Assign);
 
-export default AssignContainer;
+export default withRouter(AssignContainer);
