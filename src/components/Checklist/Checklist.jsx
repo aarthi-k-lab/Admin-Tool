@@ -13,25 +13,44 @@ class Checklist extends React.PureComponent {
   constructor(props) {
     super(props);
     this.renderChecklistItem = this.renderChecklistItem.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(event) {
-    console.log(event, this.a); // #TODO
+  handleChange(id) {
+    const { onChange } = this.props;
+    return (event) => {
+      onChange(id, event.target.value);
+    };
   }
 
-  renderChecklistItem({ options, title, type }) {
+  renderChecklistItem({
+    id,
+    options,
+    title,
+    type,
+    value,
+  }) {
+    const onChange = this.handleChange(id);
     switch (type) {
       case RADIO_BUTTONS:
         return (
           <RadioButtons
-            onChange={this.handleChange}
+            onChange={onChange}
             options={options}
+            selectedValue={value}
             title={title}
           />
         );
       case MULTILINE_TEXT:
         return (
-          <TextField label={title} maxRows={10} multiline rows={5} />
+          <TextField
+            label={title}
+            maxRows={10}
+            multiline
+            onChange={onChange}
+            rows={5}
+            value={value}
+          />
         );
       default:
         return (
@@ -67,15 +86,18 @@ Checklist.defaultProps = {
 Checklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.string.isRequired,
       options: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
       }),
       title: PropTypes.string.isRequired,
       type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
+      value: PropTypes.any,
     }),
   ).isRequired,
   className: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
 };
 

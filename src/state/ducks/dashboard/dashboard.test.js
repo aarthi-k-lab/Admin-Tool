@@ -617,8 +617,13 @@ describe('assign Loan', () => {
       .toEqual(select(selectors.taskId));
   });
 
-  it('should call select ProcessId from store', () => {
+  it('should call select groupName from store', () => {
     expect(saga.next(74365847).value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call select ProcessId from store', () => {
+    expect(saga.next('FEUW').value)
       .toEqual(select(selectors.processId));
   });
 
@@ -633,7 +638,7 @@ describe('assign Loan', () => {
   });
   it('should call assign Api', () => {
     expect(saga.next(18008401081).value)
-      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active', {}));
+      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW', {}));
   });
 
   it('should call ASSIGN_LOAN_RESULT', () => {

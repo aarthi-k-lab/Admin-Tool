@@ -200,7 +200,7 @@ function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)
   return data;
 }
 
-async function fetchData(loanNumber, evalId) {
+async function fetchData(loanNumber, evalId, groupName) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
@@ -216,7 +216,7 @@ async function fetchData(loanNumber, evalId) {
 
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
-    body: JSON.stringify([evalId]),
+    body: JSON.stringify({ evalIds: [evalId], groupName }),
     headers: { 'content-type': 'application/json' },
   });
 
@@ -224,9 +224,10 @@ async function fetchData(loanNumber, evalId) {
   const [loanInfoResponse, evaluationInfoResponse, previousDispositionResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP],
   );
-  if (!loanInfoResponse.ok || !evaluationInfoResponse.ok || !previousDispositionResponse.ok) {
+  if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
   }
+
   const [loanDetails, evalDetails,
     previousDispositionDetails] = previousDispositionResponse.status === 200
     ? await Promise.all(

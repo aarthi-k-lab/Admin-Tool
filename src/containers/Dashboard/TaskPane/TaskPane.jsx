@@ -14,12 +14,20 @@ class TaskPane extends React.PureComponent {
 
   render() {
     const {
+      className,
       dataLoadStatus,
       onSubTaskClick,
+      selectedTaskId,
       tasks,
     } = this.props;
     return (
-      <LeftTaskPane dataLoadStatus={dataLoadStatus} onSubTaskClick={onSubTaskClick} tasks={tasks} />
+      <LeftTaskPane
+        className={className}
+        dataLoadStatus={dataLoadStatus}
+        onSubTaskClick={onSubTaskClick}
+        selectedTaskId={selectedTaskId}
+        tasks={tasks}
+      />
     );
   }
 }
@@ -29,19 +37,23 @@ const TestHooks = {
 };
 
 TaskPane.defaultProps = {
+  className: '',
   tasks: [],
 };
 
 TaskPane.propTypes = {
+  className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
   getTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
+  selectedTaskId: PropTypes.string.isRequired,
   tasks: PropTypes.arrayOf(TaskModel),
 };
 
 const mapStateToProps = state => ({
   dataLoadStatus: taskSelectors.getTaskLoadStatus(state),
   isAccessible: selectors.isTaskPaneAccessible(state),
+  selectedTaskId: taskSelectors.getSelectedChecklistId(state),
   tasks: taskSelectors.getTaskTree(state).subTasks,
 });
 

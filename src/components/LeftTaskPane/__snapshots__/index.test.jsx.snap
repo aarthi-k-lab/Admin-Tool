@@ -2,7 +2,7 @@
 
 exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
 <div
-  className="components-LeftTaskPane-LeftTaskPane__stretch-column"
+  className="stretch-column"
 >
   <div
     className="components-LeftTaskPane-LeftTaskPane__taskpane"

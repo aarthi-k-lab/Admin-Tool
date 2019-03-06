@@ -14,10 +14,16 @@ class LeftNav extends React.PureComponent {
     this.handleLandingpage = this.handleLandingpage.bind(this);
   }
 
-  handleLandingpage() {
+  handleLandingpage(path) {
     const {
-      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned,
+      onAutoSave,
+      onEndShift,
+      enableGetNext,
+      evalId,
+      isAssigned,
+      onGetGroupName,
     } = this.props;
+    onGetGroupName(path);
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
@@ -34,7 +40,7 @@ class LeftNav extends React.PureComponent {
         links.map(link => (
           groupList && groupList.some(r => link.groups.includes(r))
             ? (
-              <Link onClick={this.handleLandingpage} to={link.path}>
+              <Link onClick={() => this.handleLandingpage(link.path)} to={link.path}>
                 <img alt={link.name} src={link.img} />
               </Link>) : null
         ))
@@ -54,6 +60,7 @@ LeftNav.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({
       email: PropTypes.string,
@@ -73,6 +80,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
+  onGetGroupName: operations.onGetGroupName(dispatch),
 
 });
 const LeftNavContainer = connect(

@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
+import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
-import { selectors } from 'ducks/tasks-and-checklist';
-import './TasksAndChecklist.css';
+import { operations, selectors } from 'ducks/tasks-and-checklist';
+import Controls from './Controls';
+import Navigation from './Navigation';
+import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
   renderChecklist() {
@@ -14,6 +17,7 @@ class TasksAndChecklist extends React.PureComponent {
       checklistItems,
       checklistTitle,
       dataLoadStatus,
+      onChecklistChange,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -27,6 +31,7 @@ class TasksAndChecklist extends React.PureComponent {
     return (
       <Checklist
         checklistItems={checklistItems}
+        onChange={onChecklistChange}
         styleName="checklist"
         title={checklistTitle}
       />
@@ -34,11 +39,27 @@ class TasksAndChecklist extends React.PureComponent {
   }
 
   render() {
+    const {
+      disableNext,
+      disablePrev,
+      onNext,
+      onPrev,
+    } = this.props;
     return (
-      <>
-        <TaskPane />
+      <section styleName="tasks-and-checklist">
+        <TaskPane styleName="tasks" />
         { this.renderChecklist() }
-      </>
+        <Controls
+          className={classNames(styles.footer, styles.controls)}
+        />
+        <Navigation
+          className={classNames(styles.footer, styles.navigation)}
+          disableNext={disableNext}
+          disablePrev={disablePrev}
+          onNext={onNext}
+          onPrev={onPrev}
+        />
+      </section>
     );
   }
 }
@@ -49,6 +70,7 @@ const MULTILINE_TEXT = 'multiline-text';
 TasksAndChecklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.string.isRequired,
       options: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
@@ -59,6 +81,11 @@ TasksAndChecklist.propTypes = {
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
+  disableNext: PropTypes.bool.isRequired,
+  disablePrev: PropTypes.bool.isRequired,
+  onChecklistChange: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -66,7 +93,17 @@ function mapStateToProps(state) {
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
+    disableNext: selectors.shouldDisableNext(state),
+    disablePrev: selectors.shouldDisablePrev(state),
   };
 }
 
-export default connect(mapStateToProps, null)(TasksAndChecklist);
+function mapDispatchToProps(dispatch) {
+  return {
+    onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
+    onNext: operations.fetchNextChecklist(dispatch),
+    onPrev: operations.fetchPrevChecklist(dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TasksAndChecklist);

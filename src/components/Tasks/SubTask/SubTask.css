@@ -2,6 +2,11 @@
   cursor: pointer;
 }
 
+.checklist-selected.checklist-selected {
+  background-color: var(--grey-200);
+  border-radius: 0.5rem;
+}
+
 .error-text-subtask {
   font-size: 0.8rem;
   font-weight: 200;

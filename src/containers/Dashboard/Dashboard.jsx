@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as dashboardSelectors, operations } from 'ducks/dashboard';
 import LandingPage from './LandingPage';
 import EvaluationPage from './EvaluationPage';
 
 function Dashboard(props) {
-  const { isFirstVisit, group } = props;
+  const { isFirstVisit, group, onGetGroupName } = props;
+  onGetGroupName(group);
   return isFirstVisit ? <LandingPage /> : <EvaluationPage group={group} />;
 }
 
@@ -24,7 +25,10 @@ Dashboard.defaultProps = {
 Dashboard.propTypes = {
   group: PropTypes.string,
   isFirstVisit: PropTypes.bool.isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
 };
-
-export default connect(mapStateToProps, null)(Dashboard);
+const mapDispatchToProps = dispatch => ({
+  onGetGroupName: operations.onGetGroupName(dispatch),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 export { TestExports };

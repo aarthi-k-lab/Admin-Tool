@@ -15,6 +15,7 @@ import {
   SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
   CLEAR_BE_DISPOSITION,
+  GROUP_NAME,
 } from './types';
 
 
@@ -56,6 +57,11 @@ const getNext = payload => ({
 
 const selectEval = payload => ({
   type: SAVE_EVALID_LOANNUMBER,
+  payload,
+});
+
+const getGroupName = payload => ({
+  type: GROUP_NAME,
   payload,
 });
 
@@ -110,4 +116,5 @@ export {
   assignLoan,
   hideAssignUnassign,
   clearBEDisposition,
+  getGroupName,
 };
