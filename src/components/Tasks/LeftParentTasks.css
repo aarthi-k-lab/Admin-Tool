@@ -8,6 +8,11 @@
   width: 100%;
 }
 
+.selected-task {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
 .status-text {
   margin: 0.4rem;
 }
@@ -18,7 +23,6 @@
 
 .parent-task-name {
   display: inline-block;
-  font-weight: 500;
 }
 
 .parent-task-span {

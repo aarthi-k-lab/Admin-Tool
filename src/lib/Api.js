@@ -39,7 +39,29 @@ const callPost = function callPost(endpoint, body, params = {}) {
     });
 };
 
+function put(endpoint, body, params = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (!R.isEmpty(params)) {
+    Object.assign(headers, params);
+  }
+  return fetch(endpoint,
+    {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body),
+    })
+    .then((response) => {
+      if (R.prop('ok', response)) {
+        return response.json();
+      }
+      throw new RangeError('HTTP status code not in range (2xx).');
+    });
+}
+
 export {
   callGet,
   callPost,
+  put,
 };

@@ -4,10 +4,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
-import './LeftTaskPane.css';
+import classNames from 'classnames';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
+import styles from './LeftTaskPane.css';
 
 function StatusMenu({ onChange, taskStatus }) {
   return (
@@ -73,7 +74,12 @@ class LeftTaskPane extends React.Component {
 
   renderContent() {
     const { tasksStatus, isCollapsed } = this.state;
-    const { dataLoadStatus, onSubTaskClick, tasks } = this.props;
+    const {
+      dataLoadStatus,
+      onSubTaskClick,
+      selectedTaskId,
+      tasks,
+    } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
         <ErrorIcon fontSize="large" styleName="error-indicator" />
@@ -112,6 +118,7 @@ class LeftTaskPane extends React.Component {
         <LeftParentTasks
           isCollapsed={isCollapsed}
           onSubTaskClick={onSubTaskClick}
+          selectedTaskId={selectedTaskId}
           tasks={tasks}
         />
       </>
@@ -120,8 +127,9 @@ class LeftTaskPane extends React.Component {
 
   render() {
     const { width } = this.state;
+    const { className } = this.props;
     return (
-      <div styleName="stretch-column">
+      <div className={classNames(className, styles['stretch-column'])}>
         <div
           id="cmod_taskpane"
           style={{ width }}
@@ -135,19 +143,23 @@ class LeftTaskPane extends React.Component {
 }
 
 LeftTaskPane.propTypes = {
+  className: PropTypes.string,
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
+  selectedTaskId: PropTypes.string,
   tasks: PropTypes.arrayOf(TaskModel).isRequired,
 };
 
 LeftTaskPane.defaultProps = {
+  className: '',
   closedWidth: '4rem',
   dataLoadStatus: 'completed',
   defaultState: 'open', // or 'closed'
   openWidth: '20rem',
+  selectedTaskId: '',
 };
 
 export default LeftTaskPane;
