@@ -24,7 +24,7 @@ class Assign extends React.Component {
 
   handleClick() {
     const { onAssignLoan, location, onGetGroupName } = this.props;
-    onGetGroupName(DashboardModel.PATHS[location.pathname]);
+    onGetGroupName(DashboardModel.GROUPS[location.pathname]);
     onAssignLoan();
   }
 
