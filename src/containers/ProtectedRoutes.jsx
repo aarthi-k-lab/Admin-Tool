@@ -58,7 +58,7 @@ class ProtectedRoutes extends React.Component {
 
   render() {
     const { loading, redirectPath } = this.state;
-    const { expandView, user } = this.props;
+    const { expandView, location, user } = this.props;
     const groups = user && user.groupList;
     if (loading) {
       return <SignInLoader />;
@@ -68,7 +68,7 @@ class ProtectedRoutes extends React.Component {
       return <Redirect to={redirectPath} />;
     }
     return (
-      <App expandView={expandView} user={user}>
+      <App expandView={expandView} location={location.pathname} user={user}>
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />

@@ -24,6 +24,10 @@
   background-color: var(--grey-850);
 }
 
+.active-bar{
+  background-color: var(--grey-850);
+}
+
 .stretch-column {
   display: flex;
   flex-direction: column;

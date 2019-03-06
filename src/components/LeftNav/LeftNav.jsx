@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { links } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import './LeftNav.css';
 
@@ -15,16 +14,14 @@ class LeftNav extends React.PureComponent {
     this.handleLandingpage = this.handleLandingpage.bind(this);
   }
 
-  handleLandingpage(path) {
+  handleLandingpage() {
     const {
       onAutoSave,
       onEndShift,
       enableGetNext,
       evalId,
       isAssigned,
-      onGetGroupName,
     } = this.props;
-    onGetGroupName(DashboardModel.GROUPS[path]);
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
@@ -32,7 +29,7 @@ class LeftNav extends React.PureComponent {
   }
 
   render() {
-    const { user } = this.props;
+    const { path, user } = this.props;
     const groupList = user && user.groupList;
     return (
       <div styleName="stretch-column">
@@ -41,7 +38,7 @@ class LeftNav extends React.PureComponent {
         links.map(link => (
           groupList && groupList.some(r => link.groups.includes(r))
             ? (
-              <Link onClick={() => this.handleLandingpage(link.path)} to={link.path}>
+              <Link onClick={() => this.handleLandingpage()} styleName={R.equals(path, link.path) ? 'active-bar' : ''} to={link.path}>
                 <img alt={link.name} src={link.img} />
               </Link>) : null
         ))
@@ -61,7 +58,7 @@ LeftNav.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
-  onGetGroupName: PropTypes.func.isRequired,
+  path: PropTypes.string.isRequired,
   user: PropTypes.shape({
     userDetails: PropTypes.shape({
       email: PropTypes.string,
@@ -81,8 +78,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
-  onGetGroupName: operations.onGetGroupName(dispatch),
-
 });
 const LeftNavContainer = connect(
   mapStateToProps,
