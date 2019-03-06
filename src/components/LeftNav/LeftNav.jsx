@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { links } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
+import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import './LeftNav.css';
 
@@ -23,7 +24,7 @@ class LeftNav extends React.PureComponent {
       isAssigned,
       onGetGroupName,
     } = this.props;
-    onGetGroupName(path);
+    onGetGroupName(DashboardModel.GROUPS[path]);
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
