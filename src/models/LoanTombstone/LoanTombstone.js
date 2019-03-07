@@ -111,7 +111,7 @@ function getUPBItem(loanDetails) {
 }
 
 function getNextPaymentDueDateItem(loanDetails) {
-  const date = moment(loanDetails.nextPaymentDueDate);
+  const date = moment.tz(loanDetails.nextPaymentDueDate, 'America/Chicago');
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
@@ -147,7 +147,7 @@ function getCFPBExpirationDate(loanDetails, evalDetails) {
 
 function getFLDD(loanDetails) {
   if (loanDetails.LoanExtension != null) {
-    const date = moment(loanDetails.LoanExtension.firstLegalDueDate);
+    const date = moment.tz(loanDetails.LoanExtension.firstLegalDueDate, 'America/Chicago');
     const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
     return generateTombstoneItem('FLDD Date', dateString);
   }
@@ -155,7 +155,7 @@ function getFLDD(loanDetails) {
 }
 
 function getForeclosureSalesDate(loanDetails) {
-  const date = moment(loanDetails.foreclosureSalesDate);
+  const date = moment.tz(loanDetails.foreclosureSalesDate, 'America/Chicago');
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('Foreclosure Sale Date and Status', dateString);
 }
