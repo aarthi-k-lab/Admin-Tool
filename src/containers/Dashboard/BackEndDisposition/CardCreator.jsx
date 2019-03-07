@@ -33,7 +33,7 @@ class CardCreator extends React.Component {
 
   handleExpandClick() {
     const { status, selectedActivity } = this.state;
-    const { onSelectDisposition } = this.props;
+    const { onDispositionSelect } = this.props;
     let changedStatus = null;
     changedStatus = {
       ...status,
@@ -49,20 +49,20 @@ class CardCreator extends React.Component {
       isActivitySelected: false,
       activityName: selectedActivity,
     };
-    onSelectDisposition(payload);
+    onDispositionSelect(payload);
     this.setState({ status: changedStatus });
   }
 
   handleRadioClick(name, activityName) {
     const { status } = this.state;
-    const { onSelectDisposition } = this.props;
+    const { onDispositionSelect } = this.props;
     const payload = {
       id: status.id,
       statusName: name,
       isActivitySelected: true,
       activityName,
     };
-    onSelectDisposition(payload);
+    onDispositionSelect(payload);
   }
 
   renderActivity(item, selectedActivity, m) {
@@ -136,12 +136,12 @@ class CardCreator extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  onSelectDisposition: operations.onSelectDisposition(dispatch),
+  onDispositionSelect: operations.onDispositionSelect(dispatch),
 });
 
 CardCreator.propTypes = {
   disabled: PropTypes.bool.isRequired,
-  onSelectDisposition: PropTypes.func.isRequired,
+  onDispositionSelect: PropTypes.func.isRequired,
   selectedActivity: PropTypes.string.isRequired,
   status: PropTypes.shape({
     id: PropTypes.string.isRequired,

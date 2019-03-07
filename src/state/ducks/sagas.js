@@ -6,6 +6,8 @@ import { combinedSaga as tombstoneSaga } from './tombstone/sagas';
 import { combinedSaga as stagerSaga } from './stager/sagas';
 import { combinedSaga as notifSaga } from './notifications/sagas';
 import { combinedSaga as tasksAndChecklistSaga } from './tasks-and-checklist/sagas';
+import { combinedSaga as commentsSaga } from './comments/sagas';
+
 
 export default function* rootSaga() {
   yield all([
@@ -16,5 +18,6 @@ export default function* rootSaga() {
     stagerSaga(),
     notifSaga(),
     tasksAndChecklistSaga(),
+    commentsSaga(),
   ]);
 }

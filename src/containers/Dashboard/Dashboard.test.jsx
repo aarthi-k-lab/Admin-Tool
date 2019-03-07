@@ -7,7 +7,7 @@ describe('<Dashboard />', () => {
     const wrapper = shallow(
       <TestExports.Dashboard isFirstVisit onGetGroupName={() => {}} />,
     );
-    expect(wrapper.find('LandingPage')).toHaveLength(1);
+    expect(wrapper.find('withRouter(LandingPage)')).toHaveLength(1);
   });
   it('show EvaluationPage', () => {
     const wrapper = shallow(

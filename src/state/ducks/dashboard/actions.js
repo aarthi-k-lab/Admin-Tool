@@ -12,8 +12,8 @@ import {
   SAVE_EVALID_LOANNUMBER,
   UNASSIGN_LOAN,
   ASSIGN_LOAN,
-  SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
+  POST_COMMENT,
   CLEAR_BE_DISPOSITION,
   GROUP_NAME,
 } from './types';
@@ -37,11 +37,6 @@ const dispositionSave = dispositionPayload => ({
 const dispositionSelect = dispositionPayload => ({
   type: SAVE_SELECTED_DISPOSITION,
   payload: dispositionPayload,
-});
-
-const beDispositionSelect = beDispositionPayload => ({
-  type: SAVE_SELECTED_BE_DISPOSITION,
-  payload: beDispositionPayload,
 });
 
 const errorTombstoneFetch = () => (
@@ -73,6 +68,11 @@ const unassignLoan = () => ({
   type: UNASSIGN_LOAN,
 });
 
+const postComment = payload => ({
+  type: POST_COMMENT,
+  payload,
+});
+
 const assignLoan = () => ({
   type: ASSIGN_LOAN,
 });
@@ -101,7 +101,6 @@ const hideAssignUnassign = () => ({
 
 export {
   autoSave,
-  beDispositionSelect,
   clearDisposition,
   clearFirstVisit,
   dispositionSave,
@@ -115,6 +114,7 @@ export {
   unassignLoan,
   assignLoan,
   hideAssignUnassign,
+  postComment,
   clearBEDisposition,
   getGroupName,
 };

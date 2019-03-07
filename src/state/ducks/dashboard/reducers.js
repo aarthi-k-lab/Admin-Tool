@@ -17,7 +17,6 @@ import {
   SEARCH_LOAN_RESULT,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
-  SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
   CLEAR_BE_DISPOSITION,
   GROUP_NAME,
@@ -171,18 +170,6 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition,
       };
     }
-
-    case SAVE_SELECTED_BE_DISPOSITION: {
-      let selectedDisposition = '';
-      if (action.payload) {
-        selectedDisposition = action.payload;
-      }
-      return {
-        ...state,
-        selectedDisposition,
-      };
-    }
-
     case SAVE_EVALID_LOANNUMBER: {
       const newState = {
         ...state,

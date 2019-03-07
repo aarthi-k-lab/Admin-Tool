@@ -11,8 +11,8 @@ import {
   selectEval,
   unassignLoan,
   assignLoan,
-  beDispositionSelect,
   hideAssignUnassign,
+  postComment,
   clearBEDisposition,
   getGroupName,
 } from './actions';
@@ -23,6 +23,10 @@ const onDispositionSave = dispatch => (dispositionPayload) => {
   dispatch(dispositionSave(dispositionPayload));
 };
 
+const onPostComment = dispatch => (commentsPayload) => {
+  dispatch(postComment(commentsPayload));
+};
+
 const onDispositionSelect = dispatch => (dispositionPayload) => {
   dispatch(dispositionSelect(dispositionPayload));
 };
@@ -31,10 +35,6 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
-};
-
-const onSelectDisposition = dispatch => (payload) => {
-  dispatch(beDispositionSelect(payload));
 };
 
 const onGetNext = dispatch => (payload) => {
@@ -90,8 +90,8 @@ const operations = {
   onSelectEval,
   onUnassignLoan,
   onAssignLoan,
-  onSelectDisposition,
   onDialogClose,
+  onPostComment,
   onClearBEDisposition,
   onGetGroupName,
 };

@@ -1,0 +1,16 @@
+.comment-area-bottom {
+    height: calc(100vh - 17.4375rem);
+    width: 100%;
+    overflow: auto;
+  }
+  
+  .right-app-bar {
+    margin-bottom: 0 auto;
+    background: white;
+    display: inline-flex;
+    right: 4.9rem;
+    width: 32rem;
+    height: 52.9rem;;
+    position: absolute;
+  }
+  

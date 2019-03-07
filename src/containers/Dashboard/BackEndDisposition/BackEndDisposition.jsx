@@ -8,10 +8,13 @@ import DispositionModel from 'models/Disposition';
 import { arrayToString } from 'lib/ArrayUtils';
 import { selectors as loginSelectors } from 'ducks/login';
 import RouteAccess from 'lib/RouteAccess';
+import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import CardCreator from './CardCreator';
 import getStatus from './statusList';
 import { selectors, operations } from '../../../state/ducks/dashboard';
+import { operations as commentoperations } from '../../../state/ducks/comments';
 import './BackEndDisposition.css';
+import CommentBox from '../../../components/CommentBox/CommentBox';
 
 
 const shouldExpand = (isExpanded, item, id) => {
@@ -23,15 +26,50 @@ class BackEndDisposition extends Component {
   constructor(props) {
     super(props);
     this.handleSave = this.handleSave.bind(this);
+    this.onCommentChange = this.onCommentChange.bind(this);
     this.state = {
       status: getStatus(),
       operate: 'ExpandAll',
+      refreshHook: false,
       selectedStatus: {
         Name: '',
         isExpanded: false,
       },
       selectedActivity: '',
+      content: '',
+      canSubmit: true,
     };
+  }
+
+  componentDidUpdate() {
+    const {
+      enableGetNext, selectedDisposition, onPostComment, AppName, LoanNumber, EvalId,
+      EventName, groupName, user, ProcIdType,
+    } = this.props;
+    const { activityName } = selectedDisposition;
+    if (enableGetNext && this.savedComments) {
+      const commentsPayload = {
+        applicationName: AppName,
+        loanNumber: LoanNumber,
+        processIdType: ProcIdType,
+        processId: EvalId,
+        eventName: EventName,
+        comment: this.savedComments,
+        userName: user.userDetails.name,
+        createdDate: new Date().toJSON(),
+        commentContext: JSON.stringify({
+          task: groupName,
+          disposition: activityName,
+        }),
+      };
+      onPostComment(commentsPayload);
+      this.savedComments = '';
+    }
+  }
+
+  onCommentChange(event) {
+    if (event.target.value !== '') this.setState({ canSubmit: true });
+    this.setState({ content: event.target.value });
   }
 
   static getDerivedStateFromProps(props, prevState) {
@@ -48,15 +86,16 @@ class BackEndDisposition extends Component {
       onClearBE();
       return ({ operate: 'CollapseAll', status: changedStatus });
     }
+    if (enableGetNext) return ({ content: '', refreshHook: false });
     return prevState;
   }
 
   setSelectionLabel(id, cardStatus, activityName) {
+    const { status } = this.state;
     this.setState({
       selectedStatus: cardStatus,
       selectedActivity: activityName,
     });
-    const { status } = this.state;
     const changedStatus = status.map((item) => {
       const tempStatus = {
         ...item,
@@ -64,14 +103,13 @@ class BackEndDisposition extends Component {
       };
       return tempStatus;
     });
-    this.setState({ status: changedStatus });
+    this.setState({ status: changedStatus, canSubmit: true });
   }
 
   collapseOthers(id, cardStatus, activityName) {
-    this.setState({ selectedStatus: cardStatus, selectedActivity: activityName });
     const { status } = this.state;
+    this.setState({ selectedStatus: cardStatus, selectedActivity: activityName });
     let changedStatus = null;
-
     changedStatus = status.map((item) => {
       const tempStatus = {
         ...item,
@@ -83,19 +121,24 @@ class BackEndDisposition extends Component {
   }
 
   handleSave() {
-    const { onDispositionSaveTrigger } = this.props;
-    const { dispositionReason } = this.props;
-    if (dispositionReason) {
-      const payload = { dispositionReason: dispositionReason.activityName, group: 'BEUW' };
+    const { content } = this.state;
+    const { onDispositionSaveTrigger, selectedDisposition, groupName } = this.props;
+    const { activityName } = selectedDisposition;
+    const checkDisposition = (activityName === 'Approval' || content !== '');
+    const checkApproval = activityName === 'Approval';
+    this.savedComments = content;
+    this.setState({ refreshHook: true });
+    const checkSubmit = selectedDisposition && (checkDisposition || checkApproval);
+    if (checkSubmit) {
+      const payload = { dispositionReason: selectedDisposition.activityName, group: groupName };
       onDispositionSaveTrigger(payload);
+      this.setState({ refreshHook: true });
     }
+    this.setState({ canSubmit: checkSubmit });
   }
 
   handleExpandAll() {
-    const {
-      operate, status,
-    } = this.state;
-
+    const { operate, status } = this.state;
     const { selectedDisposition } = this.props;
     if (selectedDisposition) {
       const { cardStatus } = selectedDisposition;
@@ -168,7 +211,6 @@ class BackEndDisposition extends Component {
       saveInProgress,
       enableGetNext,
     } = this.props;
-
     const { activityName } = selectedDisposition;
     if (saveInProgress) {
       return (
@@ -209,18 +251,17 @@ class BackEndDisposition extends Component {
 
   render() {
     const {
-      status, operate, selectedStatus, selectedActivity,
+      status, operate, selectedStatus, selectedActivity, content, refreshHook, canSubmit,
     } = this.state;
     const {
       selectedDisposition, inProgress, enableGetNext, isAssigned, noTasksFound, taskFetchError,
     } = this.props;
+    const { activityName } = selectedDisposition;
     if (inProgress) {
       return (
         <Loader message="Please Wait" />
       );
     }
-
-    const { activityName } = selectedDisposition;
     const sameDispositionNotSelected = selectedDisposition
     && (selectedDisposition.cardStatus !== selectedStatus
     || selectedDisposition.activityName !== selectedActivity);
@@ -238,9 +279,10 @@ class BackEndDisposition extends Component {
     }
 
     return (
-      <div styleName="scrollable-block">
-        <section styleName="disposition-section">
-          {
+      <>
+        <div styleName="scrollable-block">
+          <section styleName="disposition-section">
+            {
         (noTasksFound || taskFetchError) ? this.renderTaskErrorMessage() : (
           <>
             <header styleName="para-title">
@@ -262,12 +304,20 @@ class BackEndDisposition extends Component {
                 status={m}
               />
             ))}
+            <CommentBox
+              content={content}
+              onCheck={canSubmit}
+              onCommentChange={this.onCommentChange}
+              onRefresh={refreshHook}
+            />
             {this.renderSave(isAssigned)}
           </>
         )
           }
-        </section>
-      </div>
+          </section>
+        </div>
+        <WidgetBuilder />
+      </>
     );
   }
 }
@@ -285,18 +335,28 @@ BackEndDisposition.defaultProps = {
   beDispositionErrorMessages: [],
   noTasksFound: false,
   taskFetchError: false,
+  AppName: 'CMOD',
+  EventName: 'UW',
+  ProcIdType: 'EvalID',
+  groupName: '',
 };
 
 BackEndDisposition.propTypes = {
+  AppName: PropTypes.string,
   beDispositionErrorMessages: PropTypes.arrayOf(PropTypes.string),
-  dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
+  EvalId: PropTypes.number.isRequired,
+  EventName: PropTypes.string,
+  groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  LoanNumber: PropTypes.number.isRequired,
   noTasksFound: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
   onClearBE: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
+  onPostComment: PropTypes.func.isRequired,
+  ProcIdType: PropTypes.string,
   saveInProgress: PropTypes.bool,
   selectedDisposition: PropTypes.shape({
     activityName: PropTypes.string,
@@ -322,13 +382,15 @@ BackEndDisposition.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  selectedDisposition: selectors.selectedDisposition(state),
-  dispositionReason: selectors.getDisposition(state),
+  selectedDisposition: selectors.getDisposition(state),
   beDispositionErrorMessages: DispositionModel.getErrorMessages(
     selectors.getDiscrepancies(state),
   ),
   enableGetNext: selectors.enableGetNext(state),
   isAssigned: selectors.isAssigned(state),
+  EvalId: selectors.evalId(state),
+  groupName: selectors.groupName(state),
+  LoanNumber: selectors.loanNumber(state),
   saveInProgress: selectors.saveInProgress(state),
   showAssign: selectors.showAssign(state),
   noTasksFound: selectors.noTasksFound(state),
@@ -338,6 +400,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onDispositionSaveTrigger: operations.onDispositionSave(dispatch),
+  onPostComment: commentoperations.postComment(dispatch),
   onClearBE: operations.onClearBEDisposition(dispatch),
 });
 
