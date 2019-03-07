@@ -100,4 +100,9 @@ describe('post Comment', () => {
     expect(saga.next(response).value)
       .toEqual(call(TestExports.fireSnackBar, snackBarData));
   });
+
+  it('should call getComments ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.getComments, payload));
+  });
 });

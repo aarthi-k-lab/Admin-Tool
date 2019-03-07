@@ -46,7 +46,7 @@ const showLoader = () => (
 );
 
 const renderNoCommentsArea = () => (
-  <span styleName="no-comments-area">No Comments</span>
+  <span styleName="no-comments-area" />
 );
 
 class CommentsWidget extends Component {

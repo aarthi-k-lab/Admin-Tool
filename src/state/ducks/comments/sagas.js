@@ -57,11 +57,8 @@ function* postComment(payload) {
       snackBarData.type = 'success';
       snackBarData.open = true;
       yield call(fireSnackBar, snackBarData);
+      yield call(getComments, payload);
     }
-    yield put({
-      type: GET_COMMENTS_RESULT,
-      payload: response,
-    });
   } catch (e) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
