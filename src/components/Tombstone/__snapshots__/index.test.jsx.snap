@@ -6,7 +6,7 @@ exports[`<TombstoneError /> snapshot test 1`] = `
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-10 MuiSvgIcon-fontSizeLarge-18"
+    className="MuiSvgIcon-root-11 MuiSvgIcon-fontSizeLarge-19"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
