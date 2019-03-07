@@ -14,7 +14,7 @@ import { selectors as loginSelectors } from '../../state/ducks/login';
 
 const formatDateWithoutTimeZone = (date) => {
   if (date) {
-    const newDate = moment(date).format('MMMM DD YYYY h:mm A');
+    const newDate = moment(`${date}Z`).tz('America/Chicago').format('MMMM DD YYYY h:mm A');
     return newDate;
   }
   return null;
@@ -28,7 +28,7 @@ const getFullName = (comments, userName) => {
 const getContextData = (Context) => {
   try {
     const context = JSON.parse(Context);
-    return (R.isNil(context.disposition) || R.isEmpty(context.disposition)) ? `${context.task}` : `${context.task} - ${context.disposition}`;
+    return (R.isNil(context.EVT_ACTN) || R.isEmpty(context.EVT_ACTN)) ? `${context.TASK}` : `${context.TASK} - ${context.EVT_ACTN}`;
   } catch (e) {
     return '';
   }
@@ -46,7 +46,7 @@ const showLoader = () => (
 );
 
 const renderNoCommentsArea = () => (
-  <span styleName="no-comments-area" />
+  <span styleName="no-comments-area">No Comments</span>
 );
 
 class CommentsWidget extends Component {
@@ -110,17 +110,29 @@ class CommentsWidget extends Component {
     } = this.state;
     const {
       AppName,
-      Disposition,
       EvalId,
       EventName,
       LoanNumber,
       ProcIdType,
+      TaskId,
       User,
       onPostComment,
       groupName,
     } = this.props;
 
-    const dispositionReason = groupName === 'FEUW' ? Disposition : Disposition.activityName;
+    let taskName = '';
+    switch (groupName) {
+      case 'FEUW':
+        taskName = 'Income Calculation Review';
+        break;
+      case 'BEUW':
+        taskName = 'Underwriting Review';
+        break;
+      default:
+        taskName = groupName;
+        break;
+    }
+
     const payload = {
       applicationName: AppName,
       loanNumber: LoanNumber,
@@ -129,8 +141,8 @@ class CommentsWidget extends Component {
       eventName: EventName,
       comment: content,
       commentContext: JSON.stringify({
-        task: groupName,
-        disposition: dispositionReason,
+        TASK: taskName,
+        TASK_ID: TaskId,
       }),
       userName: User.userDetails.name,
       createdDate: new Date().toJSON(),
@@ -233,7 +245,6 @@ CommentsWidget.propTypes = {
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
   })).isRequired,
-  Disposition: PropTypes.node.isRequired,
   EvalId: PropTypes.number.isRequired,
   EventName: PropTypes.string,
   groupName: PropTypes.string,
@@ -241,6 +252,7 @@ CommentsWidget.propTypes = {
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
   ProcIdType: PropTypes.string,
+  TaskId: PropTypes.number.isRequired,
   User: PropTypes.shape({
     userDetails: PropTypes.shape({
       name: PropTypes.string,
@@ -257,8 +269,9 @@ CommentsWidget.defaultProps = {
 
 const mapStateToProps = state => ({
   comments: selectors.getCommentsData(state),
-  Disposition: dashboardSelectors.getDisposition(state),
+  // Disposition: dashboardSelectors.getDisposition(state),
   EvalId: dashboardSelectors.evalId(state),
+  TaskId: dashboardSelectors.taskId(state),
   LoanNumber: dashboardSelectors.loanNumber(state),
   groupName: dashboardSelectors.groupName(state),
   User: loginSelectors.getUser(state),
