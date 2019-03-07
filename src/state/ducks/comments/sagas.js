@@ -24,7 +24,7 @@ function* fireSnackBar(snackBarData) {
 function* getComments(payload) {
   try {
     const req = payload.payload;
-    const newPayload = yield call(Api.callGet, `/api/comment/?applicationName=${req.applicationName}&loanNumber=${req.loanNumber}&processId=${req.processId}&processIdType=${req.processIdType}`);
+    const newPayload = yield call(Api.callGet, `/api/utility/comment?applicationName=${req.applicationName}&loanNumber=${req.loanNumber}&processId=${req.processId}&processIdType=${req.processIdType}`);
     if (newPayload != null) {
       yield put({
         type: GET_COMMENTS_RESULT,
@@ -41,7 +41,7 @@ function* getComments(payload) {
 
 function* postComment(payload) {
   try {
-    const response = yield call(Api.callPost, 'api/comment', payload.payload);
+    const response = yield call(Api.callPost, '/api/utility/comment', payload.payload);
     const failedResponse = response ? Number.isSafeInteger(response) : [];
     if (failedResponse && failedResponse.length > 0) {
       const snackBarData = {};

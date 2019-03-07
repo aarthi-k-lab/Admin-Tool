@@ -54,7 +54,7 @@ describe('get Comments', () => {
   const saga = cloneableGenerator(TestExports.getComments)(payload);
   it('call comments Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/comment/?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=EvalID'));
+      .toEqual(call(Api.callGet, '/api/utility/comment?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=EvalID'));
   });
 
   it('should trigger get comments result action', () => {
@@ -93,7 +93,7 @@ describe('post Comment', () => {
   const saga = cloneableGenerator(TestExports.postComment)(payload);
   it('call comments Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, 'api/comment', payload.payload));
+      .toEqual(call(Api.callPost, '/api/utility/comment', payload.payload));
   });
 
   it('should call firesnackbar ', () => {
