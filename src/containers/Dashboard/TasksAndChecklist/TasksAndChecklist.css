@@ -24,24 +24,31 @@
   display: grid;
   flex-grow: 1;
   grid-template-columns: auto 1fr;
-  grid-template-rows: minmax(0, 1fr) min-content;
+  grid-template-rows: minmax(0, 1fr) min-content min-content;
+}
+
+.instructions {
+  align-self: center;
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
+  justify-self: center;
 }
 
 .tasks {
   grid-column: 1 / 2;
-  grid-row: 1 / 2;
+  grid-row: 1 / 3;
   z-index: 1;
 }
 
 .controls {
   grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   z-index: 1;
 }
 
 .navigation {
   grid-column: 1 / 3;
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   text-align: center;
 }
 

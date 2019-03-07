@@ -95,9 +95,11 @@ const createChecklistNavigation = R.compose(
   R.map(
     R.compose(
       R.map(R.prop('_id')),
+      R.filter(R.propEq('visibility', true)),
       R.propOr([], 'subTasks'),
     ),
   ),
+  R.filter(R.propEq('visibility', true)),
   R.propOr([], 'subTasks'),
 );
 
@@ -108,7 +110,7 @@ function* getTasks(action) {
     yield put({
       type: LOADING_TASKS,
     });
-    const response = yield call(Api.callGet, `/api/task-engine/task/${'5c7686abd41e60431a7fc578'}?depth=${depth}`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${'5c812bee5bce32ab7529d49a'}?depth=${depth}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');

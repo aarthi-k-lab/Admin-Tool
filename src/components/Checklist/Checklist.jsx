@@ -70,7 +70,11 @@ class Checklist extends React.PureComponent {
         <div styleName="checklist-scroll-out">
           <div styleName="checklist-scroll-in">
             <Paper elevation={1} styleName="checklist-form-controls">
-              {checklistItems.map(this.renderChecklistItem)}
+              {
+                checklistItems
+                  .filter(({ isVisible }) => isVisible)
+                  .map(this.renderChecklistItem)
+              }
             </Paper>
           </div>
         </div>
@@ -87,6 +91,7 @@ Checklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
+      isVisible: PropTypes.bool,
       options: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,

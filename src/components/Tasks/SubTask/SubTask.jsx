@@ -28,7 +28,7 @@ function SubTask({ data, onClick, selected }) {
         xs={10}
       >
         <Grid alignItems="center" container item justify="center" xs={2}>
-          <TaskStatusIcon isSubTask styleName="fill-width" task={data} />
+          <TaskStatusIcon isSelected={selected} isSubTask styleName="fill-width" task={data} />
         </Grid>
         <Grid alignItems="center" container item xs={10}>
           <span

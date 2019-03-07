@@ -9,6 +9,7 @@ import Checklist from 'components/Checklist';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import Controls from './Controls';
 import Navigation from './Navigation';
+import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
@@ -49,6 +50,11 @@ class TasksAndChecklist extends React.PureComponent {
       <section styleName="tasks-and-checklist">
         <TaskPane styleName="tasks" />
         { this.renderChecklist() }
+        <DialogCard
+          message="Missing Documents"
+          styleName="instructions"
+          title="Disposition"
+        />
         <Controls
           className={classNames(styles.footer, styles.controls)}
         />
