@@ -26,6 +26,14 @@ function generateTombstoneItem(title, content) {
   };
 }
 
+function getCFPBDate(loanDetails, evalDetails) {
+  const losmit = loanDetails.LossmitModPline.filter(o => o.evalId === evalDetails.evalId);
+  if (typeof losmit !== 'undefined' && losmit.length > 0) {
+    return moment.tz(losmit[0].lastDocRcvdDttm, 'America/Chicago');
+  }
+  return false;
+}
+
 function getLoanItem(loanDetails) {
   const loanNumber = getOr('loanNumber', loanDetails, NA);
   return generateTombstoneItem('Loan #', loanNumber);
@@ -124,18 +132,17 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getDaysUntilCFPB(loanDetails) {
-  const moments = loanDetails.LossmitModPline.reduce((filteredArray, i) => {
-    if (i.lastDocRcvdDttm) {
-      const date = moment(i.lastDocRcvdDttm);
-      filteredArray.push(date);
-    }
-    return filteredArray;
-  }, []);
+function getDaysUntilCFPB(loanDetails, evalDetails) {
+  const cfpbDate = getCFPBDate(loanDetails, evalDetails);
+  const today = moment.tz('America/Chicago');
+  const dateDiffDays = cfpbDate && cfpbDate.isValid() ? today.diff(cfpbDate, 'days') : NA;
+  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
+}
 
-  const date = moments.length > 0 ? moment.max(moments) : moment(null);
-  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
+function getCFPBExpirationDate(loanDetails, evalDetails) {
+  const cfpbDate = getCFPBDate(loanDetails, evalDetails);
+  const dateString = cfpbDate ? cfpbDate.format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
 }
 
 function getFLDD(loanDetails) {
@@ -174,8 +181,8 @@ function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
   return generateTombstoneItem('Previous Disposition', previousDisposition);
 }
 
-
 function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails) {
+  getCFPBDate(loanDetails, evalDetails);
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
@@ -194,6 +201,7 @@ function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)
     getForeclosureSalesDate,
     getFLDD,
     getLienPosition,
+    getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails, evalDetails, previousDispositionDetails));

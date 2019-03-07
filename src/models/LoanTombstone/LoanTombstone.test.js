@@ -35,20 +35,24 @@ const inputJsonLoanDetails1 = {
   },
   LossmitModPline: [
     {
+      lastDocRcvdDttm: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
+      isStateRvw: null,
+      evalId: 646515,
+    },
+    {
       lastDocRcvdDttm: null,
       isStateRvw: null,
+      evalId: 1702968,
     },
     {
       lastDocRcvdDttm: 'Wed Jul 18 2018 14:45:36 GMT+0000 (UTC)',
       isStateRvw: null,
+      evalId: 1869959,
     },
     {
       lastDocRcvdDttm: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
       isStateRvw: null,
-    },
-    {
-      lastDocRcvdDttm: null,
-      isStateRvw: null,
+      evalId: 1920135,
     },
   ],
   primaryBorrower: {
@@ -164,6 +168,10 @@ const output1 = [
   },
   {
     content: '12/04/2018',
+    title: 'CFPB Timeline Expiration Date',
+  },
+  {
+    content: 91,
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -195,10 +203,13 @@ const inputJsonLoanDetails2 = {
     {
       lastDocRcvdDttm: null,
       isStateRvw: null,
+      evalId: null,
     },
     {
       lastDocRcvdDttm: null,
       isStateRvw: null,
+      evalId: null,
+
     },
   ],
 };
@@ -274,6 +285,10 @@ const output2 = [
   },
   {
     content: 'NA',
+    title: 'CFPB Timeline Expiration Date',
+  },
+  {
+    content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -286,8 +301,8 @@ describe('models/LoanTombstone', () => {
   });
   describe('getTombstoneItems', () => {
     it('returns the data complying to Tombstone UI schema', () => {
-      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output1);
       expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output2);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output1);
     });
   });
 });
