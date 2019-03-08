@@ -106,7 +106,7 @@
   width: 47.25rem;
   height: 2.5rem;
   margin-top: 0.7rem;
-  margin-left: -0.25rem !important;
+  /* margin-left: 0.25rem !important; */
 }
 
 .scrollable-block {
