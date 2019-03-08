@@ -136,13 +136,13 @@ function getModificationType(_, evalDetails) {
 function getDaysUntilCFPB(_, evalDetails) {
   const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
   const today = moment.tz('America/Chicago');
-  const dateDiffDays = date.isValid() ? today.diff(date, 'days') : NA;
+  const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
 function getCFPBExpirationDate(_, evalDetails) {
   const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
-  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
 }
 

@@ -168,11 +168,11 @@ const output1 = [
     title: 'Lien Position',
   },
   {
-    content: '12/04/2018',
+    content: '01/03/2019',
     title: 'CFPB Timeline Expiration Date',
   },
   {
-    content: 93,
+    content: -63,
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -285,11 +285,11 @@ const output2 = [
     title: 'Lien Position',
   },
   {
-    content: '12/04/2018',
+    content: '01/03/2019',
     title: 'CFPB Timeline Expiration Date',
   },
   {
-    content: 93,
+    content: -63,
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
