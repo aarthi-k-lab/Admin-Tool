@@ -25,10 +25,27 @@ const getFullName = (comments, userName) => {
   return comments.userName;
 };
 
+const getContextTaskName = (groupName) => {
+  let taskName = '';
+  switch (groupName) {
+    case 'FEUW':
+      taskName = 'Income Calculation Review';
+      break;
+    case 'BEUW':
+      taskName = 'Underwriting Review';
+      break;
+    default:
+      taskName = groupName;
+      break;
+  }
+  return taskName;
+};
+
 const getContextData = (Context) => {
   try {
     const context = JSON.parse(Context);
-    return (R.isNil(context.EVT_ACTN) || R.isEmpty(context.EVT_ACTN)) ? `${context.TASK}` : `${context.TASK} - ${context.EVT_ACTN}`;
+    const taskName = getContextTaskName(context.task ? context.task : context.TASK);
+    return (R.isNil(context.EVT_ACTN) || R.isEmpty(context.EVT_ACTN)) ? `${taskName}` : `${taskName} - ${context.EVT_ACTN}`;
   } catch (e) {
     return '';
   }
@@ -120,18 +137,7 @@ class CommentsWidget extends Component {
       groupName,
     } = this.props;
 
-    let taskName = '';
-    switch (groupName) {
-      case 'FEUW':
-        taskName = 'Income Calculation Review';
-        break;
-      case 'BEUW':
-        taskName = 'Underwriting Review';
-        break;
-      default:
-        taskName = groupName;
-        break;
-    }
+    const taskName = getContextTaskName(groupName);
 
     const payload = {
       applicationName: AppName,
