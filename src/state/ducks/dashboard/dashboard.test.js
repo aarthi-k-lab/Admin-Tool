@@ -140,6 +140,7 @@ describe('getnext Success', () => {
           processId: "34567",
           processIdType: "EvalID",
           evalId: "34567",
+          taskId: "1234",
         },
       }));
   });
@@ -151,6 +152,7 @@ describe('getnext Success', () => {
         processId: "34567",
         processIdType: "EvalID",
         evalId: "34567",
+        taskId: "1234",
       },
       type: 'app/comments/GET_COMMENTS_SAGA',
     };
