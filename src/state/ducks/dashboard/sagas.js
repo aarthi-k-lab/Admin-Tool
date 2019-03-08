@@ -11,6 +11,7 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
+import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import selectors from './selectors';
@@ -171,6 +172,7 @@ function* getNext(action) {
       const evalPayload = getEvalPayload(taskDetails);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+      yield put(commentsActions.loadComments(evalPayload.evalId));
       yield put({ type: HIDE_LOADER });
     } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
       yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
