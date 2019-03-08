@@ -27,12 +27,11 @@
   overflow: auto;
 }
 
-
 .comment-box textarea {
   border-radius: 0;
   height: 8.875rem;
   width: 49.0625rem;
-  font-size:  0.9rem;
+  font-size: 0.9rem;
   padding: 0.46875rem 0.5rem;
 }
 
@@ -40,11 +39,11 @@
   border-radius: 0;
   height: 8.875rem;
   width: 49.0625rem;
-  font-size:  0.9rem;
+  font-size: 0.9rem;
   padding: 0.46875rem 0.5rem;
-  border-color:red;
+  border-color: red;
 }
 
-.prompt-error{
-  color:red;
+.prompt-error {
+  color: red;
 }

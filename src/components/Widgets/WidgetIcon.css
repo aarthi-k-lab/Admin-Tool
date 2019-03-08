@@ -1,24 +1,22 @@
-
 .component-selected {
-    width: 4.8rem;
-    height: 4rem;
-    cursor: pointer;
-    background: rgb(238, 238, 238);
-  }
-  
+  width: 4.8rem;
+  height: 4rem;
+  cursor: pointer;
+  background: rgb(238, 238, 238);
+}
+
 .component-not-selected {
-    width: 4.8rem;
-    height: 4rem;
-    cursor: pointer;
-    background: rgb(245, 245, 245);
-  }
-  
+  width: 4.8rem;
+  height: 4rem;
+  cursor: pointer;
+  background: rgb(245, 245, 245);
+}
+
 .icon-component {
-    position: relative;
-    top: 50%;
-    height: 2.5rem;
-    width: 2.5rem;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
+  position: relative;
+  top: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

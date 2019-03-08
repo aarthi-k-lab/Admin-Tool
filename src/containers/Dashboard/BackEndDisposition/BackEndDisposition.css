@@ -98,7 +98,7 @@
 }
 
 .RadioButtonStyle {
-  padding: 0px !important;
+  padding: 0 !important;
   color: #2d2d86;
 }
 
@@ -122,6 +122,6 @@
   margin-bottom: 0.9rem;
 }
 
-.prompt-error{
-  color:red;
+.prompt-error {
+  color: red;
 }
