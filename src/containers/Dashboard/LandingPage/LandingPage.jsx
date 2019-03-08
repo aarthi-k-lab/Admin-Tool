@@ -9,7 +9,7 @@ import './LandingPage.css';
 class LandingPage extends React.PureComponent {
   renderTitle() {
     const { location } = this.props;
-    return (location.pathname === '/frontend-evaluation') ? 'Income Calculation' : 'Underwritting';
+    return (location.pathname === '/frontend-evaluation') ? 'Income Calculation' : 'Underwriting';
   }
 
   render() {
