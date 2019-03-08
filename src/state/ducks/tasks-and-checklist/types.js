@@ -13,6 +13,7 @@ const STORE_CHECKLIST = 'app/tasks-and-checklist/STORE_CHECKLIST';
 const STORE_CHECKLIST_NAVIGATION = 'app/tasks-and-checklist/STORE_CHECKLIST_NAVIGATION';
 const STORE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/STORE_CHECKLIST_ITEM_CHANGE';
 const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
+const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -30,4 +31,5 @@ export {
   STORE_CHECKLIST_NAVIGATION,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
+  TOGGLE_INSTRUCTIONS,
 };

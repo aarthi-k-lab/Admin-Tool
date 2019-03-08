@@ -92,6 +92,7 @@ function DialogCard({
           classes={{
             root: styles['sizing-icon'],
           }}
+          onClick={onDialogToggle}
         >
           <ExpandIcon />
         </IconButton>

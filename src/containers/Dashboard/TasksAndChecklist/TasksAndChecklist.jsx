@@ -45,6 +45,9 @@ class TasksAndChecklist extends React.PureComponent {
       disablePrev,
       onNext,
       onPrev,
+      onInstuctionDialogToggle,
+      showInstructions,
+      showInstructionsDialog,
     } = this.props;
     return (
       <section styleName="tasks-and-checklist">
@@ -52,6 +55,9 @@ class TasksAndChecklist extends React.PureComponent {
         { this.renderChecklist() }
         <DialogCard
           message="Missing Documents"
+          onDialogToggle={onInstuctionDialogToggle}
+          shouldShow={showInstructions}
+          showDialog={showInstructionsDialog}
           styleName="instructions"
           title="Disposition"
         />
@@ -90,8 +96,11 @@ TasksAndChecklist.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   onChecklistChange: PropTypes.func.isRequired,
+  onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  showInstructions: PropTypes.bool.isRequired,
+  showInstructionsDialog: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -101,6 +110,8 @@ function mapStateToProps(state) {
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
+    showInstructions: selectors.shouldShowInstructions(state),
+    showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
   };
 }
 
@@ -109,6 +120,7 @@ function mapDispatchToProps(dispatch) {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
+    onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),
   };
 }
 
