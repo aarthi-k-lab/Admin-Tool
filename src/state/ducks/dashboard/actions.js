@@ -16,6 +16,7 @@ import {
   POST_COMMENT,
   CLEAR_BE_DISPOSITION,
   GROUP_NAME,
+  SAVE_LOANNUMBER_PROCESSID,
 } from './types';
 
 
@@ -52,6 +53,11 @@ const getNext = payload => ({
 
 const selectEval = payload => ({
   type: SAVE_EVALID_LOANNUMBER,
+  payload,
+});
+
+const selectProcessId = payload => ({
+  type: SAVE_LOANNUMBER_PROCESSID,
   payload,
 });
 
@@ -111,6 +117,7 @@ export {
   onExpandView,
   searchLoan,
   selectEval,
+  selectProcessId,
   unassignLoan,
   assignLoan,
   hideAssignUnassign,

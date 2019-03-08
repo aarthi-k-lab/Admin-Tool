@@ -130,6 +130,33 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
   });
+  it('should save loannumber and procesId from taskDetails Response', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: actionTypes.SAVE_EVALID_LOANNUMBER,
+        payload: {
+          applicationName: "CMOD",
+          loanNumber: "12345",
+          processId: "34567",
+          processIdType: "EvalID",
+          evalId: "34567",
+        },
+      }));
+  });
+  it('getnext worker should trigger loadComments action', () => {
+    const actionDispatched = {
+      payload: {
+        applicationName: "CMOD",
+        loanNumber: "12345",
+        processId: "34567",
+        processIdType: "EvalID",
+        evalId: "34567",
+      },
+      type: 'app/comments/GET_COMMENTS_SAGA',
+    };
+    expect(saga.next().value)
+      .toEqual(put(actionDispatched));
+  });
 
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
