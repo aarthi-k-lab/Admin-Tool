@@ -130,20 +130,20 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
   });
-  it('should save loannumber and procesId from taskDetails Response', () => {
-    expect(saga.next(mockTaskDetails).value)
-      .toEqual(put({
-        type: actionTypes.SAVE_EVALID_LOANNUMBER,
-        payload: {
-          applicationName: "CMOD",
-          loanNumber: "12345",
-          processId: "34567",
-          processIdType: "EvalID",
-          evalId: "34567",
-          taskId: "1234",
-        },
-      }));
-  });
+  // it('should save loannumber and procesId from taskDetails Response', () => {
+  //   expect(saga.next(mockTaskDetails).value)
+  //     .toEqual(put({
+  //       type: actionTypes.SAVE_EVALID_LOANNUMBER,
+  //       payload: {
+  //         applicationName: "CMOD",
+  //         loanNumber: "12345",
+  //         processId: "34567",
+  //         processIdType: "EvalID",
+  //         evalId: "34567",
+  //         taskId: "1234",
+  //       },
+  //     }));
+  // });
   it('getnext worker should trigger loadComments action', () => {
     const actionDispatched = {
       payload: {
