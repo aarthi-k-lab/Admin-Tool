@@ -10,6 +10,10 @@ const inputJsonLoanDetails1 = {
     investorCode: '135',
     investorName: 'HELT 2007-FRE1',
   },
+  InvestorHierarchy: {
+    levelNumber: 3,
+    levelName: 'Special',
+  },
   successorInInterest: [],
   loanTypeDescription: 'Conv/Unins',
   LoanMilestoneDates: [
@@ -132,7 +136,7 @@ const output1 = [
     title: 'Brand Name',
   },
   {
-    content: '135 - HELT 2007-FRE1',
+    content: '135 - HELT 2007-FRE1 - Special',
     title: 'Investor',
   },
   {

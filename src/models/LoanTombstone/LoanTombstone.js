@@ -101,7 +101,9 @@ function getSsnItem(loanDetails) {
 
 function getInvestorItem(loanDetails) {
   const { investorCode: code, investorName: name } = loanDetails.investorInformation;
-  const investor = code && name ? `${code} - ${name}` : NA;
+  const { levelNumber, levelName } = getOr('InvestorHierarchy', loanDetails, {});
+  const investorL3 = levelNumber && levelNumber === 3 ? levelName : '';
+  const investor = code && name ? `${code} - ${name} - ${investorL3}` : NA;
   return generateTombstoneItem('Investor', investor);
 }
 
