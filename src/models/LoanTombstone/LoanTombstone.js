@@ -19,6 +19,10 @@ function getPreviousDispositionUrl() {
   return '/api/bpm-audit/audit/disposition/_evalNumbers';
 }
 
+function getPrioritizationUrl() {
+  return '/api/bpm-audit/audit/prioritization/_evalNumbers';
+}
+
 function generateTombstoneItem(title, content) {
   return {
     title,
@@ -184,11 +188,46 @@ function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
   return generateTombstoneItem('Previous Disposition', previousDisposition);
 }
 
-function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails) {
+function handleMultipleRecords(prioritizationDetails) {
+  let latestHandOffDisposition = NA;
+  const withoutNulls = prioritizationDetails.reduce((filteredArray, i) => {
+    if (i.latestHandOffDisposition && i.statusDate) {
+      filteredArray.push(i);
+    }
+    return filteredArray;
+  }, []);
+
+  let latest;
+  if (withoutNulls.length > 0) {
+    latest = withoutNulls.reduce((r, a) => (
+      r.statusDate > a.statusDate ? r : a));
+    latestHandOffDisposition = getOr('latestHandOffDisposition', latest, NA);
+  }
+  return latestHandOffDisposition;
+}
+
+function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
+  let latestHandOffDisposition = NA;
+  if (prioritizationDetails && prioritizationDetails.length === 1) {
+    latestHandOffDisposition = getOr(
+      'latestHandOffDisposition', prioritizationDetails[0], NA,
+    );
+  } else if (prioritizationDetails && prioritizationDetails.length > 1) {
+    latestHandOffDisposition = handleMultipleRecords(prioritizationDetails);
+  }
+  return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
+}
+
+
+function getTombstoneItems(loanDetails,
+  evalDetails,
+  previousDispositionDetails,
+  prioritizationDetails) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
     getPreviousDisposition,
+    getLatestHandOffDisposition,
     getInvestorLoanItem,
     getBorrowerItem,
     getSsnItem,
@@ -206,7 +245,10 @@ function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)
     getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
-  const data = dataGenerator.map(fn => fn(loanDetails, evalDetails, previousDispositionDetails));
+  const data = dataGenerator.map(fn => fn(loanDetails,
+    evalDetails,
+    previousDispositionDetails,
+    prioritizationDetails));
   return data;
 }
 
@@ -214,6 +256,7 @@ async function fetchData(loanNumber, evalId, groupName) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
+  const prioritizationUrl = getPrioritizationUrl();
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -230,23 +273,69 @@ async function fetchData(loanNumber, evalId, groupName) {
     headers: { 'content-type': 'application/json' },
   });
 
+  const prioritizationP = fetch(prioritizationUrl, {
+    method: 'POST',
+    body: JSON.stringify([evalId]),
+    headers: { 'content-type': 'application/json' },
+  });
+
   const evaluationInfoResponseP = fetch(evaluationInfoUrl);
-  const [loanInfoResponse, evaluationInfoResponse, previousDispositionResponse] = await Promise.all(
-    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP],
+
+  const [loanInfoResponse,
+    evaluationInfoResponse,
+    previousDispositionResponse,
+    prioritizationResponse] = await Promise.all(
+    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP, prioritizationP],
   );
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
   }
 
-  const [loanDetails, evalDetails,
-    previousDispositionDetails] = previousDispositionResponse.status === 200
-    ? await Promise.all(
-      [loanInfoResponse.json(), evaluationInfoResponse.json(), previousDispositionResponse.json()],
-    ) : await Promise.all(
-      [loanInfoResponse.json(), evaluationInfoResponse.json()],
-    );
+  let [loanDetails,
+    evalDetails,
+    previousDispositionDetails,
+    prioritizationDetails] = [];
 
-  return [...getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)];
+  if (previousDispositionResponse.status === 200 && prioritizationResponse.status === 200) {
+    [loanDetails,
+      evalDetails,
+      previousDispositionDetails,
+      prioritizationDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+      previousDispositionResponse.json(),
+      prioritizationResponse.json(),
+    ]);
+  } else if (previousDispositionResponse.status === 200) {
+    [loanDetails,
+      evalDetails,
+      previousDispositionDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+      previousDispositionResponse.json(),
+    ]);
+  } else if (prioritizationResponse.status === 200) {
+    [loanDetails,
+      evalDetails,
+      prioritizationDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+      prioritizationResponse.json(),
+    ]);
+  } else {
+    [loanDetails,
+      evalDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+    ]);
+  }
+
+  return [...getTombstoneItems(
+    loanDetails,
+    evalDetails,
+    previousDispositionDetails,
+    prioritizationDetails,
+  )];
 }
 
 const LoanTombstone = {

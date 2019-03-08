@@ -87,7 +87,7 @@ const inputJsonEvalDetails = {
   evalId: 646515,
   waterfallId: null,
   resolutionChoiceType: 'HAMP-PRA Alternate Waterfall',
-  lastDocumentReceivedDate: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
+  lastDocumentReceivedDate: null,
 };
 
 const inputJsonPreviousDisposition = [
@@ -99,6 +99,23 @@ const inputJsonPreviousDisposition = [
     status: 'Replied',
     date: 1551166757000,
     taskName: 'Underwriting',
+  },
+];
+
+const inputJsonPrioritization = [
+
+  {
+    processId: '213575',
+    loanNumber: '345432',
+    evalId: '1928799',
+    taskId: '1721050',
+    taskName: 'Underwriting',
+    stsChangedCode: 'Wait',
+    status: 'Replied',
+    assignee: 'ashish.menon@mrcooper.com',
+    statusDate: 1551425501000,
+    incomeRequried: true,
+    latestHandOffDisposition: 'Offshore Review Required',
   },
 ];
 
@@ -114,6 +131,10 @@ const output1 = [
   {
     content: 'Freddie RPA Required',
     title: 'Previous Disposition',
+  },
+  {
+    content: 'Offshore Review Required',
+    title: 'Latest Handoff Disposition',
   },
   {
     content: '0000000',
@@ -172,11 +193,11 @@ const output1 = [
     title: 'Lien Position',
   },
   {
-    content: '01/03/2019',
+    content: 'NA',
     title: 'CFPB Timeline Expiration Date',
   },
   {
-    content: -63,
+    content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -231,6 +252,10 @@ const output2 = [
   {
     content: 'Freddie RPA Required',
     title: 'Previous Disposition',
+  },
+  {
+    content: 'Offshore Review Required',
+    title: 'Latest Handoff Disposition',
   },
   {
     content: 'NA',
@@ -289,11 +314,11 @@ const output2 = [
     title: 'Lien Position',
   },
   {
-    content: '01/03/2019',
+    content: 'NA',
     title: 'CFPB Timeline Expiration Date',
   },
   {
-    content: -63,
+    content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -305,11 +330,11 @@ describe('models/LoanTombstone', () => {
     });
   });
   describe('getTombstoneItems', () => {
-    // #TODO the current date is used in the test and diff is calculated
+    // #TODO the current date is used in the test and diff is calculated --> Changed to null and NA
     //       The diff would change every day and tests would keep on failing.
     it('returns the data complying to Tombstone UI schema', () => {
-      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output2);
-      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output1);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition, inputJsonPrioritization)).toEqual(output2);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition, inputJsonPrioritization)).toEqual(output1);
     });
   });
 });
