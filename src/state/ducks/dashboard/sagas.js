@@ -167,8 +167,9 @@ function getCommentPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const processId = getEvalId(taskDetails);
   const evalId = processId;
+  const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId,
+    applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
   };
 }
 // eslint-disable-next-line
