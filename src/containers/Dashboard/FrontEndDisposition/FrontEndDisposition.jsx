@@ -20,6 +20,22 @@ import CommentBox from '../../../components/CommentBox/CommentBox';
 import './FrontEndDisposition.css';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 
+const getContextTaskName = (groupName) => {
+  let taskName = '';
+  switch (groupName) {
+    case 'FEUW':
+      taskName = 'Income Calculation Review';
+      break;
+    case 'BEUW':
+      taskName = 'Underwriting Review';
+      break;
+    default:
+      taskName = groupName;
+      break;
+  }
+  return taskName;
+};
+
 class Disposition extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -36,8 +52,9 @@ class Disposition extends React.PureComponent {
   componentDidUpdate() {
     const {
       enableGetNext, onPostComment, LoanNumber, ProcIdType, EvalId,
-      user, groupName, dispositionReason, AppName, EventName,
+      user, groupName, dispositionReason, AppName, EventName, TaskId,
     } = this.props;
+    const taskName = getContextTaskName(groupName);
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
@@ -49,8 +66,10 @@ class Disposition extends React.PureComponent {
         userName: user.userDetails.name,
         createdDate: new Date().toJSON(),
         commentContext: JSON.stringify({
-          task: groupName,
-          disposition: dispositionReason,
+          TASK: taskName,
+          TASK_ID: TaskId,
+          TASK_ACTN: dispositionReason,
+          DSPN_IND: 1,
         }),
       };
       onPostComment(commentsPayload);
@@ -273,6 +292,7 @@ Disposition.propTypes = {
   saveInProgress: PropTypes.bool,
   showAssign: PropTypes.bool.isRequired,
   taskFetchError: PropTypes.bool,
+  TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
@@ -298,6 +318,7 @@ const mapStateToProps = state => ({
   showAssign: selectors.showAssign(state),
   user: loginSelectors.getUser(state),
   EvalId: selectors.evalId(state),
+  TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
 });

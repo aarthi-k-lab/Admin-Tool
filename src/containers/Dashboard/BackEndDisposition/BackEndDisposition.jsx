@@ -22,6 +22,22 @@ const shouldExpand = (isExpanded, item, id) => {
   return (item.id === id ? false : item.expanded);
 };
 
+const getContextTaskName = (groupName) => {
+  let taskName = '';
+  switch (groupName) {
+    case 'FEUW':
+      taskName = 'Income Calculation Review';
+      break;
+    case 'BEUW':
+      taskName = 'Underwriting Review';
+      break;
+    default:
+      taskName = groupName;
+      break;
+  }
+  return taskName;
+};
+
 class BackEndDisposition extends Component {
   constructor(props) {
     super(props);
@@ -41,12 +57,14 @@ class BackEndDisposition extends Component {
     };
   }
 
+
   componentDidUpdate() {
     const {
       enableGetNext, selectedDisposition, onPostComment, AppName, LoanNumber, EvalId,
-      EventName, groupName, user, ProcIdType,
+      EventName, groupName, user, ProcIdType, TaskId,
     } = this.props;
     const { activityName } = selectedDisposition;
+    const taskName = getContextTaskName(groupName);
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
@@ -58,8 +76,10 @@ class BackEndDisposition extends Component {
         userName: user.userDetails.name,
         createdDate: new Date().toJSON(),
         commentContext: JSON.stringify({
-          task: groupName,
-          disposition: activityName,
+          TASK: taskName,
+          TASK_ID: TaskId,
+          TASK_ACTN: activityName,
+          DSPN_IND: 1,
         }),
       };
       onPostComment(commentsPayload);
@@ -370,6 +390,7 @@ BackEndDisposition.propTypes = {
   }),
   showAssign: PropTypes.bool.isRequired,
   taskFetchError: PropTypes.bool,
+  TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
@@ -389,6 +410,7 @@ const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   isAssigned: selectors.isAssigned(state),
   EvalId: selectors.evalId(state),
+  TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
   saveInProgress: selectors.saveInProgress(state),
