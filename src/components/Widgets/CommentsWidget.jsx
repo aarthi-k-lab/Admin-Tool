@@ -45,7 +45,7 @@ const getContextData = (Context) => {
   try {
     const context = JSON.parse(Context);
     const taskName = getContextTaskName(context.task ? context.task : context.TASK);
-    return (R.isNil(context.EVT_ACTN) || R.isEmpty(context.EVT_ACTN)) ? `${taskName}` : `${taskName} - ${context.EVT_ACTN}`;
+    return (R.isNil(context.TASK_ACTN) || R.isEmpty(context.TASK_ACTN)) ? `${taskName}` : `${taskName} - ${context.TASK_ACTN}`;
   } catch (e) {
     return '';
   }
