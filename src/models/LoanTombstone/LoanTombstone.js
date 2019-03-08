@@ -26,6 +26,7 @@ function generateTombstoneItem(title, content) {
   };
 }
 
+// eslint-disable-next-line no-unused-vars
 function getCFPBDate(loanDetails, evalDetails) {
   const losmit = loanDetails.LossmitModPline.filter(o => o.evalId === evalDetails.evalId);
   if (typeof losmit !== 'undefined' && losmit.length > 0) {
@@ -132,16 +133,16 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getDaysUntilCFPB(loanDetails, evalDetails) {
-  const cfpbDate = getCFPBDate(loanDetails, evalDetails);
+function getDaysUntilCFPB(_, evalDetails) {
+  const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
   const today = moment.tz('America/Chicago');
-  const dateDiffDays = cfpbDate && cfpbDate.isValid() ? today.diff(cfpbDate, 'days') : NA;
+  const dateDiffDays = date.isValid() ? today.diff(date, 'days') : NA;
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
-function getCFPBExpirationDate(loanDetails, evalDetails) {
-  const cfpbDate = getCFPBDate(loanDetails, evalDetails);
-  const dateString = cfpbDate ? cfpbDate.format('MM/DD/YYYY') : NA;
+function getCFPBExpirationDate(_, evalDetails) {
+  const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
 }
 
@@ -182,7 +183,6 @@ function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
 }
 
 function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails) {
-  getCFPBDate(loanDetails, evalDetails);
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,

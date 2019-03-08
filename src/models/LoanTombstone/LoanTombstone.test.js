@@ -83,6 +83,7 @@ const inputJsonEvalDetails = {
   evalId: 646515,
   waterfallId: null,
   resolutionChoiceType: 'HAMP-PRA Alternate Waterfall',
+  lastDocumentReceivedDate: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
 };
 
 const inputJsonPreviousDisposition = [
@@ -171,7 +172,7 @@ const output1 = [
     title: 'CFPB Timeline Expiration Date',
   },
   {
-    content: 92,
+    content: 93,
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -284,11 +285,11 @@ const output2 = [
     title: 'Lien Position',
   },
   {
-    content: 'NA',
+    content: '12/04/2018',
     title: 'CFPB Timeline Expiration Date',
   },
   {
-    content: 'NA',
+    content: 93,
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -302,7 +303,7 @@ describe('models/LoanTombstone', () => {
   describe('getTombstoneItems', () => {
     // #TODO the current date is used in the test and diff is calculated
     //       The diff would change every day and tests would keep on failing.
-    it.skip('returns the data complying to Tombstone UI schema', () => {
+    it('returns the data complying to Tombstone UI schema', () => {
       expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output2);
       expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output1);
     });
