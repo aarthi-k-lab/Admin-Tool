@@ -1,5 +1,12 @@
 .checklist.checklist {
+  transition: background-color 0.5s ease;
   cursor: pointer;
+  padding: 0.5rem;
+}
+
+.checklist-selected.checklist-selected {
+  background-color: var(--grey-200);
+  border-radius: 0.5rem;
 }
 
 .error-text-subtask {

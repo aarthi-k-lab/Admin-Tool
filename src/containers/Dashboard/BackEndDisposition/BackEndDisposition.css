@@ -1,5 +1,6 @@
 .label.label {
   font-size: 1.1rem;
+  margin-left: 4px;
 }
 
 .disposition-section {
@@ -18,31 +19,16 @@
   flex: 0 0 25em;
 }
 
-.save.save {
-  background-color: var(--light-blue-900);
-  margin-left: 0.9rem;
-  margin-bottom: 0.9rem;
-}
-
-.save.save:hover {
-  background-color: var(--blue-900);
-}
-
-.saveArea {
-  display: flex;
-  align-self: center;
-  justify-content: center;
-}
-
 .tooltip {
   font-size: 1rem !important;
+  margin-left: 2rem;
 }
 
 .label-true {
   display: block;
   font-size: 1rem;
   color: #2d2d86;
-  margin-top: 0.8 rem;
+  margin-top: 0.3rem;
   margin-left: 10rem;
   border-style: solid;
   font-weight: 800;
@@ -55,7 +41,7 @@
   display: none;
   font-size: 1rem;
   color: #2d2d86;
-  margin-top: 0.8rem;
+  margin-top: 0.3rem;
   margin-left: 10rem;
   border-style: solid;
   font-weight: 800;
@@ -87,7 +73,7 @@
   margin: 0 40rem;
   border-color: #dee2e6;
   border-style: solid;
-  border-width: 0.0625rem;
+  border-width: 1px;
   border-bottom: 0;
   border-radius: 0%;
   width: 50rem;
@@ -106,21 +92,25 @@
 }
 
 .CardContentStyle {
+  padding-bottom: 4px !important;
   margin-top: -2.5rem;
+  margin-left: 1px;
 }
 
 .RadioButtonStyle {
+  padding: 0 !important;
   color: #2d2d86;
 }
 
 .radio-button-gap {
-  width: 29.25rem;
-  height: 1.75rem;
-  margin-top: 0.5rem;
-  margin-left: -0.25rem !important;
+  width: 47.25rem;
+  height: 2.5rem;
+  margin-top: 0.7rem;
+  /* margin-left: 0.25rem !important; */
 }
 
 .scrollable-block {
+  height: 77vh;
   align-self: stretch;
   margin: 0 auto;
   overflow: auto;
@@ -129,4 +119,9 @@
 .save-button.save-button {
   align-self: center;
   margin-top: 1.25rem;
+  margin-bottom: 0.9rem;
+}
+
+.prompt-error {
+  color: red;
 }

@@ -29,6 +29,10 @@
 }
 
 .menuItemRoot.menuItemRoot {
+  height: fit-content;
+  max-height: 70%;
+  width: fit-content;
+  overflow-y: scroll;
   margin-top: 5rem;
   right: 0;
 }
@@ -38,7 +42,7 @@
   font-size: 1.2rem;
 }
 
-.menuItem.menuItem { 
+.menuItem.menuItem {
   cursor: default;
   opacity: 1;
 }

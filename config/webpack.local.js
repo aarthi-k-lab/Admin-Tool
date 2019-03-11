@@ -137,7 +137,15 @@ const config = merge(
             '^/api/task-engine': '/api',
           },
         },
-      },
+        '/api/utility': {
+          target: 'https://cmodutilitydev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/utility': '',
+          },
+        },
+     },
       publicPath: '/',
       noInfo: false,
       headers: {

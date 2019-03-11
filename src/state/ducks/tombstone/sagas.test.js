@@ -1,5 +1,9 @@
+/* eslint-disable no-unused-vars */
 import {
- select, put, call, takeEvery 
+  select,
+  put,
+  call,
+  takeEvery,
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import LoanTombstone from 'models/LoanTombstone';
@@ -30,20 +34,20 @@ describe('fetchTombstoneData', () => {
   const loanDetails = {
     loanNumber: '596400243',
     investorCode: '458',
-    'brandName': 'NSM',
+    brandName: 'NSM',
     investorLoanNumber: '0000000',
     upbAmount: 711766.64,
     nextPaymentDueDate: '2013-12-01T00:00:00.000Z',
     investorInformation: {
-      'investorCode': '458',
+      investorCode: '458',
       investorName: 'NMST 2007-1                   ',
     },
     primaryBorrower: {
-      'firstName': 'JOSE',
+      firstName: 'JOSE',
       lastName: 'DOE',
       borrowerType: 'Borrower',
     },
-    'coBorrowers': [
+    coBorrowers: [
       {
         firstName: 'ARMIDA',
         lastName: 'DOE',
@@ -66,9 +70,14 @@ describe('fetchTombstoneData', () => {
       .toEqual(select(dashboardSelectors.evalId));
   });
 
-  it('should call sods api to fetch loan details', () => {
+  it('should select groupName from store', () => {
     expect(saga.next(1161415).value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415));
+      .toEqual(select(dashboardSelectors.groupName));
+  });
+
+  it('should call sods api to fetch loan details', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FEUW'));
   });
   it('should update loandetails in store', () => {
     expect(saga.next(loanDetails).value)
@@ -96,9 +105,14 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
       .toEqual(select(dashboardSelectors.evalId));
   });
 
-  it('should call sods api to fetch loan details', () => {
+  it('should select groupName from store', () => {
     expect(saga.next(1161415).value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415));
+      .toEqual(select(dashboardSelectors.groupName));
+  });
+
+  it('should call sods api to fetch loan details', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FEUW'));
   });
 
   it('should update store with ERROR_LOADING_TOMBSTONE_DATA on error', () => {

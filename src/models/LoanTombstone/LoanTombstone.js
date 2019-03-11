@@ -19,11 +19,24 @@ function getPreviousDispositionUrl() {
   return '/api/bpm-audit/audit/disposition/_evalNumbers';
 }
 
+function getPrioritizationUrl() {
+  return '/api/bpm-audit/audit/prioritization/_evalNumbers';
+}
+
 function generateTombstoneItem(title, content) {
   return {
     title,
     content,
   };
+}
+
+// eslint-disable-next-line no-unused-vars
+function getCFPBDate(loanDetails, evalDetails) {
+  const losmit = loanDetails.LossmitModPline.filter(o => o.evalId === evalDetails.evalId);
+  if (typeof losmit !== 'undefined' && losmit.length > 0) {
+    return moment.tz(losmit[0].lastDocRcvdDttm, 'America/Chicago');
+  }
+  return false;
 }
 
 function getLoanItem(loanDetails) {
@@ -92,7 +105,9 @@ function getSsnItem(loanDetails) {
 
 function getInvestorItem(loanDetails) {
   const { investorCode: code, investorName: name } = loanDetails.investorInformation;
-  const investor = code && name ? `${code} - ${name}` : NA;
+  const { levelNumber, levelName } = getOr('InvestorHierarchy', loanDetails, {});
+  const investorL3 = levelNumber && levelNumber === 3 ? levelName : '';
+  const investor = code && name ? `${code} - ${name} - ${investorL3}` : NA;
   return generateTombstoneItem('Investor', investor);
 }
 
@@ -103,7 +118,7 @@ function getUPBItem(loanDetails) {
 }
 
 function getNextPaymentDueDateItem(loanDetails) {
-  const date = moment(loanDetails.nextPaymentDueDate);
+  const date = moment.tz(loanDetails.nextPaymentDueDate, 'America/Chicago');
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
@@ -124,23 +139,22 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getDaysUntilCFPB(loanDetails) {
-  const moments = loanDetails.LossmitModPline.reduce((filteredArray, i) => {
-    if (i.lastDocRcvdDttm) {
-      const date = moment(i.lastDocRcvdDttm);
-      filteredArray.push(date);
-    }
-    return filteredArray;
-  }, []);
+function getDaysUntilCFPB(_, evalDetails) {
+  const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
+  const today = moment.tz('America/Chicago');
+  const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
+  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
+}
 
-  const date = moments.length > 0 ? moment.max(moments) : moment(null);
-  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateString);
+function getCFPBExpirationDate(_, evalDetails) {
+  const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
+  const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
 }
 
 function getFLDD(loanDetails) {
   if (loanDetails.LoanExtension != null) {
-    const date = moment(loanDetails.LoanExtension.firstLegalDueDate);
+    const date = moment.tz(loanDetails.LoanExtension.firstLegalDueDate, 'America/Chicago');
     const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
     return generateTombstoneItem('FLDD Date', dateString);
   }
@@ -148,7 +162,7 @@ function getFLDD(loanDetails) {
 }
 
 function getForeclosureSalesDate(loanDetails) {
-  const date = moment(loanDetails.foreclosureSalesDate);
+  const date = moment.tz(loanDetails.foreclosureSalesDate, 'America/Chicago');
   const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('Foreclosure Sale Date and Status', dateString);
 }
@@ -174,12 +188,46 @@ function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
   return generateTombstoneItem('Previous Disposition', previousDisposition);
 }
 
+function handleMultipleRecords(prioritizationDetails) {
+  let latestHandOffDisposition = NA;
+  const withoutNulls = prioritizationDetails.reduce((filteredArray, i) => {
+    if (i.latestHandOffDisposition && i.statusDate) {
+      filteredArray.push(i);
+    }
+    return filteredArray;
+  }, []);
 
-function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails) {
+  let latest;
+  if (withoutNulls.length > 0) {
+    latest = withoutNulls.reduce((r, a) => (
+      r.statusDate > a.statusDate ? r : a));
+    latestHandOffDisposition = getOr('latestHandOffDisposition', latest, NA);
+  }
+  return latestHandOffDisposition;
+}
+
+function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
+  let latestHandOffDisposition = NA;
+  if (prioritizationDetails && prioritizationDetails.length === 1) {
+    latestHandOffDisposition = getOr(
+      'latestHandOffDisposition', prioritizationDetails[0], NA,
+    );
+  } else if (prioritizationDetails && prioritizationDetails.length > 1) {
+    latestHandOffDisposition = handleMultipleRecords(prioritizationDetails);
+  }
+  return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
+}
+
+
+function getTombstoneItems(loanDetails,
+  evalDetails,
+  previousDispositionDetails,
+  prioritizationDetails) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
     getPreviousDisposition,
+    getLatestHandOffDisposition,
     getInvestorLoanItem,
     getBorrowerItem,
     getSsnItem,
@@ -194,16 +242,21 @@ function getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)
     getForeclosureSalesDate,
     getFLDD,
     getLienPosition,
+    getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
-  const data = dataGenerator.map(fn => fn(loanDetails, evalDetails, previousDispositionDetails));
+  const data = dataGenerator.map(fn => fn(loanDetails,
+    evalDetails,
+    previousDispositionDetails,
+    prioritizationDetails));
   return data;
 }
 
-async function fetchData(loanNumber, evalId) {
+async function fetchData(loanNumber, evalId, groupName) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
+  const prioritizationUrl = getPrioritizationUrl();
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -216,26 +269,73 @@ async function fetchData(loanNumber, evalId) {
 
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
+    body: JSON.stringify({ evalIds: [evalId], groupName }),
+    headers: { 'content-type': 'application/json' },
+  });
+
+  const prioritizationP = fetch(prioritizationUrl, {
+    method: 'POST',
     body: JSON.stringify([evalId]),
     headers: { 'content-type': 'application/json' },
   });
 
   const evaluationInfoResponseP = fetch(evaluationInfoUrl);
-  const [loanInfoResponse, evaluationInfoResponse, previousDispositionResponse] = await Promise.all(
-    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP],
+
+  const [loanInfoResponse,
+    evaluationInfoResponse,
+    previousDispositionResponse,
+    prioritizationResponse] = await Promise.all(
+    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP, prioritizationP],
   );
-  if (!loanInfoResponse.ok || !evaluationInfoResponse.ok || !previousDispositionResponse.ok) {
+  if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
   }
-  const [loanDetails, evalDetails,
-    previousDispositionDetails] = previousDispositionResponse.status === 200
-    ? await Promise.all(
-      [loanInfoResponse.json(), evaluationInfoResponse.json(), previousDispositionResponse.json()],
-    ) : await Promise.all(
-      [loanInfoResponse.json(), evaluationInfoResponse.json()],
-    );
 
-  return [...getTombstoneItems(loanDetails, evalDetails, previousDispositionDetails)];
+  let [loanDetails,
+    evalDetails,
+    previousDispositionDetails,
+    prioritizationDetails] = [];
+
+  if (previousDispositionResponse.status === 200 && prioritizationResponse.status === 200) {
+    [loanDetails,
+      evalDetails,
+      previousDispositionDetails,
+      prioritizationDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+      previousDispositionResponse.json(),
+      prioritizationResponse.json(),
+    ]);
+  } else if (previousDispositionResponse.status === 200) {
+    [loanDetails,
+      evalDetails,
+      previousDispositionDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+      previousDispositionResponse.json(),
+    ]);
+  } else if (prioritizationResponse.status === 200) {
+    [loanDetails,
+      evalDetails,
+      prioritizationDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+      prioritizationResponse.json(),
+    ]);
+  } else {
+    [loanDetails,
+      evalDetails] = await Promise.all([
+      loanInfoResponse.json(),
+      evaluationInfoResponse.json(),
+    ]);
+  }
+
+  return [...getTombstoneItems(
+    loanDetails,
+    evalDetails,
+    previousDispositionDetails,
+    prioritizationDetails,
+  )];
 }
 
 const LoanTombstone = {

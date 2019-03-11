@@ -6,7 +6,7 @@ import TaskModel from 'lib/PropertyValidation/TaskModel';
 import TaskStatusIcon from '../TaskStatusIcon';
 import SubTask from './SubTask/SubTask';
 
-import './LeftParentTasks.css';
+import styles from './LeftParentTasks.css';
 
 class LeftParentTasks extends React.Component {
   constructor(props) {
@@ -25,12 +25,22 @@ class LeftParentTasks extends React.Component {
       </Grid>);
   }
 
-  static renderTasksChecklist(task, onSubTaskClick) {
+  static renderTasksChecklist(task, selectedTaskId, onSubTaskClick) {
+    const isTaskSelected = task.subTasks.some(({ _id: id }) => id === selectedTaskId);
     return (
       <>
-        <Grid container spacing={0} wrap="nowrap">
+        <Grid
+          className={
+            isTaskSelected
+              ? styles['selected-task']
+              : ''
+          }
+          container
+          spacing={0}
+          wrap="nowrap"
+        >
           <Grid alignItems="center" container item justify="center" xs={2}>
-            <TaskStatusIcon styleName="fill-width" task={task} />
+            <TaskStatusIcon isSelected={isTaskSelected} styleName="fill-width" task={task} />
           </Grid>
           <Grid alignItems="center" container item xs={10}>
             <span styleName="parent-task-name">{ R.pathOr('', ['taskBlueprint', 'name'], task) }</span>
@@ -48,7 +58,17 @@ class LeftParentTasks extends React.Component {
         {
           task.subTasks && task.subTasks.length ? (
             <Grid container direction="column" spacing={6}>
-              {task.subTasks.map(subTask => <SubTask data={subTask} onClick={onSubTaskClick} />)}
+              {
+                task.subTasks
+                  .filter(({ visibility }) => visibility)
+                  .map(subTask => (
+                    <SubTask
+                      data={subTask}
+                      onClick={onSubTaskClick}
+                      selected={subTask._id === selectedTaskId} // eslint-disable-line
+                    />
+                  ))
+              }
             </Grid>
           ) : null
         }
@@ -57,16 +77,20 @@ class LeftParentTasks extends React.Component {
   }
 
   renderTasks(isCollapsed) {
-    const { tasks, onSubTaskClick } = this.props;
-    return tasks.map(task => (
-      <div styleName="task-group">
-        {
-        isCollapsed
-          ? this.constructor.renderCollapsedView(task)
-          : this.constructor.renderTasksChecklist(task, onSubTaskClick)
-        }
-      </div>
-    ));
+    const { tasks, onSubTaskClick, selectedTaskId } = this.props;
+    return (
+      tasks
+        .filter(({ visibility }) => visibility)
+        .map(task => (
+          <div styleName="task-group">
+            {
+            isCollapsed
+              ? this.constructor.renderCollapsedView(task)
+              : this.constructor.renderTasksChecklist(task, selectedTaskId, onSubTaskClick)
+            }
+          </div>
+        ))
+    );
   }
 
   render() {
@@ -83,9 +107,14 @@ class LeftParentTasks extends React.Component {
   }
 }
 
+LeftParentTasks.defaultProps = {
+  selectedTaskId: '',
+};
+
 LeftParentTasks.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
+  selectedTaskId: PropTypes.string,
   tasks: PropTypes.arrayOf(TaskModel).isRequired,
 };
 

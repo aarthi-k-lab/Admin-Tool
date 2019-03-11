@@ -20,8 +20,6 @@ const evalId = state => R.pathOr(null, ['dashboard', 'evalId'], state);
 
 const taskId = state => R.pathOr(null, ['dashboard', 'taskId'], state);
 
-const selectedDisposition = state => R.pathOr(null, ['dashboard', 'selectedDisposition'], state);
-
 const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'], state);
 
 const searchLoanResult = state => R.pathOr({}, ['dashboard', 'getSearchLoanResponse'], state);
@@ -34,6 +32,7 @@ const processId = state => R.pathOr(null, ['dashboard', 'processId'], state);
 
 const processStatus = state => R.pathOr(null, ['dashboard', 'processStatus'], state);
 
+const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const enableGetNext = state => (
@@ -71,11 +70,11 @@ const selectors = {
   showAssign,
   unassignResult,
   assignResult,
-  selectedDisposition,
   processId,
   processStatus,
   isAssigned,
   clearSearch,
+  comments,
   groupName,
 };
 

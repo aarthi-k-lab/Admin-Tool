@@ -1,7 +1,7 @@
 import * as qs from 'qs';
 import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
-import { FRONTEND_MANAGER } from './Groups';
+import { BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER } from './Groups';
 import Redirect from './Redirect';
 
 function Auth(sessionValid, jwtPayload, groups) {
@@ -241,19 +241,31 @@ Auth.getErrorMessage = function getErrorMessage(location) {
 const GENERAL_ERROR_MESSAGE = 'Authentication service failed, kindly contact the support team.';
 
 Auth.failureMessages = {
-  AD_REDIRECT_FAILED: GENERAL_ERROR_MESSAGE,
-  USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
-  AD_TOKEN_GENERATION_FAILED: GENERAL_ERROR_MESSAGE,
-  USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   AD_AUTH_SERVICE_FAILURE: GENERAL_ERROR_MESSAGE,
+  AD_REDIRECT_FAILED: GENERAL_ERROR_MESSAGE,
+  AD_TOKEN_GENERATION_FAILED: GENERAL_ERROR_MESSAGE,
+  BACKEND_UNDERWRITER_ACCESS_NEEDED: 'BEUW Group Access is needed to view the Backend Underwriter Dashboard.',
+  FRONTEND_UNDERWRITER_ACCESS_NEEDED: 'FEUW Group Access is needed to view the Frontend Underwriter Dashboard.',
   MANAGER_ACCESS_NEEDED: 'Manager Group Access is needed to view the Manager Dashboard.',
-  STAGER_DASHBOARD_ACCESS_NEEDED: 'Stager Dashboard Access is needed to view the Stager Dashboard',
   MOVE_FORWARD_ACCESS_NEEDED: 'Move Forward Group Access is needed to view the Move Forward Dashboard.',
+  STAGER_DASHBOARD_ACCESS_NEEDED: 'Stager Dashboard Access is needed to view the Stager Dashboard',
+  USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
+  USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
 };
 
-Auth.homePage = [{
-  groupName: FRONTEND_MANAGER,
-  path: '/reports',
-}];
+Auth.homePage = [
+  {
+    groupName: FRONTEND_MANAGER,
+    path: '/reports',
+  },
+  {
+    groupName: FRONTEND_UNDERWRITER,
+    path: '/frontend-evaluation',
+  },
+  {
+    groupName: BACKEND_UNDERWRITER,
+    path: '/backend-evaluation',
+  },
+];
 
 export default Auth;

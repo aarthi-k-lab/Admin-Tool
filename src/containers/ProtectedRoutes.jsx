@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import Auth from 'lib/Auth';
 import SignInLoader from 'components/SignInLoader';
+import HomePage from 'components/HomePage';
 import ManagerDashboard from 'containers/ManagerDashboard';
 import {
   operations as loginOperations,
@@ -18,7 +19,7 @@ import {
 } from 'ducks/dashboard';
 import * as config from 'ducks/config';
 import RouteAccess from 'lib/RouteAccess';
-import DashboardModel from 'models/Dashboard';
+// import DashboardModel from 'models/Dashboard';
 import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
@@ -33,6 +34,10 @@ class ProtectedRoutes extends React.Component {
     };
     this.shouldRedirect = false;
     this.auth = null;
+    this.getGroups = this.getGroups.bind(this);
+    this.renderBackendRoute = this.renderBackendRoute.bind(this);
+    this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
+    this.renderMoveForwardRoute = this.renderMoveForwardRoute.bind(this);
   }
 
   componentDidMount() {
@@ -56,10 +61,42 @@ class ProtectedRoutes extends React.Component {
     getFeaturesTrigger();
   }
 
+  getGroups() {
+    const { user } = this.props;
+    return user && user.groupList;
+  }
+
+  renderFrontendRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasFrontendUnderwriterAccess(groups)
+        ? <Dashboard />
+        : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
+    );
+  }
+
+  renderBackendRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasBackendUnderwriterAccess(groups)
+        ? <Dashboard group="BEUW" />
+        : <Redirect to="/unauthorized?error=BACKEND_UNDERWRITER_ACCESS_NEEDED" />
+    );
+  }
+
+  renderMoveForwardRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasMoveForwardAccess(groups)
+        ? <MoveForward />
+        : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
-    const { expandView, user } = this.props;
-    const groups = user && user.groupList;
+    const { expandView, location, user } = this.props;
+    const groups = this.getGroups();
     if (loading) {
       return <SignInLoader />;
     }
@@ -68,24 +105,17 @@ class ProtectedRoutes extends React.Component {
       return <Redirect to={redirectPath} />;
     }
     return (
-      <App expandView={expandView} user={user}>
+      <App expandView={expandView} location={location.pathname} user={user}>
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
-          <Route path="/backend-evaluation" render={() => <Dashboard group="BEUW" />} />
-          <Route path="/frontend-checklist" render={() => <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />} />
-          <Route component={Dashboard} path="/frontend-evaluation" />
-          <Route
-            exact
-            path="/move-forward"
-            render={() => (
-              RouteAccess.hasMoveForwardAccess(groups)
-                ? <Route component={MoveForward} path="/move-forward" />
-                : <Redirect to="/unauthorized?error=MOVE_FORWARD_ACCESS_NEEDED" />
-            )}
-          />
+          <Route path="/backend-evaluation" render={this.renderBackendRoute} />
+          {/* eslint-disable-next-line */}
+          {/* <Route path="/frontend-checklist" render={() => <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />} /> */}
+          <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
+          <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />
-          <Route render={() => <Redirect to="/frontend-evaluation" />} />
+          <Route component={HomePage} />
         </Switch>
       </App>
     );

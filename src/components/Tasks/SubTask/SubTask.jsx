@@ -2,22 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import pathOr from 'ramda/src/pathOr';
+import classNames from 'classnames';
 import TaskStatusIcon from 'components/TaskStatusIcon';
-import './SubTask.css';
+import styles from './SubTask.css';
 
 const R = {
   pathOr,
 };
 
-function SubTask({ data, onClick }) {
+function SubTask({ data, onClick, selected }) {
   const boundClickHandler = () => onClick(data._id); // eslint-disable-line
   return (
     <Grid container item spacing={12}>
       <Grid item xs={2} />
       {/* <Grid item xs={2}> */}
-      <Grid container item justify="flex-start" onClick={boundClickHandler} styleName="checklist" xs={10}>
+      <Grid
+        className={classNames({
+          [styles['checklist-selected']]: selected,
+          [styles.checklist]: true,
+        })}
+        container
+        item
+        justify="flex-start"
+        onClick={boundClickHandler}
+        xs={10}
+      >
         <Grid alignItems="center" container item justify="center" xs={2}>
-          <TaskStatusIcon isSubTask styleName="fill-width" task={data} />
+          <TaskStatusIcon isSelected={selected} isSubTask styleName="fill-width" task={data} />
         </Grid>
         <Grid alignItems="center" container item xs={10}>
           <span
@@ -42,6 +53,7 @@ function SubTask({ data, onClick }) {
 
 SubTask.defaultProps = {
   onClick: () => {},
+  selected: false,
 };
 
 SubTask.propTypes = {
@@ -54,6 +66,7 @@ SubTask.propTypes = {
     }),
   }).isRequired,
   onClick: PropTypes.func,
+  selected: PropTypes.bool,
 };
 
 export default SubTask;

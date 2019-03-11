@@ -4,6 +4,7 @@ import { selectors, operations } from 'ducks/dashboard';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
+import DashboardModel from 'models/Dashboard';
 import DialogBox from '../../DialogBox';
 import './Assign.css';
 
@@ -23,7 +24,7 @@ class Assign extends React.Component {
 
   handleClick() {
     const { onAssignLoan, location, onGetGroupName } = this.props;
-    onGetGroupName(location.pathname);
+    onGetGroupName(DashboardModel.GROUPS[location.pathname]);
     onAssignLoan();
   }
 

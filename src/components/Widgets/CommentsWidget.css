@@ -1,0 +1,148 @@
+.comment-main-style {
+  width: inherit;
+  height: inherit;
+  padding: 0.5rem;
+  position: absolute;
+}
+
+.row-main-container-right {
+  padding-bottom: 1rem;
+  width: 100%;
+  text-align: right;
+}
+
+.row-main-container-left {
+  padding-bottom: 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+.message-body-other-user {
+  color: #000;
+  font-size: 1.1rem;
+  line-height: 2rem;
+  text-align: justify;
+  background: rgb(238, 238, 238);
+  padding: 0.6rem;
+  word-wrap: break-word;
+  word-break: break-all;
+  font-weight: 500;
+}
+
+.messagee-body-current-user {
+  color: #000;
+  font-size: 1.1rem;
+  line-height: 2rem;
+  text-align: justify;
+  background: rgba(62, 162, 199, 0.27);
+  padding: 0.6rem;
+  word-wrap: break-word;
+  word-break: break-all;
+  font-weight: 500;
+}
+
+.send-area {
+  bottom: 0.7rem;
+  position: absolute;
+  display: inline-flex;
+  width: 35.5rem;
+}
+
+.send-text-area {
+  width: 64%;
+  margin: 0 1rem 0 1rem;
+}
+
+.send-button-area {
+  min-height: 0;
+  min-width: 0;
+}
+
+.post-button {
+  background-color: #0b2d61;
+  border-radius: 0% !important;
+  min-height: 1.6875rem !important;
+  min-width: 3.75rem !important;
+}
+
+.no-comments-area {
+  font-size: 10px;
+  font-weight: 600;
+  top: 50%;
+  left: 16rem;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.ellipsis-current-user {
+  font-size: 1.5rem;
+  cursor: pointer;
+  float: right;
+  padding-top: 1rem;
+  display: block;
+}
+
+.ellipsis-other-user {
+  font-size: 1.5rem;
+  cursor: pointer;
+  float: right;
+  padding-top: 1rem;
+  display: none;
+}
+
+.disposition-selected {
+  font-size: 1rem;
+  vertical-align: text-bottom;
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1b6c92;
+  padding-right: 0.5rem;
+}
+
+.comment-area {
+  height: calc(100% - 3.125rem);
+  overflow: auto;
+}
+
+.comment-header {
+  width: 31.6875rem;
+  border-bottom: 1px solid lightgrey;
+  height: 3.375rem;
+  font-size: 1.5rem;
+  padding: 1rem;
+  font-weight: 600;
+}
+
+.circular-progress-loader {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+}
+
+.row-header {
+  display: -webkit-inline-box;
+}
+
+.check-icon-style {
+  margin-left: -0.8rem;
+  margin-top: -1rem;
+}
+
+.check-circle-icon {
+  margin-left: 0.3rem;
+  height: 1.2em !important;
+  padding-top: 0.9rem;
+  font-size: 1.9rem !important;
+}
+
+.display-date {
+  color: #776f6fdb;
+  font-size: 0.7rem;
+}
+
+.message-body-bottom {
+  height: 3px;
+}
