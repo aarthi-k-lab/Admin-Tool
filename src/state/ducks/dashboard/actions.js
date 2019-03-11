@@ -12,10 +12,11 @@ import {
   SAVE_EVALID_LOANNUMBER,
   UNASSIGN_LOAN,
   ASSIGN_LOAN,
-  SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
+  POST_COMMENT,
   CLEAR_BE_DISPOSITION,
   GROUP_NAME,
+  SAVE_LOANNUMBER_PROCESSID,
 } from './types';
 
 
@@ -39,11 +40,6 @@ const dispositionSelect = dispositionPayload => ({
   payload: dispositionPayload,
 });
 
-const beDispositionSelect = beDispositionPayload => ({
-  type: SAVE_SELECTED_BE_DISPOSITION,
-  payload: beDispositionPayload,
-});
-
 const errorTombstoneFetch = () => (
   {
     type: ERROR_LOADING_TOMBSTONE_DATA,
@@ -60,6 +56,11 @@ const selectEval = payload => ({
   payload,
 });
 
+const selectProcessId = payload => ({
+  type: SAVE_LOANNUMBER_PROCESSID,
+  payload,
+});
+
 const getGroupName = payload => ({
   type: GROUP_NAME,
   payload,
@@ -71,6 +72,11 @@ const endShift = () => ({
 
 const unassignLoan = () => ({
   type: UNASSIGN_LOAN,
+});
+
+const postComment = payload => ({
+  type: POST_COMMENT,
+  payload,
 });
 
 const assignLoan = () => ({
@@ -101,7 +107,6 @@ const hideAssignUnassign = () => ({
 
 export {
   autoSave,
-  beDispositionSelect,
   clearDisposition,
   clearFirstVisit,
   dispositionSave,
@@ -112,9 +117,11 @@ export {
   onExpandView,
   searchLoan,
   selectEval,
+  selectProcessId,
   unassignLoan,
   assignLoan,
   hideAssignUnassign,
+  postComment,
   clearBEDisposition,
   getGroupName,
 };

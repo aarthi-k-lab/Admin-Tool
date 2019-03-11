@@ -86,13 +86,6 @@ class Tombstone extends React.Component {
             id="long-menu"
             onClose={this.handleClose}
             open={open}
-            PaperProps={{
-              style: {
-                maxHeight: menuItem.length * 500,
-                width: 300,
-                right: 0,
-              },
-            }}
           >
             {menuItem.map(option => (
               <MenuItem styleName="menuItem">

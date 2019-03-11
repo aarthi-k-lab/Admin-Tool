@@ -26,11 +26,12 @@ class LeftParentTasks extends React.Component {
   }
 
   static renderTasksChecklist(task, selectedTaskId, onSubTaskClick) {
+    const isTaskSelected = task.subTasks.some(({ _id: id }) => id === selectedTaskId);
     return (
       <>
         <Grid
           className={
-            task.subTasks.some(({ _id: id }) => id === selectedTaskId)
+            isTaskSelected
               ? styles['selected-task']
               : ''
           }
@@ -39,7 +40,7 @@ class LeftParentTasks extends React.Component {
           wrap="nowrap"
         >
           <Grid alignItems="center" container item justify="center" xs={2}>
-            <TaskStatusIcon styleName="fill-width" task={task} />
+            <TaskStatusIcon isSelected={isTaskSelected} styleName="fill-width" task={task} />
           </Grid>
           <Grid alignItems="center" container item xs={10}>
             <span styleName="parent-task-name">{ R.pathOr('', ['taskBlueprint', 'name'], task) }</span>
@@ -57,13 +58,17 @@ class LeftParentTasks extends React.Component {
         {
           task.subTasks && task.subTasks.length ? (
             <Grid container direction="column" spacing={6}>
-              {task.subTasks.map(subTask => (
-                <SubTask
-                  data={subTask}
-                  onClick={onSubTaskClick}
-                  selected={subTask._id === selectedTaskId} // eslint-disable-line
-                />
-              ))}
+              {
+                task.subTasks
+                  .filter(({ visibility }) => visibility)
+                  .map(subTask => (
+                    <SubTask
+                      data={subTask}
+                      onClick={onSubTaskClick}
+                      selected={subTask._id === selectedTaskId} // eslint-disable-line
+                    />
+                  ))
+              }
             </Grid>
           ) : null
         }
@@ -73,15 +78,19 @@ class LeftParentTasks extends React.Component {
 
   renderTasks(isCollapsed) {
     const { tasks, onSubTaskClick, selectedTaskId } = this.props;
-    return tasks.map(task => (
-      <div styleName="task-group">
-        {
-        isCollapsed
-          ? this.constructor.renderCollapsedView(task)
-          : this.constructor.renderTasksChecklist(task, selectedTaskId, onSubTaskClick)
-        }
-      </div>
-    ));
+    return (
+      tasks
+        .filter(({ visibility }) => visibility)
+        .map(task => (
+          <div styleName="task-group">
+            {
+            isCollapsed
+              ? this.constructor.renderCollapsedView(task)
+              : this.constructor.renderTasksChecklist(task, selectedTaskId, onSubTaskClick)
+            }
+          </div>
+        ))
+    );
   }
 
   render() {

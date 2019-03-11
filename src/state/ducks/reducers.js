@@ -6,6 +6,7 @@ import { reducers as tombstone } from './tombstone';
 import { reducers as stager } from './stager';
 import { reducers as notifs } from './notifications';
 import { reducers as tasksAndChecklist } from './tasks-and-checklist';
+import { reducers as comments } from './comments';
 
 const rootReducer = combineReducers({
   appConfig,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   stager,
   notifs,
   tasksAndChecklist,
+  comments,
 });
 
 export default rootReducer;

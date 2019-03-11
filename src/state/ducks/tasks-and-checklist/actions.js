@@ -7,6 +7,7 @@ import {
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
   STORE_TASKS,
+  TOGGLE_INSTRUCTIONS,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -57,6 +58,10 @@ const storeChecklistNavigation = navDataStructure => ({
   payload: navDataStructure,
 });
 
+const toggleInstructions = () => ({
+  type: TOGGLE_INSTRUCTIONS,
+});
+
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -66,4 +71,5 @@ export {
   setSelectedChecklist,
   storeChecklistNavigation,
   storeTasks,
+  toggleInstructions,
 };

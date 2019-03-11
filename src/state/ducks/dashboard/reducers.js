@@ -17,10 +17,9 @@ import {
   SEARCH_LOAN_RESULT,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
-  SAVE_SELECTED_BE_DISPOSITION,
   HIDE_ASSIGN_UNASSIGN,
   CLEAR_BE_DISPOSITION,
-  GROUP_NAME,
+  GROUP_NAME, SAVE_LOANNUMBER_PROCESSID,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -171,19 +170,23 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition,
       };
     }
-
-    case SAVE_SELECTED_BE_DISPOSITION: {
-      let selectedDisposition = '';
-      if (action.payload) {
-        selectedDisposition = action.payload;
-      }
-      return {
+    case SAVE_EVALID_LOANNUMBER || SAVE_LOANNUMBER_PROCESSID: {
+      const newState = {
         ...state,
-        selectedDisposition,
+        evalId: action.payload.evalId,
+        loanNumber: action.payload.loanNumber,
+        taskId: action.payload.taskId,
+        processId: action.payload.piid,
+        processStatus: action.payload.pstatus,
+        showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
+        taskFetchError: false,
+        notasksFound: false,
+        isAssigned: !action.payload.isSearch,
       };
+      return newState;
     }
 
-    case SAVE_EVALID_LOANNUMBER: {
+    case SAVE_LOANNUMBER_PROCESSID: {
       const newState = {
         ...state,
         evalId: action.payload.evalId,
@@ -211,7 +214,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case GROUP_NAME: {
       return {
         ...state,
-        groupName: action.payload === '/frontend-evaluation' ? 'FEUW' : 'BEUW',
+        groupName: action.payload,
       };
     }
     case CLEAR_BE_DISPOSITION: {

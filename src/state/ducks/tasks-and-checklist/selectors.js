@@ -46,6 +46,7 @@ const getCurrentChecklistValue = ({ _id: id, value }, state) => {
 const getChecklistItems = state => R.compose(
   R.map(checklistItem => ({
     id: R.prop('_id', checklistItem),
+    isVisible: R.propOr(true, 'visibility', checklistItem),
     options: R.pathOr([], ['taskBlueprint', 'options'], checklistItem),
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
     type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
@@ -88,6 +89,10 @@ const shouldDisablePrev = (state) => {
   return R.isNil(prevChecklistId);
 };
 
+const shouldShowInstructions = R.pathOr(false, ['tasksAndChecklist', 'showInstructions']);
+
+const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'showInstructionsDialog']);
+
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
@@ -100,6 +105,8 @@ const selectors = {
   getTaskTree,
   shouldDisableNext,
   shouldDisablePrev,
+  shouldShowInstructions,
+  shouldShowInstructionsDialog,
 };
 
 export default selectors;

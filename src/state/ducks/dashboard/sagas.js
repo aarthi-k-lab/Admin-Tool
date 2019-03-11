@@ -11,6 +11,7 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
+import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import selectors from './selectors';
@@ -37,6 +38,7 @@ import {
   UNASSIGN_LOAN,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
+  // SAVE_LOANNUMBER_PROCESSID,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 
@@ -151,11 +153,25 @@ function getLoanNumber(taskDetails) {
   return R.path(['taskData', 'data', 'loanNumber'], taskDetails);
 }
 
+function getEvalId(taskDetails) {
+  return R.path(['taskData', 'data', 'applicationId'], taskDetails);
+}
+
 function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
-  const evalId = R.path(['taskData', 'data', 'applicationId'], taskDetails);
+  const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return { loanNumber, evalId, taskId };
+}
+
+function getCommentPayload(taskDetails) {
+  const loanNumber = getLoanNumber(taskDetails);
+  const processId = getEvalId(taskDetails);
+  const evalId = processId;
+  const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
+  return {
+    applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
+  };
 }
 // eslint-disable-next-line
 function* getNext(action) {
@@ -169,8 +185,11 @@ function* getNext(action) {
     if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
       const loanNumber = getLoanNumber(taskDetails);
       const evalPayload = getEvalPayload(taskDetails);
+      const commentsPayLoad = getCommentPayload(taskDetails);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+      // yield put({ type: SAVE_LOANNUMBER_PROCESSID, payload: commentsPayLoad });
+      yield put(commentsActions.loadCommentsAction(commentsPayLoad));
       yield put({ type: HIDE_LOADER });
     } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
       yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });

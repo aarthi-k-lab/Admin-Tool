@@ -23,7 +23,7 @@ describe('<CardCreator />', () => {
     const { CardCreator } = TestHooks;
     const wrapper = shallow(
       <CardCreator
-        onSelectDisposition={() => console.log('test')}
+        onDispositionSelect={() => console.log('test')}
         selectedActivity="FILE INCOMPLETE"
         status={items[0]}
       />,

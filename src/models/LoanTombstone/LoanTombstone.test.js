@@ -10,6 +10,10 @@ const inputJsonLoanDetails1 = {
     investorCode: '135',
     investorName: 'HELT 2007-FRE1',
   },
+  InvestorHierarchy: {
+    levelNumber: 3,
+    levelName: 'Special',
+  },
   successorInInterest: [],
   loanTypeDescription: 'Conv/Unins',
   LoanMilestoneDates: [
@@ -35,20 +39,24 @@ const inputJsonLoanDetails1 = {
   },
   LossmitModPline: [
     {
+      lastDocRcvdDttm: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
+      isStateRvw: null,
+      evalId: 646515,
+    },
+    {
       lastDocRcvdDttm: null,
       isStateRvw: null,
+      evalId: 1702968,
     },
     {
       lastDocRcvdDttm: 'Wed Jul 18 2018 14:45:36 GMT+0000 (UTC)',
       isStateRvw: null,
+      evalId: 1869959,
     },
     {
       lastDocRcvdDttm: 'Tue Dec 04 2018 14:27:18 GMT+0000 (UTC)',
       isStateRvw: null,
-    },
-    {
-      lastDocRcvdDttm: null,
-      isStateRvw: null,
+      evalId: 1920135,
     },
   ],
   primaryBorrower: {
@@ -79,6 +87,7 @@ const inputJsonEvalDetails = {
   evalId: 646515,
   waterfallId: null,
   resolutionChoiceType: 'HAMP-PRA Alternate Waterfall',
+  lastDocumentReceivedDate: null,
 };
 
 const inputJsonPreviousDisposition = [
@@ -90,6 +99,23 @@ const inputJsonPreviousDisposition = [
     status: 'Replied',
     date: 1551166757000,
     taskName: 'Underwriting',
+  },
+];
+
+const inputJsonPrioritization = [
+
+  {
+    processId: '213575',
+    loanNumber: '345432',
+    evalId: '1928799',
+    taskId: '1721050',
+    taskName: 'Underwriting',
+    stsChangedCode: 'Wait',
+    status: 'Replied',
+    assignee: 'ashish.menon@mrcooper.com',
+    statusDate: 1551425501000,
+    incomeRequried: true,
+    latestHandOffDisposition: 'Offshore Review Required',
   },
 ];
 
@@ -105,6 +131,10 @@ const output1 = [
   {
     content: 'Freddie RPA Required',
     title: 'Previous Disposition',
+  },
+  {
+    content: 'Offshore Review Required',
+    title: 'Latest Handoff Disposition',
   },
   {
     content: '0000000',
@@ -127,7 +157,7 @@ const output1 = [
     title: 'Brand Name',
   },
   {
-    content: '135 - HELT 2007-FRE1',
+    content: '135 - HELT 2007-FRE1 - Special',
     title: 'Investor',
   },
   {
@@ -139,7 +169,7 @@ const output1 = [
     title: 'UPB',
   },
   {
-    content: '09/01/2018',
+    content: '08/31/2018',
     title: 'Next Payment Due Date',
   },
   {
@@ -155,7 +185,7 @@ const output1 = [
     title: 'Foreclosure Sale Date and Status',
   },
   {
-    content: '11/28/2006',
+    content: '11/27/2006',
     title: 'FLDD Date',
   },
   {
@@ -163,7 +193,11 @@ const output1 = [
     title: 'Lien Position',
   },
   {
-    content: '12/04/2018',
+    content: 'NA',
+    title: 'CFPB Timeline Expiration Date',
+  },
+  {
+    content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -195,10 +229,13 @@ const inputJsonLoanDetails2 = {
     {
       lastDocRcvdDttm: null,
       isStateRvw: null,
+      evalId: null,
     },
     {
       lastDocRcvdDttm: null,
       isStateRvw: null,
+      evalId: null,
+
     },
   ],
 };
@@ -215,6 +252,10 @@ const output2 = [
   {
     content: 'Freddie RPA Required',
     title: 'Previous Disposition',
+  },
+  {
+    content: 'Offshore Review Required',
+    title: 'Latest Handoff Disposition',
   },
   {
     content: 'NA',
@@ -274,6 +315,10 @@ const output2 = [
   },
   {
     content: 'NA',
+    title: 'CFPB Timeline Expiration Date',
+  },
+  {
+    content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
   },
 ];
@@ -285,9 +330,11 @@ describe('models/LoanTombstone', () => {
     });
   });
   describe('getTombstoneItems', () => {
+    // #TODO the current date is used in the test and diff is calculated --> Changed to null and NA
+    //       The diff would change every day and tests would keep on failing.
     it('returns the data complying to Tombstone UI schema', () => {
-      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output1);
-      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition)).toEqual(output2);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails2, inputJsonEvalDetails, inputJsonPreviousDisposition, inputJsonPrioritization)).toEqual(output2);
+      expect(LoanTombstone.getTombstoneItems(inputJsonLoanDetails1, inputJsonEvalDetails, inputJsonPreviousDisposition, inputJsonPrioritization)).toEqual(output1);
     });
   });
 });

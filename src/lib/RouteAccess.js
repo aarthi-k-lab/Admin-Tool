@@ -21,6 +21,13 @@ const moveForward = {
   groups: ['util-mgr', 'allaccess'],
 };
 
+const frontendUnderwriter = {
+  path: '/frontend-evaluation',
+  name: 'frontend-evaluation',
+  img: '/static/img/frontend.svg',
+  groups: ['feuw', 'feuw-mgr'],
+};
+
 const backendUnderwriter = {
   path: '/backend-evaluation',
   name: 'backend-evaluation',
@@ -28,50 +35,53 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
-const feuwTasksAndChecklist = {
-  path: '/frontend-checklist',
-  name: 'frontend-checklist',
-  img: '/static/img/frontend.svg',
-  groups: ['allaccess'],
-};
+// const feuwTasksAndChecklist = {
+//   path: '/frontend-checklist',
+//   name: 'frontend-checklist',
+//   img: '/static/img/frontend.svg',
+//   groups: ['allaccess'],
+// };
 
 const links = [
   managerDashboard,
-  {
-    path: '/frontend-evaluation',
-    name: 'frontend-evaluation',
-    img: '/static/img/frontend.svg',
-    groups: ['feuw', 'feuw-mgr'],
-  },
+  frontendUnderwriter,
   backendUnderwriter,
   stager,
   moveForward,
-  feuwTasksAndChecklist,
+  // feuwTasksAndChecklist,
 ];
 
-function hasManagerDashboardAccess(groups) {
-  if (!R.is(Array, groups)) {
+function hasGroup(requiredGroups, userGroups) {
+  if (!R.is(Array, userGroups)) {
     return true;
   }
-  return managerDashboard.groups.some(managerGroup => groups.includes(managerGroup));
+  return requiredGroups.some(group => userGroups.includes(group));
+}
+
+function hasFrontendUnderwriterAccess(groups) {
+  return hasGroup(frontendUnderwriter.groups, groups);
+}
+
+function hasBackendUnderwriterAccess(groups) {
+  return hasGroup(backendUnderwriter.groups, groups);
+}
+
+function hasManagerDashboardAccess(groups) {
+  return hasGroup(managerDashboard.groups, groups);
 }
 
 function hasStagerDashboardAccess(groups) {
-  if (!R.is(Array, groups)) {
-    return true;
-  }
-  return stager.groups.some(stagerGroup => groups.includes(stagerGroup));
+  return hasGroup(stager.groups, groups);
 }
 
 function hasMoveForwardAccess(groups) {
-  if (!R.is(Array, groups)) {
-    return true;
-  }
-  return moveForward.groups.some(moveForwardGroup => groups.includes(moveForwardGroup));
+  return hasGroup(moveForward.groups, groups);
 }
 
 module.exports = {
   links,
+  hasBackendUnderwriterAccess,
+  hasFrontendUnderwriterAccess,
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,

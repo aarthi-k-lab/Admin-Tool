@@ -10,6 +10,7 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_NAVIGATION,
   STORE_TASKS,
+  TOGGLE_INSTRUCTIONS,
 } from './types';
 
 const FAILED = 'failed';
@@ -23,6 +24,8 @@ const defaultState = {
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
   selectedChecklist: 'nothing',
+  showInstructions: true,
+  showInstructionsDialog: false,
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -119,6 +122,12 @@ const reducer = (state = defaultState, action) => {
         ...state,
         taskTree: action.payload,
         taskLoadingStatus: SUCCEEDED,
+      };
+    }
+    case TOGGLE_INSTRUCTIONS: {
+      return {
+        ...state,
+        showInstructionsDialog: !state.showInstructionsDialog,
       };
     }
     default:
