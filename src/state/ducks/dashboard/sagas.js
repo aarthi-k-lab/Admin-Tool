@@ -12,7 +12,6 @@ import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
-import { selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import selectors from './selectors';
 import {
@@ -125,10 +124,8 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
-    const tombstoneData = yield select(tombstoneSelectors.getTombstoneData);
-    const workoutCaseType = R.propOr('', 'content', R.filter(x => x.title === 'Modification Type', tombstoneData)[0]);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}&workoutCaseType=${workoutCaseType}`, {});
+    const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
     yield put({
       type: SAVE_DISPOSITION,
       payload: response,
