@@ -130,6 +130,7 @@ class CommentsWidget extends Component {
       EvalId,
       EventName,
       LoanNumber,
+      ProcessId,
       ProcIdType,
       TaskId,
       User,
@@ -149,6 +150,7 @@ class CommentsWidget extends Component {
       commentContext: JSON.stringify({
         TASK: taskName,
         TASK_ID: TaskId,
+        processId: ProcessId,
       }),
       userName: User.userDetails.name,
       createdDate: new Date().toJSON(),
@@ -257,6 +259,7 @@ CommentsWidget.propTypes = {
   LoanNumber: PropTypes.number.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
+  ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
   TaskId: PropTypes.number.isRequired,
   User: PropTypes.shape({
@@ -279,6 +282,7 @@ const mapStateToProps = state => ({
   EvalId: dashboardSelectors.evalId(state),
   TaskId: dashboardSelectors.taskId(state),
   LoanNumber: dashboardSelectors.loanNumber(state),
+  ProcessId: dashboardSelectors.processId(state),
   groupName: dashboardSelectors.groupName(state),
   User: loginSelectors.getUser(state),
 });
