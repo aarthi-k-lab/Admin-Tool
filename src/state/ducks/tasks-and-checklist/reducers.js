@@ -24,7 +24,6 @@ const defaultState = {
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
   selectedChecklist: 'nothing',
-  showInstructions: true,
   showInstructionsDialog: false,
 };
 

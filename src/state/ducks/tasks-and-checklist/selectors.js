@@ -89,23 +89,38 @@ const shouldDisablePrev = (state) => {
   return R.isNil(prevChecklistId);
 };
 
-const shouldShowInstructions = R.pathOr(false, ['tasksAndChecklist', 'showInstructions']);
-
 const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'showInstructionsDialog']);
+
+const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
+
+const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
+
+const shouldShowDisposition = (state) => {
+  const hasDisposition = !R.isNil(
+    R.path(['tasksAndChecklist', 'taskTree', 'value', 'disposition'], state),
+  );
+  const hasInstructions = !R.isNil(
+    R.path(['tasksAndChecklist', 'taskTree', 'value', 'instructions'], state),
+  );
+  const shouldShow = R.or(hasDisposition, hasInstructions);
+  return shouldShow;
+};
 
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
+  getDisposition,
   getTaskLoadStatus,
   getDirtyChecklistItemForSave,
   getChecklistTitle,
+  getInstructions,
   getNextChecklistId,
   getPrevChecklistId,
   getSelectedChecklistId,
   getTaskTree,
   shouldDisableNext,
   shouldDisablePrev,
-  shouldShowInstructions,
+  shouldShowDisposition,
   shouldShowInstructionsDialog,
 };
 

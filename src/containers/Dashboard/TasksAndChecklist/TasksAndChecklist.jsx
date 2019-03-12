@@ -41,12 +41,14 @@ class TasksAndChecklist extends React.PureComponent {
 
   render() {
     const {
+      instructions,
       disableNext,
       disablePrev,
+      disposition,
       onNext,
       onPrev,
       onInstuctionDialogToggle,
-      showInstructions,
+      showDisposition,
       showInstructionsDialog,
     } = this.props;
     return (
@@ -54,9 +56,11 @@ class TasksAndChecklist extends React.PureComponent {
         <TaskPane styleName="tasks" />
         { this.renderChecklist() }
         <DialogCard
-          message="Missing Documents"
+          dialogContent={instructions}
+          dialogHeader="Steps to Resolve"
+          message={disposition}
           onDialogToggle={onInstuctionDialogToggle}
-          shouldShow={showInstructions}
+          shouldShow={showDisposition}
           showDialog={showInstructionsDialog}
           styleName="instructions"
           title="Disposition"
@@ -95,22 +99,26 @@ TasksAndChecklist.propTypes = {
   dataLoadStatus: PropTypes.string.isRequired,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
+  disposition: PropTypes.string.isRequired,
+  instructions: PropTypes.string.isRequired,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
-  showInstructions: PropTypes.bool.isRequired,
+  showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
+    disposition: selectors.getDisposition(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
-    showInstructions: selectors.shouldShowInstructions(state),
+    instructions: selectors.getInstructions(state),
+    showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
   };
 }

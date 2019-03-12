@@ -35,12 +35,12 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
-// const feuwTasksAndChecklist = {
-//   path: '/frontend-checklist',
-//   name: 'frontend-checklist',
-//   img: '/static/img/frontend.svg',
-//   groups: ['allaccess'],
-// };
+const feuwTasksAndChecklist = {
+  path: '/frontend-checklist',
+  name: 'frontend-checklist',
+  img: '/static/img/frontend.svg',
+  groups: ['allaccess'],
+};
 
 const links = [
   managerDashboard,
@@ -48,7 +48,7 @@ const links = [
   backendUnderwriter,
   stager,
   moveForward,
-  // feuwTasksAndChecklist,
+  feuwTasksAndChecklist,
 ];
 
 function hasGroup(requiredGroups, userGroups) {
@@ -60,6 +60,10 @@ function hasGroup(requiredGroups, userGroups) {
 
 function hasFrontendUnderwriterAccess(groups) {
   return hasGroup(frontendUnderwriter.groups, groups);
+}
+
+function hasFrontendChecklistAccess(groups) {
+  return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
 
 function hasBackendUnderwriterAccess(groups) {
@@ -82,6 +86,7 @@ module.exports = {
   links,
   hasBackendUnderwriterAccess,
   hasFrontendUnderwriterAccess,
+  hasFrontendChecklistAccess,
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
