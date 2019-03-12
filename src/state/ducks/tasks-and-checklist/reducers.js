@@ -10,6 +10,7 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_NAVIGATION,
   STORE_TASKS,
+  STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
 } from './types';
 
@@ -121,6 +122,12 @@ const reducer = (state = defaultState, action) => {
         ...state,
         taskTree: action.payload,
         taskLoadingStatus: SUCCEEDED,
+      };
+    }
+    case STORE_TASK_FILTER: {
+      return {
+        ...state,
+        taskFilter: action.payload,
       };
     }
     case TOGGLE_INSTRUCTIONS: {

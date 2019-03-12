@@ -10,6 +10,7 @@ const LOADING_TASKS = 'app/tasks-and-checklist/LOADING_TASKS';
 const REMOVE_DIRTY_CHECKLIST = 'app/tasks-and-checklist/REMOVE_DIRTY_CHECKLIST';
 const SET_SELECTED_CHECKLIST = 'app/tasks-and-checklist/SET_SELECTED_CHECKLIST';
 const STORE_CHECKLIST = 'app/tasks-and-checklist/STORE_CHECKLIST';
+const STORE_TASK_FILTER = 'app/tasks-and-checklist/STORE_TASK_FILTER';
 const STORE_CHECKLIST_NAVIGATION = 'app/tasks-and-checklist/STORE_CHECKLIST_NAVIGATION';
 const STORE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/STORE_CHECKLIST_ITEM_CHANGE';
 const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
@@ -31,5 +32,6 @@ export {
   STORE_CHECKLIST_NAVIGATION,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
+  STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
 };

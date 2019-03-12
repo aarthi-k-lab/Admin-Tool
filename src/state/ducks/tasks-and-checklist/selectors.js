@@ -1,6 +1,19 @@
 import * as R from 'ramda';
 
-const getTaskTree = state => R.propOr({ subTasks: [] }, 'taskTree', state.tasksAndChecklist);
+const getTaskFilter = R.path(['tasksAndChecklist', 'taskFilter']);
+
+const shouldDisplayAllTasks = filter => R.or(R.isNil(filter), R.isEmpty(filter));
+
+const getTaskTree = (state) => {
+  const filter = getTaskFilter(state);
+  const subTasks = R.pathOr([], ['tasksAndChecklist', 'taskTree', 'subTasks'], state);
+  const filteredSubTasks = shouldDisplayAllTasks(filter)
+    ? subTasks
+    : R.filter(R.propEq('state', filter), subTasks);
+  return {
+    subTasks: filteredSubTasks,
+  };
+};
 
 const getChecklistTitle = state => R.pathOr(
   '',
