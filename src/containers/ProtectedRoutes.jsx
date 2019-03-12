@@ -19,7 +19,7 @@ import {
 } from 'ducks/dashboard';
 import * as config from 'ducks/config';
 import RouteAccess from 'lib/RouteAccess';
-// import DashboardModel from 'models/Dashboard';
+import DashboardModel from 'models/Dashboard';
 import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
@@ -38,6 +38,7 @@ class ProtectedRoutes extends React.Component {
     this.renderBackendRoute = this.renderBackendRoute.bind(this);
     this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
     this.renderMoveForwardRoute = this.renderMoveForwardRoute.bind(this);
+    this.renderFrontendChecklistRoute = this.renderFrontendChecklistRoute.bind(this);
   }
 
   componentDidMount() {
@@ -71,6 +72,15 @@ class ProtectedRoutes extends React.Component {
     return (
       RouteAccess.hasFrontendUnderwriterAccess(groups)
         ? <Dashboard />
+        : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
+    );
+  }
+
+  renderFrontendChecklistRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasFrontendChecklistAccess(groups)
+        ? <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />
         : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
     );
   }
@@ -110,8 +120,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
           <Route path="/backend-evaluation" render={this.renderBackendRoute} />
-          {/* eslint-disable-next-line */}
-          {/* <Route path="/frontend-checklist" render={() => <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />} /> */}
+          <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />

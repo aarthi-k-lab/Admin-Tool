@@ -7,6 +7,7 @@ import {
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
   STORE_TASKS,
+  STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
 } from './types';
 
@@ -53,6 +54,10 @@ const storeTasks = taskTree => ({
   payload: taskTree,
 });
 
+const storeTaskFilter = taskFilter => ({
+  type: STORE_TASK_FILTER,
+  payload: taskFilter,
+});
 const storeChecklistNavigation = navDataStructure => ({
   type: STORE_CHECKLIST_NAVIGATION,
   payload: navDataStructure,
@@ -71,5 +76,6 @@ export {
   setSelectedChecklist,
   storeChecklistNavigation,
   storeTasks,
+  storeTaskFilter,
   toggleInstructions,
 };

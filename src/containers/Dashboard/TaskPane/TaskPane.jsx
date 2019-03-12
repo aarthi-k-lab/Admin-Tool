@@ -18,6 +18,7 @@ class TaskPane extends React.PureComponent {
       dataLoadStatus,
       onSubTaskClick,
       selectedTaskId,
+      storeTaskFilter,
       tasks,
     } = this.props;
     return (
@@ -26,6 +27,7 @@ class TaskPane extends React.PureComponent {
         dataLoadStatus={dataLoadStatus}
         onSubTaskClick={onSubTaskClick}
         selectedTaskId={selectedTaskId}
+        storeTaskFilter={storeTaskFilter}
         tasks={tasks}
       />
     );
@@ -47,6 +49,7 @@ TaskPane.propTypes = {
   getTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
+  storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel),
 };
 
@@ -60,6 +63,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getTasks: taskOperations.fetchTasks(dispatch),
   onSubTaskClick: taskOperations.fetchChecklist(dispatch),
+  storeTaskFilter: taskOperations.saveTaskFilter(dispatch),
 });
 
 const TaskPaneContainer = connect(mapStateToProps, mapDispatchToProps)(TaskPane);
