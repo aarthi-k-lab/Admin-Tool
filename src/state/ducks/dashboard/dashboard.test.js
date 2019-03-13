@@ -11,6 +11,9 @@ import {
 } from './actions';
 import { TestExports } from './sagas';
 import selectors from './selectors';
+import {
+  resetChecklistData,
+} from '../tasks-and-checklist/actions';
 
 
 describe('expand view ', () => {
@@ -102,6 +105,11 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(put(resetChecklistData()));
+  });
+
   it('should select userDetails from store', () => {
     expect(saga.next().value)
       .toEqual(select(loginSelectors.getUser));
@@ -112,8 +120,13 @@ describe('getnext Success', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
   });
 
-  it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
+  it('should call fetchChecklistDetails generator to handle get next logic for checklist', () => {
     expect(saga.next(mockTaskDetails).value)
+      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, 'FEUW'));
+  });
+
+  it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
+    expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.SAVE_EVALID_LOANNUMBER,
         payload: { loanNumber: '12345', evalId: '34567', taskId: '1234' },
@@ -184,6 +197,11 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(put(resetChecklistData()));
+  });
+
   it('should select userDetails from store', () => {
     expect(saga.next().value)
       .toEqual(select(loginSelectors.getUser));
@@ -230,6 +248,11 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(put(resetChecklistData()));
   });
 
   it('should select userDetails from store', () => {

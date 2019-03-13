@@ -119,6 +119,8 @@ const shouldShowDisposition = (state) => {
   return shouldShow;
 };
 
+const getRootTaskId = R.pathOr('', ['tasksAndChecklist', 'rootTaskId']);
+
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
@@ -129,6 +131,7 @@ const selectors = {
   getInstructions,
   getNextChecklistId,
   getPrevChecklistId,
+  getRootTaskId,
   getSelectedChecklistId,
   getTaskTree,
   shouldDisableNext,

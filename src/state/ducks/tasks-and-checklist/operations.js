@@ -2,7 +2,6 @@ import {
   getNextChecklist,
   getPrevChecklist,
   getChecklist,
-  getTasks,
   storeTaskFilter,
   handleChecklistItemChange,
   setSelectedChecklist,
@@ -18,8 +17,6 @@ const fetchChecklist = dispatch => (taskId) => {
   dispatch(getChecklist(taskId));
 };
 
-const fetchTasks = dispatch => (...args) => dispatch(getTasks(...args));
-
 const saveTaskFilter = dispatch => taskFilter => dispatch(storeTaskFilter(taskFilter));
 
 const handleChecklistItemValueChange = dispatch => (id, value) => {
@@ -32,7 +29,6 @@ const operations = {
   fetchChecklist,
   fetchNextChecklist,
   fetchPrevChecklist,
-  fetchTasks,
   saveTaskFilter,
   handleChecklistItemValueChange,
   handleToggleInstructions,

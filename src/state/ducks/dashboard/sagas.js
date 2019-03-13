@@ -13,6 +13,7 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import AppGroupName from 'models/AppGroupName';
 import selectors from './selectors';
 import {
   END_SHIFT,
@@ -39,7 +40,11 @@ import {
   ASSIGN_LOAN_RESULT,
 } from './types';
 import { errorTombstoneFetch } from './actions';
-
+import {
+  getTasks,
+  resetChecklistData,
+  storeProcessDetails,
+} from '../tasks-and-checklist/actions';
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -153,6 +158,10 @@ function getEvalId(taskDetails) {
   return R.path(['taskData', 'data', 'applicationId'], taskDetails);
 }
 
+function getChecklistId(taskDetails) {
+  return R.pathOr('', ['taskData', 'data', 'taskCheckListId'], taskDetails);
+}
+
 function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
@@ -172,11 +181,28 @@ function getCommentPayload(taskDetails) {
     applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
   };
 }
+
+function* fetchChecklistDetails(taskDetails, appGroupName) {
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
+  const checklistId = getChecklistId(taskDetails);
+  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  }
+  const { rootId: rootTaskId } = response;
+  yield put(storeProcessDetails(checklistId, rootTaskId));
+  yield put(getTasks());
+}
+
 // eslint-disable-next-line
 function* getNext(action) {
 
   try {
     yield put({ type: SHOW_LOADER });
+    yield put(resetChecklistData());
     const appGroupName = action.payload;
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -185,6 +211,7 @@ function* getNext(action) {
       const loanNumber = getLoanNumber(taskDetails);
       const evalPayload = getEvalPayload(taskDetails);
       const commentsPayLoad = getCommentPayload(taskDetails);
+      yield call(fetchChecklistDetails, taskDetails, appGroupName);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
       yield put(commentsActions.loadCommentsAction(commentsPayLoad));
@@ -281,6 +308,7 @@ function* watchAssignLoan() {
 export const TestExports = {
   autoSaveOnClose,
   endShift,
+  fetchChecklistDetails,
   saveDisposition,
   setExpandView,
   searchLoan,

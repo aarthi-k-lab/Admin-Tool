@@ -5,10 +5,12 @@ import {
   LOADING_CHECKLIST,
   LOADING_TASKS,
   REMOVE_DIRTY_CHECKLIST,
+  RESET_DATA,
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_NAVIGATION,
+  STORE_PROCESS_DETAILS,
   STORE_TASKS,
   STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
@@ -20,10 +22,12 @@ const SUCCEEDED = 'succeeded';
 
 const defaultState = {
   checklistLoadingStatus: SUCCEEDED,
-  taskLoadingStatus: SUCCEEDED,
+  taskLoadingStatus: LOADING,
   dirtyChecklistItems: {},
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
+  processId: null,
+  rootTaskId: null,
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
 };
@@ -96,6 +100,8 @@ const reducer = (state = defaultState, action) => {
       };
     case REMOVE_DIRTY_CHECKLIST:
       return removeDirtyChecklistItem(state);
+    case RESET_DATA:
+      return defaultState;
     case SET_SELECTED_CHECKLIST:
       return {
         ...state,
@@ -115,6 +121,14 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         checklistNavigation: action.payload,
+      };
+    }
+    case STORE_PROCESS_DETAILS: {
+      const { payload: { processId, rootTaskId } } = action;
+      return {
+        ...state,
+        processId,
+        rootTaskId,
       };
     }
     case STORE_TASKS: {
