@@ -37,7 +37,6 @@ import {
   UNASSIGN_LOAN,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
-  // SAVE_LOANNUMBER_PROCESSID,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 
@@ -158,7 +157,10 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  return { loanNumber, evalId, taskId };
+  const wfProcessId = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  return {
+    loanNumber, evalId, taskId, wfProcessId,
+  };
 }
 
 function getCommentPayload(taskDetails) {
@@ -185,7 +187,6 @@ function* getNext(action) {
       const commentsPayLoad = getCommentPayload(taskDetails);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      // yield put({ type: SAVE_LOANNUMBER_PROCESSID, payload: commentsPayLoad });
       yield put(commentsActions.loadCommentsAction(commentsPayLoad));
       yield put({ type: HIDE_LOADER });
     } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
