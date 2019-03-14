@@ -10,6 +10,16 @@ import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import styles from './LeftTaskPane.css';
 
+const ALL = 'All';
+const PENDING = 'Pending';
+const COMPLETED = 'Completed';
+const OPEN = 'open';
+const statusMap = {
+  All: '',
+  Pending: 'in-progress',
+  Completed: 'completed',
+};
+
 function StatusMenu({ onChange, taskStatus }) {
   return (
     <span styleName="status-select-field-span">
@@ -27,9 +37,9 @@ function StatusMenu({ onChange, taskStatus }) {
         select
         value={taskStatus}
       >
-        <MenuItem value="All">All</MenuItem>
-        <MenuItem value="Pending">Pending</MenuItem>
-        <MenuItem value="Completed">Completed</MenuItem>
+        <MenuItem value={ALL}>{ALL}</MenuItem>
+        <MenuItem value={PENDING}>{PENDING}</MenuItem>
+        <MenuItem value={COMPLETED}>{COMPLETED}</MenuItem>
       </TextField>
     </span>
   );
@@ -37,7 +47,7 @@ function StatusMenu({ onChange, taskStatus }) {
 
 StatusMenu.defaultProps = {
   onChange: () => {},
-  taskStatus: 'All',
+  taskStatus: ALL,
 };
 
 StatusMenu.propTypes = {
@@ -49,18 +59,21 @@ class LeftTaskPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasksStatus: 'All',
-      width: props.defaultState === 'open' ? props.openWidth : props.closedWidth,
-      isCollapsed: props.defaultState !== 'open',
+      tasksStatus: ALL,
+      width: props.defaultState === OPEN ? props.openWidth : props.closedWidth,
+      isCollapsed: props.defaultState !== OPEN,
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
   }
 
   handleStatusChange(event) {
+    const { storeTaskFilter } = this.props;
+    const selectedStatus = event.target.value;
     this.setState({
-      tasksStatus: event.target.value,
+      tasksStatus: selectedStatus,
     });
+    storeTaskFilter(statusMap[selectedStatus]);
   }
 
   handleClick() {
@@ -150,6 +163,7 @@ LeftTaskPane.propTypes = {
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   selectedTaskId: PropTypes.string,
+  storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel).isRequired,
 };
 

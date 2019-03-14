@@ -4,7 +4,6 @@ import {
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
-import { selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import * as actionTypes from './types';
 import {
@@ -12,6 +11,9 @@ import {
 } from './actions';
 import { TestExports } from './sagas';
 import selectors from './selectors';
+import {
+  resetChecklistData,
+} from '../tasks-and-checklist/actions';
 
 
 describe('expand view ', () => {
@@ -103,6 +105,11 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(put(resetChecklistData()));
+  });
+
   it('should select userDetails from store', () => {
     expect(saga.next().value)
       .toEqual(select(loginSelectors.getUser));
@@ -113,8 +120,13 @@ describe('getnext Success', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
   });
 
-  it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
+  it('should call fetchChecklistDetails generator to handle get next logic for checklist', () => {
     expect(saga.next(mockTaskDetails).value)
+      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, 'FEUW'));
+  });
+
+  it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
+    expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.SAVE_EVALID_LOANNUMBER,
         payload: { loanNumber: '12345', evalId: '34567', taskId: '1234' },
@@ -147,12 +159,12 @@ describe('getnext Success', () => {
   it('getnext worker should trigger loadComments action', () => {
     const actionDispatched = {
       payload: {
-        applicationName: "CMOD",
-        loanNumber: "12345",
-        processId: "34567",
-        processIdType: "EvalID",
-        evalId: "34567",
-        taskId: "1234",
+        applicationName: 'CMOD',
+        loanNumber: '12345',
+        processId: '34567',
+        processIdType: 'EvalID',
+        evalId: '34567',
+        taskId: '1234',
       },
       type: 'app/comments/GET_COMMENTS_SAGA',
     };
@@ -183,6 +195,11 @@ describe('getnext Failure -  no tasks found', () => {
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(put(resetChecklistData()));
   });
 
   it('should select userDetails from store', () => {
@@ -231,6 +248,11 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(put(resetChecklistData()));
   });
 
   it('should select userDetails from store', () => {
@@ -342,10 +364,6 @@ describe('expand view ', () => {
         email: 'bren@mrcooper.com',
       },
     };
-    const tombstoneData = [{
-      content: 'Loan Modification',
-      title: 'Modification Type',
-    }];
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 
     it('should call SHOW_SAVING_LOADER', () => {
@@ -368,14 +386,9 @@ describe('expand view ', () => {
         .toEqual(select(selectors.taskId));
     });
 
-    it('should call select Modification Type from store', () => {
-      expect(saga.next(1161415).value)
-        .toEqual(select(tombstoneSelectors.getTombstoneData));
-    });
-
     it('should call validation service', () => {
-      expect(saga.next(tombstoneData).value)
-        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW&workoutCaseType=Loan Modification', {}));
+      expect(saga.next(1161415).value)
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW', {}));
     });
 
     it('should update getNextResponse state', () => {
@@ -406,11 +419,6 @@ describe('expand view ', () => {
         email: 'bren@mrcooper.com',
       },
     };
-
-    const tombstoneData = [{
-      content: 'Loan Modification',
-      title: 'Modification Type',
-    }];
     const saga = cloneableGenerator(TestExports.saveDisposition)(dispositionPayload);
 
     it('should call SHOW_SAVING_LOADER', () => {
@@ -433,14 +441,9 @@ describe('expand view ', () => {
         .toEqual(select(selectors.taskId));
     });
 
-    it('should call select Modification Type from store', () => {
-      expect(saga.next(1161415).value)
-        .toEqual(select(tombstoneSelectors.getTombstoneData));
-    });
-
     it('should call validation service', () => {
-      expect(saga.next(tombstoneData).value)
-        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW&workoutCaseType=Loan Modification', {}));
+      expect(saga.next(1161415).value)
+        .toEqual(call(Api.callPost, '/api/disposition/disposition?evalCaseId=1883281&disposition=missingDocs&assignedTo=bren@mrcooper.com&taskId=1161415&group=FEUW', {}));
     });
 
     it('should call HIDE_SAVING_LOADER', () => {

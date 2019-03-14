@@ -1,7 +1,7 @@
 import * as qs from 'qs';
 import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
-import { FRONTEND_MANAGER } from './Groups';
+import { BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER } from './Groups';
 import Redirect from './Redirect';
 
 function Auth(sessionValid, jwtPayload, groups) {
@@ -253,9 +253,19 @@ Auth.failureMessages = {
   USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
 };
 
-Auth.homePage = [{
-  groupName: FRONTEND_MANAGER,
-  path: '/reports',
-}];
+Auth.homePage = [
+  {
+    groupName: FRONTEND_MANAGER,
+    path: '/reports',
+  },
+  {
+    groupName: FRONTEND_UNDERWRITER,
+    path: '/frontend-evaluation',
+  },
+  {
+    groupName: BACKEND_UNDERWRITER,
+    path: '/backend-evaluation',
+  },
+];
 
 export default Auth;

@@ -12,8 +12,8 @@ import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
-import { selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import AppGroupName from 'models/AppGroupName';
 import selectors from './selectors';
 import {
   END_SHIFT,
@@ -38,10 +38,13 @@ import {
   UNASSIGN_LOAN,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
-  // SAVE_LOANNUMBER_PROCESSID,
 } from './types';
 import { errorTombstoneFetch } from './actions';
-
+import {
+  getTasks,
+  resetChecklistData,
+  storeProcessDetails,
+} from '../tasks-and-checklist/actions';
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -125,10 +128,8 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
-    const tombstoneData = yield select(tombstoneSelectors.getTombstoneData);
-    const workoutCaseType = R.propOr('', 'content', R.filter(x => x.title === 'Modification Type', tombstoneData)[0]);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}&workoutCaseType=${workoutCaseType}`, {});
+    const response = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
     yield put({
       type: SAVE_DISPOSITION,
       payload: response,
@@ -157,11 +158,18 @@ function getEvalId(taskDetails) {
   return R.path(['taskData', 'data', 'applicationId'], taskDetails);
 }
 
+function getChecklistId(taskDetails) {
+  return R.pathOr('', ['taskData', 'data', 'taskCheckListId'], taskDetails);
+}
+
 function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  return { loanNumber, evalId, taskId };
+  const wfProcessId = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  return {
+    loanNumber, evalId, taskId, wfProcessId,
+  };
 }
 
 function getCommentPayload(taskDetails) {
@@ -173,11 +181,28 @@ function getCommentPayload(taskDetails) {
     applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
   };
 }
+
+function* fetchChecklistDetails(taskDetails, appGroupName) {
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
+  const checklistId = getChecklistId(taskDetails);
+  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  }
+  const { rootId: rootTaskId } = response;
+  yield put(storeProcessDetails(checklistId, rootTaskId));
+  yield put(getTasks());
+}
+
 // eslint-disable-next-line
 function* getNext(action) {
 
   try {
     yield put({ type: SHOW_LOADER });
+    yield put(resetChecklistData());
     const appGroupName = action.payload;
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -186,9 +211,9 @@ function* getNext(action) {
       const loanNumber = getLoanNumber(taskDetails);
       const evalPayload = getEvalPayload(taskDetails);
       const commentsPayLoad = getCommentPayload(taskDetails);
+      yield call(fetchChecklistDetails, taskDetails, appGroupName);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      // yield put({ type: SAVE_LOANNUMBER_PROCESSID, payload: commentsPayLoad });
       yield put(commentsActions.loadCommentsAction(commentsPayLoad));
       yield put({ type: HIDE_LOADER });
     } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
@@ -283,6 +308,7 @@ function* watchAssignLoan() {
 export const TestExports = {
   autoSaveOnClose,
   endShift,
+  fetchChecklistDetails,
   saveDisposition,
   setExpandView,
   searchLoan,

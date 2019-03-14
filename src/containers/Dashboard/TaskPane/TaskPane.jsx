@@ -7,17 +7,13 @@ import LeftTaskPane from 'components/LeftTaskPane';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 
 class TaskPane extends React.PureComponent {
-  componentDidMount() {
-    const { getTasks } = this.props;
-    getTasks();
-  }
-
   render() {
     const {
       className,
       dataLoadStatus,
       onSubTaskClick,
       selectedTaskId,
+      storeTaskFilter,
       tasks,
     } = this.props;
     return (
@@ -26,6 +22,7 @@ class TaskPane extends React.PureComponent {
         dataLoadStatus={dataLoadStatus}
         onSubTaskClick={onSubTaskClick}
         selectedTaskId={selectedTaskId}
+        storeTaskFilter={storeTaskFilter}
         tasks={tasks}
       />
     );
@@ -44,9 +41,9 @@ TaskPane.defaultProps = {
 TaskPane.propTypes = {
   className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
-  getTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
+  storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel),
 };
 
@@ -58,8 +55,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTasks: taskOperations.fetchTasks(dispatch),
   onSubTaskClick: taskOperations.fetchChecklist(dispatch),
+  storeTaskFilter: taskOperations.saveTaskFilter(dispatch),
 });
 
 const TaskPaneContainer = connect(mapStateToProps, mapDispatchToProps)(TaskPane);

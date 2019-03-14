@@ -4,11 +4,22 @@ import {
   GET_CHECKLIST_SAGA,
   GET_TASKS_SAGA,
   HANDLE_CHECKLIST_ITEM_CHANGE,
+  RESET_DATA,
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
+  STORE_PROCESS_DETAILS,
   STORE_TASKS,
+  STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
 } from './types';
+
+const storeProcessDetails = (processId, rootTaskId) => ({
+  type: STORE_PROCESS_DETAILS,
+  payload: {
+    processId,
+    rootTaskId,
+  },
+});
 
 const getNextChecklist = () => ({
   type: GET_NEXT_CHECKLIST,
@@ -25,10 +36,9 @@ const getChecklist = taskId => ({
   },
 });
 
-const getTasks = (taskId, depth = 3) => ({
+const getTasks = (depth = 3) => ({
   type: GET_TASKS_SAGA,
   payload: {
-    taskId,
     depth,
   },
 });
@@ -39,6 +49,10 @@ const handleChecklistItemChange = (id, value) => ({
     id,
     value,
   },
+});
+
+const resetChecklistData = () => ({
+  type: RESET_DATA,
 });
 
 const setSelectedChecklist = taskId => ({
@@ -53,6 +67,10 @@ const storeTasks = taskTree => ({
   payload: taskTree,
 });
 
+const storeTaskFilter = taskFilter => ({
+  type: STORE_TASK_FILTER,
+  payload: taskFilter,
+});
 const storeChecklistNavigation = navDataStructure => ({
   type: STORE_CHECKLIST_NAVIGATION,
   payload: navDataStructure,
@@ -68,8 +86,11 @@ export {
   getChecklist,
   getTasks,
   handleChecklistItemChange,
+  resetChecklistData,
   setSelectedChecklist,
   storeChecklistNavigation,
+  storeProcessDetails,
   storeTasks,
+  storeTaskFilter,
   toggleInstructions,
 };

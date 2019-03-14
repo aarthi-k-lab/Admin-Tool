@@ -1,6 +1,19 @@
 import * as R from 'ramda';
 
-const getTaskTree = state => R.propOr({ subTasks: [] }, 'taskTree', state.tasksAndChecklist);
+const getTaskFilter = R.path(['tasksAndChecklist', 'taskFilter']);
+
+const shouldDisplayAllTasks = filter => R.or(R.isNil(filter), R.isEmpty(filter));
+
+const getTaskTree = (state) => {
+  const filter = getTaskFilter(state);
+  const subTasks = R.pathOr([], ['tasksAndChecklist', 'taskTree', 'subTasks'], state);
+  const filteredSubTasks = shouldDisplayAllTasks(filter)
+    ? subTasks
+    : R.filter(R.propEq('state', filter), subTasks);
+  return {
+    subTasks: filteredSubTasks,
+  };
+};
 
 const getChecklistTitle = state => R.pathOr(
   '',
@@ -89,23 +102,41 @@ const shouldDisablePrev = (state) => {
   return R.isNil(prevChecklistId);
 };
 
-const shouldShowInstructions = R.pathOr(false, ['tasksAndChecklist', 'showInstructions']);
-
 const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'showInstructionsDialog']);
+
+const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
+
+const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
+
+const shouldShowDisposition = (state) => {
+  const hasDisposition = !R.isNil(
+    R.path(['tasksAndChecklist', 'taskTree', 'value', 'disposition'], state),
+  );
+  const hasInstructions = !R.isNil(
+    R.path(['tasksAndChecklist', 'taskTree', 'value', 'instructions'], state),
+  );
+  const shouldShow = R.or(hasDisposition, hasInstructions);
+  return shouldShow;
+};
+
+const getRootTaskId = R.pathOr('', ['tasksAndChecklist', 'rootTaskId']);
 
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
+  getDisposition,
   getTaskLoadStatus,
   getDirtyChecklistItemForSave,
   getChecklistTitle,
+  getInstructions,
   getNextChecklistId,
   getPrevChecklistId,
+  getRootTaskId,
   getSelectedChecklistId,
   getTaskTree,
   shouldDisableNext,
   shouldDisablePrev,
-  shouldShowInstructions,
+  shouldShowDisposition,
   shouldShowInstructionsDialog,
 };
 

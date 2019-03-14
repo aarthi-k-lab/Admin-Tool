@@ -19,7 +19,7 @@ import {
   ASSIGN_LOAN_RESULT,
   HIDE_ASSIGN_UNASSIGN,
   CLEAR_BE_DISPOSITION,
-  GROUP_NAME, SAVE_LOANNUMBER_PROCESSID,
+  GROUP_NAME,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -170,29 +170,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition,
       };
     }
-    case SAVE_EVALID_LOANNUMBER || SAVE_LOANNUMBER_PROCESSID: {
+    case SAVE_EVALID_LOANNUMBER: {
       const newState = {
         ...state,
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
-        processId: action.payload.piid,
-        processStatus: action.payload.pstatus,
-        showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
-        taskFetchError: false,
-        notasksFound: false,
-        isAssigned: !action.payload.isSearch,
-      };
-      return newState;
-    }
-
-    case SAVE_LOANNUMBER_PROCESSID: {
-      const newState = {
-        ...state,
-        evalId: action.payload.evalId,
-        loanNumber: action.payload.loanNumber,
-        taskId: action.payload.taskId,
-        processId: action.payload.piid,
+        processId: action.payload.wfProcessId,
         processStatus: action.payload.pstatus,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
