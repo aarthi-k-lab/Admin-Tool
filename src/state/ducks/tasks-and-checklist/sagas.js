@@ -105,12 +105,12 @@ const createChecklistNavigation = R.compose(
 
 function* getTasks(action) {
   try {
-    // eslint-disable-next-line
-    const { payload: { taskId, depth } } = action;
+    const { payload: { depth } } = action;
     yield put({
       type: LOADING_TASKS,
     });
-    const response = yield call(Api.callGet, `/api/task-engine/task/${'5c875ed5a56a7f42aa7d80df'}?depth=${depth}`);
+    const rootTaskId = yield select(selectors.getRootTaskId);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -208,7 +208,7 @@ function* handleChecklistItemChange(action) {
       callAndPut(actions.getChecklist, selectedChecklistId),
     ]);
     // #TODO add the actual rootTaskId instead of null
-    yield put(yield call(actions.getTasks, null, 3));
+    yield put(yield call(actions.getTasks));
   } catch (e) {
     yield call(handleSaveChecklistError, e);
   }
