@@ -3,3 +3,7 @@
   background-color: var(--grey-200);
   justify-content: flex-start;
 }
+
+.notif {
+  width: 50%;
+}

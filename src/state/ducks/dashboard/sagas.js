@@ -20,6 +20,7 @@ import {
   GET_NEXT,
   SET_EXPAND_VIEW,
   SET_EXPAND_VIEW_SAGA,
+  VALIDATE_DISPOSITION_SAGA,
   SAVE_DISPOSITION_SAGA,
   SAVE_DISPOSITION,
   SAVE_EVALID_LOANNUMBER,
@@ -38,6 +39,8 @@ import {
   UNASSIGN_LOAN,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
+  SET_GET_NEXT_STATUS,
+  USER_NOTIF_MSG,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -45,6 +48,18 @@ import {
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
+
+const appGroupNameToUserPersonaMap = {
+  'feuw-task-checklist': 'FEUW',
+};
+
+function getUserPersona(appGroupName) {
+  const persona = appGroupNameToUserPersonaMap[appGroupName];
+  if (persona === undefined) {
+    return appGroupName;
+  }
+  return persona;
+}
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -119,12 +134,44 @@ const selectEval = function* selectEval(loanNumber) {
 function* watchTombstoneLoan() {
   yield takeEvery(SAVE_EVALID_LOANNUMBER, selectEval);
 }
+
+const validateDisposition = function* validateDiposition(dispositionPayload) {
+  try {
+    yield put({ type: SHOW_SAVING_LOADER });
+    const payload = R.propOr({}, 'payload', dispositionPayload);
+    const disposition = R.propOr({}, 'dispositionReason', payload);
+    const group = getUserPersona(R.propOr({}, 'group', payload));
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const response = yield call(Api.callGet, `/api/disposition/validate-disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: response.enableGetNext,
+    });
+    if (!response.enableGetNext) {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: response.discrepancies,
+      });
+    } else {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: null,
+      });
+    }
+  } catch (e) {
+    yield put({ type: HIDE_SAVING_LOADER });
+  }
+};
+
 const saveDisposition = function* setDiposition(dispositionPayload) {
   try {
     yield put({ type: SHOW_SAVING_LOADER });
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
-    const group = R.propOr({}, 'group', payload);
+    const group = getUserPersona(R.propOr({}, 'group', payload));
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
@@ -146,6 +193,16 @@ function* watchDispositionSave() {
     payload = yield take(SAVE_DISPOSITION_SAGA);
     if (payload) {
       yield fork(saveDisposition, payload);
+    }
+  }
+}
+
+function* watchValidateDispositon() {
+  let payload;
+  while (true) {
+    payload = yield take(VALIDATE_DISPOSITION_SAGA);
+    if (payload) {
+      yield fork(validateDisposition, payload);
     }
   }
 }
@@ -325,6 +382,7 @@ export const TestExports = {
   watchTombstoneLoan,
   watchUnassignLoan,
   watchAssignLoan,
+  watchValidateDispositon,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -338,5 +396,6 @@ export const combinedSaga = function* combinedSaga() {
     watchTombstoneLoan(),
     watchUnassignLoan(),
     watchAssignLoan(),
+    watchValidateDispositon(),
   ]);
 };

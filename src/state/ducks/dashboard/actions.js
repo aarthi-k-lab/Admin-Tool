@@ -17,6 +17,7 @@ import {
   CLEAR_BE_DISPOSITION,
   GROUP_NAME,
   SAVE_LOANNUMBER_PROCESSID,
+  VALIDATE_DISPOSITION_SAGA,
 } from './types';
 
 
@@ -32,6 +33,11 @@ const autoSave = taskStatus => ({
 
 const dispositionSave = dispositionPayload => ({
   type: SAVE_DISPOSITION_SAGA,
+  payload: dispositionPayload,
+});
+
+const validateDisposition = dispositionPayload => ({
+  type: VALIDATE_DISPOSITION_SAGA,
   payload: dispositionPayload,
 });
 
@@ -124,4 +130,5 @@ export {
   postComment,
   clearBEDisposition,
   getGroupName,
+  validateDisposition,
 };

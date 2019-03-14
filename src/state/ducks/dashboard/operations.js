@@ -15,12 +15,17 @@ import {
   postComment,
   clearBEDisposition,
   getGroupName,
+  validateDisposition,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
 const onDispositionSave = dispatch => (dispositionPayload) => {
   dispatch(dispositionSave(dispositionPayload));
+};
+
+const validateDispositionTrigger = dispatch => (dispositionPayload) => {
+  dispatch(validateDisposition(dispositionPayload));
 };
 
 const onPostComment = dispatch => (commentsPayload) => {
@@ -94,6 +99,7 @@ const operations = {
   onPostComment,
   onClearBEDisposition,
   onGetGroupName,
+  validateDispositionTrigger,
 };
 
 export default operations;
