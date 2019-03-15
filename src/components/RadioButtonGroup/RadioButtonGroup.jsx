@@ -1,30 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
-import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
+import FormControlLabelWithTooltip from './FormControlLabelWithTooltip';
 import styles from './RadioButtonGroup.css';
-
-class FormControlWithTooltip extends FormControlLabel {
-  render() {
-    const { tooltip } = this.props;
-    return (
-      <Tooltip
-        classes={{
-          tooltip: styles.tooltip,
-        }}
-        disableFocusListener
-        disableTouchListener
-        placement="right"
-        title={tooltip}
-      >
-        {super.render()}
-      </Tooltip>
-    );
-  }
-}
 
 class RadioButtonGroup extends React.PureComponent {
   constructor(props) {
@@ -47,7 +27,7 @@ class RadioButtonGroup extends React.PureComponent {
     const { disableDisposition } = this.props;
     const label = <span>{item.value}</span>;
     return (
-      <FormControlWithTooltip
+      <FormControlLabelWithTooltip
         key={item.key}
         classes={{
           label: styles.label,
