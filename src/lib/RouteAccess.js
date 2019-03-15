@@ -42,6 +42,13 @@ const feuwTasksAndChecklist = {
   groups: ['allaccess'],
 };
 
+const trail = {
+  path: '/trail',
+  name: 'trail',
+  img: '/static/img/settings.svg',
+  groups: ['allaccess'],
+};
+
 const links = [
   managerDashboard,
   frontendUnderwriter,
@@ -49,6 +56,7 @@ const links = [
   stager,
   moveForward,
   feuwTasksAndChecklist,
+  trail,
 ];
 
 function hasGroup(requiredGroups, userGroups) {

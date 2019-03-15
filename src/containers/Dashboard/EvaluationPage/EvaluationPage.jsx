@@ -10,6 +10,7 @@ import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
 import './EvaluationPage.css';
+import Trail from 'containers/Trail';
 
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
@@ -37,7 +38,8 @@ class EvaluationPage extends React.PureComponent {
         </ContentHeader>
         <Tombstone />
         <FullHeightColumn styleName="columns-container">
-          { this.renderDashboard() }
+          {/* { this.renderDashboard() } */}
+          <Trail />
         </FullHeightColumn>
       </>
     );

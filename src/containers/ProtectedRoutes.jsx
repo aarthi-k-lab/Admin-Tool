@@ -24,6 +24,7 @@ import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
+import Trail from './Trail';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -122,6 +123,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/backend-evaluation" render={this.renderBackendRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
+          <Route exact path="/trail" render={() => <Trail />} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
