@@ -284,17 +284,17 @@ function* getNext(action) {
     } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
       yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
       yield put(errorTombstoneFetch());
-      yield errorFetchingChecklistDetails();
+      yield call(errorFetchingChecklistDetails);
     } else {
       yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
       yield put(errorTombstoneFetch());
-      yield errorFetchingChecklistDetails();
+      yield call(errorFetchingChecklistDetails);
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
     yield put(errorTombstoneFetch());
-    yield errorFetchingChecklistDetails();
+    yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
   }
 }
@@ -376,6 +376,7 @@ function* watchAssignLoan() {
 export const TestExports = {
   autoSaveOnClose,
   endShift,
+  errorFetchingChecklistDetails,
   fetchChecklistDetails,
   saveDisposition,
   setExpandView,
