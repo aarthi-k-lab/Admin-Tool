@@ -15,7 +15,7 @@ import DispositionModel from 'models/Disposition';
 import UserNotification from 'components/UserNotification/UserNotification';
 import Center from 'components/Center';
 import './EvaluationPage.css';
-import Trail from 'containers/Trail';
+// import Trail from 'containers/Trail';
 
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
@@ -55,8 +55,7 @@ class EvaluationPage extends React.PureComponent {
         </ContentHeader>
         <Tombstone />
         <FullHeightColumn styleName="columns-container">
-          {/* { this.renderDashboard() } */}
-          <Trail />
+          { this.renderDashboard() }
         </FullHeightColumn>
       </>
     );
