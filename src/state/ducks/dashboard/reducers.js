@@ -20,10 +20,24 @@ import {
   HIDE_ASSIGN_UNASSIGN,
   CLEAR_BE_DISPOSITION,
   GROUP_NAME,
+  SET_GET_NEXT_STATUS,
+  USER_NOTIF_MSG,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
+    case SET_GET_NEXT_STATUS: {
+      return {
+        ...state,
+        showGetNext: action.payload,
+      };
+    }
+    case USER_NOTIF_MSG: {
+      return {
+        ...state,
+        checklistDiscrepancies: action.payload,
+      };
+    }
     case CLEAR_DISPOSITION: {
       const newState = {
         ...state,

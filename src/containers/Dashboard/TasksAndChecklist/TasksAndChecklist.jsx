@@ -7,12 +7,21 @@ import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
-import Controls from './Controls';
+import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
+  validate() {
+    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
+    const payload = {
+      dispositionReason: dispositionCode,
+      group: groupName,
+    };
+    validateDispositionTrigger(payload);
+  }
+
   renderChecklist() {
     const {
       checklistItems,
@@ -65,9 +74,6 @@ class TasksAndChecklist extends React.PureComponent {
           styleName="instructions"
           title="Disposition"
         />
-        <Controls
-          className={classNames(styles.footer, styles.controls)}
-        />
         <Navigation
           className={classNames(styles.footer, styles.navigation)}
           disableNext={disableNext}
@@ -100,6 +106,8 @@ TasksAndChecklist.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
+  dispositionCode: PropTypes.string.isRequired,
+  groupName: PropTypes.string.isRequired,
   instructions: PropTypes.string.isRequired,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
@@ -107,16 +115,19 @@ TasksAndChecklist.propTypes = {
   onPrev: PropTypes.func.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
+  validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     disposition: selectors.getDisposition(state),
+    dispositionCode: selectors.getDispositionCode(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
+    groupName: dashboardSelectors.groupName(state),
     instructions: selectors.getInstructions(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
@@ -126,6 +137,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
+    validateDispositionTrigger: dashboardOperations.validateDispositionTrigger(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),

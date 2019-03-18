@@ -22,6 +22,7 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
 } from './types';
+import { SET_GET_NEXT_STATUS } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
 } from '../notifications/types';
@@ -191,6 +192,10 @@ function* handleChecklistItemChange(action) {
     yield put({
       type: STORE_CHECKLIST_ITEM_CHANGE,
       payload: action.payload,
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
     });
     const saveTask = yield select(selectors.getDirtyChecklistItemForSave);
     if (R.isNil(saveTask)) {

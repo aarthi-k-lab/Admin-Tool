@@ -9,6 +9,11 @@ import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { selectors } from 'ducks/dashboard';
+import DispositionModel from 'models/Disposition';
+import UserNotification from 'components/UserNotification/UserNotification';
+import Center from 'components/Center';
 import './EvaluationPage.css';
 
 class EvaluationPage extends React.PureComponent {
@@ -25,14 +30,26 @@ class EvaluationPage extends React.PureComponent {
   }
 
   render() {
-    const { location } = this.props;
+    const { location, message } = this.props;
     const title = location.pathname === '/backend-evaluation' ? 'UNDERWRITING' : 'Income Calculation';
     return (
       <>
         <ContentHeader title={title}>
+          {message && message.length ? (
+            <Center>
+              <span styleName="notif">
+                <UserNotification
+                  level="error"
+                  message={message}
+                  type="alert-box"
+                />
+              </span>
+            </Center>
+          ) : null}
           <Controls
             showEndShift
             showGetNext
+            showValidate
           />
         </ContentHeader>
         <Tombstone />
@@ -46,6 +63,7 @@ class EvaluationPage extends React.PureComponent {
 
 EvaluationPage.defaultProps = {
   group: 'FEUW',
+  message: null,
 };
 
 EvaluationPage.propTypes = {
@@ -53,12 +71,19 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  message: PropTypes.string,
 };
+
+const mapStateToProps = state => ({
+  message: DispositionModel.getErrorMessages(
+    selectors.getChecklistDiscrepancies(state),
+  ),
+});
 
 const TestHooks = {
   EvaluationPage,
 };
 
-export default withRouter(EvaluationPage);
+export default connect(mapStateToProps, null)(withRouter(EvaluationPage));
 
 export { TestHooks };

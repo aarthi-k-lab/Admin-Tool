@@ -5,7 +5,10 @@ import Button from '@material-ui/core/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import styles from './Controls.css';
 
-function Controls({ className, disableValidation }) {
+function Controls({
+  className, controlAction,
+  disableValidation, label,
+}) {
   return (
     <div className={classNames(className)}>
       <Button
@@ -14,9 +17,10 @@ function Controls({ className, disableValidation }) {
         }}
         color="primary"
         disabled={disableValidation}
+        onClick={controlAction}
       >
         <CheckIcon />
-        Validate
+        {label}
       </Button>
     </div>
   );
@@ -29,7 +33,9 @@ Controls.defaultProps = {
 
 Controls.propTypes = {
   className: PropTypes.string,
+  controlAction: PropTypes.func.isRequired,
   disableValidation: PropTypes.bool,
+  label: PropTypes.string.isRequired,
 };
 
 export default Controls;
