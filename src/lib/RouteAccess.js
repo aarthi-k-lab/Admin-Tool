@@ -21,6 +21,13 @@ const moveForward = {
   groups: ['util-mgr', 'allaccess'],
 };
 
+const docProcessor = {
+  path: '/doc-processor',
+  name: 'doc-processor',
+  img: '/static/img/docprocessor.svg',
+  groups: ['feuw', 'feuw-mgr'],
+};
+
 const frontendUnderwriter = {
   path: '/frontend-evaluation',
   name: 'frontend-evaluation',
@@ -44,6 +51,7 @@ const feuwTasksAndChecklist = {
 
 const links = [
   managerDashboard,
+  docProcessor,
   frontendUnderwriter,
   backendUnderwriter,
   stager,
