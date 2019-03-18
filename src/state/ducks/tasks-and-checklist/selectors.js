@@ -106,6 +106,8 @@ const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'show
 
 const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
 
+const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
+
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
 
 const shouldShowDisposition = (state) => {
@@ -125,6 +127,7 @@ const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
   getDisposition,
+  getDispositionCode,
   getTaskLoadStatus,
   getDirtyChecklistItemForSave,
   getChecklistTitle,
