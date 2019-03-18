@@ -1,70 +1,71 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import './TrailDetails.css';
-import CardCreator from 'containers/Dashboard/BackEndDisposition/CardCreator';
+// import CardCreator from 'containers/Dashboard/BackEndDisposition/CardCreator';
+import Grid from '@material-ui/core/Grid';
 
-const items = [
-  {
-    id: 'ID1',
-    name: 'N1',
-    activities: [{ id: 'I1', activityName: 'AN1', verbiage: 'V1' }],
-    labelDisplay: 'LD1',
-    expanded: false,
-  },
-  {
-    id: 'ID2',
-    name: 'N2',
-    activities: [{ id: 'I2', activityName: 'AN2', verbiage: 'V2' }],
-    labelDisplay: 'LD2',
-    expanded: false,
-  },
-];
+// const items = [
+//   {
+//     id: 'ID1',
+//     name: 'N1',
+//     activities: [{ id: 'I1', activityName: 'AN1', verbiage: 'V1' }],
+//     labelDisplay: 'LD1',
+//     expanded: false,
+//   },
+//   {
+//     id: 'ID2',
+//     name: 'N2',
+//     activities: [{ id: 'I2', activityName: 'AN2', verbiage: 'V2' }],
+//     labelDisplay: 'LD2',
+//     expanded: false,
+//   },
+// ];
+class TrailDetails extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.renderDetailsCard = this.renderDetailsCard.bind(this);
+  }
 
-
-const TrailDetails = ({ details }) => (
-  <div>
-    <Card>
-      <CardContent>
-        <div styleName="trail-detail">
-          <Typography color="textSecondary" gutterBottom>
-            Trail Letter Sent On
-            <div styleName="field-value">{details.sentOn}</div>
-          </Typography>
-          <div styleName="inner-columns">
-            <Typography color="textSecondary" gutterBottom>
-              Acceptance Date
-              <div styleName="field-value">{details.acceptanceDate}</div>
-            </Typography>
-            <Typography color="textSecondary" gutterBottom>
-              DownPayment
-              <div styleName="field-value">{details.downPayment}</div>
-            </Typography>
-            <Typography color="textSecondary" gutterBottom>
-              FHA Trail Letter Received
-              <div styleName="field-value">{details.receivedDate}</div>
-            </Typography>
-          </div>
+  renderDetailsCard() {
+    const { details } = this.props;
+    return (
+      <div styleName="parent">
+        <div styleName="title-style">
+          {details.title}
         </div>
-      </CardContent>
-    </Card>
-    <button
-      styleName="OperateButton"
-      type="submit"
-    >
-      Expand ALL
-    </button>
-    {items.map(m => (
-      <CardCreator
-        status={m}
-      />
-    ))}
-  </div>
-);
+        <br />
+        <div styleName="card">
+          <Card>
+            <CardContent>
+              <Grid container spacing={24} styleName="header-Name">
+                {details.trailDetails.map(detail => (
+                  <Grid item xs={3}>
+                    <span styleName="header-style">{detail.columnName}</span>
+                    <br />
+                    <br />
+                    <span styleName="value-style">{detail.columnValue}</span>
+                  </Grid>
+                ))
+                }
+              </Grid>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
+  render() {
+    return (
+      this.renderDetailsCard()
+    );
+  }
+}
 
 TrailDetails.propTypes = {
   details: PropTypes.shape({

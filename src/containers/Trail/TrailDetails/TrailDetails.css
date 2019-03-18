@@ -1,19 +1,25 @@
-.trail-detail{
-    display: flex;
+.parent{
+    width:inherit;
 }
-div.trail-detail *{
+.header-Name{
+    text-align: center;
+}
+.header-style{
     font-size: 12pt;
     font-family: "Lato", sans-serif;
     color: #707479;
 }
-.inner-columns{
-    display: flex;
-}
-.inner-columns > p{
-    padding-left: 2rem;
-}
-.field-value{
+.value-style{
     font-weight: bold;
-    color: #333940 !important;
+    color: #333940;
     margin-top: 0.5rem;
+}
+.title-style{
+    font-size: 16pt;
+    font-family: "Lato", sans-serif;
+    color: #707479;
+    font-weight: bold;
+}
+.card{
+    box-shadow: 3px 1px 10px 3px rgba(0, 0, 0, 0.2);
 }
