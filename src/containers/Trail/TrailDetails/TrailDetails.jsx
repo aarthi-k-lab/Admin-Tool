@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import './TrailDetails.css';
 // import CardCreator from 'containers/Dashboard/BackEndDisposition/CardCreator';
 import Grid from '@material-ui/core/Grid';
+import ExpandPanel from './ExpandPanel';
 
 // const items = [
 //   {
@@ -42,7 +43,7 @@ class TrailDetails extends React.PureComponent {
         <div styleName="card">
           <Card>
             <CardContent>
-              <Grid container spacing={24} styleName="header-Name">
+              <Grid container styleName="header-Name">
                 {details.trailDetails.map(detail => (
                   <Grid item xs={3}>
                     <span styleName="header-style">{detail.columnName}</span>
@@ -55,6 +56,9 @@ class TrailDetails extends React.PureComponent {
               </Grid>
             </CardContent>
           </Card>
+        </div>
+        <div>
+          <ExpandPanel />
         </div>
       </div>
     );
