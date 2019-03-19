@@ -1,6 +1,5 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import FullHeightColumn from 'components/FullHeightColumn';
 import Grid from '@material-ui/core/Grid';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TrailDetails from './TrailDetails';
@@ -24,32 +23,75 @@ const details = {
   }],
 };
 
+const navigationList = [
+  {
+    header: 'Trail Period',
+    assignee: 'Prasad',
+    status: 'FAILED',
+    statusDate: '11/10/2018',
+    startDate: '07/08/2018',
+    endDate: '09/10/2017',
+    expectedCompletionDate: '02/04/2019',
+  },
+  {
+    header: 'Back End UnderWriting',
+    assignee: 'David Hook',
+    status: 'COMPLETED',
+    statusDate: '11/10/2018',
+    startDate: '07/08/2018',
+    endDate: '09/10/2017',
+    expectedCompletionDate: '02/04/2019',
+    child: [{
+      header: 'Legal fees',
+      assignee: 'Prasad',
+      status: 'TO ORDER',
+      statusDate: '11/10/2018',
+    }, {
+      header: 'Value',
+      assignee: 'Prasad',
+      status: 'ORDERED',
+      statusDate: '11/10/2018',
+    }, {
+      header: 'Escrow',
+      assignee: 'Willam White',
+      status: 'TO ORDER',
+      statusDate: '26/08/2018',
+    }],
+  }, {
+    header: 'Front End UnderWriting',
+    assignee: 'Sudhan',
+    status: 'COMPLETED',
+    statusDate: '11/10/2018',
+    startDate: '07/08/2018',
+    endDate: '09/10/2017',
+    expectedCompletionDate: '02/04/2019',
+  },
+];
+
 class Trail extends React.PureComponent {
   render() {
     return (
-      <div>
+      <div styleName="columns-container">
         <Tombstone />
-        <FullHeightColumn>
-          <div styleName="parent">
-            <Grid container spacing={24}>
-              <Grid item xs={3}>
-                <div styleName="navigation-pane">
-                  <Navigation />
-                </div>
-              </Grid>
-              <Grid item xs={6}>
-                <div styleName="detail-parent">
-                  <TrailDetails details={details} />
-                </div>
-              </Grid>
-              <Grid item xs={3}>
-                <div>
-                  Download Pane
-                </div>
-              </Grid>
+        <div styleName="parent">
+          <Grid container>
+            <Grid item xs={3}>
+              <div styleName="navigation-pane">
+                <Navigation navigationList={navigationList} />
+              </div>
             </Grid>
-          </div>
-        </FullHeightColumn>
+            <Grid item xs={6}>
+              <div styleName="detail-parent">
+                <TrailDetails details={details} />
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <div styleName="navigation-pane">
+                Custom Communication Letter
+              </div>
+            </Grid>
+          </Grid>
+        </div>
       </div>
     );
   }
