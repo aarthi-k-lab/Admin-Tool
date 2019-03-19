@@ -137,7 +137,7 @@ class Disposition extends Component {
     const { activityName } = selectedDisposition;
     const groups = user && user.groupList;
     let level = 'error';
-    let message = '';
+    let message = null;
 
     if (errorMessages.length > 0) {
       message = errorMessages.reduce(
