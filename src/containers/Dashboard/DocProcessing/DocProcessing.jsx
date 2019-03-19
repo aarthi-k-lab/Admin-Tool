@@ -6,7 +6,7 @@ import Disposition from '../Disposition';
 import getStatus from './statusList';
 import { selectors } from '../../../state/ducks/dashboard';
 
-class BackEndDisposition extends Component {
+class DocProcessing extends Component {
   constructor(props) {
     super(props);
     this.saveValidation = this.saveValidation.bind(this);
@@ -30,7 +30,7 @@ class BackEndDisposition extends Component {
   }
 }
 
-BackEndDisposition.defaultProps = {
+DocProcessing.defaultProps = {
   selectedDisposition: {
     cardStatus: {
       Name: '',
@@ -38,7 +38,7 @@ BackEndDisposition.defaultProps = {
     },
   },
 };
-BackEndDisposition.propTypes = {
+DocProcessing.propTypes = {
   selectedDisposition: PropTypes.shape({
     activityName: PropTypes.string,
     cardStatus: PropTypes.shape({
@@ -69,11 +69,11 @@ const mapStateToProps = state => ({
   showAssign: selectors.showAssign(state),
 });
 
-const BackEndDispositionContainer = connect(mapStateToProps, null)(BackEndDisposition);
+const DocProcessingContainer = connect(mapStateToProps, null)(DocProcessing);
 const TestHooks = {
-  BackEndDisposition,
+  DocProcessing,
 };
-export default BackEndDispositionContainer;
+export default DocProcessingContainer;
 export {
   TestHooks,
 };

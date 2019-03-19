@@ -1,5 +1,5 @@
 import BackendDisposition from './BackEndDisposition';
-import CardCreatorContainer from './CardCreator';
+import CardCreatorContainer from '../Disposition/CardCreator';
 
 export {
   BackendDisposition,

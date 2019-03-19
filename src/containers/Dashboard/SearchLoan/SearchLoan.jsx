@@ -63,6 +63,7 @@ class SearchLoan extends React.PureComponent {
     const { onSelectEval } = this.props;
     if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
+      // TO-DO
       this.redirectPath = payload.taskName === 'Underwriting' ? '/backend-evaluation' : '/frontend-evaluation';
       this.setState({ isRedirect: true });
     }
