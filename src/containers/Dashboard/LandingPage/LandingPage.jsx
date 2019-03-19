@@ -4,12 +4,13 @@ import Controls from 'containers/Controls';
 import FullHeightColumn from 'components/FullHeightColumn';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import DashboardModel from 'models/Dashboard';
 import './LandingPage.css';
 
 class LandingPage extends React.PureComponent {
   renderTitle() {
     const { location } = this.props;
-    return (location.pathname === '/frontend-evaluation') ? 'Income Calculation' : 'Underwriting';
+    return DashboardModel.getTitle(location.pathname);
   }
 
   render() {

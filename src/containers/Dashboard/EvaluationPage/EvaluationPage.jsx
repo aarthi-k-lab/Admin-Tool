@@ -31,7 +31,7 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const { location, message } = this.props;
-    const title = location.pathname === '/backend-evaluation' ? 'UNDERWRITING' : 'Income Calculation';
+    const title = DashboardModel.getTitle(location.pathname);
     return (
       <>
         <ContentHeader title={title}>
