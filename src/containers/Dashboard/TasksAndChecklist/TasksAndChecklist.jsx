@@ -26,6 +26,35 @@ class TasksAndChecklist extends React.PureComponent {
     validateDispositionTrigger(payload);
   }
 
+  renderTaskErrorMessage() {
+    const { noTasksFound, taskFetchError } = this.props;
+    const warningMessage = 'No tasks assigned.Please contact your manager';
+    if (taskFetchError) {
+      const errorMessage = 'Task Fetch Failed.Please try again Later';
+      return (
+        <div styleName="notificationMsg">
+          <UserNotification
+            level="error"
+            message={errorMessage}
+            type="alert-box"
+          />
+        </div>
+      );
+    }
+    if (noTasksFound) {
+      return (
+        <div styleName="notificationMsg">
+          <UserNotification
+            level="error"
+            message={warningMessage}
+            type="alert-box"
+          />
+        </div>
+      );
+    }
+    return null;
+  }
+
   renderChecklist() {
     const {
       checklistItems,
@@ -70,16 +99,21 @@ class TasksAndChecklist extends React.PureComponent {
       disablePrev,
       disposition,
       inProgress,
+      noTasksFound,
       onNext,
       onPrev,
       onInstuctionDialogToggle,
       showDisposition,
       showInstructionsDialog,
+      taskFetchError,
     } = this.props;
     if (inProgress) {
       return (
         <Loader message="Please Wait" />
       );
+    }
+    if (noTasksFound || taskFetchError) {
+      return this.renderTaskErrorMessage();
     }
     return (
       <section styleName="tasks-and-checklist">
@@ -114,6 +148,8 @@ const MULTILINE_TEXT = 'multiline-text';
 TasksAndChecklist.defaultProps = {
   inProgress: false,
   message: null,
+  noTasksFound: false,
+  taskFetchError: false,
 };
 
 TasksAndChecklist.propTypes = {
@@ -138,12 +174,14 @@ TasksAndChecklist.propTypes = {
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   message: PropTypes.string,
+  noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
+  taskFetchError: PropTypes.bool,
   validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
@@ -162,8 +200,10 @@ function mapStateToProps(state) {
     message: DispositionModel.getErrorMessages(
       dashboardSelectors.getChecklistDiscrepancies(state),
     ),
+    noTasksFound: dashboardSelectors.noTasksFound(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
+    taskFetchError: dashboardSelectors.taskFetchError(state),
   };
 }
 

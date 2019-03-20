@@ -18,6 +18,13 @@
   padding: 0.5rem 1.5rem;
 }
 
+.notificationMsg.notificationMsg {
+  align-items: center;
+  display: grid;
+  justify-content: center;
+  width: 100%;
+}
+
 .loader {
   align-self: center;
   grid-column: 1 / 3;

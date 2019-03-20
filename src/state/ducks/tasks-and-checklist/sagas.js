@@ -123,7 +123,11 @@ function* getTasks(action) {
     }
     const checklistNavigation = yield call(createChecklistNavigation, response);
     const checklistNavAction = yield call(actions.storeChecklistNavigation, checklistNavigation);
-    const selectedChecklistId = R.pathOr('', ['nothing', 'next'], checklistNavigation);
+    const checklistSelectionIsPresent = yield select(selectors.getSelectedChecklistId);
+    let selectedChecklistId = null;
+    if (checklistSelectionIsPresent === 'nothing') {
+      selectedChecklistId = R.pathOr('', ['nothing', 'next'], checklistNavigation);
+    }
     if (selectedChecklistId) {
       yield all([
         callAndPut(actions.setSelectedChecklist, selectedChecklistId),
