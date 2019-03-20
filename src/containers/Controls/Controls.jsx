@@ -22,8 +22,11 @@ class Controls extends React.PureComponent {
   }
 
   handlegetNext() {
-    const { onGetNext, groupName } = this.props;
-    onGetNext(groupName);
+    const {
+      onGetNext, groupName,
+      isFirstVisit, dispositionCode,
+    } = this.props;
+    onGetNext({ appGroupName: groupName, isFirstVisit, dispositionCode });
   }
 
   validateDisposition() {
@@ -83,6 +86,7 @@ class Controls extends React.PureComponent {
 Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
+  isFirstVisit: true,
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
@@ -97,6 +101,7 @@ Controls.propTypes = {
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
+  isFirstVisit: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -124,6 +129,7 @@ const mapStateToProps = state => ({
   enableEndShift: selectors.enableEndShift(state),
   enableGetNext: selectors.enableGetNext(state),
   dispositionCode: checklistSelectors.getDispositionCode(state),
+  isFirstVisit: selectors.isFirstVisit(state),
   showAssign: selectors.showAssign(state),
   showDisposition: checklistSelectors.shouldShowDisposition(state),
   user: loginSelectors.getUser(state),

@@ -92,6 +92,10 @@ const getPrevChecklistId = (state) => {
   );
 };
 
+const getFirstTaskId = (state) => {
+  R.pathOr('-', ['tasksAndChecklist', 'checklistNavigation', 'nothing', 'next'], state);
+};
+
 const shouldDisableNext = (state) => {
   const nextChecklistId = getNextChecklistId(state);
   return R.isNil(nextChecklistId);
@@ -140,6 +144,7 @@ const selectors = {
   shouldDisableNext,
   shouldDisablePrev,
   shouldShowDisposition,
+  getFirstTaskId,
   shouldShowInstructionsDialog,
 };
 

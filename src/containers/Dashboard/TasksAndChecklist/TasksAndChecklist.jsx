@@ -6,10 +6,14 @@ import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
+import Loader from 'components/Loader/Loader';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
+import UserNotification from 'components/UserNotification/UserNotification';
+import DispositionModel from 'models/Disposition';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
+import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
@@ -27,6 +31,7 @@ class TasksAndChecklist extends React.PureComponent {
       checklistItems,
       checklistTitle,
       dataLoadStatus,
+      message,
       onChecklistChange,
     } = this.props;
     if (dataLoadStatus === 'loading') {
@@ -44,7 +49,17 @@ class TasksAndChecklist extends React.PureComponent {
         onChange={onChecklistChange}
         styleName="checklist"
         title={checklistTitle}
-      />
+      >
+        {message && message.length ? (
+          <span styleName="notif">
+            <UserNotification
+              level="error"
+              message={message}
+              type="alert-box"
+            />
+          </span>
+        ) : null}
+      </Checklist>
     );
   }
 
@@ -54,12 +69,18 @@ class TasksAndChecklist extends React.PureComponent {
       disableNext,
       disablePrev,
       disposition,
+      inProgress,
       onNext,
       onPrev,
       onInstuctionDialogToggle,
       showDisposition,
       showInstructionsDialog,
     } = this.props;
+    if (inProgress) {
+      return (
+        <Loader message="Please Wait" />
+      );
+    }
     return (
       <section styleName="tasks-and-checklist">
         <TaskPane styleName="tasks" />
@@ -74,6 +95,7 @@ class TasksAndChecklist extends React.PureComponent {
           styleName="instructions"
           title="Disposition"
         />
+        <WidgetBuilder styleName="task-checklist" />
         <Navigation
           className={classNames(styles.footer, styles.navigation)}
           disableNext={disableNext}
@@ -88,6 +110,11 @@ class TasksAndChecklist extends React.PureComponent {
 
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
+
+TasksAndChecklist.defaultProps = {
+  inProgress: false,
+  message: null,
+};
 
 TasksAndChecklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
@@ -108,7 +135,9 @@ TasksAndChecklist.propTypes = {
   disposition: PropTypes.string.isRequired,
   dispositionCode: PropTypes.string.isRequired,
   groupName: PropTypes.string.isRequired,
+  inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
+  message: PropTypes.string,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
@@ -128,7 +157,11 @@ function mapStateToProps(state) {
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
     groupName: dashboardSelectors.groupName(state),
+    inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
+    message: DispositionModel.getErrorMessages(
+      dashboardSelectors.getChecklistDiscrepancies(state),
+    ),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
   };

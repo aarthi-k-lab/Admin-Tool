@@ -60,6 +60,11 @@ function* getChecklist(action) {
   }
 }
 
+
+function* callAndPut(fn, ...args) {
+  return yield put(yield call(fn, ...args));
+}
+
 function createNavigationDataStructureIter(ids, prev) {
   const id = R.head(ids);
   const next = R.head(R.tail(ids));
@@ -118,6 +123,13 @@ function* getTasks(action) {
     }
     const checklistNavigation = yield call(createChecklistNavigation, response);
     const checklistNavAction = yield call(actions.storeChecklistNavigation, checklistNavigation);
+    const selectedChecklistId = R.pathOr('', ['nothing', 'next'], checklistNavigation);
+    if (selectedChecklistId) {
+      yield all([
+        callAndPut(actions.setSelectedChecklist, selectedChecklistId),
+        callAndPut(actions.getChecklist, selectedChecklistId),
+      ]);
+    }
     yield put(checklistNavAction);
     yield put({
       type: STORE_TASKS,
@@ -155,10 +167,6 @@ function* getPrevChecklist() {
   if (R.not(R.isNil(prevChecklistId))) {
     yield call(navigateChecklist, prevChecklistId);
   }
-}
-
-function* callAndPut(fn, ...args) {
-  return yield put(yield call(fn, ...args));
 }
 
 function* showLoaderOnSave() {

@@ -243,12 +243,35 @@ function getCommentPayload(taskDetails) {
   };
 }
 
-function* fetchChecklistDetails(taskDetails, appGroupName) {
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+function* fetchChecklistDetails(taskDetails, payload) {
+  if (!AppGroupName.shouldGetChecklist(payload.appGroupName)) {
     return;
   }
+  let response = null;
   const checklistId = getChecklistId(taskDetails);
-  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  if (!payload.isFirstVisit) {
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const group = getUserPersona(payload.appGroupName);
+    const disposition = payload.dispositionCode;
+    const saveResponse = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: saveResponse.enableGetNext,
+    });
+    if (saveResponse.enableGetNext) {
+      response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+    } else {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: response.discrepancies,
+      });
+    }
+  } else {
+    response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  }
   const didErrorOccur = response === null;
   if (didErrorOccur) {
     throw new Error('Api call failed');
@@ -268,7 +291,7 @@ function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
     yield put(resetChecklistData());
-    const appGroupName = action.payload;
+    const { appGroupName } = action.payload;
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
@@ -276,7 +299,7 @@ function* getNext(action) {
       const loanNumber = getLoanNumber(taskDetails);
       const evalPayload = getEvalPayload(taskDetails);
       const commentsPayLoad = getCommentPayload(taskDetails);
-      yield call(fetchChecklistDetails, taskDetails, appGroupName);
+      yield call(fetchChecklistDetails, taskDetails, action.payload);
       yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
       yield put(tombstoneActions.fetchTombstoneData(loanNumber));
       yield put(commentsActions.loadCommentsAction(commentsPayLoad));
