@@ -71,28 +71,26 @@ const navigationList = [
 class Trail extends React.PureComponent {
   render() {
     return (
-      <div styleName="columns-container">
+      <>
         <Tombstone />
-        <div styleName="parent">
-          <Grid container>
-            <Grid item xs={3}>
-              <div styleName="navigation-pane">
-                <Navigation navigationList={navigationList} />
-              </div>
-            </Grid>
-            <Grid item xs={6}>
-              <div styleName="detail-parent">
-                <TrailDetails details={details} />
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div styleName="navigation-pane">
-                Custom Communication Letter
-              </div>
-            </Grid>
+        <Grid container styleName="container">
+          <Grid item styleName="container-item" xs={3}>
+            <div styleName="navigation-pane">
+              <Navigation navigationList={navigationList} />
+            </div>
           </Grid>
-        </div>
-      </div>
+          <Grid item styleName="container-item" xs={6}>
+            <div styleName="detail-parent">
+              <TrailDetails details={details} />
+            </div>
+          </Grid>
+          <Grid item styleName="container-item" xs={3}>
+            <div styleName="navigation-pane">
+              Custom Communication Letter
+            </div>
+          </Grid>
+        </Grid>
+      </>
     );
   }
 }

@@ -35,12 +35,11 @@ class TrailDetails extends React.PureComponent {
   renderDetailsCard() {
     const { details } = this.props;
     return (
-      <div styleName="parent">
-        <div styleName="title-style">
-          {details.title}
-        </div>
-        <br />
-        <div styleName="card">
+      <>
+        <div styleName="title-row">
+          <div styleName="title-style">
+            {details.title}
+          </div>
           <Card>
             <CardContent>
               <Grid container styleName="header-Name">
@@ -57,10 +56,8 @@ class TrailDetails extends React.PureComponent {
             </CardContent>
           </Card>
         </div>
-        <div>
-          <ExpandPanel />
-        </div>
-      </div>
+        <ExpandPanel />
+      </>
     );
   }
 
