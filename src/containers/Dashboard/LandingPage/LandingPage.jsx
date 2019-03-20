@@ -10,7 +10,8 @@ import './LandingPage.css';
 class LandingPage extends React.PureComponent {
   renderTitle() {
     const { location } = this.props;
-    return DashboardModel.getTitle(location.pathname);
+    const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
+    return el.task;
   }
 
   render() {

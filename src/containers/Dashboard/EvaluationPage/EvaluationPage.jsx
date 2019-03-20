@@ -29,7 +29,8 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const { location } = this.props;
-    const title = DashboardModel.getTitle(location.pathname);
+    const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
+    const title = el.task;
     return (
       <>
         <ContentHeader title={title}>
