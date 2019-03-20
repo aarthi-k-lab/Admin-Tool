@@ -227,6 +227,11 @@ describe('getnext Failure -  no tasks found', () => {
       }));
   });
 
+  it('should call error handler for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.errorFetchingChecklistDetails));
+  });
+
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
@@ -278,6 +283,11 @@ describe('getnext Failure -  task fetch failure', () => {
         type: ERROR_LOADING_TOMBSTONE_DATA,
         payload: { data: [], error: true, loading: false },
       }));
+  });
+
+  it('should call error handler for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.errorFetchingChecklistDetails));
   });
 
   it('should dispatch action HIDE_LOADER', () => {

@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import Tooltip from '@material-ui/core/Tooltip';
+import * as R from 'ramda';
 import RadioButtons from './RadioButtons';
-import './Checklist.css';
+import styles from './Checklist.css';
 
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
@@ -41,8 +43,8 @@ class Checklist extends React.PureComponent {
             title={title}
           />
         );
-      case MULTILINE_TEXT:
-        return (
+      case MULTILINE_TEXT: {
+        const textField = (
           <TextField
             label={title}
             maxRows={10}
@@ -52,6 +54,24 @@ class Checklist extends React.PureComponent {
             value={value}
           />
         );
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
       default:
         return (
           <div>

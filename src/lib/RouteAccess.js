@@ -35,6 +35,14 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
+// TO-DO
+const docProcessor = {
+  path: '/doc-processor',
+  name: 'doc-processor',
+  img: '/static/img/doc-processor.svg',
+  groups: ['beuw', 'beuw-mgr', 'allaccess'],
+};
+
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
@@ -44,6 +52,7 @@ const feuwTasksAndChecklist = {
 
 const links = [
   managerDashboard,
+  docProcessor,
   frontendUnderwriter,
   backendUnderwriter,
   stager,
@@ -70,6 +79,10 @@ function hasBackendUnderwriterAccess(groups) {
   return hasGroup(backendUnderwriter.groups, groups);
 }
 
+function hasDocProcessorAccess(groups) {
+  return hasGroup(docProcessor.groups, groups);
+}
+
 function hasManagerDashboardAccess(groups) {
   return hasGroup(managerDashboard.groups, groups);
 }
@@ -85,6 +98,7 @@ function hasMoveForwardAccess(groups) {
 module.exports = {
   links,
   hasBackendUnderwriterAccess,
+  hasDocProcessorAccess,
   hasFrontendUnderwriterAccess,
   hasFrontendChecklistAccess,
   hasManagerDashboardAccess,

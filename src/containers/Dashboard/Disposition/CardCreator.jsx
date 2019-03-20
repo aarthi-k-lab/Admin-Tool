@@ -13,7 +13,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import PropTypes from 'prop-types';
 import { operations } from '../../../state/ducks/dashboard';
-import styles from './BackEndDisposition.css';
+import styles from './Disposition.css';
 
 
 class CardCreator extends React.Component {

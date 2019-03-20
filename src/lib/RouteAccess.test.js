@@ -29,6 +29,6 @@ describe('hasStagerDashboardAccess should return appropriate access', () => {
 
 describe('All personas exists', () => {
   it('Backendunderwriter feature icon exists', () => {
-    expect(links[2].groups[0]).toEqual('beuw');
+    expect(links[2].groups[0]).toEqual('feuw');
   });
 });
