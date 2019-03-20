@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import Validators from 'lib/Validators';
 import Auth from 'lib/Auth';
+import * as R from 'ramda';
 import waterfallLookup from './waterfallLookup';
 
 export const NA = 'NA';
@@ -60,7 +61,8 @@ function getBrandNameItem(loanDetails) {
 }
 
 function getPrimaryBorrowerName(loanDetails) {
-  const { firstName, lastName } = loanDetails.primaryBorrower;
+  const firstName = R.path(['primaryBorrower', 'firstName'], loanDetails);
+  const lastName = R.path(['primaryBorrower', 'lastName'], loanDetails);
   const primaryBorrower = firstName && lastName ? `${firstName} ${lastName}` : NA;
   return primaryBorrower;
 }
