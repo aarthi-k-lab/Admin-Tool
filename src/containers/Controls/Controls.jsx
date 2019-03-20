@@ -42,6 +42,7 @@ class Controls extends React.PureComponent {
     const {
       enableEndShift,
       enableGetNext,
+      groupName,
       onEndShift,
       onExpand,
       showDisposition,
@@ -74,7 +75,7 @@ class Controls extends React.PureComponent {
     return (
       <>
         {assign}
-        {validate}
+        {groupName === 'feuw-task-checklist' ? validate : null}
         {endShift}
         {getNext}
         {expand}

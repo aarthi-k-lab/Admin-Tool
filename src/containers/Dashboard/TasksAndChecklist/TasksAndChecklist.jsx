@@ -198,7 +198,7 @@ function getUserNotification(message) {
   if (message.type === 'error') {
     return {
       type: 'error',
-      msg: DispositionModel.getErrorMessages(message),
+      msg: DispositionModel.getErrorMessages(message.data),
     };
   }
   return {

@@ -157,7 +157,10 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     if (!response.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: response.discrepancies,
+        payload: {
+          type: 'error',
+          data: response.discrepancies,
+        },
       });
     } else {
       yield put({
@@ -269,7 +272,10 @@ function* fetchChecklistDetails(taskDetails, payload) {
     } else {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: response.discrepancies,
+        payload: {
+          type: 'error',
+          data: response.discrepancies,
+        },
       });
     }
   } else {
@@ -278,6 +284,15 @@ function* fetchChecklistDetails(taskDetails, payload) {
   const didErrorOccur = response === null;
   if (didErrorOccur) {
     throw new Error('Api call failed');
+  } else {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
+    });
   }
   const { rootId: rootTaskId } = response;
   yield put(storeProcessDetails(checklistId, rootTaskId));

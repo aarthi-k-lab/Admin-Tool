@@ -22,6 +22,7 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
 } from './types';
+import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
@@ -204,6 +205,11 @@ function* handleChecklistItemChange(action) {
     yield put({
       type: STORE_CHECKLIST_ITEM_CHANGE,
       payload: action.payload,
+    });
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+      },
     });
     yield put({
       type: SET_GET_NEXT_STATUS,
