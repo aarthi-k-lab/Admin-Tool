@@ -72,6 +72,20 @@ class TasksAndChecklist extends React.PureComponent {
     if (checklistItems.length <= 0) {
       return null;
     }
+    let notification;
+    if (message.type === 'do-not-display') {
+      notification = null;
+    } else {
+      notification = (
+        <span styleName="notif">
+          <UserNotification
+            level={message.type}
+            message={message.msg}
+            type="alert-box"
+          />
+        </span>
+      );
+    }
     return (
       <Checklist
         checklistItems={checklistItems}
@@ -79,15 +93,7 @@ class TasksAndChecklist extends React.PureComponent {
         styleName="checklist"
         title={checklistTitle}
       >
-        {message && message.length ? (
-          <span styleName="notif">
-            <UserNotification
-              level="error"
-              message={message}
-              type="alert-box"
-            />
-          </span>
-        ) : null}
+        {notification}
       </Checklist>
     );
   }
@@ -185,6 +191,21 @@ TasksAndChecklist.propTypes = {
   validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
+function getUserNotification(message) {
+  if (message.type === 'success') {
+    return message;
+  }
+  if (message.type === 'error') {
+    return {
+      type: 'error',
+      msg: DispositionModel.getErrorMessages(message),
+    };
+  }
+  return {
+    type: 'do-not-display',
+  };
+}
+
 function mapStateToProps(state) {
   return {
     disposition: selectors.getDisposition(state),
@@ -197,9 +218,7 @@ function mapStateToProps(state) {
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
-    message: DispositionModel.getErrorMessages(
-      dashboardSelectors.getChecklistDiscrepancies(state),
-    ),
+    message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound: dashboardSelectors.noTasksFound(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),

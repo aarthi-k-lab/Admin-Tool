@@ -162,7 +162,10 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     } else {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: null,
+        payload: {
+          type: 'success',
+          msg: 'Validation successful!',
+        },
       });
     }
   } catch (e) {
