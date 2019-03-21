@@ -15,13 +15,55 @@ class Checklist extends React.PureComponent {
   constructor(props) {
     super(props);
     this.renderChecklistItem = this.renderChecklistItem.bind(this);
+    this.getMultilineTextValue = this.getMultilineTextValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.state = {
+      multilineTextDirtyValues: {},
+    };
+  }
+
+  getMultilineTextValue(id, initialValue) {
+    const { multilineTextDirtyValues } = this.state;
+    const dirtyValue = multilineTextDirtyValues[id];
+    if (dirtyValue === undefined) {
+      return initialValue;
+    }
+    return dirtyValue;
+  }
+
+  handleBlur(id) {
+    return (element) => {
+      const { onChange } = this.props;
+      if (element) {
+        element.addEventListener('blur', (event) => {
+          const { multilineTextDirtyValues: oldValues } = this.state;
+          const dirtyValue = R.isEmpty(event.target.value) ? null : event.target.value;
+          const multilineTextDirtyValues = R.dissoc(id, oldValues);
+          this.setState({
+            multilineTextDirtyValues,
+          });
+          onChange(id, dirtyValue);
+        });
+      }
+    };
   }
 
   handleChange(id) {
     const { onChange } = this.props;
     return (event) => {
       onChange(id, event.target.value);
+    };
+  }
+
+  handleTextChange(id) {
+    return (event) => {
+      const { multilineTextDirtyValues: oldValues } = this.state;
+      const multilineTextDirtyValues = R.assoc(id, event.target.value, oldValues);
+      this.setState({
+        multilineTextDirtyValues,
+      });
     };
   }
 
@@ -32,9 +74,9 @@ class Checklist extends React.PureComponent {
     type,
     value,
   }) {
-    const onChange = this.handleChange(id);
     switch (type) {
-      case RADIO_BUTTONS:
+      case RADIO_BUTTONS: {
+        const onChange = this.handleChange(id);
         return (
           <RadioButtons
             onChange={onChange}
@@ -43,15 +85,18 @@ class Checklist extends React.PureComponent {
             title={title}
           />
         );
+      }
       case MULTILINE_TEXT: {
+        const refCallback = this.handleBlur(id);
         const textField = (
           <TextField
+            inputRef={refCallback}
             label={title}
             maxRows={10}
             multiline
-            onChange={onChange}
+            onChange={this.handleTextChange(id)}
             rows={5}
-            value={value}
+            value={this.getMultilineTextValue(id, value)}
           />
         );
         const hint = R.prop('hint', options);
