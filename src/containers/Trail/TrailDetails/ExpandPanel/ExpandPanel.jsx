@@ -53,12 +53,13 @@ class ExpandPanel extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      panel: null,
       expanded: false,
       expandAll: false,
+      panel: null,
     };
     this.renderPanel = this.renderPanel.bind(this);
   }
+
 
   renderPanel() {
     const { panel, expanded, expandAll } = this.state;
@@ -67,12 +68,13 @@ class ExpandPanel extends React.PureComponent {
         <div styleName="expand-all">
           <ExpansionPanel
             expanded={expandAll}
-            onChange={() => this.setState(prevState => (
-              { ...prevState, expandAll: !expandAll, expanded: !expandAll }))}
+            onChange={() => this.setState(
+              { expandAll: !expandAll, expanded: !expandAll, panel: null },
+            )}
             styleName="button-border"
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="button">
-              <Typography styleName="button-heading">Expand All</Typography>
+              <Typography styleName="button-heading">{expandAll ? 'Collapse All' : 'Expand All'}</Typography>
             </ExpansionPanelSummary>
           </ExpansionPanel>
         </div>
@@ -81,8 +83,12 @@ class ExpandPanel extends React.PureComponent {
             data.map(value => (
               <ExpansionPanel
                 expanded={expandAll || (panel === value.title && expanded)}
-                onChange={() => this.setState(prevState => (
-                  { ...prevState, panel: value.title, expanded: !prevState.expanded }))}
+                onClick={() => {
+                  this.setState({
+                    panel: value.title,
+                    expanded: !expanded,
+                  });
+                }}
                 styleName="panel-border"
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
