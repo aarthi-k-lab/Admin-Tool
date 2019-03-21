@@ -91,17 +91,27 @@ function createNavigationDataStructure(ids, prev) {
       prev,
       next: id,
     },
-    ...createNavigationDataStructureIter(ids, prev),
+    ...createNavigationDataStructureIter(R.tail(ids), prev),
   };
+}
+
+function prependChecklistItemForNavigationWhenNoChecklistItemIsSelected(arr) {
+  const firstInProgressChecklist = R.find(R.propEq('state', 'in-progress'), arr);
+  if (R.isNil(firstInProgressChecklist)) {
+    return R.prepend(R.head(arr), arr);
+  }
+  return R.prepend(firstInProgressChecklist, arr);
 }
 
 // createChecklistNavigation :: Object -> Object
 const createChecklistNavigation = R.compose(
   createNavigationDataStructure,
+  R.map(R.prop('id')),
+  prependChecklistItemForNavigationWhenNoChecklistItemIsSelected,
   R.reduce(R.concat, []),
   R.map(
     R.compose(
-      R.map(R.prop('_id')),
+      R.map(checklist => ({ id: R.prop('_id', checklist), state: R.prop('state', checklist) })),
       R.filter(R.propEq('visibility', true)),
       R.propOr([], 'subTasks'),
     ),
