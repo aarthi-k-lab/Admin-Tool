@@ -39,7 +39,12 @@ class Checklist extends React.PureComponent {
       if (element) {
         element.addEventListener('blur', (event) => {
           const { multilineTextDirtyValues: oldValues } = this.state;
-          const dirtyValue = R.isEmpty(event.target.value) ? null : event.target.value;
+          const value = (
+            R.is(String, event.target.value)
+              ? R.trim(event.target.value)
+              : ''
+          );
+          const dirtyValue = R.isEmpty(value) ? null : value;
           const multilineTextDirtyValues = R.dissoc(id, oldValues);
           this.setState({
             multilineTextDirtyValues,
