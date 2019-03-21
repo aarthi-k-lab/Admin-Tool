@@ -3,6 +3,7 @@ import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
 import {
   BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER, DOC_PROCESSOR,
+  FRONTEND_UNDERWRITER_BETA,
 } from './Groups';
 import Redirect from './Redirect';
 
@@ -260,6 +261,10 @@ Auth.homePage = [
   {
     groupName: FRONTEND_MANAGER,
     path: '/reports',
+  },
+  {
+    groupName: FRONTEND_UNDERWRITER_BETA,
+    path: '/frontend-checklist',
   },
   {
     groupName: FRONTEND_UNDERWRITER,

@@ -249,12 +249,7 @@ function getCommentPayload(taskDetails) {
   };
 }
 
-function* fetchChecklistDetails(taskDetails, payload) {
-  if (!AppGroupName.shouldGetChecklist(payload.appGroupName)) {
-    return;
-  }
-  let response = null;
-  const checklistId = getChecklistId(taskDetails);
+function* saveChecklistDisposition(payload) {
   if (!payload.isFirstVisit) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
@@ -267,20 +262,27 @@ function* fetchChecklistDetails(taskDetails, payload) {
       type: SET_GET_NEXT_STATUS,
       payload: saveResponse.enableGetNext,
     });
-    if (saveResponse.enableGetNext) {
-      response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
-    } else {
+    if (!saveResponse.enableGetNext) {
+      yield put({ type: HIDE_LOADER });
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'error',
-          data: response.discrepancies,
+          data: saveResponse.discrepancies,
         },
       });
+      return false;
     }
-  } else {
-    response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
   }
+  return true;
+}
+
+function* fetchChecklistDetails(taskDetails, payload) {
+  if (!AppGroupName.shouldGetChecklist(payload.appGroupName)) {
+    return;
+  }
+  const checklistId = getChecklistId(taskDetails);
+  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
   const didErrorOccur = response === null;
   if (didErrorOccur) {
     throw new Error('Api call failed');
@@ -308,28 +310,30 @@ function* errorFetchingChecklistDetails() {
 function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
-    yield put(resetChecklistData());
-    const { appGroupName } = action.payload;
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
-    if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
-      const loanNumber = getLoanNumber(taskDetails);
-      const evalPayload = getEvalPayload(taskDetails);
-      const commentsPayLoad = getCommentPayload(taskDetails);
-      yield call(fetchChecklistDetails, taskDetails, action.payload);
-      yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-      yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      yield put(commentsActions.loadCommentsAction(commentsPayLoad));
-      yield put({ type: HIDE_LOADER });
-    } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
-      yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
-      yield put(errorTombstoneFetch());
-      yield call(errorFetchingChecklistDetails);
-    } else {
-      yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-      yield put(errorTombstoneFetch());
-      yield call(errorFetchingChecklistDetails);
+    if (yield call(saveChecklistDisposition, action.payload)) {
+      yield put(resetChecklistData());
+      const { appGroupName } = action.payload;
+      const user = yield select(loginSelectors.getUser);
+      const userPrincipalName = R.path(['userDetails', 'email'], user);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
+        const loanNumber = getLoanNumber(taskDetails);
+        const evalPayload = getEvalPayload(taskDetails);
+        const commentsPayLoad = getCommentPayload(taskDetails);
+        yield call(fetchChecklistDetails, taskDetails, action.payload);
+        yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+        yield put(commentsActions.loadCommentsAction(commentsPayLoad));
+        yield put({ type: HIDE_LOADER });
+      } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
+        yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      } else {
+        yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      }
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
@@ -421,6 +425,7 @@ export const TestExports = {
   fetchChecklistDetails,
   saveDisposition,
   setExpandView,
+  saveChecklistDisposition,
   searchLoan,
   selectEval,
   unassignLoan,

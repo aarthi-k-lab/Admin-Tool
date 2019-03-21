@@ -109,8 +109,14 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    const saveDispositionSuccess = true;
+    expect(saga.next(saveDispositionSuccess).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -151,20 +157,6 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
   });
-  // it('should save loannumber and procesId from taskDetails Response', () => {
-  //   expect(saga.next(mockTaskDetails).value)
-  //     .toEqual(put({
-  //       type: actionTypes.SAVE_EVALID_LOANNUMBER,
-  //       payload: {
-  //         applicationName: "CMOD",
-  //         loanNumber: "12345",
-  //         processId: "34567",
-  //         processIdType: "EvalID",
-  //         evalId: "34567",
-  //         taskId: "1234",
-  //       },
-  //     }));
-  // });
   it('getnext worker should trigger loadComments action', () => {
     const actionDispatched = {
       payload: {
@@ -210,8 +202,13 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -272,8 +269,13 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
   });
 

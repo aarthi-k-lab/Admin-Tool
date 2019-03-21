@@ -47,7 +47,7 @@ const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
   img: '/static/img/frontend.svg',
-  groups: ['allaccess'],
+  groups: ['allaccess', 'feuw-beta', 'beta'],
 };
 
 const links = [
