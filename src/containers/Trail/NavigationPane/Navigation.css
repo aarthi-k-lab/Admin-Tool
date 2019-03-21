@@ -30,9 +30,11 @@
     background: red;
     color: white;
     font-weight: bold;
+    padding: 1px 5px 1px 5px;
 }
 .completedStatus{
     background: green;
     color: white;
     font-weight: bold;
+    padding: 1px 5px 1px 5px;
 }

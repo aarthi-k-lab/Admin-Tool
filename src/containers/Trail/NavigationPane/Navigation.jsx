@@ -7,6 +7,13 @@ class Navigation extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    const { onCardClick } = this.props;
+    onCardClick();
+    console.log('-----------------');
   }
 
   render() {
@@ -16,7 +23,7 @@ class Navigation extends React.PureComponent {
         <div styleName="navigation">
           {navigationList.map(parent => (
             <div style={{ padding: '15px 0px 15px 0px' }}>
-              <Grid container styleName="parent-grid">
+              <Grid container onClick={() => this.handleClick()} styleName="parent-grid">
                 <Grid item xs={2}>
                   Img
                 </Grid>
@@ -83,6 +90,7 @@ Navigation.propTypes = {
     startDate: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
   }).isRequired,
+  onCardClick: PropTypes.func.isRequired,
 };
 
 export default Navigation;

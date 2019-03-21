@@ -33,17 +33,17 @@ class TrailDetails extends React.PureComponent {
   }
 
   renderDetailsCard() {
-    const { details } = this.props;
+    const { details, data } = this.props;
     return (
       <>
         <div styleName="title-row">
           <div styleName="title-style">
-            {details.title}
+            {data.title}
           </div>
           <Card>
             <CardContent>
               <Grid container styleName="header-Name">
-                {details.trailDetails.map(detail => (
+                {data.trailDetails && data.trailDetails.map(detail => (
                   <Grid item xs={3}>
                     <span styleName="header-style">{detail.columnName}</span>
                     <br />
@@ -56,12 +56,16 @@ class TrailDetails extends React.PureComponent {
             </CardContent>
           </Card>
         </div>
-        <ExpandPanel />
+        <ExpandPanel data={details} />
       </>
     );
   }
 
   render() {
+    const { details, data } = this.props;
+    if (details.length === 0 && Object.keys(data).length === 0) {
+      return null;
+    }
     return (
       this.renderDetailsCard()
     );
@@ -69,6 +73,11 @@ class TrailDetails extends React.PureComponent {
 }
 
 TrailDetails.propTypes = {
+  data: PropTypes.shape({
+    details: PropTypes.string.isRequired,
+    month: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
   details: PropTypes.shape({
     acceptanceDate: PropTypes.string.isRequired,
     downPayment: PropTypes.string.isRequired,

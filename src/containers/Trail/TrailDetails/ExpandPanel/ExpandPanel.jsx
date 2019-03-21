@@ -1,53 +1,17 @@
 /* eslint-disable class-methods-use-this */
+import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Grid from '@material-ui/core/Grid';
+import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
+import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
+import PropTypes from 'prop-types';
 import './ExpandPanel.css';
 
-const data = [{
-  title: 'Trail1',
-  month: 'January 2019',
-},
-{
-  title: 'Trail2',
-  month: 'February 2020',
-},
-{
-  title: 'Trail3',
-  month: 'February 2020',
-},
-{
-  title: 'Trail4',
-  month: 'February 2020',
-},
-{
-  title: 'Trail5',
-  month: 'February 2020',
-},
-{
-  title: 'Trail6',
-  month: 'February 2020',
-},
-{
-  title: 'Trail7',
-  month: 'February 2020',
-},
-{
-  title: 'Trail8',
-  month: 'February 2020',
-},
-{
-  title: 'Trail9',
-  month: 'February 2020',
-},
-{
-  title: 'Trail0',
-  month: 'February 2020',
-},
-];
 
 class ExpandPanel extends React.PureComponent {
   constructor(props) {
@@ -62,6 +26,7 @@ class ExpandPanel extends React.PureComponent {
 
   renderPanel() {
     const { panel, expanded, expandAll } = this.state;
+    const { data } = this.props;
     return (
       <>
         <div styleName="expand-all">
@@ -78,7 +43,7 @@ class ExpandPanel extends React.PureComponent {
         </div>
         <div styleName="detail-list">
           {
-            data.map(value => (
+            data && data.map(value => (
               <ExpansionPanel
                 expanded={expandAll || (panel === value.title && expanded)}
                 onChange={() => this.setState(prevState => (
@@ -86,14 +51,27 @@ class ExpandPanel extends React.PureComponent {
                 styleName="panel-border"
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography styleName="heading">{value.title}</Typography>
-                  <Typography styleName="secondaryHeading">{value.month}</Typography>
+                  <Checkbox
+                    checked
+                    checkedIcon={<CircleCheckedFilled />}
+                    icon={<CircleUnchecked />}
+                    styleName={value.title === 'Trail3' ? 'uncheckbox' : 'checkbox'}
+                    value="checkedG"
+                  />
+                  <span styleName="heading">{value.title}</span>
+                  <span styleName="secondaryHeading">{value.month}</span>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>
-                    Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.
-                    Aliquam eget maximus est, id dignissim quam.
-                  </Typography>
+                  <Grid container>
+                    {value.details && value.details.map(detail => (
+                      <Grid item xs={2}>
+                        <span styleName="header-style">{detail.header}</span>
+                        <br />
+                        <span styleName="value-style">{detail.value}</span>
+                      </Grid>
+                    ))
+                    }
+                  </Grid>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ))
@@ -109,5 +87,13 @@ class ExpandPanel extends React.PureComponent {
     );
   }
 }
+
+ExpandPanel.propTypes = {
+  data: PropTypes.shape({
+    details: PropTypes.string.isRequired,
+    month: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default ExpandPanel;
