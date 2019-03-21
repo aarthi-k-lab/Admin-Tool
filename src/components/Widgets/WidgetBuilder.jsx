@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import getWidgets from './WidgetSelects';
 import WidgetIcon from './WidgetIcon';
-import './WidgetBuilder.css';
+import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
 
 class WidgetBuilder extends Component {
@@ -57,8 +59,9 @@ class WidgetBuilder extends Component {
 
   render() {
     const { rightAppBarOpen } = this.state;
+    const { className } = this.props;
     return (
-      <div id="widget_builder" styleName="widget-builder">
+      <div className={classNames(className, styles['widget-builder'])} id="widget_builder">
         <div id="widget_builder_container">
           <div
             id="widget_main_center"
@@ -81,6 +84,10 @@ class WidgetBuilder extends Component {
 
 const TestHooks = {
   WidgetBuilder,
+};
+
+WidgetBuilder.propTypes = {
+  className: PropTypes.string.isRequired,
 };
 
 export default WidgetBuilder;

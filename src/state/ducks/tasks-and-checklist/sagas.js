@@ -22,6 +22,7 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
 } from './types';
+import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
@@ -58,6 +59,11 @@ function* getChecklist(action) {
       payload: snackBar,
     });
   }
+}
+
+
+function* callAndPut(fn, ...args) {
+  return yield put(yield call(fn, ...args));
 }
 
 function createNavigationDataStructureIter(ids, prev) {
@@ -118,6 +124,17 @@ function* getTasks(action) {
     }
     const checklistNavigation = yield call(createChecklistNavigation, response);
     const checklistNavAction = yield call(actions.storeChecklistNavigation, checklistNavigation);
+    const checklistSelectionIsPresent = yield select(selectors.getSelectedChecklistId);
+    let selectedChecklistId = null;
+    if (checklistSelectionIsPresent === 'nothing') {
+      selectedChecklistId = R.pathOr('', ['nothing', 'next'], checklistNavigation);
+    }
+    if (selectedChecklistId) {
+      yield all([
+        callAndPut(actions.setSelectedChecklist, selectedChecklistId),
+        callAndPut(actions.getChecklist, selectedChecklistId),
+      ]);
+    }
     yield put(checklistNavAction);
     yield put({
       type: STORE_TASKS,
@@ -157,10 +174,6 @@ function* getPrevChecklist() {
   }
 }
 
-function* callAndPut(fn, ...args) {
-  return yield put(yield call(fn, ...args));
-}
-
 function* showLoaderOnSave() {
   yield put({
     type: LOADING_CHECKLIST,
@@ -192,6 +205,11 @@ function* handleChecklistItemChange(action) {
     yield put({
       type: STORE_CHECKLIST_ITEM_CHANGE,
       payload: action.payload,
+    });
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+      },
     });
     yield put({
       type: SET_GET_NEXT_STATUS,

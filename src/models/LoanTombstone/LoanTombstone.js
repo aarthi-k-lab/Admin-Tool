@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import Validators from 'lib/Validators';
 import Auth from 'lib/Auth';
+import * as R from 'ramda';
 import waterfallLookup from './waterfallLookup';
 
 export const NA = 'NA';
@@ -60,13 +61,15 @@ function getBrandNameItem(loanDetails) {
 }
 
 function getPrimaryBorrowerName(loanDetails) {
-  const { firstName, lastName } = loanDetails.primaryBorrower;
+  const firstName = R.path(['primaryBorrower', 'firstName'], loanDetails);
+  const lastName = R.path(['primaryBorrower', 'lastName'], loanDetails);
   const primaryBorrower = firstName && lastName ? `${firstName} ${lastName}` : NA;
   return primaryBorrower;
 }
 
 function getPrimaryBorrowerSSN(loanDetails) {
-  return loanDetails.primaryBorrower.ssn || NA;
+  const ssn = R.path(['primaryBorrower', 'ssn'], loanDetails);
+  return ssn || NA;
 }
 
 function getCoBorrowersName(loanDetails) {
@@ -104,10 +107,11 @@ function getSsnItem(loanDetails) {
 }
 
 function getInvestorItem(loanDetails) {
-  const { investorCode: code, investorName: name } = loanDetails.investorInformation;
+  const investorCode = R.path(['investorInformation', 'investorCode'], loanDetails);
+  const investorName = R.path(['investorInformation', 'investorName'], loanDetails);
   const { levelNumber, levelName } = getOr('InvestorHierarchy', loanDetails, {});
   const investorL3 = levelNumber && levelNumber === 3 ? levelName : '';
-  const investor = code && name ? `${code} - ${name} - ${investorL3}` : NA;
+  const investor = investorCode && investorName ? `${investorCode} - ${investorName} - ${investorL3}` : NA;
   return generateTombstoneItem('Investor', investor);
 }
 
@@ -153,8 +157,9 @@ function getCFPBExpirationDate(_, evalDetails) {
 }
 
 function getFLDD(loanDetails) {
-  if (loanDetails.LoanExtension != null) {
-    const date = moment.tz(loanDetails.LoanExtension.firstLegalDueDate, 'America/Chicago');
+  const fldd = R.path(['LoanExtension', 'firstLegalDueDate'], loanDetails);
+  if (fldd) {
+    const date = moment.tz(fldd, 'America/Chicago');
     const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
     return generateTombstoneItem('FLDD Date', dateString);
   }

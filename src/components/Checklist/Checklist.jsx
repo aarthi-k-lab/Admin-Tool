@@ -83,9 +83,13 @@ class Checklist extends React.PureComponent {
   }
 
   render() {
-    const { checklistItems, className, title } = this.props;
+    const {
+      checklistItems, children,
+      className, title,
+    } = this.props;
     return (
       <section className={className}>
+        { children }
         <Typography styleName="checklist-title" variant="h5">{title}</Typography>
         <div styleName="checklist-scroll-out">
           <div styleName="checklist-scroll-in">
@@ -121,6 +125,7 @@ Checklist.propTypes = {
       value: PropTypes.any,
     }),
   ).isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,

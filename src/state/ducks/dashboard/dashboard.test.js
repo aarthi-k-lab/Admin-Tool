@@ -82,7 +82,11 @@ describe('watch getnext ', () => {
 
 describe('getnext Success', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -121,8 +125,13 @@ describe('getnext Success', () => {
   });
 
   it('should call fetchChecklistDetails generator to handle get next logic for checklist', () => {
+    const expectedPayload = {
+      appGroupName: 'FEUW',
+      dispositionCode: 'missingDocs',
+      isFirstVisit: true,
+    };
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, 'FEUW'));
+      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, expectedPayload));
   });
 
   it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
@@ -180,7 +189,11 @@ describe('getnext Success', () => {
 
 describe('getnext Failure -  no tasks found', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -240,7 +253,11 @@ describe('getnext Failure -  no tasks found', () => {
 
 describe('getnext Failure -  task fetch failure', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {

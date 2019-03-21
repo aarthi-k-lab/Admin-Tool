@@ -14,12 +14,12 @@ class UserNotification extends React.PureComponent {
   }
 
   render() {
-    const { type } = this.props;
+    const { className, type } = this.props;
     const Component = this.constructor.components[type];
     const componentProps = this.getProps(type);
     if (Component) {
       return (
-        <Component {...componentProps} />
+        <Component className={className} {...componentProps} />
       );
     }
     return null;
@@ -31,7 +31,12 @@ UserNotification.components = {
   [UserNotification.ALERT_BOX]: AlertBox,
 };
 
+UserNotification.defaultProps = {
+  className: '',
+};
+
 UserNotification.propTypes = {
+  className: PropTypes.string,
   level: PropTypes.oneOf(['error', 'success']).isRequired,
   message: PropTypes.node.isRequired,
   type: PropTypes.oneOf([
