@@ -6,7 +6,7 @@ const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 const PAGE_LOOKUP = [
   {
     group: 'FEUW',
-    task: '',
+    task: 'Income Calculation',
     path: '/frontend-evaluation',
   },
   {
