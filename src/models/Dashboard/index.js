@@ -16,7 +16,7 @@ const PAGE_LOOKUP = [
   },
   {
     group: 'FEUW_TASKS_AND_CHECKLIST',
-    task: 'Income Calculation',
+    task: 'Income Calculation (beta)',
     path: '/frontend-checklist',
   },
   {
@@ -42,6 +42,7 @@ function getTitle(location) {
     case '/backend-evaluation':
       return 'Underwriting';
     case '/frontend-evaluation':
+      return 'Income Calculation';
     case '/frontend-checklist':
       return 'Income Calculation (beta)';
     case '/doc-processor':
