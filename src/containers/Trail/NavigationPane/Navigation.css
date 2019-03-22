@@ -1,15 +1,39 @@
-.navigation{
-    padding: 8px;
-}
-.parent-grid{
+.cards{
     background: var(--grey-200);
     border: 1px solid #bbbdbf;
     border-radius: 5px;
-    padding: 8px;
+    overflow: auto;
 }
-.parent-grid:hover{
-    background: rgb(6, 193, 226);
+.image{
+    border-radius: 50%;
+    border: 1px solid grey;
+    display: inline-flex;
+    justify-content: center;
+}
+.icon{
+    color: grey;
+    position: relative;
+    top: 2px;
+}
+.user-detail{
+    padding-left: 8px;
+}
+.parent-card:hover{
+    background-color: #d4e7f9;
     cursor: pointer;
+}
+.main-container{
+    padding: 18px 8px 18px 8px;
+}
+.item{
+    margin-top: 14px !important;
+}
+.left-item{
+    position: relative;
+    left: 8px;
+}
+.right-item{
+    text-align: right;
 }
 .child-grid{
     background: var(--grey-200);
@@ -17,9 +41,17 @@
     padding: 8px;
 }
 .header-style{
-    font-size: 8pt;
-    font-family: "Lato", sans-serif;
-    color: #707479;
+    font-size: 0.7rem;
+    color:var(--grey-590)
+}
+.align{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+.sub-container{
+    border-top: 1px solid #b0b4b9;
+    padding-bottom: 14px;
 }
 .value-style{
     font-weight: bold;
@@ -27,14 +59,16 @@
     margin-top: 0.5rem;
 }
 .failedStatus{
-    background: red;
-    color: white;
+    background-color: var(--red-600);
+    color:#fafafa;
     font-weight: bold;
     padding: 1px 5px 1px 5px;
+    border-radius: 4px;
 }
 .completedStatus{
-    background: green;
-    color: white;
+    background-color: var(--light-green-500);
+    color: #fafafa;
     font-weight: bold;
     padding: 1px 5px 1px 5px;
+    border-radius: 4px;
 }
