@@ -43,7 +43,7 @@ function getTitle(location) {
       return 'Underwriting';
     case '/frontend-evaluation':
     case '/frontend-checklist':
-      return 'Income Calculation';
+      return 'Income Calculation (beta)';
     case '/doc-processor':
       return 'Processing';
     default:
