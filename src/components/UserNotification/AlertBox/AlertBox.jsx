@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import WarningIcon from '@material-ui/icons/Warning';
-import './AlertBox.css';
+import styles from './AlertBox.css';
 
 class AlertBox extends React.PureComponent {
   static getIcon(level) {
@@ -28,10 +29,10 @@ class AlertBox extends React.PureComponent {
   }
 
   render() {
-    const { level, message } = this.props;
+    const { className, level, message } = this.props;
     const icon = this.constructor.getIcon(level);
     return (
-      <div styleName={this.constructor.getBoxStyle(level)}>
+      <div className={classnames(className, styles[this.constructor.getBoxStyle(level)])}>
         {icon}
         <span styleName="message">{message}</span>
       </div>
@@ -42,7 +43,12 @@ class AlertBox extends React.PureComponent {
 AlertBox.ERROR = 'error';
 AlertBox.SUCCESS = 'success';
 
+AlertBox.defaultProps = {
+  className: '',
+};
+
 AlertBox.propTypes = {
+  className: PropTypes.string,
   level: PropTypes.oneOf([AlertBox.ERROR, AlertBox.SUCCESS]).isRequired,
   message: PropTypes.node.isRequired,
 };

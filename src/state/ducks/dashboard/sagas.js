@@ -48,6 +48,10 @@ import {
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
+import {
+  ERROR_LOADING_CHECKLIST,
+  ERROR_LOADING_TASKS,
+} from '../tasks-and-checklist/types';
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -153,12 +157,18 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     if (!response.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: response.discrepancies,
+        payload: {
+          type: 'error',
+          data: response.discrepancies,
+        },
       });
     } else {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: null,
+        payload: {
+          type: 'success',
+          msg: 'Validation successful!',
+        },
       });
     }
   } catch (e) {
@@ -239,8 +249,36 @@ function getCommentPayload(taskDetails) {
   };
 }
 
-function* fetchChecklistDetails(taskDetails, appGroupName) {
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+function* saveChecklistDisposition(payload) {
+  if (!payload.isFirstVisit) {
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const group = getUserPersona(payload.appGroupName);
+    const disposition = payload.dispositionCode;
+    const saveResponse = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: saveResponse.enableGetNext,
+    });
+    if (!saveResponse.enableGetNext) {
+      yield put({ type: HIDE_LOADER });
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {
+          type: 'error',
+          data: saveResponse.discrepancies,
+        },
+      });
+      return false;
+    }
+  }
+  return true;
+}
+
+function* fetchChecklistDetails(taskDetails, payload) {
+  if (!AppGroupName.shouldGetChecklist(payload.appGroupName)) {
     return;
   }
   const checklistId = getChecklistId(taskDetails);
@@ -248,42 +286,60 @@ function* fetchChecklistDetails(taskDetails, appGroupName) {
   const didErrorOccur = response === null;
   if (didErrorOccur) {
     throw new Error('Api call failed');
+  } else {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
+    });
   }
   const { rootId: rootTaskId } = response;
   yield put(storeProcessDetails(checklistId, rootTaskId));
   yield put(getTasks());
 }
 
+function* errorFetchingChecklistDetails() {
+  yield put({ type: ERROR_LOADING_CHECKLIST });
+  yield put({ type: ERROR_LOADING_TASKS });
+}
+
 // eslint-disable-next-line
 function* getNext(action) {
-
   try {
     yield put({ type: SHOW_LOADER });
-    yield put(resetChecklistData());
-    const appGroupName = action.payload;
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
-    if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
-      const loanNumber = getLoanNumber(taskDetails);
-      const evalPayload = getEvalPayload(taskDetails);
-      const commentsPayLoad = getCommentPayload(taskDetails);
-      yield call(fetchChecklistDetails, taskDetails, appGroupName);
-      yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-      yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      yield put(commentsActions.loadCommentsAction(commentsPayLoad));
-      yield put({ type: HIDE_LOADER });
-    } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
-      yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
-      yield put(errorTombstoneFetch());
-    } else {
-      yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-      yield put(errorTombstoneFetch());
+    if (yield call(saveChecklistDisposition, action.payload)) {
+      yield put(resetChecklistData());
+      const { appGroupName } = action.payload;
+      const user = yield select(loginSelectors.getUser);
+      const userPrincipalName = R.path(['userDetails', 'email'], user);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
+        const loanNumber = getLoanNumber(taskDetails);
+        const evalPayload = getEvalPayload(taskDetails);
+        const commentsPayLoad = getCommentPayload(taskDetails);
+        yield call(fetchChecklistDetails, taskDetails, action.payload);
+        yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+        yield put(commentsActions.loadCommentsAction(commentsPayLoad));
+        yield put({ type: HIDE_LOADER });
+      } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
+        yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      } else {
+        yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      }
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
     yield put(errorTombstoneFetch());
+    yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
   }
 }
@@ -365,9 +421,11 @@ function* watchAssignLoan() {
 export const TestExports = {
   autoSaveOnClose,
   endShift,
+  errorFetchingChecklistDetails,
   fetchChecklistDetails,
   saveDisposition,
   setExpandView,
+  saveChecklistDisposition,
   searchLoan,
   selectEval,
   unassignLoan,

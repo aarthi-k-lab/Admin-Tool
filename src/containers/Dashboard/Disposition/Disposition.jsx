@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
+import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
-import { arrayToString } from 'lib/ArrayUtils';
 import { selectors as loginSelectors } from 'ducks/login';
+import { arrayToString } from 'lib/ArrayUtils';
 import RouteAccess from 'lib/RouteAccess';
+import { selectors, operations } from 'ducks/dashboard';
+import { operations as commentoperations } from 'ducks/comments';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
-import CardCreator from '../BackEndDisposition/CardCreator';
-// import getStatus from '../BackEndDisposition/statusList';
-import { selectors, operations } from '../../../state/ducks/dashboard';
-import { operations as commentoperations } from '../../../state/ducks/comments';
+import CardCreator from './CardCreator';
 import './Disposition.css';
 import CommentBox from '../../../components/CommentBox/CommentBox';
 
@@ -20,7 +20,6 @@ const shouldExpand = (isExpanded, item, id) => {
   if (isExpanded) return item.id === id;
   return (item.id === id ? false : item.expanded);
 };
-
 const getContextTaskName = (groupName) => {
   let taskName = '';
   switch (groupName) {
@@ -36,13 +35,14 @@ const getContextTaskName = (groupName) => {
   }
   return taskName;
 };
-
 class Disposition extends Component {
   constructor(props) {
     super(props);
-    const status = this.props;
+    const { status } = this.props;
     this.handleSave = this.handleSave.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
+    this.renderErrorNotification = this.renderErrorNotification.bind(this);
+    this.getErrorMessages = this.getErrorMessages.bind(this);
     this.state = {
       status,
       operate: 'ExpandAll',
@@ -56,7 +56,6 @@ class Disposition extends Component {
       canSubmit: true,
     };
   }
-
 
   componentDidUpdate() {
     const {
@@ -126,6 +125,63 @@ class Disposition extends Component {
     this.setState({ status: changedStatus, canSubmit: true });
   }
 
+  getErrorMessages() {
+    const {
+      beDispositionErrorMessages: errorMessages,
+      enableGetNext,
+      showAssign,
+      user,
+      isAssigned,
+      selectedDisposition,
+    } = this.props;
+    const { activityName } = selectedDisposition;
+    const groups = user && user.groupList;
+    let level = 'error';
+    let message = null;
+
+    if (errorMessages.length > 0) {
+      message = errorMessages.reduce(
+        (acc, msg) => {
+          acc.push(msg);
+          acc.push(<br key={msg} />);
+          return acc;
+        },
+        [],
+      );
+    }
+    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
+      message = 'Please click Unassign to unassign the task from the user.';
+    }
+    if (showAssign) {
+      message = 'Please note only Manager can unassign the task.';
+    }
+    if (!isAssigned) {
+      message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
+    }
+    if (enableGetNext) {
+      message = `The task has been dispositioned successfully with disposition ${arrayToString([activityName])}`;
+      level = 'success';
+    }
+
+    return { level, message };
+  }
+
+  handleSave() {
+    const { content } = this.state;
+    const {
+      onDispositionSaveTrigger, selectedDisposition, groupName, saveValidation,
+    } = this.props;
+    this.savedComments = content;
+    this.setState({ refreshHook: true });
+    const checkSubmit = saveValidation(content);
+    if (checkSubmit) {
+      const payload = { dispositionReason: selectedDisposition.activityName, group: groupName };
+      onDispositionSaveTrigger(payload);
+      this.setState({ refreshHook: true });
+    }
+    this.setState({ canSubmit: checkSubmit });
+  }
+
   collapseOthers(id, cardStatus, activityName) {
     const { status } = this.state;
     this.setState({ selectedStatus: cardStatus, selectedActivity: activityName });
@@ -140,25 +196,6 @@ class Disposition extends Component {
     this.setState({ status: changedStatus, operate: 'ExpandAll' });
   }
 
-  handleSave() {
-    const { content } = this.state;
-    const {
-      onDispositionSaveTrigger, selectedDisposition, groupName, saveValidation,
-    } = this.props;
-    // const { activityName } = selectedDisposition;
-    // const checkDisposition = (activityName === 'Approval' || content !== '');
-    // const checkApproval = activityName === 'Approval';
-    this.savedComments = content;
-    this.setState({ refreshHook: true });
-    const checkSubmit = saveValidation();
-    // const checkSubmit = selectedDisposition && (checkDisposition || checkApproval);
-    if (checkSubmit) {
-      const payload = { dispositionReason: selectedDisposition.activityName, group: groupName };
-      onDispositionSaveTrigger(payload);
-      this.setState({ refreshHook: true });
-    }
-    this.setState({ canSubmit: checkSubmit });
-  }
 
   handleExpandAll() {
     const { operate, status } = this.state;
@@ -173,58 +210,6 @@ class Disposition extends Component {
     }));
     const changeOperate = operate === 'ExpandAll' ? 'CollapseAll' : 'ExpandAll';
     this.setState({ status: statuses, operate: changeOperate });
-  }
-
-  renderErrorNotification(isAssigned, activityName) {
-    const {
-      beDispositionErrorMessages: errorMessages,
-      enableGetNext,
-      showAssign,
-      user,
-    } = this.props;
-    const groups = user && user.groupList;
-    if (errorMessages.length > 0) {
-      const errorsNode = errorMessages.reduce(
-        (acc, message) => {
-          acc.push(message);
-          acc.push(<br key={message} />);
-          return acc;
-        },
-        [],
-      );
-      return (
-        <UserNotification level="error" message={errorsNode} type="alert-box" />
-      );
-    }
-
-    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
-      const message = 'Please click Unassign to unassign the task from the user.';
-      return (
-        <UserNotification level="error" message={message} type="alert-box" />
-      );
-    }
-
-    if (showAssign) {
-      const message = 'Please note only Manager can unassign the task.';
-      return (
-        <UserNotification level="error" message={message} type="alert-box" />
-      );
-    }
-
-    if (!isAssigned) {
-      const message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
-      return (
-        <UserNotification level="error" message={message} type="alert-box" />
-      );
-    }
-
-    if (enableGetNext) {
-      const dispositionSuccessMessage = `The task has been dispositioned successfully with disposition ${arrayToString([activityName])}`;
-      return (
-        <UserNotification level="success" message={dispositionSuccessMessage} type="alert-box" />
-      );
-    }
-    return null;
   }
 
   renderSave(isAssigned) {
@@ -271,6 +256,15 @@ class Disposition extends Component {
     return null;
   }
 
+  renderErrorNotification() {
+    const { level, message } = this.getErrorMessages();
+    if (!R.isNil(message)) {
+      return (
+        <UserNotification level={level} message={message} type="alert-box" />
+      );
+    }
+    return null;
+  }
 
   render() {
     const {
@@ -279,7 +273,7 @@ class Disposition extends Component {
     const {
       selectedDisposition,
       inProgress,
-      enableGetNext, isAssigned, noTasksFound, taskFetchError, errorNotification,
+      enableGetNext, isAssigned, noTasksFound, taskFetchError,
     } = this.props;
     const { activityName } = selectedDisposition;
     if (inProgress) {
@@ -302,7 +296,6 @@ class Disposition extends Component {
         this.collapseOthers(id, cardStatus, activityName);
       }
     }
-
     return (
       <>
         <div styleName="scrollable-block">
@@ -313,7 +306,7 @@ class Disposition extends Component {
             <header styleName="para-title">
           Select the outcome of your review
             </header>
-            {errorNotification(isAssigned, activityName)}
+            {this.renderErrorNotification(isAssigned, activityName)}
             <button
               disabled={enableGetNext || !isAssigned}
               onClick={() => this.handleExpandAll()}
@@ -346,7 +339,6 @@ class Disposition extends Component {
     );
   }
 }
-
 Disposition.defaultProps = {
   enableGetNext: false,
   inProgress: false,
@@ -365,12 +357,10 @@ Disposition.defaultProps = {
   ProcIdType: 'EvalID',
   groupName: '',
 };
-
 Disposition.propTypes = {
   AppName: PropTypes.string,
   beDispositionErrorMessages: PropTypes.arrayOf(PropTypes.string),
   enableGetNext: PropTypes.bool,
-  errorNotification: PropTypes.func.isRequired,
   EvalId: PropTypes.number.isRequired,
   EventName: PropTypes.string,
   groupName: PropTypes.string,
@@ -396,6 +386,9 @@ Disposition.propTypes = {
     isExpanded: PropTypes.bool,
   }),
   showAssign: PropTypes.bool.isRequired,
+  status: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+  })).isRequired,
   taskFetchError: PropTypes.bool,
   TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
@@ -408,7 +401,6 @@ Disposition.propTypes = {
     userGroups: PropTypes.array,
   }).isRequired,
 };
-
 const mapStateToProps = state => ({
   selectedDisposition: selectors.getDisposition(state),
   beDispositionErrorMessages: DispositionModel.getErrorMessages(
@@ -426,21 +418,16 @@ const mapStateToProps = state => ({
   taskFetchError: selectors.taskFetchError(state),
   user: loginSelectors.getUser(state),
 });
-
 const mapDispatchToProps = dispatch => ({
   onDispositionSaveTrigger: operations.onDispositionSave(dispatch),
   onPostComment: commentoperations.postComment(dispatch),
   onClearBE: operations.onClearBEDisposition(dispatch),
 });
-
 const DispositionContainer = connect(mapStateToProps, mapDispatchToProps)(Disposition);
-
 const TestHooks = {
   Disposition,
 };
-
 export default DispositionContainer;
-
 export {
   TestHooks,
 };

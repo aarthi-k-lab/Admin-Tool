@@ -82,7 +82,11 @@ describe('watch getnext ', () => {
 
 describe('getnext Success', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -105,8 +109,14 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    const saveDispositionSuccess = true;
+    expect(saga.next(saveDispositionSuccess).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -121,8 +131,13 @@ describe('getnext Success', () => {
   });
 
   it('should call fetchChecklistDetails generator to handle get next logic for checklist', () => {
+    const expectedPayload = {
+      appGroupName: 'FEUW',
+      dispositionCode: 'missingDocs',
+      isFirstVisit: true,
+    };
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, 'FEUW'));
+      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, expectedPayload));
   });
 
   it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
@@ -142,20 +157,6 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
   });
-  // it('should save loannumber and procesId from taskDetails Response', () => {
-  //   expect(saga.next(mockTaskDetails).value)
-  //     .toEqual(put({
-  //       type: actionTypes.SAVE_EVALID_LOANNUMBER,
-  //       payload: {
-  //         applicationName: "CMOD",
-  //         loanNumber: "12345",
-  //         processId: "34567",
-  //         processIdType: "EvalID",
-  //         evalId: "34567",
-  //         taskId: "1234",
-  //       },
-  //     }));
-  // });
   it('getnext worker should trigger loadComments action', () => {
     const actionDispatched = {
       payload: {
@@ -180,7 +181,11 @@ describe('getnext Success', () => {
 
 describe('getnext Failure -  no tasks found', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -197,8 +202,13 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -227,6 +237,11 @@ describe('getnext Failure -  no tasks found', () => {
       }));
   });
 
+  it('should call error handler for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.errorFetchingChecklistDetails));
+  });
+
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
@@ -235,7 +250,11 @@ describe('getnext Failure -  no tasks found', () => {
 
 describe('getnext Failure -  task fetch failure', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -250,8 +269,13 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -278,6 +302,11 @@ describe('getnext Failure -  task fetch failure', () => {
         type: ERROR_LOADING_TOMBSTONE_DATA,
         payload: { data: [], error: true, loading: false },
       }));
+  });
+
+  it('should call error handler for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.errorFetchingChecklistDetails));
   });
 
   it('should dispatch action HIDE_LOADER', () => {

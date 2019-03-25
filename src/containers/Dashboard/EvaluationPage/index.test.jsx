@@ -12,7 +12,7 @@ describe('<EvaluationPage />', () => {
   it('<ContentHeader /> shows title', () => {
     const contentHeader = wrapper.find('ContentHeader');
     expect(contentHeader).toHaveLength(1);
-    expect(contentHeader.at(0).prop('title')).toEqual('UNDERWRITING');
+    expect(contentHeader.at(0).prop('title')).toEqual('Underwriting');
   });
 
   it('<Controls /> shows GetNext and EndShift', () => {
