@@ -200,6 +200,14 @@ const output1 = [
     content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
   },
+  {
+    content: 'NA',
+    title: 'Evaluation Type',
+  },
+  {
+    content: 'NA',
+    title: 'Boarding Date',
+  },
 ];
 
 const inputJsonLoanDetails2 = {
@@ -220,6 +228,14 @@ const inputJsonLoanDetails2 = {
   foreclosureSalesDate: null,
   loanTypeDescription: null,
   LoanMilestoneDates: [
+    {
+      mlstnTypeNm: 'BalloonDate',
+      mlstnDttm: 'Mon Dec 01 2036 00:00:00 GMT+0000 (UTC)',
+    },
+    {
+      mlstnTypeNm: 'BalloonDate',
+      mlstnDttm: 'Mon Dec 01 2036 00:00:00 GMT+0000 (UTC)',
+    },
     {
       mlstnTypeNm: 'BalloonDate',
       mlstnDttm: 'Mon Dec 01 2036 00:00:00 GMT+0000 (UTC)',
@@ -320,6 +336,14 @@ const output2 = [
   {
     content: 'NA',
     title: 'Days Until CFPB Timeline Expiration',
+  },
+  {
+    content: 'NA',
+    title: 'Evaluation Type',
+  },
+  {
+    content: 'NA',
+    title: 'Boarding Date',
   },
 ];
 
