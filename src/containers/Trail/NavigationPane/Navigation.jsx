@@ -38,7 +38,7 @@ class Navigation extends React.PureComponent {
                 </Grid>
               </Grid>
               <Grid container onClick={() => this.handleClick()} styleName="sub-container">
-                <Grid item styleName="item left-item" xs={3}>
+                <Grid item styleName="item left-item" xs={4}>
                   <span styleName="header-style">START DATE</span>
                   <br />
                   <span styleName="value-style">{parent.startDate}</span>
@@ -48,7 +48,7 @@ class Navigation extends React.PureComponent {
                   <br />
                   <span styleName="value-style">{parent.endDate}</span>
                 </Grid>
-                <Grid item styleName="item" xs={6}>
+                <Grid item styleName="item" xs={5}>
                   <span styleName="header-style">EXPECTED COMPLETION DATE</span>
                   <br />
                   <span styleName="value-style">{parent.expectedCompletionDate}</span>

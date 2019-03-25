@@ -115,9 +115,7 @@ class Trail extends React.PureComponent {
             </div>
           </Grid>
           <Grid item styleName="container-item" xs={3}>
-            <div styleName="navigation-pane">
-              Custom Communication Letter
-            </div>
+            <div styleName="navigation-pane" />
           </Grid>
         </Grid>
       </>
