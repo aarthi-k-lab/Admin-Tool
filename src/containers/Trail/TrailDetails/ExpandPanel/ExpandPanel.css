@@ -5,7 +5,7 @@
 }
 .detail-list{
     overflow: auto;
-    max-height: calc(100% - 238px);
+    max-height: calc(100% - 200px);
     padding-right: 20px;
     padding-left: 20px;
     padding-bottom: 12px;
@@ -31,19 +31,18 @@ div.button:first-child > p{
 }
 .heading{
     font-size: 1.3rem !important;
-    color: #707479 !important;
+    color: var(--grey-900) !important;
     font-weight: bold !important;
-    padding: 10px 0px 0px 10px;
+    align-self: center;
 }
-.secondaryHeading{
+.secondary-heading{
     font-size: 0.9rem !important;
     font-family: "Lato", sans-serif;
-    color: #707479 !important;
-    padding: 5px 8px 0px 10px !important;
+    color: var(--grey-650) !important;
     background: var(--grey-200);
-    height: 30px;
-    margin: 0px 0px 0px 10px;
+    padding-right: 0px !important;
     align-self: center;
+    margin-left: 1rem;
 }
 .button-heading{
     font-size: 0.70rem !important;
