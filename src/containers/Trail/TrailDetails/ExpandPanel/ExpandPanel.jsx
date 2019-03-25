@@ -81,7 +81,7 @@ class ExpandPanel extends React.PureComponent {
                     value="checkedG"
                   />
                   <span styleName="heading">{value.title}</span>
-                  <span styleName="secondaryHeading">{value.month}</span>
+                  <span styleName="secondary-heading">{value.month}</span>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Grid container>
