@@ -11,7 +11,6 @@ import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
 import './EvaluationPage.css';
-// import Trail from 'containers/Trail';
 
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
