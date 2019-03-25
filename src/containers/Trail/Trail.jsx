@@ -136,4 +136,11 @@ const TrailContainer = connect(
   null,
   mapDispatchToProps,
 )(Trail);
+
+const TestHooks = {
+  Trail,
+};
 export default TrailContainer;
+export {
+  TestHooks,
+};
