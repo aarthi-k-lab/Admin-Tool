@@ -46,15 +46,20 @@ Profile.renderGroups = function renderGroups(groups) {
 };
 
 Profile.renderSkills = function renderSkills(skills) {
+  let mergedSkills = [];
+  Object.keys(skills).forEach(value => {
+    let currSkills = skills[value];
+    mergedSkills.push(currSkills.map(currSkill => value + currSkill));
+  });
   const sortedSkillsWithDefinitions = {};
-  const sortedSkills = !R.isNil(skills) && !R.isEmpty(skills)
-    ? Object.keys(skills).sort((skill1, skill2) => {
+  const sortedSkills = !R.isNil(mergedSkills) && !R.isEmpty(mergedSkills)
+    ? Object.keys(mergedSkills).sort((skill1, skill2) => {
       const skillNo1 = skill1.replace(/\s/g, '').match(/Skill(.*)/);
       const skillNo2 = skill2.replace(/\s/g, '').match(/Skill(.*)/);
       return parseInt(skillNo1[1], 10) - parseInt(skillNo2[1], 10);
     }) : [];
   sortedSkills.forEach((key) => {
-    sortedSkillsWithDefinitions[key] = skills[key];
+    sortedSkillsWithDefinitions[key] = mergedSkills[key];
   });
 
   return sortedSkillsWithDefinitions && sortedSkills && sortedSkills.map(skill => (
