@@ -15,7 +15,7 @@
     min-height: 2rem !important;
 }
 div.button:first-child > p{
-    font-size: 8pt !important;
+    font-size: 0.75rem !important;
 }
 .button-border{
     box-shadow: none !important;
@@ -30,13 +30,13 @@ div.button:first-child > p{
     border-top-right-radius: 0 !important;
 }
 .heading{
-    font-size: 16pt !important;
+    font-size: 1.3rem !important;
     color: #707479 !important;
     font-weight: bold !important;
     padding: 10px 0px 0px 10px;
 }
 .secondaryHeading{
-    font-size: 10pt !important;
+    font-size: 0.9rem !important;
     font-family: "Lato", sans-serif;
     color: #707479 !important;
     padding: 5px 8px 0px 10px !important;
@@ -46,7 +46,7 @@ div.button:first-child > p{
     align-self: center;
 }
 .button-heading{
-    font-size: 8pt !important;
+    font-size: 0.70rem !important;
     font-family: "Lato", sans-serif;
     font-weight: bold !important; 
 }
@@ -55,7 +55,7 @@ div.button:first-child > p{
     border-bottom: 1px solid #dbdee1;
 }
 .header-style{
-    font-size: 12pt;
+    font-size: 0.90rem;
     font-family: "Lato", sans-serif;
     color: #707479;
 }
@@ -64,13 +64,18 @@ div.button:first-child > p{
     color: #333940;
     margin-top: 0.5rem;
 }
-.checkbox{
+.complete{
     color:var(--light-green-500) !important;
     border-radius: 50% !important;
     pointer-events: none;
 }
-.uncheckbox{
+.incomplete{
     color:#e2e2e1 !important;
+    border-radius: 50% !important;
+    pointer-events: none;
+}
+.failed{
+    color: var(--red-600) !important;
     border-radius: 50% !important;
     pointer-events: none;
 }

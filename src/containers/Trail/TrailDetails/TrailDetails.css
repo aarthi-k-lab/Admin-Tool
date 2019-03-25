@@ -2,7 +2,7 @@
     text-align: center;
 }
 .header-style{
-    font-size: 12pt;
+    font-size: 1rem;
     font-family: "Lato", sans-serif;
     color: #707479;
 }
@@ -12,7 +12,7 @@
     margin-top: 0.5rem;
 }
 .title-style{
-    font-size: 16pt;
+    font-size: 1.25rem;
     font-family: "Lato", sans-serif;
     color: #707479;
     font-weight: bold;

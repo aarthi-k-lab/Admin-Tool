@@ -33,17 +33,17 @@ class TrailDetails extends React.PureComponent {
   }
 
   renderDetailsCard() {
-    const { details, data } = this.props;
+    const { monthlyDetails, cardDetails } = this.props;
     return (
       <>
         <div styleName="title-row">
           <div styleName="title-style">
-            {data.title}
+            {cardDetails.title}
           </div>
           <Card>
             <CardContent>
               <Grid container styleName="header-Name">
-                {data.trailDetails && data.trailDetails.map(detail => (
+                {cardDetails.trailDetails && cardDetails.trailDetails.map(detail => (
                   <Grid item xs={3}>
                     <span styleName="header-style">{detail.columnName}</span>
                     <br />
@@ -56,14 +56,14 @@ class TrailDetails extends React.PureComponent {
             </CardContent>
           </Card>
         </div>
-        <ExpandPanel data={details} />
+        <ExpandPanel monthlyDetails={monthlyDetails} />
       </>
     );
   }
 
   render() {
-    const { details, data } = this.props;
-    if (details.length === 0 && Object.keys(data).length === 0) {
+    const { monthlyDetails, cardDetails } = this.props;
+    if (monthlyDetails.length === 0 && Object.keys(cardDetails).length === 0) {
       return null;
     }
     return (
@@ -73,12 +73,12 @@ class TrailDetails extends React.PureComponent {
 }
 
 TrailDetails.propTypes = {
-  data: PropTypes.shape({
+  cardDetails: PropTypes.shape({
     details: PropTypes.string.isRequired,
     month: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
   }).isRequired,
-  details: PropTypes.shape({
+  monthlyDetails: PropTypes.shape({
     acceptanceDate: PropTypes.string.isRequired,
     downPayment: PropTypes.string.isRequired,
     receivedDate: PropTypes.string.isRequired,

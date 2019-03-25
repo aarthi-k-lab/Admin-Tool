@@ -218,6 +218,14 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
   return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
 }
 
+function getEvalType() {
+  return generateTombstoneItem('Eval Type', 'PRE APPROVED');
+}
+
+function getBoardingDate() {
+  return generateTombstoneItem('Boarding Date', '12/10/18');
+}
+
 
 function getTombstoneItems(loanDetails,
   evalDetails,
@@ -245,6 +253,9 @@ function getTombstoneItems(loanDetails,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
+  if (window.location.pathname === '/trail') {
+    dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
+  }
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
     previousDispositionDetails,

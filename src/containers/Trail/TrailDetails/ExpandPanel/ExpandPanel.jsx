@@ -22,7 +22,6 @@ class ExpandPanel extends React.PureComponent {
     this.renderPanel = this.renderPanel.bind(this);
     this.handleExpandAll = this.handleExpandAll.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.setStatusColor = this.setStatusColor.bind(this);
   }
 
   handleExpandAll() {
@@ -48,7 +47,6 @@ class ExpandPanel extends React.PureComponent {
       isExpanded: false,
     });
   }
-
 
   renderPanel() {
     const { isExpanded, panels } = this.state;
@@ -87,7 +85,7 @@ class ExpandPanel extends React.PureComponent {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Grid container>
-                    {value.details && value.details.map(detail => (
+                    {value.monthDetail && value.monthDetail.map(detail => (
                       <Grid item xs={2}>
                         <span styleName="header-style">{detail.header}</span>
                         <br />

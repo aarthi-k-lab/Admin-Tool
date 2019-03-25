@@ -38,18 +38,21 @@ const navigationList = [
   },
 ];
 
-const data = [{
+const monthlyData = [{
   title: 'Trail1',
   month: 'January 2019',
+  status: 'complete',
 },
 {
   title: 'Trail2',
   month: 'February 2020',
+  status: 'failed',
 },
 {
   title: 'Trail3',
   month: 'February 2020',
-  details: [{
+  status: 'incomplete',
+  monthDetail: [{
     header: 'Total Trail amount',
     value: '$283400',
   }, {
@@ -75,8 +78,8 @@ class Trail extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      trailData: {},
-      trailDetails: [],
+      cardDetails: {},
+      monthlyDetails: [],
     };
     this.handleNavigationClick = this.handleNavigationClick.bind(this);
   }
@@ -89,11 +92,11 @@ class Trail extends React.PureComponent {
   }
 
   handleNavigationClick() {
-    this.setState({ trailDetails: data, trailData: details });
+    this.setState({ monthlyDetails: monthlyData, cardDetails: details });
   }
 
   render() {
-    const { trailDetails, trailData } = this.state;
+    const { monthlyDetails, cardDetails } = this.state;
     return (
       <>
         <Tombstone />
@@ -108,7 +111,7 @@ class Trail extends React.PureComponent {
           </Grid>
           <Grid item styleName="container-item" xs={6}>
             <div styleName="detail-parent">
-              <TrailDetails data={trailData} details={trailDetails} />
+              <TrailDetails cardDetails={cardDetails} monthlyDetails={monthlyDetails} />
             </div>
           </Grid>
           <Grid item styleName="container-item" xs={3}>
