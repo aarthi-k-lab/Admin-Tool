@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -7,53 +6,72 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
+import * as R from 'ramda';
 import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
 import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 import PropTypes from 'prop-types';
 import './ExpandPanel.css';
 
-
 class ExpandPanel extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false,
-      expandAll: false,
-      panel: null,
+      isExpanded: false,
+      panels: [],
     };
     this.renderPanel = this.renderPanel.bind(this);
+    this.handleExpandAll = this.handleExpandAll.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.setStatusColor = this.setStatusColor.bind(this);
+  }
+
+  handleExpandAll() {
+    const { isExpanded, panels } = this.state;
+    const { monthlyDetails } = this.props;
+    let currentPanel = 0;
+    while (currentPanel < monthlyDetails.length) {
+      panels[currentPanel] = !isExpanded;
+      currentPanel += 1;
+    }
+    this.setState({
+      isExpanded: !isExpanded,
+      panels,
+    });
+  }
+
+  handleClick(panelIndex) {
+    const { panels } = this.state;
+    panels[panelIndex] = !panels[panelIndex];
+    this.setState({
+      ...panels,
+      panels,
+      isExpanded: false,
+    });
   }
 
 
   renderPanel() {
-    const { panel, expanded, expandAll } = this.state;
-    const { data } = this.props;
+    const { isExpanded, panels } = this.state;
+    const { monthlyDetails } = this.props;
     return (
       <>
         <div styleName="expand-all">
           <ExpansionPanel
-            expanded={expandAll}
-            onChange={() => this.setState(
-              { expandAll: !expandAll, expanded: !expandAll, panel: null },
-            )}
+            expanded={isExpanded}
+            onChange={() => this.handleExpandAll()}
             styleName="button-border"
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="button">
-              <Typography styleName="button-heading">{expandAll ? 'Collapse All' : 'Expand All'}</Typography>
+              <Typography styleName="button-heading">{isExpanded ? 'Collapse All' : 'Expand All'}</Typography>
             </ExpansionPanelSummary>
           </ExpansionPanel>
         </div>
         <div styleName="detail-list">
           {
-            data && data.map(value => (
+            monthlyDetails.map((value, index) => (
               <ExpansionPanel
-                expanded={expandAll || (panel === value.title && expanded)}
-                onClick={() => {
-                  this.setState({
-                    panel: value.title,
-                    expanded: !expanded,
-                  });
-                }}
+                expanded={R.isNil(panels[index]) ? false : panels[index]}
+                onChange={() => this.handleClick(index)}
                 styleName="panel-border"
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -61,7 +79,7 @@ class ExpandPanel extends React.PureComponent {
                     checked
                     checkedIcon={<CircleCheckedFilled />}
                     icon={<CircleUnchecked />}
-                    styleName={value.title === 'Trail3' ? 'uncheckbox' : 'checkbox'}
+                    styleName={R.toLower(value.status)}
                     value="checkedG"
                   />
                   <span styleName="heading">{value.title}</span>
@@ -95,7 +113,7 @@ class ExpandPanel extends React.PureComponent {
 }
 
 ExpandPanel.propTypes = {
-  data: PropTypes.shape({
+  monthlyDetails: PropTypes.shape({
     details: PropTypes.string.isRequired,
     month: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
