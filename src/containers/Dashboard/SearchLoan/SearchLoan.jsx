@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
 import { Link, Redirect, withRouter } from 'react-router-dom';
+import RouteAccess from 'lib/RouteAccess';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -47,11 +51,20 @@ class SearchLoan extends React.PureComponent {
     this.canRedirect = true;
   }
 
+  getFrontEndPath() {
+    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
+  }
+
   getParamsValue() {
     const { location } = this.props;
     const params = location.search;
     const loanNumberSearch = new URLSearchParams(params);
     return loanNumberSearch.get('loanNumber');
+  }
+
+  getGroups() {
+    const { user } = this.props;
+    return user && user.groupList;
   }
 
   handleBackButton() {
@@ -64,7 +77,11 @@ class SearchLoan extends React.PureComponent {
     if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
       // TO-DO
-      this.redirectPath = payload.taskName === 'Underwriting' ? '/backend-evaluation' : '/frontend-evaluation';
+      if (payload.taskName === 'Underwriting') {
+        this.redirectPath = '/backend-evaluation';
+      } else {
+        this.redirectPath = this.getFrontEndPath();
+      }
       this.setState({ isRedirect: true });
     }
   }
@@ -139,15 +156,13 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return (this.canRedirect
-      ? <Redirect to="/frontend-evaluation" /> : null
-    );
+    return (this.canRedirect) ? <Redirect to={this.getFrontEndPath()} /> : null;
   }
 
   render() {
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/frontend-evaluation">&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
         { this.renderSearchResults() }
       </>
     );
@@ -250,12 +265,21 @@ SearchLoan.propTypes = {
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
   })).isRequired,
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
+  user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({

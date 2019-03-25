@@ -1,26 +1,26 @@
-const FEUW = 'feuw';
+const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const DP = 'DP';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 
 const PAGE_LOOKUP = [
   {
-    group: 'FEUW',
-    task: '',
+    group: FEUW,
+    task: 'Income Calculation',
     path: '/frontend-evaluation',
   },
   {
-    group: 'BEUW',
+    group: BEUW,
     task: 'Underwriting',
     path: '/backend-evaluation',
   },
   {
-    group: 'FEUW_TASKS_AND_CHECKLIST',
-    task: 'Income Calculation',
+    group: FEUW_TASKS_AND_CHECKLIST,
+    task: 'Income Calculation (beta)',
     path: '/frontend-checklist',
   },
   {
-    group: 'DP',
+    group: DP,
     task: 'Processing',
     path: '/doc-processor',
   },
@@ -31,10 +31,10 @@ const PAGE_LOOKUP = [
   },
 ];
 const GROUPS = {
-  '/frontend-evaluation': 'FEUW',
-  '/backend-evaluation': 'BEUW',
+  '/frontend-evaluation': FEUW,
+  '/backend-evaluation': BEUW,
   // TO-DO
-  '/doc-processor': 'DP',
+  '/doc-processor': DP,
 };
 
 function getTitle(location) {
@@ -42,8 +42,9 @@ function getTitle(location) {
     case '/backend-evaluation':
       return 'Underwriting';
     case '/frontend-evaluation':
-    case '/frontend-checklist':
       return 'Income Calculation';
+    case '/frontend-checklist':
+      return 'Income Calculation (beta)';
     case '/doc-processor':
       return 'Processing';
     default:
