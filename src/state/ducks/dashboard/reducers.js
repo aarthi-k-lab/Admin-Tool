@@ -81,6 +81,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         assignLoanResponse: {},
         unassignLoanResponse: {},
         clearSearch: false,
+        checklistErrorCode: '',
       };
     }
 
@@ -111,6 +112,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         inProgress: true,
         noTasksFound: false,
+        checklistErrorCode: '',
       };
     }
     case HIDE_LOADER: {
@@ -144,6 +146,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         noTasksFound: true,
+        checklistErrorCode: R.pathOr('', ['payload', 'messageCode'], action),
       };
     }
     case TASKS_NOT_FOUND: {

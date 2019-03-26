@@ -14,6 +14,7 @@ import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import AppGroupName from 'models/AppGroupName';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
 import {
   END_SHIFT,
@@ -135,7 +136,12 @@ function* fetchChecklistDetails(appGroupName, checklistId) {
   }
   const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
   if (isChecklistIdInvalid) {
-    yield put({ type: CHECKLIST_NOT_FOUND });
+    yield put({
+      type: CHECKLIST_NOT_FOUND,
+      payload: {
+        messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+      },
+    });
     return;
   }
   const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
@@ -163,13 +169,14 @@ function* fetchChecklistDetailsForSearchResult(checklistId) {
 }
 
 function* selectEval(searchItem) {
-  const searchLoanNumber = R.propOr({}, 'payload', searchItem);
+  const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
   yield put(makeChecklistReadOnly());
+  yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   const checklistId = R.propOr('', 'taskCheckListId', searchItem);
   yield call(fetchChecklistDetailsForSearchResult, checklistId);
   try {
-    yield put(tombstoneActions.fetchTombstoneData(searchLoanNumber));
+    yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
