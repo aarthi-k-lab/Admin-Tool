@@ -9,7 +9,7 @@ import {
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
   SEARCH_LOAN_TRIGGER,
-  SAVE_EVALID_LOANNUMBER,
+  SEARCH_SELECT_EVAL,
   UNASSIGN_LOAN,
   ASSIGN_LOAN,
   HIDE_ASSIGN_UNASSIGN,
@@ -58,7 +58,7 @@ const getNext = payload => ({
 });
 
 const selectEval = payload => ({
-  type: SAVE_EVALID_LOANNUMBER,
+  type: SEARCH_SELECT_EVAL,
   payload,
 });
 

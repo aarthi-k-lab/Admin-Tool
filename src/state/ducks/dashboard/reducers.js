@@ -11,6 +11,7 @@ import {
   SHOW_LOADER,
   SHOW_SAVING_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
@@ -109,6 +110,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         inProgress: true,
+        noTasksFound: false,
       };
     }
     case HIDE_LOADER: {
@@ -136,6 +138,12 @@ const reducer = (state = { firstVisit: true }, action) => {
         clearSearch: true,
         groupName: state.groupName,
         getSearchLoanResponse: {},
+      };
+    }
+    case CHECKLIST_NOT_FOUND: {
+      return {
+        ...state,
+        noTasksFound: true,
       };
     }
     case TASKS_NOT_FOUND: {

@@ -29,6 +29,7 @@ import {
   SHOW_SAVING_LOADER,
   HIDE_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
@@ -41,10 +42,12 @@ import {
   ASSIGN_LOAN_RESULT,
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
+  SEARCH_SELECT_EVAL,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
   getTasks,
+  makeChecklistReadOnly,
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
@@ -126,17 +129,54 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
-const selectEval = function* selectEval(loanNumber) {
-  const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
+function* fetchChecklistDetails(appGroupName, checklistId) {
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
+  const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
+  if (isChecklistIdInvalid) {
+    yield put({ type: CHECKLIST_NOT_FOUND });
+    return;
+  }
+  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  } else {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
+    });
+  }
+  const { rootId: rootTaskId } = response;
+  yield put(storeProcessDetails(checklistId, rootTaskId));
+  yield put(getTasks());
+}
+
+function* fetchChecklistDetailsForSearchResult(checklistId) {
+  const appGroupName = yield select(selectors.groupName);
+  yield call(fetchChecklistDetails, appGroupName, checklistId);
+}
+
+function* selectEval(searchItem) {
+  const searchLoanNumber = R.propOr({}, 'payload', searchItem);
+  yield put(resetChecklistData());
+  yield put(makeChecklistReadOnly());
+  const checklistId = R.propOr('', 'taskCheckListId', searchItem);
+  yield call(fetchChecklistDetailsForSearchResult, checklistId);
   try {
     yield put(tombstoneActions.fetchTombstoneData(searchLoanNumber));
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
-};
+}
 
 function* watchTombstoneLoan() {
-  yield takeEvery(SAVE_EVALID_LOANNUMBER, selectEval);
+  yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
@@ -277,28 +317,10 @@ function* saveChecklistDisposition(payload) {
   return true;
 }
 
-function* fetchChecklistDetails(taskDetails, payload) {
-  if (!AppGroupName.shouldGetChecklist(payload.appGroupName)) {
-    return;
-  }
+function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
+  const { appGroupName } = payload;
   const checklistId = getChecklistId(taskDetails);
-  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
-  const didErrorOccur = response === null;
-  if (didErrorOccur) {
-    throw new Error('Api call failed');
-  } else {
-    yield put({
-      type: USER_NOTIF_MSG,
-      payload: {},
-    });
-    yield put({
-      type: SET_GET_NEXT_STATUS,
-      payload: false,
-    });
-  }
-  const { rootId: rootTaskId } = response;
-  yield put(storeProcessDetails(checklistId, rootTaskId));
-  yield put(getTasks());
+  yield call(fetchChecklistDetails, appGroupName, checklistId);
 }
 
 function* errorFetchingChecklistDetails() {
@@ -320,7 +342,7 @@ function* getNext(action) {
         const loanNumber = getLoanNumber(taskDetails);
         const evalPayload = getEvalPayload(taskDetails);
         const commentsPayLoad = getCommentPayload(taskDetails);
-        yield call(fetchChecklistDetails, taskDetails, action.payload);
+        yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
         yield put(tombstoneActions.fetchTombstoneData(loanNumber));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
@@ -422,7 +444,7 @@ export const TestExports = {
   autoSaveOnClose,
   endShift,
   errorFetchingChecklistDetails,
-  fetchChecklistDetails,
+  fetchChecklistDetails: fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
   saveChecklistDisposition,

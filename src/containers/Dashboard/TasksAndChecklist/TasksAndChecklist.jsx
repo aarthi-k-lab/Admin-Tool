@@ -161,6 +161,7 @@ TasksAndChecklist.defaultProps = {
 TasksAndChecklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
       options: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
