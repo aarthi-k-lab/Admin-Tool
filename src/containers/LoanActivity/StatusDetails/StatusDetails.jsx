@@ -2,11 +2,11 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import PropTypes from 'prop-types';
-import './TrailDetails.css';
 import Grid from '@material-ui/core/Grid';
 import ExpandPanel from './ExpandPanel';
+import './StatusDetails.css';
 
-class TrailDetails extends React.PureComponent {
+class StatusDetails extends React.PureComponent {
   constructor(props) {
     super(props);
     this.renderDetailsCard = this.renderDetailsCard.bind(this);
@@ -23,7 +23,7 @@ class TrailDetails extends React.PureComponent {
           <Card>
             <CardContent styleName="card-content">
               <Grid container>
-                {cardDetails.trailDetails && cardDetails.trailDetails.map(detail => (
+                {cardDetails.statusDetails && cardDetails.statusDetails.map(detail => (
                   <Grid item styleName="item" xs={3}>
                     <span styleName="header-style">{detail.columnName}</span>
                     <span styleName="value-style">{detail.columnValue}</span>
@@ -50,7 +50,7 @@ class TrailDetails extends React.PureComponent {
   }
 }
 
-TrailDetails.propTypes = {
+StatusDetails.propTypes = {
   cardDetails: PropTypes.shape({
     details: PropTypes.string.isRequired,
     month: PropTypes.string.isRequired,
@@ -64,4 +64,4 @@ TrailDetails.propTypes = {
   }).isRequired,
 };
 
-export default TrailDetails;
+export default StatusDetails;

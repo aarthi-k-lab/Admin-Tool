@@ -8,7 +8,7 @@ import EvaluationPage from './EvaluationPage';
 function Dashboard(props) {
   const { isFirstVisit, group, onGetGroupName } = props;
   onGetGroupName(group);
-  return isFirstVisit ? <LandingPage /> : <EvaluationPage group={group} />;
+  return isFirstVisit && group !== 'LA' ? <LandingPage /> : <EvaluationPage group={group} />;
 }
 
 const TestExports = {

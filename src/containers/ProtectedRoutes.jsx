@@ -24,7 +24,6 @@ import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
-import Trail from './Trail';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -97,6 +96,14 @@ class ProtectedRoutes extends React.Component {
   }
 
   // TO-DO
+  // eslint-disable-next-line class-methods-use-this
+  renderLoanActivity() {
+    return (
+      <Dashboard group="LA" />
+    );
+  }
+
+  // TO-DO
   renderDocProcessorRoute() {
     const groups = this.getGroups();
     return (
@@ -135,7 +142,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-processor" render={this.renderDocProcessorRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
-          <Route exact path="/trail" render={() => <Trail />} />
+          <Route exact path="/loan-activity" render={this.renderLoanActivity} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

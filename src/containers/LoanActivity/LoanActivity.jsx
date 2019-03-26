@@ -1,17 +1,15 @@
-/* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
-import Tombstone from 'containers/Dashboard/Tombstone';
-import TrailDetails from './TrailDetails';
-import Navigation from './NavigationPane';
+import StatusDetails from './StatusDetails';
+import StatusTree from './Status';
 import { operations } from '../../state/ducks/dashboard';
-import './Trail.css';
+import './LoanActivity.css';
 
-const details = {
+const status = {
   title: 'Trial Period',
-  trailDetails: [{
+  statusDetails: [{
     columnName: 'Trail Letter Sent on',
     columnValue: '11/02/2018',
   }, {
@@ -26,7 +24,7 @@ const details = {
   }],
 };
 
-const navigationList = [
+const statusList = [
   {
     header: 'Trail Period',
     assignee: 'Prasad',
@@ -74,14 +72,14 @@ const monthlyData = [{
 },
 ];
 
-class Trail extends React.PureComponent {
+class LoanActivity extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       cardDetails: {},
       monthlyDetails: [],
     };
-    this.handleNavigationClick = this.handleNavigationClick.bind(this);
+    this.handleStatusClick = this.handleStatusClick.bind(this);
   }
 
 
@@ -91,38 +89,37 @@ class Trail extends React.PureComponent {
     onSelectEval('1928799');
   }
 
-  handleNavigationClick() {
-    this.setState({ monthlyDetails: monthlyData, cardDetails: details });
+  handleStatusClick() {
+    this.setState({ monthlyDetails: monthlyData, cardDetails: status });
   }
 
   render() {
     const { monthlyDetails, cardDetails } = this.state;
     return (
       <>
-        <Tombstone />
         <Grid container styleName="container">
           <Grid item styleName="container-item" xs={3}>
-            <div styleName="navigation-pane">
-              <Navigation
-                navigationList={navigationList}
-                onCardClick={this.handleNavigationClick}
+            <div styleName="status">
+              <StatusTree
+                onCardClick={this.handleStatusClick}
+                statusList={statusList}
               />
             </div>
           </Grid>
           <Grid item styleName="container-item" xs={6}>
             <div styleName="detail-parent">
-              <TrailDetails cardDetails={cardDetails} monthlyDetails={monthlyDetails} />
+              <StatusDetails cardDetails={cardDetails} monthlyDetails={monthlyDetails} />
             </div>
           </Grid>
           <Grid item styleName="container-item" xs={3}>
-            <div styleName="navigation-pane" />
+            <div styleName="status" />
           </Grid>
         </Grid>
       </>
     );
   }
 }
-Trail.propTypes = {
+LoanActivity.propTypes = {
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
 };
@@ -133,10 +130,10 @@ const mapDispatchToProps = dispatch => ({
 const TrailContainer = connect(
   null,
   mapDispatchToProps,
-)(Trail);
+)(LoanActivity);
 
 const TestHooks = {
-  Trail,
+  LoanActivity,
 };
 export default TrailContainer;
 export {

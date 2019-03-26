@@ -2,9 +2,9 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import CardIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
-import './Navigation.css';
+import './Status.css';
 
-class Navigation extends React.PureComponent {
+class Status extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -17,10 +17,10 @@ class Navigation extends React.PureComponent {
   }
 
   render() {
-    const { navigationList } = this.props;
+    const { statusList } = this.props;
     return (
       <>
-        {navigationList.map(parent => (
+        {statusList.map(parent => (
           <div styleName="cards">
             <div styleName="parent-card">
               <Grid container onClick={() => this.handleClick()} styleName="main-container">
@@ -78,8 +78,9 @@ class Navigation extends React.PureComponent {
   }
 }
 
-Navigation.propTypes = {
-  navigationList: PropTypes.shape({
+Status.propTypes = {
+  onCardClick: PropTypes.func.isRequired,
+  statusList: PropTypes.shape({
     assignee: PropTypes.string.isRequired,
     endDate: PropTypes.string.isRequired,
     expectedCompletionDate: PropTypes.string.isRequired,
@@ -87,7 +88,6 @@ Navigation.propTypes = {
     startDate: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
   }).isRequired,
-  onCardClick: PropTypes.func.isRequired,
 };
 
-export default Navigation;
+export default Status;

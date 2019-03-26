@@ -8,6 +8,7 @@ import { BackendDisposition } from 'containers/Dashboard/BackEndDisposition';
 import DocProcessing from 'containers/Dashboard/DocProcessing';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
+import LoanActivity from 'containers/LoanActivity';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
 import './EvaluationPage.css';
@@ -22,27 +23,29 @@ class EvaluationPage extends React.PureComponent {
         return <TasksAndChecklist />;
       case DashboardModel.DP:
         return <DocProcessing />;
+      case DashboardModel.LOAN_ACTIVITY:
+        return <LoanActivity />;
       default:
         return <FrontEndDisposition />;
     }
   }
 
   render() {
-    const { location } = this.props;
+    const { location, group } = this.props;
     const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
     const title = el.task;
     return (
       <>
         <ContentHeader title={title}>
           <Controls
-            showEndShift
-            showGetNext
-            showValidate
+            showEndShift={group !== DashboardModel.LOAN_ACTIVITY}
+            showGetNext={group !== DashboardModel.LOAN_ACTIVITY}
+            showValidate={group !== DashboardModel.LOAN_ACTIVITY}
           />
         </ContentHeader>
         <Tombstone />
         <FullHeightColumn styleName="columns-container">
-          { this.renderDashboard() }
+          {this.renderDashboard()}
         </FullHeightColumn>
       </>
     );

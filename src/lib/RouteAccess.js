@@ -51,10 +51,11 @@ const feuwTasksAndChecklist = {
   beta: true,
 };
 
-const trail = {
-  path: '/trail',
-  name: 'trail',
-  img: '/static/img/settings.svg',
+// TO DO
+const loanActivity = {
+  path: '/loan-activity',
+  name: 'loan-activity',
+  img: '/static/img/loan-activity.svg',
   groups: ['allaccess'],
 };
 
@@ -66,7 +67,7 @@ const links = [
   stager,
   moveForward,
   feuwTasksAndChecklist,
-  trail,
+  loanActivity,
 ];
 
 function hasGroup(requiredGroups, userGroups) {

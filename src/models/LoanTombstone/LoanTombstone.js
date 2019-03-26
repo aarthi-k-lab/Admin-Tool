@@ -231,11 +231,10 @@ function getBoardingDate() {
   return generateTombstoneItem('Boarding Date', '12/10/18');
 }
 
-
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails) {
+  prioritizationDetails, groupName) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
@@ -258,7 +257,7 @@ function getTombstoneItems(loanDetails,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
-  if (window.location.pathname === '/trail') {
+  if (R.equals(groupName, 'LA')) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
   }
   const data = dataGenerator.map(fn => fn(loanDetails,
@@ -351,6 +350,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     evalDetails,
     previousDispositionDetails,
     prioritizationDetails,
+    groupName,
   )];
 }
 
