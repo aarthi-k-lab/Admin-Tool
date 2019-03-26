@@ -190,7 +190,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
-        processId: action.payload.wfProcessId,
+        processId: action.payload.piid,
         processStatus: action.payload.pstatus,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,

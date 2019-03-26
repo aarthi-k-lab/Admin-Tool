@@ -233,9 +233,9 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  const wfProcessId = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  const piid = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
   return {
-    loanNumber, evalId, taskId, wfProcessId,
+    loanNumber, evalId, taskId, piid,
   };
 }
 
