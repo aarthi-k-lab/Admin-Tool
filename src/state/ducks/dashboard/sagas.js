@@ -13,6 +13,7 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
@@ -379,7 +380,21 @@ function* watchGetNext() {
 
 // eslint-disable-next-line
 function* endShift(action) {
-  yield put({ type: SUCCESS_END_SHIFT });
+  const groupName = yield select(selectors.groupName);
+  if (groupName === 'feuw-task-checklist') {
+    yield put({ type: SHOW_LOADER });
+    const payload = {};
+    payload.appGroupName = groupName;
+    payload.isFirstVisit = yield select(selectors.isFirstVisit);
+    payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
+    if (yield call(saveChecklistDisposition, payload)) {
+      yield put(resetChecklistData());
+      yield put({ type: HIDE_LOADER });
+      yield put({ type: SUCCESS_END_SHIFT });
+    }
+  } else {
+    yield put({ type: SUCCESS_END_SHIFT });
+  }
 }
 
 function* watchEndShift() {
