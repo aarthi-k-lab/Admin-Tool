@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AppContainer /> snapshot test with footer 1`] = `
+<div
+  className="components-AppContainer-AppContainer__app"
+>
+  content
+  <footer
+    className="components-Footer-Footer__footer"
+  >
+    © Nationstar Mortgage LLC, All rights reserved
+  </footer>
+</div>
+`;
+
+exports[`<AppContainer /> snapshot test without footer 1`] = `
+<div
+  className="components-AppContainer-AppContainer__app"
+>
+  content
+</div>
+`;

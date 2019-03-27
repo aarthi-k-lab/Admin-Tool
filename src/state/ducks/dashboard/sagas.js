@@ -174,7 +174,7 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   yield put(makeChecklistReadOnly());
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
-  const checklistId = R.propOr('', 'taskCheckListId', searchItem);
+  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   yield call(fetchChecklistDetailsForSearchResult, checklistId);
   try {
     yield put(tombstoneActions.fetchTombstoneData());
