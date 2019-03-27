@@ -94,7 +94,6 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         unassignLoanResponse,
-        showAssign: false,
       };
     }
     case ASSIGN_LOAN_RESULT: {
