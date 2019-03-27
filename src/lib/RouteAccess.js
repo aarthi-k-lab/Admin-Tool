@@ -40,7 +40,7 @@ const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['beuw', 'beuw-mgr', 'allaccess'],
+  groups: ['doc-processor'],
 };
 
 const feuwTasksAndChecklist = {
