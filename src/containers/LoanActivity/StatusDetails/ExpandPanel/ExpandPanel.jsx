@@ -117,5 +117,10 @@ ExpandPanel.propTypes = {
     title: PropTypes.string.isRequired,
   }).isRequired,
 };
-
+const TestHooks = {
+  ExpandPanel,
+};
 export default ExpandPanel;
+export {
+  TestHooks,
+};

@@ -89,5 +89,10 @@ Status.propTypes = {
     status: PropTypes.string.isRequired,
   }).isRequired,
 };
-
+const TestHooks = {
+  Status,
+};
 export default Status;
+export {
+  TestHooks,
+};
