@@ -1,5 +1,6 @@
 import {
   autoSave,
+  displayAssign,
   dispositionSave,
   dispositionSelect,
   endShift,
@@ -79,6 +80,10 @@ const onDialogClose = dispatch => () => {
   dispatch(hideAssignUnassign());
 };
 
+const onUnassignSuccess = dispatch => () => {
+  dispatch(displayAssign());
+};
+
 const onGetGroupName = dispatch => (payload) => {
   dispatch(getGroupName(payload));
 };
@@ -94,6 +99,7 @@ const operations = {
   onSearchLoan,
   onSelectEval,
   onUnassignLoan,
+  onUnassignSuccess,
   onAssignLoan,
   onDialogClose,
   onPostComment,

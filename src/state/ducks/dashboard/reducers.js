@@ -23,6 +23,7 @@ import {
   GROUP_NAME,
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
+  DISPLAY_ASSIGN,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -217,6 +218,15 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         showAssign: null,
+        isAssigned: !R.isEmpty(assignLoanResponse),
+      };
+    }
+
+    case DISPLAY_ASSIGN: {
+      const { assignLoanResponse } = state;
+      return {
+        ...state,
+        showAssign: false,
         isAssigned: !R.isEmpty(assignLoanResponse),
       };
     }

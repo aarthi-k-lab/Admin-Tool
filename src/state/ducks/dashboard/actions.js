@@ -3,6 +3,7 @@ import {
   AUTO_SAVE_OPERATIONS,
   END_SHIFT,
   GET_NEXT,
+  DISPLAY_ASSIGN,
   SET_EXPAND_VIEW_SAGA,
   SAVE_DISPOSITION_SAGA,
   SAVE_SELECTED_DISPOSITION,
@@ -110,11 +111,16 @@ const hideAssignUnassign = () => ({
   type: HIDE_ASSIGN_UNASSIGN,
 });
 
+const displayAssign = () => ({
+  type: DISPLAY_ASSIGN,
+});
+
 
 export {
   autoSave,
   clearDisposition,
   clearFirstVisit,
+  displayAssign,
   dispositionSave,
   dispositionSelect,
   endShift,
