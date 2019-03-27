@@ -57,6 +57,8 @@ const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
 
+const getChecklistErrorCode = R.pathOr('', ['dashboard', 'checklistErrorCode']);
+
 const selectors = {
   enableEndShift,
   enableGetNext,
@@ -82,6 +84,7 @@ const selectors = {
   comments,
   groupName,
   getChecklistDiscrepancies,
+  getChecklistErrorCode,
 };
 
 export default selectors;

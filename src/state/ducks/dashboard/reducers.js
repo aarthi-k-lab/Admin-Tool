@@ -11,6 +11,7 @@ import {
   SHOW_LOADER,
   SHOW_SAVING_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
@@ -80,6 +81,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         assignLoanResponse: {},
         unassignLoanResponse: {},
         clearSearch: false,
+        checklistErrorCode: '',
       };
     }
 
@@ -109,6 +111,8 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         inProgress: true,
+        noTasksFound: false,
+        checklistErrorCode: '',
       };
     }
     case HIDE_LOADER: {
@@ -136,6 +140,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         clearSearch: true,
         groupName: state.groupName,
         getSearchLoanResponse: {},
+      };
+    }
+    case CHECKLIST_NOT_FOUND: {
+      return {
+        ...state,
+        noTasksFound: true,
+        checklistErrorCode: R.pathOr('', ['payload', 'messageCode'], action),
       };
     }
     case TASKS_NOT_FOUND: {
@@ -190,7 +201,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
-        processId: action.payload.wfProcessId,
+        processId: action.payload.piid,
         processStatus: action.payload.pstatus,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,

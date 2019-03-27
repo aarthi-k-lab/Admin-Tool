@@ -4,6 +4,7 @@ import {
   ERROR_LOADING_TASKS,
   LOADING_CHECKLIST,
   LOADING_TASKS,
+  MAKE_CHECKLIST_READ_ONLY,
   REMOVE_DIRTY_CHECKLIST,
   RESET_DATA,
   SET_SELECTED_CHECKLIST,
@@ -27,6 +28,7 @@ const defaultState = {
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
   processId: null,
+  readOnly: false,
   rootTaskId: null,
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
@@ -97,6 +99,11 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskLoadingStatus: LOADING,
+      };
+    case MAKE_CHECKLIST_READ_ONLY:
+      return {
+        ...state,
+        readOnly: true,
       };
     case REMOVE_DIRTY_CHECKLIST:
       return removeDirtyChecklistItem(state);
