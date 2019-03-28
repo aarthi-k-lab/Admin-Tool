@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import dashboardSelectors from 'ducks/dashboard/selectors';
 
 const getTaskFilter = R.path(['tasksAndChecklist', 'taskFilter']);
 
@@ -59,7 +60,7 @@ const getCurrentChecklistValue = ({ _id: id, value }, state) => {
 const getChecklistItems = state => R.compose(
   R.map(checklistItem => ({
     id: R.prop('_id', checklistItem),
-    disabled: R.pathOr(false, ['tasksAndChecklist', 'readOnly'], state),
+    disabled: !dashboardSelectors.isAssigned(state),
     isVisible: R.propOr(true, 'visibility', checklistItem),
     options: R.pathOr([], ['taskBlueprint', 'options'], checklistItem),
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),

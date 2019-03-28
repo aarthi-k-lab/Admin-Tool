@@ -51,7 +51,6 @@ import {
 import { errorTombstoneFetch } from './actions';
 import {
   getTasks,
-  makeChecklistReadOnly,
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
@@ -177,7 +176,6 @@ function* fetchChecklistDetailsForSearchResult(searchItem) {
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
-  yield put(makeChecklistReadOnly());
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   try {
