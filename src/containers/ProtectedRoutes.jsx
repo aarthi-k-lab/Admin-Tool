@@ -39,6 +39,7 @@ class ProtectedRoutes extends React.Component {
     this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
     this.renderMoveForwardRoute = this.renderMoveForwardRoute.bind(this);
     this.renderFrontendChecklistRoute = this.renderFrontendChecklistRoute.bind(this);
+    this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
   }
 
   componentDidMount() {
@@ -94,6 +95,16 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  // TO-DO
+  renderDocProcessorRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasDocProcessorAccess(groups)
+        ? <Dashboard group="DP" />
+        : <Redirect to="/unauthorized?error=DOC_PROCESSOR_ACCESS_NEEDED" />
+    );
+  }
+
   renderMoveForwardRoute() {
     const groups = this.getGroups();
     return (
@@ -120,6 +131,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
           <Route path="/backend-evaluation" render={this.renderBackendRoute} />
+          <Route path="/doc-processor" render={this.renderDocProcessorRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />

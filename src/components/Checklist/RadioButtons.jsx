@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import * as R from 'ramda';
+import { FormControlLabelWithTooltip } from 'components/RadioButtonGroup';
 import styles from './RadioButtons.css';
 
 function RadioButtons({
+  disabled,
   onChange,
   options,
   title,
@@ -23,14 +25,17 @@ function RadioButtons({
         value={selectedValue}
       >
         {
-          options.map(({ displayName, value }) => (
-            <FormControlLabel
+          options.map(({ displayName, value, hint }) => (
+            <FormControlLabelWithTooltip
               classes={{
                 label: styles['radio-control-option-label'],
               }}
               control={<Radio styleName="radio-control-bubble" />}
+              disabled={disabled}
+              disableTooltip={R.isNil(hint) || R.isEmpty(hint)}
               label={displayName}
               styleName="radio-control"
+              tooltip={hint}
               value={value}
             />
           ))
@@ -45,9 +50,11 @@ RadioButtons.defaultProps = {
 };
 
 RadioButtons.propTypes = {
+  disabled: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string.isRequired,
+    hint: PropTypes.string,
     value: PropTypes.string.isRequired,
   })).isRequired,
   selectedValue: PropTypes.string,

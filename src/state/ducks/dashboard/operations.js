@@ -1,5 +1,6 @@
 import {
   autoSave,
+  displayAssign,
   dispositionSave,
   dispositionSelect,
   endShift,
@@ -15,12 +16,17 @@ import {
   postComment,
   clearBEDisposition,
   getGroupName,
+  validateDisposition,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
 const onDispositionSave = dispatch => (dispositionPayload) => {
   dispatch(dispositionSave(dispositionPayload));
+};
+
+const validateDispositionTrigger = dispatch => (dispositionPayload) => {
+  dispatch(validateDisposition(dispositionPayload));
 };
 
 const onPostComment = dispatch => (commentsPayload) => {
@@ -74,6 +80,10 @@ const onDialogClose = dispatch => () => {
   dispatch(hideAssignUnassign());
 };
 
+const onUnassignSuccess = dispatch => () => {
+  dispatch(displayAssign());
+};
+
 const onGetGroupName = dispatch => (payload) => {
   dispatch(getGroupName(payload));
 };
@@ -89,11 +99,13 @@ const operations = {
   onSearchLoan,
   onSelectEval,
   onUnassignLoan,
+  onUnassignSuccess,
   onAssignLoan,
   onDialogClose,
   onPostComment,
   onClearBEDisposition,
   onGetGroupName,
+  validateDispositionTrigger,
 };
 
 export default operations;

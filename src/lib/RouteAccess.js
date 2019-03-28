@@ -26,6 +26,7 @@ const frontendUnderwriter = {
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
   groups: ['feuw', 'feuw-mgr'],
+  notInGroup: ['beta'],
 };
 
 const backendUnderwriter = {
@@ -35,15 +36,25 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
+// TO-DO
+const docProcessor = {
+  path: '/doc-processor',
+  name: 'doc-processor',
+  img: '/static/img/doc-processor.svg',
+  groups: ['doc-processor'],
+};
+
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
   img: '/static/img/frontend.svg',
-  groups: ['allaccess'],
+  groups: ['allaccess', 'feuw-beta', 'beta'],
+  beta: true,
 };
 
 const links = [
   managerDashboard,
+  docProcessor,
   frontendUnderwriter,
   backendUnderwriter,
   stager,
@@ -51,11 +62,15 @@ const links = [
   feuwTasksAndChecklist,
 ];
 
-function hasGroup(requiredGroups, userGroups) {
+function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
     return true;
   }
-  return requiredGroups.some(group => userGroups.includes(group));
+  if (!notInGroup) {
+    return requiredGroups.some(group => userGroups.includes(group));
+  }
+  return requiredGroups.some(group => userGroups.includes(group))
+  && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
 function hasFrontendUnderwriterAccess(groups) {
@@ -63,11 +78,15 @@ function hasFrontendUnderwriterAccess(groups) {
 }
 
 function hasFrontendChecklistAccess(groups) {
-  return hasGroup(feuwTasksAndChecklist.groups, groups);
+  return hasGroup(feuwTasksAndChecklist.groups, groups, feuwTasksAndChecklist.notInGroup);
 }
 
 function hasBackendUnderwriterAccess(groups) {
   return hasGroup(backendUnderwriter.groups, groups);
+}
+
+function hasDocProcessorAccess(groups) {
+  return hasGroup(docProcessor.groups, groups);
 }
 
 function hasManagerDashboardAccess(groups) {
@@ -85,6 +104,7 @@ function hasMoveForwardAccess(groups) {
 module.exports = {
   links,
   hasBackendUnderwriterAccess,
+  hasDocProcessorAccess,
   hasFrontendUnderwriterAccess,
   hasFrontendChecklistAccess,
   hasManagerDashboardAccess,

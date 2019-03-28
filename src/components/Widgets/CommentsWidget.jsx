@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -209,12 +210,13 @@ class CommentsWidget extends Component {
         <div id="send_area" styleName="send-area">
           <div id="send_text_area" styleName="send-text-area">
             <TextField
+              InputProps={{ style: { fontSize: '1.1rem' } }}
               multiline
               onChange={event => this.onCommentChange(event)}
               onKeyPress={event => this.onCommentChange(event)}
               placeholder="Enter Comment"
               rowsMax="4"
-              style={{ width: '100%' }}
+              style={{ width: '100%', height: '5.75rem' }}
               value={content}
             />
           </div>

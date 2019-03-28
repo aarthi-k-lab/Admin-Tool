@@ -29,3 +29,7 @@
   align-self: stretch;
   overflow-y: auto;
 }
+
+.tooltip {
+  font-size: 0.8rem;
+}

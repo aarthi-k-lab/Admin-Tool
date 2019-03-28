@@ -4,6 +4,7 @@ import {
   GET_CHECKLIST_SAGA,
   GET_TASKS_SAGA,
   HANDLE_CHECKLIST_ITEM_CHANGE,
+  MAKE_CHECKLIST_READ_ONLY,
   RESET_DATA,
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
@@ -12,14 +13,6 @@ import {
   STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
 } from './types';
-
-const storeProcessDetails = (processId, rootTaskId) => ({
-  type: STORE_PROCESS_DETAILS,
-  payload: {
-    processId,
-    rootTaskId,
-  },
-});
 
 const getNextChecklist = () => ({
   type: GET_NEXT_CHECKLIST,
@@ -51,6 +44,10 @@ const handleChecklistItemChange = (id, value) => ({
   },
 });
 
+const makeChecklistReadOnly = () => ({
+  type: MAKE_CHECKLIST_READ_ONLY,
+});
+
 const resetChecklistData = () => ({
   type: RESET_DATA,
 });
@@ -76,6 +73,14 @@ const storeChecklistNavigation = navDataStructure => ({
   payload: navDataStructure,
 });
 
+const storeProcessDetails = (processId, rootTaskId) => ({
+  type: STORE_PROCESS_DETAILS,
+  payload: {
+    processId,
+    rootTaskId,
+  },
+});
+
 const toggleInstructions = () => ({
   type: TOGGLE_INSTRUCTIONS,
 });
@@ -86,6 +91,7 @@ export {
   getChecklist,
   getTasks,
   handleChecklistItemChange,
+  makeChecklistReadOnly,
   resetChecklistData,
   setSelectedChecklist,
   storeChecklistNavigation,

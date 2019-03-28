@@ -13,13 +13,16 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
 import {
   END_SHIFT,
   GET_NEXT,
   SET_EXPAND_VIEW,
   SET_EXPAND_VIEW_SAGA,
+  VALIDATE_DISPOSITION_SAGA,
   SAVE_DISPOSITION_SAGA,
   SAVE_DISPOSITION,
   SAVE_EVALID_LOANNUMBER,
@@ -28,6 +31,7 @@ import {
   SHOW_SAVING_LOADER,
   HIDE_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
@@ -38,13 +42,33 @@ import {
   UNASSIGN_LOAN,
   UNASSIGN_LOAN_RESULT,
   ASSIGN_LOAN_RESULT,
+  SET_GET_NEXT_STATUS,
+  USER_NOTIF_MSG,
+  SEARCH_SELECT_EVAL,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
   getTasks,
+  makeChecklistReadOnly,
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
+import {
+  ERROR_LOADING_CHECKLIST,
+  ERROR_LOADING_TASKS,
+} from '../tasks-and-checklist/types';
+
+const appGroupNameToUserPersonaMap = {
+  'feuw-task-checklist': 'FEUW',
+};
+
+function getUserPersona(appGroupName) {
+  const persona = appGroupNameToUserPersonaMap[appGroupName];
+  if (persona === undefined) {
+    return appGroupName;
+  }
+  return persona;
+}
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -107,24 +131,105 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
-const selectEval = function* selectEval(loanNumber) {
-  const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
+function* fetchChecklistDetails(appGroupName, checklistId) {
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
+  const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
+  if (isChecklistIdInvalid) {
+    yield put({
+      type: CHECKLIST_NOT_FOUND,
+      payload: {
+        messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+      },
+    });
+    return;
+  }
+  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  } else {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
+    });
+  }
+  const { rootId: rootTaskId } = response;
+  yield put(storeProcessDetails(checklistId, rootTaskId));
+  yield put(getTasks());
+}
+
+function* fetchChecklistDetailsForSearchResult(checklistId) {
+  const appGroupName = yield select(selectors.groupName);
+  yield call(fetchChecklistDetails, appGroupName, checklistId);
+}
+
+function* selectEval(searchItem) {
+  const evalDetails = R.propOr({}, 'payload', searchItem);
+  yield put(resetChecklistData());
+  yield put(makeChecklistReadOnly());
+  yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
+  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+  yield call(fetchChecklistDetailsForSearchResult, checklistId);
   try {
-    yield put(tombstoneActions.fetchTombstoneData(searchLoanNumber));
+    yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
-};
+}
 
 function* watchTombstoneLoan() {
-  yield takeEvery(SAVE_EVALID_LOANNUMBER, selectEval);
+  yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
+
+const validateDisposition = function* validateDiposition(dispositionPayload) {
+  try {
+    yield put({ type: SHOW_SAVING_LOADER });
+    const payload = R.propOr({}, 'payload', dispositionPayload);
+    const disposition = R.propOr({}, 'dispositionReason', payload);
+    const group = getUserPersona(R.propOr({}, 'group', payload));
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const response = yield call(Api.callGet, `/api/disposition/validate-disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: response.enableGetNext,
+    });
+    if (!response.enableGetNext) {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {
+          type: 'error',
+          data: response.discrepancies,
+        },
+      });
+    } else {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {
+          type: 'success',
+          msg: 'Validation successful!',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({ type: HIDE_SAVING_LOADER });
+  }
+};
+
 const saveDisposition = function* setDiposition(dispositionPayload) {
   try {
     yield put({ type: SHOW_SAVING_LOADER });
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
-    const group = R.propOr({}, 'group', payload);
+    const group = getUserPersona(R.propOr({}, 'group', payload));
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
@@ -150,6 +255,16 @@ function* watchDispositionSave() {
   }
 }
 
+function* watchValidateDispositon() {
+  let payload;
+  while (true) {
+    payload = yield take(VALIDATE_DISPOSITION_SAGA);
+    if (payload) {
+      yield fork(validateDisposition, payload);
+    }
+  }
+}
+
 function getLoanNumber(taskDetails) {
   return R.path(['taskData', 'data', 'loanNumber'], taskDetails);
 }
@@ -166,9 +281,9 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  const wfProcessId = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  const piid = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
   return {
-    loanNumber, evalId, taskId, wfProcessId,
+    loanNumber, evalId, taskId, piid,
   };
 }
 
@@ -182,51 +297,79 @@ function getCommentPayload(taskDetails) {
   };
 }
 
-function* fetchChecklistDetails(taskDetails, appGroupName) {
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
-    return;
+function* saveChecklistDisposition(payload) {
+  if (!payload.isFirstVisit) {
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const group = getUserPersona(payload.appGroupName);
+    const disposition = payload.dispositionCode;
+    const saveResponse = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: saveResponse.enableGetNext,
+    });
+    if (!saveResponse.enableGetNext) {
+      yield put({ type: HIDE_LOADER });
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {
+          type: 'error',
+          data: saveResponse.discrepancies,
+        },
+      });
+      return false;
+    }
   }
+  return true;
+}
+
+function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
+  const { appGroupName } = payload;
   const checklistId = getChecklistId(taskDetails);
-  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
-  const didErrorOccur = response === null;
-  if (didErrorOccur) {
-    throw new Error('Api call failed');
-  }
-  const { rootId: rootTaskId } = response;
-  yield put(storeProcessDetails(checklistId, rootTaskId));
-  yield put(getTasks());
+  yield call(fetchChecklistDetails, appGroupName, checklistId);
+}
+
+function* errorFetchingChecklistDetails() {
+  yield put({ type: ERROR_LOADING_CHECKLIST });
+  yield put({ type: ERROR_LOADING_TASKS });
 }
 
 // eslint-disable-next-line
 function* getNext(action) {
-
   try {
     yield put({ type: SHOW_LOADER });
-    yield put(resetChecklistData());
-    const appGroupName = action.payload;
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
-    if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
-      const loanNumber = getLoanNumber(taskDetails);
-      const evalPayload = getEvalPayload(taskDetails);
-      const commentsPayLoad = getCommentPayload(taskDetails);
-      yield call(fetchChecklistDetails, taskDetails, appGroupName);
-      yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-      yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      yield put(commentsActions.loadCommentsAction(commentsPayLoad));
-      yield put({ type: HIDE_LOADER });
-    } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
-      yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
-      yield put(errorTombstoneFetch());
-    } else {
-      yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-      yield put(errorTombstoneFetch());
+    if (yield call(saveChecklistDisposition, action.payload)) {
+      yield put(resetChecklistData());
+      const { appGroupName } = action.payload;
+      const user = yield select(loginSelectors.getUser);
+      const userPrincipalName = R.path(['userDetails', 'email'], user);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
+        const loanNumber = getLoanNumber(taskDetails);
+        const evalPayload = getEvalPayload(taskDetails);
+        const commentsPayLoad = getCommentPayload(taskDetails);
+        yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
+        yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+        yield put(commentsActions.loadCommentsAction(commentsPayLoad));
+        yield put({ type: HIDE_LOADER });
+      } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
+        yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      } else {
+        yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      }
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
     yield put(errorTombstoneFetch());
+    yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
   }
 }
@@ -237,7 +380,21 @@ function* watchGetNext() {
 
 // eslint-disable-next-line
 function* endShift(action) {
-  yield put({ type: SUCCESS_END_SHIFT });
+  const groupName = yield select(selectors.groupName);
+  if (groupName === 'feuw-task-checklist') {
+    yield put({ type: SHOW_LOADER });
+    const payload = {};
+    payload.appGroupName = groupName;
+    payload.isFirstVisit = yield select(selectors.isFirstVisit);
+    payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
+    if (yield call(saveChecklistDisposition, payload)) {
+      yield put(resetChecklistData());
+      yield put({ type: HIDE_LOADER });
+      yield put({ type: SUCCESS_END_SHIFT });
+    }
+  } else {
+    yield put({ type: SUCCESS_END_SHIFT });
+  }
 }
 
 function* watchEndShift() {
@@ -308,9 +465,11 @@ function* watchAssignLoan() {
 export const TestExports = {
   autoSaveOnClose,
   endShift,
-  fetchChecklistDetails,
+  errorFetchingChecklistDetails,
+  fetchChecklistDetails: fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
+  saveChecklistDisposition,
   searchLoan,
   selectEval,
   unassignLoan,
@@ -325,6 +484,7 @@ export const TestExports = {
   watchTombstoneLoan,
   watchUnassignLoan,
   watchAssignLoan,
+  watchValidateDispositon,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -338,5 +498,6 @@ export const combinedSaga = function* combinedSaga() {
     watchTombstoneLoan(),
     watchUnassignLoan(),
     watchAssignLoan(),
+    watchValidateDispositon(),
   ]);
 };

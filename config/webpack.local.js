@@ -145,7 +145,7 @@ const config = merge(
             '^/api/utility': '',
           },
         },
-     },
+      },
       publicPath: '/',
       noInfo: false,
       headers: {

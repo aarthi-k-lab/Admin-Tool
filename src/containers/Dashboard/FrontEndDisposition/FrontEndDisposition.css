@@ -3,7 +3,7 @@
   flex-direction: column;
   margin: 0 auto;
   padding: 0 0.75rem;
-  max-width: 50rem;
+  max-width: 50.25rem;
 }
 
 .disposition-section > * {
@@ -22,6 +22,7 @@
 }
 
 .scrollable-block {
+  height: 77vh;
   align-self: stretch;
   margin: 0 auto;
   overflow: auto;

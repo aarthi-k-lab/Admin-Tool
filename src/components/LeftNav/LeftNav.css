@@ -28,6 +28,10 @@
   background-color: var(--grey-850);
 }
 
+.beta {
+  background-color: var(--mr-navy);
+}
+
 .stretch-column {
   display: flex;
   flex-direction: column;

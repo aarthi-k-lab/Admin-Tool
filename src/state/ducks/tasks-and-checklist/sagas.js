@@ -22,6 +22,8 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
 } from './types';
+import { USER_NOTIF_MSG } from '../dashboard/types';
+import { SET_GET_NEXT_STATUS } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
 } from '../notifications/types';
@@ -59,6 +61,11 @@ function* getChecklist(action) {
   }
 }
 
+
+function* callAndPut(fn, ...args) {
+  return yield put(yield call(fn, ...args));
+}
+
 function createNavigationDataStructureIter(ids, prev) {
   const id = R.head(ids);
   const next = R.head(R.tail(ids));
@@ -84,17 +91,27 @@ function createNavigationDataStructure(ids, prev) {
       prev,
       next: id,
     },
-    ...createNavigationDataStructureIter(ids, prev),
+    ...createNavigationDataStructureIter(R.tail(ids), prev),
   };
+}
+
+function prependChecklistItemForNavigationWhenNoChecklistItemIsSelected(arr) {
+  const firstInProgressChecklist = R.find(R.propEq('state', 'in-progress'), arr);
+  if (R.isNil(firstInProgressChecklist)) {
+    return R.prepend(R.head(arr), arr);
+  }
+  return R.prepend(firstInProgressChecklist, arr);
 }
 
 // createChecklistNavigation :: Object -> Object
 const createChecklistNavigation = R.compose(
   createNavigationDataStructure,
+  R.map(R.prop('id')),
+  prependChecklistItemForNavigationWhenNoChecklistItemIsSelected,
   R.reduce(R.concat, []),
   R.map(
     R.compose(
-      R.map(R.prop('_id')),
+      R.map(checklist => ({ id: R.prop('_id', checklist), state: R.prop('state', checklist) })),
       R.filter(R.propEq('visibility', true)),
       R.propOr([], 'subTasks'),
     ),
@@ -117,6 +134,17 @@ function* getTasks(action) {
     }
     const checklistNavigation = yield call(createChecklistNavigation, response);
     const checklistNavAction = yield call(actions.storeChecklistNavigation, checklistNavigation);
+    const checklistSelectionIsPresent = yield select(selectors.getSelectedChecklistId);
+    let selectedChecklistId = null;
+    if (checklistSelectionIsPresent === 'nothing') {
+      selectedChecklistId = R.pathOr('', ['nothing', 'next'], checklistNavigation);
+    }
+    if (selectedChecklistId) {
+      yield all([
+        callAndPut(actions.setSelectedChecklist, selectedChecklistId),
+        callAndPut(actions.getChecklist, selectedChecklistId),
+      ]);
+    }
     yield put(checklistNavAction);
     yield put({
       type: STORE_TASKS,
@@ -156,10 +184,6 @@ function* getPrevChecklist() {
   }
 }
 
-function* callAndPut(fn, ...args) {
-  return yield put(yield call(fn, ...args));
-}
-
 function* showLoaderOnSave() {
   yield put({
     type: LOADING_CHECKLIST,
@@ -191,6 +215,15 @@ function* handleChecklistItemChange(action) {
     yield put({
       type: STORE_CHECKLIST_ITEM_CHANGE,
       payload: action.payload,
+    });
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+      },
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
     });
     const saveTask = yield select(selectors.getDirtyChecklistItemForSave);
     if (R.isNil(saveTask)) {

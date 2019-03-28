@@ -13,6 +13,7 @@
     "start": "webpack-dev-server --config=\"./config/webpack.config.js\" --hot --env.NODE_ENV=\"local\" --host 127.0.0.1 --port 8080",
     "storybook": "start-storybook -s public -p 9001 -c .storybook",
     "test": "jest -c \"./config/jest.config.js\"",
+    "snapshotupdate": "jest -c \"./config/jest.config.js\" --updateSnapshot",
     "test:debug": "node --inspect-brk node_modules/.bin/jest -c \"./config/jest.config.js\" --runInBand --detectOpenHandles",
     "webpack": "webpack --config=\"./config/webpack.config.js\""
   },

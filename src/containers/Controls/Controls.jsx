@@ -4,13 +4,16 @@ import { connect } from 'react-redux';
 import {
   EndShift, Expand, GetNext, Assign, Unassign,
 } from 'components/ContentHeader';
+import classNames from 'classnames';
 import {
   operations,
   selectors,
 } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
-
+import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
+import Control from '../Dashboard/TasksAndChecklist/Controls';
 
 class Controls extends React.PureComponent {
   constructor(props) {
@@ -19,22 +22,44 @@ class Controls extends React.PureComponent {
   }
 
   handlegetNext() {
-    const { onGetNext, groupName } = this.props;
-    onGetNext(groupName);
+    const {
+      onGetNext, groupName,
+      isFirstVisit, dispositionCode,
+    } = this.props;
+    onGetNext({ appGroupName: groupName, isFirstVisit, dispositionCode });
+  }
+
+  validateDisposition() {
+    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
+    const payload = {
+      dispositionReason: dispositionCode,
+      group: groupName,
+    };
+    validateDispositionTrigger(payload);
   }
 
   render() {
     const {
       enableEndShift,
       enableGetNext,
+      groupName,
       onEndShift,
       onExpand,
+      showDisposition,
       showEndShift,
       showGetNext,
       showAssign,
+      showValidate,
       user,
     } = this.props;
     let assign = null;
+    const validate = showValidate ? (
+      <Control
+        className={classNames(styles.controls, styles.spacer)}
+        controlAction={() => this.validateDisposition()}
+        disableValidation={!showDisposition}
+        label="Validate"
+      />) : null;
     const getNext = showGetNext
       ? <GetNext disabled={!enableGetNext} onClick={this.handlegetNext} /> : null;
     const endShift = showEndShift ? <EndShift disabled={!enableEndShift} onClick={onEndShift} />
@@ -50,6 +75,7 @@ class Controls extends React.PureComponent {
     return (
       <>
         {assign}
+        {groupName === 'feuw-task-checklist' ? validate : null}
         {endShift}
         {getNext}
         {expand}
@@ -61,18 +87,22 @@ class Controls extends React.PureComponent {
 Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
+  isFirstVisit: true,
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
   showEndShift: false,
   showGetNext: false,
   showAssign: null,
+  showValidate: false,
 };
 
 Controls.propTypes = {
+  dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
+  isFirstVisit: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -80,8 +110,10 @@ Controls.propTypes = {
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
   showAssign: PropTypes.bool,
+  showDisposition: PropTypes.bool.isRequired,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
+  showValidate: PropTypes.bool,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
@@ -91,13 +123,16 @@ Controls.propTypes = {
     }),
     userGroups: PropTypes.array,
   }).isRequired,
-
+  validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   enableEndShift: selectors.enableEndShift(state),
   enableGetNext: selectors.enableGetNext(state),
+  dispositionCode: checklistSelectors.getDispositionCode(state),
+  isFirstVisit: selectors.isFirstVisit(state),
   showAssign: selectors.showAssign(state),
+  showDisposition: checklistSelectors.shouldShowDisposition(state),
   user: loginSelectors.getUser(state),
   groupName: selectors.groupName(state),
 });
@@ -106,6 +141,7 @@ const mapDispatchToProps = dispatch => ({
   onExpand: operations.onExpand(dispatch),
   onGetNext: operations.onGetNext(dispatch),
   onEndShift: operations.onEndShift(dispatch),
+  validateDispositionTrigger: operations.validateDispositionTrigger(dispatch),
   onAssignLoan: operations.onAssignLoan(dispatch),
 });
 
