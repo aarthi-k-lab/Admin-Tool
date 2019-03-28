@@ -73,6 +73,7 @@ class Checklist extends React.PureComponent {
   }
 
   renderChecklistItem({
+    disabled,
     id,
     options,
     title,
@@ -84,6 +85,7 @@ class Checklist extends React.PureComponent {
         const onChange = this.handleChange(id);
         return (
           <RadioButtons
+            disabled={disabled}
             onChange={onChange}
             options={options}
             selectedValue={value}
@@ -95,6 +97,7 @@ class Checklist extends React.PureComponent {
         const refCallback = this.handleBlur(id);
         const textField = (
           <TextField
+            disabled={disabled}
             inputRef={refCallback}
             label={title}
             maxRows={10}
@@ -164,6 +167,7 @@ Checklist.defaultProps = {
 Checklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
       isVisible: PropTypes.bool,
       options: PropTypes.shape({

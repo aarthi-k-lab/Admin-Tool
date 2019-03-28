@@ -159,6 +159,7 @@ describe('Ducks :: dashboard -> reducer', () => {
     const expectedState = {
       clearSearch: false,
       assignLoanResponse: {},
+      checklistErrorCode: '',
       unassignLoanResponse: {},
       getSearchLoanResponse: {
         loanNumber: '1800840108',

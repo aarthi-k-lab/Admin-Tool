@@ -13,7 +13,9 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
 import {
   END_SHIFT,
@@ -29,6 +31,7 @@ import {
   SHOW_SAVING_LOADER,
   HIDE_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
@@ -41,10 +44,12 @@ import {
   ASSIGN_LOAN_RESULT,
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
+  SEARCH_SELECT_EVAL,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
   getTasks,
+  makeChecklistReadOnly,
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
@@ -126,17 +131,60 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
-const selectEval = function* selectEval(loanNumber) {
-  const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
+function* fetchChecklistDetails(appGroupName, checklistId) {
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
+  const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
+  if (isChecklistIdInvalid) {
+    yield put({
+      type: CHECKLIST_NOT_FOUND,
+      payload: {
+        messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+      },
+    });
+    return;
+  }
+  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  } else {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: false,
+    });
+  }
+  const { rootId: rootTaskId } = response;
+  yield put(storeProcessDetails(checklistId, rootTaskId));
+  yield put(getTasks());
+}
+
+function* fetchChecklistDetailsForSearchResult(checklistId) {
+  const appGroupName = yield select(selectors.groupName);
+  yield call(fetchChecklistDetails, appGroupName, checklistId);
+}
+
+function* selectEval(searchItem) {
+  const evalDetails = R.propOr({}, 'payload', searchItem);
+  yield put(resetChecklistData());
+  yield put(makeChecklistReadOnly());
+  yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
+  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+  yield call(fetchChecklistDetailsForSearchResult, checklistId);
   try {
-    yield put(tombstoneActions.fetchTombstoneData(searchLoanNumber));
+    yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
-};
+}
 
 function* watchTombstoneLoan() {
-  yield takeEvery(SAVE_EVALID_LOANNUMBER, selectEval);
+  yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
@@ -233,9 +281,9 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  const wfProcessId = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  const piid = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
   return {
-    loanNumber, evalId, taskId, wfProcessId,
+    loanNumber, evalId, taskId, piid,
   };
 }
 
@@ -277,28 +325,10 @@ function* saveChecklistDisposition(payload) {
   return true;
 }
 
-function* fetchChecklistDetails(taskDetails, payload) {
-  if (!AppGroupName.shouldGetChecklist(payload.appGroupName)) {
-    return;
-  }
+function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
+  const { appGroupName } = payload;
   const checklistId = getChecklistId(taskDetails);
-  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
-  const didErrorOccur = response === null;
-  if (didErrorOccur) {
-    throw new Error('Api call failed');
-  } else {
-    yield put({
-      type: USER_NOTIF_MSG,
-      payload: {},
-    });
-    yield put({
-      type: SET_GET_NEXT_STATUS,
-      payload: false,
-    });
-  }
-  const { rootId: rootTaskId } = response;
-  yield put(storeProcessDetails(checklistId, rootTaskId));
-  yield put(getTasks());
+  yield call(fetchChecklistDetails, appGroupName, checklistId);
 }
 
 function* errorFetchingChecklistDetails() {
@@ -320,7 +350,7 @@ function* getNext(action) {
         const loanNumber = getLoanNumber(taskDetails);
         const evalPayload = getEvalPayload(taskDetails);
         const commentsPayLoad = getCommentPayload(taskDetails);
-        yield call(fetchChecklistDetails, taskDetails, action.payload);
+        yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
         yield put(tombstoneActions.fetchTombstoneData(loanNumber));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
@@ -350,7 +380,21 @@ function* watchGetNext() {
 
 // eslint-disable-next-line
 function* endShift(action) {
-  yield put({ type: SUCCESS_END_SHIFT });
+  const groupName = yield select(selectors.groupName);
+  if (groupName === 'feuw-task-checklist') {
+    yield put({ type: SHOW_LOADER });
+    const payload = {};
+    payload.appGroupName = groupName;
+    payload.isFirstVisit = yield select(selectors.isFirstVisit);
+    payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
+    if (yield call(saveChecklistDisposition, payload)) {
+      yield put(resetChecklistData());
+      yield put({ type: HIDE_LOADER });
+      yield put({ type: SUCCESS_END_SHIFT });
+    }
+  } else {
+    yield put({ type: SUCCESS_END_SHIFT });
+  }
 }
 
 function* watchEndShift() {
@@ -422,7 +466,7 @@ export const TestExports = {
   autoSaveOnClose,
   endShift,
   errorFetchingChecklistDetails,
-  fetchChecklistDetails,
+  fetchChecklistDetails: fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
   saveChecklistDisposition,

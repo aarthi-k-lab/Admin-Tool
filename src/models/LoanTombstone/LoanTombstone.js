@@ -193,6 +193,17 @@ function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
   return generateTombstoneItem('Previous Disposition', previousDisposition);
 }
 
+function getEvalType(_, evalDetails) {
+  const evalType = getOr('evalType', evalDetails, NA);
+  return generateTombstoneItem('Evaluation Type', evalType);
+}
+
+function getBoardingDate(loanDetails) {
+  const boardingDate = moment.tz(loanDetails.LoanMilestoneDates[2].mlstnDttm, 'America/Chicago');
+  const dateString = boardingDate.isValid() ? boardingDate.add(30, 'days').format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('Boarding Date', dateString);
+}
+
 function handleMultipleRecords(prioritizationDetails) {
   let latestHandOffDisposition = NA;
   const withoutNulls = prioritizationDetails.reduce((filteredArray, i) => {
@@ -256,6 +267,8 @@ function getTombstoneItems(loanDetails,
     getLienPosition,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
+    getEvalType,
+    getBoardingDate,
   ];
   if (R.equals(groupName, 'LA')) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
