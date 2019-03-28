@@ -16,9 +16,9 @@ class LeftNav extends React.PureComponent {
   }
 
   static getIconStyle(currentPath, path, beta = false) {
-    // const isActive = R.equals(currentPath, path);
+    const isActive = R.equals(currentPath, path);
     return classNames({
-      // [styles['active-bar']]: isActive,
+      [styles['active-bar']]: isActive,
       [styles.beta]: beta,
     });
   }

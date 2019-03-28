@@ -10,6 +10,7 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
@@ -132,10 +133,7 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
-function* fetchChecklistDetails(appGroupName, checklistId) {
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
-    return;
-  }
+function* fetchChecklistDetails(checklistId) {
   const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
   if (isChecklistIdInvalid) {
     yield put({
@@ -165,9 +163,15 @@ function* fetchChecklistDetails(appGroupName, checklistId) {
   yield put(getTasks());
 }
 
-function* fetchChecklistDetailsForSearchResult(checklistId) {
-  const appGroupName = yield select(selectors.groupName);
-  yield call(fetchChecklistDetails, appGroupName, checklistId);
+function* fetchChecklistDetailsForSearchResult(searchItem) {
+  const groupList = yield select(loginSelectors.getGroupList);
+  const hasFrontendChecklistAccess = RouteAccess.hasFrontendChecklistAccess(groupList);
+  const isFrontEndTask = R.path(['payload', 'taskName'], searchItem) === 'FrontEnd Review';
+  const shouldRetriveChecklist = hasFrontendChecklistAccess && isFrontEndTask;
+  if (shouldRetriveChecklist) {
+    const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+    yield call(fetchChecklistDetails, checklistId);
+  }
 }
 
 function* selectEval(searchItem) {
@@ -175,8 +179,7 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   yield put(makeChecklistReadOnly());
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
-  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
-  yield call(fetchChecklistDetailsForSearchResult, checklistId);
+  yield call(fetchChecklistDetailsForSearchResult, searchItem);
   try {
     yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
@@ -328,8 +331,11 @@ function* saveChecklistDisposition(payload) {
 
 function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
   const { appGroupName } = payload;
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
   const checklistId = getChecklistId(taskDetails);
-  yield call(fetchChecklistDetails, appGroupName, checklistId);
+  yield call(fetchChecklistDetails, checklistId);
 }
 
 function* errorFetchingChecklistDetails() {
@@ -357,7 +363,7 @@ function* getNext(action) {
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
-        yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
+        yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else {

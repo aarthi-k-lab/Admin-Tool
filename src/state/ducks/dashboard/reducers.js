@@ -153,7 +153,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case TASKS_NOT_FOUND: {
       let noTasksFound;
       if (action.payload) {
-        noTasksFound = action.payload.notasksFound;
+        ({ noTasksFound } = action.payload);
       }
       return {
         ...state,
@@ -206,7 +206,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         processStatus: action.payload.pstatus,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
-        notasksFound: false,
+        noTasksFound: false,
         isAssigned: !action.payload.isSearch,
       };
       return newState;
