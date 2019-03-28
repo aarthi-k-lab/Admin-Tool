@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { links } from 'lib/RouteAccess';
+import { links, shouldShowIcon } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
 import classNames from 'classnames';
@@ -44,7 +44,7 @@ class LeftNav extends React.PureComponent {
         <nav id="cmod_leftnav" styleName="left-nav-bar">
           {
         links.map(link => (
-          groupList && groupList.some(r => link.groups.includes(r))
+          shouldShowIcon(link, groupList)
             ? (
               <Link
                 className={this.constructor.getIconStyle(path, link.path)}

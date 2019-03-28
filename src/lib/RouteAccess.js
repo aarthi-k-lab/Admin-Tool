@@ -72,12 +72,16 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
   && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
+function shouldShowIcon(link, userGroups) {
+  return hasGroup(link.groups, userGroups, link.notInGroup);
+}
+
 function hasFrontendUnderwriterAccess(groups) {
-  return hasGroup(frontendUnderwriter.groups, groups);
+  return hasGroup(frontendUnderwriter.groups, groups, frontendUnderwriter.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
-  return hasGroup(feuwTasksAndChecklist.groups, groups, feuwTasksAndChecklist.notInGroup);
+  return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
 
 function hasBackendUnderwriterAccess(groups) {
@@ -109,4 +113,5 @@ module.exports = {
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
+  shouldShowIcon,
 };
