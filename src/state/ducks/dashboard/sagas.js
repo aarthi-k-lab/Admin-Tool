@@ -15,6 +15,7 @@ import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
+import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
 import {
@@ -378,8 +379,20 @@ function* watchGetNext() {
   yield takeEvery(GET_NEXT, getNext);
 }
 
+/**
+ * @description
+ * This function is called for two reasons:
+ *  1. To simply clear the dashboard data when navigating between the left pane icons
+ *  2. When the user clicks 'End Shift' button present in the dashboard
+ * @param {*} action
+ */
 // eslint-disable-next-line
 function* endShift(action) {
+  const type = R.pathOr('', ['payload', 'type'], action);
+  if (type === EndShift.CLEAR_DASHBOARD_DATA) {
+    yield put({ type: SUCCESS_END_SHIFT });
+    return;
+  }
   const groupName = yield select(selectors.groupName);
   if (groupName === 'feuw-task-checklist') {
     yield put({ type: SHOW_LOADER });

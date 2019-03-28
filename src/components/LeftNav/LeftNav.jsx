@@ -5,6 +5,7 @@ import { links } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as R from 'ramda';
+import EndShift from 'models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import styles from './LeftNav.css';
 
@@ -33,7 +34,7 @@ class LeftNav extends React.PureComponent {
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
-    onEndShift();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
   render() {
