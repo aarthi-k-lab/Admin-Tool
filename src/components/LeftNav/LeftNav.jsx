@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { links } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import * as R from 'ramda';
+import classNames from 'classnames';
 import EndShift from 'models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import styles from './LeftNav.css';
@@ -15,11 +15,10 @@ class LeftNav extends React.PureComponent {
     this.handleLandingpage = this.handleLandingpage.bind(this);
   }
 
-  static getIconStyle(currentPath, path, beta = false) {
+  static getIconStyle(currentPath, path) {
     const isActive = R.equals(currentPath, path);
     return classNames({
       [styles['active-bar']]: isActive,
-      [styles.beta]: beta,
     });
   }
 
@@ -48,7 +47,7 @@ class LeftNav extends React.PureComponent {
           groupList && groupList.some(r => link.groups.includes(r))
             ? (
               <Link
-                className={this.constructor.getIconStyle(path, link.path, link.beta)}
+                className={this.constructor.getIconStyle(path, link.path)}
                 onClick={() => this.handleLandingpage()}
                 to={link.path}
               >

@@ -47,9 +47,8 @@ const docProcessor = {
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/frontend.svg',
+  img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
-  beta: true,
 };
 
 const links = [
