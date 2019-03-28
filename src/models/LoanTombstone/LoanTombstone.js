@@ -234,14 +234,6 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
   return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
 }
 
-function getEvalType() {
-  return generateTombstoneItem('Eval Type', 'PRE APPROVED');
-}
-
-function getBoardingDate() {
-  return generateTombstoneItem('Boarding Date', '12/10/18');
-}
-
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
@@ -267,8 +259,6 @@ function getTombstoneItems(loanDetails,
     getLienPosition,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
-    getEvalType,
-    getBoardingDate,
   ];
   if (R.equals(groupName, 'LA')) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);

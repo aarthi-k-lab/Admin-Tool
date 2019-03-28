@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import StatusDetails from './StatusDetails';
@@ -82,13 +81,6 @@ class LoanActivity extends React.PureComponent {
     this.handleStatusClick = this.handleStatusClick.bind(this);
   }
 
-
-  componentDidMount() {
-    const { onSearchLoan, onSelectEval } = this.props;
-    onSearchLoan('596815091');
-    onSelectEval('1928799');
-  }
-
   handleStatusClick() {
     this.setState({ monthlyDetails: monthlyData, cardDetails: status });
   }
@@ -119,10 +111,6 @@ class LoanActivity extends React.PureComponent {
     );
   }
 }
-LoanActivity.propTypes = {
-  onSearchLoan: PropTypes.func.isRequired,
-  onSelectEval: PropTypes.func.isRequired,
-};
 const mapDispatchToProps = dispatch => ({
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
