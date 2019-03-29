@@ -19,8 +19,8 @@ const fetchChecklist = dispatch => (taskId) => {
 
 const saveTaskFilter = dispatch => taskFilter => dispatch(storeTaskFilter(taskFilter));
 
-const handleChecklistItemValueChange = dispatch => (id, value) => {
-  dispatch(handleChecklistItemChange(id, value));
+const handleChecklistItemValueChange = dispatch => (id, value, taskCode) => {
+  dispatch(handleChecklistItemChange(id, value, taskCode));
 };
 
 const handleToggleInstructions = dispatch => () => dispatch(toggleInstructions());

@@ -347,11 +347,20 @@ function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
     if (yield call(saveChecklistDisposition, action.payload)) {
+      const allTasksComments = yield select(checklistSelectors.getTaskComment);
       yield put(resetChecklistData());
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      if (R.keys(allTasksComments).length) {
+        yield all(R.keys(allTasksComments).map((taskComment) => {
+          if (R.keys(allTasksComments[taskComment]).length) {
+            return put(commentsActions.postCommentAction(allTasksComments[taskComment]));
+          }
+          return null;
+        }));
+      }
       if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
         const loanNumber = getLoanNumber(taskDetails);
         const evalPayload = getEvalPayload(taskDetails);
@@ -482,6 +491,7 @@ function* watchAssignLoan() {
 
 export const TestExports = {
   autoSaveOnClose,
+  checklistSelectors,
   endShift,
   errorFetchingChecklistDetails,
   fetchChecklistDetails: fetchChecklistDetailsForGetNext,

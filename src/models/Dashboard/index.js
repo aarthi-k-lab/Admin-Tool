@@ -7,26 +7,31 @@ const PAGE_LOOKUP = [
   {
     group: FEUW,
     task: 'Income Calculation',
+    taskCode: 'UW',
     path: '/frontend-evaluation',
   },
   {
     group: BEUW,
     task: 'Underwriting',
+    taskCode: 'UW',
     path: '/backend-evaluation',
   },
   {
     group: FEUW_TASKS_AND_CHECKLIST,
     task: 'Income Calculation (beta)',
+    taskCode: 'UW',
     path: '/frontend-checklist',
   },
   {
     group: DP,
     task: 'Processing',
+    taskCode: 'DP',
     path: '/doc-processor',
   },
   {
     group: '',
     task: 'Unrecognized Dashboard',
+    taskCode: '',
     path: '',
   },
 ];

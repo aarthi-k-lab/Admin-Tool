@@ -13,6 +13,7 @@ import {
   STORE_PROCESS_DETAILS,
   STORE_TASKS,
   STORE_TASK_FILTER,
+  STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
 } from './types';
 
@@ -30,6 +31,7 @@ const defaultState = {
   rootTaskId: null,
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
+  taskComment: {},
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -142,6 +144,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskFilter: action.payload,
+      };
+    }
+    case STORE_MISC_TASK_COMMENT: {
+      return {
+        ...state,
+        taskComment: action.payload,
       };
     }
     case TOGGLE_INSTRUCTIONS: {
