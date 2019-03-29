@@ -227,7 +227,7 @@ describe('getnext Failure -  no tasks found', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(put({
         type: actionTypes.TASKS_NOT_FOUND,
-        payload: { notasksFound: true },
+        payload: { noTasksFound: true },
       }));
   });
   it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {

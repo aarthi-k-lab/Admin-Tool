@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { links } from 'lib/RouteAccess';
+import { links, shouldShowIcon } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import * as R from 'ramda';
+import classNames from 'classnames';
+import EndShift from 'models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import styles from './LeftNav.css';
 
@@ -14,11 +15,10 @@ class LeftNav extends React.PureComponent {
     this.handleLandingpage = this.handleLandingpage.bind(this);
   }
 
-  static getIconStyle(currentPath, path, beta = false) {
-    // const isActive = R.equals(currentPath, path);
+  static getIconStyle(currentPath, path) {
+    const isActive = R.equals(currentPath, path);
     return classNames({
-      // [styles['active-bar']]: isActive,
-      [styles.beta]: beta,
+      [styles['active-bar']]: isActive,
     });
   }
 
@@ -33,7 +33,7 @@ class LeftNav extends React.PureComponent {
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
-    onEndShift();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
   render() {
@@ -44,10 +44,10 @@ class LeftNav extends React.PureComponent {
         <nav id="cmod_leftnav" styleName="left-nav-bar">
           {
         links.map(link => (
-          groupList && groupList.some(r => link.groups.includes(r))
+          shouldShowIcon(link, groupList)
             ? (
               <Link
-                className={this.constructor.getIconStyle(path, link.path, link.beta)}
+                className={this.constructor.getIconStyle(path, link.path)}
                 onClick={() => this.handleLandingpage()}
                 to={link.path}
               >

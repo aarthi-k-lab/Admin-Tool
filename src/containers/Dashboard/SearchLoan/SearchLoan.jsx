@@ -5,6 +5,7 @@ import ReactTable from 'react-table';
 import * as R from 'ramda';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
+import EndShift from 'models/EndShift';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
@@ -69,7 +70,7 @@ class SearchLoan extends React.PureComponent {
 
   handleBackButton() {
     const { onEndShift } = this.props;
-    onEndShift();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
   handleRowClick(payload) {

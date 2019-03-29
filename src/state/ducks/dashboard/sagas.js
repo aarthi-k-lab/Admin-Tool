@@ -10,11 +10,13 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
+import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
 import {
@@ -49,7 +51,6 @@ import {
 import { errorTombstoneFetch } from './actions';
 import {
   getTasks,
-  makeChecklistReadOnly,
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
@@ -131,10 +132,7 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
-function* fetchChecklistDetails(appGroupName, checklistId) {
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
-    return;
-  }
+function* fetchChecklistDetails(checklistId) {
   const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
   if (isChecklistIdInvalid) {
     yield put({
@@ -164,18 +162,22 @@ function* fetchChecklistDetails(appGroupName, checklistId) {
   yield put(getTasks());
 }
 
-function* fetchChecklistDetailsForSearchResult(checklistId) {
-  const appGroupName = yield select(selectors.groupName);
-  yield call(fetchChecklistDetails, appGroupName, checklistId);
+function* fetchChecklistDetailsForSearchResult(searchItem) {
+  const groupList = yield select(loginSelectors.getGroupList);
+  const hasFrontendChecklistAccess = RouteAccess.hasFrontendChecklistAccess(groupList);
+  const isFrontEndTask = R.path(['payload', 'taskName'], searchItem) === 'FrontEnd Review';
+  const shouldRetriveChecklist = hasFrontendChecklistAccess && isFrontEndTask;
+  if (shouldRetriveChecklist) {
+    const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+    yield call(fetchChecklistDetails, checklistId);
+  }
 }
 
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
-  yield put(makeChecklistReadOnly());
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
-  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
-  yield call(fetchChecklistDetailsForSearchResult, checklistId);
+  yield call(fetchChecklistDetailsForSearchResult, searchItem);
   try {
     yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
@@ -298,7 +300,8 @@ function getCommentPayload(taskDetails) {
 }
 
 function* saveChecklistDisposition(payload) {
-  if (!payload.isFirstVisit) {
+  const { appGroupName } = payload;
+  if (!payload.isFirstVisit && appGroupName === 'feuw-task-checklist') {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
@@ -327,8 +330,11 @@ function* saveChecklistDisposition(payload) {
 
 function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
   const { appGroupName } = payload;
+  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+    return;
+  }
   const checklistId = getChecklistId(taskDetails);
-  yield call(fetchChecklistDetails, appGroupName, checklistId);
+  yield call(fetchChecklistDetails, checklistId);
 }
 
 function* errorFetchingChecklistDetails() {
@@ -356,7 +362,7 @@ function* getNext(action) {
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
-        yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
+        yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else {
@@ -378,8 +384,20 @@ function* watchGetNext() {
   yield takeEvery(GET_NEXT, getNext);
 }
 
+/**
+ * @description
+ * This function is called for two reasons:
+ *  1. To simply clear the dashboard data when navigating between the left pane icons
+ *  2. When the user clicks 'End Shift' button present in the dashboard
+ * @param {*} action
+ */
 // eslint-disable-next-line
 function* endShift(action) {
+  const type = R.pathOr('', ['payload', 'type'], action);
+  if (type === EndShift.CLEAR_DASHBOARD_DATA) {
+    yield put({ type: SUCCESS_END_SHIFT });
+    return;
+  }
   const groupName = yield select(selectors.groupName);
   if (groupName === 'feuw-task-checklist') {
     yield put({ type: SHOW_LOADER });

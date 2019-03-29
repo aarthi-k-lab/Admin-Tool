@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
+import EndShift from 'models/EndShift';
 import Profile from './Profile';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import './Header.css';
@@ -71,7 +72,7 @@ class Header extends React.Component {
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
-    onEndShift();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
   static renderName(userDetails) {

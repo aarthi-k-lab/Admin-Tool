@@ -9,6 +9,7 @@ import {
   operations,
   selectors,
 } from 'ducks/dashboard';
+import EndShiftModel from 'models/EndShift';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
@@ -53,6 +54,9 @@ class Controls extends React.PureComponent {
       user,
     } = this.props;
     let assign = null;
+    const onEndShiftClick = () => onEndShift(
+      EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
+    );
     const validate = showValidate ? (
       <Control
         className={classNames(styles.controls, styles.spacer)}
@@ -62,7 +66,8 @@ class Controls extends React.PureComponent {
       />) : null;
     const getNext = showGetNext
       ? <GetNext disabled={!enableGetNext} onClick={this.handlegetNext} /> : null;
-    const endShift = showEndShift ? <EndShift disabled={!enableEndShift} onClick={onEndShift} />
+    const endShift = showEndShift
+      ? <EndShift disabled={!enableEndShift} onClick={onEndShiftClick} />
       : null;
     const expand = <Expand onClick={onExpand} />;
     if (showAssign != null && !showAssign) {

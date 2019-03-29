@@ -38,7 +38,7 @@ class Status extends React.PureComponent {
                 </Grid>
               </Grid>
               <Grid container onClick={() => this.handleClick()} styleName="sub-container">
-                <Grid item styleName="item left-item" xs={4}>
+                <Grid item styleName="item" xs={3}>
                   <span styleName="header-style">START DATE</span>
                   <br />
                   <span styleName="value-style">{parent.startDate}</span>

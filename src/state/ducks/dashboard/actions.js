@@ -1,4 +1,5 @@
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
+import EndShift from 'models/EndShift';
 import {
   AUTO_SAVE_OPERATIONS,
   END_SHIFT,
@@ -73,8 +74,11 @@ const getGroupName = payload => ({
   payload,
 });
 
-const endShift = () => ({
+const endShift = (type = EndShift.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA) => ({
   type: END_SHIFT,
+  payload: {
+    type,
+  },
 });
 
 const unassignLoan = () => ({
