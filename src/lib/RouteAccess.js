@@ -26,6 +26,7 @@ const frontendUnderwriter = {
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
   groups: ['feuw', 'feuw-mgr'],
+  notInGroup: ['beta'],
 };
 
 const backendUnderwriter = {
@@ -40,7 +41,7 @@ const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['beuw', 'beuw-mgr', 'allaccess'],
+  groups: ['doc-processor'],
 };
 
 const feuwTasksAndChecklist = {
@@ -70,11 +71,15 @@ const links = [
   loanActivity,
 ];
 
-function hasGroup(requiredGroups, userGroups) {
+function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
     return true;
   }
-  return requiredGroups.some(group => userGroups.includes(group));
+  if (!notInGroup) {
+    return requiredGroups.some(group => userGroups.includes(group));
+  }
+  return requiredGroups.some(group => userGroups.includes(group))
+  && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
 function hasFrontendUnderwriterAccess(groups) {
@@ -82,7 +87,7 @@ function hasFrontendUnderwriterAccess(groups) {
 }
 
 function hasFrontendChecklistAccess(groups) {
-  return hasGroup(feuwTasksAndChecklist.groups, groups);
+  return hasGroup(feuwTasksAndChecklist.groups, groups, feuwTasksAndChecklist.notInGroup);
 }
 
 function hasBackendUnderwriterAccess(groups) {

@@ -73,38 +73,41 @@ exports[`<Profile /> snapshot test 1`] = `
     >
       Skills: 
     </p>
-    <ol
-      className="components-AppHeader-Profile-Profile__group-list"
+    <div
+      className="components-AppHeader-Profile-Profile__skills"
     >
-      <li>
-        <p
-          className="MuiTypography-root-28 MuiTypography-body1-37"
+      <ol
+        className="components-AppHeader-Profile-Profile__group-list"
+      >
+        <li
+          className=""
         >
-          Skill1 - something
-        </p>
-      </li>
-      <li>
-        <p
-          className="MuiTypography-root-28 MuiTypography-body1-37"
+          <p
+            className="MuiTypography-root-28 MuiTypography-body1-37"
+          >
+            FEUW-Skill1 - something
+          </p>
+        </li>
+        <li
+          className=""
         >
-          Skill2 - nothing
-        </p>
-      </li>
-      <li>
-        <p
-          className="MuiTypography-root-28 MuiTypography-body1-37"
+          <p
+            className="MuiTypography-root-28 MuiTypography-body1-37"
+          >
+            FEUW-Skill2 - nothing
+          </p>
+        </li>
+        <li
+          className=""
         >
-          Skill14 - InVESTOR
-        </p>
-      </li>
-      <li>
-        <p
-          className="MuiTypography-root-28 MuiTypography-body1-37"
-        >
-          Skill19 - MRC Onshore
-        </p>
-      </li>
-    </ol>
+          <p
+            className="MuiTypography-root-28 MuiTypography-body1-37"
+          >
+            FEUW-Skill19 - MRC Onshore
+          </p>
+        </li>
+      </ol>
+    </div>
   </div>
 </div>
 `;

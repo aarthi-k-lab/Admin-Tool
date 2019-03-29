@@ -11,6 +11,7 @@ import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -27,26 +28,13 @@ class TasksAndChecklist extends React.PureComponent {
   }
 
   renderTaskErrorMessage() {
-    const { noTasksFound, taskFetchError } = this.props;
-    const warningMessage = 'No tasks assigned.Please contact your manager';
-    if (taskFetchError) {
-      const errorMessage = 'Task Fetch Failed.Please try again Later';
+    const { checklistErrorMessage } = this.props;
+    if (checklistErrorMessage) {
       return (
         <div styleName="notificationMsg">
           <UserNotification
             level="error"
-            message={errorMessage}
-            type="alert-box"
-          />
-        </div>
-      );
-    }
-    if (noTasksFound) {
-      return (
-        <div styleName="notificationMsg">
-          <UserNotification
-            level="error"
-            message={warningMessage}
+            message={checklistErrorMessage}
             type="alert-box"
           />
         </div>
@@ -159,8 +147,10 @@ TasksAndChecklist.defaultProps = {
 };
 
 TasksAndChecklist.propTypes = {
+  checklistErrorMessage: PropTypes.string.isRequired,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
       options: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
@@ -206,11 +196,38 @@ function getUserNotification(message) {
   };
 }
 
+function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFound) {
+  if (!(taskFetchError || noTasksFound)) {
+    return '';
+  }
+  switch (checklistErrorCode) {
+    case ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT:
+      return 'Checklist not found.';
+    default:
+      break;
+  }
+  if (taskFetchError) {
+    return 'Task Fetch Failed.Please try again Later';
+  }
+  if (noTasksFound) {
+    return 'No tasks assigned.Please contact your manager';
+  }
+  return '';
+}
+
 function mapStateToProps(state) {
+  const noTasksFound = dashboardSelectors.noTasksFound(state);
+  const taskFetchError = dashboardSelectors.taskFetchError(state);
+  const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
   return {
     disposition: selectors.getDisposition(state),
     dispositionCode: selectors.getDispositionCode(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
+    checklistErrorMessage: getChecklistErrorMessage(
+      checklistErrorCode,
+      taskFetchError,
+      noTasksFound,
+    ),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
@@ -219,10 +236,10 @@ function mapStateToProps(state) {
     inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
-    noTasksFound: dashboardSelectors.noTasksFound(state),
+    noTasksFound,
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
-    taskFetchError: dashboardSelectors.taskFetchError(state),
+    taskFetchError,
   };
 }
 

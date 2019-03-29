@@ -3,13 +3,14 @@ import {
   AUTO_SAVE_OPERATIONS,
   END_SHIFT,
   GET_NEXT,
+  DISPLAY_ASSIGN,
   SET_EXPAND_VIEW_SAGA,
   SAVE_DISPOSITION_SAGA,
   SAVE_SELECTED_DISPOSITION,
   CLEAR_DISPOSITION,
   CLEAR_FIRST_VISIT,
   SEARCH_LOAN_TRIGGER,
-  SAVE_EVALID_LOANNUMBER,
+  SEARCH_SELECT_EVAL,
   UNASSIGN_LOAN,
   ASSIGN_LOAN,
   HIDE_ASSIGN_UNASSIGN,
@@ -58,7 +59,7 @@ const getNext = payload => ({
 });
 
 const selectEval = payload => ({
-  type: SAVE_EVALID_LOANNUMBER,
+  type: SEARCH_SELECT_EVAL,
   payload,
 });
 
@@ -110,11 +111,16 @@ const hideAssignUnassign = () => ({
   type: HIDE_ASSIGN_UNASSIGN,
 });
 
+const displayAssign = () => ({
+  type: DISPLAY_ASSIGN,
+});
+
 
 export {
   autoSave,
   clearDisposition,
   clearFirstVisit,
+  displayAssign,
   dispositionSave,
   dispositionSelect,
   endShift,

@@ -46,6 +46,7 @@ const enableGetNext = state => (
 const enableEndShift = state => (
   isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state)
+  || R.pathOr(false, ['dashboard', 'showGetNext'], state)
 );
 
 const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
@@ -56,6 +57,8 @@ const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 
 
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
+
+const getChecklistErrorCode = R.pathOr('', ['dashboard', 'checklistErrorCode']);
 
 const selectors = {
   enableEndShift,
@@ -82,6 +85,7 @@ const selectors = {
   comments,
   groupName,
   getChecklistDiscrepancies,
+  getChecklistErrorCode,
 };
 
 export default selectors;
