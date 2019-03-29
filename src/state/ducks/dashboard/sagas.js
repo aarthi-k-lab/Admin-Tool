@@ -300,7 +300,8 @@ function getCommentPayload(taskDetails) {
 }
 
 function* saveChecklistDisposition(payload) {
-  if (!payload.isFirstVisit) {
+  const { appGroupName } = payload;
+  if (!payload.isFirstVisit && appGroupName === 'feuw-task-checklist') {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
