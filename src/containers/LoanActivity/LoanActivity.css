@@ -8,8 +8,10 @@
 .status{
     background-color: var(--grey-50);
     padding: 10px 10px 10px 40px;
-    overflow: auto;
-    height:  100%;
+    min-height:  calc(100vh - 11.8rem);
+    max-height: calc(100vh - 11.8rem);
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .detail-parent{
     height: 100%;
