@@ -47,9 +47,8 @@ const docProcessor = {
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/frontend.svg',
+  img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
-  beta: true,
 };
 
 // TO DO
@@ -82,12 +81,16 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
   && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
+function shouldShowIcon(link, userGroups) {
+  return hasGroup(link.groups, userGroups, link.notInGroup);
+}
+
 function hasFrontendUnderwriterAccess(groups) {
-  return hasGroup(frontendUnderwriter.groups, groups);
+  return hasGroup(frontendUnderwriter.groups, groups, frontendUnderwriter.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
-  return hasGroup(feuwTasksAndChecklist.groups, groups, feuwTasksAndChecklist.notInGroup);
+  return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
 
 function hasBackendUnderwriterAccess(groups) {
@@ -119,4 +122,5 @@ module.exports = {
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
+  shouldShowIcon,
 };

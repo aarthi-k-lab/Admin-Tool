@@ -148,17 +148,13 @@ class Disposition extends Component {
         },
         [],
       );
-    }
-    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
+    } else if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
       message = 'Please click Unassign to unassign the task from the user.';
-    }
-    if (showAssign) {
+    } else if (showAssign) {
       message = 'Please note only Manager can unassign the task.';
-    }
-    if (!isAssigned) {
+    } else if (!isAssigned) {
       message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
-    }
-    if (enableGetNext) {
+    } else if (enableGetNext) {
       message = `The task has been dispositioned successfully with disposition ${arrayToString([activityName])}`;
       level = 'success';
     }

@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import IdleTimer from 'react-idle-timer';
 import { connect } from 'react-redux';
+import EndShift from 'models/EndShift';
 import {
   operations as dashboardOperations, selectors,
 } from 'ducks/dashboard';
@@ -56,7 +57,7 @@ class IdleUserHandler extends Component {
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
-      onEndShift();
+      onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
     }
   }
 

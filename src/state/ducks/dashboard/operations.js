@@ -60,8 +60,8 @@ const onSelectEval = dispatch => (payload) => {
   dispatch(selectEval(payload));
 };
 
-const onEndShift = dispatch => () => {
-  dispatch(endShift());
+const onEndShift = dispatch => (type) => {
+  dispatch(endShift(type));
 };
 
 const onUnassignLoan = dispatch => () => {
