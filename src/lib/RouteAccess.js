@@ -26,6 +26,7 @@ const frontendUnderwriter = {
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
   groups: ['feuw', 'feuw-mgr'],
+  notInGroup: ['beta'],
 };
 
 const backendUnderwriter = {
@@ -40,15 +41,14 @@ const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['beuw', 'beuw-mgr', 'allaccess'],
+  groups: ['doc-processor'],
 };
 
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/frontend.svg',
+  img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
-  beta: true,
 };
 
 const links = [
@@ -61,15 +61,23 @@ const links = [
   feuwTasksAndChecklist,
 ];
 
-function hasGroup(requiredGroups, userGroups) {
+function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
     return true;
   }
-  return requiredGroups.some(group => userGroups.includes(group));
+  if (!notInGroup) {
+    return requiredGroups.some(group => userGroups.includes(group));
+  }
+  return requiredGroups.some(group => userGroups.includes(group))
+  && !(notInGroup.some(group => userGroups.includes(group)));
+}
+
+function shouldShowIcon(link, userGroups) {
+  return hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendUnderwriterAccess(groups) {
-  return hasGroup(frontendUnderwriter.groups, groups);
+  return hasGroup(frontendUnderwriter.groups, groups, frontendUnderwriter.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
@@ -105,4 +113,5 @@ module.exports = {
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
+  shouldShowIcon,
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
+import EndShift from 'models/EndShift';
 import { operations, selectors } from '../state/ducks/dashboard';
 
 
@@ -29,7 +30,7 @@ class HandleBrowserEvent extends React.PureComponent {
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
-    setTimeout(() => onEndShift(), 0);
+    setTimeout(() => onEndShift(EndShift.CLEAR_DASHBOARD_DATA), 0);
   }
 
   render() {

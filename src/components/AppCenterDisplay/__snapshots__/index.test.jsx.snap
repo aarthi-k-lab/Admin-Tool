@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AppCenterDisplay /> snapshot test 1`] = `
+<div
+  className="components-AppContainer-AppContainer__app"
+>
+  header
+  <div
+    className="components-Body-Body__body-container"
+  >
+    <section
+      className="components-Body-Body__body"
+    >
+      <div
+        className="components-Center-Center__center--expand components-Center-Center__center"
+      >
+        <div
+          className="components-AppCenterDisplay-AppCenterDisplay__app-center-display"
+        >
+          content
+        </div>
+      </div>
+    </section>
+  </div>
+  <footer
+    className="components-Footer-Footer__footer"
+  >
+    © Nationstar Mortgage LLC, All rights reserved
+  </footer>
+</div>
+`;

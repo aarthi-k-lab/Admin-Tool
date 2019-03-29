@@ -1,8 +1,10 @@
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
+import EndShift from 'models/EndShift';
 import {
   AUTO_SAVE_OPERATIONS,
   END_SHIFT,
   GET_NEXT,
+  DISPLAY_ASSIGN,
   SET_EXPAND_VIEW_SAGA,
   SAVE_DISPOSITION_SAGA,
   SAVE_SELECTED_DISPOSITION,
@@ -72,8 +74,11 @@ const getGroupName = payload => ({
   payload,
 });
 
-const endShift = () => ({
+const endShift = (type = EndShift.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA) => ({
   type: END_SHIFT,
+  payload: {
+    type,
+  },
 });
 
 const unassignLoan = () => ({
@@ -110,11 +115,16 @@ const hideAssignUnassign = () => ({
   type: HIDE_ASSIGN_UNASSIGN,
 });
 
+const displayAssign = () => ({
+  type: DISPLAY_ASSIGN,
+});
+
 
 export {
   autoSave,
   clearDisposition,
   clearFirstVisit,
+  displayAssign,
   dispositionSave,
   dispositionSelect,
   endShift,

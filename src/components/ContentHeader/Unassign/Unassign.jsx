@@ -51,9 +51,9 @@ class Unassign extends React.Component {
 
   handleClose() {
     this.setState({ isOpen: false });
-    const { unassignResult, onDialogClose } = this.props;
+    const { unassignResult, onUnassignSuccess } = this.props;
     if (unassignResult.cmodProcess.taskStatus === 'Paused') {
-      onDialogClose();
+      onUnassignSuccess();
     }
   }
 
@@ -92,13 +92,13 @@ class Unassign extends React.Component {
 
 Unassign.defaultProps = {
   disabled: false,
-  onDialogClose: () => {},
+  onUnassignSuccess: () => {},
 };
 
 Unassign.propTypes = {
   disabled: PropTypes.bool,
-  onDialogClose: PropTypes.func,
   onUnassignLoan: PropTypes.func.isRequired,
+  onUnassignSuccess: PropTypes.func,
   unassignResult: PropTypes.shape({
     cmodProcess: PropTypes.shape({
       taskStatus: PropTypes.string.isRequired,
@@ -117,7 +117,7 @@ Unassign.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   onUnassignLoan: operations.onUnassignLoan(dispatch),
-  onDialogClose: operations.onDialogClose(dispatch),
+  onUnassignSuccess: operations.onUnassignSuccess(dispatch),
 });
 
 

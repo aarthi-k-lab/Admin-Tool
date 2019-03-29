@@ -4,6 +4,7 @@ import {
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import * as actionTypes from './types';
 import {
@@ -226,7 +227,7 @@ describe('getnext Failure -  no tasks found', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(put({
         type: actionTypes.TASKS_NOT_FOUND,
-        payload: { notasksFound: true },
+        payload: { noTasksFound: true },
       }));
   });
   it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
@@ -344,7 +345,49 @@ describe('watch endShift ', () => {
 });
 
 describe('endShift worker', () => {
+  const action = {
+    payload: {
+      appGroupName: 'feuw-task-checklist',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
+  };
   const saga = cloneableGenerator(TestExports.endShift)();
+  it('should select groupName', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should dispatch app/dasboard/SHOW_LOADER', () => {
+    expect(saga.next('feuw-task-checklist').value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should select isFirstVisit', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.isFirstVisit));
+  });
+
+  it('should select DispositionCode', () => {
+    expect(saga.next(true).value)
+      .toEqual(select(checklistSelectors.getDispositionCode));
+  });
+
+  it('should make checklistDisposition call', () => {
+    expect(saga.next('missingDocs').value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should reset checklist data', () => {
+    expect(saga.next(true).value)
+      .toEqual(put(resetChecklistData()));
+  });
+
+  it('should hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+
   it('should dispatch SUCCESS_END_SHIFT', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SUCCESS_END_SHIFT }));

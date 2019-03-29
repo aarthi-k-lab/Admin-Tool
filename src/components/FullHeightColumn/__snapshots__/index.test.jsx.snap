@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FullHeightColumn /> snapshot test 1`] = `
+<div
+  className="components-FullHeightColumn-FullHeightColumn__stretch-column"
+>
+  <section
+    className="class1 class2 components-FullHeightColumn-FullHeightColumn__stretch-row"
+  >
+    content
+  </section>
+</div>
+`;

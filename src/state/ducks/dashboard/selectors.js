@@ -46,6 +46,7 @@ const enableGetNext = state => (
 const enableEndShift = state => (
   isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state)
+  || R.pathOr(false, ['dashboard', 'showGetNext'], state)
 );
 
 const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
