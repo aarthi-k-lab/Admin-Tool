@@ -21,6 +21,7 @@ import {
   STORE_CHECKLIST,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
+  STORE_MISC_TASK_COMMENT,
 } from './types';
 import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
@@ -29,7 +30,11 @@ import {
 } from '../notifications/types';
 import * as actions from './actions';
 import selectors from './selectors';
+import { selectors as dashboardSelectors } from '../dashboard';
+import { selectors as loginSelectors } from '../login';
+import DashboardModel from '../../../models/Dashboard/index';
 
+const MISCTSK_CHK2 = 'MISCTSK_CHK2';
 function* getChecklist(action) {
   try {
     const { payload: { taskId } } = action;
@@ -210,8 +215,50 @@ function* handleSaveChecklistError(e) {
   });
 }
 
+function isValidTaskPayload(action, taskCodeRef) {
+  return !R.isNil(action.payload.taskCode)
+    && !R.isEmpty(action.payload.taskCode) && R.equals(action.payload.taskCode, taskCodeRef);
+}
+
+function* postComment(action) {
+  if (isValidTaskPayload(action, MISCTSK_CHK2)) {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const user = yield select(loginSelectors.getUser);
+    const groupName = yield select(dashboardSelectors.groupName);
+    const page = DashboardModel.PAGE_LOOKUP.find(group => group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const taskName = !R.isNil(page) ? page.task : '';
+    const taskId = yield select(dashboardSelectors.taskId);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const disposition = yield select(selectors.getDisposition);
+    const commentPayload = {
+      applicationName: 'CMOD',
+      loanNumber,
+      processIdType: 'EvalId',
+      processId: evalId,
+      eventName,
+      comment: action.payload.value,
+      userName: user.userDetails.name,
+      createdDate: new Date().toJSON(),
+      commentContext: JSON.stringify({
+        TASK: taskName,
+        TASK_ID: taskId,
+        TASK_ACTN: disposition,
+        DSPN_IND: 1,
+      }),
+    };
+    const payload = {};
+    payload[action.payload.taskCode] = commentPayload;
+    yield put({
+      type: STORE_MISC_TASK_COMMENT,
+      payload,
+    });
+  }
+}
+
 function* handleChecklistItemChange(action) {
   try {
+    yield postComment(action);
     yield put({
       type: STORE_CHECKLIST_ITEM_CHANGE,
       payload: action.payload,

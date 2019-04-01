@@ -35,11 +35,12 @@ const getTasks = (depth = 3) => ({
   },
 });
 
-const handleChecklistItemChange = (id, value) => ({
+const handleChecklistItemChange = (id, value, taskCode) => ({
   type: HANDLE_CHECKLIST_ITEM_CHANGE,
   payload: {
     id,
     value,
+    taskCode,
   },
 });
 
