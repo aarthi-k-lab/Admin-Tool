@@ -53,7 +53,7 @@ const feuwTasksAndChecklist = {
 
 // TO DO
 const loanActivity = {
-  path: '/loan-activity',
+  path: '/',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
   groups: ['allaccess'],
@@ -93,6 +93,10 @@ function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
 
+function hasLoanActivityAccess(groups) {
+  return hasGroup(loanActivity.groups, groups);
+}
+
 function hasBackendUnderwriterAccess(groups) {
   return hasGroup(backendUnderwriter.groups, groups);
 }
@@ -122,5 +126,6 @@ module.exports = {
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
+  hasLoanActivityAccess,
   shouldShowIcon,
 };

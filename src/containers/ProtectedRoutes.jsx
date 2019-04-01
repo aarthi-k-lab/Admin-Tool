@@ -40,6 +40,7 @@ class ProtectedRoutes extends React.Component {
     this.renderMoveForwardRoute = this.renderMoveForwardRoute.bind(this);
     this.renderFrontendChecklistRoute = this.renderFrontendChecklistRoute.bind(this);
     this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
+    this.renderLoanActivity = this.renderLoanActivity.bind(this);
   }
 
   componentDidMount() {
@@ -98,8 +99,11 @@ class ProtectedRoutes extends React.Component {
   // TO-DO
   // eslint-disable-next-line class-methods-use-this
   renderLoanActivity() {
+    const groups = this.getGroups();
     return (
-      <Dashboard group="LA" />
+      RouteAccess.hasLoanActivityAccess(groups)
+        ? <Dashboard group="LA" />
+        : <Redirect to="/unauthorized?error=LOAN_ACTIVITY_ACCESS_NEEDED" />
     );
   }
 

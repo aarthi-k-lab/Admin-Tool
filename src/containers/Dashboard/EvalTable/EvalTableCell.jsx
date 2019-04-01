@@ -23,7 +23,7 @@ class EvalTableCell extends React.PureComponent {
         <span styleName={styleProps}>
           {value}
         </span>
-      ) : <Link onClick={() => this.handleLinkClick()} style={{ cursor: 'pointer', color: 'blue' }} to="/loan-activity">{value}</Link>
+      ) : <Link onClick={() => this.handleLinkClick()} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'none' }} to="/loan-activity">{value}</Link>
     );
   }
 }
