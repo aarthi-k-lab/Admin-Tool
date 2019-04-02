@@ -237,7 +237,7 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails, groupName) {
+  prioritizationDetails) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
@@ -260,7 +260,7 @@ function getTombstoneItems(loanDetails,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
-  if (R.equals(groupName, 'LA')) {
+  if (true) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
   }
   const data = dataGenerator.map(fn => fn(loanDetails,
