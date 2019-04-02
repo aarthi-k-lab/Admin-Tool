@@ -2,8 +2,28 @@
     background: var(--grey-200);
     border: 1px solid #bbbdbf;
     border-radius: 5px;
-    margin-bottom: 0.75rem;
 }
+
+.stepper{
+    padding: 0px !important;
+    background-color: unset !important;
+}
+
+.step-label{
+    position: absolute;
+}
+
+div.step-label:first-child{
+    position: relative;
+    top: 42px;
+}
+
+.step-content{
+    border-left: 1px solid #bdbdbd !important;
+    margin-top: 0px !important;
+    padding-right: 0px !important;
+}
+
 .image{
     display: inline-flex;
     justify-content: center;

@@ -1,21 +1,35 @@
-.container-item{
-    height:100%;
-}
-.container{
-    height: 100%;
+.container {
     background-color: var(--grey-200);
 }
-.status{
+
+.status {
     background-color: var(--grey-50);
-    padding: 10px 10px 10px 40px;
-    min-height:  calc(100vh - 12rem);
-    max-height: calc(100vh - 12rem);
+    padding: 10px 10px 10px 10px;
+    height: calc(100vh - 142px);
     overflow-x: hidden;
     overflow-y: auto;
 }
-.detail-parent{
-    height: 100%;
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.detail-parent {
     padding: 0.25rem;
-    max-height: calc(100vh - 12rem);
+    height: calc(100vh - 142px);
     overflow: auto;
 }
