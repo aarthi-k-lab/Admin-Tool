@@ -95,12 +95,11 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
-  // TO-DO
   renderDocProcessorRoute() {
     const groups = this.getGroups();
     return (
       RouteAccess.hasDocProcessorAccess(groups)
-        ? <Dashboard group="DP" />
+        ? <Dashboard group="PROC" />
         : <Redirect to="/unauthorized?error=DOC_PROCESSOR_ACCESS_NEEDED" />
     );
   }

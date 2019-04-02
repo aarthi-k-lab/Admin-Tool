@@ -248,7 +248,7 @@ Auth.failureMessages = {
   AD_REDIRECT_FAILED: GENERAL_ERROR_MESSAGE,
   AD_TOKEN_GENERATION_FAILED: GENERAL_ERROR_MESSAGE,
   BACKEND_UNDERWRITER_ACCESS_NEEDED: 'BEUW Group Access is needed to view the Backend Underwriter Dashboard.',
-  DOC_PROCESSOR_ACCESS_NEEDED: 'DP Group Access is needed to view the Doc-Processor Dashboard.',
+  DOC_PROCESSOR_ACCESS_NEEDED: 'PROC Group Access is needed to view the Doc Processor Dashboard.',
   FRONTEND_UNDERWRITER_ACCESS_NEEDED: 'FEUW Group Access is needed to view the Frontend Underwriter Dashboard.',
   MANAGER_ACCESS_NEEDED: 'Manager Group Access is needed to view the Manager Dashboard.',
   MOVE_FORWARD_ACCESS_NEEDED: 'Move Forward Group Access is needed to view the Move Forward Dashboard.',

@@ -133,6 +133,10 @@ const output1 = [
     title: 'Previous Disposition',
   },
   {
+    content: 'Offshore Review Required',
+    title: 'Latest Handoff Disposition',
+  },
+  {
     content: '0000000',
     title: 'Investor Loan #',
   },
@@ -175,10 +179,6 @@ const output1 = [
   {
     content: 'HAMP-PRA Alternate Waterfall',
     title: 'Modification Type',
-  },
-  {
-    content: 'Offshore Review Required',
-    title: 'Latest Handoff Disposition',
   },
   {
     content: '12/04/2018',
@@ -254,6 +254,10 @@ const output2 = [
     title: 'Previous Disposition',
   },
   {
+    content: 'Offshore Review Required',
+    title: 'Latest Handoff Disposition',
+  },
+  {
     content: 'NA',
     title: 'Investor Loan #',
   },
@@ -296,10 +300,6 @@ const output2 = [
   {
     content: 'HAMP-PRA Alternate Waterfall',
     title: 'Modification Type',
-  },
-  {
-    content: 'Offshore Review Required',
-    title: 'Latest Handoff Disposition',
   },
   {
     content: 'NA',

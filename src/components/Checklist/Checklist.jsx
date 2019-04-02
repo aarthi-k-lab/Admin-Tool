@@ -33,7 +33,7 @@ class Checklist extends React.PureComponent {
     return dirtyValue;
   }
 
-  handleBlur(id) {
+  handleBlur(id, taskCode) {
     return (element) => {
       const { onChange } = this.props;
       if (element) {
@@ -49,16 +49,16 @@ class Checklist extends React.PureComponent {
           this.setState({
             multilineTextDirtyValues,
           });
-          onChange(id, dirtyValue);
+          onChange(id, dirtyValue, taskCode);
         });
       }
     };
   }
 
-  handleChange(id) {
+  handleChange(id, taskCode) {
     const { onChange } = this.props;
     return (event) => {
-      onChange(id, event.target.value);
+      onChange(id, event.target.value, taskCode);
     };
   }
 
@@ -78,11 +78,12 @@ class Checklist extends React.PureComponent {
     options,
     title,
     type,
+    taskCode,
     value,
   }) {
     switch (type) {
       case RADIO_BUTTONS: {
-        const onChange = this.handleChange(id);
+        const onChange = this.handleChange(id, taskCode);
         return (
           <RadioButtons
             disabled={disabled}
@@ -94,7 +95,7 @@ class Checklist extends React.PureComponent {
         );
       }
       case MULTILINE_TEXT: {
-        const refCallback = this.handleBlur(id);
+        const refCallback = this.handleBlur(id, taskCode);
         const textField = (
           <TextField
             disabled={disabled}
@@ -174,6 +175,7 @@ Checklist.propTypes = {
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
       }),
+      taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
       value: PropTypes.any,
