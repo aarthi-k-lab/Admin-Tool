@@ -194,10 +194,10 @@ SearchLoan.COLUMN_DATA = [{
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'STATUS REASON',
-  accessor: 'statusReason',
-  maxWidth: 130,
-  minWidth: 130,
+  Header: 'PROCESS STATUS REASON',
+  accessor: 'pstatusReason',
+  maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -226,6 +226,13 @@ SearchLoan.COLUMN_DATA = [{
   accessor: 'tstatus',
   maxWidth: 90,
   minWidth: 90,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK STATUS REASON',
+  accessor: 'statusReason',
+  maxWidth: 130,
+  minWidth: 130,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
