@@ -11,6 +11,9 @@ import {
   operations as loginOperations,
   selectors as loginSelectors,
 } from 'ducks/login';
+import {
+  selectors as TombstoneSelectors,
+} from 'ducks/tombstone';
 import { connect } from 'react-redux';
 import App from 'components/App';
 import {
@@ -99,12 +102,15 @@ class ProtectedRoutes extends React.Component {
   // TO-DO
   // eslint-disable-next-line class-methods-use-this
   renderLoanActivity() {
+    const { items, loanNumber } = this.props;
     const groups = this.getGroups();
-    return (
-      RouteAccess.hasLoanActivityAccess(groups)
-        ? <Dashboard group="LA" />
-        : <Redirect to="/unauthorized?error=LOAN_ACTIVITY_ACCESS_NEEDED" />
-    );
+    let renderComponent = null;
+    if (RouteAccess.hasLoanActivityAccess(groups)) {
+      renderComponent = (items.length > 0 || loanNumber) ? <Dashboard group="LA" /> : <Redirect to="/" />;
+    } else {
+      renderComponent = <Redirect to="/unauthorized?error=LOAN_ACTIVITY_ACCESS_NEEDED" />;
+    }
+    return renderComponent;
   }
 
   // TO-DO
@@ -160,6 +166,8 @@ const mapStateToProps = state => ({
   expandView: dashboardSelectors.expandView(state),
   features: config.selectors.getFeatures(state),
   user: loginSelectors.getUser(state),
+  items: TombstoneSelectors.getTombstoneData(state),
+  loanNumber: dashboardSelectors.loanNumber(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -168,12 +176,22 @@ const mapDispatchToProps = dispatch => ({
   getFeaturesTrigger: config.operations.getFeaturesTrigger(dispatch),
 });
 
+ProtectedRoutes.defaultProps = {
+  items: [],
+};
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
   features: PropTypes.shape({
     taskPane: PropTypes.bool,
   }).isRequired,
   getFeaturesTrigger: PropTypes.func.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    }),
+  ),
+  loanNumber: PropTypes.string.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,

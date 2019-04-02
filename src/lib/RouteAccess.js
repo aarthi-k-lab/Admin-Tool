@@ -53,7 +53,7 @@ const feuwTasksAndChecklist = {
 
 // TO DO
 const loanActivity = {
-  path: '/',
+  path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
   groups: ['allaccess'],
