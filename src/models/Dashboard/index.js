@@ -1,6 +1,6 @@
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
-const DP = 'DP';
+const PROC = 'PROC';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 
 const PAGE_LOOKUP = [
@@ -23,9 +23,9 @@ const PAGE_LOOKUP = [
     path: '/frontend-checklist',
   },
   {
-    group: DP,
+    group: PROC,
     task: 'Processing',
-    taskCode: 'DP',
+    taskCode: 'PROC',
     path: '/doc-processor',
   },
   {
@@ -38,8 +38,7 @@ const PAGE_LOOKUP = [
 const GROUPS = {
   '/frontend-evaluation': FEUW,
   '/backend-evaluation': BEUW,
-  // TO-DO
-  '/doc-processor': DP,
+  '/doc-processor': PROC,
 };
 
 function getTitle(location) {
@@ -60,7 +59,7 @@ function getTitle(location) {
 const DashboardModel = {
   FEUW,
   BEUW,
-  DP,
+  PROC,
   FEUW_TASKS_AND_CHECKLIST,
   GROUPS,
   PAGE_LOOKUP,

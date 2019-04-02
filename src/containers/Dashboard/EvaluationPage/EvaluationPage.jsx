@@ -20,7 +20,7 @@ class EvaluationPage extends React.PureComponent {
         return <BackendDisposition />;
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
-      case DashboardModel.DP:
+      case DashboardModel.PROC:
         return <DocProcessing />;
       default:
         return <FrontEndDisposition />;

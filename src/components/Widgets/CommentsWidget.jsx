@@ -35,6 +35,9 @@ const getContextTaskName = (groupName) => {
     case 'BEUW':
       taskName = 'Underwriting Review';
       break;
+    case 'PROC':
+      taskName = 'Processing Review';
+      break;
     default:
       taskName = groupName;
       break;

@@ -36,12 +36,11 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
-// TO-DO
 const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['doc-processor'],
+  groups: ['proc', 'proc-mgr'],
 };
 
 const feuwTasksAndChecklist = {
