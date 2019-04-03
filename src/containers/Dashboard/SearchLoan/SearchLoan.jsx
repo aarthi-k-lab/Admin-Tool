@@ -77,11 +77,15 @@ class SearchLoan extends React.PureComponent {
     const { onSelectEval } = this.props;
     if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
-      // TO-DO
-      if (payload.taskName === 'Underwriting') {
-        this.redirectPath = '/backend-evaluation';
-      } else {
-        this.redirectPath = this.getFrontEndPath();
+      switch (payload.taskName) {
+        case 'Underwriting':
+          this.redirectPath = '/backend-evaluation';
+          break;
+        case 'Processing':
+          this.redirectPath = '/doc-processor';
+          break;
+        default:
+          this.redirectPath = this.getFrontEndPath();
       }
       this.setState({ isRedirect: true });
     }
@@ -190,10 +194,10 @@ SearchLoan.COLUMN_DATA = [{
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'STATUS REASON',
-  accessor: 'statusReason',
-  maxWidth: 130,
-  minWidth: 130,
+  Header: 'PROCESS STATUS REASON',
+  accessor: 'pstatusReason',
+  maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -222,6 +226,13 @@ SearchLoan.COLUMN_DATA = [{
   accessor: 'tstatus',
   maxWidth: 90,
   minWidth: 90,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
+  Header: 'TASK STATUS REASON',
+  accessor: 'statusReason',
+  maxWidth: 130,
+  minWidth: 130,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
