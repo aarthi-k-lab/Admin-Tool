@@ -203,6 +203,8 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFou
   switch (checklistErrorCode) {
     case ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT:
       return 'Checklist not found.';
+    case ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED:
+      return 'Checklist fetch failed. Please try again later.';
     default:
       break;
   }
