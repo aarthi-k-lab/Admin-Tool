@@ -24,6 +24,7 @@ import {
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
   DISPLAY_ASSIGN,
+  CLEAR_ERROR_MESSAGE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -250,6 +251,14 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition: clearDisposition,
       };
       return newState;
+    }
+
+    case CLEAR_ERROR_MESSAGE: {
+      return {
+        ...state,
+        noTasksFound: false,
+        checklistErrorCode: '',
+      };
     }
     default:
       return state;
