@@ -47,6 +47,7 @@ import {
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
   SEARCH_SELECT_EVAL,
+  CLEAR_ERROR_MESSAGE,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -458,6 +459,19 @@ function* watchUnassignLoan() {
   yield takeEvery(UNASSIGN_LOAN, unassignLoan);
 }
 
+function* fetchChecklistDetailsForAssign(groupName, response) {
+  if (!AppGroupName.shouldGetChecklist(groupName)) {
+    return;
+  }
+  yield put(resetChecklistData());
+  yield put({
+    type: CLEAR_ERROR_MESSAGE,
+    payload: {},
+  });
+  const checklistId = R.pathOr('', ['taskData', 'taskCheckListId'], response);
+  yield call(fetchChecklistDetails, checklistId);
+}
+
 function* assignLoan() {
   try {
     const evalId = yield select(selectors.evalId);
@@ -474,6 +488,7 @@ function* assignLoan() {
         type: ASSIGN_LOAN_RESULT,
         payload: response,
       });
+      yield call(fetchChecklistDetailsForAssign, groupName, response);
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
