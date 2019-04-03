@@ -1,6 +1,7 @@
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const PROC = 'PROC';
+const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 
 const PAGE_LOOKUP = [
@@ -29,6 +30,12 @@ const PAGE_LOOKUP = [
     path: '/doc-processor',
   },
   {
+    // TO-DO
+    group: LOAN_ACTIVITY,
+    task: 'Loan Activity',
+    path: '/loan-activity',
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -38,6 +45,8 @@ const PAGE_LOOKUP = [
 const GROUPS = {
   '/frontend-evaluation': FEUW,
   '/backend-evaluation': BEUW,
+  // TO-DO'S
+  '/loan-activity': LOAN_ACTIVITY,
   '/doc-processor': PROC,
 };
 
@@ -51,6 +60,8 @@ function getTitle(location) {
       return 'Income Calculation (beta)';
     case '/doc-processor':
       return 'Processing';
+    case '/loan-activity':
+      return 'Loan Activity';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -60,6 +71,7 @@ const DashboardModel = {
   FEUW,
   BEUW,
   PROC,
+  LOAN_ACTIVITY,
   FEUW_TASKS_AND_CHECKLIST,
   GROUPS,
   PAGE_LOOKUP,

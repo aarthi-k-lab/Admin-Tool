@@ -96,8 +96,8 @@ class SearchLoan extends React.PureComponent {
     const loanNumber = this.getParamsValue();
     return R.isEmpty(searchLoanResult)
       || (searchLoanResult
-      && searchLoanResult.loanNumber
-      && loanNumber !== searchLoanResult.loanNumber.toString());
+        && searchLoanResult.loanNumber
+        && loanNumber !== searchLoanResult.loanNumber.toString());
   }
 
   renderSearchResults() {
@@ -132,7 +132,7 @@ class SearchLoan extends React.PureComponent {
             <div styleName="eval-table-height-limiter">
               <h3 styleName="resultText">
                 <span styleName="searchResutlText">{ searchResultCount }</span>
-                        &nbsp;search results found for Loan &nbsp; &quot;
+                &nbsp;search results found for Loan &nbsp; &quot;
                 <span styleName="searchResutlText">{ loanNumber }</span>
                 &quot;
               </h3>
@@ -251,6 +251,12 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'ASSIGNED TO',
   accessor: 'assignee',
+  maxWidth: 200,
+  minWidth: 200,
+  Cell: row => <EvalTableRow row={row} />,
+}, {
+  Header: 'ACTIONS',
+  accessor: 'actions',
   maxWidth: 200,
   minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,

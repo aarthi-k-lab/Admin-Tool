@@ -5,10 +5,14 @@ import { selectors as dashboardSelectors, operations } from 'ducks/dashboard';
 import LandingPage from './LandingPage';
 import EvaluationPage from './EvaluationPage';
 
+function getPage(isFirstVisit, group) {
+  return isFirstVisit && group !== 'LA' ? <LandingPage /> : <EvaluationPage group={group} />;
+}
+
 function Dashboard(props) {
   const { isFirstVisit, group, onGetGroupName } = props;
   onGetGroupName(group);
-  return isFirstVisit ? <LandingPage /> : <EvaluationPage group={group} />;
+  return getPage(isFirstVisit, group);
 }
 
 const TestExports = {

@@ -234,7 +234,6 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
   return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
 }
 
-
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
@@ -248,6 +247,8 @@ function getTombstoneItems(loanDetails,
     getBorrowerItem,
     getSsnItem,
     getSuccessorInInterestStatus,
+    getEvalType,
+    getBoardingDate,
     getBrandNameItem,
     getInvestorItem,
     getLoanTypeDescription,
@@ -260,8 +261,6 @@ function getTombstoneItems(loanDetails,
     getLienPosition,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
-    getEvalType,
-    getBoardingDate,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
@@ -353,6 +352,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     evalDetails,
     previousDispositionDetails,
     prioritizationDetails,
+    groupName,
   )];
 }
 

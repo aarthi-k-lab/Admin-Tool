@@ -1,20 +1,37 @@
+// eslint-disable
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import './EvalTableCell.css';
 
-const EvalTableCell = ({ value, styleProps }) => {
-  const span = (
-    <span styleName={styleProps}>
-      { value }
-    </span>
-  );
-  return span;
-};
+class EvalTableCell extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleLinkClick = this.handleLinkClick.bind(this);
+  }
 
-EvalTableCell.PropTypes = {
-  value: PropTypes.string.isRequired,
+  handleLinkClick() {
+    const { click } = this.props;
+    click();
+  }
+
+  render() {
+    const actions = 'Loan Activity';
+    const { value, styleProps } = this.props;
+    return (
+      value !== actions ? (
+        <span styleName={styleProps}>
+          {value}
+        </span>
+      ) : <Link onClick={() => this.handleLinkClick()} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'none' }} to="/loan-activity">{value}</Link>
+    );
+  }
+}
+
+EvalTableCell.propTypes = {
+  click: PropTypes.func.isRequired,
   styleProps: PropTypes.string.isRequired,
-  addLink: PropTypes.bool.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 export default EvalTableCell;
