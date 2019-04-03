@@ -33,15 +33,6 @@ const statusList = [
     endDate: '09/10/2017',
     expectedCompletionDate: '02/04/2019',
   },
-  {
-    header: 'Trails Period',
-    assignee: 'Prasad',
-    status: 'FAILED',
-    statusDate: '11/10/2018',
-    startDate: '07/08/2018',
-    endDate: '09/10/2017',
-    expectedCompletionDate: '02/04/2019',
-  },
 ];
 
 const monthlyData = [{

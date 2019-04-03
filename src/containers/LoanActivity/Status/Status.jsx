@@ -4,9 +4,45 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
+import StepConnector from '@material-ui/core/StepConnector';
 import Grid from '@material-ui/core/Grid';
 import CardIcon from '@material-ui/icons/Person';
+import { withStyles } from '@material-ui/core/styles';
 import './Status.css';
+
+const styles = () => ({
+  connectorDisabled: {
+    padding: 0,
+  },
+  connectorLine: {
+    minHeight: 'auto',
+  },
+  inactiveIconContainer: {
+    position: 'relative',
+    top: '70px',
+    left: '-6px',
+  },
+  activeIconContainer: {
+    position: 'relative',
+    top: '70px',
+    left: '-9px',
+  },
+  inactiveIcon: {
+    color: '#9e9e9e !important',
+    width: '12px',
+  },
+  activeIcon: {
+    color: '#9e9e9e !important',
+    width: '18px',
+  },
+  iconText: {
+    display: 'none !important',
+  },
+  labelRoot: {
+    borderLeft: '1px solid #bdbdbd',
+    marginLeft: '12px',
+  },
+});
 
 class Status extends React.Component {
   constructor(props) {
@@ -21,13 +57,37 @@ class Status extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { statusList } = this.props;
+    const connector = (
+      <StepConnector
+        classes={{
+          disabled: classes.connectorDisabled,
+          line: classes.connectorLine,
+        }}
+      />
+    );
     return (
       <>
-        <Stepper nonLinear orientation="vertical" styleName="stepper">
-          {statusList.map(parent => (
+        {/* TO- DO  Conditional statements will be changed when we get a actual response */}
+        <Stepper connector={connector} orientation="vertical" styleName="stepper">
+          {statusList.map((parent, index) => (
             <Step key={parent.header} active>
-              <StepLabel styleName="step-label" />
+              <StepLabel
+                classes={{
+                  iconContainer: index === 0 ? classes.activeIconContainer
+                    : classes.inactiveIconContainer,
+                  iconRoot: classes.iconRoot,
+                  root: classes.labelRoot,
+                }}
+                StepIconProps={{
+                  classes: {
+                    root: index === 0 ? classes.activeIcon : classes.inactiveIcon,
+                    text: classes.iconText,
+                  },
+                }}
+                styleName={index === 0 ? 'no-border' : ''}
+              />
               <StepContent styleName="step-content">
                 <div styleName="cards">
                   <div styleName="parent-card">
@@ -90,6 +150,7 @@ class Status extends React.Component {
 }
 
 Status.propTypes = {
+  classes: PropTypes.shape.isRequired,
   onCardClick: PropTypes.func.isRequired,
   statusList: PropTypes.shape({
     assignee: PropTypes.string.isRequired,
@@ -104,7 +165,7 @@ Status.propTypes = {
 const TestHooks = {
   Status,
 };
-export default Status;
+export default withStyles(styles)(Status);
 export {
   TestHooks,
 };

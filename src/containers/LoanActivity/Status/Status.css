@@ -9,13 +9,8 @@
     background-color: unset !important;
 }
 
-.step-label{
-    position: absolute;
-}
-
-div.step-label:first-child{
-    position: relative;
-    top: 42px;
+.no-border{
+    border-left: none !important;
 }
 
 .step-content{
