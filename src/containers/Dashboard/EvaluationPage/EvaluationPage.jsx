@@ -13,6 +13,9 @@ import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
 import './EvaluationPage.css';
 
+function isNotLoanActivity(group) {
+  return group !== DashboardModel.LOAN_ACTIVITY;
+}
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
     const { group } = this.props;
@@ -38,9 +41,9 @@ class EvaluationPage extends React.PureComponent {
       <>
         <ContentHeader title={title}>
           <Controls
-            showEndShift={group !== DashboardModel.LOAN_ACTIVITY}
-            showGetNext={group !== DashboardModel.LOAN_ACTIVITY}
-            showValidate={group !== DashboardModel.LOAN_ACTIVITY}
+            showEndShift={isNotLoanActivity(group)}
+            showGetNext={isNotLoanActivity(group)}
+            showValidate={isNotLoanActivity(group)}
           />
         </ContentHeader>
         <Tombstone />

@@ -82,7 +82,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          target: 'https://cmodworkassignqa.int.mrcooper.io',
+          target: 'https://cmodworkassigndev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -90,7 +90,7 @@ const config = merge(
           },
         },
         '/api/search-svc': {
-          target: 'https://cmodsearchengineqa.int.mrcooper.io',
+          target: 'https://cmodsearchenginedev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
