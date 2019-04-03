@@ -1,6 +1,6 @@
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
-const DP = 'DP';
+const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 
@@ -24,9 +24,9 @@ const PAGE_LOOKUP = [
     path: '/frontend-checklist',
   },
   {
-    group: DP,
+    group: PROC,
     task: 'Processing',
-    taskCode: 'DP',
+    taskCode: 'PROC',
     path: '/doc-processor',
   },
   {
@@ -47,7 +47,7 @@ const GROUPS = {
   '/backend-evaluation': BEUW,
   // TO-DO'S
   '/loan-activity': LOAN_ACTIVITY,
-  '/doc-processor': DP,
+  '/doc-processor': PROC,
 };
 
 function getTitle(location) {
@@ -70,7 +70,7 @@ function getTitle(location) {
 const DashboardModel = {
   FEUW,
   BEUW,
-  DP,
+  PROC,
   LOAN_ACTIVITY,
   FEUW_TASKS_AND_CHECKLIST,
   GROUPS,

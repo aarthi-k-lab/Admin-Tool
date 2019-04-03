@@ -99,8 +99,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
-  // TO-DO
-  // eslint-disable-next-line class-methods-use-this
+  renderDocProcessorRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasDocProcessorAccess(groups)
+        ? <Dashboard group="PROC" />
+        : <Redirect to="/unauthorized?error=DOC_PROCESSOR_ACCESS_NEEDED" />
+    );
+  }
+
   renderLoanActivity() {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
@@ -111,16 +118,6 @@ class ProtectedRoutes extends React.Component {
       renderComponent = <Redirect to="/unauthorized?error=LOAN_ACTIVITY_ACCESS_NEEDED" />;
     }
     return renderComponent;
-  }
-
-  // TO-DO
-  renderDocProcessorRoute() {
-    const groups = this.getGroups();
-    return (
-      RouteAccess.hasDocProcessorAccess(groups)
-        ? <Dashboard group="DP" />
-        : <Redirect to="/unauthorized?error=DOC_PROCESSOR_ACCESS_NEEDED" />
-    );
   }
 
   renderMoveForwardRoute() {
