@@ -247,6 +247,8 @@ function getTombstoneItems(loanDetails,
     getBorrowerItem,
     getSsnItem,
     getSuccessorInInterestStatus,
+    getEvalType,
+    getBoardingDate,
     getBrandNameItem,
     getInvestorItem,
     getLoanTypeDescription,
@@ -260,9 +262,6 @@ function getTombstoneItems(loanDetails,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
-  if (true) {
-    dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
-  }
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
     previousDispositionDetails,
