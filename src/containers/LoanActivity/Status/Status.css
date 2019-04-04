@@ -2,6 +2,8 @@
     background: var(--grey-200);
     border: 1px solid #bbbdbf;
     border-radius: 5px;
+    /* for mock */
+    margin-bottom: 16px;
 }
 
 .stepper{
@@ -13,8 +15,10 @@
     border-left: none !important;
 }
 
+/* TO DO , have to revert it once gets integrated with service */
 .step-content{
-    border-left: 1px solid #bdbdbd !important;
+    /* border-left: 1px solid #bdbdbd !important; */
+    border-left: none !important;
     margin-top: 0px !important;
     padding-right: 0px !important;
 }

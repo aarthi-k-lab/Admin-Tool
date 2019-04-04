@@ -7,6 +7,7 @@ import StepContent from '@material-ui/core/StepContent';
 import StepConnector from '@material-ui/core/StepConnector';
 import Grid from '@material-ui/core/Grid';
 import CardIcon from '@material-ui/icons/Person';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withStyles } from '@material-ui/core/styles';
 import './Status.css';
 
@@ -38,9 +39,11 @@ const styles = () => ({
   iconText: {
     display: 'none !important',
   },
+  // Need to revert it once gets integrated with service
   labelRoot: {
-    borderLeft: '1px solid #bdbdbd',
+    // borderLeft: '1px solid #bdbdbd',
     marginLeft: '12px',
+    display: 'none',
   },
 });
 
@@ -51,9 +54,15 @@ class Status extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick() {
+  handleClick(type) {
     const { onCardClick } = this.props;
-    onCardClick();
+    onCardClick(type);
+  }
+
+  // This method is only for mock ui display
+  // eslint-disable-next-line class-methods-use-this
+  isFirst(index) {
+    return index === 0;
   }
 
   render() {
@@ -75,14 +84,13 @@ class Status extends React.Component {
             <Step key={parent.header} active>
               <StepLabel
                 classes={{
-                  iconContainer: index === 0 ? classes.activeIconContainer
+                  iconContainer: this.isFirst(index) ? classes.activeIconContainer
                     : classes.inactiveIconContainer,
-                  iconRoot: classes.iconRoot,
                   root: classes.labelRoot,
                 }}
                 StepIconProps={{
                   classes: {
-                    root: index === 0 ? classes.activeIcon : classes.inactiveIcon,
+                    root: this.isFirst(index) ? classes.activeIcon : classes.inactiveIcon,
                     text: classes.iconText,
                   },
                 }}
@@ -91,9 +99,9 @@ class Status extends React.Component {
               <StepContent styleName="step-content">
                 <div styleName="cards">
                   <div styleName="parent-card">
-                    <Grid container onClick={() => this.handleClick()} styleName="main-container">
+                    <Grid container onClick={() => this.handleClick(parent.type)} styleName="main-container">
                       <Grid item styleName="image" xs={1}>
-                        <CardIcon styleName="icon" />
+                        {parent.type === 'Trial' ? (<CardIcon styleName="icon" />) : (<AssignmentIcon styleName="icon" />)}
                       </Grid>
                       <Grid item styleName="user-detail" xs={7}>
                         <span styleName="value-style">{parent.header}</span>
@@ -102,10 +110,10 @@ class Status extends React.Component {
                       </Grid>
                       <Grid item styleName="right-item" xs={4}>
                         <span styleName={parent.status === 'FAILED' ? 'failedStatus' : 'completedStatus'}>{parent.status}</span>
-                        <span styleName="header-style align">In 67 days</span>
+                        <span styleName="header-style align">{parent.days}</span>
                       </Grid>
                     </Grid>
-                    <Grid container onClick={() => this.handleClick()} styleName="sub-container">
+                    <Grid container onClick={() => this.handleClick(parent.type)} styleName="sub-container">
                       <Grid item styleName="item" xs={3}>
                         <span styleName="header-style">START DATE</span>
                         <br />

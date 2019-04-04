@@ -38,13 +38,13 @@ class StatusDetails extends React.PureComponent {
               <CardContent style={{ borderBottom: '1px solid rgb(202, 205, 209)' }} styleName="card-contentList">
                 <Grid container>
                   <Grid item styleName="item" xs={3}>
-                    <span styleName="card-contentHeader-style">{`${'Trial'} Letter Sent on`}</span>
+                    <span styleName="card-contentHeader-style">{letter.letterSentOnColumn}</span>
                   </Grid>
                   <Grid item styleName="item" xs={2}>
                     <span styleName="card-contentValue-style">{letter.letterSentOn}</span>
                   </Grid>
                   <Grid item styleName="item" xs={4}>
-                    <span styleName="card-contentHeader-style">{`FHA ${'Trial'} Letter Received on`}</span>
+                    <span styleName="card-contentHeader-style">{letter.letterReceivedOnColumn}</span>
                   </Grid>
                   <Grid item styleName="item" xs={2}>
                     <span styleName="card-contentValue-style">{letter.letterReceivedOn}</span>

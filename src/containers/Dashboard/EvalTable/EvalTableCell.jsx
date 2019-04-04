@@ -63,6 +63,4 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
 });
 
-const EvalTableCellContainer = connect(mapStateToProps, null)(EvalTableCell);
-
-export default EvalTableCellContainer;
+export default connect(mapStateToProps, null)(EvalTableCell);
