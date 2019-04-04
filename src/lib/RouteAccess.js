@@ -55,9 +55,7 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['cmod-dev-trial', 'cmod-dev-trial-mgr', 'cmod-qa-trial',
-    'cmod-qa-trial-mgr', 'cmod-uat-trial', 'cmod-uat-trial-mgr',
-    'cmod-prod-trial', 'cmod-prod-trial-mgr'],
+  groups: ['trial', 'trial-mgr'],
 };
 
 const links = [
