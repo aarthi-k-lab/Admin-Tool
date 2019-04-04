@@ -61,12 +61,13 @@ Profile.renderSkills = function renderSkills(skillList) {
     });
   });
   Object.keys(skillList).forEach((group) => {
-    const result = {};
-    const tempSkills = skillList[group].reduce((obj, val) => {
+    const tempSkills = skillList[group].reduce((result, val) => {
       const [skill, description] = val.split('::');
-      result[`${group}-${skill}`] = description;
-      return result;
-    });
+      return {
+        ...result,
+        [`${group}-${skill}`]: description,
+      };
+    }, {});
 
     const sortedSkills = !R.isNil(tempSkills) && !R.isEmpty(tempSkills)
       ? Object.keys(tempSkills).sort((skill1, skill2) => {
