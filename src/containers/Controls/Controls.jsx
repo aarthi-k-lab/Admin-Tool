@@ -41,12 +41,12 @@ class Controls extends React.PureComponent {
 
   render() {
     const {
+      disableValidation,
       enableEndShift,
       enableGetNext,
       groupName,
       onEndShift,
       onExpand,
-      showDisposition,
       showEndShift,
       showGetNext,
       showSendToUnderWritingIcon,
@@ -62,7 +62,7 @@ class Controls extends React.PureComponent {
       <Control
         className={classNames(styles.controls, styles.spacer)}
         controlAction={() => this.validateDisposition()}
-        disableValidation={!showDisposition}
+        disableValidation={disableValidation}
         label="Validate"
       />) : null;
     const getNext = showGetNext
@@ -108,6 +108,7 @@ Controls.defaultProps = {
 };
 
 Controls.propTypes = {
+  disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
@@ -120,7 +121,6 @@ Controls.propTypes = {
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
   showAssign: PropTypes.bool,
-  showDisposition: PropTypes.bool.isRequired,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
@@ -137,16 +137,21 @@ Controls.propTypes = {
   validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  enableEndShift: selectors.enableEndShift(state),
-  enableGetNext: selectors.enableGetNext(state),
-  dispositionCode: checklistSelectors.getDispositionCode(state),
-  isFirstVisit: selectors.isFirstVisit(state),
-  showAssign: selectors.showAssign(state),
-  showDisposition: checklistSelectors.shouldShowDisposition(state),
-  user: loginSelectors.getUser(state),
-  groupName: selectors.groupName(state),
-});
+const mapStateToProps = (state) => {
+  const showDisposition = checklistSelectors.shouldShowDisposition(state);
+  const isNotAssigned = !selectors.isAssigned(state);
+  const disableValidation = isNotAssigned || !showDisposition;
+  return {
+    disableValidation,
+    enableEndShift: selectors.enableEndShift(state),
+    enableGetNext: selectors.enableGetNext(state),
+    dispositionCode: checklistSelectors.getDispositionCode(state),
+    isFirstVisit: selectors.isFirstVisit(state),
+    showAssign: selectors.showAssign(state),
+    user: loginSelectors.getUser(state),
+    groupName: selectors.groupName(state),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   onExpand: operations.onExpand(dispatch),

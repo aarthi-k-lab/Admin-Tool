@@ -198,10 +198,18 @@ function getEvalType(_, evalDetails) {
   return generateTombstoneItem('Evaluation Type', evalType);
 }
 
+function getServiceTransferInDate(LoanMilestoneDates) {
+  if (LoanMilestoneDates.length > 2) {
+    const boardingDate = moment.tz(LoanMilestoneDates[2].mlstnDttm, 'America/Chicago');
+    const dateString = boardingDate.isValid() ? boardingDate.add(30, 'days').format('MM/DD/YYYY') : NA;
+    return dateString;
+  }
+  return NA;
+}
+
 function getBoardingDate(loanDetails) {
-  const boardingDate = moment.tz(loanDetails.LoanMilestoneDates[2].mlstnDttm, 'America/Chicago');
-  const dateString = boardingDate.isValid() ? boardingDate.add(30, 'days').format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('Boarding Date', dateString);
+  const boardingDate = getServiceTransferInDate(loanDetails.LoanMilestoneDates);
+  return generateTombstoneItem('Boarding Date', boardingDate);
 }
 
 function handleMultipleRecords(prioritizationDetails) {

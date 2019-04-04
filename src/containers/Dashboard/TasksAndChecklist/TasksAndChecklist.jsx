@@ -8,7 +8,7 @@ import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
-import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -18,15 +18,6 @@ import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
-  validate() {
-    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
-    const payload = {
-      dispositionReason: dispositionCode,
-      group: groupName,
-    };
-    validateDispositionTrigger(payload);
-  }
-
   renderTaskErrorMessage() {
     const { checklistErrorMessage } = this.props;
     if (checklistErrorMessage) {
@@ -165,8 +156,6 @@ TasksAndChecklist.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
-  dispositionCode: PropTypes.string.isRequired,
-  groupName: PropTypes.string.isRequired,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   message: PropTypes.string,
@@ -178,7 +167,6 @@ TasksAndChecklist.propTypes = {
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
   taskFetchError: PropTypes.bool,
-  validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
 function getUserNotification(message) {
@@ -203,6 +191,8 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFou
   switch (checklistErrorCode) {
     case ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT:
       return 'Checklist not found.';
+    case ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED:
+      return 'Checklist fetch failed. Please try again later.';
     default:
       break;
   }
@@ -221,7 +211,6 @@ function mapStateToProps(state) {
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
   return {
     disposition: selectors.getDisposition(state),
-    dispositionCode: selectors.getDispositionCode(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
     checklistErrorMessage: getChecklistErrorMessage(
       checklistErrorCode,
@@ -246,7 +235,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
-    validateDispositionTrigger: dashboardOperations.validateDispositionTrigger(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),
