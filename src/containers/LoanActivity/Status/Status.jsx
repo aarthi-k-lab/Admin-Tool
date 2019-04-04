@@ -67,7 +67,7 @@ class Status extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { statusList } = this.props;
+    const { statusList, clickedCard } = this.props;
     const connector = (
       <StepConnector
         classes={{
@@ -98,7 +98,7 @@ class Status extends React.Component {
               />
               <StepContent styleName="step-content">
                 <div styleName="cards">
-                  <div styleName="parent-card">
+                  <div styleName={`parent-card ${clickedCard === parent.type ? 'active' : ''}`}>
                     <Grid container onClick={() => this.handleClick(parent.type)} styleName="main-container">
                       <Grid item styleName="image" xs={1}>
                         {parent.type === 'Trial' ? (<CardIcon styleName="icon" />) : (<AssignmentIcon styleName="icon" />)}
@@ -159,6 +159,7 @@ class Status extends React.Component {
 
 Status.propTypes = {
   classes: PropTypes.shape.isRequired,
+  clickedCard: PropTypes.string.isRequired,
   onCardClick: PropTypes.func.isRequired,
   statusList: PropTypes.shape({
     assignee: PropTypes.string.isRequired,

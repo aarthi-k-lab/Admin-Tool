@@ -101,22 +101,28 @@ class LoanActivity extends React.PureComponent {
     this.state = {
       cardDetails: {},
       monthlyDetails: [],
+      clickedCard: '',
     };
     this.handleStatusClick = this.handleStatusClick.bind(this);
   }
 
   handleStatusClick(type) {
-    this.setState({ monthlyDetails: getMockData(type), cardDetails: getMockStatusData(type) });
+    this.setState({
+      monthlyDetails: getMockData(type),
+      cardDetails: getMockStatusData(type),
+      clickedCard: type,
+    });
   }
 
   render() {
-    const { monthlyDetails, cardDetails } = this.state;
+    const { monthlyDetails, cardDetails, clickedCard } = this.state;
     return (
       <>
         <Grid container styleName="container">
           <Grid item xs={3}>
             <div styleName="status">
               <StatusTree
+                clickedCard={clickedCard}
                 onCardClick={this.handleStatusClick}
                 statusList={statusList}
               />
@@ -124,7 +130,10 @@ class LoanActivity extends React.PureComponent {
           </Grid>
           <Grid item xs={6}>
             <div styleName="detail-parent">
-              <StatusDetails cardDetails={cardDetails} monthlyDetails={monthlyDetails} />
+              <StatusDetails
+                cardDetails={cardDetails}
+                monthlyDetails={monthlyDetails}
+              />
             </div>
           </Grid>
           <Grid item xs={3}>
