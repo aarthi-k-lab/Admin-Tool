@@ -33,6 +33,27 @@ class StatusDetails extends React.PureComponent {
               </Grid>
             </CardContent>
           </Card>
+          <Card>
+            {cardDetails.letterSent && cardDetails.letterSent.map(letter => (
+              <CardContent style={{ borderBottom: '1px solid rgb(202, 205, 209)' }} styleName="card-contentList">
+                <Grid container>
+                  <Grid item styleName="item" xs={3}>
+                    <span styleName="card-contentHeader-style">{`${'Trial'} Letter Sent on`}</span>
+                  </Grid>
+                  <Grid item styleName="item" xs={2}>
+                    <span styleName="card-contentValue-style">{letter.letterSentOn}</span>
+                  </Grid>
+                  <Grid item styleName="item" xs={4}>
+                    <span styleName="card-contentHeader-style">{`FHA ${'Trial'} Letter Received on`}</span>
+                  </Grid>
+                  <Grid item styleName="item" xs={2}>
+                    <span styleName="card-contentValue-style">{letter.letterReceivedOn}</span>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            ))
+            }
+          </Card>
         </div>
         <ExpandPanel monthlyDetails={monthlyDetails} />
       </>

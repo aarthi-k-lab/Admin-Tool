@@ -1,11 +1,11 @@
 .header-style{
     font-size: 1rem;
     font-family: "Lato", sans-serif;
-    color: #707479;
+    color: #edf1f5;
 }
 .value-style{
     font-weight: bold;
-    color: #333940;
+    color: #edf1f5;
     margin-top: 0.5rem;
 }
 .title-style{
@@ -20,6 +20,19 @@
 }
 .card-content{
     padding-bottom: 1rem !important;
+    background: #38383f;
+}
+.card-contentList{
+    padding-bottom: 1rem !important;
+}
+.card-contentHeader-style{
+    font-size: 1rem;
+    font-family: "Lato", sans-serif;
+    color: #707479;
+}
+.card-contentValue-style{
+    font-weight: bold;
+    color: #48494a;
 }
 .item{
     display: flex;
