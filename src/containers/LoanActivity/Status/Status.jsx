@@ -25,7 +25,7 @@ const styles = () => ({
   activeIconContainer: {
     position: 'relative',
     top: '70px',
-    left: '-9px',
+    left: '-8px',
   },
   inactiveIcon: {
     color: '#9e9e9e !important',

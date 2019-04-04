@@ -55,7 +55,9 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess'],
+  groups: ['cmod-dev-trial', 'cmod-dev-trial-mgr', 'cmod-qa-trial',
+    'cmod-qa-trial-mgr', 'cmod-uat-trial', 'cmod-uat-trial-mgr',
+    'cmod-prod-trial', 'cmod-prod-trial-mgr'],
 };
 
 const links = [
@@ -77,7 +79,7 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
     return requiredGroups.some(group => userGroups.includes(group));
   }
   return requiredGroups.some(group => userGroups.includes(group))
-  && !(notInGroup.some(group => userGroups.includes(group)));
+    && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
 function shouldShowIcon(link, userGroups) {
