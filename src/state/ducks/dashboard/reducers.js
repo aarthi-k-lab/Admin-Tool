@@ -82,7 +82,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         getSearchLoanResponse,
         assignLoanResponse: {},
         unassignLoanResponse: {},
-        clearSearch: false,
+        clearSearch: true,
         checklistErrorCode: '',
       };
     }
