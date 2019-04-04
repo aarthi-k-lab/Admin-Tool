@@ -157,7 +157,7 @@ describe('Ducks :: dashboard -> reducer', () => {
 
   it('searchLoan Result action', () => {
     const expectedState = {
-      clearSearch: false,
+      clearSearch: true,
       assignLoanResponse: {},
       checklistErrorCode: '',
       unassignLoanResponse: {},
