@@ -133,34 +133,48 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
+function* errorFetchingChecklistDetails() {
+  yield put({ type: ERROR_LOADING_CHECKLIST });
+  yield put({ type: ERROR_LOADING_TASKS });
+}
+
 function* fetchChecklistDetails(checklistId) {
-  const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
-  if (isChecklistIdInvalid) {
+  try {
+    const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
+    if (isChecklistIdInvalid) {
+      yield put({
+        type: CHECKLIST_NOT_FOUND,
+        payload: {
+          messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+        },
+      });
+      return;
+    }
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    } else {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {},
+      });
+      yield put({
+        type: SET_GET_NEXT_STATUS,
+        payload: false,
+      });
+    }
+    const { rootId: rootTaskId } = response;
+    yield put(storeProcessDetails(checklistId, rootTaskId));
+    yield put(getTasks());
+  } catch (e) {
     yield put({
       type: CHECKLIST_NOT_FOUND,
       payload: {
-        messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+        messageCode: ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED,
       },
     });
-    return;
   }
-  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
-  const didErrorOccur = response === null;
-  if (didErrorOccur) {
-    throw new Error('Api call failed');
-  } else {
-    yield put({
-      type: USER_NOTIF_MSG,
-      payload: {},
-    });
-    yield put({
-      type: SET_GET_NEXT_STATUS,
-      payload: false,
-    });
-  }
-  const { rootId: rootTaskId } = response;
-  yield put(storeProcessDetails(checklistId, rootTaskId));
-  yield put(getTasks());
 }
 
 function* fetchChecklistDetailsForSearchResult(searchItem) {
@@ -336,11 +350,6 @@ function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
   }
   const checklistId = getChecklistId(taskDetails);
   yield call(fetchChecklistDetails, checklistId);
-}
-
-function* errorFetchingChecklistDetails() {
-  yield put({ type: ERROR_LOADING_CHECKLIST });
-  yield put({ type: ERROR_LOADING_TASKS });
 }
 
 // eslint-disable-next-line
