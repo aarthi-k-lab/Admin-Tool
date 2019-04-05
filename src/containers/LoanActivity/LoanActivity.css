@@ -34,4 +34,6 @@
     width: 50%;
     position: relative;
     left: 25%;
+    max-height: calc(100vh - 160px);
+    overflow: auto;
 }

@@ -72,7 +72,7 @@ class ExpandPanel extends React.PureComponent {
                 onChange={() => this.handleClick(index)}
                 styleName="panel-border"
               >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="summary">
                   <Checkbox
                     checked
                     checkedIcon={<CircleCheckedFilled />}
