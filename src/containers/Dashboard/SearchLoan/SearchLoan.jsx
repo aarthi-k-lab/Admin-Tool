@@ -81,8 +81,9 @@ class SearchLoan extends React.PureComponent {
   }
 
   handleRowClick(payload) {
+    // payload.assignee !== 'In Queue' &&
     const { onSelectEval } = this.props;
-    if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A' && payload.tstatus !== 'Paused') {
+    if (payload.assignee !== 'N/A' && payload.tstatus !== 'Paused') {
       onSelectEval(payload);
       switch (payload.taskName) {
         case 'Underwriting':
@@ -92,6 +93,7 @@ class SearchLoan extends React.PureComponent {
           this.redirectPath = '/doc-processor';
           break;
         case 'Trial Modification':
+        case 'Forbearance':
           this.redirectPath = this.getRoute();
           break;
         default:

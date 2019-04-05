@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 // import Grid from '@material-ui/core/Grid';
+import PropTypes from 'prop-types';
 import StatusDetails from './StatusDetails';
 // import StatusTree from './Status';
-import { operations } from '../../state/ducks/dashboard';
+import { operations, selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
 // const statusList = [
@@ -113,7 +114,8 @@ class LoanActivity extends React.PureComponent {
 
   render() {
     // const { monthlyDetails, cardDetails } = this.state;
-    // const { clickedCard } = this.state;
+    const { type } = this.props;
+    const getData = (type === 'Trial Modification') ? 'Trial' : 'Forbearance';
     return (
       <>
         {/* <Grid container styleName="container"> */}
@@ -130,8 +132,8 @@ class LoanActivity extends React.PureComponent {
         {/* <Grid item xs={5}> */}
         <div styleName="detail-parent">
           <StatusDetails
-            cardDetails={getMockStatusData('Trial')}
-            monthlyDetails={getMockData('Trial')}
+            cardDetails={getMockStatusData(getData)}
+            monthlyDetails={getMockData(getData)}
           />
         </div>
         {/* </Grid> */}
@@ -143,12 +145,18 @@ class LoanActivity extends React.PureComponent {
     );
   }
 }
+LoanActivity.propTypes = {
+  type: PropTypes.string.isRequired,
+};
 const mapDispatchToProps = dispatch => ({
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
 });
+const mapStateToProps = state => ({
+  type: selectors.processName(state),
+});
 const TrailContainer = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(LoanActivity);
 

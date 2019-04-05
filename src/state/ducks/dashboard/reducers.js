@@ -205,6 +205,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskId: action.payload.taskId,
         processId: action.payload.piid,
         processStatus: action.payload.pstatus,
+        processName: action.payload.taskName,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         noTasksFound: false,
