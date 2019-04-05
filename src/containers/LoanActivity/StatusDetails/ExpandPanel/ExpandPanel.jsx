@@ -83,7 +83,7 @@ class ExpandPanel extends React.PureComponent {
                   <span styleName="heading">{value.title}</span>
                   <span styleName="secondary-heading">{value.month}</span>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails styleName="expand-panel-details">
                   <Grid container>
                     {value.monthDetail && value.monthDetail.map(detail => (
                       <Grid item xs={2}>

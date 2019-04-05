@@ -1,35 +1,35 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 import StatusDetails from './StatusDetails';
-import StatusTree from './Status';
+// import StatusTree from './Status';
 import { operations } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
-const statusList = [
-  {
-    header: 'Trial Period',
-    assignee: 'Prasad',
-    status: 'FAILED',
-    statusDate: '11/10/2018',
-    startDate: '06/16/2018',
-    endDate: '06/19/2018',
-    days: 'In 67 DAYS',
-    type: 'Trial',
-    expectedCompletionDate: '06/28/2018',
-  },
-  {
-    header: 'Forbearance',
-    assignee: 'Sudhan Madhavan',
-    status: 'COMPLETED',
-    statusDate: '08/14/2018',
-    startDate: '08/15/2018',
-    endDate: '08/20/2018',
-    days: 'In 2 DAYS',
-    type: 'Forbearance',
-    expectedCompletionDate: '08/20/2018',
-  },
-];
+// const statusList = [
+//   {
+//     header: 'Trial Period',
+//     assignee: 'Prasad',
+//     status: 'FAILED',
+//     statusDate: '11/10/2018',
+//     startDate: '06/16/2018',
+//     endDate: '06/19/2018',
+//     days: 'In 67 DAYS',
+//     type: 'Trial',
+//     expectedCompletionDate: '06/28/2018',
+//   },
+//   {
+//     header: 'Forbearance',
+//     assignee: 'Sudhan Madhavan',
+//     status: 'COMPLETED',
+//     statusDate: '08/14/2018',
+//     startDate: '08/15/2018',
+//     endDate: '08/20/2018',
+//     days: 'In 2 DAYS',
+//     type: 'Forbearance',
+//     expectedCompletionDate: '08/20/2018',
+//   },
+// ];
 
 const monthValue = [{
   header: 'Total Trail amount',
@@ -51,31 +51,29 @@ const monthValue = [{
   value: '17/12/2019',
 }];
 
-function getMockStatusData(type) {
-  return {
-    title: `${type} ${type === 'Trial' ? 'Period' : ''}`,
-    statusDetails: [{
-      columnName: 'Acceptance Date',
-      columnValue: '17/02/2018',
-    }, {
-      columnName: 'Down Payment',
-      columnValue: '$1234',
-    }],
-    letterSent: [{
-      letterSentOnColumn: `${type} letter sent on`,
-      letterSentOn: '17/02/2018',
-      letterReceivedOnColumn: `FHA ${type} letter received on`,
-      letterReceivedOn: '19/02/2018',
-    }, {
-      letterSentOnColumn: `${type} letter sent on`,
-      letterSentOn: '21/02/2018',
-      letterReceivedOnColumn: `FHA ${type} letter received on`,
-      letterReceivedOn: '23/02/2018',
-    }],
-  };
-}
+const getMockStatusData = type => ({
+  title: `${type} ${type === 'Trial' ? 'Period' : ''}`,
+  statusDetails: [{
+    columnName: 'Acceptance Date',
+    columnValue: '17/02/2018',
+  }, {
+    columnName: 'Down Payment',
+    columnValue: '$1234',
+  }],
+  letterSent: [{
+    letterSentOnColumn: `${type} letter sent on`,
+    letterSentOn: '17/02/2018',
+    letterReceivedOnColumn: `FHA ${type} letter received on`,
+    letterReceivedOn: '19/02/2018',
+  }, {
+    letterSentOnColumn: `${type} letter sent on`,
+    letterSentOn: '21/02/2018',
+    letterReceivedOnColumn: `FHA ${type} letter received on`,
+    letterReceivedOn: '23/02/2018',
+  }],
+});
 
-function getMockData(type) {
+const getMockData = (type) => {
   const data = [];
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
@@ -93,33 +91,34 @@ function getMockData(type) {
     });
   }
   return data;
-}
+};
 
 class LoanActivity extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cardDetails: {},
-      monthlyDetails: [],
-      clickedCard: '',
-    };
-    this.handleStatusClick = this.handleStatusClick.bind(this);
-  }
+  // constructor(props) {
+  //   super(props);
+  // this.state = {
+  //   cardDetails: {},
+  //   monthlyDetails: [],
+  //   clickedCard: '',
+  // };
+  // }
 
-  handleStatusClick(type) {
-    this.setState({
-      monthlyDetails: getMockData(type),
-      cardDetails: getMockStatusData(type),
-      clickedCard: type,
-    });
-  }
+  // handleStatusClick(type) {
+  //   this.setState({
+  //     monthlyDetails: getMockData(type),
+  //     cardDetails: getMockStatusData(type),
+  //     clickedCard: type,
+  //   });
+  // }
 
   render() {
-    const { monthlyDetails, cardDetails, clickedCard } = this.state;
+    // const { monthlyDetails, cardDetails } = this.state;
+    // const { clickedCard } = this.state;
     return (
       <>
-        <Grid container styleName="container">
-          <Grid item xs={3}>
+        {/* <Grid container styleName="container"> */}
+        {/* Left pane */}
+        {/* <Grid item xs={3}>
             <div styleName="status">
               <StatusTree
                 clickedCard={clickedCard}
@@ -127,19 +126,19 @@ class LoanActivity extends React.PureComponent {
                 statusList={statusList}
               />
             </div>
-          </Grid>
-          <Grid item xs={6}>
-            <div styleName="detail-parent">
-              <StatusDetails
-                cardDetails={cardDetails}
-                monthlyDetails={monthlyDetails}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={3}>
+          </Grid> */}
+        {/* <Grid item xs={5}> */}
+        <div styleName="detail-parent">
+          <StatusDetails
+            cardDetails={getMockStatusData('Trial')}
+            monthlyDetails={getMockData('Trial')}
+          />
+        </div>
+        {/* </Grid> */}
+        {/* <Grid item xs={3}>
             <div styleName="status" />
-          </Grid>
-        </Grid>
+          </Grid> */}
+        {/* </Grid> */}
       </>
     );
   }

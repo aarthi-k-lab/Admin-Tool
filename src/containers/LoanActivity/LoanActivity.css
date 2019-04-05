@@ -29,7 +29,9 @@
 }
 
 .detail-parent {
-    padding: 0.25rem;
-    height: calc(100vh - 160px);
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    position: relative;
+    left: 25%;
 }

@@ -28,6 +28,7 @@ class SearchLoan extends React.PureComponent {
     this.getParamsValue = this.getParamsValue.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
     this.validateLoanNumber = this.validateLoanNumber.bind(this);
+    this.getRoute = this.getRoute.bind(this);
   }
 
 
@@ -54,6 +55,12 @@ class SearchLoan extends React.PureComponent {
 
   getFrontEndPath() {
     return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
+  }
+
+  getRoute() {
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    return RouteAccess.hasLoanActivityAccess(groups) ? '/loan-activity' : '/';
   }
 
   getParamsValue() {
@@ -83,6 +90,9 @@ class SearchLoan extends React.PureComponent {
           break;
         case 'Processing':
           this.redirectPath = '/doc-processor';
+          break;
+        case 'Trial Modification':
+          this.redirectPath = this.getRoute();
           break;
         default:
           this.redirectPath = this.getFrontEndPath();
@@ -254,13 +264,15 @@ SearchLoan.COLUMN_DATA = [{
   maxWidth: 200,
   minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'ACTIONS',
-  accessor: 'actions',
-  maxWidth: 200,
-  minWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-}];
+},
+// {
+//   Header: 'ACTIONS',
+//   accessor: 'actions',
+//   maxWidth: 200,
+//   minWidth: 200,
+//   Cell: row => <EvalTableRow row={row} />,
+// },
+];
 
 
 SearchLoan.defaultProps = {

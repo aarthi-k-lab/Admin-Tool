@@ -10,9 +10,10 @@
 }
 .button{
     padding: 0 12px 0 12px !important;
-    min-height: 2rem !important;
+    min-height: 0 !important;
 }
 div.button:first-child > p{
+    margin: 0px;
     font-size: 0.75rem !important;
 }
 .button-border{
@@ -33,6 +34,11 @@ div.button:first-child > p{
     font-weight: bold !important;
     align-self: center;
 }
+
+.expand-panel-details{
+    padding: 0px 17px 6px 40px !important;
+}
+
 .secondary-heading{
     font-size: 0.9rem !important;
     font-family: "Lato", sans-serif;
@@ -51,6 +57,11 @@ div.button:first-child > p{
     margin: 0px !important;
     border-bottom: 1px solid #dbdee1;
 }
+
+.button-height{
+    min-height: 0 !important;
+}
+
 .header-style{
     font-size: 0.90rem;
     font-family: "Lato", sans-serif;
