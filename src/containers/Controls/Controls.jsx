@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  EndShift, Expand, GetNext, Assign, Unassign,
+  EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import {
@@ -49,6 +49,7 @@ class Controls extends React.PureComponent {
       onExpand,
       showEndShift,
       showGetNext,
+      showSendToUnderWritingIcon,
       showAssign,
       showValidate,
       user,
@@ -69,6 +70,8 @@ class Controls extends React.PureComponent {
     const endShift = showEndShift
       ? <EndShift disabled={!enableEndShift} onClick={onEndShiftClick} />
       : null;
+    const getSendToUnderWritingButton = showSendToUnderWritingIcon
+      ? <SendToUnderwriting /> : null;
     const expand = <Expand onClick={onExpand} />;
     if (showAssign != null && !showAssign) {
       assign = <Assign />;
@@ -83,6 +86,7 @@ class Controls extends React.PureComponent {
         {groupName === 'feuw-task-checklist' ? validate : null}
         {endShift}
         {getNext}
+        {getSendToUnderWritingButton}
         {expand}
       </>
     );
@@ -98,6 +102,7 @@ Controls.defaultProps = {
   onGetNext: () => { },
   showEndShift: false,
   showGetNext: false,
+  showSendToUnderWritingIcon: false,
   showAssign: null,
   showValidate: false,
 };
@@ -118,6 +123,7 @@ Controls.propTypes = {
   showAssign: PropTypes.bool,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
+  showSendToUnderWritingIcon: PropTypes.bool,
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,

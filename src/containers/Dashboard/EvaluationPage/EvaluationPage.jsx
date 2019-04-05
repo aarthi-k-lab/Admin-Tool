@@ -43,6 +43,7 @@ class EvaluationPage extends React.PureComponent {
           <Controls
             showEndShift={isNotLoanActivity(group)}
             showGetNext={isNotLoanActivity(group)}
+            showSendToUnderWritingIcon={!isNotLoanActivity(group)}
             showValidate={isNotLoanActivity(group)}
           />
         </ContentHeader>
