@@ -21,9 +21,7 @@ class EvalTableRow extends React.PureComponent {
   render() {
     const getStyles = (row) => {
       let styles = '';
-      if (row.original.tstatus === 'Paused') {
-        styles = 'blackText';
-      } else if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
+      if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
         styles = 'redText pointer';
       } else if (row.original.assignee && (row.original.assignee === 'In Queue' || row.original.assignee === 'N/A')) {
         styles = 'blackText';
