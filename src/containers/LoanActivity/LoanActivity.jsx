@@ -6,8 +6,8 @@ import { operations, selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
 const monthValue = [{
-  header: 'Total Trail amount',
-  value: '$283400',
+  header: 'Total Trial amount',
+  value: '$283400.00',
 }, {
   header: 'P&I',
   value: '$125.00',
@@ -15,14 +15,14 @@ const monthValue = [{
   header: 'Escrow',
   value: '$85.00',
 }, {
-  header: 'Trail Due On',
-  value: '01/02/2019',
+  header: 'Trial Due On',
+  value: '02/01/2019',
 }, {
   header: 'Deadline On',
-  value: '01/12/2019',
+  value: '12/01/2019',
 }, {
   header: 'Paid On',
-  value: '17/12/2019',
+  value: '12/17/2019',
 }];
 
 
@@ -56,21 +56,21 @@ const getMockData = (type) => {
     title: `${type} ${type === 'Trial' ? 'Period' : ''}`,
     statusDetails: [{
       columnName: 'Acceptance Date',
-      columnValue: '17/02/2018',
+      columnValue: '02/17/2018',
     }, {
       columnName: 'Down Payment',
-      columnValue: '$1234',
+      columnValue: '$1234.00',
     }],
     letterSent: [{
       letterSentOnColumn: `${type} letter sent on`,
-      letterSentOn: '17/02/2018',
+      letterSentOn: '02/17/2018',
       letterReceivedOnColumn: `FHA ${type} letter received on`,
-      letterReceivedOn: '19/02/2018',
+      letterReceivedOn: '02/19/2018',
     }, {
       letterSentOnColumn: `${type} letter sent on`,
-      letterSentOn: '21/02/2018',
+      letterSentOn: '02/21/2018',
       letterReceivedOnColumn: `FHA ${type} letter received on`,
-      letterReceivedOn: '23/02/2018',
+      letterReceivedOn: '02/23/2018',
     }],
     monthlyDetails: getMockMonthlyData(type),
   };

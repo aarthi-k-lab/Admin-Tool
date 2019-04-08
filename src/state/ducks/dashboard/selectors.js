@@ -81,11 +81,7 @@ const selectors = {
   assignResult,
   processId,
   processStatus,
-<<<<<<< HEAD
   getActivityDetails,
-=======
-  processName,
->>>>>>> f78254cf867ee7a6c210001a5d1e225dfefe1cc1
   isAssigned,
   clearSearch,
   comments,
