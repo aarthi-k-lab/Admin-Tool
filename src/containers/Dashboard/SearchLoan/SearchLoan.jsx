@@ -28,7 +28,7 @@ class SearchLoan extends React.PureComponent {
     this.getParamsValue = this.getParamsValue.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
     this.validateLoanNumber = this.validateLoanNumber.bind(this);
-    this.getRoute = this.getRoute.bind(this);
+    this.getLoanActivityPath = this.getLoanActivityPath.bind(this);
   }
 
 
@@ -57,7 +57,7 @@ class SearchLoan extends React.PureComponent {
     return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
   }
 
-  getRoute() {
+  getLoanActivityPath() {
     const { user } = this.props;
     const groups = user && user.groupList;
     return RouteAccess.hasLoanActivityAccess(groups) ? '/loan-activity' : '/';
@@ -92,7 +92,8 @@ class SearchLoan extends React.PureComponent {
           this.redirectPath = '/doc-processor';
           break;
         case 'Trial Modification':
-          this.redirectPath = this.getRoute();
+        case 'Forbearance':
+          this.redirectPath = this.getLoanActivityPath();
           break;
         default:
           this.redirectPath = this.getFrontEndPath();

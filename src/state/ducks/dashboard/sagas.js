@@ -19,6 +19,7 @@ import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
+import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
   END_SHIFT,
   GET_NEXT,
@@ -48,6 +49,7 @@ import {
   USER_NOTIF_MSG,
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
+  GET_LOAN_ACTIVITY_DETAILS,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -188,11 +190,26 @@ function* fetchChecklistDetailsForSearchResult(searchItem) {
   }
 }
 
+function* fetchLoanActivityDetails(evalDetails) {
+  const { payload } = evalDetails;
+  const groupList = yield select(loginSelectors.getGroupList);
+  const hasLoanActivityAccess = RouteAccess.hasLoanActivityAccess(groupList);
+  if (hasLoanActivityAccess) {
+    // Here we need to get data from actual api
+    const response = mockData(R.equals(payload.taskName, 'Trial Modification') ? 'Trial' : payload.taskName);
+    yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
+  }
+}
+
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
+  // fetch loan activity details from api
+  if (R.equals(evalDetails.taskName, 'Trial Modification') || R.equals(evalDetails.taskName, 'Forbearance')) {
+    yield call(fetchLoanActivityDetails, searchItem);
+  }
   try {
     yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {

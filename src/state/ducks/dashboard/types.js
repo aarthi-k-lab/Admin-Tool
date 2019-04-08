@@ -7,6 +7,7 @@ const CHECKLIST_NOT_FOUND = 'app/dashboard/CHECKLIST_NOT_FOUND';
 const TASKS_NOT_FOUND = 'app/dashboard/TASKS_NOT_FOUND';
 const TASKS_FETCH_ERROR = 'app/dashboard/TASKS_FETCH_ERROR';
 const GET_NEXT = 'app/dashboard/GET_NEXT';
+const GET_LOAN_ACTIVITY_DETAILS = 'app/dashboard/GET_LOAN_ACTIVITY_DETAILS';
 const SET_EXPAND_VIEW_SAGA = 'app/dashboard/set_expand_view_saga';
 const SET_EXPAND_VIEW = 'app/dashboard/SET_EXPAND_VIEW';
 const SUCCESS_END_SHIFT = 'app/dashboard/SUCCESS_END_SHIFT';
@@ -74,4 +75,5 @@ export {
   SAVE_LOANNUMBER_PROCESSID,
   SET_GET_NEXT_STATUS,
   SEARCH_SELECT_EVAL,
+  GET_LOAN_ACTIVITY_DETAILS,
 };

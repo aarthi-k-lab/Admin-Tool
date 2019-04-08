@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import StatusDetails from './StatusDetails';
-import { operations } from '../../state/ducks/dashboard';
+import { operations, selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
 const monthValue = [{
@@ -24,29 +25,10 @@ const monthValue = [{
   value: '17/12/2019',
 }];
 
-const getMockStatusData = type => ({
-  title: `${type} ${type === 'Trial' ? 'Period' : ''}`,
-  statusDetails: [{
-    columnName: 'Acceptance Date',
-    columnValue: '17/02/2018',
-  }, {
-    columnName: 'Down Payment',
-    columnValue: '$1234',
-  }],
-  letterSent: [{
-    letterSentOnColumn: `${type} letter sent on`,
-    letterSentOn: '17/02/2018',
-    letterReceivedOnColumn: `FHA ${type} letter received on`,
-    letterReceivedOn: '19/02/2018',
-  }, {
-    letterSentOnColumn: `${type} letter sent on`,
-    letterSentOn: '21/02/2018',
-    letterReceivedOnColumn: `FHA ${type} letter received on`,
-    letterReceivedOn: '23/02/2018',
-  }],
-});
 
-const getMockData = (type) => {
+// MockData
+// eslint-disable-next-line no-unused-vars
+const getMockMonthlyData = (type) => {
   const data = [];
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
@@ -66,33 +48,63 @@ const getMockData = (type) => {
   return data;
 };
 
+// This will get called in dashboard sagas
+// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line arrow-body-style
+const getMockData = (type) => {
+  return {
+    title: `${type} ${type === 'Trial' ? 'Period' : ''}`,
+    statusDetails: [{
+      columnName: 'Acceptance Date',
+      columnValue: '17/02/2018',
+    }, {
+      columnName: 'Down Payment',
+      columnValue: '$1234',
+    }],
+    letterSent: [{
+      letterSentOnColumn: `${type} letter sent on`,
+      letterSentOn: '17/02/2018',
+      letterReceivedOnColumn: `FHA ${type} letter received on`,
+      letterReceivedOn: '19/02/2018',
+    }, {
+      letterSentOnColumn: `${type} letter sent on`,
+      letterSentOn: '21/02/2018',
+      letterReceivedOnColumn: `FHA ${type} letter received on`,
+      letterReceivedOn: '23/02/2018',
+    }],
+    monthlyDetails: getMockMonthlyData(type),
+  };
+};
+
 class LoanActivity extends React.PureComponent {
   render() {
+    const { loanActivityDetails } = this.props;
     return (
       <>
         <div styleName="detail-parent">
-          <StatusDetails
-            cardDetails={getMockStatusData('Trial')}
-            monthlyDetails={getMockData('Trial')}
-          />
+          <StatusDetails loanActivityDetails={loanActivityDetails} />
         </div>
       </>
     );
   }
 }
+LoanActivity.propTypes = {
+  loanActivityDetails: PropTypes.shape.isRequired,
+};
 const mapDispatchToProps = dispatch => ({
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
 });
-const TrailContainer = connect(
-  null,
-  mapDispatchToProps,
-)(LoanActivity);
+const mapStateToProps = state => ({
+  loanActivityDetails: selectors.getActivityDetails(state),
+});
 
 const TestHooks = {
   LoanActivity,
 };
-export default TrailContainer;
+const container = connect(mapStateToProps, mapDispatchToProps)(LoanActivity);
+export default container;
+export const mockData = getMockData;
 export {
   TestHooks,
 };
