@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusDetails from './StatusDetails';
-import { operations, selectors } from '../../state/ducks/dashboard';
+import { selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
 const monthValue = [{
@@ -91,10 +91,6 @@ class LoanActivity extends React.PureComponent {
 LoanActivity.propTypes = {
   loanActivityDetails: PropTypes.shape.isRequired,
 };
-const mapDispatchToProps = dispatch => ({
-  onSearchLoan: operations.onSearchLoan(dispatch),
-  onSelectEval: operations.onSelectEval(dispatch),
-});
 const mapStateToProps = state => ({
   loanActivityDetails: selectors.getActivityDetails(state),
 });
@@ -102,7 +98,7 @@ const mapStateToProps = state => ({
 const TestHooks = {
   LoanActivity,
 };
-const container = connect(mapStateToProps, mapDispatchToProps)(LoanActivity);
+const container = connect(mapStateToProps, null)(LoanActivity);
 export default container;
 export const mockData = getMockData;
 export {
