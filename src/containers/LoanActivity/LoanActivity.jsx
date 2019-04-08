@@ -2,29 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusDetails from './StatusDetails';
-import { operations, selectors } from '../../state/ducks/dashboard';
+import { selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
-
-const monthValue = [{
-  header: 'Total Trial amount',
-  value: '$283400.00',
-}, {
-  header: 'P&I',
-  value: '$125.00',
-}, {
-  header: 'Escrow',
-  value: '$85.00',
-}, {
-  header: 'Trial Due On',
-  value: '02/01/2019',
-}, {
-  header: 'Deadline On',
-  value: '12/01/2019',
-}, {
-  header: 'Paid On',
-  value: '12/17/2019',
-}];
-
 
 // MockData
 // eslint-disable-next-line no-unused-vars
@@ -35,6 +14,12 @@ const getMockMonthlyData = (type) => {
   ];
   let index;
   const range = type === 'Trial' ? 3 : 12;
+  const constantMoney = 2865.00;
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  });
   // eslint-disable-next-line no-plusplus
   for (index = 0; index < range; index++) {
     data.push({
@@ -42,7 +27,25 @@ const getMockMonthlyData = (type) => {
       month: `${monthNames[index]} 2019`,
       // eslint-disable-next-line no-nested-ternary
       status: type !== 'Trial' ? (index > 3 ? 'incomplete' : 'complete') : (index === 1 ? 'failed' : 'complete'),
-      monthDetail: monthValue,
+      monthDetail: [{
+        header: 'Total Trial amount',
+        value: formatter.format(constantMoney + index),
+      }, {
+        header: 'P&I',
+        value: '$125.00',
+      }, {
+        header: 'Escrow',
+        value: '$85.00',
+      }, {
+        header: 'Trial Due On',
+        value: `02/${index + 1 < 10 ? `${'0'}${index + 2}` : index + 1}/2019`,
+      }, {
+        header: 'Deadline On',
+        value: `02/${index + 10}/2019`,
+      }, {
+        header: 'Paid On',
+        value: `02/${index + 9}/2019`,
+      }],
     });
   }
   return data;
@@ -91,10 +94,6 @@ class LoanActivity extends React.PureComponent {
 LoanActivity.propTypes = {
   loanActivityDetails: PropTypes.shape.isRequired,
 };
-const mapDispatchToProps = dispatch => ({
-  onSearchLoan: operations.onSearchLoan(dispatch),
-  onSelectEval: operations.onSelectEval(dispatch),
-});
 const mapStateToProps = state => ({
   loanActivityDetails: selectors.getActivityDetails(state),
 });
@@ -102,7 +101,7 @@ const mapStateToProps = state => ({
 const TestHooks = {
   LoanActivity,
 };
-const container = connect(mapStateToProps, mapDispatchToProps)(LoanActivity);
+const container = connect(mapStateToProps, null)(LoanActivity);
 export default container;
 export const mockData = getMockData;
 export {

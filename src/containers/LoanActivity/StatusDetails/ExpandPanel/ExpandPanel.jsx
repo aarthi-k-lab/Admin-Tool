@@ -22,6 +22,29 @@ class ExpandPanel extends React.PureComponent {
     this.renderPanel = this.renderPanel.bind(this);
     this.handleExpandAll = this.handleExpandAll.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.getMaxDateIndex = this.getMaxDateIndex.bind(this);
+    this.getMaxDateIndex(props.monthlyDetails);
+  }
+
+  getMaxDateIndex(monthlyDetails) {
+    let maxDate;
+    let maxDateIndex;
+    monthlyDetails.forEach((detail, index) => {
+      if (detail.monthDetail) {
+        detail.monthDetail.forEach((value) => {
+          if (value.header === 'Trial Due On') {
+            const currentDate = new Date(value.value);
+            if (currentDate > maxDate) {
+              maxDateIndex = index;
+            } else {
+              maxDateIndex = index - 1;
+            }
+            maxDate = currentDate;
+          }
+        });
+      }
+    });
+    this.dateIndex = maxDateIndex;
   }
 
   handleExpandAll() {
@@ -68,7 +91,9 @@ class ExpandPanel extends React.PureComponent {
           {
             monthlyDetails.map((value, index) => (
               <ExpansionPanel
-                expanded={R.isNil(panels[index]) ? false : panels[index]}
+                // eslint-disable-next-line no-nested-ternary
+                expanded={index !== this.dateIndex ? R.isNil(panels[index])
+                  ? false : panels[index] : true}
                 onChange={() => this.handleClick(index)}
                 styleName="panel-border"
               >
