@@ -142,9 +142,9 @@ class SearchLoan extends React.PureComponent {
           <div styleName="eval-table-container">
             <div styleName="eval-table-height-limiter">
               <h3 styleName="resultText">
-                <span styleName="searchResutlText">{ searchResultCount }</span>
+                <span styleName="searchResutlText">{searchResultCount}</span>
                 &nbsp;search results found for Loan &nbsp; &quot;
-                <span styleName="searchResutlText">{ loanNumber }</span>
+                <span styleName="searchResutlText">{loanNumber}</span>
                 &quot;
               </h3>
               <ReactTable
@@ -179,7 +179,7 @@ class SearchLoan extends React.PureComponent {
     return (
       <>
         <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
-        { this.renderSearchResults() }
+        {this.renderSearchResults()}
       </>
     );
   }
@@ -266,13 +266,13 @@ SearchLoan.COLUMN_DATA = [{
   minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
 },
-// {
-//   Header: 'ACTIONS',
-//   accessor: 'actions',
-//   maxWidth: 200,
-//   minWidth: 200,
-//   Cell: row => <EvalTableRow row={row} />,
-// },
+  // {
+  //   Header: 'ACTIONS',
+  //   accessor: 'actions',
+  //   maxWidth: 200,
+  //   minWidth: 200,
+  //   Cell: row => <EvalTableRow row={row} />,
+  // },
 ];
 
 
