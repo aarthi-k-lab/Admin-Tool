@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { TestHooks } from './LoanActivity';
 
 describe('<LoanActivity />', () => {
-  it('shows Trail widget in Loading mode', () => {
+  it('shows Trial widget in Loading mode', () => {
     const { LoanActivity } = TestHooks;
     const wrapper = shallow(
       <LoanActivity />,
