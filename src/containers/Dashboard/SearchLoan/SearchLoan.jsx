@@ -82,7 +82,7 @@ class SearchLoan extends React.PureComponent {
 
   handleRowClick(payload) {
     const { onSelectEval } = this.props;
-    if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A' && payload.tstatus !== 'Paused') {
+    if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
       switch (payload.taskName) {
         case 'Underwriting':
