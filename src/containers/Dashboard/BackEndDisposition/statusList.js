@@ -89,7 +89,7 @@ const status = [
       },
       {
         id: 'jdwdfsidjoajejcaj837489as',
-        activityName: 'Send to UnderWriting',
+        activityName: 'Send to Underwriting',
         verbiage: 'Select this option if you are an agent reviewing "Sent for Reject" loans and want to hand back to the underwriter to re-review. Ensure you provide comments and that the Eval status is "Active", the Eval substatus is in "Referral" or "Referral KB" and the Resolution case is in \'open\' and the resolution substatus is in "Escrow KB.',
       },
     ],
