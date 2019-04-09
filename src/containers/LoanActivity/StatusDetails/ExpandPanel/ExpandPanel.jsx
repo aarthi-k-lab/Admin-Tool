@@ -55,6 +55,7 @@ class ExpandPanel extends React.PureComponent {
       panels[currentPanel] = !isExpanded;
       currentPanel += 1;
     }
+    this.dateIndex = null;
     this.setState({
       isExpanded: !isExpanded,
       panels,
@@ -63,7 +64,8 @@ class ExpandPanel extends React.PureComponent {
 
   handleClick(panelIndex) {
     const { panels } = this.state;
-    panels[panelIndex] = !panels[panelIndex];
+    panels[panelIndex] = this.dateIndex === panelIndex ? false : !panels[panelIndex];
+    this.dateIndex = null;
     this.setState({
       ...panels,
       panels,
