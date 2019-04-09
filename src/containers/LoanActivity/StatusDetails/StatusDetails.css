@@ -1,12 +1,18 @@
 .header-style{
+    padding-left: 15px;
+    padding-top: 4px;
+    width: 118px;
+    height:21px;
     font-size: 1rem;
     font-family: "Lato", sans-serif;
-    color: #edf1f5;
+    color: #adafb2;
 }
 .value-style{
+    padding-left: 15px;
+    width: 90px;
+    height:21px;
     font-weight: bold;
     color: #edf1f5;
-    margin-top: 0.5rem;
 }
 .title-style{
     font-size: 1.25rem;
@@ -25,10 +31,14 @@
     border-radius: 0px !important;
 }
 .card-content{
-    padding: 1.2rem !important;
+    width: 721px;
+    height: 63px;
+    padding: 1rem !important;
     background: #38383f;
 }
 .card-contentList{
+    width: 721px;
+    height: 44px;
     padding-bottom: 1rem !important;
 }
 .card-contentHeader-style{
@@ -41,6 +51,11 @@
     color: #48494a;
 }
 .item{
+    max-width: 18% !important;
+    display: flex;
+    flex-direction: column;
+}
+.letterItems{
     display: flex;
     flex-direction: column;
 }

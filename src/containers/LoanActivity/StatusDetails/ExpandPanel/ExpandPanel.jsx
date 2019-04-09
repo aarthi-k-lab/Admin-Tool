@@ -10,6 +10,29 @@ import PropTypes from 'prop-types';
 import TaskStatusIcon from 'components/TaskStatusIcon';
 import './ExpandPanel.css';
 
+function getBackgroundColor(index) {
+  switch (index) {
+    case 0:
+      return '#EBEBEC';
+    case 1:
+    case 2:
+      return '#F5F5F5';
+    default:
+      return null;
+  }
+}
+
+function getWidth(index) {
+  switch (index) {
+    case 0:
+      return 3;
+    case 1:
+    case 2:
+      return 1;
+    default:
+      return 2;
+  }
+}
 class ExpandPanel extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -98,17 +121,25 @@ class ExpandPanel extends React.PureComponent {
                 styleName="panel-border"
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="summary">
-                  <TaskStatusIcon isSubTask task={{ state: 'completed' }} />
+                  <TaskStatusIcon isSubTask task={{ state: value.status }} />
                   <span styleName="heading">{value.title}</span>
                   <span styleName="secondary-heading">{value.month}</span>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails styleName="expand-panel-details">
                   <Grid container>
-                    {value.monthDetail && value.monthDetail.map(detail => (
-                      <Grid item xs={2}>
-                        <span styleName="header-style">{detail.header}</span>
+                    {value.monthDetail && value.monthDetail.map((detail, i) => (
+                      <Grid
+                        item
+                        style={{
+                          background: getBackgroundColor(i), padding: '10px', paddingLeft: i > 2 ? '20px' : '10px', maxWidth: (i === 1 || i === 2) ? '13%' : (`${100 / (12 / getWidth(i))}%`),
+                        }}
+                        xs={getWidth(i)}
+                      >
+                        <span styleName="header-style">
+                          {detail.header}
+                        </span>
                         <br />
-                        <span styleName="value-style">{detail.value}</span>
+                        <span style={{ fontSize: i === 0 ? '1.5625rem' : '0.875rem' }} styleName="value-style">{detail.value}</span>
                       </Grid>
                     ))
                     }

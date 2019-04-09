@@ -37,20 +37,20 @@ class StatusDetails extends React.PureComponent {
           <Card>
             {loanActivityDetails.letterSent && loanActivityDetails.letterSent.map(letter => (
               <CardContent style={{ borderBottom: '1px solid rgb(202, 205, 209)' }} styleName="card-contentList">
-                <Grid container>
-                  <Grid item styleName="item" xs={3}>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ paddingLeft: '10px' }} styleName="letterItems">
                     <span styleName="card-contentHeader-style">{letter.letterSentOnColumn}</span>
-                  </Grid>
-                  <Grid item styleName="item" xs={2}>
+                  </div>
+                  <div style={{ paddingLeft: '20px' }} styleName="letterItems">
                     <span styleName="card-contentValue-style">{letter.letterSentOn}</span>
-                  </Grid>
-                  <Grid item styleName="item" xs={4}>
+                  </div>
+                  <div style={{ paddingLeft: '40px' }} styleName="letterItems">
                     <span styleName="card-contentHeader-style">{letter.letterReceivedOnColumn}</span>
-                  </Grid>
-                  <Grid item styleName="item">
+                  </div>
+                  <div style={{ paddingLeft: '20px' }} styleName="letterItems">
                     <span styleName="card-contentValue-style">{letter.letterReceivedOn}</span>
-                  </Grid>
-                </Grid>
+                  </div>
+                </div>
               </CardContent>
             ))
             }

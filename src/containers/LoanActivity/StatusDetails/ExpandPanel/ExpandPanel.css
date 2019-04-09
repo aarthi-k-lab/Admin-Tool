@@ -73,14 +73,14 @@ div.button:first-child > p{
 }
 
 .header-style{
-    font-size: 0.90rem;
+    font-size: 0.875rem;
     font-family: "Lato", sans-serif;
     color: #707479;
 }
 .value-style{
-    font-weight: bold;
+    font-family: "Lato", sans-serif;
     color: #333940;
-    margin-top: 0.5rem;
+    font-weight: bold;
 }
 .complete{
     color:var(--light-green-500) !important;

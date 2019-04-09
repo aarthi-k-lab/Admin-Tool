@@ -14,7 +14,7 @@ const getMockMonthlyData = (type) => {
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
   let index;
-  const range = type === 'Trial' ? 5 : 12;
+  const range = type === 'Trial' ? 3 : 12;
   const constantMoney = 2865.00;
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -27,7 +27,7 @@ const getMockMonthlyData = (type) => {
       title: `${type} ${index + 1}`,
       month: `${monthNames[index]} 2019`,
       // eslint-disable-next-line no-nested-ternary
-      status: type !== 'Trial' ? (index > 3 ? 'incomplete' : 'complete') : (index === 1 ? 'failed' : 'complete'),
+      status: type !== 'Trial' ? (index > 3 ? 'incomplete' : 'complete') : (index === 1 ? '' : 'completed'),
       monthDetail: [{
         header: 'Total Trial amount',
         value: formatter.format(constantMoney + index),
