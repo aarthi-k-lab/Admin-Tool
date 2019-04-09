@@ -1,7 +1,7 @@
 .expand-all{
     display: flex;
     justify-content: flex-end;
-    padding-right: 16px;
+    padding-right: 19px;
 }
 .detail-list{
     padding-right: 20px;
@@ -12,8 +12,9 @@
     min-height: 0 !important;
     padding: 0 !important;
 }
-div.summary > :first-child{
-    margin: 0 !important;
+.summary > :first-child{
+    height: 36px;
+    padding: 0.75rem 1rem;
 }
 .button{
     padding: 0 12px 0 12px !important;
@@ -40,18 +41,20 @@ div.button:first-child > p{
     color: var(--grey-900) !important;
     font-weight: bold !important;
     align-self: center;
+    margin-left: 0.5rem;
 }
 
 .expand-panel-details{
-    padding: 0px 8px 4px 16px !important;
+    padding: 0px 8px 8px 16px !important;
 }
 
 .secondary-heading{
+    margin-left: 0.5rem;
     font-size: 0.9rem !important;
     font-family: "Lato", sans-serif;
     color: var(--grey-650) !important;
     background: var(--grey-200);
-    padding-right: 0px !important;
+    padding: 4px !important;
     align-self: center;
     margin-left: 1rem;
 }

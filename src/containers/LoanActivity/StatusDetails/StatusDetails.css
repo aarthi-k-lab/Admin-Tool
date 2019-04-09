@@ -18,8 +18,14 @@
 .title-row{
     padding:24px;
 }
+.title-row >:last-child{
+    border-radius: 0px !important;
+}
+.card-border{
+    border-radius: 0px !important;
+}
 .card-content{
-    padding: 1rem !important;
+    padding: 1.2rem !important;
     background: #38383f;
 }
 .card-contentList{
