@@ -1,6 +1,8 @@
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
+const DOC_PROCESSOR = 'PROC';
 
 const checklistGroupNames = [
+  DOC_PROCESSOR,
   FEUW_TASKS_AND_CHECKLIST,
 ];
 
@@ -16,12 +18,12 @@ function getUserPersona(appGroupName) {
   return persona;
 }
 
-function shouldGetChecklist(appGroupName) {
+function hasChecklist(appGroupName) {
   return checklistGroupNames.includes(appGroupName);
 }
 
 module.exports = {
   FEUW_TASKS_AND_CHECKLIST,
   getUserPersona,
-  shouldGetChecklist,
+  hasChecklist,
 };

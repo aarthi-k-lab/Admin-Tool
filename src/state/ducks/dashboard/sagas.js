@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
   select,
   take,
@@ -125,7 +124,10 @@ const searchLoan = function* searchLoan(loanNumber) {
       });
     }
   } catch (e) {
-    yield put({ type: SEARCH_LOAN_RESULT, payload: { loanNumber: searchLoanNumber, valid: false } });
+    yield put({
+      type: SEARCH_LOAN_RESULT,
+      payload: { loanNumber: searchLoanNumber, valid: false },
+    });
   }
 };
 
@@ -316,7 +318,7 @@ function getCommentPayload(taskDetails) {
 
 function* saveChecklistDisposition(payload) {
   const { appGroupName } = payload;
-  if (!payload.isFirstVisit && appGroupName === 'feuw-task-checklist') {
+  if (!payload.isFirstVisit && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
@@ -345,7 +347,7 @@ function* saveChecklistDisposition(payload) {
 
 function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
   const { appGroupName } = payload;
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+  if (!AppGroupName.hasChecklist(appGroupName)) {
     return;
   }
   const checklistId = getChecklistId(taskDetails);
@@ -418,7 +420,7 @@ function* endShift(action) {
     return;
   }
   const groupName = yield select(selectors.groupName);
-  if (groupName === 'feuw-task-checklist') {
+  if (AppGroupName.hasChecklist(groupName)) {
     yield put({ type: SHOW_LOADER });
     const payload = {};
     payload.appGroupName = groupName;
@@ -469,7 +471,7 @@ function* watchUnassignLoan() {
 }
 
 function* fetchChecklistDetailsForAssign(groupName, response) {
-  if (!AppGroupName.shouldGetChecklist(groupName)) {
+  if (!AppGroupName.hasChecklist(groupName)) {
     return;
   }
   yield put(resetChecklistData());

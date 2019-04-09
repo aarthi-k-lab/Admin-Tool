@@ -9,8 +9,10 @@ import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
+import DashboardErrors from 'models/DashboardErrors';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
@@ -41,6 +43,10 @@ class TasksAndChecklist extends React.PureComponent {
       dataLoadStatus,
       message,
       onChecklistChange,
+      disposition,
+      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+      user,
+      showAssign,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -55,14 +61,12 @@ class TasksAndChecklist extends React.PureComponent {
     if (message.type === 'do-not-display') {
       notification = null;
     } else {
-      notification = (
-        <span styleName="notif">
-          <UserNotification
-            level={message.type}
-            message={message.msg}
-            type="alert-box"
-          />
-        </span>
+      notification = DashboardErrors.renderErrorNotification(
+        disposition,
+        enableGetNext, isAssigned, noTasksFound, taskFetchError,
+        message.msg,
+        user,
+        showAssign,
       );
     }
     return (
@@ -131,6 +135,7 @@ const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
 
 TasksAndChecklist.defaultProps = {
+  enableGetNext: false,
   inProgress: false,
   message: null,
   noTasksFound: false,
@@ -156,17 +161,29 @@ TasksAndChecklist.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
+  enableGetNext: PropTypes.bool,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   message: PropTypes.string,
   noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
   taskFetchError: PropTypes.bool,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
 function getUserNotification(message) {
@@ -221,14 +238,18 @@ function mapStateToProps(state) {
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
+    enableGetNext: dashboardSelectors.enableGetNext(state),
+    isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
+    showAssign: dashboardSelectors.showAssign(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
     taskFetchError,
+    user: loginSelectors.getUser(state),
   };
 }
 
