@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
 import StatusDetails from './StatusDetails';
 import { selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
@@ -13,7 +14,7 @@ const getMockMonthlyData = (type) => {
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
   let index;
-  const range = type === 'Trial' ? 3 : 12;
+  const range = type === 'Trial' ? 5 : 12;
   const constantMoney = 2865.00;
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -84,9 +85,16 @@ class LoanActivity extends React.PureComponent {
     const { loanActivityDetails } = this.props;
     return (
       <>
-        <div styleName="detail-parent">
-          <StatusDetails loanActivityDetails={loanActivityDetails} />
-        </div>
+        <Grid container>
+          <Grid item styleName="status-details-parent" xs={9}>
+            <div styleName="status-details">
+              <StatusDetails loanActivityDetails={loanActivityDetails} />
+            </div>
+          </Grid>
+          <Grid item xs={3}>
+            <div styleName="report-downloader" />
+          </Grid>
+        </Grid>
       </>
     );
   }

@@ -20,7 +20,7 @@ class StatusDetails extends React.PureComponent {
           <div styleName="title-style">
             {loanActivityDetails.title}
           </div>
-          <Card>
+          <Card styleName="card-border">
             <CardContent styleName="card-content">
               <Grid container>
                 {loanActivityDetails.statusDetails
@@ -47,7 +47,7 @@ class StatusDetails extends React.PureComponent {
                   <Grid item styleName="item" xs={4}>
                     <span styleName="card-contentHeader-style">{letter.letterReceivedOnColumn}</span>
                   </Grid>
-                  <Grid item styleName="item" xs={2}>
+                  <Grid item styleName="item">
                     <span styleName="card-contentValue-style">{letter.letterReceivedOn}</span>
                   </Grid>
                 </Grid>

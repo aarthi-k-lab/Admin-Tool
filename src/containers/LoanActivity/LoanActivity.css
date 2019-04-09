@@ -28,12 +28,19 @@
     background: #555;
 }
 
-.detail-parent {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    position: relative;
-    left: 25%;
+.status-details-parent{
+    min-height: calc(100vh - 160px);
     max-height: calc(100vh - 160px);
     overflow: auto;
+}
+
+.status-details {
+    width: 60%;
+    margin: auto;
+}
+
+.report-downloader{
+    min-height: calc(100vh - 160px);
+    max-height: calc(100vh - 160px);
+    background-color: #fff;
 }

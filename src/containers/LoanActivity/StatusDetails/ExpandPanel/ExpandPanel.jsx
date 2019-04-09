@@ -1,4 +1,3 @@
-import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -7,9 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import * as R from 'ramda';
-import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
-import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 import PropTypes from 'prop-types';
+import TaskStatusIcon from 'components/TaskStatusIcon';
 import './ExpandPanel.css';
 
 class ExpandPanel extends React.PureComponent {
@@ -100,13 +98,7 @@ class ExpandPanel extends React.PureComponent {
                 styleName="panel-border"
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="summary">
-                  <Checkbox
-                    checked
-                    checkedIcon={<CircleCheckedFilled />}
-                    icon={<CircleUnchecked />}
-                    styleName={R.toLower(value.status)}
-                    value="checkedG"
-                  />
+                  <TaskStatusIcon isSubTask task={{ state: 'completed' }} />
                   <span styleName="heading">{value.title}</span>
                   <span styleName="secondary-heading">{value.month}</span>
                 </ExpansionPanelSummary>
