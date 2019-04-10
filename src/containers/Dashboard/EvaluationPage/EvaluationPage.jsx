@@ -5,7 +5,6 @@ import FullHeightColumn from 'components/FullHeightColumn';
 import Controls from 'containers/Controls';
 import FrontEndDisposition from 'containers/Dashboard/FrontEndDisposition';
 import { BackendDisposition } from 'containers/Dashboard/BackEndDisposition';
-import DocProcessing from 'containers/Dashboard/DocProcessing';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
@@ -25,7 +24,7 @@ class EvaluationPage extends React.PureComponent {
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
       case DashboardModel.PROC:
-        return <DocProcessing />;
+        return <TasksAndChecklist />;
       case DashboardModel.LOAN_ACTIVITY:
         return <LoanActivity />;
       default:

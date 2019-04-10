@@ -16,6 +16,7 @@
 .notif {
   align-self: center;
   padding: 0.5rem 1.5rem;
+  max-width: 50rem;
 }
 
 .notificationMsg.notificationMsg {

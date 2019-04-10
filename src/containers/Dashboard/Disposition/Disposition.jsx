@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
-import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
+import DashboardErrors from 'models/DashboardErrors';
 import { selectors as loginSelectors } from 'ducks/login';
-import { arrayToString } from 'lib/ArrayUtils';
-import RouteAccess from 'lib/RouteAccess';
 import { selectors, operations } from 'ducks/dashboard';
 import { operations as commentoperations } from 'ducks/comments';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -44,8 +41,6 @@ class Disposition extends Component {
     const { status } = this.props;
     this.handleSave = this.handleSave.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
-    this.renderErrorNotification = this.renderErrorNotification.bind(this);
-    this.getErrorMessages = this.getErrorMessages.bind(this);
     this.state = {
       status,
       operate: 'ExpandAll',
@@ -128,43 +123,6 @@ class Disposition extends Component {
     this.setState({ status: changedStatus, canSubmit: true });
   }
 
-  getErrorMessages() {
-    const {
-      beDispositionErrorMessages: errorMessages,
-      enableGetNext,
-      showAssign,
-      user,
-      isAssigned,
-      selectedDisposition,
-    } = this.props;
-    const { activityName } = selectedDisposition;
-    const groups = user && user.groupList;
-    let level = 'error';
-    let message = null;
-
-    if (errorMessages.length > 0) {
-      message = errorMessages.reduce(
-        (acc, msg) => {
-          acc.push(msg);
-          acc.push(<br key={msg} />);
-          return acc;
-        },
-        [],
-      );
-    } else if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
-      message = 'Please click Unassign to unassign the task from the user.';
-    } else if (showAssign) {
-      message = 'Please note only Manager can unassign the task.';
-    } else if (!isAssigned) {
-      message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
-    } else if (enableGetNext) {
-      message = `The task has been dispositioned successfully with disposition ${arrayToString([activityName])}`;
-      level = 'success';
-    }
-
-    return { level, message };
-  }
-
   handleSave() {
     const { content } = this.state;
     const {
@@ -238,33 +196,6 @@ class Disposition extends Component {
     );
   }
 
-  renderTaskErrorMessage() {
-    const { noTasksFound, taskFetchError } = this.props;
-    const warningMessage = 'No tasks assigned.Please contact your manager';
-    if (taskFetchError) {
-      const errorMessage = 'Task Fetch Failed.Please try again Later';
-      return (
-        <UserNotification level="error" message={errorMessage} type="alert-box" />
-      );
-    }
-    if (noTasksFound) {
-      return (
-        <UserNotification level="error" message={warningMessage} type="alert-box" />
-      );
-    }
-    return null;
-  }
-
-  renderErrorNotification() {
-    const { level, message } = this.getErrorMessages();
-    if (!R.isNil(message)) {
-      return (
-        <UserNotification level={level} message={message} type="alert-box" />
-      );
-    }
-    return null;
-  }
-
   render() {
     const {
       status, operate, selectedStatus, selectedActivity, content, refreshHook, canSubmit,
@@ -273,6 +204,9 @@ class Disposition extends Component {
       selectedDisposition,
       inProgress,
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
+      user,
+      showAssign,
+      beDispositionErrorMessages: errorMessages,
     } = this.props;
     const { activityName } = selectedDisposition;
     if (inProgress) {
@@ -300,12 +234,24 @@ class Disposition extends Component {
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
             {
-        (noTasksFound || taskFetchError) ? this.renderTaskErrorMessage() : (
+        (noTasksFound || taskFetchError) ? DashboardErrors.renderErrorNotification(
+          activityName,
+          enableGetNext, isAssigned, noTasksFound, taskFetchError,
+          errorMessages,
+          user,
+          showAssign,
+        ) : (
           <>
             <header styleName="para-title">
           Select the outcome of your review
             </header>
-            {this.renderErrorNotification(isAssigned, activityName)}
+            {DashboardErrors.renderErrorNotification(
+              activityName,
+              enableGetNext, isAssigned, noTasksFound, taskFetchError,
+              errorMessages,
+              user,
+              showAssign,
+            )}
             <button
               disabled={enableGetNext || !isAssigned}
               onClick={() => this.handleExpandAll()}

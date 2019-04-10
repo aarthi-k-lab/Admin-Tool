@@ -10,6 +10,7 @@ import {
   selectors,
 } from 'ducks/dashboard';
 import EndShiftModel from 'models/EndShift';
+import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
@@ -83,7 +84,7 @@ class Controls extends React.PureComponent {
     return (
       <>
         {assign}
-        {groupName === 'feuw-task-checklist' ? validate : null}
+        {AppGroupName.hasChecklist(groupName) ? validate : null}
         {endShift}
         {getNext}
         {getSendToUnderWritingButton}
