@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
   select,
   take,
@@ -10,10 +9,14 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
+import EndShift from 'models/EndShift';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import selectors from './selectors';
 import {
   END_SHIFT,
@@ -29,6 +32,7 @@ import {
   SHOW_SAVING_LOADER,
   HIDE_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
@@ -41,6 +45,8 @@ import {
   ASSIGN_LOAN_RESULT,
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
+  SEARCH_SELECT_EVAL,
+  CLEAR_ERROR_MESSAGE,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -48,6 +54,10 @@ import {
   resetChecklistData,
   storeProcessDetails,
 } from '../tasks-and-checklist/actions';
+import {
+  ERROR_LOADING_CHECKLIST,
+  ERROR_LOADING_TASKS,
+} from '../tasks-and-checklist/types';
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -114,7 +124,10 @@ const searchLoan = function* searchLoan(loanNumber) {
       });
     }
   } catch (e) {
-    yield put({ type: SEARCH_LOAN_RESULT, payload: { loanNumber: searchLoanNumber, valid: false } });
+    yield put({
+      type: SEARCH_LOAN_RESULT,
+      payload: { loanNumber: searchLoanNumber, valid: false },
+    });
   }
 };
 
@@ -122,17 +135,75 @@ function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
 
-const selectEval = function* selectEval(loanNumber) {
-  const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
+function* errorFetchingChecklistDetails() {
+  yield put({ type: ERROR_LOADING_CHECKLIST });
+  yield put({ type: ERROR_LOADING_TASKS });
+}
+
+function* fetchChecklistDetails(checklistId) {
   try {
-    yield put(tombstoneActions.fetchTombstoneData(searchLoanNumber));
+    const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
+    if (isChecklistIdInvalid) {
+      yield put({
+        type: CHECKLIST_NOT_FOUND,
+        payload: {
+          messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+        },
+      });
+      return;
+    }
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    } else {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {},
+      });
+      yield put({
+        type: SET_GET_NEXT_STATUS,
+        payload: false,
+      });
+    }
+    const { rootId: rootTaskId } = response;
+    yield put(storeProcessDetails(checklistId, rootTaskId));
+    yield put(getTasks());
+  } catch (e) {
+    yield put({
+      type: CHECKLIST_NOT_FOUND,
+      payload: {
+        messageCode: ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED,
+      },
+    });
+  }
+}
+
+function* fetchChecklistDetailsForSearchResult(searchItem) {
+  const groupList = yield select(loginSelectors.getGroupList);
+  const hasFrontendChecklistAccess = RouteAccess.hasFrontendChecklistAccess(groupList);
+  const isFrontEndTask = R.path(['payload', 'taskName'], searchItem) === 'FrontEnd Review';
+  const shouldRetriveChecklist = hasFrontendChecklistAccess && isFrontEndTask;
+  if (shouldRetriveChecklist) {
+    const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+    yield call(fetchChecklistDetails, checklistId);
+  }
+}
+
+function* selectEval(searchItem) {
+  const evalDetails = R.propOr({}, 'payload', searchItem);
+  yield put(resetChecklistData());
+  yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
+  yield call(fetchChecklistDetailsForSearchResult, searchItem);
+  try {
+    yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
-};
+}
 
 function* watchTombstoneLoan() {
-  yield takeEvery(SAVE_EVALID_LOANNUMBER, selectEval);
+  yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
@@ -153,12 +224,18 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     if (!response.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: response.discrepancies,
+        payload: {
+          type: 'error',
+          data: response.discrepancies,
+        },
       });
     } else {
       yield put({
         type: USER_NOTIF_MSG,
-        payload: null,
+        payload: {
+          type: 'success',
+          msg: 'Validation successful!',
+        },
       });
     }
   } catch (e) {
@@ -223,9 +300,9 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  const wfProcessId = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  const piid = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
   return {
-    loanNumber, evalId, taskId, wfProcessId,
+    loanNumber, evalId, taskId, piid,
   };
 }
 
@@ -239,51 +316,87 @@ function getCommentPayload(taskDetails) {
   };
 }
 
-function* fetchChecklistDetails(taskDetails, appGroupName) {
-  if (!AppGroupName.shouldGetChecklist(appGroupName)) {
+function* saveChecklistDisposition(payload) {
+  const { appGroupName } = payload;
+  if (!payload.isFirstVisit && AppGroupName.hasChecklist(appGroupName)) {
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const group = getUserPersona(payload.appGroupName);
+    const disposition = payload.dispositionCode;
+    const saveResponse = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    yield put({
+      type: SET_GET_NEXT_STATUS,
+      payload: saveResponse.enableGetNext,
+    });
+    if (!saveResponse.enableGetNext) {
+      yield put({ type: HIDE_LOADER });
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {
+          type: 'error',
+          data: saveResponse.discrepancies,
+        },
+      });
+      return false;
+    }
+  }
+  return true;
+}
+
+function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
+  const { appGroupName } = payload;
+  if (!AppGroupName.hasChecklist(appGroupName)) {
     return;
   }
   const checklistId = getChecklistId(taskDetails);
-  const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
-  const didErrorOccur = response === null;
-  if (didErrorOccur) {
-    throw new Error('Api call failed');
-  }
-  const { rootId: rootTaskId } = response;
-  yield put(storeProcessDetails(checklistId, rootTaskId));
-  yield put(getTasks());
+  yield call(fetchChecklistDetails, checklistId);
 }
 
 // eslint-disable-next-line
 function* getNext(action) {
-
   try {
     yield put({ type: SHOW_LOADER });
-    yield put(resetChecklistData());
-    const appGroupName = action.payload;
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
-    if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
-      const loanNumber = getLoanNumber(taskDetails);
-      const evalPayload = getEvalPayload(taskDetails);
-      const commentsPayLoad = getCommentPayload(taskDetails);
-      yield call(fetchChecklistDetails, taskDetails, appGroupName);
-      yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-      yield put(tombstoneActions.fetchTombstoneData(loanNumber));
-      yield put(commentsActions.loadCommentsAction(commentsPayLoad));
-      yield put({ type: HIDE_LOADER });
-    } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
-      yield put({ type: TASKS_NOT_FOUND, payload: { notasksFound: true } });
-      yield put(errorTombstoneFetch());
-    } else {
-      yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-      yield put(errorTombstoneFetch());
+    if (yield call(saveChecklistDisposition, action.payload)) {
+      const allTasksComments = yield select(checklistSelectors.getTaskComment);
+      yield put(resetChecklistData());
+      const { appGroupName } = action.payload;
+      const user = yield select(loginSelectors.getUser);
+      const userPrincipalName = R.path(['userDetails', 'email'], user);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      if (R.keys(allTasksComments).length) {
+        yield all(R.keys(allTasksComments).map((taskComment) => {
+          if (R.keys(allTasksComments[taskComment]).length) {
+            return put(commentsActions.postCommentAction(allTasksComments[taskComment]));
+          }
+          return null;
+        }));
+      }
+      if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
+        const loanNumber = getLoanNumber(taskDetails);
+        const evalPayload = getEvalPayload(taskDetails);
+        const commentsPayLoad = getCommentPayload(taskDetails);
+        yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
+        yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+        yield put(commentsActions.loadCommentsAction(commentsPayLoad));
+        yield put({ type: HIDE_LOADER });
+      } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
+        yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      } else {
+        yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      }
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
     yield put(errorTombstoneFetch());
+    yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
   }
 }
@@ -292,9 +405,35 @@ function* watchGetNext() {
   yield takeEvery(GET_NEXT, getNext);
 }
 
+/**
+ * @description
+ * This function is called for two reasons:
+ *  1. To simply clear the dashboard data when navigating between the left pane icons
+ *  2. When the user clicks 'End Shift' button present in the dashboard
+ * @param {*} action
+ */
 // eslint-disable-next-line
 function* endShift(action) {
-  yield put({ type: SUCCESS_END_SHIFT });
+  const type = R.pathOr('', ['payload', 'type'], action);
+  if (type === EndShift.CLEAR_DASHBOARD_DATA) {
+    yield put({ type: SUCCESS_END_SHIFT });
+    return;
+  }
+  const groupName = yield select(selectors.groupName);
+  if (AppGroupName.hasChecklist(groupName)) {
+    yield put({ type: SHOW_LOADER });
+    const payload = {};
+    payload.appGroupName = groupName;
+    payload.isFirstVisit = yield select(selectors.isFirstVisit);
+    payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
+    if (yield call(saveChecklistDisposition, payload)) {
+      yield put(resetChecklistData());
+      yield put({ type: HIDE_LOADER });
+      yield put({ type: SUCCESS_END_SHIFT });
+    }
+  } else {
+    yield put({ type: SUCCESS_END_SHIFT });
+  }
 }
 
 function* watchEndShift() {
@@ -331,6 +470,19 @@ function* watchUnassignLoan() {
   yield takeEvery(UNASSIGN_LOAN, unassignLoan);
 }
 
+function* fetchChecklistDetailsForAssign(groupName, response) {
+  if (!AppGroupName.hasChecklist(groupName)) {
+    return;
+  }
+  yield put(resetChecklistData());
+  yield put({
+    type: CLEAR_ERROR_MESSAGE,
+    payload: {},
+  });
+  const checklistId = R.pathOr('', ['taskData', 'taskCheckListId'], response);
+  yield call(fetchChecklistDetails, checklistId);
+}
+
 function* assignLoan() {
   try {
     const evalId = yield select(selectors.evalId);
@@ -347,6 +499,7 @@ function* assignLoan() {
         type: ASSIGN_LOAN_RESULT,
         payload: response,
       });
+      yield call(fetchChecklistDetailsForAssign, groupName, response);
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
@@ -364,10 +517,13 @@ function* watchAssignLoan() {
 
 export const TestExports = {
   autoSaveOnClose,
+  checklistSelectors,
   endShift,
-  fetchChecklistDetails,
+  errorFetchingChecklistDetails,
+  fetchChecklistDetails: fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
+  saveChecklistDisposition,
   searchLoan,
   selectEval,
   unassignLoan,

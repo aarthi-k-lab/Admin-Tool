@@ -13,14 +13,6 @@ import {
   TOGGLE_INSTRUCTIONS,
 } from './types';
 
-const storeProcessDetails = (processId, rootTaskId) => ({
-  type: STORE_PROCESS_DETAILS,
-  payload: {
-    processId,
-    rootTaskId,
-  },
-});
-
 const getNextChecklist = () => ({
   type: GET_NEXT_CHECKLIST,
 });
@@ -43,11 +35,12 @@ const getTasks = (depth = 3) => ({
   },
 });
 
-const handleChecklistItemChange = (id, value) => ({
+const handleChecklistItemChange = (id, value, taskCode) => ({
   type: HANDLE_CHECKLIST_ITEM_CHANGE,
   payload: {
     id,
     value,
+    taskCode,
   },
 });
 
@@ -74,6 +67,14 @@ const storeTaskFilter = taskFilter => ({
 const storeChecklistNavigation = navDataStructure => ({
   type: STORE_CHECKLIST_NAVIGATION,
   payload: navDataStructure,
+});
+
+const storeProcessDetails = (processId, rootTaskId) => ({
+  type: STORE_PROCESS_DETAILS,
+  payload: {
+    processId,
+    rootTaskId,
+  },
 });
 
 const toggleInstructions = () => ({

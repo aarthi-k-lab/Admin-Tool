@@ -1,17 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { links } from 'lib/RouteAccess';
+import { links, shouldShowIcon } from 'lib/RouteAccess';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
+import classNames from 'classnames';
+import EndShift from 'models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
-import './LeftNav.css';
-
+import styles from './LeftNav.css';
 
 class LeftNav extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handleLandingpage = this.handleLandingpage.bind(this);
+  }
+
+  static getIconStyle(currentPath, path) {
+    const isActive = R.equals(currentPath, path);
+    return classNames({
+      [styles['active-bar']]: isActive,
+    });
   }
 
   handleLandingpage() {
@@ -25,7 +33,7 @@ class LeftNav extends React.PureComponent {
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
-    onEndShift();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
   render() {
@@ -36,9 +44,13 @@ class LeftNav extends React.PureComponent {
         <nav id="cmod_leftnav" styleName="left-nav-bar">
           {
         links.map(link => (
-          groupList && groupList.some(r => link.groups.includes(r))
+          shouldShowIcon(link, groupList)
             ? (
-              <Link onClick={() => this.handleLandingpage()} styleName={R.equals(path, link.path) ? 'active-bar' : ''} to={link.path}>
+              <Link
+                className={this.constructor.getIconStyle(path, link.path)}
+                onClick={() => this.handleLandingpage()}
+                to={link.path}
+              >
                 <img alt={link.name} src={link.img} />
               </Link>) : null
         ))

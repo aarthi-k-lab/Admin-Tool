@@ -29,7 +29,9 @@ function Profile({ userDetails, groups, skills }) {
       </div>
       <div styleName="row">
         <Typography styleName="field-title" variant="body1">Skills: </Typography>
-        <ol styleName="group-list">{Profile.renderSkills(skills)}</ol>
+        <div styleName="skills">
+          <ol styleName="group-list">{Profile.renderSkills(skills)}</ol>
+        </div>
       </div>
     </Paper>
   );
@@ -45,23 +47,55 @@ Profile.renderGroups = function renderGroups(groups) {
   );
 };
 
-Profile.renderSkills = function renderSkills(skills) {
-  const sortedSkillsWithDefinitions = {};
-  const sortedSkills = !R.isNil(skills) && !R.isEmpty(skills)
-    ? Object.keys(skills).sort((skill1, skill2) => {
-      const skillNo1 = skill1.replace(/\s/g, '').match(/Skill(.*)/);
-      const skillNo2 = skill2.replace(/\s/g, '').match(/Skill(.*)/);
-      return parseInt(skillNo1[1], 10) - parseInt(skillNo2[1], 10);
-    }) : [];
-  sortedSkills.forEach((key) => {
-    sortedSkillsWithDefinitions[key] = skills[key];
+Profile.renderSkills = function renderSkills(skillList) {
+  let skills = [];
+  const skillsListWithMap = {};
+  Object.keys(skillList).forEach((group) => {
+    skillsListWithMap[group] = {};
+    skillList[group].map((eachSkill) => {
+      const result = {};
+      const [skill, desc] = eachSkill.split('::');
+      result[skill] = desc;
+      skillsListWithMap[group][skill] = desc;
+      return result;
+    });
+  });
+  Object.keys(skillList).forEach((group) => {
+    const tempSkills = skillList[group].reduce((result, val) => {
+      const [skill, description] = val.split('::');
+      return {
+        ...result,
+        [`${group}-${skill}`]: description,
+      };
+    }, {});
+
+    const sortedSkills = !R.isNil(tempSkills) && !R.isEmpty(tempSkills)
+      ? Object.keys(tempSkills).sort((skill1, skill2) => {
+        const skillNo1 = skill1.replace(/\s/g, '').match(/Skill(.*)/);
+        const skillNo2 = skill2.replace(/\s/g, '').match(/Skill(.*)/);
+        return parseInt(skillNo1[1], 10) - parseInt(skillNo2[1], 10);
+      }) : [];
+    skills = skills.concat(sortedSkills);
   });
 
-  return sortedSkillsWithDefinitions && sortedSkills && sortedSkills.map(skill => (
-    <li key={skill}>
-      <Typography variant="body1">{ `${skill} - ${sortedSkillsWithDefinitions[skill]}` }</Typography>
-    </li>
-  ));
+  let start = 0;
+  let style = '';
+  return skills.map((skill) => {
+    const [skillValue, descValue] = skill.split('-');
+    if (skillValue === 'BEUW' && start !== 1) {
+      start += 1;
+      style = 'separater';
+    } else {
+      style = '';
+    }
+    return (
+      <li key={skill} styleName={style}>
+        <Typography variant="body1">
+          {`${skill} - ${skillsListWithMap[skillValue][descValue]}`}
+        </Typography>
+      </li>
+    );
+  });
 };
 
 Profile.propTypes = {

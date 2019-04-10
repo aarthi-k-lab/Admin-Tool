@@ -7,16 +7,14 @@ import FrontEndDisposition from 'containers/Dashboard/FrontEndDisposition';
 import { BackendDisposition } from 'containers/Dashboard/BackEndDisposition';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
+import LoanActivity from 'containers/LoanActivity';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { selectors } from 'ducks/dashboard';
-import DispositionModel from 'models/Disposition';
-import UserNotification from 'components/UserNotification/UserNotification';
-import Center from 'components/Center';
 import './EvaluationPage.css';
-import Trail from 'containers/Trail';
 
+function isNotLoanActivity(group) {
+  return group !== DashboardModel.LOAN_ACTIVITY;
+}
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
     const { group } = this.props;
@@ -25,38 +23,32 @@ class EvaluationPage extends React.PureComponent {
         return <BackendDisposition />;
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
+      case DashboardModel.PROC:
+        return <TasksAndChecklist />;
+      case DashboardModel.LOAN_ACTIVITY:
+        return <LoanActivity />;
       default:
         return <FrontEndDisposition />;
     }
   }
 
   render() {
-    const { location, message } = this.props;
-    const title = location.pathname === '/backend-evaluation' ? 'UNDERWRITING' : 'Income Calculation';
+    const { location, group } = this.props;
+    const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
+    const title = el.task;
     return (
       <>
         <ContentHeader title={title}>
-          {message && message.length ? (
-            <Center>
-              <span styleName="notif">
-                <UserNotification
-                  level="error"
-                  message={message}
-                  type="alert-box"
-                />
-              </span>
-            </Center>
-          ) : null}
           <Controls
-            showEndShift
-            showGetNext
-            showValidate
+            showEndShift={isNotLoanActivity(group)}
+            showGetNext={isNotLoanActivity(group)}
+            showSendToUnderWritingIcon={!isNotLoanActivity(group)}
+            showValidate={isNotLoanActivity(group)}
           />
         </ContentHeader>
         <Tombstone />
         <FullHeightColumn styleName="columns-container">
-          {/* { this.renderDashboard() } */}
-          <Trail />
+          {this.renderDashboard()}
         </FullHeightColumn>
       </>
     );
@@ -65,7 +57,6 @@ class EvaluationPage extends React.PureComponent {
 
 EvaluationPage.defaultProps = {
   group: 'FEUW',
-  message: null,
 };
 
 EvaluationPage.propTypes = {
@@ -73,19 +64,12 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  message: PropTypes.string,
 };
-
-const mapStateToProps = state => ({
-  message: DispositionModel.getErrorMessages(
-    selectors.getChecklistDiscrepancies(state),
-  ),
-});
 
 const TestHooks = {
   EvaluationPage,
 };
 
-export default connect(mapStateToProps, null)(withRouter(EvaluationPage));
+export default withRouter(EvaluationPage);
 
 export { TestHooks };

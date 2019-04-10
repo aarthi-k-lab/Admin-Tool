@@ -8,6 +8,7 @@
 
 .container.container > * {
   margin-bottom: 0.5rem;
+  max-height: 100vh;
 }
 
 .container.container > :last-child {
@@ -26,4 +27,13 @@
 .row {
   display: flex;
   flex-wrap: nowrap;
+}
+
+.skills {
+  height: 300px;
+  overflow: auto;
+}
+
+.separater {
+  border-top: 1px solid #000;
 }

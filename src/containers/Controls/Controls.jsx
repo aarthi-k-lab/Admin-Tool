@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  EndShift, Expand, GetNext, Assign, Unassign,
+  EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import {
   operations,
   selectors,
 } from 'ducks/dashboard';
+import EndShiftModel from 'models/EndShift';
+import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
@@ -22,8 +24,11 @@ class Controls extends React.PureComponent {
   }
 
   handlegetNext() {
-    const { onGetNext, groupName } = this.props;
-    onGetNext(groupName);
+    const {
+      onGetNext, groupName,
+      isFirstVisit, dispositionCode,
+    } = this.props;
+    onGetNext({ appGroupName: groupName, isFirstVisit, dispositionCode });
   }
 
   validateDisposition() {
@@ -37,29 +42,37 @@ class Controls extends React.PureComponent {
 
   render() {
     const {
+      disableValidation,
       enableEndShift,
       enableGetNext,
+      groupName,
       onEndShift,
       onExpand,
-      showDisposition,
       showEndShift,
       showGetNext,
+      showSendToUnderWritingIcon,
       showAssign,
       showValidate,
       user,
     } = this.props;
     let assign = null;
+    const onEndShiftClick = () => onEndShift(
+      EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
+    );
     const validate = showValidate ? (
       <Control
         className={classNames(styles.controls, styles.spacer)}
         controlAction={() => this.validateDisposition()}
-        disableValidation={!showDisposition}
+        disableValidation={disableValidation}
         label="Validate"
       />) : null;
     const getNext = showGetNext
       ? <GetNext disabled={!enableGetNext} onClick={this.handlegetNext} /> : null;
-    const endShift = showEndShift ? <EndShift disabled={!enableEndShift} onClick={onEndShift} />
+    const endShift = showEndShift
+      ? <EndShift disabled={!enableEndShift} onClick={onEndShiftClick} />
       : null;
+    const getSendToUnderWritingButton = showSendToUnderWritingIcon
+      ? <SendToUnderwriting /> : null;
     const expand = <Expand onClick={onExpand} />;
     if (showAssign != null && !showAssign) {
       assign = <Assign />;
@@ -71,9 +84,10 @@ class Controls extends React.PureComponent {
     return (
       <>
         {assign}
-        {validate}
+        {AppGroupName.hasChecklist(groupName) ? validate : null}
         {endShift}
         {getNext}
+        {getSendToUnderWritingButton}
         {expand}
       </>
     );
@@ -83,20 +97,24 @@ class Controls extends React.PureComponent {
 Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
+  isFirstVisit: true,
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
   showEndShift: false,
   showGetNext: false,
+  showSendToUnderWritingIcon: false,
   showAssign: null,
   showValidate: false,
 };
 
 Controls.propTypes = {
+  disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
+  isFirstVisit: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -104,9 +122,9 @@ Controls.propTypes = {
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
   showAssign: PropTypes.bool,
-  showDisposition: PropTypes.bool.isRequired,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
+  showSendToUnderWritingIcon: PropTypes.bool,
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -120,15 +138,21 @@ Controls.propTypes = {
   validateDispositionTrigger: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  enableEndShift: selectors.enableEndShift(state),
-  enableGetNext: selectors.enableGetNext(state),
-  dispositionCode: checklistSelectors.getDispositionCode(state),
-  showAssign: selectors.showAssign(state),
-  showDisposition: checklistSelectors.shouldShowDisposition(state),
-  user: loginSelectors.getUser(state),
-  groupName: selectors.groupName(state),
-});
+const mapStateToProps = (state) => {
+  const showDisposition = checklistSelectors.shouldShowDisposition(state);
+  const isNotAssigned = !selectors.isAssigned(state);
+  const disableValidation = isNotAssigned || !showDisposition;
+  return {
+    disableValidation,
+    enableEndShift: selectors.enableEndShift(state),
+    enableGetNext: selectors.enableGetNext(state),
+    dispositionCode: checklistSelectors.getDispositionCode(state),
+    isFirstVisit: selectors.isFirstVisit(state),
+    showAssign: selectors.showAssign(state),
+    user: loginSelectors.getUser(state),
+    groupName: selectors.groupName(state),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   onExpand: operations.onExpand(dispatch),

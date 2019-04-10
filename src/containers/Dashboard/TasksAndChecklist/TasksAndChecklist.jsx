@@ -6,20 +6,34 @@ import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
+import Loader from 'components/Loader/Loader';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
-import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
+import UserNotification from 'components/UserNotification/UserNotification';
+import DispositionModel from 'models/Disposition';
+import DashboardErrors from 'models/DashboardErrors';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
+import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
-  validate() {
-    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
-    const payload = {
-      dispositionReason: dispositionCode,
-      group: groupName,
-    };
-    validateDispositionTrigger(payload);
+  renderTaskErrorMessage() {
+    const { checklistErrorMessage } = this.props;
+    if (checklistErrorMessage) {
+      return (
+        <div styleName="notificationMsg">
+          <UserNotification
+            level="error"
+            message={checklistErrorMessage}
+            type="alert-box"
+          />
+        </div>
+      );
+    }
+    return null;
   }
 
   renderChecklist() {
@@ -27,7 +41,12 @@ class TasksAndChecklist extends React.PureComponent {
       checklistItems,
       checklistTitle,
       dataLoadStatus,
+      message,
       onChecklistChange,
+      disposition,
+      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+      user,
+      showAssign,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -38,13 +57,27 @@ class TasksAndChecklist extends React.PureComponent {
     if (checklistItems.length <= 0) {
       return null;
     }
+    let notification;
+    if (message.type === 'do-not-display') {
+      notification = null;
+    } else {
+      notification = DashboardErrors.renderErrorNotification(
+        disposition,
+        enableGetNext, isAssigned, noTasksFound, taskFetchError,
+        message.msg,
+        user,
+        showAssign,
+      );
+    }
     return (
       <Checklist
         checklistItems={checklistItems}
         onChange={onChecklistChange}
         styleName="checklist"
         title={checklistTitle}
-      />
+      >
+        {notification}
+      </Checklist>
     );
   }
 
@@ -54,12 +87,23 @@ class TasksAndChecklist extends React.PureComponent {
       disableNext,
       disablePrev,
       disposition,
+      inProgress,
+      noTasksFound,
       onNext,
       onPrev,
       onInstuctionDialogToggle,
       showDisposition,
       showInstructionsDialog,
+      taskFetchError,
     } = this.props;
+    if (inProgress) {
+      return (
+        <Loader message="Please Wait" />
+      );
+    }
+    if (noTasksFound || taskFetchError) {
+      return this.renderTaskErrorMessage();
+    }
     return (
       <section styleName="tasks-and-checklist">
         <TaskPane styleName="tasks" />
@@ -74,6 +118,7 @@ class TasksAndChecklist extends React.PureComponent {
           styleName="instructions"
           title="Disposition"
         />
+        <WidgetBuilder styleName="task-checklist" />
         <Navigation
           className={classNames(styles.footer, styles.navigation)}
           disableNext={disableNext}
@@ -89,9 +134,19 @@ class TasksAndChecklist extends React.PureComponent {
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
 
+TasksAndChecklist.defaultProps = {
+  enableGetNext: false,
+  inProgress: false,
+  message: null,
+  noTasksFound: false,
+  taskFetchError: false,
+};
+
 TasksAndChecklist.propTypes = {
+  checklistErrorMessage: PropTypes.string.isRequired,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
       options: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
@@ -106,38 +161,101 @@ TasksAndChecklist.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
-  dispositionCode: PropTypes.string.isRequired,
-  groupName: PropTypes.string.isRequired,
+  enableGetNext: PropTypes.bool,
+  inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
+  message: PropTypes.string,
+  noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
-  validateDispositionTrigger: PropTypes.func.isRequired,
+  taskFetchError: PropTypes.bool,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
+function getUserNotification(message) {
+  if (message.type === 'success') {
+    return message;
+  }
+  if (message.type === 'error') {
+    return {
+      type: 'error',
+      msg: DispositionModel.getErrorMessages(message.data),
+    };
+  }
+  return {
+    type: 'do-not-display',
+  };
+}
+
+function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFound) {
+  if (!(taskFetchError || noTasksFound)) {
+    return '';
+  }
+  switch (checklistErrorCode) {
+    case ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT:
+      return 'Checklist not found.';
+    case ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED:
+      return 'Checklist fetch failed. Please try again later.';
+    default:
+      break;
+  }
+  if (taskFetchError) {
+    return 'Task Fetch Failed.Please try again Later';
+  }
+  if (noTasksFound) {
+    return 'No tasks assigned.Please contact your manager';
+  }
+  return '';
+}
+
 function mapStateToProps(state) {
+  const noTasksFound = dashboardSelectors.noTasksFound(state);
+  const taskFetchError = dashboardSelectors.taskFetchError(state);
+  const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
   return {
     disposition: selectors.getDisposition(state),
-    dispositionCode: selectors.getDispositionCode(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
+    checklistErrorMessage: getChecklistErrorMessage(
+      checklistErrorCode,
+      taskFetchError,
+      noTasksFound,
+    ),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
+    enableGetNext: dashboardSelectors.enableGetNext(state),
+    isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
+    inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
+    message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
+    noTasksFound,
+    showAssign: dashboardSelectors.showAssign(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
+    taskFetchError,
+    user: loginSelectors.getUser(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
-    validateDispositionTrigger: dashboardOperations.validateDispositionTrigger(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),

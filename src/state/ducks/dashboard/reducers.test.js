@@ -18,7 +18,7 @@ const saveDispositionAction = {
 const noTasksFoundAction = {
   type: TASKS_NOT_FOUND,
   payload: {
-    notasksFound: true,
+    noTasksFound: true,
   },
 };
 
@@ -128,14 +128,14 @@ describe('Ducks :: dashboard -> reducer', () => {
       loanNumber: '1234',
       taskId: '1234',
       taskFetchError: false,
-      notasksFound: false,
+      noTasksFound: false,
       showAssign: null,
       isAssigned: true,
     };
     expect(reducer(state, saveEvalIdLoanNumberAction)).toEqual(expectedState);
   });
 
-  it('notasksFound action', () => {
+  it('noTasksFound action', () => {
     const expectedState = {
       noTasksFound: true,
       evalId: null,
@@ -157,8 +157,9 @@ describe('Ducks :: dashboard -> reducer', () => {
 
   it('searchLoan Result action', () => {
     const expectedState = {
-      clearSearch: false,
+      clearSearch: true,
       assignLoanResponse: {},
+      checklistErrorCode: '',
       unassignLoanResponse: {},
       getSearchLoanResponse: {
         loanNumber: '1800840108',

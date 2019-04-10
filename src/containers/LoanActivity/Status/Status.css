@@ -1,0 +1,106 @@
+.cards {
+    background: var(--grey-200);
+    border: 1px solid #bbbdbf;
+    border-radius: 5px;
+    /* for mock */
+    margin-bottom: 16px;
+}
+
+.stepper {
+    padding: 0px !important;
+    background-color: unset !important;
+}
+
+.no-border {
+    border-left: none !important;
+}
+
+/* TO DO , have to revert it once gets integrated with service */
+
+.step-content {
+    /* border-left: 1px solid #bdbdbd !important; */
+    border-left: none !important;
+    margin-top: 0px !important;
+    padding-right: 0px !important;
+}
+
+.active{
+    background-color: #d4e7f9;
+}
+
+.image {
+    display: inline-flex;
+    justify-content: center;
+}
+
+.icon {
+    color: grey;
+    position: relative;
+    top: 2px;
+}
+
+.user-detail {
+    padding-left: 0.5rem;
+}
+
+.parent-card:hover {
+    background-color: #d4e7f9;
+    cursor: pointer;
+}
+
+.main-container {
+    padding: 18px 8px 18px 8px;
+    border-bottom: 1px solid #b0b4b9;
+}
+
+.item {
+    margin-top: 0.875rem !important;
+}
+
+.right-item {
+    text-align: right;
+}
+
+.child-grid {
+    background: var(--grey-200);
+    border: 1px solid #bbbdbf;
+    padding: 0.5rem;
+}
+
+.header-style {
+    font-size: 0.7rem;
+    color: var(--grey-590)
+}
+
+.align {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+}
+
+.sub-container {
+    padding-bottom: 14px;
+    margin-left: 1rem;
+}
+
+.value-style {
+    font-weight: bold;
+    color: #333940;
+    margin-top: 0.5rem;
+}
+
+.failedStatus {
+    background-color: var(--red-600);
+    color: #fafafa;
+    font-weight: bold;
+    padding: 1px 5px 1px 5px;
+    border-radius: 0.25rem;
+}
+
+.completedStatus {
+    background-color: var(--light-green-500);
+    color: #fafafa;
+    font-weight: bold;
+    padding: 1px 5px 1px 5px;
+    border-radius: 0.25rem;
+}

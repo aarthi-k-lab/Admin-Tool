@@ -4,6 +4,11 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
 import { Link, Redirect, withRouter } from 'react-router-dom';
+import RouteAccess from 'lib/RouteAccess';
+import EndShift from 'models/EndShift';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -47,6 +52,10 @@ class SearchLoan extends React.PureComponent {
     this.canRedirect = true;
   }
 
+  getFrontEndPath() {
+    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
+  }
+
   getParamsValue() {
     const { location } = this.props;
     const params = location.search;
@@ -54,16 +63,30 @@ class SearchLoan extends React.PureComponent {
     return loanNumberSearch.get('loanNumber');
   }
 
+  getGroups() {
+    const { user } = this.props;
+    return user && user.groupList;
+  }
+
   handleBackButton() {
     const { onEndShift } = this.props;
-    onEndShift();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
   handleRowClick(payload) {
     const { onSelectEval } = this.props;
     if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
       onSelectEval(payload);
-      this.redirectPath = payload.taskName === 'Underwriting' ? '/backend-evaluation' : '/frontend-evaluation';
+      switch (payload.taskName) {
+        case 'Underwriting':
+          this.redirectPath = '/backend-evaluation';
+          break;
+        case 'Processing':
+          this.redirectPath = '/doc-processor';
+          break;
+        default:
+          this.redirectPath = this.getFrontEndPath();
+      }
       this.setState({ isRedirect: true });
     }
   }
@@ -73,8 +96,8 @@ class SearchLoan extends React.PureComponent {
     const loanNumber = this.getParamsValue();
     return R.isEmpty(searchLoanResult)
       || (searchLoanResult
-      && searchLoanResult.loanNumber
-      && loanNumber !== searchLoanResult.loanNumber.toString());
+        && searchLoanResult.loanNumber
+        && loanNumber !== searchLoanResult.loanNumber.toString());
   }
 
   renderSearchResults() {
@@ -109,7 +132,7 @@ class SearchLoan extends React.PureComponent {
             <div styleName="eval-table-height-limiter">
               <h3 styleName="resultText">
                 <span styleName="searchResutlText">{ searchResultCount }</span>
-                        &nbsp;search results found for Loan &nbsp; &quot;
+                &nbsp;search results found for Loan &nbsp; &quot;
                 <span styleName="searchResutlText">{ loanNumber }</span>
                 &quot;
               </h3>
@@ -138,15 +161,13 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return (this.canRedirect
-      ? <Redirect to="/frontend-evaluation" /> : null
-    );
+    return (this.canRedirect) ? <Redirect to={this.getFrontEndPath()} /> : null;
   }
 
   render() {
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/frontend-evaluation">&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
         { this.renderSearchResults() }
       </>
     );
@@ -173,10 +194,10 @@ SearchLoan.COLUMN_DATA = [{
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
-  Header: 'STATUS REASON',
-  accessor: 'statusReason',
-  maxWidth: 130,
-  minWidth: 130,
+  Header: 'PROCESS STATUS REASON',
+  accessor: 'pstatusReason',
+  maxWidth: 150,
+  minWidth: 150,
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
@@ -208,6 +229,13 @@ SearchLoan.COLUMN_DATA = [{
   Cell: row => <EvalTableRow row={row} />,
 
 }, {
+  Header: 'TASK STATUS REASON',
+  accessor: 'statusReason',
+  maxWidth: 130,
+  minWidth: 130,
+  Cell: row => <EvalTableRow row={row} />,
+
+}, {
   Header: 'TASK STATUS DATE',
   accessor: 'tstatusDate',
   maxWidth: 110,
@@ -223,6 +251,12 @@ SearchLoan.COLUMN_DATA = [{
 }, {
   Header: 'ASSIGNED TO',
   accessor: 'assignee',
+  maxWidth: 200,
+  minWidth: 200,
+  Cell: row => <EvalTableRow row={row} />,
+}, {
+  Header: 'ACTIONS',
+  accessor: 'actions',
   maxWidth: 200,
   minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
@@ -249,12 +283,21 @@ SearchLoan.propTypes = {
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
   })).isRequired,
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
+  user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({

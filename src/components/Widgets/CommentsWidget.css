@@ -1,8 +1,13 @@
+
 .comment-main-style {
+  height: calc(100% - 13%);
+  overflow: auto;
+  margin-bottom: 0;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: hidden;
   width: inherit;
-  height: inherit;
   padding: 0.5rem;
-  position: absolute;
 }
 
 .row-main-container-right {
@@ -43,7 +48,10 @@
 
 .send-area {
   bottom: 0.7rem;
-  position: absolute;
+  overflow: auto;
+  position: fixed !important;
+  overflow-x: hidden;
+  overflow-y: hidden;
   display: inline-flex;
   width: 35.5rem;
 }
@@ -103,7 +111,9 @@
 }
 
 .comment-area {
-  height: calc(100% - 3.125rem);
+  height: calc(100% - 6.438rem);
+  overflow-x: hidden;
+  overflow-y: hidden;
   overflow: auto;
 }
 

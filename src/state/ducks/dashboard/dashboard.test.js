@@ -4,6 +4,7 @@ import {
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import * as actionTypes from './types';
 import {
@@ -15,6 +16,24 @@ import {
   resetChecklistData,
 } from '../tasks-and-checklist/actions';
 
+const mockComment = {
+  MISC_TSK_CHK2: {
+    applicationName: 'AppName',
+    loanNumber: 'LoanNumber',
+    processIdType: 'ProcIdType',
+    processId: 'EvalId',
+    eventName: 'EventName',
+    comment: 'test',
+    userName: 'Deepan Kumaresan',
+    createdDate: new Date().toJSON(),
+    commentContext: JSON.stringify({
+      TASK: 'MISC',
+      TASK_ID: '656565656567',
+      TASK_ACTN: 'wait',
+      DSPN_IND: 1,
+    }),
+  },
+};
 
 describe('expand view ', () => {
   it('should toggle expandView State', () => {
@@ -82,7 +101,11 @@ describe('watch getnext ', () => {
 
 describe('getnext Success', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -105,8 +128,19 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should get checklist comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getTaskComment));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    const saveDispositionSuccess = true;
+    expect(saga.next(saveDispositionSuccess).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -121,8 +155,13 @@ describe('getnext Success', () => {
   });
 
   it('should call fetchChecklistDetails generator to handle get next logic for checklist', () => {
+    const expectedPayload = {
+      appGroupName: 'FEUW',
+      dispositionCode: 'missingDocs',
+      isFirstVisit: true,
+    };
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, 'FEUW'));
+      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, expectedPayload));
   });
 
   it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
@@ -142,20 +181,6 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
   });
-  // it('should save loannumber and procesId from taskDetails Response', () => {
-  //   expect(saga.next(mockTaskDetails).value)
-  //     .toEqual(put({
-  //       type: actionTypes.SAVE_EVALID_LOANNUMBER,
-  //       payload: {
-  //         applicationName: "CMOD",
-  //         loanNumber: "12345",
-  //         processId: "34567",
-  //         processIdType: "EvalID",
-  //         evalId: "34567",
-  //         taskId: "1234",
-  //       },
-  //     }));
-  // });
   it('getnext worker should trigger loadComments action', () => {
     const actionDispatched = {
       payload: {
@@ -180,7 +205,11 @@ describe('getnext Success', () => {
 
 describe('getnext Failure -  no tasks found', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -197,8 +226,18 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should get checklist comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getTaskComment));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -216,7 +255,7 @@ describe('getnext Failure -  no tasks found', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(put({
         type: actionTypes.TASKS_NOT_FOUND,
-        payload: { notasksFound: true },
+        payload: { noTasksFound: true },
       }));
   });
   it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
@@ -227,6 +266,11 @@ describe('getnext Failure -  no tasks found', () => {
       }));
   });
 
+  it('should call error handler for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.errorFetchingChecklistDetails));
+  });
+
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
@@ -235,7 +279,11 @@ describe('getnext Failure -  no tasks found', () => {
 
 describe('getnext Failure -  task fetch failure', () => {
   const action = {
-    payload: 'FEUW',
+    payload: {
+      appGroupName: 'FEUW',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
   };
   const saga = cloneableGenerator(TestExports.getNext)(action);
   const userDetails = {
@@ -250,8 +298,18 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should dispatch action RESET_DATA for checklist', () => {
+  it('should call save disposition generator', () => {
     expect(saga.next().value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should get checklist comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getTaskComment));
+  });
+
+  it('should dispatch action RESET_DATA for checklist', () => {
+    expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -278,6 +336,11 @@ describe('getnext Failure -  task fetch failure', () => {
         type: ERROR_LOADING_TOMBSTONE_DATA,
         payload: { data: [], error: true, loading: false },
       }));
+  });
+
+  it('should call error handler for checklist', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.errorFetchingChecklistDetails));
   });
 
   it('should dispatch action HIDE_LOADER', () => {
@@ -315,7 +378,49 @@ describe('watch endShift ', () => {
 });
 
 describe('endShift worker', () => {
+  const action = {
+    payload: {
+      appGroupName: 'feuw-task-checklist',
+      isFirstVisit: true,
+      dispositionCode: 'missingDocs',
+    },
+  };
   const saga = cloneableGenerator(TestExports.endShift)();
+  it('should select groupName', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should dispatch app/dasboard/SHOW_LOADER', () => {
+    expect(saga.next('feuw-task-checklist').value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should select isFirstVisit', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.isFirstVisit));
+  });
+
+  it('should select DispositionCode', () => {
+    expect(saga.next(true).value)
+      .toEqual(select(checklistSelectors.getDispositionCode));
+  });
+
+  it('should make checklistDisposition call', () => {
+    expect(saga.next('missingDocs').value)
+      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should reset checklist data', () => {
+    expect(saga.next(true).value)
+      .toEqual(put(resetChecklistData()));
+  });
+
+  it('should hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+
   it('should dispatch SUCCESS_END_SHIFT', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SUCCESS_END_SHIFT }));

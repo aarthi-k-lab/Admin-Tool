@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import dashboardSelectors from 'ducks/dashboard/selectors';
 
 const getTaskFilter = R.path(['tasksAndChecklist', 'taskFilter']);
 
@@ -59,8 +60,10 @@ const getCurrentChecklistValue = ({ _id: id, value }, state) => {
 const getChecklistItems = state => R.compose(
   R.map(checklistItem => ({
     id: R.prop('_id', checklistItem),
+    disabled: !dashboardSelectors.isAssigned(state),
     isVisible: R.propOr(true, 'visibility', checklistItem),
     options: R.pathOr([], ['taskBlueprint', 'options'], checklistItem),
+    taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
     type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
     value: getCurrentChecklistValue(checklistItem, state),
@@ -91,6 +94,12 @@ const getPrevChecklistId = (state) => {
     state,
   );
 };
+
+const getFirstTaskId = (state) => {
+  R.pathOr('-', ['tasksAndChecklist', 'checklistNavigation', 'nothing', 'next'], state);
+};
+
+const getTaskComment = state => R.pathOr({}, ['tasksAndChecklist', 'taskComment'], state);
 
 const shouldDisableNext = (state) => {
   const nextChecklistId = getNextChecklistId(state);
@@ -137,9 +146,11 @@ const selectors = {
   getRootTaskId,
   getSelectedChecklistId,
   getTaskTree,
+  getTaskComment,
   shouldDisableNext,
   shouldDisablePrev,
   shouldShowDisposition,
+  getFirstTaskId,
   shouldShowInstructionsDialog,
 };
 

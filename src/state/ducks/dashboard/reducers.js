@@ -11,6 +11,7 @@ import {
   SHOW_LOADER,
   SHOW_SAVING_LOADER,
   HIDE_SAVING_LOADER,
+  CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_TRIGGER,
@@ -22,6 +23,8 @@ import {
   GROUP_NAME,
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
+  DISPLAY_ASSIGN,
+  CLEAR_ERROR_MESSAGE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -79,7 +82,8 @@ const reducer = (state = { firstVisit: true }, action) => {
         getSearchLoanResponse,
         assignLoanResponse: {},
         unassignLoanResponse: {},
-        clearSearch: false,
+        clearSearch: true,
+        checklistErrorCode: '',
       };
     }
 
@@ -109,6 +113,8 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         inProgress: true,
+        noTasksFound: false,
+        checklistErrorCode: '',
       };
     }
     case HIDE_LOADER: {
@@ -138,10 +144,17 @@ const reducer = (state = { firstVisit: true }, action) => {
         getSearchLoanResponse: {},
       };
     }
+    case CHECKLIST_NOT_FOUND: {
+      return {
+        ...state,
+        noTasksFound: true,
+        checklistErrorCode: R.pathOr('', ['payload', 'messageCode'], action),
+      };
+    }
     case TASKS_NOT_FOUND: {
       let noTasksFound;
       if (action.payload) {
-        noTasksFound = action.payload.notasksFound;
+        ({ noTasksFound } = action.payload);
       }
       return {
         ...state,
@@ -190,11 +203,11 @@ const reducer = (state = { firstVisit: true }, action) => {
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
-        processId: action.payload.wfProcessId,
+        processId: action.payload.piid,
         processStatus: action.payload.pstatus,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
-        notasksFound: false,
+        noTasksFound: false,
         isAssigned: !action.payload.isSearch,
       };
       return newState;
@@ -205,6 +218,15 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         showAssign: null,
+        isAssigned: !R.isEmpty(assignLoanResponse),
+      };
+    }
+
+    case DISPLAY_ASSIGN: {
+      const { assignLoanResponse } = state;
+      return {
+        ...state,
+        showAssign: false,
         isAssigned: !R.isEmpty(assignLoanResponse),
       };
     }
@@ -229,6 +251,14 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition: clearDisposition,
       };
       return newState;
+    }
+
+    case CLEAR_ERROR_MESSAGE: {
+      return {
+        ...state,
+        noTasksFound: false,
+        checklistErrorCode: '',
+      };
     }
     default:
       return state;

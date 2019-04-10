@@ -9,6 +9,7 @@ import { FormControlLabelWithTooltip } from 'components/RadioButtonGroup';
 import styles from './RadioButtons.css';
 
 function RadioButtons({
+  disabled,
   onChange,
   options,
   title,
@@ -30,6 +31,7 @@ function RadioButtons({
                 label: styles['radio-control-option-label'],
               }}
               control={<Radio styleName="radio-control-bubble" />}
+              disabled={disabled}
               disableTooltip={R.isNil(hint) || R.isEmpty(hint)}
               label={displayName}
               styleName="radio-control"
@@ -48,6 +50,7 @@ RadioButtons.defaultProps = {
 };
 
 RadioButtons.propTypes = {
+  disabled: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string.isRequired,

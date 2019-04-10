@@ -26,6 +26,7 @@ const frontendUnderwriter = {
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
   groups: ['feuw', 'feuw-mgr'],
+  notInGroup: ['beta'],
 };
 
 const backendUnderwriter = {
@@ -35,47 +36,72 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
+const docProcessor = {
+  path: '/doc-processor',
+  name: 'doc-processor',
+  img: '/static/img/doc-processor.svg',
+  groups: ['proc', 'proc-mgr'],
+};
+
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/frontend.svg',
-  groups: ['allaccess'],
+  img: '/static/img/fe_beta.svg',
+  groups: ['allaccess', 'feuw-beta', 'beta'],
 };
 
-const trail = {
-  path: '/trail',
-  name: 'trail',
-  img: '/static/img/settings.svg',
-  groups: ['allaccess'],
+// TO DO
+const loanActivity = {
+  path: '/loan-activity',
+  name: 'loan-activity',
+  img: '/static/img/loan-activity.svg',
+  groups: ['trial', 'trial-mgr'],
 };
 
 const links = [
   managerDashboard,
+  docProcessor,
   frontendUnderwriter,
   backendUnderwriter,
   stager,
   moveForward,
   feuwTasksAndChecklist,
-  trail,
+  loanActivity,
 ];
 
-function hasGroup(requiredGroups, userGroups) {
+function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
     return true;
   }
-  return requiredGroups.some(group => userGroups.includes(group));
+  if (!notInGroup) {
+    return requiredGroups.some(group => userGroups.includes(group));
+  }
+  return requiredGroups.some(group => userGroups.includes(group))
+    && !(notInGroup.some(group => userGroups.includes(group)));
+}
+
+function shouldShowIcon(link, userGroups) {
+  return hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendUnderwriterAccess(groups) {
-  return hasGroup(frontendUnderwriter.groups, groups);
+  return hasGroup(frontendUnderwriter.groups, groups, frontendUnderwriter.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
 
+function hasLoanActivityAccess(groups) {
+  return hasGroup(loanActivity.groups, groups);
+}
+
 function hasBackendUnderwriterAccess(groups) {
   return hasGroup(backendUnderwriter.groups, groups);
+}
+
+function hasDocProcessorAccess(groups) {
+  return hasGroup(docProcessor.groups, groups);
 }
 
 function hasManagerDashboardAccess(groups) {
@@ -93,9 +119,12 @@ function hasMoveForwardAccess(groups) {
 module.exports = {
   links,
   hasBackendUnderwriterAccess,
+  hasDocProcessorAccess,
   hasFrontendUnderwriterAccess,
   hasFrontendChecklistAccess,
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
+  hasLoanActivityAccess,
+  shouldShowIcon,
 };

@@ -2,7 +2,7 @@
 
 exports[`<AlertBox /> snapshot test for error level 1`] = `
 <div
-  className="components-UserNotification-AlertBox-AlertBox__alert-box--error components-UserNotification-AlertBox-AlertBox__alert-box"
+  className="alert-box--error"
 >
   <svg
     aria-hidden="true"
@@ -29,7 +29,7 @@ exports[`<AlertBox /> snapshot test for error level 1`] = `
 
 exports[`<AlertBox /> snapshot test for other levels 1`] = `
 <div
-  className="components-UserNotification-AlertBox-AlertBox__alert-box"
+  className="alert-box"
 >
   <span
     className="components-UserNotification-AlertBox-AlertBox__message"
@@ -41,7 +41,7 @@ exports[`<AlertBox /> snapshot test for other levels 1`] = `
 
 exports[`<AlertBox /> snapshot test for success level 1`] = `
 <div
-  className="components-UserNotification-AlertBox-AlertBox__alert-box--success components-UserNotification-AlertBox-AlertBox__alert-box"
+  className="alert-box--success"
 >
   <svg
     aria-hidden="true"
