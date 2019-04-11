@@ -141,7 +141,8 @@ Controls.propTypes = {
 const mapStateToProps = (state) => {
   const showDisposition = checklistSelectors.shouldShowDisposition(state);
   const isNotAssigned = !selectors.isAssigned(state);
-  const disableValidation = isNotAssigned || !showDisposition;
+  const enableValidate = checklistSelectors.enableValidate(state);
+  const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
   return {
     disableValidation,
     enableEndShift: selectors.enableEndShift(state),

@@ -16,6 +16,7 @@ const STORE_CHECKLIST_NAVIGATION = 'app/tasks-and-checklist/STORE_CHECKLIST_NAVI
 const STORE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/STORE_CHECKLIST_ITEM_CHANGE';
 const STORE_PROCESS_DETAILS = 'app/tasks-and-checklist/STORE_PROCESS_DETAILS';
 const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
+const VALIDATION_DISPLAY = 'app/tasks-and-checklist/VALIDATION_DISPLAY,';
 const STORE_MISC_TASK_COMMENT = 'app/tasks-and-checklist/STORE_MISC_TASK_COMMENT';
 const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
 
@@ -40,4 +41,5 @@ export {
   STORE_TASK_FILTER,
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
+  VALIDATION_DISPLAY,
 };
