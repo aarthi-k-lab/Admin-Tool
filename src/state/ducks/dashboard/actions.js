@@ -20,6 +20,7 @@ import {
   GROUP_NAME,
   SAVE_LOANNUMBER_PROCESSID,
   VALIDATE_DISPOSITION_SAGA,
+  GET_LOAN_ACTIVITY_DETAILS,
 } from './types';
 
 
@@ -119,6 +120,11 @@ const displayAssign = () => ({
   type: DISPLAY_ASSIGN,
 });
 
+const loanActivityDetails = payload => ({
+  type: GET_LOAN_ACTIVITY_DETAILS,
+  payload,
+});
+
 
 export {
   autoSave,
@@ -141,4 +147,5 @@ export {
   clearBEDisposition,
   getGroupName,
   validateDisposition,
+  loanActivityDetails,
 };

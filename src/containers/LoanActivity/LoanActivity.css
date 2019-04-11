@@ -11,25 +11,34 @@
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 10px;
+    border-radius: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 10px;
+    border-radius: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-.detail-parent {
-    padding: 0.25rem;
-    height: calc(100vh - 160px);
+.status-details-parent{
+    min-height: calc(100vh - 160px);
+    max-height: calc(100vh - 160px);
     overflow: auto;
+}
+
+.status-details {
+    width: 60%;
+    margin: auto;
+}
+
+.report-downloader{
+    background-color: #fff;
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
 import ExpandPanel from './ExpandPanel';
 import './StatusDetails.css';
 
@@ -13,56 +12,36 @@ class StatusDetails extends React.PureComponent {
   }
 
   renderDetailsCard() {
-    const { monthlyDetails, cardDetails } = this.props;
+    const { loanActivityDetails } = this.props;
     return (
       <>
         <div styleName="title-row">
           <div styleName="title-style">
-            {cardDetails.title}
+            {loanActivityDetails.title}
           </div>
-          <Card>
+          <Card styleName="card-border">
             <CardContent styleName="card-content">
-              <Grid container>
-                {cardDetails.statusDetails && cardDetails.statusDetails.map(detail => (
-                  <Grid item styleName="item" xs={3}>
-                    <span styleName="header-style">{detail.columnName}</span>
-                    <span styleName="value-style">{detail.columnValue}</span>
-                  </Grid>
-                ))
+              <div style={{ display: 'flex', width: '760px' }}>
+                {loanActivityDetails.statusDetails
+                  && loanActivityDetails.statusDetails.map(detail => (
+                    <div styleName="item">
+                      <span styleName="header-style">{detail.columnName}</span>
+                      <span styleName="value-style">{detail.columnValue}</span>
+                    </div>
+                  ))
                 }
-              </Grid>
+              </div>
             </CardContent>
           </Card>
-          <Card>
-            {cardDetails.letterSent && cardDetails.letterSent.map(letter => (
-              <CardContent style={{ borderBottom: '1px solid rgb(202, 205, 209)' }} styleName="card-contentList">
-                <Grid container>
-                  <Grid item styleName="item" xs={3}>
-                    <span styleName="card-contentHeader-style">{letter.letterSentOnColumn}</span>
-                  </Grid>
-                  <Grid item styleName="item" xs={2}>
-                    <span styleName="card-contentValue-style">{letter.letterSentOn}</span>
-                  </Grid>
-                  <Grid item styleName="item" xs={4}>
-                    <span styleName="card-contentHeader-style">{letter.letterReceivedOnColumn}</span>
-                  </Grid>
-                  <Grid item styleName="item" xs={2}>
-                    <span styleName="card-contentValue-style">{letter.letterReceivedOn}</span>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            ))
-            }
-          </Card>
         </div>
-        <ExpandPanel monthlyDetails={monthlyDetails} />
+        <ExpandPanel monthlyDetails={loanActivityDetails.monthlyDetails} />
       </>
     );
   }
 
   render() {
-    const { monthlyDetails, cardDetails } = this.props;
-    if (monthlyDetails.length === 0 && Object.keys(cardDetails).length === 0) {
+    const { loanActivityDetails } = this.props;
+    if (Object.keys(loanActivityDetails).length === 0) {
       return null;
     }
     return (
@@ -72,17 +51,7 @@ class StatusDetails extends React.PureComponent {
 }
 
 StatusDetails.propTypes = {
-  cardDetails: PropTypes.shape({
-    details: PropTypes.string.isRequired,
-    month: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-  }).isRequired,
-  monthlyDetails: PropTypes.shape({
-    acceptanceDate: PropTypes.string.isRequired,
-    downPayment: PropTypes.string.isRequired,
-    receivedDate: PropTypes.string.isRequired,
-    sentOn: PropTypes.string.isRequired,
-  }).isRequired,
+  loanActivityDetails: PropTypes.shape.isRequired,
 };
 
 export default StatusDetails;

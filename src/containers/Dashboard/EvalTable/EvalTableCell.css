@@ -14,3 +14,9 @@
 .pointer {
   cursor: pointer !important;
 }
+
+.loanActivityLink {
+  cursor: pointer;
+  color: blue;
+  text-decoration: none;
+}
