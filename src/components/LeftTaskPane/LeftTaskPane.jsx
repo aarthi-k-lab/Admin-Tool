@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
+import AddTask from './AddTask';
 import styles from './LeftTaskPane.css';
 
 const ALL = 'All';
@@ -109,10 +110,13 @@ class LeftTaskPane extends React.Component {
           {
             !isCollapsed
               ? (
-                <StatusMenu
-                  onChange={this.handleStatusChange}
-                  taskStatus={tasksStatus}
-                />
+                <>
+                  <StatusMenu
+                    onChange={this.handleStatusChange}
+                    taskStatus={tasksStatus}
+                  />
+                  <AddTask disabled={false} onClick={() => console.log('ADD TASK clicked')} />
+                </>
               )
               : null
           }
