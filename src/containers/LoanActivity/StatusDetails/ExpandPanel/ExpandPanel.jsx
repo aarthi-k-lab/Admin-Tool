@@ -32,6 +32,21 @@ function getWidth(index) {
       return 2;
   }
 }
+
+const ExpandAllCollapseAll = props => (
+  <>
+    <ExpansionPanel
+      expanded={props.isExpanded}
+      onChange={props.handleExpandAll}
+      styleName="button-border"
+    >
+      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="button">
+        <Typography styleName="button-heading">{props.isExpanded ? 'Collapse All' : 'Expand All'}</Typography>
+      </ExpansionPanelSummary>
+    </ExpansionPanel>
+  </>
+);
+
 class ExpandPanel extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -61,6 +76,7 @@ class ExpandPanel extends React.PureComponent {
             }
             maxDate = currentDate;
           }
+          return maxDateIndex;
         });
       }
     });
@@ -99,15 +115,7 @@ class ExpandPanel extends React.PureComponent {
     return (
       <>
         <div styleName="expand-all">
-          <ExpansionPanel
-            expanded={isExpanded}
-            onChange={() => this.handleExpandAll()}
-            styleName="button-border"
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="button">
-              <Typography styleName="button-heading">{isExpanded ? 'Collapse All' : 'Expand All'}</Typography>
-            </ExpansionPanelSummary>
-          </ExpansionPanel>
+          <ExpandAllCollapseAll handleExpandAll={this.handleExpandAll} isExpanded={isExpanded} />
         </div>
         <div styleName="detail-list">
           {
@@ -129,13 +137,15 @@ class ExpandPanel extends React.PureComponent {
                     {value.monthDetail && value.monthDetail.map((detail, i) => (
                       <div
                         style={{
-                          marginTop: '-8px', lineHeight: i === 0 ? '1.3' : '1.5', height: '4.8525rem', display: 'flex', flexDirection: 'column', background: getBackgroundColor(i), padding: '1rem', paddingLeft: i > 2 ? '1rem' : '1rem', paddingTop: i === 0 ? '1rem' : '1.25rem',
+                          background: getBackgroundColor(i),
+                          paddingLeft: i > 2 ? '1rem' : '1rem',
+                          paddingTop: i === 0 ? '1rem' : '1.25rem',
+                          lineHeight: i === 0 ? '1.3' : '1.5',
                         }}
+                        styleName="monthDetailStyle"
                         xs={getWidth(i)}
                       >
-                        <span styleName="header-style">
-                          {detail.header}
-                        </span>
+                        <span styleName="header-style">{detail.header}</span>
                         <span style={{ fontSize: i === 0 ? '1.5625rem' : '0.875rem' }} styleName="value-style">{detail.value}</span>
                       </div>
                     ))

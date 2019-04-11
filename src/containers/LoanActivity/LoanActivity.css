@@ -11,17 +11,17 @@
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 10px;
+    border-radius: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 10px;
+    border-radius: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -40,7 +40,5 @@
 }
 
 .report-downloader{
-    min-height: calc(100vh - 160px);
-    max-height: calc(100vh - 160px);
     background-color: #fff;
 }

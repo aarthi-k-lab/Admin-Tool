@@ -1,10 +1,10 @@
-.evalTable {
+.evalTable.evalTable {
     text-align: left !important;
     flex-basis: 100%;
     height: 0;
   }
 .header-style{
-    padding-left: 0.9375rem;
+    padding-left: 1.6375rem;
     padding-top: 0.25rem;
     font-size: 1rem;
     font-family: "Lato", sans-serif;
@@ -18,7 +18,9 @@
     padding: 12px;
 }
 .tableData-style{
+    font-size: 1rem;
     font-weight: bold;
+    padding-left: 1.6375rem;
 }
 .searchStyle {
     background-color: #fff;
@@ -27,9 +29,13 @@
     margin-right: 5.5rem;
     padding-left: 10px;
 }
-.searchIcon {
+.searchIcon.searchIcon {
     margin-right: 0.5rem;
     margin-left: 0.5rem;
     height: 10px;
     color: black !important;
+}
+.widgetHeaderAndContent{
+    border-bottom: 1px solid rgb(181, 184, 189);
+    padding: 10px;
 }

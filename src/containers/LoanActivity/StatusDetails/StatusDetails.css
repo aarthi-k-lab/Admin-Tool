@@ -26,12 +26,12 @@
 .card-border{
     border-radius: 0px !important;
 }
-.card-content{
+.card-content.card-content{
     width: 45.0625rem;
     height: 5.25rem;
     padding: 1rem !important;
 }
-.card-contentList{
+.card-contentList.card-contentList{
     width: 45.0625rem;
     height: 44px;
     padding-bottom: 1rem !important;
@@ -48,7 +48,7 @@
 .item{
     display: flex;
     flex-direction: column;
-    padding-left:28px;
+    padding-left:2.375rem;
     line-height: 1.5;
 }
 .letterItems{

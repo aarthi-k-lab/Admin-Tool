@@ -266,13 +266,6 @@ SearchLoan.COLUMN_DATA = [{
   minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
 },
-  // {
-  //   Header: 'ACTIONS',
-  //   accessor: 'actions',
-  //   maxWidth: 200,
-  //   minWidth: 200,
-  //   Cell: row => <EvalTableRow row={row} />,
-  // },
 ];
 
 

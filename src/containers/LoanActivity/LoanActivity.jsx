@@ -8,7 +8,6 @@ import { selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
 // MockData
-// eslint-disable-next-line no-unused-vars
 const getMockMonthlyData = (type) => {
   const data = [];
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -53,8 +52,6 @@ const getMockMonthlyData = (type) => {
   return data;
 };
 
-// This will get called in dashboard sagas
-// eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line arrow-body-style
 const getMockData = (type) => {
   return {
@@ -95,14 +92,14 @@ class LoanActivity extends React.PureComponent {
     const { loanActivityDetails } = this.props;
     return (
       <>
-        <Grid container>
+        <Grid alignItems="stretch" container>
           <Grid item styleName="status-details-parent" xs={9}>
             <div styleName="status-details">
               <StatusDetails loanActivityDetails={loanActivityDetails} />
             </div>
           </Grid>
-          <Grid item xs={3}>
-            <div styleName="report-downloader">
+          <Grid item style={{ flexGrow: 1, display: 'flex', alignItems: 'stretch' }} xs={3}>
+            <div style={{ flexGrow: 1 }} styleName="report-downloader">
               <DocWidget />
             </div>
           </Grid>

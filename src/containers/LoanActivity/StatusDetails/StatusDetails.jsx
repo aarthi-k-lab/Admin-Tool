@@ -21,7 +21,7 @@ class StatusDetails extends React.PureComponent {
           </div>
           <Card styleName="card-border">
             <CardContent styleName="card-content">
-              <div style={{ display: 'flex', width: '630px' }}>
+              <div style={{ display: 'flex', width: '760px' }}>
                 {loanActivityDetails.statusDetails
                   && loanActivityDetails.statusDetails.map(detail => (
                     <div styleName="item">

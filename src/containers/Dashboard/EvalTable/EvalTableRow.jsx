@@ -39,7 +39,7 @@ class EvalTableRow extends React.PureComponent {
       case 'ACTIONS':
         cellData = (
           <EvalTableCell
-            click={() => this.handleLinkClick()}
+            click={this.handleLinkClick}
             styleProps={getStyles(row)}
             value="Loan Activity"
           />
