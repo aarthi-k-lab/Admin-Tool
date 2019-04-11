@@ -1,0 +1,35 @@
+.evalTable {
+    text-align: left !important;
+    flex-basis: 100%;
+    height: 0;
+  }
+.header-style{
+    padding-left: 0.9375rem;
+    padding-top: 0.25rem;
+    font-size: 1rem;
+    font-family: "Lato", sans-serif;
+    color: #707479;
+}  
+.title-style{
+    font-size: 1.25rem;
+    font-family: "Lato", sans-serif;
+    color: black;
+    font-weight: bold;
+    padding: 12px;
+}
+.tableData-style{
+    font-weight: bold;
+}
+.searchStyle {
+    background-color: #fff;
+    height: 2rem;
+    width: 180px;
+    margin-right: 5.5rem;
+    padding-left: 10px;
+}
+.searchIcon {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    height: 10px;
+    color: black !important;
+}

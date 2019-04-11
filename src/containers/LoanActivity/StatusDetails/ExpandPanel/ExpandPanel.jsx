@@ -4,7 +4,6 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Grid from '@material-ui/core/Grid';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import TaskStatusIcon from 'components/TaskStatusIcon';
@@ -126,24 +125,22 @@ class ExpandPanel extends React.PureComponent {
                   <span styleName="secondary-heading">{value.month}</span>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails styleName="expand-panel-details">
-                  <Grid container>
+                  <div style={{ display: 'flex' }}>
                     {value.monthDetail && value.monthDetail.map((detail, i) => (
-                      <Grid
-                        item
+                      <div
                         style={{
-                          background: getBackgroundColor(i), padding: '10px', paddingLeft: i > 2 ? '20px' : '10px', maxWidth: (i === 1 || i === 2) ? '13%' : (`${100 / (12 / getWidth(i))}%`),
+                          marginTop: '-8px', lineHeight: i === 0 ? '1.3' : '1.5', height: '4.8525rem', display: 'flex', flexDirection: 'column', background: getBackgroundColor(i), padding: '1rem', paddingLeft: i > 2 ? '1rem' : '1rem', paddingTop: i === 0 ? '1rem' : '1.25rem',
                         }}
                         xs={getWidth(i)}
                       >
                         <span styleName="header-style">
                           {detail.header}
                         </span>
-                        <br />
                         <span style={{ fontSize: i === 0 ? '1.5625rem' : '0.875rem' }} styleName="value-style">{detail.value}</span>
-                      </Grid>
+                      </div>
                     ))
                     }
-                  </Grid>
+                  </div>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ))

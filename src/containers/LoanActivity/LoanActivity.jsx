@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import StatusDetails from './StatusDetails';
+import DocWidget from './DocWidget';
 import { selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
@@ -15,7 +16,7 @@ const getMockMonthlyData = (type) => {
   ];
   let index;
   const range = type === 'Trial' ? 3 : 12;
-  const constantMoney = 2865.00;
+  const constantMoney = 2865555.00;
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -27,7 +28,7 @@ const getMockMonthlyData = (type) => {
       title: `${type} ${index + 1}`,
       month: `${monthNames[index]} 2019`,
       // eslint-disable-next-line no-nested-ternary
-      status: type !== 'Trial' ? (index > 3 ? 'incomplete' : 'complete') : (index === 1 ? '' : 'completed'),
+      status: type !== 'Trial' ? (index > 3 ? 'incomplete' : 'complete') : 'completed',
       monthDetail: [{
         header: 'Total Trial amount',
         value: formatter.format(constantMoney + index),
@@ -64,6 +65,15 @@ const getMockData = (type) => {
     }, {
       columnName: 'Down Payment',
       columnValue: '$1234.00',
+    }, {
+      columnName: 'Case Id',
+      columnValue: '1',
+    }, {
+      columnName: 'Case Type',
+      columnValue: 'Trial',
+    }, {
+      columnName: 'FHA Trial Letter Received',
+      columnValue: '04/12/2018',
     }],
     letterSent: [{
       letterSentOnColumn: `${type} letter sent on`,
@@ -92,7 +102,9 @@ class LoanActivity extends React.PureComponent {
             </div>
           </Grid>
           <Grid item xs={3}>
-            <div styleName="report-downloader" />
+            <div styleName="report-downloader">
+              <DocWidget />
+            </div>
           </Grid>
         </Grid>
       </>

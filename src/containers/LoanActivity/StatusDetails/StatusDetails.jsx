@@ -2,7 +2,6 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
 import ExpandPanel from './ExpandPanel';
 import './StatusDetails.css';
 
@@ -22,38 +21,17 @@ class StatusDetails extends React.PureComponent {
           </div>
           <Card styleName="card-border">
             <CardContent styleName="card-content">
-              <Grid container>
+              <div style={{ display: 'flex', width: '630px' }}>
                 {loanActivityDetails.statusDetails
                   && loanActivityDetails.statusDetails.map(detail => (
-                    <Grid item styleName="item" xs={3}>
+                    <div styleName="item">
                       <span styleName="header-style">{detail.columnName}</span>
                       <span styleName="value-style">{detail.columnValue}</span>
-                    </Grid>
+                    </div>
                   ))
                 }
-              </Grid>
+              </div>
             </CardContent>
-          </Card>
-          <Card>
-            {loanActivityDetails.letterSent && loanActivityDetails.letterSent.map(letter => (
-              <CardContent style={{ borderBottom: '1px solid rgb(202, 205, 209)' }} styleName="card-contentList">
-                <div style={{ display: 'flex' }}>
-                  <div style={{ paddingLeft: '10px' }} styleName="letterItems">
-                    <span styleName="card-contentHeader-style">{letter.letterSentOnColumn}</span>
-                  </div>
-                  <div style={{ paddingLeft: '20px' }} styleName="letterItems">
-                    <span styleName="card-contentValue-style">{letter.letterSentOn}</span>
-                  </div>
-                  <div style={{ paddingLeft: '40px' }} styleName="letterItems">
-                    <span styleName="card-contentHeader-style">{letter.letterReceivedOnColumn}</span>
-                  </div>
-                  <div style={{ paddingLeft: '20px' }} styleName="letterItems">
-                    <span styleName="card-contentValue-style">{letter.letterReceivedOn}</span>
-                  </div>
-                </div>
-              </CardContent>
-            ))
-            }
           </Card>
         </div>
         <ExpandPanel monthlyDetails={loanActivityDetails.monthlyDetails} />
