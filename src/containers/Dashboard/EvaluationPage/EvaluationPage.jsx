@@ -10,10 +10,15 @@ import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { selectors } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
 function isNotLoanActivity(group) {
   return group !== DashboardModel.LOAN_ACTIVITY;
+}
+function isTrialOrForbearance(taskName) {
+  return taskName === 'Trial Modification' ? 'Trial' : 'Forbearance';
 }
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
@@ -33,9 +38,9 @@ class EvaluationPage extends React.PureComponent {
   }
 
   render() {
-    const { location, group } = this.props;
+    const { location, group, taskName } = this.props;
     const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
-    const title = el.task;
+    const title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
     return (
       <>
         <ContentHeader title={title}>
@@ -64,12 +69,16 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  taskName: PropTypes.string.isRequired,
 };
+const mapStateToProps = state => ({
+  taskName: selectors.processName(state),
+});
 
+const container = connect(mapStateToProps, null)(EvaluationPage);
 const TestHooks = {
   EvaluationPage,
 };
-
-export default withRouter(EvaluationPage);
+export default withRouter(container);
 
 export { TestHooks };

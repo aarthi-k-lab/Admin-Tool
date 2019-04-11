@@ -1,12 +1,14 @@
 .header-style{
+    padding-left: 0.9375rem;
+    padding-top: 0.25rem;
     font-size: 1rem;
     font-family: "Lato", sans-serif;
-    color: #edf1f5;
+    color: #707479;
 }
 .value-style{
+    padding-left: 0.9375rem;
     font-weight: bold;
-    color: #edf1f5;
-    margin-top: 0.5rem;
+    color: #333940;
 }
 .title-style{
     font-size: 1.25rem;
@@ -16,13 +18,22 @@
     margin-bottom: 1rem;
 }
 .title-row{
-    padding:24px;
+    padding:1.5rem;
 }
-.card-content{
-    padding-bottom: 1rem !important;
-    background: #38383f;
+.title-row >:last-child{
+    border-radius: 0px !important;
 }
-.card-contentList{
+.card-border{
+    border-radius: 0px !important;
+}
+.card-content.card-content{
+    width: 45.0625rem;
+    height: 5.25rem;
+    padding: 1rem !important;
+}
+.card-contentList.card-contentList{
+    width: 45.0625rem;
+    height: 44px;
     padding-bottom: 1rem !important;
 }
 .card-contentHeader-style{
@@ -35,6 +46,12 @@
     color: #48494a;
 }
 .item{
+    display: flex;
+    flex-direction: column;
+    padding-left:2.375rem;
+    line-height: 1.5;
+}
+.letterItems{
     display: flex;
     flex-direction: column;
 }

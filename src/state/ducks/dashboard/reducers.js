@@ -25,6 +25,7 @@ import {
   USER_NOTIF_MSG,
   DISPLAY_ASSIGN,
   CLEAR_ERROR_MESSAGE,
+  GET_LOAN_ACTIVITY_DETAILS,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -39,6 +40,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         checklistDiscrepancies: action.payload,
+      };
+    }
+    case GET_LOAN_ACTIVITY_DETAILS: {
+      return {
+        ...state,
+        loanActivityDetails: action.payload,
       };
     }
     case CLEAR_DISPOSITION: {
@@ -205,6 +212,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskId: action.payload.taskId,
         processId: action.payload.piid,
         processStatus: action.payload.pstatus,
+        processName: action.payload.taskName,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         noTasksFound: false,

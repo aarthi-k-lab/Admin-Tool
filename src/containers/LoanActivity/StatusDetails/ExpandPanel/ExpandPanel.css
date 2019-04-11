@@ -1,78 +1,122 @@
-.expand-all{
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 16px;
+.expand-all {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 1.1875rem;
 }
-.detail-list{
-    padding-right: 20px;
-    padding-left: 20px;
-    padding-bottom: 12px;
+
+.detail-list {
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+  padding-bottom: 0.75rem;
 }
-.button{
-    padding: 0 12px 0 12px !important;
-    min-height: 2rem !important;
+
+.summary.summary {
+  min-height: 0 !important;
+  padding: 0 !important;
 }
-div.button:first-child > p{
-    font-size: 0.75rem !important;
+
+.summary > :first-child {
+  height: 3rem;
+  padding: 0.75rem 1rem;
 }
-.button-border{
-    box-shadow: none !important;
-    background-color: transparent !important;
+
+.button.button {
+  padding: 0 0.75rem 0 0.75rem !important;
+  min-height: 0 !important;
 }
-.button-border:last-child{
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+
+div.button:first-child > p {
+  margin: 0px;
+  font-size: 0.75rem !important;
 }
-.button-border:first-child{
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
+
+.button-border.button-border {
+  box-shadow: none !important;
+  background-color: transparent !important;
 }
-.heading{
-    font-size: 1.3rem !important;
-    color: var(--grey-900) !important;
-    font-weight: bold !important;
-    align-self: center;
+
+.button-border:last-child {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
-.secondary-heading{
-    font-size: 0.9rem !important;
-    font-family: "Lato", sans-serif;
-    color: var(--grey-650) !important;
-    background: var(--grey-200);
-    padding-right: 0px !important;
-    align-self: center;
-    margin-left: 1rem;
+
+.button-border:first-child {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
-.button-heading{
-    font-size: 0.70rem !important;
-    font-family: "Lato", sans-serif;
-    font-weight: bold !important; 
+
+.heading.heading {
+  font-size: 1.3rem !important;
+  color: var(--grey-900) !important;
+  font-weight: bold !important;
+  align-self: center;
+  margin-left: 1rem;
 }
-.panel-border{
-    margin: 0px !important;
-    border-bottom: 1px solid #dbdee1;
+
+.expand-panel-details.expand-panel-details {
+  padding: 0px 0.5rem 0.5rem 1rem !important;
 }
-.header-style{
-    font-size: 0.90rem;
-    font-family: "Lato", sans-serif;
-    color: #707479;
+
+.secondary-heading.secondary-heading {
+  margin-left: 0.5rem;
+  font-size: 0.9rem !important;
+  font-family: "Lato", sans-serif;
+  color: var(--grey-650) !important;
+  background: var(--grey-200);
+  padding: 0.25rem !important;
+  align-self: center;
+  margin-left: 1rem;
 }
-.value-style{
-    font-weight: bold;
-    color: #333940;
-    margin-top: 0.5rem;
+
+.button-heading.button-heading {
+  font-size: 0.70rem !important;
+  font-family: "Lato", sans-serif;
+  font-weight: bold !important; 
 }
-.complete{
-    color:var(--light-green-500) !important;
-    border-radius: 50% !important;
-    pointer-events: none;
+
+.panel-border.panel-border {
+  margin: 0px !important;
+  border-bottom: 1px solid #dbdee1;
 }
-.incomplete{
-    color:#e2e2e1 !important;
-    border-radius: 50% !important;
-    pointer-events: none;
+
+.button-height.button-height {
+  min-height: 0 !important;
 }
-.failed{
-    color: var(--red-600) !important;
-    border-radius: 50% !important;
-    pointer-events: none;
+
+.header-style {
+  font-size: 0.875rem;
+  font-family: "Lato", sans-serif;
+  color: #707479;
+}
+
+.value-style {
+  font-family: "Lato", sans-serif;
+  color: #333940;
+  font-weight: bold;
+}
+
+.complete.complete {
+  color: var(--light-green-500) !important;
+  border-radius: 50% !important;
+  pointer-events: none;
+}
+
+.incomplete.incomplete {
+  color: #e2e2e1 !important;
+  border-radius: 50% !important;
+  pointer-events: none;
+}
+
+.failed.failed {
+  color: var(--red-600) !important;
+  border-radius: 50% !important;
+  pointer-events: none;
+}
+
+.monthDetailStyle {
+  margin-top: -8px;
+  height: 4.8525rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
 }
