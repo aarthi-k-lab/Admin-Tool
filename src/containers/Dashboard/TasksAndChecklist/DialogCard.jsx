@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandIcon from '@material-ui/icons/ExpandLess';
-import CollapseIcon from '@material-ui/icons/ExpandMore';
 import HelpIcon from '@material-ui/icons/Help';
 import Dialog from '@material-ui/core/Dialog';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import CollapseIcon from '@material-ui/icons/ExpandMore';
 import styles from './DialogCard.css';
+import DispositonComment from './DispositionComment';
 
 const propertyValidation = {
   dialogHeader: PropTypes.string,
@@ -38,6 +40,7 @@ function Modal({
           }}
           onClick={onClose}
         >
+          <ChatBubbleIcon />
           <CollapseIcon />
         </IconButton>
       </div>
@@ -94,8 +97,11 @@ function DialogCard({
           }}
           onClick={onDialogToggle}
         >
+          <ChatBubbleIcon />
+          <CollapseIcon />
           <ExpandIcon />
         </IconButton>
+        <DispositonComment />
       </div>
     </>
   );

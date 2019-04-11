@@ -1,0 +1,21 @@
+.comment-box textarea {
+  margin-left: 1rem ;
+  margin-bottom: 1rem ;
+  height: 2.875rem ;
+  width: 25.0625rem ;
+}
+
+.comment-box textarea:focus{
+  margin-left: 1rem ;
+  margin-bottom: 1rem ;
+  height: 4.875rem ;
+  width: 25.0625rem ;
+}
+
+.comment-box {
+    width: 22.94rem ;
+}
+
+.prompt-error {
+  color: red;
+}
