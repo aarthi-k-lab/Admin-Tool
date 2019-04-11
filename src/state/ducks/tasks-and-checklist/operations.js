@@ -6,6 +6,7 @@ import {
   handleChecklistItemChange,
   setSelectedChecklist,
   toggleInstructions,
+  showOptionalTasks,
 } from './actions';
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
@@ -25,6 +26,8 @@ const handleChecklistItemValueChange = dispatch => (id, value, taskCode) => {
 
 const handleToggleInstructions = dispatch => () => dispatch(toggleInstructions());
 
+const handleShowOptionalTasks = dispatch => () => dispatch(showOptionalTasks());
+
 const operations = {
   fetchChecklist,
   fetchNextChecklist,
@@ -32,6 +35,7 @@ const operations = {
   saveTaskFilter,
   handleChecklistItemValueChange,
   handleToggleInstructions,
+  handleShowOptionalTasks,
 };
 
 export default operations;

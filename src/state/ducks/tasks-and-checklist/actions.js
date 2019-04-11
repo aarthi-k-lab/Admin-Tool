@@ -11,6 +11,7 @@ import {
   STORE_TASKS,
   STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
+  SHOW_OPTIONAL_TASKS,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -81,6 +82,10 @@ const toggleInstructions = () => ({
   type: TOGGLE_INSTRUCTIONS,
 });
 
+const showOptionalTasks = () => ({
+  type: SHOW_OPTIONAL_TASKS,
+});
+
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -94,4 +99,5 @@ export {
   storeTasks,
   storeTaskFilter,
   toggleInstructions,
+  showOptionalTasks,
 };

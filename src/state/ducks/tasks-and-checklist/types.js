@@ -18,6 +18,7 @@ const STORE_PROCESS_DETAILS = 'app/tasks-and-checklist/STORE_PROCESS_DETAILS';
 const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
 const STORE_MISC_TASK_COMMENT = 'app/tasks-and-checklist/STORE_MISC_TASK_COMMENT';
 const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
+const SHOW_OPTIONAL_TASKS = 'app/tasks-and-checklist/SHOW_OPTIONAL_TASKS';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -40,4 +41,5 @@ export {
   STORE_TASK_FILTER,
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
+  SHOW_OPTIONAL_TASKS,
 };

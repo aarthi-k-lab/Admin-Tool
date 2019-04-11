@@ -90,6 +90,7 @@ class LeftTaskPane extends React.Component {
     const { tasksStatus, isCollapsed } = this.state;
     const {
       dataLoadStatus,
+      onAddTaskClick,
       onSubTaskClick,
       selectedTaskId,
       tasks,
@@ -115,7 +116,7 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
-                  <AddTask disabled={false} onClick={() => console.log('ADD TASK clicked')} />
+                  <AddTask disabled={false} onClick={() => onAddTaskClick()} />
                 </>
               )
               : null
@@ -164,6 +165,7 @@ LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
+  onAddTaskClick: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   selectedTaskId: PropTypes.string,

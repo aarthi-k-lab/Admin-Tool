@@ -15,6 +15,7 @@ import {
   STORE_TASK_FILTER,
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
+  SHOW_OPTIONAL_TASKS,
 } from './types';
 
 const FAILED = 'failed';
@@ -32,6 +33,7 @@ const defaultState = {
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
   taskComment: {},
+  showOptionalTasks: false,
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -156,6 +158,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         showInstructionsDialog: !state.showInstructionsDialog,
+      };
+    }
+    case SHOW_OPTIONAL_TASKS: {
+      return {
+        ...state,
+        showOptionalTasks: !state.showOptionalTasks,
       };
     }
     default:
