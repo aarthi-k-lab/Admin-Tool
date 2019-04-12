@@ -1,30 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import './AddTask.css';
+import { withStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
 
-const AddTask = ({ disabled, onClick }) => (
-  <Button
-    className="material-ui-button"
-    color="primary"
-    disabled={disabled}
-    onClick={onClick}
-    styleName="add-task"
-    variant="contained"
-  >
-    <img alt="add-icon" height="25" src="/static/img/add.svg" width="25" />
-    <span>ADD TASK</span>
-  </Button>
+const styles = theme => ({
+  margin: {
+    margin: theme.spacing.unit,
+  },
+  extendedIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  custom: {
+    color: 'black',
+    backgroundColor: 'var(--grey-300)',
+    borderRadius: '0.15rem',
+    minHeight: '25px',
+    width: '30px',
+    height: '0px',
+    marginLeft: '10rem',
+    '&:hover': {
+      backgroundColor: 'var(--grey-300)',
+    },
+  },
+});
+
+const AddTask = ({ classes, onClick, toolTipPosition }) => (
+  <Tooltip aria-label="Add Task" placement={toolTipPosition} title="Add Task">
+    <Fab
+      aria-label="Add"
+      className={classes.custom}
+      color="secondary"
+      onClick={onClick}
+    >
+      <AddIcon />
+    </Fab>
+  </Tooltip>
 );
 
 AddTask.defaultProps = {
-  disabled: false,
   onClick: () => {},
+  toolTipPosition: 'bottom',
 };
 
 AddTask.propTypes = {
-  disabled: PropTypes.bool,
+  classes: PropTypes.shape.isRequired,
   onClick: PropTypes.func,
+  toolTipPosition: PropTypes.string,
 };
 
-export default AddTask;
+export default withStyles(styles)(AddTask);

@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+// import * as R from 'ramda';
+import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
-import LeftParentTasks from './LeftParentTasks';
+// import LeftParentTasks from './LeftParentTasks';
 import AddTask from '../LeftTaskPane/AddTask';
 import BackToAllTasks from '../LeftTaskPane/BackToAllTasks';
+import TaskStatusIcon from '../TaskStatusIcon/TaskStatusIcon';
 import './LeftParentTasks.css';
 
 class OptionalTaskDetails extends React.Component {
@@ -48,13 +51,26 @@ class OptionalTaskDetails extends React.Component {
         tasks.filter(({ visibility }) => visibility)
           .map(task => (
             <div styleName="task-group">
-              {
-                 LeftParentTasks.renderCollapsedView(task)
-        }
-              {
+              <Grid container spacing={0}>
+                <Grid item xs={12}>
+                  <span title="test">
+                    <TaskStatusIcon styleName="icon-padding" task={task} />
+                  </span>
+                  {
             isTaskAdded ? this.constructor.renderDeleteIcon()
-              : <AddTask disabled={false} onClick={() => this.onAddTask()} />
+              : (
+                <AddTask
+                  disabled={false}
+                  onClick={() => this.onAddTask()}
+                  toolTipPosition="left"
+                />
+              )
         }
+                </Grid>
+              </Grid>
+              {/* {
+                 LeftParentTasks.renderCollapsedView(task)
+        } */}
             </div>
           )) }
           <BackToAllTasks disabled={false} onClick={() => onAddTaskClick()} />
