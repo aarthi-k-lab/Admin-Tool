@@ -32,6 +32,9 @@ const processId = state => R.pathOr(null, ['dashboard', 'processId'], state);
 
 const processStatus = state => R.pathOr(null, ['dashboard', 'processStatus'], state);
 
+const processName = state => R.pathOr(null, ['dashboard', 'processName'], state);
+
+const getActivityDetails = state => R.pathOr(null, ['dashboard', 'loanActivityDetails'], state);
 const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
@@ -80,6 +83,8 @@ const selectors = {
   assignResult,
   processId,
   processStatus,
+  processName,
+  getActivityDetails,
   isAssigned,
   clearSearch,
   comments,

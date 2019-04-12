@@ -4,7 +4,6 @@ import {
   ERROR_LOADING_TASKS,
   LOADING_CHECKLIST,
   LOADING_TASKS,
-  MAKE_CHECKLIST_READ_ONLY,
   REMOVE_DIRTY_CHECKLIST,
   RESET_DATA,
   SET_SELECTED_CHECKLIST,
@@ -14,6 +13,7 @@ import {
   STORE_PROCESS_DETAILS,
   STORE_TASKS,
   STORE_TASK_FILTER,
+  STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
 } from './types';
 
@@ -28,10 +28,10 @@ const defaultState = {
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
   processId: null,
-  readOnly: false,
   rootTaskId: null,
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
+  taskComment: {},
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -100,11 +100,6 @@ const reducer = (state = defaultState, action) => {
         ...state,
         taskLoadingStatus: LOADING,
       };
-    case MAKE_CHECKLIST_READ_ONLY:
-      return {
-        ...state,
-        readOnly: true,
-      };
     case REMOVE_DIRTY_CHECKLIST:
       return removeDirtyChecklistItem(state);
     case RESET_DATA:
@@ -149,6 +144,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskFilter: action.payload,
+      };
+    }
+    case STORE_MISC_TASK_COMMENT: {
+      return {
+        ...state,
+        taskComment: action.payload,
       };
     }
     case TOGGLE_INSTRUCTIONS: {

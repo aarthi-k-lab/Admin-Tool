@@ -8,7 +8,6 @@ const ERROR_LOADING_TASKS = 'app/tasks-and-checklist/ERROR_LOADING_TASKS';
 const HANDLE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/HANDLE_CHECKLIST_ITEM_CHANGE';
 const LOADING_CHECKLIST = 'app/tasks-and-checklist/LOADING_CHECKLIST';
 const LOADING_TASKS = 'app/tasks-and-checklist/LOADING_TASKS';
-const MAKE_CHECKLIST_READ_ONLY = 'app/tasks-and-checklist/MAKE_CHECKLIST_READ_ONLY';
 const REMOVE_DIRTY_CHECKLIST = 'app/tasks-and-checklist/REMOVE_DIRTY_CHECKLIST';
 const SET_SELECTED_CHECKLIST = 'app/tasks-and-checklist/SET_SELECTED_CHECKLIST';
 const STORE_CHECKLIST = 'app/tasks-and-checklist/STORE_CHECKLIST';
@@ -17,6 +16,7 @@ const STORE_CHECKLIST_NAVIGATION = 'app/tasks-and-checklist/STORE_CHECKLIST_NAVI
 const STORE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/STORE_CHECKLIST_ITEM_CHANGE';
 const STORE_PROCESS_DETAILS = 'app/tasks-and-checklist/STORE_PROCESS_DETAILS';
 const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
+const STORE_MISC_TASK_COMMENT = 'app/tasks-and-checklist/STORE_MISC_TASK_COMMENT';
 const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
 
 export {
@@ -29,7 +29,6 @@ export {
   HANDLE_CHECKLIST_ITEM_CHANGE,
   LOADING_CHECKLIST,
   LOADING_TASKS,
-  MAKE_CHECKLIST_READ_ONLY,
   REMOVE_DIRTY_CHECKLIST,
   SET_SELECTED_CHECKLIST,
   RESET_DATA,
@@ -39,5 +38,6 @@ export {
   STORE_PROCESS_DETAILS,
   STORE_TASKS,
   STORE_TASK_FILTER,
+  STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
 };

@@ -36,20 +36,26 @@ const backendUnderwriter = {
   groups: ['beuw', 'beuw-mgr', 'allaccess'],
 };
 
-// TO-DO
 const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['doc-processor'],
+  groups: ['proc', 'proc-mgr'],
 };
 
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/frontend.svg',
+  img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
-  beta: true,
+};
+
+// TO DO
+const loanActivity = {
+  path: '/loan-activity',
+  name: 'loan-activity',
+  img: '/static/img/loan-activity.svg',
+  groups: ['trial', 'trial-mgr'],
 };
 
 const links = [
@@ -60,6 +66,7 @@ const links = [
   stager,
   moveForward,
   feuwTasksAndChecklist,
+  loanActivity,
 ];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
@@ -70,15 +77,23 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
     return requiredGroups.some(group => userGroups.includes(group));
   }
   return requiredGroups.some(group => userGroups.includes(group))
-  && !(notInGroup.some(group => userGroups.includes(group)));
+    && !(notInGroup.some(group => userGroups.includes(group)));
+}
+
+function shouldShowIcon(link, userGroups) {
+  return hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendUnderwriterAccess(groups) {
-  return hasGroup(frontendUnderwriter.groups, groups);
+  return hasGroup(frontendUnderwriter.groups, groups, frontendUnderwriter.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
-  return hasGroup(feuwTasksAndChecklist.groups, groups, feuwTasksAndChecklist.notInGroup);
+  return hasGroup(feuwTasksAndChecklist.groups, groups);
+}
+
+function hasLoanActivityAccess(groups) {
+  return hasGroup(loanActivity.groups, groups);
 }
 
 function hasBackendUnderwriterAccess(groups) {
@@ -110,4 +125,6 @@ module.exports = {
   hasManagerDashboardAccess,
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
+  hasLoanActivityAccess,
+  shouldShowIcon,
 };

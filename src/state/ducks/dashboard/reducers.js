@@ -24,6 +24,8 @@ import {
   SET_GET_NEXT_STATUS,
   USER_NOTIF_MSG,
   DISPLAY_ASSIGN,
+  CLEAR_ERROR_MESSAGE,
+  GET_LOAN_ACTIVITY_DETAILS,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -38,6 +40,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         checklistDiscrepancies: action.payload,
+      };
+    }
+    case GET_LOAN_ACTIVITY_DETAILS: {
+      return {
+        ...state,
+        loanActivityDetails: action.payload,
       };
     }
     case CLEAR_DISPOSITION: {
@@ -81,7 +89,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         getSearchLoanResponse,
         assignLoanResponse: {},
         unassignLoanResponse: {},
-        clearSearch: false,
+        clearSearch: true,
         checklistErrorCode: '',
       };
     }
@@ -153,7 +161,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case TASKS_NOT_FOUND: {
       let noTasksFound;
       if (action.payload) {
-        noTasksFound = action.payload.notasksFound;
+        ({ noTasksFound } = action.payload);
       }
       return {
         ...state,
@@ -204,9 +212,10 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskId: action.payload.taskId,
         processId: action.payload.piid,
         processStatus: action.payload.pstatus,
+        processName: action.payload.taskName,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
-        notasksFound: false,
+        noTasksFound: false,
         isAssigned: !action.payload.isSearch,
       };
       return newState;
@@ -250,6 +259,14 @@ const reducer = (state = { firstVisit: true }, action) => {
         selectedDisposition: clearDisposition,
       };
       return newState;
+    }
+
+    case CLEAR_ERROR_MESSAGE: {
+      return {
+        ...state,
+        noTasksFound: false,
+        checklistErrorCode: '',
+      };
     }
     default:
       return state;

@@ -1,9 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import EvalTableCell from './EvalTableCell';
-
+import { operations, selectors } from '../../../state/ducks/dashboard';
 
 class EvalTableRow extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleLinkClick = this.handleLinkClick.bind(this);
+  }
+
+  handleLinkClick() {
+    const { row, searchLoanResult } = this.props;
+    const { loanNumber } = searchLoanResult;
+    const payLoad = { loanNumber, ...row.original };
+    const { onSelectEval } = this.props;
+    onSelectEval(payLoad);
+  }
+
   render() {
     const getStyles = (row) => {
       let styles = '';
@@ -22,6 +36,15 @@ class EvalTableRow extends React.PureComponent {
       case 'ASSIGNED TO':
         cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
         break;
+      case 'ACTIONS':
+        cellData = (
+          <EvalTableCell
+            click={this.handleLinkClick}
+            styleProps={getStyles(row)}
+            value="Loan Activity"
+          />
+        );
+        break;
       default:
         cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value} />;
     }
@@ -34,9 +57,26 @@ class EvalTableRow extends React.PureComponent {
 }
 
 EvalTableRow.propTypes = {
+  onSelectEval: PropTypes.func.isRequired,
   row: PropTypes.arrayOf(PropTypes.shape({
     evalId: PropTypes.string.isRequired,
   })).isRequired,
+  searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
+    loanNumber: PropTypes.string.isRequired,
+    valid: PropTypes.bool,
+  })).isRequired,
 };
+const mapDispatchToProps = dispatch => ({
+  onSelectEval: operations.onSelectEval(dispatch),
+});
 
-export default EvalTableRow;
+const mapStateToProps = state => ({
+  searchLoanResult: selectors.searchLoanResult(state),
+});
+
+const EvalTableRowContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EvalTableRow);
+
+export default EvalTableRowContainer;

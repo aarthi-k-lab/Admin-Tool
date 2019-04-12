@@ -6,4 +6,5 @@ export const FRONTEND_MANAGER = 'feuw-mgr';
 export const STAGER = 'stager';
 export const STAGER_MANAGER = 'stager-mgr';
 export const FRONTEND_UNDERWRITER_BETA = 'beta';
-export const DOC_PROCESSOR = 'beuw'; // To-DO
+export const DOC_PROCESSOR = 'proc';
+export const LOAN_ACTIVITY = 'la';

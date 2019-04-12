@@ -4,17 +4,15 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import * as R from 'ramda';
 import RadioButtonGroup from 'components/RadioButtonGroup';
-import UserNotification from 'components/UserNotification/UserNotification';
 import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
-import { arrayToString } from 'lib/ArrayUtils';
 import DispositionModel from 'models/Disposition';
+import DashboardErrors from 'models/DashboardErrors';
 import {
   operations,
   selectors,
 } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
-import RouteAccess from 'lib/RouteAccess';
 import { operations as commentoperations } from '../../../state/ducks/comments';
 import CommentBox from '../../../components/CommentBox/CommentBox';
 import './FrontEndDisposition.css';
@@ -28,6 +26,9 @@ const getContextTaskName = (groupName) => {
       break;
     case 'BEUW':
       taskName = 'Underwriting Review';
+      break;
+    case 'PROC':
+      taskName = 'Processing Review';
       break;
     default:
       taskName = groupName;
@@ -119,59 +120,6 @@ class Disposition extends React.PureComponent {
     this.setState({ canSubmit: checkSubmit });
   }
 
-  renderErrorNotification(isAssigned) {
-    const {
-      dispositionErrorMessages: errorMessages,
-      enableGetNext,
-      dispositionReason,
-      showAssign,
-      user,
-    } = this.props;
-    const groups = user && user.groupList;
-    if (errorMessages.length > 0) {
-      const errorsNode = errorMessages.reduce(
-        (acc, message) => {
-          acc.push(message);
-          acc.push(<br key={message} />);
-          return acc;
-        },
-        [],
-      );
-      return (
-        <UserNotification level="error" message={errorsNode} type="alert-box" />
-      );
-    }
-
-    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
-      const message = 'Please click Unassign to unassign the task from the user.';
-      return (
-        <UserNotification level="error" message={message} type="alert-box" />
-      );
-    }
-
-    if (showAssign) {
-      const message = 'Please note only Manager can unassign the task.';
-      return (
-        <UserNotification level="error" message={message} type="alert-box" />
-      );
-    }
-
-    if (!isAssigned) {
-      const message = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
-      return (
-        <UserNotification level="error" message={message} type="alert-box" />
-      );
-    }
-
-    if (enableGetNext) {
-      const dispositionSuccessMessage = `The task has been dispositioned successfully with disposition ${arrayToString([dispositionReason])}`;
-      return (
-        <UserNotification level="success" message={dispositionSuccessMessage} type="alert-box" />
-      );
-    }
-    return null;
-  }
-
   renderSave(isAssigned) {
     const {
       dispositionErrorMessages,
@@ -198,27 +146,13 @@ class Disposition extends React.PureComponent {
     );
   }
 
-  renderTaskErrorMessage() {
-    const { noTasksFound, taskFetchError } = this.props;
-    const warningMessage = 'No tasks assigned.Please contact your manager';
-    if (taskFetchError) {
-      const errorMessage = 'Task Fetch Failed.Please try again Later';
-      return (
-        <UserNotification level="error" message={errorMessage} type="alert-box" />
-      );
-    }
-    if (noTasksFound) {
-      return (
-        <UserNotification level="error" message={warningMessage} type="alert-box" />
-      );
-    }
-    return null;
-  }
-
   render() {
     const {
       noTasksFound, dispositionReason, inProgress, enableGetNext,
       taskFetchError, isAssigned,
+      dispositionErrorMessages,
+      user,
+      showAssign,
     } = this.props;
     const { content, canSubmit, refreshHook } = this.state;
     if (inProgress) {
@@ -231,10 +165,22 @@ class Disposition extends React.PureComponent {
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
             {
-              (noTasksFound || taskFetchError) ? this.renderTaskErrorMessage() : (
+              (noTasksFound || taskFetchError) ? DashboardErrors.renderErrorNotification(
+                dispositionReason,
+                enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                dispositionErrorMessages,
+                user,
+                showAssign,
+              ) : (
                 <>
                   <header styleName="title">Please select the outcome of your review</header>
-                  {this.renderErrorNotification(isAssigned)}
+                  {DashboardErrors.renderErrorNotification(
+                    dispositionReason,
+                    enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                    dispositionErrorMessages,
+                    user,
+                    showAssign,
+                  )}
                   <RadioButtonGroup
                     clearSelectedDisposition={R.isEmpty(dispositionReason)}
                     disableDisposition={enableGetNext || !isAssigned}

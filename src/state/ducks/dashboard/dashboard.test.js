@@ -16,6 +16,24 @@ import {
   resetChecklistData,
 } from '../tasks-and-checklist/actions';
 
+const mockComment = {
+  MISC_TSK_CHK2: {
+    applicationName: 'AppName',
+    loanNumber: 'LoanNumber',
+    processIdType: 'ProcIdType',
+    processId: 'EvalId',
+    eventName: 'EventName',
+    comment: 'test',
+    userName: 'Deepan Kumaresan',
+    createdDate: new Date().toJSON(),
+    commentContext: JSON.stringify({
+      TASK: 'MISC',
+      TASK_ID: '656565656567',
+      TASK_ACTN: 'wait',
+      DSPN_IND: 1,
+    }),
+  },
+};
 
 describe('expand view ', () => {
   it('should toggle expandView State', () => {
@@ -115,6 +133,11 @@ describe('getnext Success', () => {
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
   });
 
+  it('should get checklist comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getTaskComment));
+  });
+
   it('should dispatch action RESET_DATA for checklist', () => {
     const saveDispositionSuccess = true;
     expect(saga.next(saveDispositionSuccess).value)
@@ -208,6 +231,11 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
   });
 
+  it('should get checklist comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getTaskComment));
+  });
+
   it('should dispatch action RESET_DATA for checklist', () => {
     expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
@@ -227,7 +255,7 @@ describe('getnext Failure -  no tasks found', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(put({
         type: actionTypes.TASKS_NOT_FOUND,
-        payload: { notasksFound: true },
+        payload: { noTasksFound: true },
       }));
   });
   it('should dispatch ERROR_LOADING_TOMBSTONE_DATA', () => {
@@ -273,6 +301,11 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+  });
+
+  it('should get checklist comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getTaskComment));
   });
 
   it('should dispatch action RESET_DATA for checklist', () => {

@@ -197,11 +197,27 @@ function getEvalType(_, evalDetails) {
   const evalType = getOr('evalType', evalDetails, NA);
   return generateTombstoneItem('Evaluation Type', evalType);
 }
+function mlstnDateSortDesc(d1, d2) {
+  const a = new Date(d1.mlstnDttm);
+  const b = new Date(d2.mlstnDttm);
+  return b.getTime() - a.getTime();
+}
+function getServiceTransferInDate(loanMilestoneDates) {
+  if (loanMilestoneDates) {
+    const serviceTransferInDateMlstns = loanMilestoneDates.filter(l => (l.mlstnTypeNm
+      && l.mlstnTypeNm.toLowerCase() === 'ServiceTransferInDate'.toLowerCase())).sort(mlstnDateSortDesc);
+    if (serviceTransferInDateMlstns && serviceTransferInDateMlstns.length > 0) {
+      const boardingDate = moment.tz(serviceTransferInDateMlstns[0].mlstnDttm, 'America/Chicago');
+      const dateString = boardingDate.isValid() ? boardingDate.add(30, 'days').format('MM/DD/YYYY') : NA;
+      return dateString;
+    }
+  }
+  return NA;
+}
 
 function getBoardingDate(loanDetails) {
-  const boardingDate = moment.tz(loanDetails.LoanMilestoneDates[2].mlstnDttm, 'America/Chicago');
-  const dateString = boardingDate.isValid() ? boardingDate.add(30, 'days').format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('Boarding Date', dateString);
+  const boardingDate = getServiceTransferInDate(loanDetails.LoanMilestoneDates);
+  return generateTombstoneItem('Boarding Date', boardingDate);
 }
 
 function handleMultipleRecords(prioritizationDetails) {
@@ -234,7 +250,6 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
   return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
 }
 
-
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
@@ -243,10 +258,13 @@ function getTombstoneItems(loanDetails,
     getLoanItem,
     getEvalIdItem,
     getPreviousDisposition,
+    getLatestHandOffDisposition,
     getInvestorLoanItem,
     getBorrowerItem,
     getSsnItem,
     getSuccessorInInterestStatus,
+    getEvalType,
+    getBoardingDate,
     getBrandNameItem,
     getInvestorItem,
     getLoanTypeDescription,
@@ -254,14 +272,11 @@ function getTombstoneItems(loanDetails,
     getNextPaymentDueDateItem,
     getWaterfallName,
     getModificationType,
-    getLatestHandOffDisposition,
     getForeclosureSalesDate,
     getFLDD,
     getLienPosition,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
-    getEvalType,
-    getBoardingDate,
   ];
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
@@ -353,6 +368,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     evalDetails,
     previousDispositionDetails,
     prioritizationDetails,
+    groupName,
   )];
 }
 

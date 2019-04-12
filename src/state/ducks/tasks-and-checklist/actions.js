@@ -4,7 +4,6 @@ import {
   GET_CHECKLIST_SAGA,
   GET_TASKS_SAGA,
   HANDLE_CHECKLIST_ITEM_CHANGE,
-  MAKE_CHECKLIST_READ_ONLY,
   RESET_DATA,
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
@@ -36,16 +35,13 @@ const getTasks = (depth = 3) => ({
   },
 });
 
-const handleChecklistItemChange = (id, value) => ({
+const handleChecklistItemChange = (id, value, taskCode) => ({
   type: HANDLE_CHECKLIST_ITEM_CHANGE,
   payload: {
     id,
     value,
+    taskCode,
   },
-});
-
-const makeChecklistReadOnly = () => ({
-  type: MAKE_CHECKLIST_READ_ONLY,
 });
 
 const resetChecklistData = () => ({
@@ -91,7 +87,6 @@ export {
   getChecklist,
   getTasks,
   handleChecklistItemChange,
-  makeChecklistReadOnly,
   resetChecklistData,
   setSelectedChecklist,
   storeChecklistNavigation,

@@ -8,9 +8,11 @@ import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
-import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
+import DashboardErrors from 'models/DashboardErrors';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
@@ -18,15 +20,6 @@ import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
-  validate() {
-    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
-    const payload = {
-      dispositionReason: dispositionCode,
-      group: groupName,
-    };
-    validateDispositionTrigger(payload);
-  }
-
   renderTaskErrorMessage() {
     const { checklistErrorMessage } = this.props;
     if (checklistErrorMessage) {
@@ -50,6 +43,10 @@ class TasksAndChecklist extends React.PureComponent {
       dataLoadStatus,
       message,
       onChecklistChange,
+      disposition,
+      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+      user,
+      showAssign,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -64,14 +61,12 @@ class TasksAndChecklist extends React.PureComponent {
     if (message.type === 'do-not-display') {
       notification = null;
     } else {
-      notification = (
-        <span styleName="notif">
-          <UserNotification
-            level={message.type}
-            message={message.msg}
-            type="alert-box"
-          />
-        </span>
+      notification = DashboardErrors.renderErrorNotification(
+        disposition,
+        enableGetNext, isAssigned, noTasksFound, taskFetchError,
+        message.msg,
+        user,
+        showAssign,
       );
     }
     return (
@@ -140,6 +135,7 @@ const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
 
 TasksAndChecklist.defaultProps = {
+  enableGetNext: false,
   inProgress: false,
   message: null,
   noTasksFound: false,
@@ -165,20 +161,29 @@ TasksAndChecklist.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
-  dispositionCode: PropTypes.string.isRequired,
-  groupName: PropTypes.string.isRequired,
+  enableGetNext: PropTypes.bool,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   message: PropTypes.string,
   noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
   taskFetchError: PropTypes.bool,
-  validateDispositionTrigger: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
 function getUserNotification(message) {
@@ -203,6 +208,8 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFou
   switch (checklistErrorCode) {
     case ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT:
       return 'Checklist not found.';
+    case ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED:
+      return 'Checklist fetch failed. Please try again later.';
     default:
       break;
   }
@@ -221,7 +228,6 @@ function mapStateToProps(state) {
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
   return {
     disposition: selectors.getDisposition(state),
-    dispositionCode: selectors.getDispositionCode(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
     checklistErrorMessage: getChecklistErrorMessage(
       checklistErrorCode,
@@ -232,21 +238,24 @@ function mapStateToProps(state) {
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
+    enableGetNext: dashboardSelectors.enableGetNext(state),
+    isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
+    showAssign: dashboardSelectors.showAssign(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
     taskFetchError,
+    user: loginSelectors.getUser(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
-    validateDispositionTrigger: dashboardOperations.validateDispositionTrigger(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),

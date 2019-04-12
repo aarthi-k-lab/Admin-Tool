@@ -11,6 +11,9 @@ import {
   operations as loginOperations,
   selectors as loginSelectors,
 } from 'ducks/login';
+import {
+  selectors as TombstoneSelectors,
+} from 'ducks/tombstone';
 import { connect } from 'react-redux';
 import App from 'components/App';
 import {
@@ -40,6 +43,7 @@ class ProtectedRoutes extends React.Component {
     this.renderMoveForwardRoute = this.renderMoveForwardRoute.bind(this);
     this.renderFrontendChecklistRoute = this.renderFrontendChecklistRoute.bind(this);
     this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
+    this.renderLoanActivity = this.renderLoanActivity.bind(this);
   }
 
   componentDidMount() {
@@ -95,14 +99,25 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
-  // TO-DO
   renderDocProcessorRoute() {
     const groups = this.getGroups();
     return (
       RouteAccess.hasDocProcessorAccess(groups)
-        ? <Dashboard group="DP" />
+        ? <Dashboard group="PROC" />
         : <Redirect to="/unauthorized?error=DOC_PROCESSOR_ACCESS_NEEDED" />
     );
+  }
+
+  renderLoanActivity() {
+    const { items, loanNumber } = this.props;
+    const groups = this.getGroups();
+    let renderComponent = null;
+    if (RouteAccess.hasLoanActivityAccess(groups)) {
+      renderComponent = (items.length > 0 || loanNumber) ? <Dashboard group="LA" /> : <Redirect to="/" />;
+    } else {
+      renderComponent = <Redirect to="/unauthorized?error=LOAN_ACTIVITY_ACCESS_NEEDED" />;
+    }
+    return renderComponent;
   }
 
   renderMoveForwardRoute() {
@@ -134,6 +149,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-processor" render={this.renderDocProcessorRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
+          <Route exact path="/loan-activity" render={this.renderLoanActivity} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
@@ -147,6 +163,8 @@ const mapStateToProps = state => ({
   expandView: dashboardSelectors.expandView(state),
   features: config.selectors.getFeatures(state),
   user: loginSelectors.getUser(state),
+  items: TombstoneSelectors.getTombstoneData(state),
+  loanNumber: dashboardSelectors.loanNumber(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -155,12 +173,22 @@ const mapDispatchToProps = dispatch => ({
   getFeaturesTrigger: config.operations.getFeaturesTrigger(dispatch),
 });
 
+ProtectedRoutes.defaultProps = {
+  items: [],
+};
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
   features: PropTypes.shape({
     taskPane: PropTypes.bool,
   }).isRequired,
   getFeaturesTrigger: PropTypes.func.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    }),
+  ),
+  loanNumber: PropTypes.string.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
