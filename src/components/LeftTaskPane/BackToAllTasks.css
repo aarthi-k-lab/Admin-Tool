@@ -1,11 +1,12 @@
 .back-to-all-tasks.back-to-all-tasks {
     background-color: var(--dark-lime-green);
     border-radius: 10px;
-    width: 35%;
+    width: 52%;
     height: 2rem;
     min-height: 0.25rem;
     padding: 0px;
-    margin: 0.75rem 0.5rem 0.5rem 5.5rem;
+    margin: 1.75rem 0.5rem 0.5rem 2.5rem;
+    color: white;
   }
 
   .back-to-all-tasks span {

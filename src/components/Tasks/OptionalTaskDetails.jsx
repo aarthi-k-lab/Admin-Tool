@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import * as R from 'ramda';
+import * as R from 'ramda';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import CollapseIcon from 'components/Tasks/CollapseIcon';
-// import LeftParentTasks from './LeftParentTasks';
 import AddTask from '../LeftTaskPane/AddTask';
 import BackToAllTasks from '../LeftTaskPane/BackToAllTasks';
 import TaskStatusIcon from '../TaskStatusIcon/TaskStatusIcon';
-import './LeftParentTasks.css';
+import './OptionalTaskDetails.css';
 
 class OptionalTaskDetails extends React.Component {
   constructor(props) {
@@ -42,40 +40,39 @@ class OptionalTaskDetails extends React.Component {
     return (
         <>
           <header>
-            <h3>ADD NEW TASK (OPTIONAL)</h3>
-            <CollapseIcon
-              direction="left"
-            />
+            <h3>ADD NEW TASK</h3>
           </header>
           {
-        tasks.filter(({ visibility }) => visibility)
-          .map(task => (
-            <div styleName="task-group">
-              <Grid container spacing={0}>
-                <Grid item xs={12}>
-                  <span title="test">
-                    <TaskStatusIcon styleName="icon-padding" task={task} />
-                  </span>
+          tasks.filter(({ visibility }) => visibility)
+            .map(task => (
+              <Grid
+                container
+                spacing={0}
+                wrap="nowrap"
+              >
+                <Grid alignItems="center" container item justify="center" xs={2}>
+                  <TaskStatusIcon styleName="fill-width" task={task} />
+                </Grid>
+                <Grid alignItems="center" container item xs={10}>
+                  <span styleName="parent-task-name">{ R.pathOr('', ['taskBlueprint', 'name'], task) }</span>
                   {
-            isTaskAdded ? this.constructor.renderDeleteIcon()
-              : (
-                <AddTask
-                  disabled={false}
-                  onClick={() => this.onAddTask()}
-                  toolTipPosition="left"
-                />
-              )
-        }
+                      isTaskAdded ? this.constructor.renderDeleteIcon()
+                        : (
+                          <span styleName="optional-task-details">
+                            <AddTask
+                              disabled={false}
+                              onClick={() => this.onAddTask()}
+                              toolTipPosition="left"
+                            />
+                          </span>
+                        )
+                      }
                 </Grid>
               </Grid>
-              {/* {
-                 LeftParentTasks.renderCollapsedView(task)
-        } */}
-            </div>
-          )) }
+            ))
+          }
           <BackToAllTasks disabled={false} onClick={() => onAddTaskClick()} />
-        </>
-    );
+        </>);
   }
 }
 
