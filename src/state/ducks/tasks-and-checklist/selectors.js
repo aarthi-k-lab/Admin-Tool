@@ -119,6 +119,8 @@ const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 
 
 const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
+const getDispositionComment = R.pathOr('-', ['tasksAndChecklist', 'dispositionComment']);
+
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
 
 const shouldShowDisposition = (state) => {
@@ -154,6 +156,7 @@ const selectors = {
   shouldShowDisposition,
   getFirstTaskId,
   enableValidate,
+  getDispositionComment,
   shouldShowInstructionsDialog,
 };
 

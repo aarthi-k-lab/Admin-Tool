@@ -3,6 +3,7 @@ const GET_CHECKLIST_SAGA = 'app/tasks-and-checklist/GET_CHECKLIST_SAGA';
 const GET_NEXT_CHECKLIST = 'app/tasks-and-checklist/GET_NEXT_CHECKLIST';
 const GET_PREV_CHECKLIST = 'app/tasks-and-checklist/GET_PREV_CHECKLIST';
 const GET_TASKS_SAGA = 'app/tasks-and-checklist/GET_TASKS_SAGA';
+const DISP_COMMENT = 'app/tasks-and-checklist/DISP_COMMENT';
 const ERROR_LOADING_CHECKLIST = 'app/tasks-and-checklist/ERROR_LOADING_CHECKLIST';
 const ERROR_LOADING_TASKS = 'app/tasks-and-checklist/ERROR_LOADING_TASKS';
 const HANDLE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/HANDLE_CHECKLIST_ITEM_CHANGE';
@@ -19,6 +20,7 @@ const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
 const VALIDATION_DISPLAY = 'app/tasks-and-checklist/VALIDATION_DISPLAY,';
 const STORE_MISC_TASK_COMMENT = 'app/tasks-and-checklist/STORE_MISC_TASK_COMMENT';
 const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
+const DISP_COMMENT_SAGA = 'app/tasks-and-checklist/DISP_COMMENT_SAGA';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -30,6 +32,7 @@ export {
   HANDLE_CHECKLIST_ITEM_CHANGE,
   LOADING_CHECKLIST,
   LOADING_TASKS,
+  DISP_COMMENT,
   REMOVE_DIRTY_CHECKLIST,
   SET_SELECTED_CHECKLIST,
   RESET_DATA,
@@ -42,4 +45,5 @@ export {
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
   VALIDATION_DISPLAY,
+  DISP_COMMENT_SAGA,
 };

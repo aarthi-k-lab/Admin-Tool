@@ -20,7 +20,13 @@
 .expanded-comment-box {
   width: 100%;
   grid-column: 1/5;
-  grid-row: 4/5;
+  padding-left: 1rem;
+}
+
+.expanded-comment-box textarea {
+  width: 100%;
+  margin-bottom: 1rem;
+  height: 4.875rem;
   padding-left: 1rem;
 }
 
@@ -29,8 +35,6 @@
   width: 1.5rem;
   margin-right: 0.5rem;
 }
-
-
 
 .content {
   margin-right: 1.5rem;

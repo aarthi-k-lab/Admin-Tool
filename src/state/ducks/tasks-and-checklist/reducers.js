@@ -16,6 +16,7 @@ import {
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
   VALIDATION_DISPLAY,
+  DISP_COMMENT,
 } from './types';
 
 const FAILED = 'failed';
@@ -157,6 +158,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskComment: action.payload,
+      };
+    }
+    case DISP_COMMENT: {
+      return {
+        ...state,
+        dispositionComment: action.payload,
       };
     }
     case TOGGLE_INSTRUCTIONS: {

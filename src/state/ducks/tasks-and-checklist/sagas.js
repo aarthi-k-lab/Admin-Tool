@@ -22,6 +22,8 @@ import {
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
   STORE_MISC_TASK_COMMENT,
+  DISP_COMMENT_SAGA,
+  DISP_COMMENT,
 } from './types';
 import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
@@ -256,6 +258,38 @@ function* postComment(action) {
   }
 }
 
+function* postDispositionComment(action) {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const user = yield select(loginSelectors.getUser);
+  const groupName = yield select(dashboardSelectors.groupName);
+  const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+  const eventName = !R.isNil(page) ? page.taskCode : '';
+  const taskName = !R.isNil(page) ? page.task : '';
+  const taskId = yield select(dashboardSelectors.taskId);
+  const evalId = yield select(dashboardSelectors.evalId);
+  const disposition = yield select(selectors.getDisposition);
+  const commentPayload = {
+    applicationName: 'CMOD',
+    loanNumber,
+    processIdType: 'EvalId',
+    processId: evalId,
+    eventName,
+    comment: action.payload,
+    userName: user.userDetails.name,
+    createdDate: new Date().toJSON(),
+    commentContext: JSON.stringify({
+      TASK: taskName,
+      TASK_ID: taskId,
+      TASK_ACTN: disposition,
+      DSPN_IND: 1,
+    }),
+  };
+  yield put({
+    type: DISP_COMMENT,
+    payload: commentPayload,
+  });
+}
+
 function* handleChecklistItemChange(action) {
   try {
     yield postComment(action);
@@ -314,6 +348,10 @@ function* watchGetTasks() {
   yield takeEvery(GET_TASKS_SAGA, getTasks);
 }
 
+function* watchDispositionComment() {
+  yield takeEvery(DISP_COMMENT_SAGA, postDispositionComment);
+}
+
 export const TestExports = {
   watchGetTasks,
 };
@@ -325,5 +363,6 @@ export function* combinedSaga() {
     watchGetNextChecklist(),
     watchGetPrevChecklist(),
     watchGetTasks(),
+    watchDispositionComment(),
   ]);
 }
