@@ -19,20 +19,22 @@ const styles = theme => ({
     minHeight: '25px',
     width: '30px',
     height: '0px',
-    marginLeft: '10rem',
     '&:hover': {
       backgroundColor: 'var(--grey-300)',
     },
   },
 });
 
-const AddTask = ({ classes, onClick, toolTipPosition }) => (
+const AddTask = ({
+  classes, onClick, toolTipPosition, margin,
+}) => (
   <Tooltip aria-label="Add Task" placement={toolTipPosition} title="Add Task">
     <Fab
       aria-label="Add"
       className={classes.custom}
       color="secondary"
       onClick={onClick}
+      style={margin}
     >
       <AddIcon />
     </Fab>
@@ -40,12 +42,16 @@ const AddTask = ({ classes, onClick, toolTipPosition }) => (
 );
 
 AddTask.defaultProps = {
+  margin: {
+    'margin-left': '10rem',
+  },
   onClick: () => {},
   toolTipPosition: 'bottom',
 };
 
 AddTask.propTypes = {
   classes: PropTypes.shape.isRequired,
+  margin: PropTypes.shape,
   onClick: PropTypes.func,
   toolTipPosition: PropTypes.string,
 };

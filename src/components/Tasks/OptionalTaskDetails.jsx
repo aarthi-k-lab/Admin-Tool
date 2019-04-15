@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import AddTask from '../LeftTaskPane/AddTask';
-import BackToAllTasks from '../LeftTaskPane/BackToAllTasks';
+import Close from '../LeftTaskPane/Close';
 import TaskStatusIcon from '../TaskStatusIcon/TaskStatusIcon';
 import './OptionalTaskDetails.css';
 
@@ -40,7 +40,7 @@ class OptionalTaskDetails extends React.Component {
     return (
         <>
           <header>
-            <h3>ADD NEW TASK</h3>
+            <h3 styleName="optional-task-heading">ADD NEW TASK</h3>
           </header>
           {
           tasks.filter(({ visibility }) => visibility)
@@ -48,19 +48,23 @@ class OptionalTaskDetails extends React.Component {
               <Grid
                 container
                 spacing={0}
+                styleName="task-group"
                 wrap="nowrap"
               >
                 <Grid alignItems="center" container item justify="center" xs={2}>
                   <TaskStatusIcon styleName="fill-width" task={task} />
                 </Grid>
-                <Grid alignItems="center" container item xs={10}>
+                <Grid alignItems="center" container item xs={6}>
                   <span styleName="parent-task-name">{ R.pathOr('', ['taskBlueprint', 'name'], task) }</span>
+                </Grid>
+                <Grid alignItems="center" container item xs={2}>
                   {
                       isTaskAdded ? this.constructor.renderDeleteIcon()
                         : (
                           <span styleName="optional-task-details">
                             <AddTask
                               disabled={false}
+                              margin={{ 'margin-left': '3rem' }}
                               onClick={() => this.onAddTask()}
                               toolTipPosition="left"
                             />
@@ -71,7 +75,7 @@ class OptionalTaskDetails extends React.Component {
               </Grid>
             ))
           }
-          <BackToAllTasks disabled={false} onClick={() => onAddTaskClick()} />
+          <Close disabled={false} onClick={() => onAddTaskClick()} />
         </>);
   }
 }

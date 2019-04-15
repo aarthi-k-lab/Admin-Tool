@@ -1,31 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import ChervronLeft from '@material-ui/icons/ChevronLeft';
-import './BackToAllTasks.css';
+import './Close.css';
 
-const BackToAllTasks = ({ disabled, onClick }) => (
+const Close = ({ disabled, onClick }) => (
   <Button
     className="material-ui-button"
     color="green"
     disabled={disabled}
     onClick={onClick}
-    styleName="back-to-all-tasks"
+    styleName="close-task"
     variant="contained"
   >
-    <ChervronLeft />
-    <span>BACK TO ALL TASKS</span>
+    <span>CLOSE</span>
   </Button>
 );
 
-BackToAllTasks.defaultProps = {
+Close.defaultProps = {
   disabled: false,
   onClick: () => {},
 };
 
-BackToAllTasks.propTypes = {
+Close.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export default BackToAllTasks;
+export default Close;
