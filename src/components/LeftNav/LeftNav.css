@@ -3,7 +3,7 @@
   background-color: Black;
   display: inline-flex;
   flex-direction: column;
-  height: 100%;
+  flex-grow: 1;
   list-style-type: none;
   width: 4rem;
 }

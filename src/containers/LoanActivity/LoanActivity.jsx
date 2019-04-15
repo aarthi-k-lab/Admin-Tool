@@ -92,14 +92,14 @@ class LoanActivity extends React.PureComponent {
     const { loanActivityDetails } = this.props;
     return (
       <>
-        <Grid alignItems="stretch" container>
+        <Grid alignItems="stretch" container styleName="loan-activity">
           <Grid item styleName="status-details-parent" xs={9}>
             <div styleName="status-details">
               <StatusDetails loanActivityDetails={loanActivityDetails} />
             </div>
           </Grid>
           <Grid item styleName="status-details-parent report-downloader" xs={3}>
-            <div style={{ flexGrow: 1 }}>
+            <div styleName="doc-widget">
               <DocWidget />
             </div>
           </Grid>
