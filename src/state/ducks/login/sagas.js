@@ -1,6 +1,7 @@
 import {
   take,
   all,
+  call,
   put,
 } from 'redux-saga/effects';
 import { SET_USER_SCHEMA_SAGA, SET_USER_SCHEMA_SUCCESS, SET_USER_SCHEMA_FAILED } from './types';
@@ -21,9 +22,9 @@ const setUserSchema = function* setUserSchema(payload) {
 
 function* watchSetUserSchema() {
   try {
-    let payload = yield take(SET_USER_SCHEMA_SAGA);
+    const payload = yield take(SET_USER_SCHEMA_SAGA);
     if (payload != null) {
-      payload = yield setUserSchema(payload);
+      yield call(setUserSchema, payload);
     }
   } catch (e) {
     yield put({

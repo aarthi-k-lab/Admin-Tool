@@ -6,11 +6,19 @@ import {
   handleChecklistItemChange,
   setSelectedChecklist,
   toggleInstructions,
+  validationDisplayAction,
+  dispositionCommentAction,
 } from './actions';
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
 
 const fetchPrevChecklist = dispatch => () => dispatch(getPrevChecklist());
+
+const triggerValidationDisplay = dispatch => payload => dispatch(validationDisplayAction(payload));
+
+const dispositionCommentTrigger = dispatch => payload => (
+  dispatch(dispositionCommentAction(payload))
+);
 
 const fetchChecklist = dispatch => (taskId) => {
   dispatch(setSelectedChecklist(taskId));
@@ -32,6 +40,8 @@ const operations = {
   saveTaskFilter,
   handleChecklistItemValueChange,
   handleToggleInstructions,
+  triggerValidationDisplay,
+  dispositionCommentTrigger,
 };
 
 export default operations;

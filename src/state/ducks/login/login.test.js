@@ -1,4 +1,4 @@
-import { put, take } from 'redux-saga/effects';
+import { put, take, call } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as actionTypes from './types';
 import { setUserSchemaSuccess, setUserSchemaFailure, setUserSchemaTrigger } from './actions';
@@ -14,7 +14,7 @@ describe('WatchSetUserSchema', () => {
   });
   it('SetUserSchema should be triggered', () => {
     expect(saga.next({}).value)
-      .toEqual(TestExports.setUserSchema({}));
+      .toEqual(call(TestExports.setUserSchema, {}));
   });
 });
 

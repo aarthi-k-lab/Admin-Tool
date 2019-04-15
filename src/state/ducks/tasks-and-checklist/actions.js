@@ -11,6 +11,8 @@ import {
   STORE_TASKS,
   STORE_TASK_FILTER,
   TOGGLE_INSTRUCTIONS,
+  VALIDATION_DISPLAY,
+  DISP_COMMENT_SAGA,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -21,6 +23,15 @@ const getPrevChecklist = () => ({
   type: GET_PREV_CHECKLIST,
 });
 
+const validationDisplayAction = payload => ({
+  type: VALIDATION_DISPLAY,
+  payload,
+});
+
+const dispositionCommentAction = payload => ({
+  type: DISP_COMMENT_SAGA,
+  payload,
+});
 const getChecklist = taskId => ({
   type: GET_CHECKLIST_SAGA,
   payload: {
@@ -94,4 +105,6 @@ export {
   storeTasks,
   storeTaskFilter,
   toggleInstructions,
+  validationDisplayAction,
+  dispositionCommentAction,
 };
