@@ -362,7 +362,9 @@ function* getNext(action) {
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
-      yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
+      if (dispositionComment) {
+        yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
+      }
       yield put(resetChecklistData());
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);

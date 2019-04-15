@@ -119,7 +119,7 @@ const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 
 
 const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
-const getDispositionComment = R.pathOr('-', ['tasksAndChecklist', 'dispositionComment']);
+const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
 
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
 
