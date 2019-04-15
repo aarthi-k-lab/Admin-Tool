@@ -11,8 +11,8 @@
 }
 
 .summary.summary {
-  min-height: 0 !important;
-  padding: 0 !important;
+  min-height: 0;
+  padding: 0;
 }
 
 .summary > :first-child {
@@ -20,9 +20,13 @@
   padding: 0.75rem 1rem;
 }
 
+.secondary-heading {
+  padding-right: 0.35rem !important;
+}
+
 .button.button {
-  padding: 0 0.75rem 0 0.75rem !important;
-  min-height: 0 !important;
+  padding: 0 0.75rem 0 0.75rem;
+  min-height: 0;
 }
 
 div.button:first-child > p {
@@ -31,8 +35,8 @@ div.button:first-child > p {
 }
 
 .button-border.button-border {
-  box-shadow: none !important;
-  background-color: transparent !important;
+  box-shadow: none;
+  background-color: transparent;
 }
 
 .button-border:last-child {
@@ -46,41 +50,41 @@ div.button:first-child > p {
 }
 
 .heading.heading {
-  font-size: 1.3rem !important;
-  color: var(--grey-900) !important;
-  font-weight: bold !important;
+  font-size: 1.3rem;
+  color: var(--grey-900);
+  font-weight: bold;
   align-self: center;
   margin-left: 1rem;
 }
 
 .expand-panel-details.expand-panel-details {
-  padding: 0px 0.5rem 0.5rem 1rem !important;
+  padding: 0px 0.5rem 0.5rem 1rem;
 }
 
 .secondary-heading.secondary-heading {
   margin-left: 0.5rem;
-  font-size: 0.9rem !important;
+  font-size: 0.9rem;
   font-family: "Lato", sans-serif;
-  color: var(--grey-650) !important;
+  color: var(--grey-650);
   background: var(--grey-200);
-  padding: 0.25rem !important;
+  padding: 0.25rem;
   align-self: center;
   margin-left: 1rem;
 }
 
 .button-heading.button-heading {
-  font-size: 0.70rem !important;
+  font-size: 0.70rem;
   font-family: "Lato", sans-serif;
-  font-weight: bold !important; 
+  font-weight: bold; 
 }
 
 .panel-border.panel-border {
-  margin: 0px !important;
+  margin: 0px;
   border-bottom: 1px solid #dbdee1;
 }
 
 .button-height.button-height {
-  min-height: 0 !important;
+  min-height: 0;
 }
 
 .header-style {
@@ -96,20 +100,20 @@ div.button:first-child > p {
 }
 
 .complete.complete {
-  color: var(--light-green-500) !important;
-  border-radius: 50% !important;
+  color: var(--light-green-500);
+  border-radius: 50%;
   pointer-events: none;
 }
 
 .incomplete.incomplete {
-  color: #e2e2e1 !important;
-  border-radius: 50% !important;
+  color: #e2e2e1;
+  border-radius: 50%;
   pointer-events: none;
 }
 
 .failed.failed {
-  color: var(--red-600) !important;
-  border-radius: 50% !important;
+  color: var(--red-600);
+  border-radius: 50%;
   pointer-events: none;
 }
 

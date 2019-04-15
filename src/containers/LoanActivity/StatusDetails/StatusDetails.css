@@ -23,18 +23,18 @@
 .title-row >:last-child{
     border-radius: 0px !important;
 }
-.card-border{
-    border-radius: 0px !important;
+.card-border.card-border{
+    border-radius: 0px;
 }
 .card-content.card-content{
     width: 45.0625rem;
     height: 5.25rem;
-    padding: 1rem !important;
+    padding: 1rem;
 }
 .card-contentList.card-contentList{
     width: 45.0625rem;
     height: 44px;
-    padding-bottom: 1rem !important;
+    padding-bottom: 1rem;
 }
 .card-contentHeader-style{
     font-size: 1rem;
