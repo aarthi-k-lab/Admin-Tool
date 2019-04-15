@@ -1,5 +1,5 @@
 import {
-  put, call, takeEvery, take, fork, select,
+  put, call, takeEvery, take, fork, select, all,
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
@@ -15,6 +15,7 @@ import selectors from './selectors';
 import {
   resetChecklistData,
 } from '../tasks-and-checklist/actions';
+import { POST_COMMENT_SAGA } from '../comments/types';
 
 const mockComment = {
   MISC_TSK_CHK2: {
@@ -134,8 +135,20 @@ describe('getnext Success', () => {
   });
 
   it('should get checklist comment', () => {
-    expect(saga.next(mockComment).value)
+    const saveDispositionSuccess = true;
+    expect(saga.next(saveDispositionSuccess).value)
       .toEqual(select(TestExports.checklistSelectors.getTaskComment));
+  });
+
+  it('should get checklist disposition comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getDispositionComment));
+  });
+
+  it('should get PUT disposition comment', () => {
+    const testComment = 'test';
+    expect(saga.next(testComment).value)
+      .toEqual(put({ type: POST_COMMENT_SAGA, payload: testComment }));
   });
 
   it('should dispatch action RESET_DATA for checklist', () => {
@@ -152,6 +165,14 @@ describe('getnext Success', () => {
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+  });
+
+  it('should YIELD PUT ALL Comments', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(all([put({
+        type: POST_COMMENT_SAGA,
+        payload: mockComment.MISC_TSK_CHK2,
+      })]));
   });
 
   it('should call fetchChecklistDetails generator to handle get next logic for checklist', () => {
@@ -232,12 +253,24 @@ describe('getnext Failure -  no tasks found', () => {
   });
 
   it('should get checklist comment', () => {
-    expect(saga.next(mockComment).value)
+    const saveChecklistDisposition = true;
+    expect(saga.next(saveChecklistDisposition).value)
       .toEqual(select(TestExports.checklistSelectors.getTaskComment));
   });
 
+  it('should get checklist disposition comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getDispositionComment));
+  });
+
+  it('should get PUT disposition comment', () => {
+    const testComment = 'test';
+    expect(saga.next(testComment).value)
+      .toEqual(put({ type: POST_COMMENT_SAGA, payload: testComment }));
+  });
+
   it('should dispatch action RESET_DATA for checklist', () => {
-    expect(saga.next(true).value)
+    expect(saga.next().value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -251,8 +284,16 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
   });
 
-  it('should dispatch NO_TASKS_FOUND', () => {
+  it('should YIELD PUT ALL Comments', () => {
     expect(saga.next(mockTaskDetails).value)
+      .toEqual(all([put({
+        type: POST_COMMENT_SAGA,
+        payload: mockComment.MISC_TSK_CHK2,
+      })]));
+  });
+
+  it('should dispatch NO_TASKS_FOUND', () => {
+    expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.TASKS_NOT_FOUND,
         payload: { noTasksFound: true },
@@ -304,12 +345,24 @@ describe('getnext Failure -  task fetch failure', () => {
   });
 
   it('should get checklist comment', () => {
-    expect(saga.next(mockComment).value)
+    const saveChecklistDisposition = true;
+    expect(saga.next(saveChecklistDisposition).value)
       .toEqual(select(TestExports.checklistSelectors.getTaskComment));
   });
 
+  it('should get checklist disposition comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getDispositionComment));
+  });
+
+  it('should get PUT disposition comment', () => {
+    const testComment = 'test';
+    expect(saga.next(testComment).value)
+      .toEqual(put({ type: POST_COMMENT_SAGA, payload: testComment }));
+  });
+
   it('should dispatch action RESET_DATA for checklist', () => {
-    expect(saga.next(true).value)
+    expect(saga.next().value)
       .toEqual(put(resetChecklistData()));
   });
 
@@ -323,8 +376,16 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
   });
 
-  it('should dispatch TASK_FETCH_ERROR', () => {
+  it('should YIELD PUT ALL Comments', () => {
     expect(saga.next(mockTaskDetails).value)
+      .toEqual(all([put({
+        type: POST_COMMENT_SAGA,
+        payload: mockComment.MISC_TSK_CHK2,
+      })]));
+  });
+
+  it('should dispatch TASK_FETCH_ERROR', () => {
+    expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.TASKS_FETCH_ERROR,
         payload: { taskfetchError: true },

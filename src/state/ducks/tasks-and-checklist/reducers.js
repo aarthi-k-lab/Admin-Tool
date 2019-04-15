@@ -16,6 +16,8 @@ import {
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
   SHOW_OPTIONAL_TASKS,
+  VALIDATION_DISPLAY,
+  DISP_COMMENT,
 } from './types';
 
 const FAILED = 'failed';
@@ -127,6 +129,12 @@ const reducer = (state = defaultState, action) => {
         checklistNavigation: action.payload,
       };
     }
+    case VALIDATION_DISPLAY: {
+      return {
+        ...state,
+        enableValidate: action.payload,
+      };
+    }
     case STORE_PROCESS_DETAILS: {
       const { payload: { processId, rootTaskId } } = action;
       return {
@@ -152,6 +160,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskComment: action.payload,
+      };
+    }
+    case DISP_COMMENT: {
+      return {
+        ...state,
+        dispositionComment: action.payload,
       };
     }
     case TOGGLE_INSTRUCTIONS: {

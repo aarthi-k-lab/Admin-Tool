@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandIcon from '@material-ui/icons/ExpandLess';
+// import Dialog from '@material-ui/core/Dialog';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import CollapseIcon from '@material-ui/icons/ExpandMore';
-import HelpIcon from '@material-ui/icons/Help';
-import Dialog from '@material-ui/core/Dialog';
+import InfoIcon from '@material-ui/icons/Info';
+// import { select } from 'node_modules/redux-saga/effects';
 import styles from './DialogCard.css';
+import DispositionComment from './DispositionComment';
 
 const propertyValidation = {
   dialogHeader: PropTypes.string,
@@ -16,97 +19,79 @@ const propertyValidation = {
   title: PropTypes.string.isRequired,
 };
 
-function Modal({
-  dialogHeader,
-  dialogContent,
-  showDialog,
-  onClose,
-  title,
-  message,
-}) {
-  return (
-    <Dialog
-      onClose={onClose}
-      open={showDialog}
-    >
-      <div className={classNames(styles['dialog-card'], styles.modal)}>
-        <span styleName="title">{title}</span>
-        <span styleName="message">{message}</span>
-        <IconButton
-          classes={{
-            root: styles['sizing-icon'],
-          }}
-          onClick={onClose}
-        >
-          <CollapseIcon />
-        </IconButton>
-      </div>
-      <section styleName="dialog-content">
-        <header styleName="dialog-content-header">
-          { dialogHeader }
-        </header>
-        <div styleName="dialog-content-body">
-          <HelpIcon classes={{ root: styles['info-icon'] }} />
-          { dialogContent }
-        </div>
-      </section>
-    </Dialog>
-  );
-}
-
-Modal.propTypes = {
-  ...propertyValidation,
-  onClose: PropTypes.func.isRequired,
-};
-
-function DialogCard({
-  className,
-  dialogContent,
-  dialogHeader,
-  message,
-  onDialogToggle,
-  shouldShow,
-  showDialog,
-  title,
-}) {
-  if (!shouldShow) {
-    return null;
+class DialogCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { activeIcon: 'comment', expanded: false };
   }
-  const dialog = (
-    <Modal
-      dialogContent={dialogContent}
-      dialogHeader={dialogHeader}
-      message={message}
-      onClose={onDialogToggle}
-      showDialog={showDialog}
-      title={title}
-    />
-  );
-  return (
-    <>
-      { dialog }
-      <div className={classNames(className, styles['dialog-card'])}>
-        <span styleName="title">{title}</span>
-        <span styleName="message">{message}</span>
-        <IconButton
-          classes={{
-            root: styles['sizing-icon'],
-          }}
-          onClick={onDialogToggle}
-        >
-          <ExpandIcon />
-        </IconButton>
-      </div>
-    </>
-  );
+
+  changeActiveIcon(selectedActiveIcon) {
+    this.setState({ activeIcon: selectedActiveIcon });
+  }
+
+  toggleExpand() {
+    const { expanded } = this.state;
+    this.setState({ expanded: !expanded });
+  }
+
+  render() {
+    const {
+      className,
+      dialogContent,
+      dialogHeader,
+      message,
+      shouldShow,
+      title,
+    } = this.props;
+    const { activeIcon, expanded } = this.state;
+    if (!shouldShow) {
+      return null;
+    }
+    return (
+      <>
+        <div className={classNames(className, styles['dialog-card'])}>
+          <span styleName="title">{title}</span>
+          <span styleName="message">{message}</span>
+          <IconButton
+            classes={{
+              root: styles['sizing-icon'],
+            }}
+            onClick={() => this.changeActiveIcon('comment')}
+          >
+            <ChatBubbleIcon styleName={activeIcon === 'comment' ? 'active-disp-icon' : 'disp-icon'} />
+          </IconButton>
+          <IconButton
+            classes={{
+              root: styles['sizing-icon'],
+            }}
+            onClick={() => this.changeActiveIcon('instructions')}
+          >
+            <InfoIcon styleName={activeIcon === 'instructions' ? 'active-disp-icon' : 'disp-icon'} />
+          </IconButton>
+          <IconButton
+            classes={{
+              root: styles['sizing-icon'],
+            }}
+            onClick={() => this.toggleExpand()}
+          >
+            {expanded ? <ExpandIcon styleName="active-disp-icon" /> : <CollapseIcon styleName="active-disp-icon" />}
+          </IconButton>
+          <DispositionComment
+            activeIcon={activeIcon}
+            allTaskScenario={message === 'All Tasks Completed'}
+            content={dialogContent}
+            expanded={expanded}
+            header={dialogHeader}
+          />
+        </div>
+      </>
+    );
+  }
 }
 
 DialogCard.defaultProps = {
   className: '',
-  showDialog: false,
   shouldShow: true,
-  dialogHeader: 'Steps to Resolve',
-  dialogContent: 'Please ensure that the eval substatus and case substatus are in missing documents.',
 };
 
 

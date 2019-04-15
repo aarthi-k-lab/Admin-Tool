@@ -33,20 +33,6 @@ function getWidth(index) {
   }
 }
 
-const ExpandAllCollapseAll = props => (
-  <>
-    <ExpansionPanel
-      expanded={props.isExpanded}
-      onChange={props.handleExpandAll}
-      styleName="button-border"
-    >
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="button">
-        <Typography styleName="button-heading">{props.isExpanded ? 'Collapse All' : 'Expand All'}</Typography>
-      </ExpansionPanelSummary>
-    </ExpansionPanel>
-  </>
-);
-
 class ExpandPanel extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -58,6 +44,8 @@ class ExpandPanel extends React.PureComponent {
     this.handleExpandAll = this.handleExpandAll.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.getMaxDateIndex = this.getMaxDateIndex.bind(this);
+    this.renderExpandAllCollapseAll = this.renderExpandAllCollapseAll.bind(this);
+    this.renderExpansionPanel = this.renderExpansionPanel.bind(this);
     this.getMaxDateIndex(props.monthlyDetails);
   }
 
@@ -109,50 +97,71 @@ class ExpandPanel extends React.PureComponent {
     });
   }
 
+  renderExpandAllCollapseAll() {
+    const { isExpanded } = this.state;
+    return (
+      <ExpansionPanel
+        expanded={isExpanded}
+        onChange={this.handleExpandAll}
+        styleName="button-border"
+      >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="button">
+          <Typography styleName="button-heading">{isExpanded ? 'Collapse All' : 'Expand All'}</Typography>
+        </ExpansionPanelSummary>
+      </ExpansionPanel>
+    );
+  }
+
+  renderExpansionPanel(value, index) {
+    const { panels } = this.state;
+    return (
+      <ExpansionPanel
+        // eslint-disable-next-line no-nested-ternary
+        expanded={index !== this.dateIndex ? R.isNil(panels[index])
+          ? false : panels[index] : true}
+        onChange={() => this.handleClick(index)}
+        styleName="panel-border"
+      >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="summary">
+          <TaskStatusIcon isSubTask task={{ state: value.status }} />
+          <span styleName="heading">{value.title}</span>
+          <span styleName="secondary-heading">{value.month}</span>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails styleName="expand-panel-details">
+          <div style={{ display: 'flex' }}>
+            {value.monthDetail && value.monthDetail.map((detail, i) => (
+              <div
+                style={{
+                  background: getBackgroundColor(i),
+                  paddingLeft: i > 2 ? '1rem' : '1rem',
+                  paddingTop: i === 0 ? '1rem' : '1.25rem',
+                  lineHeight: i === 0 ? '1.3' : '1.5',
+                }}
+                styleName="monthDetailStyle"
+                xs={getWidth(i)}
+              >
+                <span styleName="header-style">{detail.header}</span>
+                <span style={{ fontSize: i === 0 ? '1.5625rem' : '0.875rem' }} styleName="value-style">{detail.value}</span>
+              </div>
+            ))
+            }
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    );
+  }
+
   renderPanel() {
-    const { isExpanded, panels } = this.state;
     const { monthlyDetails } = this.props;
     return (
       <>
         <div styleName="expand-all">
-          <ExpandAllCollapseAll handleExpandAll={this.handleExpandAll} isExpanded={isExpanded} />
+          {this.renderExpandAllCollapseAll()}
         </div>
         <div styleName="detail-list">
           {
             monthlyDetails.map((value, index) => (
-              <ExpansionPanel
-                // eslint-disable-next-line no-nested-ternary
-                expanded={index !== this.dateIndex ? R.isNil(panels[index])
-                  ? false : panels[index] : true}
-                onChange={() => this.handleClick(index)}
-                styleName="panel-border"
-              >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} styleName="summary">
-                  <TaskStatusIcon isSubTask task={{ state: value.status }} />
-                  <span styleName="heading">{value.title}</span>
-                  <span styleName="secondary-heading">{value.month}</span>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails styleName="expand-panel-details">
-                  <div style={{ display: 'flex' }}>
-                    {value.monthDetail && value.monthDetail.map((detail, i) => (
-                      <div
-                        style={{
-                          background: getBackgroundColor(i),
-                          paddingLeft: i > 2 ? '1rem' : '1rem',
-                          paddingTop: i === 0 ? '1rem' : '1.25rem',
-                          lineHeight: i === 0 ? '1.3' : '1.5',
-                        }}
-                        styleName="monthDetailStyle"
-                        xs={getWidth(i)}
-                      >
-                        <span styleName="header-style">{detail.header}</span>
-                        <span style={{ fontSize: i === 0 ? '1.5625rem' : '0.875rem' }} styleName="value-style">{detail.value}</span>
-                      </div>
-                    ))
-                    }
-                  </div>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+              this.renderExpansionPanel(value, index)
             ))
           }
         </div>

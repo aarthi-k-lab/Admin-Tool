@@ -1,0 +1,63 @@
+.comment-box textarea {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  height: 2.875rem;
+  width: 100%;
+}
+
+.comment-box textarea:focus {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  height: 4.875rem;
+  width: 100%;
+}
+
+.comment-box {
+  width: 100%;
+  grid-column: 1/5;
+}
+
+.expanded-comment-box {
+  width: 100%;
+  grid-column: 1/5;
+  padding-left: 1rem;
+}
+
+.expanded-comment-box textarea {
+  width: 100%;
+  margin-bottom: 1rem;
+  height: 4.875rem;
+  padding-left: 1rem;
+}
+
+.info-icon.info-icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.content {
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.content-header {
+  color: var(--grey-500);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.content-body {
+  align-items: center;
+  display: flex;
+  font-size: 1.1rem;
+}
+
+.prompt-error {
+  color: red;
+  float: right;
+  font-size: 0.8rem;
+  margin: 0 0 0.4rem 1rem;
+}

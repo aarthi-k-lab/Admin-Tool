@@ -98,8 +98,8 @@ class LoanActivity extends React.PureComponent {
               <StatusDetails loanActivityDetails={loanActivityDetails} />
             </div>
           </Grid>
-          <Grid item style={{ flexGrow: 1, display: 'flex', alignItems: 'stretch' }} xs={3}>
-            <div style={{ flexGrow: 1 }} styleName="report-downloader">
+          <Grid item styleName="status-details-parent report-downloader" xs={3}>
+            <div style={{ flexGrow: 1 }}>
               <DocWidget />
             </div>
           </Grid>

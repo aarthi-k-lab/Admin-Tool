@@ -7,20 +7,20 @@
 }
 
 .stepper.stepper {
-    padding: 0px !important;
-    background-color: unset !important;
+    padding: 0px;
+    background-color: unset;
 }
 
 .no-border.no-border {
-    border-left: none !important;
+    border-left: none;
 }
 
 /* TO DO , have to revert it once gets integrated with service */
 
 .step-content.step-content {
-    border-left: none !important;
-    margin-top: 0px !important;
-    padding-right: 0px !important;
+    border-left: none;
+    margin-top: 0px;
+    padding-right: 0px;
 }
 
 .active{
@@ -53,7 +53,7 @@
 }
 
 .item.item {
-    margin-top: 0.875rem !important;
+    margin-top: 0.875rem;
 }
 
 .right-item {
