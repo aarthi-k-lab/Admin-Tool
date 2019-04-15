@@ -78,10 +78,10 @@ class DialogCard extends Component {
           </IconButton>
           <DispositionComment
             activeIcon={activeIcon}
+            allTaskScenario={message === 'All Tasks Completed'}
             content={dialogContent}
             expanded={expanded}
             header={dialogHeader}
-            showMandatory={message !== 'All Tasks Completed'}
           />
         </div>
       </>

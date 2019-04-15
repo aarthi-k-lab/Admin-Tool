@@ -153,6 +153,9 @@ function* getTasks(action) {
       ]);
     }
     yield put(checklistNavAction);
+    if (R.pathOr(null, ['value', 'dispositionCode'], response) === 'allTasksCompleted') {
+      yield put(actions.validationDisplayAction(true));
+    }
     yield put({
       type: STORE_TASKS,
       payload: response,

@@ -17,13 +17,15 @@ class DispositionComment extends Component {
   }
 
   onCommentChange(event) {
-    const { triggerValidationDisplay } = this.props;
+    const { triggerValidationDisplay, allTaskScenario } = this.props;
     if (event.target.value !== '') {
       this.setState({ content: event.target.value });
       triggerValidationDisplay(true);
     } else {
       this.setState({ content: '' });
-      triggerValidationDisplay(false);
+      if (!allTaskScenario) {
+        triggerValidationDisplay(false);
+      }
     }
   }
 
@@ -35,10 +37,10 @@ class DispositionComment extends Component {
 
   renderCommentBox() {
     const { content } = this.state;
-    const { expanded, showMandatory } = this.props;
+    const { expanded, allTaskScenario } = this.props;
     return (
         <>
-          {(!content && showMandatory)
+          {(!content && !allTaskScenario)
             && (
             <p
               id="text-Area"
@@ -94,11 +96,11 @@ DispositionComment.defaultProps = {
 
 DispositionComment.propTypes = {
   activeIcon: PropTypes.string.isRequired,
+  allTaskScenario: PropTypes.bool.isRequired,
   content: PropTypes.string,
   dispositionCommentTrigger: PropTypes.func.isRequired,
   expanded: PropTypes.bool,
   header: PropTypes.string,
-  showMandatory: PropTypes.bool.isRequired,
   triggerValidationDisplay: PropTypes.func.isRequired,
 };
 
