@@ -7,6 +7,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
+import OptionalTaskDetails from 'components/Tasks/OptionalTaskDetails';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import AddTask from './AddTask';
 import styles from './LeftTaskPane.css';
@@ -90,6 +91,7 @@ class LeftTaskPane extends React.Component {
     const { tasksStatus, isCollapsed } = this.state;
     const {
       dataLoadStatus,
+      onAddTaskClick,
       onSubTaskClick,
       selectedTaskId,
       tasks,
@@ -115,7 +117,7 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
-                  <AddTask disabled={false} onClick={() => console.log('ADD TASK clicked')} />
+                  <AddTask onClick={() => onAddTaskClick()} />
                 </>
               )
               : null
@@ -144,7 +146,9 @@ class LeftTaskPane extends React.Component {
 
   render() {
     const { width } = this.state;
-    const { className } = this.props;
+    const {
+      className, showOptionalTasks, onAddTaskClick, tasks,
+    } = this.props;
     return (
       <div className={classNames(className, styles['stretch-column'])}>
         <div
@@ -152,7 +156,9 @@ class LeftTaskPane extends React.Component {
           style={{ width }}
           styleName="taskpane"
         >
-          { this.renderContent() }
+          { showOptionalTasks
+            ? <OptionalTaskDetails onAddTaskClick={onAddTaskClick} tasks={tasks} />
+            : this.renderContent() }
         </div>
       </div>
     );
@@ -164,9 +170,11 @@ LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
+  onAddTaskClick: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   selectedTaskId: PropTypes.string,
+  showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel).isRequired,
 };

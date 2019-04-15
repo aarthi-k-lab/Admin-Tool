@@ -6,6 +6,7 @@ import {
   handleChecklistItemChange,
   setSelectedChecklist,
   toggleInstructions,
+  showOptionalTasks,
   validationDisplayAction,
   dispositionCommentAction,
 } from './actions';
@@ -33,6 +34,8 @@ const handleChecklistItemValueChange = dispatch => (id, value, taskCode) => {
 
 const handleToggleInstructions = dispatch => () => dispatch(toggleInstructions());
 
+const handleShowOptionalTasks = dispatch => () => dispatch(showOptionalTasks());
+
 const operations = {
   fetchChecklist,
   fetchNextChecklist,
@@ -40,6 +43,7 @@ const operations = {
   saveTaskFilter,
   handleChecklistItemValueChange,
   handleToggleInstructions,
+  handleShowOptionalTasks,
   triggerValidationDisplay,
   dispositionCommentTrigger,
 };
