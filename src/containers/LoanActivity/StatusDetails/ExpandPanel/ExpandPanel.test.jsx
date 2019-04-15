@@ -45,7 +45,7 @@ describe('<ExpandPanel />', () => {
     const wrapper = shallow(
       <ExpandPanel monthlyDetails={monthlyData} />,
     );
-    expect(wrapper.find('WithStyles(ExpansionPanel)')).toHaveLength(monthlyData.length);
+    expect(wrapper.find('WithStyles(ExpansionPanel)')).toHaveLength(monthlyData.length + 1);
   });
 
   it('shows Disposition widget with no data', () => {
@@ -56,17 +56,16 @@ describe('<ExpandPanel />', () => {
     expect(wrapper.find('div')).toHaveLength(2);
   });
 
-  // it('should change the ExpandAll label to CollapseAll once when clicked', () => {
-  //   const { ExpandPanel } = TestHooks;
-  //   const wrapper = shallow(
-  //     <ExpandPanel monthlyDetails={monthlyData} />,
-  //   );
-  //   expect(wrapper.state().isExpanded).toBe(false);
-  //   const firstButton = wrapper.find('WithStyles(ExpandAllCollapseAll)').at(0);
-  //   console.log(wrapper.html);
-  //   firstButton.simulate('change');
-  //   expect(wrapper.state().isExpanded).toBe(true);
-  // });
+  it('should change the ExpandAll label to CollapseAll once when clicked', () => {
+    const { ExpandPanel } = TestHooks;
+    const wrapper = shallow(
+      <ExpandPanel monthlyDetails={monthlyData} />,
+    );
+    expect(wrapper.state().isExpanded).toBe(false);
+    const firstButton = wrapper.find('WithStyles(ExpansionPanel)').at(0);
+    firstButton.simulate('change');
+    expect(wrapper.state().isExpanded).toBe(true);
+  });
 
 
   it('should change the collapseAll label to ExpandAll once when clicked', () => {
