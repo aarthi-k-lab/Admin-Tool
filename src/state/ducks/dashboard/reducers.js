@@ -26,6 +26,7 @@ import {
   DISPLAY_ASSIGN,
   CLEAR_ERROR_MESSAGE,
   GET_LOAN_ACTIVITY_DETAILS,
+  TASKS_LIMIT_EXCEEDED,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -166,6 +167,19 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         noTasksFound,
+        evalId: null,
+        loanNumber: null,
+        taskId: null,
+      };
+    }
+    case TASKS_LIMIT_EXCEEDED: {
+      let isTasksLimitExceeded;
+      if (action.payload) {
+        ({ isTasksLimitExceeded } = action.payload);
+      }
+      return {
+        ...state,
+        isTasksLimitExceeded,
         evalId: null,
         loanNumber: null,
         taskId: null,

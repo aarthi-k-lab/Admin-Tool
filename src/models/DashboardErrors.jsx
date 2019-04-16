@@ -13,6 +13,7 @@ const MSG_CAN_UNASSIGN = 'Please click Unassign to unassign the task from the us
 const MSG_CANNOT_UNASSIGN = 'Please note only Manager can unassign the task.';
 const MSG_SHOULD_ASSIGN = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
 const MSG_DSPN_SUCCESS = 'The task has been dispositioned successfully with disposition';
+const MSG_TASKS_LIMIT_EXCEEDS = 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
 
 function reduceMessageListToMessage(acc, msg) {
   acc.push(msg);
@@ -29,6 +30,7 @@ function getMessage(
   isAssigned,
   enableGetNext,
   disposition,
+  isTasksLimitExceeded,
 ) {
   let level = LEVEL_ERROR;
   let message = null;
@@ -36,6 +38,8 @@ function getMessage(
     message = MSG_TASK_FETCH_ERROR;
   } else if (noTasksFound) {
     message = MSG_NO_TASKS_FOUND;
+  } else if (isTasksLimitExceeded) {
+    message = MSG_TASKS_LIMIT_EXCEEDS;
   } else if (enableGetNext) {
     const prettifiedDisposition = arrayToString([disposition]);
     message = `${MSG_DSPN_SUCCESS} ${prettifiedDisposition}`;
@@ -62,11 +66,12 @@ function renderErrorNotification(
   errorMessages,
   user,
   showAssign,
+  isTasksLimitExceeded,
 ) {
   const groups = user && user.groupList;
   const { level, message } = getMessage(
     taskFetchError, noTasksFound, errorMessages, groups,
-    showAssign, isAssigned, enableGetNext, disposition,
+    showAssign, isAssigned, enableGetNext, disposition, isTasksLimitExceeded,
   );
   if (!R.isNil(message)) {
     return (
