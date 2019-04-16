@@ -44,6 +44,7 @@ class Controls extends React.PureComponent {
     const {
       disableValidation,
       enableEndShift,
+      enableValidate,
       enableGetNext,
       groupName,
       onEndShift,
@@ -53,6 +54,7 @@ class Controls extends React.PureComponent {
       showSendToUnderWritingIcon,
       showAssign,
       showValidate,
+      isFirstVisit,
       user,
     } = this.props;
     let assign = null;
@@ -67,9 +69,14 @@ class Controls extends React.PureComponent {
         label="Validate"
       />) : null;
     const getNext = showGetNext
-      ? <GetNext disabled={!enableGetNext} onClick={this.handlegetNext} /> : null;
+      ? (
+        <GetNext
+          disabled={!enableGetNext || (!enableValidate && !isFirstVisit)}
+          onClick={this.handlegetNext}
+        />
+      ) : null;
     const endShift = showEndShift
-      ? <EndShift disabled={!enableEndShift} onClick={onEndShiftClick} />
+      ? <EndShift disabled={!enableEndShift || !enableValidate} onClick={onEndShiftClick} />
       : null;
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
       ? <SendToUnderwriting /> : null;
@@ -97,6 +104,7 @@ class Controls extends React.PureComponent {
 Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
+  enableValidate: false,
   isFirstVisit: true,
   onEndShift: () => { },
   onExpand: () => { },
@@ -113,6 +121,7 @@ Controls.propTypes = {
   dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
+  enableValidate: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
   isFirstVisit: PropTypes.bool,
   location: PropTypes.shape({
@@ -141,9 +150,11 @@ Controls.propTypes = {
 const mapStateToProps = (state) => {
   const showDisposition = checklistSelectors.shouldShowDisposition(state);
   const isNotAssigned = !selectors.isAssigned(state);
-  const disableValidation = isNotAssigned || !showDisposition;
+  const enableValidate = checklistSelectors.enableValidate(state);
+  const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
   return {
     disableValidation,
+    enableValidate,
     enableEndShift: selectors.enableEndShift(state),
     enableGetNext: selectors.enableGetNext(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),

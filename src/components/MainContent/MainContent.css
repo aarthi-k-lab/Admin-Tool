@@ -2,13 +2,12 @@
   align-items: stretch;
   display: flex;
   flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
   flex-direction: column;
 }
 
 .main-content-expanded {
-  align-items: stretch;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
+  composes: main-content;
   max-width: 100%;
 }

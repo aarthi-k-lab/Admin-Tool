@@ -1,57 +1,68 @@
-.header-style{
-    padding-left: 0.9375rem;
-    padding-top: 0.25rem;
-    font-size: 1rem;
-    font-family: "Lato", sans-serif;
-    color: #707479;
+.header-style {
+  padding-left: 0.9375rem;
+  padding-top: 0.25rem;
+  font-size: 1rem;
+  font-family: "Lato", sans-serif;
+  color: #707479;
 }
-.value-style{
-    padding-left: 0.9375rem;
-    font-weight: bold;
-    color: #333940;
+
+.value-style {
+  padding-left: 0.9375rem;
+  font-weight: bold;
+  color: #333940;
 }
-.title-style{
-    font-size: 1.25rem;
-    font-family: "Lato", sans-serif;
-    color: #707479;
-    font-weight: bold;
-    margin-bottom: 1rem;
+
+.title-style {
+  font-size: 1.25rem;
+  font-family: "Lato", sans-serif;
+  color: #707479;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
-.title-row{
-    padding:1.5rem;
+
+.title-row {
+  padding: 1.5rem;
 }
-.title-row >:last-child{
-    border-radius: 0px !important;
+
+.title-row > :last-child {
+  border-radius: 0 !important;
 }
-.card-border{
-    border-radius: 0px !important;
+
+.card-border.card-border {
+  border-radius: 0;
 }
-.card-content.card-content{
-    width: 45.0625rem;
-    height: 5.25rem;
-    padding: 1rem !important;
+
+.card-content.card-content {
+  width: 45.0625rem;
+  height: 5.25rem;
+  padding: 1rem;
 }
-.card-contentList.card-contentList{
-    width: 45.0625rem;
-    height: 44px;
-    padding-bottom: 1rem !important;
+
+.card-contentList.card-contentList {
+  width: 45.0625rem;
+  height: 44px;
+  padding-bottom: 1rem;
 }
-.card-contentHeader-style{
-    font-size: 1rem;
-    font-family: "Lato", sans-serif;
-    color: #707479;
+
+.card-contentHeader-style {
+  font-size: 1rem;
+  font-family: "Lato", sans-serif;
+  color: #707479;
 }
-.card-contentValue-style{
-    font-weight: bold;
-    color: #48494a;
+
+.card-contentValue-style {
+  font-weight: bold;
+  color: #48494a;
 }
-.item{
-    display: flex;
-    flex-direction: column;
-    padding-left:2.375rem;
-    line-height: 1.5;
+
+.item {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2.375rem;
+  line-height: 1.5;
 }
-.letterItems{
-    display: flex;
-    flex-direction: column;
+
+.letterItems {
+  display: flex;
+  flex-direction: column;
 }

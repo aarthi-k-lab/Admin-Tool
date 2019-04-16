@@ -70,7 +70,9 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
         </div>
       </span>
       <button
-        className="MuiButtonBase-root-99 MuiButton-root-73 MuiButton-contained-84 MuiButton-containedPrimary-85 MuiButton-raised-87 MuiButton-raisedPrimary-88 material-ui-button components-LeftTaskPane-AddTask__add-task"
+        aria-describedby={null}
+        aria-label="Add"
+        className="MuiButtonBase-root-94 MuiFab-root-84 MuiFab-secondary-87 AddTask-custom-75"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -80,28 +82,41 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
         onKeyUp={[Function]}
         onMouseDown={[Function]}
         onMouseLeave={[Function]}
+        onMouseOver={[Function]}
         onMouseUp={[Function]}
         onTouchEnd={[Function]}
         onTouchMove={[Function]}
         onTouchStart={[Function]}
+        style={
+          Object {
+            "margin-left": "10rem",
+          }
+        }
         tabIndex="0"
+        title="Add Task"
         type="button"
       >
         <span
-          className="MuiButton-label-74"
+          className="MuiFab-label-85"
         >
-          <img
-            alt="add-icon"
-            height="25"
-            src="/static/img/add.svg"
-            width="25"
-          />
-          <span>
-            ADD TASK
-          </span>
+          <svg
+            aria-hidden="true"
+            className="MuiSvgIcon-root-60"
+            focusable="false"
+            role="presentation"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+            />
+            <path
+              d="M0 0h24v24H0z"
+              fill="none"
+            />
+          </svg>
         </span>
         <span
-          className="MuiTouchRipple-root-102"
+          className="MuiTouchRipple-root-97"
         />
       </button>
       <span

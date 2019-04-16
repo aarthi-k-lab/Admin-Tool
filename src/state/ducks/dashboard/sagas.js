@@ -17,6 +17,7 @@ import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
@@ -378,6 +379,10 @@ function* getNext(action) {
     yield put({ type: SHOW_LOADER });
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
+      const dispositionComment = yield select(checklistSelectors.getDispositionComment);
+      if (dispositionComment) {
+        yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
+      }
       yield put(resetChecklistData());
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);

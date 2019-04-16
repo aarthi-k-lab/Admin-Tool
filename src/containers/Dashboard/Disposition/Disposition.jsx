@@ -8,6 +8,8 @@ import DashboardErrors from 'models/DashboardErrors';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors, operations } from 'ducks/dashboard';
 import { operations as commentoperations } from 'ducks/comments';
+import DashboardModel from 'models/Dashboard';
+import * as R from 'ramda';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import CardCreator from './CardCreator';
 import './Disposition.css';
@@ -17,24 +19,7 @@ const shouldExpand = (isExpanded, item, id) => {
   if (isExpanded) return item.id === id;
   return (item.id === id ? false : item.expanded);
 };
-const getContextTaskName = (groupName) => {
-  let taskName = '';
-  switch (groupName) {
-    case 'FEUW':
-      taskName = 'Income Calculation Review';
-      break;
-    case 'BEUW':
-      taskName = 'Underwriting Review';
-      break;
-    case 'PROC':
-      taskName = 'Processing Review';
-      break;
-    default:
-      taskName = groupName;
-      break;
-  }
-  return taskName;
-};
+
 class Disposition extends Component {
   constructor(props) {
     super(props);
@@ -58,17 +43,19 @@ class Disposition extends Component {
   componentDidUpdate() {
     const {
       enableGetNext, selectedDisposition, onPostComment, AppName, LoanNumber, EvalId,
-      EventName, groupName, user, ProcIdType, TaskId,
+      groupName, user, ProcIdType, TaskId,
     } = this.props;
     const { activityName } = selectedDisposition;
-    const taskName = getContextTaskName(groupName);
+    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const taskName = !R.isNil(page) ? page.task : '';
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
         loanNumber: LoanNumber,
         processIdType: ProcIdType,
         processId: EvalId,
-        eventName: EventName,
+        eventName,
         comment: this.savedComments,
         userName: user.userDetails.name,
         createdDate: new Date().toJSON(),
@@ -303,7 +290,6 @@ Disposition.defaultProps = {
   isTasksLimitExceeded: false,
   taskFetchError: false,
   AppName: 'CMOD',
-  EventName: 'UW',
   ProcIdType: 'EvalID',
   groupName: '',
 };
@@ -312,7 +298,6 @@ Disposition.propTypes = {
   beDispositionErrorMessages: PropTypes.arrayOf(PropTypes.string),
   enableGetNext: PropTypes.bool,
   EvalId: PropTypes.number.isRequired,
-  EventName: PropTypes.string,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,

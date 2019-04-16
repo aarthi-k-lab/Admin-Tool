@@ -12,30 +12,12 @@ import {
   operations,
   selectors,
 } from 'ducks/dashboard';
+import DashboardModel from 'models/Dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import { operations as commentoperations } from '../../../state/ducks/comments';
 import CommentBox from '../../../components/CommentBox/CommentBox';
 import './FrontEndDisposition.css';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
-
-const getContextTaskName = (groupName) => {
-  let taskName = '';
-  switch (groupName) {
-    case 'FEUW':
-      taskName = 'Income Calculation Review';
-      break;
-    case 'BEUW':
-      taskName = 'Underwriting Review';
-      break;
-    case 'PROC':
-      taskName = 'Processing Review';
-      break;
-    default:
-      taskName = groupName;
-      break;
-  }
-  return taskName;
-};
 
 class Disposition extends React.PureComponent {
   constructor(props) {
@@ -53,16 +35,18 @@ class Disposition extends React.PureComponent {
   componentDidUpdate() {
     const {
       enableGetNext, onPostComment, LoanNumber, ProcIdType, EvalId,
-      user, groupName, dispositionReason, AppName, EventName, TaskId,
+      user, groupName, dispositionReason, AppName, TaskId,
     } = this.props;
-    const taskName = getContextTaskName(groupName);
+    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const taskName = !R.isNil(page) ? page.task : '';
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
         loanNumber: LoanNumber,
         processIdType: ProcIdType,
         processId: EvalId,
-        eventName: EventName,
+        eventName,
         comment: this.savedComments,
         userName: user.userDetails.name,
         createdDate: new Date().toJSON(),
@@ -217,7 +201,6 @@ Disposition.defaultProps = {
   inProgress: false,
   saveInProgress: false,
   AppName: 'CMOD',
-  EventName: 'UW',
   ProcIdType: 'EvalID',
   groupName: '',
 };
@@ -228,7 +211,6 @@ Disposition.propTypes = {
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
   EvalId: PropTypes.number.isRequired,
-  EventName: PropTypes.string,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,

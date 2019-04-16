@@ -111,11 +111,15 @@ const shouldDisablePrev = (state) => {
   return R.isNil(prevChecklistId);
 };
 
+const enableValidate = R.pathOr(false, ['tasksAndChecklist', 'enableValidate']);
+
 const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'showInstructionsDialog']);
 
 const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
 
 const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
+
+const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
 
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
 
@@ -131,6 +135,8 @@ const shouldShowDisposition = (state) => {
 };
 
 const getRootTaskId = R.pathOr('', ['tasksAndChecklist', 'rootTaskId']);
+
+const shouldShowOptionalTasks = R.pathOr('', ['tasksAndChecklist', 'showOptionalTasks']);
 
 const selectors = {
   getChecklistItems,
@@ -151,7 +157,10 @@ const selectors = {
   shouldDisablePrev,
   shouldShowDisposition,
   getFirstTaskId,
+  enableValidate,
+  getDispositionComment,
   shouldShowInstructionsDialog,
+  shouldShowOptionalTasks,
 };
 
 export default selectors;

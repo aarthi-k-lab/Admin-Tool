@@ -105,28 +105,30 @@ class TasksAndChecklist extends React.PureComponent {
       return this.renderTaskErrorMessage();
     }
     return (
-      <section styleName="tasks-and-checklist">
-        <TaskPane styleName="tasks" />
-        { this.renderChecklist() }
-        <DialogCard
-          dialogContent={instructions}
-          dialogHeader="Steps to Resolve"
-          message={disposition}
-          onDialogToggle={onInstuctionDialogToggle}
-          shouldShow={showDisposition}
-          showDialog={showInstructionsDialog}
-          styleName="instructions"
-          title="Disposition"
-        />
-        <WidgetBuilder styleName="task-checklist" />
-        <Navigation
-          className={classNames(styles.footer, styles.navigation)}
-          disableNext={disableNext}
-          disablePrev={disablePrev}
-          onNext={onNext}
-          onPrev={onPrev}
-        />
-      </section>
+      <div styleName="scroll-wrapper">
+        <section styleName="tasks-and-checklist">
+          <TaskPane styleName="tasks" />
+          { this.renderChecklist() }
+          <DialogCard
+            dialogContent={instructions}
+            dialogHeader="Steps to Resolve"
+            message={disposition}
+            onDialogToggle={onInstuctionDialogToggle}
+            shouldShow={showDisposition}
+            showDialog={showInstructionsDialog}
+            styleName="instructions"
+            title="Disposition"
+          />
+          <WidgetBuilder styleName="task-checklist" />
+          <Navigation
+            className={classNames(styles.footer, styles.navigation)}
+            disableNext={disableNext}
+            disablePrev={disablePrev}
+            onNext={onNext}
+            onPrev={onPrev}
+          />
+        </section>
+      </div>
     );
   }
 }

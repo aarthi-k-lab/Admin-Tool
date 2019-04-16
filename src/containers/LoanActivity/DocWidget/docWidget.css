@@ -1,41 +1,32 @@
 .evalTable.evalTable {
-    text-align: left !important;
-    flex-basis: 100%;
-    height: 0;
-  }
-.header-style{
-    padding-left: 1.6375rem;
-    padding-top: 0.25rem;
-    font-size: 1rem;
-    font-family: "Lato", sans-serif;
-    color: #707479;
-}  
-.title-style{
-    font-size: 1.25rem;
-    font-family: "Lato", sans-serif;
-    color: black;
-    font-weight: bold;
-    padding: 12px;
+  text-align: left;
+  flex-basis: 100%;
+  height: 0;
 }
-.tableData-style{
-    font-size: 1rem;
-    font-weight: bold;
-    padding-left: 1.6375rem;
+
+.header-style {
+  padding-left: 1.6375rem;
+  padding-top: 0.25rem;
+  font-size: 1rem;
+  font-family: "Lato", sans-serif;
+  color: #707479;
 }
-.searchStyle {
-    background-color: #fff;
-    height: 2rem;
-    width: 180px;
-    margin-right: 5.5rem;
-    padding-left: 10px;
+
+.title-style {
+  font-size: 1.25rem;
+  font-family: "Lato", sans-serif;
+  color: black;
+  font-weight: bold;
+  padding: 2rem;
 }
-.searchIcon.searchIcon {
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
-    height: 10px;
-    color: black !important;
+
+.tableData-style {
+  font-size: 1rem;
+  font-weight: bold;
+  padding-left: 1.6375rem;
 }
-.widgetHeaderAndContent{
-    border-bottom: 1px solid rgb(181, 184, 189);
-    padding: 10px;
+
+.widgetHeaderAndContent {
+  border-bottom: 1px solid rgb(181, 184, 189);
+  padding: 10px;
 }
