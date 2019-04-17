@@ -17,6 +17,7 @@ import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import DashboardModel from 'models/Dashboard';
 import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 import { mockData } from '../../../containers/LoanActivity/LoanActivity';
@@ -260,7 +261,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
         type: USER_NOTIF_MSG,
         payload: {
           type: 'success',
-          msg: 'Validation successful!',
+          msg: DashboardModel.Messages.MSG_VALIDATION_SUCCESS,
         },
       });
     }

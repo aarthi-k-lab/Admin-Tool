@@ -7,12 +7,12 @@ import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
+import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
@@ -62,7 +62,7 @@ class TasksAndChecklist extends React.PureComponent {
     if (message.type === 'do-not-display') {
       notification = null;
     } else {
-      notification = DashboardErrors.renderErrorNotification(
+      notification = DashboardModel.Messages.renderErrorNotification(
         disposition,
         enableGetNext, isAssigned, noTasksFound, taskFetchError,
         message.msg,
