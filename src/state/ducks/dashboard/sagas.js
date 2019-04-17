@@ -183,12 +183,19 @@ function* fetchChecklistDetails(checklistId) {
   }
 }
 
-function* fetchChecklistDetailsForSearchResult(searchItem) {
+function* shouldRetriveChecklist(searchItem) {
+  const checklistTaskNames = ['FrontEnd Review', 'Processing'];
   const groupList = yield select(loginSelectors.getGroupList);
-  const hasFrontendChecklistAccess = RouteAccess.hasFrontendChecklistAccess(groupList);
-  const isFrontEndTask = R.path(['payload', 'taskName'], searchItem) === 'FrontEnd Review';
-  const shouldRetriveChecklist = hasFrontendChecklistAccess && isFrontEndTask;
-  if (shouldRetriveChecklist) {
+  const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
+  const taskName = R.path(['payload', 'taskName'], searchItem);
+  const isChecklistTask = checklistTaskNames.includes(taskName);
+  const retriveChecklist = hasChecklistAccess && isChecklistTask;
+  return retriveChecklist;
+}
+
+function* fetchChecklistDetailsForSearchResult(searchItem) {
+  const retriveChecklist = yield call(shouldRetriveChecklist, searchItem);
+  if (retriveChecklist) {
     const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
     yield call(fetchChecklistDetails, checklistId);
   }
