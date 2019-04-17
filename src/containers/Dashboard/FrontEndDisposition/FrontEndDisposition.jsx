@@ -7,7 +7,6 @@ import RadioButtonGroup from 'components/RadioButtonGroup';
 import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import {
   operations,
   selectors,
@@ -150,7 +149,7 @@ class Disposition extends React.PureComponent {
           <section styleName="disposition-section">
             {
               (noTasksFound || taskFetchError || isTasksLimitExceeded)
-                ? DashboardErrors.renderErrorNotification(
+                ? DashboardModel.Messages.renderErrorNotification(
                   dispositionReason,
                   enableGetNext, isAssigned, noTasksFound, taskFetchError,
                   dispositionErrorMessages,
@@ -160,7 +159,7 @@ class Disposition extends React.PureComponent {
                 ) : (
                   <>
                     <header styleName="title">Please select the outcome of your review</header>
-                    {DashboardErrors.renderErrorNotification(
+                    { DashboardModel.Messages.renderErrorNotification(
                       dispositionReason,
                       enableGetNext, isAssigned, noTasksFound, taskFetchError,
                       dispositionErrorMessages,

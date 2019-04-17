@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors, operations } from 'ducks/dashboard';
 import { operations as commentoperations } from 'ducks/comments';
@@ -223,7 +222,7 @@ class Disposition extends Component {
           <section styleName="disposition-section">
             {
               (noTasksFound || taskFetchError || isTasksLimitExceeded)
-                ? DashboardErrors.renderErrorNotification(
+                ? DashboardModel.Messages.renderErrorNotification(
                   activityName,
                   enableGetNext, isAssigned, noTasksFound, taskFetchError,
                   errorMessages,
@@ -235,7 +234,7 @@ class Disposition extends Component {
                     <header styleName="para-title">
                       Select the outcome of your review
                     </header>
-                    {DashboardErrors.renderErrorNotification(
+                    { DashboardModel.Messages.renderErrorNotification(
                       activityName,
                       enableGetNext, isAssigned, noTasksFound, taskFetchError,
                       errorMessages,
