@@ -47,6 +47,7 @@ class TasksAndChecklist extends React.PureComponent {
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
       user,
       showAssign,
+      isTasksLimitExceeded,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -67,6 +68,7 @@ class TasksAndChecklist extends React.PureComponent {
         message.msg,
         user,
         showAssign,
+        isTasksLimitExceeded,
       );
     }
     return (
@@ -141,6 +143,7 @@ TasksAndChecklist.defaultProps = {
   inProgress: false,
   message: null,
   noTasksFound: false,
+  isTasksLimitExceeded: false,
   taskFetchError: false,
 };
 
@@ -167,6 +170,7 @@ TasksAndChecklist.propTypes = {
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
+  isTasksLimitExceeded: PropTypes.bool,
   message: PropTypes.string,
   noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
@@ -241,6 +245,7 @@ function mapStateToProps(state) {
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
     enableGetNext: dashboardSelectors.enableGetNext(state),
+    isTasksLimitExceeded: dashboardSelectors.isTasksLimitExceeded(state),
     isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
