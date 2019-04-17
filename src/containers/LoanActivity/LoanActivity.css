@@ -1,35 +1,60 @@
 .container {
-    background-color: var(--grey-200);
+  background-color: var(--grey-200);
 }
 
 .status {
-    background-color: var(--grey-50);
-    padding: 10px 10px 10px 10px;
-    height: calc(100vh - 160px);
-    overflow-x: hidden;
-    overflow-y: auto;
+  background-color: var(--grey-50);
+  padding: 10px 10px 10px 10px;
+  height: calc(100vh - 160px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
+  width: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+  background: #f1f1f1;
+  border-radius: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
+  background: #888;
+  border-radius: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
 
-.detail-parent {
-    padding: 0.25rem;
-    height: calc(100vh - 160px);
-    overflow: auto;
+.loan-activity {
+  align-self: stretch;
+}
+
+.status-details-parent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.status-details {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  width: 60%;
+  margin: auto;
+}
+
+.report-downloader {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-widget {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
 }

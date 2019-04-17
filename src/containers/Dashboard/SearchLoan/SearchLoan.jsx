@@ -28,6 +28,7 @@ class SearchLoan extends React.PureComponent {
     this.getParamsValue = this.getParamsValue.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
     this.validateLoanNumber = this.validateLoanNumber.bind(this);
+    this.getLoanActivityPath = this.getLoanActivityPath.bind(this);
   }
 
 
@@ -54,6 +55,12 @@ class SearchLoan extends React.PureComponent {
 
   getFrontEndPath() {
     return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
+  }
+
+  getLoanActivityPath() {
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    return RouteAccess.hasLoanActivityAccess(groups) ? '/loan-activity' : '/';
   }
 
   getParamsValue() {
@@ -83,6 +90,10 @@ class SearchLoan extends React.PureComponent {
           break;
         case 'Processing':
           this.redirectPath = '/doc-processor';
+          break;
+        case 'Trial Modification':
+        case 'Forbearance':
+          this.redirectPath = this.getLoanActivityPath();
           break;
         default:
           this.redirectPath = this.getFrontEndPath();
@@ -131,9 +142,9 @@ class SearchLoan extends React.PureComponent {
           <div styleName="eval-table-container">
             <div styleName="eval-table-height-limiter">
               <h3 styleName="resultText">
-                <span styleName="searchResutlText">{ searchResultCount }</span>
+                <span styleName="searchResutlText">{searchResultCount}</span>
                 &nbsp;search results found for Loan &nbsp; &quot;
-                <span styleName="searchResutlText">{ loanNumber }</span>
+                <span styleName="searchResutlText">{loanNumber}</span>
                 &quot;
               </h3>
               <ReactTable
@@ -168,7 +179,7 @@ class SearchLoan extends React.PureComponent {
     return (
       <>
         <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
-        { this.renderSearchResults() }
+        {this.renderSearchResults()}
       </>
     );
   }
@@ -254,13 +265,8 @@ SearchLoan.COLUMN_DATA = [{
   maxWidth: 200,
   minWidth: 200,
   Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'ACTIONS',
-  accessor: 'actions',
-  maxWidth: 200,
-  minWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-}];
+},
+];
 
 
 SearchLoan.defaultProps = {

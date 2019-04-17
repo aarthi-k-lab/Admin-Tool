@@ -1,0 +1,24 @@
+.optional-task-details {
+
+}
+
+.optional-task-heading.optional-task-heading {
+    margin-left: 1rem;
+}
+
+.task-group {
+    margin-bottom: 1.5rem;
+}
+
+.icon-padding.icon-padding {
+    padding: 0.75rem 1rem;
+}
+
+.fill-width.fill-width {
+    flex-grow: 1;
+    padding: 0.75rem 0;
+}
+
+.parent-task-name {
+    display: inline-block;
+}

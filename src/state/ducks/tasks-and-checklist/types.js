@@ -20,6 +20,7 @@ const STORE_TASKS = 'app/tasks-and-checklist/STORE_TASKS';
 const VALIDATION_DISPLAY = 'app/tasks-and-checklist/VALIDATION_DISPLAY,';
 const STORE_MISC_TASK_COMMENT = 'app/tasks-and-checklist/STORE_MISC_TASK_COMMENT';
 const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
+const SHOW_OPTIONAL_TASKS = 'app/tasks-and-checklist/SHOW_OPTIONAL_TASKS';
 const DISP_COMMENT_SAGA = 'app/tasks-and-checklist/DISP_COMMENT_SAGA';
 
 export {
@@ -44,6 +45,7 @@ export {
   STORE_TASK_FILTER,
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
+  SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
   DISP_COMMENT_SAGA,
 };

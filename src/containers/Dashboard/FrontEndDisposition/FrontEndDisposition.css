@@ -1,6 +1,9 @@
 .disposition-section {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
   margin: 0 auto;
   padding: 0 0.75rem;
   max-width: 50.25rem;
@@ -22,8 +25,9 @@
 }
 
 .scrollable-block {
-  height: 77vh;
   align-self: stretch;
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   overflow: auto;
 }

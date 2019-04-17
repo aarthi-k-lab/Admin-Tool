@@ -37,7 +37,13 @@ class EvalTableRow extends React.PureComponent {
         cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
         break;
       case 'ACTIONS':
-        cellData = <EvalTableCell click={() => this.handleLinkClick()} styleProps={getStyles(row)} value="Loan Activity" />;
+        cellData = (
+          <EvalTableCell
+            click={this.handleLinkClick}
+            styleProps={getStyles(row)}
+            value="Loan Activity"
+          />
+        );
         break;
       default:
         cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value} />;

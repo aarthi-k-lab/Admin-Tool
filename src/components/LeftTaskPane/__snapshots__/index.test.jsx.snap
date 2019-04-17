@@ -69,6 +69,56 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           </div>
         </div>
       </span>
+      <button
+        aria-describedby={null}
+        aria-label="Add"
+        className="MuiButtonBase-root-94 MuiFab-root-84 MuiFab-secondary-87 AddTask-custom-75"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onContextMenu={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        style={
+          Object {
+            "margin-left": "10rem",
+          }
+        }
+        tabIndex="0"
+        title="Add Task"
+        type="button"
+      >
+        <span
+          className="MuiFab-label-85"
+        >
+          <svg
+            aria-hidden="true"
+            className="MuiSvgIcon-root-60"
+            focusable="false"
+            role="presentation"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+            />
+            <path
+              d="M0 0h24v24H0z"
+              fill="none"
+            />
+          </svg>
+        </span>
+        <span
+          className="MuiTouchRipple-root-97"
+        />
+      </button>
       <span
         className="components-LeftTaskPane-LeftTaskPane__collapse-icon-open"
         onClick={[Function]}

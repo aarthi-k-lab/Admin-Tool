@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import { connect } from 'react-redux';
 import ContentHeader from 'components/ContentHeader';
 import FullHeightColumn from 'components/FullHeightColumn';
 import Controls from 'containers/Controls';
@@ -14,10 +13,15 @@ import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
 import CustomSnackBar from 'components/CustomSnackBar';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
+import { connect } from 'react-redux';
+import { selectors } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
 function isNotLoanActivity(group) {
   return group !== DashboardModel.LOAN_ACTIVITY;
+}
+function isTrialOrForbearance(taskName) {
+  return taskName === 'Trial Modification' ? 'Trial' : 'Forbearance';
 }
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {
@@ -55,9 +59,9 @@ class EvaluationPage extends React.PureComponent {
   }
 
   render() {
-    const { location, group } = this.props;
+    const { location, group, taskName } = this.props;
     const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
-    const title = el.task;
+    const title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
     return (
       <>
         <ContentHeader title={title}>
@@ -89,9 +93,10 @@ EvaluationPage.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
   snackBarData: PropTypes.node.isRequired,
+  taskName: PropTypes.string.isRequired,
 };
-
 const mapStateToProps = state => ({
+  taskName: selectors.processName(state),
   snackBarData: notificationSelectors.getSnackBarState(state),
 });
 

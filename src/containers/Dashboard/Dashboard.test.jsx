@@ -13,6 +13,6 @@ describe('<Dashboard />', () => {
     const wrapper = shallow(
       <TestExports.Dashboard onGetGroupName={() => {}} />,
     );
-    expect(wrapper.find('withRouter(EvaluationPage)')).toHaveLength(1);
+    expect(wrapper.find('withRouter(Connect(EvaluationPage))')).toHaveLength(1);
   });
 });
