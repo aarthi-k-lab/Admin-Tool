@@ -57,7 +57,7 @@ function getMessage(
     message = MSG_SHOULD_ASSIGN;
   }
 
-  if (R.inclues(message, SUCCESS_MESSAGES)) {
+  if (R.includes(message, SUCCESS_MESSAGES)) {
     level = LEVEL_SUCCESS;
   }
 
