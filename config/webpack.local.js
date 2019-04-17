@@ -82,7 +82,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          target: 'https://cmodworkassignqa.int.mrcooper.io',
+          target: 'https://cmodworkassigndev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -98,7 +98,7 @@ const config = merge(
           },
         },
         '/api/userskills': {
-          target: 'https://cmoduserskillqa.int.mrcooper.io',
+          target: 'https://cmoduserskilldev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -130,7 +130,7 @@ const config = merge(
           },
         },
         '/api/task-engine': {
-          target: 'https://cmodtaskengineqa.int.mrcooper.io',
+          target: 'https://cmodtaskenginedev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
