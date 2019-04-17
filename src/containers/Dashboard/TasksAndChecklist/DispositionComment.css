@@ -2,14 +2,16 @@
   margin-left: 1rem;
   margin-bottom: 1rem;
   height: 2.875rem;
-  width: 100%;
+  width: 18rem;
+  resize: none;
 }
 
 .comment-box textarea:focus {
   margin-left: 1rem;
   margin-bottom: 1rem;
   height: 4.875rem;
-  width: 100%;
+  width: 18rem;
+  resize: none;
 }
 
 .comment-box {
@@ -24,10 +26,11 @@
 }
 
 .expanded-comment-box textarea {
-  width: 100%;
+  width: 18rem;
   margin-bottom: 1rem;
   height: 4.875rem;
   padding-left: 1rem;
+  resize: none;
 }
 
 .info-icon.info-icon {
