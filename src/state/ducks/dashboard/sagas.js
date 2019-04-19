@@ -17,7 +17,6 @@ import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
-import DashboardModel from 'models/Dashboard';
 import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 import { mockData } from '../../../containers/LoanActivity/LoanActivity';
@@ -216,6 +215,9 @@ function* fetchLoanActivityDetails(evalDetails) {
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
+  const user = yield select(loginSelectors.getUser);
+  const { userDetails } = user;
+  evalDetails.isAssigned = userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -261,7 +263,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
         type: USER_NOTIF_MSG,
         payload: {
           type: 'success',
-          msg: DashboardModel.Messages.MSG_VALIDATION_SUCCESS,
+          msg: 'Validation successful!',
         },
       });
     }

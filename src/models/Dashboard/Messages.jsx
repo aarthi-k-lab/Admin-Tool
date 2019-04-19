@@ -16,8 +16,6 @@ const MSG_DSPN_SUCCESS = 'The task has been dispositioned successfully with disp
 const MSG_TASKS_LIMIT_EXCEEDS = 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
 const MSG_VALIDATION_SUCCESS = 'Validation successful!';
 
-const SUCCESS_MESSAGES = [MSG_DSPN_SUCCESS, MSG_VALIDATION_SUCCESS];
-
 function reduceMessageListToMessage(acc, msg) {
   acc.push(msg);
   acc.push(<br key={msg} />);
@@ -43,22 +41,23 @@ function getMessage(
     message = MSG_NO_TASKS_FOUND;
   } else if (isTasksLimitExceeded) {
     message = MSG_TASKS_LIMIT_EXCEEDS;
-  } else if (errorMessages.length > 0) {
+  } else if (errorMessages
+     && !R.is(Array, errorMessages) && errorMessages === MSG_VALIDATION_SUCCESS) {
+    message = errorMessages;
+    level = LEVEL_SUCCESS;
+  } else if (errorMessages && errorMessages.length > 0) {
     message = R.is(Array, errorMessages)
       ? errorMessages.reduce(reduceMessageListToMessage, []) : errorMessages;
   } else if (enableGetNext) {
     const prettifiedDisposition = arrayToString([disposition]);
     message = `${MSG_DSPN_SUCCESS} ${prettifiedDisposition}`;
+    level = LEVEL_SUCCESS;
   } else if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
     message = MSG_CAN_UNASSIGN;
   } else if (showAssign) {
     message = MSG_CANNOT_UNASSIGN;
   } else if (!isAssigned) {
     message = MSG_SHOULD_ASSIGN;
-  }
-
-  if (R.includes(message, SUCCESS_MESSAGES)) {
-    level = LEVEL_SUCCESS;
   }
 
   return {

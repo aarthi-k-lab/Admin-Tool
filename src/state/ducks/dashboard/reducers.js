@@ -230,7 +230,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         noTasksFound: false,
-        isAssigned: !action.payload.isSearch,
+        isAssigned: action.payload.isSearch ? action.payload.isAssigned : true,
       };
       return newState;
     }
