@@ -14,6 +14,7 @@ const MSG_CANNOT_UNASSIGN = 'Please note only Manager can unassign the task.';
 const MSG_SHOULD_ASSIGN = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
 const MSG_DSPN_SUCCESS = 'The task has been dispositioned successfully with disposition';
 const MSG_TASKS_LIMIT_EXCEEDS = 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
+const MSG_VALIDATION_SUCCESS = 'Validation successful!';
 
 function reduceMessageListToMessage(acc, msg) {
   acc.push(msg);
@@ -40,13 +41,17 @@ function getMessage(
     message = MSG_NO_TASKS_FOUND;
   } else if (isTasksLimitExceeded) {
     message = MSG_TASKS_LIMIT_EXCEEDS;
+  } else if (errorMessages
+     && !R.is(Array, errorMessages) && errorMessages === MSG_VALIDATION_SUCCESS) {
+    message = errorMessages;
+    level = LEVEL_SUCCESS;
+  } else if (errorMessages && errorMessages.length > 0) {
+    message = R.is(Array, errorMessages)
+      ? errorMessages.reduce(reduceMessageListToMessage, []) : errorMessages;
   } else if (enableGetNext) {
     const prettifiedDisposition = arrayToString([disposition]);
     message = `${MSG_DSPN_SUCCESS} ${prettifiedDisposition}`;
     level = LEVEL_SUCCESS;
-  } else if (errorMessages.length > 0) {
-    message = R.is(Array, errorMessages)
-      ? errorMessages.reduce(reduceMessageListToMessage, []) : errorMessages;
   } else if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
     message = MSG_CAN_UNASSIGN;
   } else if (showAssign) {
@@ -54,6 +59,7 @@ function getMessage(
   } else if (!isAssigned) {
     message = MSG_SHOULD_ASSIGN;
   }
+
   return {
     level,
     message,
@@ -81,8 +87,8 @@ function renderErrorNotification(
   return null;
 }
 
-const DashboardErrors = {
+const Messages = {
   renderErrorNotification,
 };
 
-export default DashboardErrors;
+export default Messages;
