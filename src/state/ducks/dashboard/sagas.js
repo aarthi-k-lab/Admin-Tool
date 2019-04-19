@@ -36,6 +36,7 @@ import {
   HIDE_SAVING_LOADER,
   CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
+  TASKS_LIMIT_EXCEEDED,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
@@ -182,12 +183,19 @@ function* fetchChecklistDetails(checklistId) {
   }
 }
 
-function* fetchChecklistDetailsForSearchResult(searchItem) {
+function* shouldRetriveChecklist(searchItem) {
+  const checklistTaskNames = ['FrontEnd Review', 'Processing'];
   const groupList = yield select(loginSelectors.getGroupList);
-  const hasFrontendChecklistAccess = RouteAccess.hasFrontendChecklistAccess(groupList);
-  const isFrontEndTask = R.path(['payload', 'taskName'], searchItem) === 'FrontEnd Review';
-  const shouldRetriveChecklist = hasFrontendChecklistAccess && isFrontEndTask;
-  if (shouldRetriveChecklist) {
+  const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
+  const taskName = R.path(['payload', 'taskName'], searchItem);
+  const isChecklistTask = checklistTaskNames.includes(taskName);
+  const retriveChecklist = hasChecklistAccess && isChecklistTask;
+  return retriveChecklist;
+}
+
+function* fetchChecklistDetailsForSearchResult(searchItem) {
+  const retriveChecklist = yield call(shouldRetriveChecklist, searchItem);
+  if (retriveChecklist) {
     const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
     yield call(fetchChecklistDetails, checklistId);
   }
@@ -207,6 +215,10 @@ function* fetchLoanActivityDetails(evalDetails) {
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
+  const user = yield select(loginSelectors.getUser);
+  const { userDetails } = user;
+  evalDetails.isAssigned = !R.isNil(evalDetails.assignee)
+  && userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -386,7 +398,7 @@ function* getNext(action) {
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${getUserPersona(appGroupName)}&userPrincipalName=${userPrincipalName}`);
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
           if (R.keys(allTasksComments[taskComment]).length) {
@@ -406,6 +418,10 @@ function* getNext(action) {
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
+      } else if (!R.isNil(R.path(['limitExceeded'], taskDetails))) {
+        yield put({ type: TASKS_LIMIT_EXCEEDED, payload: { isTasksLimitExceeded: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else {

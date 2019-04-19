@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors, operations } from 'ducks/dashboard';
 import { operations as commentoperations } from 'ducks/comments';
@@ -193,6 +192,7 @@ class Disposition extends Component {
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
       user,
       showAssign,
+      isTasksLimitExceeded,
       beDispositionErrorMessages: errorMessages,
     } = this.props;
     const { activityName } = selectedDisposition;
@@ -202,8 +202,8 @@ class Disposition extends Component {
       );
     }
     const sameDispositionNotSelected = selectedDisposition
-    && (selectedDisposition.cardStatus !== selectedStatus
-    || selectedDisposition.activityName !== selectedActivity);
+      && (selectedDisposition.cardStatus !== selectedStatus
+        || selectedDisposition.activityName !== selectedActivity);
     if (sameDispositionNotSelected) {
       const {
         id,
@@ -221,49 +221,52 @@ class Disposition extends Component {
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
             {
-        (noTasksFound || taskFetchError) ? DashboardErrors.renderErrorNotification(
-          activityName,
-          enableGetNext, isAssigned, noTasksFound, taskFetchError,
-          errorMessages,
-          user,
-          showAssign,
-        ) : (
-          <>
-            <header styleName="para-title">
-          Select the outcome of your review
-            </header>
-            {DashboardErrors.renderErrorNotification(
-              activityName,
-              enableGetNext, isAssigned, noTasksFound, taskFetchError,
-              errorMessages,
-              user,
-              showAssign,
-            )}
-            <button
-              disabled={enableGetNext || !isAssigned}
-              onClick={() => this.handleExpandAll()}
-              styleName="OperateButton"
-              type="submit"
-            >
-              {operate}
-            </button>
-            { status.map(m => (
-              <CardCreator
-                disabled={enableGetNext || !isAssigned}
-                selectedActivity={selectedActivity}
-                status={m}
-              />
-            ))}
-            <CommentBox
-              content={content}
-              onCheck={canSubmit}
-              onCommentChange={this.onCommentChange}
-              onRefresh={refreshHook}
-            />
-            {this.renderSave(isAssigned)}
-          </>
-        )
-          }
+              (noTasksFound || taskFetchError || isTasksLimitExceeded)
+                ? DashboardModel.Messages.renderErrorNotification(
+                  activityName,
+                  enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                  errorMessages,
+                  user,
+                  showAssign,
+                  isTasksLimitExceeded,
+                ) : (
+                  <>
+                    <header styleName="para-title">
+                      Select the outcome of your review
+                    </header>
+                    { DashboardModel.Messages.renderErrorNotification(
+                      activityName,
+                      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                      errorMessages,
+                      user,
+                      showAssign,
+                      isTasksLimitExceeded,
+                    )}
+                    <button
+                      disabled={enableGetNext || !isAssigned}
+                      onClick={() => this.handleExpandAll()}
+                      styleName="OperateButton"
+                      type="submit"
+                    >
+                      {operate}
+                    </button>
+                    {status.map(m => (
+                      <CardCreator
+                        disabled={enableGetNext || !isAssigned}
+                        selectedActivity={selectedActivity}
+                        status={m}
+                      />
+                    ))}
+                    <CommentBox
+                      content={content}
+                      onCheck={canSubmit}
+                      onCommentChange={this.onCommentChange}
+                      onRefresh={refreshHook}
+                    />
+                    {this.renderSave(isAssigned)}
+                  </>
+                )
+            }
           </section>
         </div>
         <WidgetBuilder />
@@ -283,6 +286,7 @@ Disposition.defaultProps = {
   saveInProgress: false,
   beDispositionErrorMessages: [],
   noTasksFound: false,
+  isTasksLimitExceeded: false,
   taskFetchError: false,
   AppName: 'CMOD',
   ProcIdType: 'EvalID',
@@ -296,6 +300,7 @@ Disposition.propTypes = {
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  isTasksLimitExceeded: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
   noTasksFound: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
@@ -345,6 +350,7 @@ const mapStateToProps = state => ({
   saveInProgress: selectors.saveInProgress(state),
   showAssign: selectors.showAssign(state),
   noTasksFound: selectors.noTasksFound(state),
+  isTasksLimitExceeded: selectors.isTasksLimitExceeded(state),
   taskFetchError: selectors.taskFetchError(state),
   user: loginSelectors.getUser(state),
 });

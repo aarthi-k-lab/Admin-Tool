@@ -1,3 +1,6 @@
+import Messages from './Messages';
+
+
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const PROC = 'PROC';
@@ -81,6 +84,7 @@ const DashboardModel = {
   GROUPS,
   PAGE_LOOKUP,
   getTitle,
+  Messages,
 };
 
 export default DashboardModel;

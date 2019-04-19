@@ -7,7 +7,6 @@ import RadioButtonGroup from 'components/RadioButtonGroup';
 import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import {
   operations,
   selectors,
@@ -133,7 +132,7 @@ class Disposition extends React.PureComponent {
   render() {
     const {
       noTasksFound, dispositionReason, inProgress, enableGetNext,
-      taskFetchError, isAssigned,
+      taskFetchError, isAssigned, isTasksLimitExceeded,
       dispositionErrorMessages,
       user,
       showAssign,
@@ -149,38 +148,41 @@ class Disposition extends React.PureComponent {
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
             {
-              (noTasksFound || taskFetchError) ? DashboardErrors.renderErrorNotification(
-                dispositionReason,
-                enableGetNext, isAssigned, noTasksFound, taskFetchError,
-                dispositionErrorMessages,
-                user,
-                showAssign,
-              ) : (
-                <>
-                  <header styleName="title">Please select the outcome of your review</header>
-                  {DashboardErrors.renderErrorNotification(
-                    dispositionReason,
-                    enableGetNext, isAssigned, noTasksFound, taskFetchError,
-                    dispositionErrorMessages,
-                    user,
-                    showAssign,
-                  )}
-                  <RadioButtonGroup
-                    clearSelectedDisposition={R.isEmpty(dispositionReason)}
-                    disableDisposition={enableGetNext || !isAssigned}
-                    items={dispositionOptions}
-                    name="disposition-options"
-                    onChange={this.handleDispositionSelection}
-                  />
-                  <CommentBox
-                    content={content}
-                    onCheck={canSubmit}
-                    onCommentChange={this.onCommentChange}
-                    onRefresh={refreshHook}
-                  />
-                  {this.renderSave(isAssigned)}
-                </>
-              )
+              (noTasksFound || taskFetchError || isTasksLimitExceeded)
+                ? DashboardModel.Messages.renderErrorNotification(
+                  dispositionReason,
+                  enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                  dispositionErrorMessages,
+                  user,
+                  showAssign,
+                  isTasksLimitExceeded,
+                ) : (
+                  <>
+                    <header styleName="title">Please select the outcome of your review</header>
+                    { DashboardModel.Messages.renderErrorNotification(
+                      dispositionReason,
+                      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                      dispositionErrorMessages,
+                      user,
+                      showAssign,
+                      isTasksLimitExceeded,
+                    )}
+                    <RadioButtonGroup
+                      clearSelectedDisposition={R.isEmpty(dispositionReason)}
+                      disableDisposition={enableGetNext || !isAssigned}
+                      items={dispositionOptions}
+                      name="disposition-options"
+                      onChange={this.handleDispositionSelection}
+                    />
+                    <CommentBox
+                      content={content}
+                      onCheck={canSubmit}
+                      onCommentChange={this.onCommentChange}
+                      onRefresh={refreshHook}
+                    />
+                    {this.renderSave(isAssigned)}
+                  </>
+                )
             }
           </section>
         </div>
@@ -193,6 +195,7 @@ class Disposition extends React.PureComponent {
 Disposition.defaultProps = {
   enableGetNext: false,
   noTasksFound: false,
+  isTasksLimitExceeded: false,
   taskFetchError: false,
   inProgress: false,
   saveInProgress: false,
@@ -210,6 +213,7 @@ Disposition.propTypes = {
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  isTasksLimitExceeded: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
   noTasksFound: PropTypes.bool,
   onClear: PropTypes.func.isRequired,
@@ -243,6 +247,7 @@ const mapStateToProps = state => ({
   saveInProgress: selectors.saveInProgress(state),
   isAssigned: selectors.isAssigned(state),
   taskFetchError: selectors.taskFetchError(state),
+  isTasksLimitExceeded: selectors.isTasksLimitExceeded(state),
   showAssign: selectors.showAssign(state),
   user: loginSelectors.getUser(state),
   EvalId: selectors.evalId(state),
