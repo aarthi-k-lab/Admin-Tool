@@ -49,19 +49,9 @@ class TasksAndChecklist extends React.PureComponent {
       showAssign,
       isTasksLimitExceeded,
     } = this.props;
-    if (dataLoadStatus === 'loading') {
-      return <CircularProgress styleName="loader" />;
-    }
-    if (dataLoadStatus === 'failed') {
-      return <ErrorIcon fontSize="large" styleName="error-indicator" />;
-    }
-    if (checklistItems.length <= 0) {
-      return null;
-    }
+    // TODO (need to refactor this block)
     let notification;
-    if (message.type === 'do-not-display') {
-      notification = null;
-    } else {
+    if (isTasksLimitExceeded) {
       notification = DashboardModel.Messages.renderErrorNotification(
         disposition,
         enableGetNext, isAssigned, noTasksFound, taskFetchError,
@@ -70,6 +60,28 @@ class TasksAndChecklist extends React.PureComponent {
         showAssign,
         isTasksLimitExceeded,
       );
+    } else {
+      if (dataLoadStatus === 'loading') {
+        return <CircularProgress styleName="loader" />;
+      }
+      if (dataLoadStatus === 'failed') {
+        return <ErrorIcon fontSize="large" styleName="error-indicator" />;
+      }
+      if (checklistItems.length <= 0) {
+        return null;
+      }
+      if (message.type === 'do-not-display') {
+        notification = null;
+      } else {
+        notification = DashboardModel.Messages.renderErrorNotification(
+          disposition,
+          enableGetNext, isAssigned, noTasksFound, taskFetchError,
+          message.msg,
+          user,
+          showAssign,
+          isTasksLimitExceeded,
+        );
+      }
     }
     return (
       <Checklist
@@ -110,7 +122,7 @@ class TasksAndChecklist extends React.PureComponent {
       <div styleName="scroll-wrapper">
         <section styleName="tasks-and-checklist">
           <TaskPane styleName="tasks" />
-          { this.renderChecklist() }
+          {this.renderChecklist()}
           <DialogCard
             dialogContent={instructions}
             dialogHeader="Steps to Resolve"

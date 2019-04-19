@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import {
   ERROR_LOADING_CHECKLIST,
   ERROR_LOADING_TASKS,
+  TASKS_LIMIT_EXCEEDED,
   LOADING_CHECKLIST,
   LOADING_TASKS,
   REMOVE_DIRTY_CHECKLIST,
@@ -93,6 +94,11 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskLoadingStatus: FAILED,
+      };
+    case TASKS_LIMIT_EXCEEDED:
+      return {
+        ...state,
+        isTasksLimitExceeded: true,
       };
     case LOADING_CHECKLIST:
       return {
