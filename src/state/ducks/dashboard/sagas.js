@@ -217,7 +217,8 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
-  evalDetails.isAssigned = userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
+  evalDetails.isAssigned = !R.isNil(evalDetails.assignee)
+  && userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
