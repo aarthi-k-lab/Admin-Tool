@@ -420,9 +420,9 @@ function* getNext(action) {
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else if (!R.isNil(R.path(['limitExceeded'], taskDetails))) {
+        yield put({ type: TASKS_LIMIT_EXCEEDED, payload: { isTasksLimitExceeded: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
-        yield put({ type: TASKS_LIMIT_EXCEEDED, payload: { isTasksLimitExceeded: true } });
       } else {
         yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
         yield put(errorTombstoneFetch());

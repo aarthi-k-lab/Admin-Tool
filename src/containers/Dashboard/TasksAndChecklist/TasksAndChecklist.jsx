@@ -47,41 +47,27 @@ class TasksAndChecklist extends React.PureComponent {
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
       user,
       showAssign,
-      isTasksLimitExceeded,
     } = this.props;
-    // TODO (need to refactor this block)
+    if (dataLoadStatus === 'loading') {
+      return <CircularProgress styleName="loader" />;
+    }
+    if (dataLoadStatus === 'failed') {
+      return <ErrorIcon fontSize="large" styleName="error-indicator" />;
+    }
+    if (checklistItems.length <= 0) {
+      return null;
+    }
     let notification;
-    if (isTasksLimitExceeded) {
+    if (message.type === 'do-not-display') {
+      notification = null;
+    } else {
       notification = DashboardModel.Messages.renderErrorNotification(
         disposition,
         enableGetNext, isAssigned, noTasksFound, taskFetchError,
         message.msg,
         user,
         showAssign,
-        isTasksLimitExceeded,
       );
-    } else {
-      if (dataLoadStatus === 'loading') {
-        return <CircularProgress styleName="loader" />;
-      }
-      if (dataLoadStatus === 'failed') {
-        return <ErrorIcon fontSize="large" styleName="error-indicator" />;
-      }
-      if (checklistItems.length <= 0) {
-        return null;
-      }
-      if (message.type === 'do-not-display') {
-        notification = null;
-      } else {
-        notification = DashboardModel.Messages.renderErrorNotification(
-          disposition,
-          enableGetNext, isAssigned, noTasksFound, taskFetchError,
-          message.msg,
-          user,
-          showAssign,
-          isTasksLimitExceeded,
-        );
-      }
     }
     return (
       <Checklist
@@ -109,13 +95,14 @@ class TasksAndChecklist extends React.PureComponent {
       showDisposition,
       showInstructionsDialog,
       taskFetchError,
+      isTasksLimitExceeded,
     } = this.props;
     if (inProgress) {
       return (
         <Loader message="Please Wait" />
       );
     }
-    if (noTasksFound || taskFetchError) {
+    if (noTasksFound || taskFetchError || isTasksLimitExceeded) {
       return this.renderTaskErrorMessage();
     }
     return (
@@ -219,8 +206,9 @@ function getUserNotification(message) {
   };
 }
 
-function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFound) {
-  if (!(taskFetchError || noTasksFound)) {
+function getChecklistErrorMessage(checklistErrorCode, taskFetchError,
+  noTasksFound, isTasksLimitExceeded) {
+  if ((!(taskFetchError || noTasksFound)) && !isTasksLimitExceeded) {
     return '';
   }
   switch (checklistErrorCode) {
@@ -237,6 +225,9 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFou
   if (noTasksFound) {
     return 'No tasks assigned.Please contact your manager';
   }
+  if (isTasksLimitExceeded) {
+    return 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
+  }
   return '';
 }
 
@@ -244,6 +235,7 @@ function mapStateToProps(state) {
   const noTasksFound = dashboardSelectors.noTasksFound(state);
   const taskFetchError = dashboardSelectors.taskFetchError(state);
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
+  const isTasksLimitExceeded = dashboardSelectors.isTasksLimitExceeded(state);
   return {
     disposition: selectors.getDisposition(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
@@ -251,19 +243,20 @@ function mapStateToProps(state) {
       checklistErrorCode,
       taskFetchError,
       noTasksFound,
+      isTasksLimitExceeded,
     ),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
     disablePrev: selectors.shouldDisablePrev(state),
     enableGetNext: dashboardSelectors.enableGetNext(state),
-    isTasksLimitExceeded: dashboardSelectors.isTasksLimitExceeded(state),
     isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
+    isTasksLimitExceeded,
     showAssign: dashboardSelectors.showAssign(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
