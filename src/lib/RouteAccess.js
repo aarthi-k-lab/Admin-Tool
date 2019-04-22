@@ -65,11 +65,11 @@ const loanActivity = {
 const links = [
   managerDashboard,
   docProcessor,
+  feuwTasksAndChecklist,
   frontendUnderwriter,
   backendUnderwriter,
   stager,
   moveForward,
-  feuwTasksAndChecklist,
   loanActivity,
 ];
 
