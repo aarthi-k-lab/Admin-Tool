@@ -13,35 +13,30 @@ const PAGE_LOOKUP = [
     task: 'Income Calculation',
     taskCode: 'UW',
     path: '/frontend-evaluation',
-    hasCommentsWidget: true,
   },
   {
     group: BEUW,
     task: 'Underwriting',
     taskCode: 'UW',
     path: '/backend-evaluation',
-    hasCommentsWidget: true,
   },
   {
     group: FEUW_TASKS_AND_CHECKLIST,
     task: 'Income Calculation (beta)',
     taskCode: 'UW',
     path: '/frontend-checklist',
-    hasCommentsWidget: true,
   },
   {
     group: PROC,
     task: 'Processing',
     taskCode: 'PROC',
     path: '/doc-processor',
-    hasCommentsWidget: false,
   },
   {
     // TO-DO
     group: LOAN_ACTIVITY,
     task: 'Loan Activity',
     path: '/loan-activity',
-    hasCommentsWidget: false,
   },
   {
     group: '',

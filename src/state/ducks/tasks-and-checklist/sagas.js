@@ -24,6 +24,7 @@ import {
   STORE_MISC_TASK_COMMENT,
   DISP_COMMENT_SAGA,
   DISP_COMMENT,
+  CLEAR_COMMENT_BOX,
 } from './types';
 import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
@@ -296,6 +297,10 @@ function* postDispositionComment(action) {
 function* handleChecklistItemChange(action) {
   try {
     yield postComment(action);
+    yield put({
+      type: CLEAR_COMMENT_BOX,
+      payload: {},
+    });
     yield put({
       type: STORE_CHECKLIST_ITEM_CHANGE,
       payload: action.payload,

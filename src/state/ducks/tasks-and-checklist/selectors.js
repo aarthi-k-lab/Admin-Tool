@@ -113,6 +113,8 @@ const shouldDisablePrev = (state) => {
 
 const enableValidate = R.pathOr(false, ['tasksAndChecklist', 'enableValidate']);
 
+const clearComments = R.pathOr(false, ['tasksAndChecklist', 'clearComment']);
+
 const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'showInstructionsDialog']);
 
 const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
@@ -161,6 +163,7 @@ const selectors = {
   getDispositionComment,
   shouldShowInstructionsDialog,
   shouldShowOptionalTasks,
+  clearComments,
 };
 
 export default selectors;

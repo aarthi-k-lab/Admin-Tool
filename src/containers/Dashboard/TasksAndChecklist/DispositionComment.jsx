@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HelpIcon from '@material-ui/icons/Help';
 import { connect } from 'react-redux';
 import styles from './DispositionComment.css';
-import { operations } from '../../../state/ducks/tasks-and-checklist';
+import { operations, selectors } from '../../../state/ducks/tasks-and-checklist';
 
 class DispositionComment extends Component {
   constructor(props) {
@@ -14,10 +14,20 @@ class DispositionComment extends Component {
     this.onCommentChange = this.onCommentChange.bind(this);
     this.renderCommentBox = this.renderCommentBox.bind(this);
     this.onCommentBlur = this.onCommentBlur.bind(this);
+    this.clearComments = this.clearComments.bind(this);
+  }
+
+  static getDerivedStateFromProps(props, prevState) {
+    const { clearComments } = props;
+    if (clearComments) {
+      return ({ content: '' });
+    }
+    return prevState;
   }
 
   onCommentChange(event) {
-    const { triggerValidationDisplay, allTaskScenario } = this.props;
+    const { triggerValidationDisplay, allTaskScenario, clearComments } = this.props;
+    console.log(clearComments);
     if (event.target.value !== '') {
       this.setState({ content: event.target.value });
       triggerValidationDisplay(true);
@@ -33,6 +43,10 @@ class DispositionComment extends Component {
     const { dispositionCommentTrigger } = this.props;
     const { content } = this.state;
     dispositionCommentTrigger(content);
+  }
+
+  clearComments() {
+    this.setState({ content: '' });
   }
 
   renderCommentBox() {
@@ -88,15 +102,21 @@ const mapDispatchToProps = dispatch => ({
   dispositionCommentTrigger: operations.dispositionCommentTrigger(dispatch),
 });
 
+const mapStateToProps = state => ({
+  clearComments: selectors.clearComments(state),
+});
+
 DispositionComment.defaultProps = {
   expanded: false,
   header: 'Steps to Resolve',
   content: 'Please ensure that the eval substatus and case substatus are in missing documents.',
+  clearComments: false,
 };
 
 DispositionComment.propTypes = {
   activeIcon: PropTypes.string.isRequired,
   allTaskScenario: PropTypes.bool.isRequired,
+  clearComments: PropTypes.bool,
   content: PropTypes.string,
   dispositionCommentTrigger: PropTypes.func.isRequired,
   expanded: PropTypes.bool,
@@ -104,4 +124,4 @@ DispositionComment.propTypes = {
   triggerValidationDisplay: PropTypes.func.isRequired,
 };
 
-export default connect(null, mapDispatchToProps)(DispositionComment);
+export default connect(mapStateToProps, mapDispatchToProps)(DispositionComment);

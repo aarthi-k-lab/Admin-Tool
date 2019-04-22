@@ -17,6 +17,7 @@ import {
   TOGGLE_INSTRUCTIONS,
   SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
+  CLEAR_COMMENT_BOX,
   DISP_COMMENT,
 } from './types';
 
@@ -36,6 +37,7 @@ const defaultState = {
   showInstructionsDialog: false,
   taskComment: {},
   showOptionalTasks: false,
+  clearComment: false,
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -143,6 +145,13 @@ const reducer = (state = defaultState, action) => {
         rootTaskId,
       };
     }
+    case CLEAR_COMMENT_BOX: {
+      return {
+        ...state,
+        clearComment: true,
+      };
+    }
+
     case STORE_TASKS: {
       return {
         ...state,
