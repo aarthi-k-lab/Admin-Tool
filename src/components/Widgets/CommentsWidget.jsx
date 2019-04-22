@@ -109,8 +109,8 @@ class CommentsWidget extends Component {
   loadComments() {
     const {
       AppName,
-      EvalId,
       LoanNumber,
+      ProcessId,
       ProcIdType,
       onGetComments,
       groupName,
@@ -123,7 +123,7 @@ class CommentsWidget extends Component {
       applicationName: AppName,
       loanNumber: LoanNumber,
       processIdType: ProcIdType,
-      processId: EvalId,
+      processId: ProcessId,
       eventName,
     };
     onGetComments(payload);
@@ -136,7 +136,6 @@ class CommentsWidget extends Component {
     } = this.state;
     const {
       AppName,
-      EvalId,
       LoanNumber,
       ProcessId,
       ProcIdType,
@@ -154,7 +153,7 @@ class CommentsWidget extends Component {
       applicationName: AppName,
       loanNumber: LoanNumber,
       processIdType: ProcIdType,
-      processId: EvalId,
+      processId: ProcessId,
       eventName,
       comment: content,
       commentContext: JSON.stringify({
@@ -281,7 +280,7 @@ CommentsWidget.propTypes = {
 
 CommentsWidget.defaultProps = {
   AppName: 'CMOD',
-  ProcIdType: 'EvalID',
+  ProcIdType: 'ProcessId',
   groupName: '',
 };
 

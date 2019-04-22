@@ -342,7 +342,7 @@ function getCommentPayload(taskDetails) {
   const evalId = processId;
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
+    applicationName: 'CMOD', processIdType: 'ProcessId', loanNumber, processId, evalId, taskId,
   };
 }
 

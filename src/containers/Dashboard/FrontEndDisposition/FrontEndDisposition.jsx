@@ -200,7 +200,7 @@ Disposition.defaultProps = {
   inProgress: false,
   saveInProgress: false,
   AppName: 'CMOD',
-  ProcIdType: 'EvalID',
+  ProcIdType: 'ProcessId',
   groupName: '',
 };
 
