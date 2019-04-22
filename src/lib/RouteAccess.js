@@ -66,10 +66,10 @@ const links = [
   managerDashboard,
   docProcessor,
   frontendUnderwriter,
+  feuwTasksAndChecklist,
   backendUnderwriter,
   stager,
   moveForward,
-  feuwTasksAndChecklist,
   loanActivity,
 ];
 
