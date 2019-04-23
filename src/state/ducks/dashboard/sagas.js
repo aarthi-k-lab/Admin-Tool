@@ -13,6 +13,7 @@ import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { actions as checklistActions } from 'ducks/tasks-and-checklist/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
@@ -455,6 +456,7 @@ function* endShift(action) {
   const type = R.pathOr('', ['payload', 'type'], action);
   if (type === EndShift.CLEAR_DASHBOARD_DATA) {
     yield put({ type: SUCCESS_END_SHIFT });
+    yield put(checklistActions.emptyDispositionComment(null));
     return;
   }
   const groupName = yield select(selectors.groupName);

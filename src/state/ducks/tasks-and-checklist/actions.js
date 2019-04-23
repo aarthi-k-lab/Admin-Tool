@@ -13,8 +13,8 @@ import {
   TOGGLE_INSTRUCTIONS,
   SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
-  CLEAR_COMMENT_BOX,
   DISP_COMMENT_SAGA,
+  EMPTY_DISPOSITION_COMMENT,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -98,8 +98,8 @@ const showOptionalTasks = () => ({
   type: SHOW_OPTIONAL_TASKS,
 });
 
-const clearCommentBox = () => ({
-  type: CLEAR_COMMENT_BOX,
+const emptyDispositionComment = () => ({
+  type: EMPTY_DISPOSITION_COMMENT,
 });
 
 export {
@@ -118,5 +118,5 @@ export {
   showOptionalTasks,
   validationDisplayAction,
   dispositionCommentAction,
-  clearCommentBox,
+  emptyDispositionComment,
 };

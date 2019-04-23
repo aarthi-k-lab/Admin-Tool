@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HelpIcon from '@material-ui/icons/Help';
 import { connect } from 'react-redux';
 import styles from './DispositionComment.css';
-import { operations, selectors } from '../../../state/ducks/tasks-and-checklist';
+import { operations } from '../../../state/ducks/tasks-and-checklist';
 
 class DispositionComment extends Component {
   constructor(props) {
@@ -17,17 +17,25 @@ class DispositionComment extends Component {
     this.clearComments = this.clearComments.bind(this);
   }
 
-  static getDerivedStateFromProps(props, prevState) {
-    const { clearComments } = props;
-    if (clearComments) {
-      return ({ content: '' });
+  // static getDerivedStateFromProps(props, prevState) {
+  //   const { clearComments } = props;
+  //   if (clearComments) {
+  //     return ({ content: '' });
+  //   }
+  //   return prevState;
+  // }
+
+  componentDidMount() {
+    const { allTaskScenario, triggerValidationDisplay } = this.props;
+    if (!allTaskScenario) {
+      triggerValidationDisplay(false);
+    } else {
+      triggerValidationDisplay(false);
     }
-    return prevState;
   }
 
   onCommentChange(event) {
-    const { triggerValidationDisplay, allTaskScenario, clearComments } = this.props;
-    console.log(clearComments);
+    const { triggerValidationDisplay, allTaskScenario } = this.props;
     if (event.target.value !== '') {
       this.setState({ content: event.target.value });
       triggerValidationDisplay(true);
@@ -86,7 +94,9 @@ class DispositionComment extends Component {
   }
 
   render() {
-    const { activeIcon, header, content } = this.props;
+    const {
+      activeIcon, header, content,
+    } = this.props;
     if (activeIcon === 'comment') {
       return this.renderCommentBox();
     }
@@ -102,21 +112,16 @@ const mapDispatchToProps = dispatch => ({
   dispositionCommentTrigger: operations.dispositionCommentTrigger(dispatch),
 });
 
-const mapStateToProps = state => ({
-  clearComments: selectors.clearComments(state),
-});
 
 DispositionComment.defaultProps = {
   expanded: false,
   header: 'Steps to Resolve',
   content: 'Please ensure that the eval substatus and case substatus are in missing documents.',
-  clearComments: false,
 };
 
 DispositionComment.propTypes = {
   activeIcon: PropTypes.string.isRequired,
   allTaskScenario: PropTypes.bool.isRequired,
-  clearComments: PropTypes.bool,
   content: PropTypes.string,
   dispositionCommentTrigger: PropTypes.func.isRequired,
   expanded: PropTypes.bool,
@@ -124,4 +129,4 @@ DispositionComment.propTypes = {
   triggerValidationDisplay: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DispositionComment);
+export default connect(null, mapDispatchToProps)(DispositionComment);
