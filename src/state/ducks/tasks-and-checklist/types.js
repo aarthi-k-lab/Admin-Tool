@@ -22,6 +22,7 @@ const STORE_MISC_TASK_COMMENT = 'app/tasks-and-checklist/STORE_MISC_TASK_COMMENT
 const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
 const SHOW_OPTIONAL_TASKS = 'app/tasks-and-checklist/SHOW_OPTIONAL_TASKS';
 const DISP_COMMENT_SAGA = 'app/tasks-and-checklist/DISP_COMMENT_SAGA';
+const EMPTY_DISPOSITION_COMMENT = 'app/tasks-and-checklist/EMPTY_DISPOSITION_COMMENT';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -48,4 +49,5 @@ export {
   SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
   DISP_COMMENT_SAGA,
+  EMPTY_DISPOSITION_COMMENT,
 };

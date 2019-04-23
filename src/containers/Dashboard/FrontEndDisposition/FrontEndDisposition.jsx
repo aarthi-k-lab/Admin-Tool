@@ -12,6 +12,8 @@ import {
   selectors,
 } from 'ducks/dashboard';
 import DashboardModel from 'models/Dashboard';
+import CustomSnackBar from 'components/CustomSnackBar';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import { selectors as loginSelectors } from 'ducks/login';
 import { operations as commentoperations } from '../../../state/ducks/comments';
 import CommentBox from '../../../components/CommentBox/CommentBox';
@@ -29,6 +31,7 @@ class Disposition extends React.PureComponent {
     this.onCommentChange = this.onCommentChange.bind(this);
     this.handleDispositionSelection = this.handleDispositionSelection.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.renderSnackBar = this.renderSnackBar.bind(this);
   }
 
   componentDidUpdate() {
@@ -103,6 +106,18 @@ class Disposition extends React.PureComponent {
     this.setState({ canSubmit: checkSubmit });
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
+
   renderSave(isAssigned) {
     const {
       dispositionErrorMessages,
@@ -147,6 +162,7 @@ class Disposition extends React.PureComponent {
       <>
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
+            {this.renderSnackBar()}
             {
               (noTasksFound || taskFetchError || isTasksLimitExceeded)
                 ? DashboardModel.Messages.renderErrorNotification(
@@ -206,6 +222,7 @@ Disposition.defaultProps = {
 
 Disposition.propTypes = {
   AppName: PropTypes.string,
+  closeSnackBar: PropTypes.func.isRequired,
   dispositionErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
@@ -223,6 +240,7 @@ Disposition.propTypes = {
   ProcIdType: PropTypes.string,
   saveInProgress: PropTypes.bool,
   showAssign: PropTypes.bool.isRequired,
+  snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
@@ -240,6 +258,7 @@ const mapStateToProps = state => ({
   dispositionErrorMessages: DispositionModel.getErrorMessages(
     selectors.getDiscrepancies(state),
   ),
+  snackBarData: notificationSelectors.getSnackBarState(state),
   dispositionReason: selectors.getDisposition(state),
   enableGetNext: selectors.enableGetNext(state),
   inProgress: selectors.inProgress(state),
@@ -261,6 +280,7 @@ const mapDispatchToProps = dispatch => ({
   onDispositionSaveTrigger: operations.onDispositionSave(dispatch),
   onDispositionSelect: operations.onDispositionSelect(dispatch),
   onPostComment: commentoperations.postComment(dispatch),
+  closeSnackBar: notificationOperations.closeSnackBar(dispatch),
 });
 
 const DispositionContainer = connect(mapStateToProps, mapDispatchToProps)(Disposition);

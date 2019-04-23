@@ -14,6 +14,7 @@ import {
   SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
   DISP_COMMENT_SAGA,
+  EMPTY_DISPOSITION_COMMENT,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -97,6 +98,10 @@ const showOptionalTasks = () => ({
   type: SHOW_OPTIONAL_TASKS,
 });
 
+const emptyDispositionComment = () => ({
+  type: EMPTY_DISPOSITION_COMMENT,
+});
+
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -113,4 +118,5 @@ export {
   showOptionalTasks,
   validationDisplayAction,
   dispositionCommentAction,
+  emptyDispositionComment,
 };

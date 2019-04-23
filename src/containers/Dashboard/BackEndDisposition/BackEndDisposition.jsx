@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DispositionModel from 'models/Disposition';
+import CustomSnackBar from 'components/CustomSnackBar';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import Disposition from '../Disposition';
 import getStatus from './statusList';
 import { selectors } from '../../../state/ducks/dashboard';
@@ -10,6 +12,7 @@ class BackEndDisposition extends Component {
   constructor(props) {
     super(props);
     this.saveValidation = this.saveValidation.bind(this);
+    this.renderSnackBar = this.renderSnackBar.bind(this);
   }
 
   saveValidation(content) {
@@ -20,17 +23,34 @@ class BackEndDisposition extends Component {
     return selectedDisposition && (checkDisposition || checkApproval);
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
+
   render() {
     return (
-      <Disposition
-        saveValidation={this.saveValidation}
-        status={getStatus()}
-      />
+      <>
+        {this.renderSnackBar()}
+        <Disposition
+          saveValidation={this.saveValidation}
+          status={getStatus()}
+        />
+      </>
     );
   }
 }
 
 BackEndDisposition.defaultProps = {
+  snackBarData: null,
+  closeSnackBar: () => {},
   selectedDisposition: {
     cardStatus: {
       Name: '',
@@ -39,6 +59,7 @@ BackEndDisposition.defaultProps = {
   },
 };
 BackEndDisposition.propTypes = {
+  closeSnackBar: PropTypes.func,
   selectedDisposition: PropTypes.shape({
     activityName: PropTypes.string,
     cardStatus: PropTypes.shape({
@@ -49,6 +70,7 @@ BackEndDisposition.propTypes = {
     isActivitySelected: PropTypes.bool,
     isExpanded: PropTypes.bool,
   }),
+  snackBarData: PropTypes.node,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
@@ -61,6 +83,7 @@ BackEndDisposition.propTypes = {
 };
 const mapStateToProps = state => ({
   selectedDisposition: selectors.getDisposition(state),
+  snackBarData: notificationSelectors.getSnackBarState(state),
   beDispositionErrorMessages: DispositionModel.getErrorMessages(
     selectors.getDiscrepancies(state),
   ),
@@ -69,7 +92,13 @@ const mapStateToProps = state => ({
   showAssign: selectors.showAssign(state),
 });
 
-const BackEndDispositionContainer = connect(mapStateToProps, null)(BackEndDisposition);
+const mapDispatchToProps = dispatch => ({
+  closeSnackBar: notificationOperations.closeSnackBar(dispatch),
+});
+
+const
+  BackEndDispositionContainer = connect(mapStateToProps, mapDispatchToProps)(BackEndDisposition);
+
 const TestHooks = {
   BackEndDisposition,
 };

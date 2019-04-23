@@ -14,6 +14,8 @@ import { selectors as loginSelectors } from 'ducks/login';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import CustomSnackBar from 'components/CustomSnackBar';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -81,6 +83,18 @@ class TasksAndChecklist extends React.PureComponent {
     );
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
+
   render() {
     const {
       instructions,
@@ -110,6 +124,7 @@ class TasksAndChecklist extends React.PureComponent {
         <section styleName="tasks-and-checklist">
           <TaskPane styleName="tasks" />
           {this.renderChecklist()}
+          {this.renderSnackBar()}
           <DialogCard
             dialogContent={instructions}
             dialogHeader="Steps to Resolve"
@@ -161,6 +176,7 @@ TasksAndChecklist.propTypes = {
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
+  closeSnackBar: PropTypes.func.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
@@ -179,6 +195,7 @@ TasksAndChecklist.propTypes = {
   showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
+  snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -245,6 +262,7 @@ function mapStateToProps(state) {
       noTasksFound,
       isTasksLimitExceeded,
     ),
+    snackBarData: notificationSelectors.getSnackBarState(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
@@ -268,6 +286,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
+    closeSnackBar: notificationOperations.closeSnackBar(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),

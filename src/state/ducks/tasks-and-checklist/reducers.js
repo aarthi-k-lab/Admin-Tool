@@ -18,6 +18,7 @@ import {
   SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
   DISP_COMMENT,
+  EMPTY_DISPOSITION_COMMENT,
 } from './types';
 
 const FAILED = 'failed';
@@ -143,6 +144,7 @@ const reducer = (state = defaultState, action) => {
         rootTaskId,
       };
     }
+
     case STORE_TASKS: {
       return {
         ...state,
@@ -178,6 +180,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         showOptionalTasks: !state.showOptionalTasks,
+      };
+    }
+    case EMPTY_DISPOSITION_COMMENT: {
+      return {
+        ...state,
+        dispositionComment: null,
       };
     }
     default:

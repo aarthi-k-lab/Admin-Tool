@@ -14,6 +14,24 @@ class DispositionComment extends Component {
     this.onCommentChange = this.onCommentChange.bind(this);
     this.renderCommentBox = this.renderCommentBox.bind(this);
     this.onCommentBlur = this.onCommentBlur.bind(this);
+    this.clearComments = this.clearComments.bind(this);
+  }
+
+  // static getDerivedStateFromProps(props, prevState) {
+  //   const { clearComments } = props;
+  //   if (clearComments) {
+  //     return ({ content: '' });
+  //   }
+  //   return prevState;
+  // }
+
+  componentDidMount() {
+    const { allTaskScenario, triggerValidationDisplay } = this.props;
+    if (!allTaskScenario) {
+      triggerValidationDisplay(false);
+    } else {
+      triggerValidationDisplay(false);
+    }
   }
 
   onCommentChange(event) {
@@ -33,6 +51,10 @@ class DispositionComment extends Component {
     const { dispositionCommentTrigger } = this.props;
     const { content } = this.state;
     dispositionCommentTrigger(content);
+  }
+
+  clearComments() {
+    this.setState({ content: '' });
   }
 
   renderCommentBox() {
@@ -72,7 +94,9 @@ class DispositionComment extends Component {
   }
 
   render() {
-    const { activeIcon, header, content } = this.props;
+    const {
+      activeIcon, header, content,
+    } = this.props;
     if (activeIcon === 'comment') {
       return this.renderCommentBox();
     }
@@ -87,6 +111,7 @@ const mapDispatchToProps = dispatch => ({
   triggerValidationDisplay: operations.triggerValidationDisplay(dispatch),
   dispositionCommentTrigger: operations.dispositionCommentTrigger(dispatch),
 });
+
 
 DispositionComment.defaultProps = {
   expanded: false,
