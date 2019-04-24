@@ -41,10 +41,10 @@ const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const enableGetNext = state => (
-  (isFirstVisit(state)
+  ((isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
   || (isFirstVisit(state)
-  || R.pathOr(false, ['dashboard', 'showGetNext'], state))
+  || R.pathOr(false, ['dashboard', 'showGetNext'], state))) && (R.pathOr(true, ['dashboard', 'getNextProcessed'], state))
 );
 
 // enableEndShift has same conditions as getnext to get enabled

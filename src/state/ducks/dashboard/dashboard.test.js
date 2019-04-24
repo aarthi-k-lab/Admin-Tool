@@ -129,6 +129,11 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
+  it('should dispatch action GetNext Loaded', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
+  });
+
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
@@ -247,6 +252,11 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
+  it('should dispatch action GetNext Loaded', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
+  });
+
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
@@ -337,6 +347,11 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should dispatch action GetNext Loaded', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
   });
 
   it('should call save disposition generator', () => {

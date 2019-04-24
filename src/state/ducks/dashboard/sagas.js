@@ -52,6 +52,7 @@ import {
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
   GET_LOAN_ACTIVITY_DETAILS,
+  GETNEXT_PROCESSED,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -389,6 +390,7 @@ function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
 function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
+    yield put({ type: GETNEXT_PROCESSED, payload: false });
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
@@ -437,6 +439,8 @@ function* getNext(action) {
     yield put(errorTombstoneFetch());
     yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
+  } finally {
+    yield put({ type: GETNEXT_PROCESSED, payload: true });
   }
 }
 
