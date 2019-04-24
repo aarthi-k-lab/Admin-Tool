@@ -50,6 +50,10 @@ const feuwTasksAndChecklist = {
   groups: ['allaccess', 'feuw-beta', 'beta'],
 };
 
+const checkListGroups = {
+  groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr'],
+};
+
 // TO DO
 const loanActivity = {
   path: '/loan-activity',
@@ -62,10 +66,10 @@ const links = [
   managerDashboard,
   docProcessor,
   frontendUnderwriter,
+  feuwTasksAndChecklist,
   backendUnderwriter,
   stager,
   moveForward,
-  feuwTasksAndChecklist,
   loanActivity,
 ];
 
@@ -90,6 +94,10 @@ function hasFrontendUnderwriterAccess(groups) {
 
 function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
+}
+
+function hasChecklistAccess(groups) {
+  return hasGroup(checkListGroups.groups, groups);
 }
 
 function hasLoanActivityAccess(groups) {
@@ -127,4 +135,5 @@ module.exports = {
   hasStagerDashboardAccess,
   hasLoanActivityAccess,
   shouldShowIcon,
+  hasChecklistAccess,
 };

@@ -69,41 +69,6 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           </div>
         </div>
       </span>
-      <button
-        className="MuiButtonBase-root-99 MuiButton-root-73 MuiButton-contained-84 MuiButton-containedPrimary-85 MuiButton-raised-87 MuiButton-raisedPrimary-88 material-ui-button components-LeftTaskPane-AddTask__add-task"
-        disabled={false}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onContextMenu={[Function]}
-        onFocus={[Function]}
-        onKeyDown={[Function]}
-        onKeyUp={[Function]}
-        onMouseDown={[Function]}
-        onMouseLeave={[Function]}
-        onMouseUp={[Function]}
-        onTouchEnd={[Function]}
-        onTouchMove={[Function]}
-        onTouchStart={[Function]}
-        tabIndex="0"
-        type="button"
-      >
-        <span
-          className="MuiButton-label-74"
-        >
-          <img
-            alt="add-icon"
-            height="25"
-            src="/static/img/add.svg"
-            width="25"
-          />
-          <span>
-            ADD TASK
-          </span>
-        </span>
-        <span
-          className="MuiTouchRipple-root-102"
-        />
-      </button>
       <span
         className="components-LeftTaskPane-LeftTaskPane__collapse-icon-open"
         onClick={[Function]}

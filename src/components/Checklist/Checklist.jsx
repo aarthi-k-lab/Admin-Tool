@@ -145,16 +145,14 @@ class Checklist extends React.PureComponent {
       <section className={className}>
         { children }
         <Typography styleName="checklist-title" variant="h5">{title}</Typography>
-        <div styleName="checklist-scroll-out">
-          <div styleName="checklist-scroll-in">
-            <Paper elevation={1} styleName="checklist-form-controls">
-              {
-                checklistItems
-                  .filter(({ isVisible }) => isVisible)
-                  .map(this.renderChecklistItem)
-              }
-            </Paper>
-          </div>
+        <div styleName="scrollable-checklist">
+          <Paper elevation={1} styleName="checklist-form-controls">
+            {
+              checklistItems
+                .filter(({ isVisible }) => isVisible)
+                .map(this.renderChecklistItem)
+            }
+          </Paper>
         </div>
       </section>
     );

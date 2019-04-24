@@ -26,6 +26,8 @@ import {
   DISPLAY_ASSIGN,
   CLEAR_ERROR_MESSAGE,
   GET_LOAN_ACTIVITY_DETAILS,
+  TASKS_LIMIT_EXCEEDED,
+  GETNEXT_PROCESSED,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -124,6 +126,12 @@ const reducer = (state = { firstVisit: true }, action) => {
         checklistErrorCode: '',
       };
     }
+    case GETNEXT_PROCESSED: {
+      return {
+        ...state,
+        getNextProcessed: action.payload,
+      };
+    }
     case HIDE_LOADER: {
       return {
         ...state,
@@ -166,6 +174,19 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         noTasksFound,
+        evalId: null,
+        loanNumber: null,
+        taskId: null,
+      };
+    }
+    case TASKS_LIMIT_EXCEEDED: {
+      let isTasksLimitExceeded;
+      if (action.payload) {
+        ({ isTasksLimitExceeded } = action.payload);
+      }
+      return {
+        ...state,
+        isTasksLimitExceeded,
         evalId: null,
         loanNumber: null,
         taskId: null,
@@ -216,7 +237,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
         noTasksFound: false,
-        isAssigned: !action.payload.isSearch,
+        isAssigned: action.payload.isSearch ? action.payload.isAssigned : true,
       };
       return newState;
     }

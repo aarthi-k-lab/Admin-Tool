@@ -30,7 +30,7 @@
 }
 
 div.button:first-child > p {
-  margin: 0px;
+  margin: 0;
   font-size: 0.75rem !important;
 }
 
@@ -58,11 +58,10 @@ div.button:first-child > p {
 }
 
 .expand-panel-details.expand-panel-details {
-  padding: 0px 0.5rem 0.5rem 1rem;
+  padding: 0 0.5rem 0.5rem 1rem;
 }
 
 .secondary-heading.secondary-heading {
-  margin-left: 0.5rem;
   font-size: 0.9rem;
   font-family: "Lato", sans-serif;
   color: var(--grey-650);
@@ -73,13 +72,13 @@ div.button:first-child > p {
 }
 
 .button-heading.button-heading {
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   font-family: "Lato", sans-serif;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 .panel-border.panel-border {
-  margin: 0px;
+  margin: 0;
   border-bottom: 1px solid #dbdee1;
 }
 

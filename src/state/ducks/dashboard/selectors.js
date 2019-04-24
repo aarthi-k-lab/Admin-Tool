@@ -6,6 +6,8 @@ const isFirstVisit = state => R.pathOr(false, ['dashboard', 'firstVisit'], state
 
 const noTasksFound = state => R.pathOr(false, ['dashboard', 'noTasksFound'], state);
 
+const isTasksLimitExceeded = state => R.pathOr(false, ['dashboard', 'isTasksLimitExceeded'], state);
+
 const taskFetchError = state => R.pathOr(false, ['dashboard', 'taskFetchError'], state);
 
 const loanNumber = state => R.pathOr(null, ['dashboard', 'loanNumber'], state);
@@ -39,10 +41,10 @@ const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const enableGetNext = state => (
-  (isFirstVisit(state)
+  ((isFirstVisit(state)
   || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
   || (isFirstVisit(state)
-  || R.pathOr(false, ['dashboard', 'showGetNext'], state))
+  || R.pathOr(false, ['dashboard', 'showGetNext'], state))) && (R.pathOr(true, ['dashboard', 'getNextProcessed'], state))
 );
 
 // enableEndShift has same conditions as getnext to get enabled
@@ -77,6 +79,7 @@ const selectors = {
   loanNumber,
   saveInProgress,
   taskFetchError,
+  isTasksLimitExceeded,
   searchLoanResult,
   showAssign,
   unassignResult,

@@ -24,6 +24,7 @@
   display: grid;
   justify-content: center;
   width: 100%;
+  margin-top: 1.25rem;
 }
 
 .loader {
@@ -42,6 +43,8 @@
   align-self: stretch;
   display: grid;
   flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
   grid-template-columns: auto 1fr;
   grid-template-rows: minmax(0, 1fr) min-content min-content;
 }
@@ -79,4 +82,11 @@
   background-color: white;
   border-top: 0.1rem solid var(--grey-200);
   font-weight: 600;
+}
+
+.scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-self: stretch;
 }

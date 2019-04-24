@@ -13,10 +13,12 @@ import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { actions as checklistActions } from 'ducks/tasks-and-checklist/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
@@ -35,6 +37,7 @@ import {
   HIDE_SAVING_LOADER,
   CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
+  TASKS_LIMIT_EXCEEDED,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
@@ -49,6 +52,7 @@ import {
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
   GET_LOAN_ACTIVITY_DETAILS,
+  GETNEXT_PROCESSED,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -181,12 +185,19 @@ function* fetchChecklistDetails(checklistId) {
   }
 }
 
-function* fetchChecklistDetailsForSearchResult(searchItem) {
+function* shouldRetriveChecklist(searchItem) {
+  const checklistTaskNames = ['FrontEnd Review', 'Processing'];
   const groupList = yield select(loginSelectors.getGroupList);
-  const hasFrontendChecklistAccess = RouteAccess.hasFrontendChecklistAccess(groupList);
-  const isFrontEndTask = R.path(['payload', 'taskName'], searchItem) === 'FrontEnd Review';
-  const shouldRetriveChecklist = hasFrontendChecklistAccess && isFrontEndTask;
-  if (shouldRetriveChecklist) {
+  const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
+  const taskName = R.path(['payload', 'taskName'], searchItem);
+  const isChecklistTask = checklistTaskNames.includes(taskName);
+  const retriveChecklist = hasChecklistAccess && isChecklistTask;
+  return retriveChecklist;
+}
+
+function* fetchChecklistDetailsForSearchResult(searchItem) {
+  const retriveChecklist = yield call(shouldRetriveChecklist, searchItem);
+  if (retriveChecklist) {
     const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
     yield call(fetchChecklistDetails, checklistId);
   }
@@ -206,6 +217,10 @@ function* fetchLoanActivityDetails(evalDetails) {
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
+  const user = yield select(loginSelectors.getUser);
+  const { userDetails } = user;
+  evalDetails.isAssigned = !R.isNil(evalDetails.assignee)
+  && userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -329,7 +344,7 @@ function getCommentPayload(taskDetails) {
   const evalId = processId;
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
+    applicationName: 'CMOD', processIdType: 'ProcessId', loanNumber, processId, evalId, taskId,
   };
 }
 
@@ -375,8 +390,13 @@ function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
 function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
+    yield put({ type: GETNEXT_PROCESSED, payload: false });
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
+      const dispositionComment = yield select(checklistSelectors.getDispositionComment);
+      if (dispositionComment) {
+        yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
+      }
       yield put(resetChecklistData());
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
@@ -403,6 +423,10 @@ function* getNext(action) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
+      } else if (!R.isNil(R.path(['limitExceeded'], taskDetails))) {
+        yield put({ type: TASKS_LIMIT_EXCEEDED, payload: { isTasksLimitExceeded: true } });
+        yield put(errorTombstoneFetch());
+        yield call(errorFetchingChecklistDetails);
       } else {
         yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
         yield put(errorTombstoneFetch());
@@ -415,6 +439,8 @@ function* getNext(action) {
     yield put(errorTombstoneFetch());
     yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
+  } finally {
+    yield put({ type: GETNEXT_PROCESSED, payload: true });
   }
 }
 
@@ -434,6 +460,7 @@ function* endShift(action) {
   const type = R.pathOr('', ['payload', 'type'], action);
   if (type === EndShift.CLEAR_DASHBOARD_DATA) {
     yield put({ type: SUCCESS_END_SHIFT });
+    yield put(checklistActions.emptyDispositionComment(null));
     return;
   }
   const groupName = yield select(selectors.groupName);

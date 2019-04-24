@@ -7,13 +7,15 @@ import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
+import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import CustomSnackBar from 'components/CustomSnackBar';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -61,7 +63,7 @@ class TasksAndChecklist extends React.PureComponent {
     if (message.type === 'do-not-display') {
       notification = null;
     } else {
-      notification = DashboardErrors.renderErrorNotification(
+      notification = DashboardModel.Messages.renderErrorNotification(
         disposition,
         enableGetNext, isAssigned, noTasksFound, taskFetchError,
         message.msg,
@@ -81,6 +83,18 @@ class TasksAndChecklist extends React.PureComponent {
     );
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
+
   render() {
     const {
       instructions,
@@ -95,38 +109,42 @@ class TasksAndChecklist extends React.PureComponent {
       showDisposition,
       showInstructionsDialog,
       taskFetchError,
+      isTasksLimitExceeded,
     } = this.props;
     if (inProgress) {
       return (
         <Loader message="Please Wait" />
       );
     }
-    if (noTasksFound || taskFetchError) {
+    if (noTasksFound || taskFetchError || isTasksLimitExceeded) {
       return this.renderTaskErrorMessage();
     }
     return (
-      <section styleName="tasks-and-checklist">
-        <TaskPane styleName="tasks" />
-        { this.renderChecklist() }
-        <DialogCard
-          dialogContent={instructions}
-          dialogHeader="Steps to Resolve"
-          message={disposition}
-          onDialogToggle={onInstuctionDialogToggle}
-          shouldShow={showDisposition}
-          showDialog={showInstructionsDialog}
-          styleName="instructions"
-          title="Disposition"
-        />
-        <WidgetBuilder styleName="task-checklist" />
-        <Navigation
-          className={classNames(styles.footer, styles.navigation)}
-          disableNext={disableNext}
-          disablePrev={disablePrev}
-          onNext={onNext}
-          onPrev={onPrev}
-        />
-      </section>
+      <div styleName="scroll-wrapper">
+        <section styleName="tasks-and-checklist">
+          <TaskPane styleName="tasks" />
+          {this.renderChecklist()}
+          {this.renderSnackBar()}
+          <DialogCard
+            dialogContent={instructions}
+            dialogHeader="Steps to Resolve"
+            message={disposition}
+            onDialogToggle={onInstuctionDialogToggle}
+            shouldShow={showDisposition}
+            showDialog={showInstructionsDialog}
+            styleName="instructions"
+            title="Disposition"
+          />
+          <WidgetBuilder styleName="task-checklist" />
+          <Navigation
+            className={classNames(styles.footer, styles.navigation)}
+            disableNext={disableNext}
+            disablePrev={disablePrev}
+            onNext={onNext}
+            onPrev={onPrev}
+          />
+        </section>
+      </div>
     );
   }
 }
@@ -139,6 +157,7 @@ TasksAndChecklist.defaultProps = {
   inProgress: false,
   message: null,
   noTasksFound: false,
+  isTasksLimitExceeded: false,
   taskFetchError: false,
 };
 
@@ -157,6 +176,7 @@ TasksAndChecklist.propTypes = {
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
+  closeSnackBar: PropTypes.func.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
@@ -165,6 +185,7 @@ TasksAndChecklist.propTypes = {
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
+  isTasksLimitExceeded: PropTypes.bool,
   message: PropTypes.string,
   noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
@@ -174,6 +195,7 @@ TasksAndChecklist.propTypes = {
   showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
+  snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -201,8 +223,9 @@ function getUserNotification(message) {
   };
 }
 
-function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFound) {
-  if (!(taskFetchError || noTasksFound)) {
+function getChecklistErrorMessage(checklistErrorCode, taskFetchError,
+  noTasksFound, isTasksLimitExceeded) {
+  if ((!(taskFetchError || noTasksFound)) && !isTasksLimitExceeded) {
     return '';
   }
   switch (checklistErrorCode) {
@@ -219,6 +242,9 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError, noTasksFou
   if (noTasksFound) {
     return 'No tasks assigned.Please contact your manager';
   }
+  if (isTasksLimitExceeded) {
+    return 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
+  }
   return '';
 }
 
@@ -226,6 +252,7 @@ function mapStateToProps(state) {
   const noTasksFound = dashboardSelectors.noTasksFound(state);
   const taskFetchError = dashboardSelectors.taskFetchError(state);
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
+  const isTasksLimitExceeded = dashboardSelectors.isTasksLimitExceeded(state);
   return {
     disposition: selectors.getDisposition(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
@@ -233,7 +260,9 @@ function mapStateToProps(state) {
       checklistErrorCode,
       taskFetchError,
       noTasksFound,
+      isTasksLimitExceeded,
     ),
+    snackBarData: notificationSelectors.getSnackBarState(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
     disableNext: selectors.shouldDisableNext(state),
@@ -245,6 +274,7 @@ function mapStateToProps(state) {
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
+    isTasksLimitExceeded,
     showAssign: dashboardSelectors.showAssign(state),
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
@@ -256,6 +286,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
+    closeSnackBar: notificationOperations.closeSnackBar(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),

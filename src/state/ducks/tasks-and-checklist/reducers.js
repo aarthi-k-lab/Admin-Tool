@@ -15,6 +15,10 @@ import {
   STORE_TASK_FILTER,
   STORE_MISC_TASK_COMMENT,
   TOGGLE_INSTRUCTIONS,
+  SHOW_OPTIONAL_TASKS,
+  VALIDATION_DISPLAY,
+  DISP_COMMENT,
+  EMPTY_DISPOSITION_COMMENT,
 } from './types';
 
 const FAILED = 'failed';
@@ -32,6 +36,7 @@ const defaultState = {
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
   taskComment: {},
+  showOptionalTasks: false,
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -125,6 +130,12 @@ const reducer = (state = defaultState, action) => {
         checklistNavigation: action.payload,
       };
     }
+    case VALIDATION_DISPLAY: {
+      return {
+        ...state,
+        enableValidate: action.payload,
+      };
+    }
     case STORE_PROCESS_DETAILS: {
       const { payload: { processId, rootTaskId } } = action;
       return {
@@ -133,6 +144,7 @@ const reducer = (state = defaultState, action) => {
         rootTaskId,
       };
     }
+
     case STORE_TASKS: {
       return {
         ...state,
@@ -152,10 +164,28 @@ const reducer = (state = defaultState, action) => {
         taskComment: action.payload,
       };
     }
+    case DISP_COMMENT: {
+      return {
+        ...state,
+        dispositionComment: action.payload,
+      };
+    }
     case TOGGLE_INSTRUCTIONS: {
       return {
         ...state,
         showInstructionsDialog: !state.showInstructionsDialog,
+      };
+    }
+    case SHOW_OPTIONAL_TASKS: {
+      return {
+        ...state,
+        showOptionalTasks: !state.showOptionalTasks,
+      };
+    }
+    case EMPTY_DISPOSITION_COMMENT: {
+      return {
+        ...state,
+        dispositionComment: null,
       };
     }
     default:

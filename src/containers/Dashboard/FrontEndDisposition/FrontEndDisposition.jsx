@@ -7,35 +7,18 @@ import RadioButtonGroup from 'components/RadioButtonGroup';
 import Loader from 'components/Loader/Loader';
 import dispositionOptions from 'constants/dispositionOptions';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import {
   operations,
   selectors,
 } from 'ducks/dashboard';
+import DashboardModel from 'models/Dashboard';
+import CustomSnackBar from 'components/CustomSnackBar';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import { selectors as loginSelectors } from 'ducks/login';
 import { operations as commentoperations } from '../../../state/ducks/comments';
 import CommentBox from '../../../components/CommentBox/CommentBox';
 import './FrontEndDisposition.css';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
-
-const getContextTaskName = (groupName) => {
-  let taskName = '';
-  switch (groupName) {
-    case 'FEUW':
-      taskName = 'Income Calculation Review';
-      break;
-    case 'BEUW':
-      taskName = 'Underwriting Review';
-      break;
-    case 'PROC':
-      taskName = 'Processing Review';
-      break;
-    default:
-      taskName = groupName;
-      break;
-  }
-  return taskName;
-};
 
 class Disposition extends React.PureComponent {
   constructor(props) {
@@ -48,21 +31,24 @@ class Disposition extends React.PureComponent {
     this.onCommentChange = this.onCommentChange.bind(this);
     this.handleDispositionSelection = this.handleDispositionSelection.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.renderSnackBar = this.renderSnackBar.bind(this);
   }
 
   componentDidUpdate() {
     const {
       enableGetNext, onPostComment, LoanNumber, ProcIdType, EvalId,
-      user, groupName, dispositionReason, AppName, EventName, TaskId,
+      user, groupName, dispositionReason, AppName, TaskId,
     } = this.props;
-    const taskName = getContextTaskName(groupName);
+    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const taskName = !R.isNil(page) ? page.task : '';
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
         loanNumber: LoanNumber,
         processIdType: ProcIdType,
         processId: EvalId,
-        eventName: EventName,
+        eventName,
         comment: this.savedComments,
         userName: user.userDetails.name,
         createdDate: new Date().toJSON(),
@@ -120,6 +106,18 @@ class Disposition extends React.PureComponent {
     this.setState({ canSubmit: checkSubmit });
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
+
   renderSave(isAssigned) {
     const {
       dispositionErrorMessages,
@@ -149,7 +147,7 @@ class Disposition extends React.PureComponent {
   render() {
     const {
       noTasksFound, dispositionReason, inProgress, enableGetNext,
-      taskFetchError, isAssigned,
+      taskFetchError, isAssigned, isTasksLimitExceeded,
       dispositionErrorMessages,
       user,
       showAssign,
@@ -164,39 +162,43 @@ class Disposition extends React.PureComponent {
       <>
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
+            {this.renderSnackBar()}
             {
-              (noTasksFound || taskFetchError) ? DashboardErrors.renderErrorNotification(
-                dispositionReason,
-                enableGetNext, isAssigned, noTasksFound, taskFetchError,
-                dispositionErrorMessages,
-                user,
-                showAssign,
-              ) : (
-                <>
-                  <header styleName="title">Please select the outcome of your review</header>
-                  {DashboardErrors.renderErrorNotification(
-                    dispositionReason,
-                    enableGetNext, isAssigned, noTasksFound, taskFetchError,
-                    dispositionErrorMessages,
-                    user,
-                    showAssign,
-                  )}
-                  <RadioButtonGroup
-                    clearSelectedDisposition={R.isEmpty(dispositionReason)}
-                    disableDisposition={enableGetNext || !isAssigned}
-                    items={dispositionOptions}
-                    name="disposition-options"
-                    onChange={this.handleDispositionSelection}
-                  />
-                  <CommentBox
-                    content={content}
-                    onCheck={canSubmit}
-                    onCommentChange={this.onCommentChange}
-                    onRefresh={refreshHook}
-                  />
-                  {this.renderSave(isAssigned)}
-                </>
-              )
+              (noTasksFound || taskFetchError || isTasksLimitExceeded)
+                ? DashboardModel.Messages.renderErrorNotification(
+                  dispositionReason,
+                  enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                  dispositionErrorMessages,
+                  user,
+                  showAssign,
+                  isTasksLimitExceeded,
+                ) : (
+                  <>
+                    <header styleName="title">Please select the outcome of your review</header>
+                    { DashboardModel.Messages.renderErrorNotification(
+                      dispositionReason,
+                      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                      dispositionErrorMessages,
+                      user,
+                      showAssign,
+                      isTasksLimitExceeded,
+                    )}
+                    <RadioButtonGroup
+                      clearSelectedDisposition={R.isEmpty(dispositionReason)}
+                      disableDisposition={enableGetNext || !isAssigned}
+                      items={dispositionOptions}
+                      name="disposition-options"
+                      onChange={this.handleDispositionSelection}
+                    />
+                    <CommentBox
+                      content={content}
+                      onCheck={canSubmit}
+                      onCommentChange={this.onCommentChange}
+                      onRefresh={refreshHook}
+                    />
+                    {this.renderSave(isAssigned)}
+                  </>
+                )
             }
           </section>
         </div>
@@ -209,25 +211,26 @@ class Disposition extends React.PureComponent {
 Disposition.defaultProps = {
   enableGetNext: false,
   noTasksFound: false,
+  isTasksLimitExceeded: false,
   taskFetchError: false,
   inProgress: false,
   saveInProgress: false,
   AppName: 'CMOD',
-  EventName: 'UW',
-  ProcIdType: 'EvalID',
+  ProcIdType: 'ProcessId',
   groupName: '',
 };
 
 Disposition.propTypes = {
   AppName: PropTypes.string,
+  closeSnackBar: PropTypes.func.isRequired,
   dispositionErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispositionReason: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
   EvalId: PropTypes.number.isRequired,
-  EventName: PropTypes.string,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  isTasksLimitExceeded: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
   noTasksFound: PropTypes.bool,
   onClear: PropTypes.func.isRequired,
@@ -237,6 +240,7 @@ Disposition.propTypes = {
   ProcIdType: PropTypes.string,
   saveInProgress: PropTypes.bool,
   showAssign: PropTypes.bool.isRequired,
+  snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
@@ -254,6 +258,7 @@ const mapStateToProps = state => ({
   dispositionErrorMessages: DispositionModel.getErrorMessages(
     selectors.getDiscrepancies(state),
   ),
+  snackBarData: notificationSelectors.getSnackBarState(state),
   dispositionReason: selectors.getDisposition(state),
   enableGetNext: selectors.enableGetNext(state),
   inProgress: selectors.inProgress(state),
@@ -261,6 +266,7 @@ const mapStateToProps = state => ({
   saveInProgress: selectors.saveInProgress(state),
   isAssigned: selectors.isAssigned(state),
   taskFetchError: selectors.taskFetchError(state),
+  isTasksLimitExceeded: selectors.isTasksLimitExceeded(state),
   showAssign: selectors.showAssign(state),
   user: loginSelectors.getUser(state),
   EvalId: selectors.evalId(state),
@@ -274,6 +280,7 @@ const mapDispatchToProps = dispatch => ({
   onDispositionSaveTrigger: operations.onDispositionSave(dispatch),
   onDispositionSelect: operations.onDispositionSelect(dispatch),
   onPostComment: commentoperations.postComment(dispatch),
+  closeSnackBar: notificationOperations.closeSnackBar(dispatch),
 });
 
 const DispositionContainer = connect(mapStateToProps, mapDispatchToProps)(Disposition);

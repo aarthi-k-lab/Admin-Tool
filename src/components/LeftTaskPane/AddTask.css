@@ -4,10 +4,10 @@
     width: 35%;
     height: 2rem;
     min-height: 0.25rem;
-    padding: 0px;
+    padding: 0;
     margin: 0.75rem 0.5rem 0.5rem 5.5rem;
   }
-
+  
   .add-task span {
     justify-content: left;
   }
@@ -15,4 +15,3 @@
   .add-task.add-task:hover {
     background-color: var(--dark-lime-green);
   }
-  

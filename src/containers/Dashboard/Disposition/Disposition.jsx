@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import DispositionModel from 'models/Disposition';
-import DashboardErrors from 'models/DashboardErrors';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors, operations } from 'ducks/dashboard';
 import { operations as commentoperations } from 'ducks/comments';
+import DashboardModel from 'models/Dashboard';
+import * as R from 'ramda';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import CardCreator from './CardCreator';
 import './Disposition.css';
@@ -17,24 +18,7 @@ const shouldExpand = (isExpanded, item, id) => {
   if (isExpanded) return item.id === id;
   return (item.id === id ? false : item.expanded);
 };
-const getContextTaskName = (groupName) => {
-  let taskName = '';
-  switch (groupName) {
-    case 'FEUW':
-      taskName = 'Income Calculation Review';
-      break;
-    case 'BEUW':
-      taskName = 'Underwriting Review';
-      break;
-    case 'PROC':
-      taskName = 'Processing Review';
-      break;
-    default:
-      taskName = groupName;
-      break;
-  }
-  return taskName;
-};
+
 class Disposition extends Component {
   constructor(props) {
     super(props);
@@ -58,17 +42,19 @@ class Disposition extends Component {
   componentDidUpdate() {
     const {
       enableGetNext, selectedDisposition, onPostComment, AppName, LoanNumber, EvalId,
-      EventName, groupName, user, ProcIdType, TaskId,
+      groupName, user, ProcIdType, TaskId,
     } = this.props;
     const { activityName } = selectedDisposition;
-    const taskName = getContextTaskName(groupName);
+    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const taskName = !R.isNil(page) ? page.task : '';
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
         loanNumber: LoanNumber,
         processIdType: ProcIdType,
         processId: EvalId,
-        eventName: EventName,
+        eventName,
         comment: this.savedComments,
         userName: user.userDetails.name,
         createdDate: new Date().toJSON(),
@@ -206,6 +192,7 @@ class Disposition extends Component {
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
       user,
       showAssign,
+      isTasksLimitExceeded,
       beDispositionErrorMessages: errorMessages,
     } = this.props;
     const { activityName } = selectedDisposition;
@@ -215,8 +202,8 @@ class Disposition extends Component {
       );
     }
     const sameDispositionNotSelected = selectedDisposition
-    && (selectedDisposition.cardStatus !== selectedStatus
-    || selectedDisposition.activityName !== selectedActivity);
+      && (selectedDisposition.cardStatus !== selectedStatus
+        || selectedDisposition.activityName !== selectedActivity);
     if (sameDispositionNotSelected) {
       const {
         id,
@@ -234,49 +221,52 @@ class Disposition extends Component {
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
             {
-        (noTasksFound || taskFetchError) ? DashboardErrors.renderErrorNotification(
-          activityName,
-          enableGetNext, isAssigned, noTasksFound, taskFetchError,
-          errorMessages,
-          user,
-          showAssign,
-        ) : (
-          <>
-            <header styleName="para-title">
-          Select the outcome of your review
-            </header>
-            {DashboardErrors.renderErrorNotification(
-              activityName,
-              enableGetNext, isAssigned, noTasksFound, taskFetchError,
-              errorMessages,
-              user,
-              showAssign,
-            )}
-            <button
-              disabled={enableGetNext || !isAssigned}
-              onClick={() => this.handleExpandAll()}
-              styleName="OperateButton"
-              type="submit"
-            >
-              {operate}
-            </button>
-            { status.map(m => (
-              <CardCreator
-                disabled={enableGetNext || !isAssigned}
-                selectedActivity={selectedActivity}
-                status={m}
-              />
-            ))}
-            <CommentBox
-              content={content}
-              onCheck={canSubmit}
-              onCommentChange={this.onCommentChange}
-              onRefresh={refreshHook}
-            />
-            {this.renderSave(isAssigned)}
-          </>
-        )
-          }
+              (noTasksFound || taskFetchError || isTasksLimitExceeded)
+                ? DashboardModel.Messages.renderErrorNotification(
+                  activityName,
+                  enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                  errorMessages,
+                  user,
+                  showAssign,
+                  isTasksLimitExceeded,
+                ) : (
+                  <>
+                    <header styleName="para-title">
+                      Select the outcome of your review
+                    </header>
+                    { DashboardModel.Messages.renderErrorNotification(
+                      activityName,
+                      enableGetNext, isAssigned, noTasksFound, taskFetchError,
+                      errorMessages,
+                      user,
+                      showAssign,
+                      isTasksLimitExceeded,
+                    )}
+                    <button
+                      disabled={enableGetNext || !isAssigned}
+                      onClick={() => this.handleExpandAll()}
+                      styleName="OperateButton"
+                      type="submit"
+                    >
+                      {operate}
+                    </button>
+                    {status.map(m => (
+                      <CardCreator
+                        disabled={enableGetNext || !isAssigned}
+                        selectedActivity={selectedActivity}
+                        status={m}
+                      />
+                    ))}
+                    <CommentBox
+                      content={content}
+                      onCheck={canSubmit}
+                      onCommentChange={this.onCommentChange}
+                      onRefresh={refreshHook}
+                    />
+                    {this.renderSave(isAssigned)}
+                  </>
+                )
+            }
           </section>
         </div>
         <WidgetBuilder />
@@ -296,10 +286,10 @@ Disposition.defaultProps = {
   saveInProgress: false,
   beDispositionErrorMessages: [],
   noTasksFound: false,
+  isTasksLimitExceeded: false,
   taskFetchError: false,
   AppName: 'CMOD',
-  EventName: 'UW',
-  ProcIdType: 'EvalID',
+  ProcIdType: 'ProcessId',
   groupName: '',
 };
 Disposition.propTypes = {
@@ -307,10 +297,10 @@ Disposition.propTypes = {
   beDispositionErrorMessages: PropTypes.arrayOf(PropTypes.string),
   enableGetNext: PropTypes.bool,
   EvalId: PropTypes.number.isRequired,
-  EventName: PropTypes.string,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  isTasksLimitExceeded: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
   noTasksFound: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
@@ -360,6 +350,7 @@ const mapStateToProps = state => ({
   saveInProgress: selectors.saveInProgress(state),
   showAssign: selectors.showAssign(state),
   noTasksFound: selectors.noTasksFound(state),
+  isTasksLimitExceeded: selectors.isTasksLimitExceeded(state),
   taskFetchError: selectors.taskFetchError(state),
   user: loginSelectors.getUser(state),
 });

@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import moment from 'moment-timezone';
 import * as R from 'ramda';
+import DashboardModel from 'models/Dashboard';
 import { selectors, operations } from '../../state/ducks/comments';
 import './CommentsWidget.css';
 import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
@@ -108,18 +109,22 @@ class CommentsWidget extends Component {
   loadComments() {
     const {
       AppName,
-      EvalId,
-      EventName,
       LoanNumber,
+      ProcessId,
       ProcIdType,
       onGetComments,
+      groupName,
     } = this.props;
+
+    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+
     const payload = {
       applicationName: AppName,
       loanNumber: LoanNumber,
       processIdType: ProcIdType,
-      processId: EvalId,
-      eventName: EventName,
+      processId: ProcessId,
+      eventName,
     };
     onGetComments(payload);
     this.setState({ Loader: false });
@@ -131,8 +136,6 @@ class CommentsWidget extends Component {
     } = this.state;
     const {
       AppName,
-      EvalId,
-      EventName,
       LoanNumber,
       ProcessId,
       ProcIdType,
@@ -142,14 +145,16 @@ class CommentsWidget extends Component {
       groupName,
     } = this.props;
 
-    const taskName = getContextTaskName(groupName);
+    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const taskName = !R.isNil(page) ? page.task : '';
 
     const payload = {
       applicationName: AppName,
       loanNumber: LoanNumber,
       processIdType: ProcIdType,
-      processId: EvalId,
-      eventName: EventName,
+      processId: ProcessId,
+      eventName,
       comment: content,
       commentContext: JSON.stringify({
         TASK: taskName,
@@ -259,7 +264,6 @@ CommentsWidget.propTypes = {
     createdOn: PropTypes.string.isRequired,
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
-  EventName: PropTypes.string,
   groupName: PropTypes.string,
   LoanNumber: PropTypes.number.isRequired,
   onGetComments: PropTypes.func.isRequired,
@@ -276,8 +280,7 @@ CommentsWidget.propTypes = {
 
 CommentsWidget.defaultProps = {
   AppName: 'CMOD',
-  EventName: 'UW',
-  ProcIdType: 'EvalID',
+  ProcIdType: 'ProcessId',
   groupName: '',
 };
 

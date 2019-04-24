@@ -2,6 +2,12 @@
   margin: 0 auto;
 }
 
+.scrollable-checklist {
+  flex-basis: 0;
+  flex-grow: 1;
+  overflow: auto;
+}
+
 .checklist-form-controls {
   padding: 1.5rem;
 }
@@ -18,16 +24,6 @@
 .checklist-title.checklist-title {
   color: var(--grey-650);
   margin: 1rem 0;
-}
-
-.checklist-scroll-out {
-  display: flex;
-  flex-grow: 1;
-}
-
-.checklist-scroll-in {
-  align-self: stretch;
-  overflow-y: auto;
 }
 
 .tooltip {
