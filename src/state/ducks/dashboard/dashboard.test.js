@@ -580,7 +580,7 @@ describe('expand view ', () => {
         }));
     });
     it('should call HIDE_SAVING_LOADER', () => {
-      expect(saga.next().value)
+      expect(saga.throw(new Error('disposition fetch failed')).value)
         .toEqual(put({ type: actionTypes.HIDE_SAVING_LOADER }));
     });
   });
