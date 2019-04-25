@@ -43,8 +43,7 @@ class OptionalTaskDetails extends React.Component {
             <h3 styleName="optional-task-heading">ADD NEW TASK</h3>
           </header>
           {
-          tasks.filter(({ visibility }) => visibility)
-            .map(task => (
+            tasks.map(task => (
               <Grid
                 container
                 spacing={0}
@@ -55,7 +54,7 @@ class OptionalTaskDetails extends React.Component {
                   <TaskStatusIcon styleName="fill-width" task={task} />
                 </Grid>
                 <Grid alignItems="center" container item xs={6}>
-                  <span styleName="parent-task-name">{ R.pathOr('', ['taskBlueprint', 'name'], task) }</span>
+                  <span styleName="parent-task-name">{ R.prop('name', task) }</span>
                 </Grid>
                 <Grid alignItems="center" container item xs={2}>
                   {

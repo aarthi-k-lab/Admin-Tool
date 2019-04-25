@@ -21,6 +21,7 @@ import {
   STORE_CHECKLIST,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
+  STORE_OPTIONAL_TASKS,
   STORE_MISC_TASK_COMMENT,
   DISP_COMMENT_SAGA,
   DISP_COMMENT,
@@ -127,6 +128,21 @@ const createChecklistNavigation = R.compose(
   R.propOr([], 'subTasks'),
 );
 
+function filterOptionalTasks(allTasks) {
+  const isOptionalTask = R.pathEq(['taskBlueprint', 'type'], 'user-triggered');
+  const getOptionalTasks = R.compose(
+    R.map(task => ({
+      name: R.pathOr('', ['taskBlueprint', 'name'], task),
+      description: R.pathOr('', ['taskBlueprint', 'description'], task),
+      taskCode: R.pathOr('', ['taskBlueprint', 'taskCode'], task),
+    })),
+    R.filter(isOptionalTask),
+    R.propOr([], 'subTasks'),
+  );
+  const optionalTasks = getOptionalTasks(allTasks);
+  return optionalTasks;
+}
+
 function* getTasks(action) {
   try {
     const { payload: { depth } } = action;
@@ -139,6 +155,11 @@ function* getTasks(action) {
     if (didErrorOccur) {
       throw new Error('Api call failed');
     }
+    const optionalTasks = yield call(filterOptionalTasks, response);
+    yield put({
+      type: STORE_OPTIONAL_TASKS,
+      payload: optionalTasks,
+    });
     const checklistNavigation = yield call(createChecklistNavigation, response);
     const checklistNavAction = yield call(actions.storeChecklistNavigation, checklistNavigation);
     const checklistSelectionIsPresent = yield select(selectors.getSelectedChecklistId);
