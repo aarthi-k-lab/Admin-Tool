@@ -22,7 +22,7 @@ const mockComment = {
     applicationName: 'AppName',
     loanNumber: 'LoanNumber',
     processIdType: 'ProcIdType',
-    processId: 'EvalId',
+    processId: 'ProcessId',
     eventName: 'EventName',
     comment: 'test',
     userName: 'Deepan Kumaresan',
@@ -129,6 +129,11 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
+  it('should dispatch action GetNext Loaded', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
+  });
+
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
@@ -208,7 +213,7 @@ describe('getnext Success', () => {
         applicationName: 'CMOD',
         loanNumber: '12345',
         processId: '34567',
-        processIdType: 'EvalID',
+        processIdType: 'ProcessId',
         evalId: '34567',
         taskId: '1234',
       },
@@ -245,6 +250,11 @@ describe('getnext Failure -  no tasks found', () => {
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should dispatch action GetNext Loaded', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
   });
 
   it('should call save disposition generator', () => {
@@ -337,6 +347,11 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should dispatch action GetNext Loaded', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
   });
 
   it('should call save disposition generator', () => {
@@ -565,7 +580,7 @@ describe('expand view ', () => {
         }));
     });
     it('should call HIDE_SAVING_LOADER', () => {
-      expect(saga.next().value)
+      expect(saga.throw(new Error('disposition fetch failed')).value)
         .toEqual(put({ type: actionTypes.HIDE_SAVING_LOADER }));
     });
   });

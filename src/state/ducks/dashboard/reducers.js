@@ -27,6 +27,7 @@ import {
   CLEAR_ERROR_MESSAGE,
   GET_LOAN_ACTIVITY_DETAILS,
   TASKS_LIMIT_EXCEEDED,
+  GETNEXT_PROCESSED,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -123,6 +124,12 @@ const reducer = (state = { firstVisit: true }, action) => {
         inProgress: true,
         noTasksFound: false,
         checklistErrorCode: '',
+      };
+    }
+    case GETNEXT_PROCESSED: {
+      return {
+        ...state,
+        getNextProcessed: action.payload,
       };
     }
     case HIDE_LOADER: {

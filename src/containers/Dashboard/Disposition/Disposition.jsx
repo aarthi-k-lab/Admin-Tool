@@ -289,7 +289,7 @@ Disposition.defaultProps = {
   isTasksLimitExceeded: false,
   taskFetchError: false,
   AppName: 'CMOD',
-  ProcIdType: 'EvalID',
+  ProcIdType: 'ProcessId',
   groupName: '',
 };
 Disposition.propTypes = {

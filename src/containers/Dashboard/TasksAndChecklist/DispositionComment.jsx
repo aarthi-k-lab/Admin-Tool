@@ -17,14 +17,6 @@ class DispositionComment extends Component {
     this.clearComments = this.clearComments.bind(this);
   }
 
-  // static getDerivedStateFromProps(props, prevState) {
-  //   const { clearComments } = props;
-  //   if (clearComments) {
-  //     return ({ content: '' });
-  //   }
-  //   return prevState;
-  // }
-
   componentDidMount() {
     const { allTaskScenario, triggerValidationDisplay } = this.props;
     if (!allTaskScenario) {

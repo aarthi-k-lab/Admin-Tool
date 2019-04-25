@@ -52,6 +52,7 @@ import {
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
   GET_LOAN_ACTIVITY_DETAILS,
+  GETNEXT_PROCESSED,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -289,6 +290,7 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
       type: SAVE_DISPOSITION,
       payload: response,
     });
+    yield put(checklistActions.validationDisplayAction(true));
     yield put({ type: HIDE_SAVING_LOADER });
   } catch (e) {
     yield put({ type: HIDE_SAVING_LOADER });
@@ -343,7 +345,7 @@ function getCommentPayload(taskDetails) {
   const evalId = processId;
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'EvalID', loanNumber, processId, evalId, taskId,
+    applicationName: 'CMOD', processIdType: 'ProcessId', loanNumber, processId, evalId, taskId,
   };
 }
 
@@ -389,6 +391,7 @@ function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
 function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
+    yield put({ type: GETNEXT_PROCESSED, payload: false });
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
@@ -399,7 +402,7 @@ function* getNext(action) {
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${getUserPersona(appGroupName)}&userPrincipalName=${userPrincipalName}`);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
           if (R.keys(allTasksComments[taskComment]).length) {
@@ -437,6 +440,8 @@ function* getNext(action) {
     yield put(errorTombstoneFetch());
     yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
+  } finally {
+    yield put({ type: GETNEXT_PROCESSED, payload: true });
   }
 }
 
