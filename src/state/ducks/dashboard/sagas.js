@@ -290,6 +290,7 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
       type: SAVE_DISPOSITION,
       payload: response,
     });
+    yield put(checklistActions.validationDisplayAction(true));
     yield put({ type: HIDE_SAVING_LOADER });
   } catch (e) {
     yield put({ type: HIDE_SAVING_LOADER });
