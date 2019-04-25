@@ -109,7 +109,7 @@
 }
 
 .scrollable-block {
-  height: 77vh;
+  height: 50rem;
   align-self: stretch;
   margin: 0 auto;
   overflow: auto;
