@@ -30,7 +30,7 @@ class DispositionComment extends Component {
     if (!allTaskScenario) {
       triggerValidationDisplay(false);
     } else {
-      triggerValidationDisplay(false);
+      triggerValidationDisplay(true);
     }
   }
 
