@@ -6,9 +6,6 @@
 .disposition-section {
   display: flex;
   flex-direction: column;
-  /* flex-grow: 1;
-  flex-basis: 0;
-  overflow: auto; */
   align-items: center;
   max-width: 50.25rem;
 }
@@ -109,15 +106,11 @@
   width: 47.25rem;
   height: 2.5rem;
   margin-top: 0.7rem;
-
-  /* margin-left: 0.25rem !important; */
 }
 
 .scrollable-block {
   height: 77vh;
   align-self: stretch;
-  /* display: flex;
-  flex-direction: column; */
   margin: 0 auto;
   overflow: auto;
 }
