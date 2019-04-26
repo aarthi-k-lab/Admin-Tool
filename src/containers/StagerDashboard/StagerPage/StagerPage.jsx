@@ -11,8 +11,26 @@ import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
+const UNDER_WRITER = 'UNDERWRITER STAGER';
+const DOCS_OUT = 'Docs Out Stager';
 class StagerPage extends React.PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      tasksStatus: UNDER_WRITER,
+    };
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+  }
+
+  handleStatusChange(event) {
+    const selectedStatus = event.target.value;
+    this.setState({
+      tasksStatus: selectedStatus,
+    });
+  }
+
   render() {
+    const { tasksStatus } = this.state;
     const {
       activeTab, activeTile, downloadCSVUri,
       counts, loading, onStatusCardClick,
@@ -23,10 +41,11 @@ class StagerPage extends React.PureComponent {
       <>
         <ContentHeader title={(<>
           <Select
-            disabled
-            value="UNDERWRITER"
+            onChange={this.handleStatusChange}
+            value={tasksStatus}
           >
-            <MenuItem value="UNDERWRITER">UNDERWRITER STAGER</MenuItem>
+            <MenuItem value={UNDER_WRITER}>{UNDER_WRITER}</MenuItem>
+            <MenuItem value={DOCS_OUT}>{DOCS_OUT}</MenuItem>
           </Select>
           <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
             <RefreshIcon />
