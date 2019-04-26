@@ -48,6 +48,10 @@ function StatusMenu({ onChange, taskStatus }) {
   );
 }
 
+function shouldShowAddTaskButton(optionalTasks) {
+  return optionalTasks.length > 0;
+}
+
 StatusMenu.defaultProps = {
   onChange: () => {},
   taskStatus: ALL,
@@ -88,8 +92,6 @@ class LeftTaskPane extends React.Component {
     });
   }
 
-  // shouldShowAddTaskButton() {
-  // }
 
   renderContent() {
     const { tasksStatus, isCollapsed } = this.state;
@@ -98,6 +100,7 @@ class LeftTaskPane extends React.Component {
       onAddTaskClick,
       onSubTaskClick,
       selectedTaskId,
+      optionalTasks,
       tasks,
     } = this.props;
     if (dataLoadStatus === 'failed') {
@@ -121,8 +124,10 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
-                  <AddTask onClick={() => onAddTaskClick()} />
-
+                  { shouldShowAddTaskButton(optionalTasks)
+                    ? <AddTask onClick={() => onAddTaskClick()} />
+                    : <div />
+                  }
                 </>
               )
               : null
