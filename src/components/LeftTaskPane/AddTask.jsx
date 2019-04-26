@@ -51,7 +51,9 @@ AddTask.defaultProps = {
 
 AddTask.propTypes = {
   classes: PropTypes.shape.isRequired,
-  margin: PropTypes.shape,
+  margin: PropTypes.shape({
+    marginLeft: PropTypes.string,
+  }),
   onClick: PropTypes.func,
   toolTipPosition: PropTypes.string,
 };
