@@ -306,7 +306,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     headers: { 'content-type': 'application/json' },
   });
 
-  const prioritizationP = fetch(prioritizationUrl, {
+  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${groupName}`, {
     method: 'POST',
     body: JSON.stringify([evalId]),
     headers: { 'content-type': 'application/json' },
