@@ -291,13 +291,13 @@ function* postDispositionComment(action) {
   const eventName = !R.isNil(page) ? page.taskCode : '';
   const taskName = !R.isNil(page) ? page.task : '';
   const taskId = yield select(dashboardSelectors.taskId);
-  const evalId = yield select(dashboardSelectors.evalId);
+  const processId = yield select(dashboardSelectors.processId);
   const disposition = yield select(selectors.getDisposition);
   const commentPayload = {
     applicationName: 'CMOD',
     loanNumber,
-    processIdType: 'EvalId',
-    processId: evalId,
+    processIdType: 'ProcessId',
+    processId,
     eventName,
     comment: action.payload,
     userName: user.userDetails.name,
