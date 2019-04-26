@@ -57,12 +57,14 @@ class ExpandPanel extends React.PureComponent {
         detail.monthDetail.forEach((value) => {
           if (value.header === 'Trial Due On') {
             const currentDate = new Date(value.value);
-            if (currentDate > maxDate) {
+            if (index === 0) {
+              maxDate = new Date(value.value);
               maxDateIndex = index;
-            } else {
-              maxDateIndex = index - 1;
             }
-            maxDate = currentDate;
+            if (index > 0 && currentDate > maxDate) {
+              maxDateIndex = index;
+              maxDate = currentDate;
+            }
           }
           return maxDateIndex;
         });
