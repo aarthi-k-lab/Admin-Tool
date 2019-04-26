@@ -11,25 +11,38 @@ import './OptionalTaskDetails.css';
 class OptionalTaskDetails extends React.Component {
   constructor(props) {
     super(props);
+    const { tasks } = this.props;
+    const isTaskAdded = new Array(tasks.length);
     this.state = {
-      isTaskAdded: false,
+      isTaskAdded: isTaskAdded.fill(false),
     };
   }
 
-  onAddTask() {
-    const { isTaskAdded } = this.state;
-    this.setState({
-      isTaskAdded: !isTaskAdded,
-    });
+  onAddTask(index) {
+    this.modifyTaskList(index);
   }
 
-  onDeleteTask() {
-    console.log('test');
+  onDeleteTask(task, index) {
+    this.modifyTaskList(index);
+  }
+
+  modifyTaskList(taskIdx) {
+    const { isTaskAdded } = this.state;
+    const isTaskAddedList = isTaskAdded;
+    isTaskAddedList[taskIdx] = !isTaskAddedList[taskIdx];
+    this.setState({
+      isTaskAdded: isTaskAddedList,
+    });
   }
 
   static renderDeleteIcon() {
     return (
-      <DeleteTask onClick={() => this.onDeleteTask()} />
+      <DeleteTask
+        disabled={false}
+        margin={{ 'margin-left': '4.2rem' }}
+        onClick={() => this.onDeleteTask()}
+        toolTipPosition="left"
+      />
     );
   }
 
@@ -42,7 +55,7 @@ class OptionalTaskDetails extends React.Component {
             <h3 styleName="optional-task-heading">ADD NEW TASK</h3>
           </header>
           {
-            tasks.map(task => (
+            tasks.map((task, index) => (
               <Grid
                 container
                 spacing={0}
@@ -57,13 +70,13 @@ class OptionalTaskDetails extends React.Component {
                 </Grid>
                 <Grid alignItems="center" container item xs={2}>
                   {
-                      isTaskAdded ? this.constructor.renderDeleteIcon()
+                      isTaskAdded[index] ? this.constructor.renderDeleteIcon()
                         : (
                           <span styleName="optional-task-details">
                             <AddTask
                               disabled={false}
                               margin={{ 'margin-left': '3rem' }}
-                              onClick={() => this.onAddTask()}
+                              onClick={() => this.onAddTask(index)}
                               toolTipPosition="left"
                             />
                           </span>
