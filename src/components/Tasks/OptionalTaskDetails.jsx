@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
 import AddTask from '../LeftTaskPane/AddTask';
+import DeleteTask from '../LeftTaskPane/DeleteTask';
 import Close from '../LeftTaskPane/Close';
 import TaskStatusIcon from '../TaskStatusIcon/TaskStatusIcon';
 import './OptionalTaskDetails.css';
@@ -11,26 +11,38 @@ import './OptionalTaskDetails.css';
 class OptionalTaskDetails extends React.Component {
   constructor(props) {
     super(props);
+    const { tasks } = this.props;
+    const isTaskAdded = new Array(tasks.length);
     this.state = {
-      isTaskAdded: false,
+      isTaskAdded: isTaskAdded.fill(false),
     };
   }
 
-  onAddTask() {
+  onAddTask(index) {
+    this.modifyTaskList(index);
+  }
+
+  onDeleteTask(task, index) {
+    this.modifyTaskList(index);
+  }
+
+  modifyTaskList(taskIdx) {
     const { isTaskAdded } = this.state;
+    const isTaskAddedList = isTaskAdded;
+    isTaskAddedList[taskIdx] = !isTaskAddedList[taskIdx];
     this.setState({
-      isTaskAdded: !isTaskAdded,
+      isTaskAdded: isTaskAddedList,
     });
   }
 
   static renderDeleteIcon() {
     return (
-      <IconButton>
-        <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z" />
-          <path d="M0 0h24v24H0V0z" fill="none" />
-        </svg>
-      </IconButton>
+      <DeleteTask
+        disabled={false}
+        margin={{ 'margin-left': '4.2rem' }}
+        onClick={() => this.onDeleteTask()}
+        toolTipPosition="left"
+      />
     );
   }
 
@@ -43,7 +55,7 @@ class OptionalTaskDetails extends React.Component {
             <h3 styleName="optional-task-heading">ADD NEW TASK</h3>
           </header>
           {
-            tasks.map(task => (
+            tasks.map((task, index) => (
               <Grid
                 container
                 spacing={0}
@@ -58,13 +70,13 @@ class OptionalTaskDetails extends React.Component {
                 </Grid>
                 <Grid alignItems="center" container item xs={2}>
                   {
-                      isTaskAdded ? this.constructor.renderDeleteIcon()
+                      isTaskAdded[index] ? this.constructor.renderDeleteIcon()
                         : (
                           <span styleName="optional-task-details">
                             <AddTask
                               disabled={false}
                               margin={{ 'margin-left': '3rem' }}
-                              onClick={() => this.onAddTask()}
+                              onClick={() => this.onAddTask(index)}
                               toolTipPosition="left"
                             />
                           </span>
