@@ -69,6 +69,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           </div>
         </div>
       </span>
+      <div />
       <span
         className="components-LeftTaskPane-LeftTaskPane__collapse-icon-open"
         onClick={[Function]}
