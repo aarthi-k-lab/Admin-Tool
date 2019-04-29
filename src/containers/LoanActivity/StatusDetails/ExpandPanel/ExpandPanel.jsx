@@ -60,7 +60,7 @@ class ExpandPanel extends React.PureComponent {
             if (index === 0) {
               maxDate = new Date(value.value);
               maxDateIndex = index;
-            } else if (index > 0 && currentDate > maxDate) {
+            } else if (currentDate > maxDate) {
               maxDateIndex = index;
               maxDate = currentDate;
             }
