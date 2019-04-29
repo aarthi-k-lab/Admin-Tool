@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
@@ -25,23 +25,23 @@ const styles = theme => ({
   },
 });
 
-const AddTask = ({
+const DeleteTask = ({
   classes, onClick, toolTipPosition, margin,
 }) => (
-  <Tooltip aria-label="Add Task" placement={toolTipPosition} title="Add Task">
+  <Tooltip aria-label="Delete Task" placement={toolTipPosition} title="Delete Task">
     <Fab
-      aria-label="Add"
+      aria-label="Delete"
       className={classes.custom}
       color="secondary"
       onClick={onClick}
       style={margin}
     >
-      <AddIcon />
+      <DeleteOutlined />
     </Fab>
   </Tooltip>
 );
 
-AddTask.defaultProps = {
+DeleteTask.defaultProps = {
   margin: {
     'margin-left': '10rem',
   },
@@ -49,7 +49,7 @@ AddTask.defaultProps = {
   toolTipPosition: 'bottom',
 };
 
-AddTask.propTypes = {
+DeleteTask.propTypes = {
   classes: PropTypes.shape.isRequired,
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,
@@ -58,4 +58,4 @@ AddTask.propTypes = {
   toolTipPosition: PropTypes.string,
 };
 
-export default withStyles(styles)(AddTask);
+export default withStyles(styles)(DeleteTask);

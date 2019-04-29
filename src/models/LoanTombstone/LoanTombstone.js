@@ -3,6 +3,7 @@ import Validators from 'lib/Validators';
 import Auth from 'lib/Auth';
 import * as R from 'ramda';
 import waterfallLookup from './waterfallLookup';
+import { getUserPersona } from '../AppGroupName';
 
 export const NA = 'NA';
 
@@ -305,8 +306,8 @@ async function fetchData(loanNumber, evalId, groupName) {
     body: JSON.stringify({ evalIds: [evalId], groupName }),
     headers: { 'content-type': 'application/json' },
   });
-
-  const prioritizationP = fetch(prioritizationUrl, {
+  const appGroupName = getUserPersona(groupName);
+  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${appGroupName}`, {
     method: 'POST',
     body: JSON.stringify([evalId]),
     headers: { 'content-type': 'application/json' },
