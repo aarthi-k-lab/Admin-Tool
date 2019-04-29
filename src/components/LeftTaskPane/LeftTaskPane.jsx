@@ -9,7 +9,9 @@ import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import OptionalTaskDetails from 'components/Tasks/OptionalTaskDetails';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
+import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
 import styles from './LeftTaskPane.css';
+import AddTask from './AddTask';
 
 const ALL = 'All';
 const PENDING = 'Pending';
@@ -44,6 +46,10 @@ function StatusMenu({ onChange, taskStatus }) {
       </TextField>
     </span>
   );
+}
+
+function shouldShowAddTaskButton(optionalTasks) {
+  return optionalTasks.length > 0;
 }
 
 StatusMenu.defaultProps = {
@@ -86,12 +92,15 @@ class LeftTaskPane extends React.Component {
     });
   }
 
+
   renderContent() {
     const { tasksStatus, isCollapsed } = this.state;
     const {
       dataLoadStatus,
+      onAddTaskClick,
       onSubTaskClick,
       selectedTaskId,
+      optionalTasks,
       tasks,
     } = this.props;
     if (dataLoadStatus === 'failed') {
@@ -115,6 +124,10 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
+                  { shouldShowAddTaskButton(optionalTasks)
+                    ? <AddTask onClick={() => onAddTaskClick()} />
+                    : <div />
+                  }
                 </>
               )
               : null
@@ -144,8 +157,9 @@ class LeftTaskPane extends React.Component {
   render() {
     const { width } = this.state;
     const {
-      className, showOptionalTasks, onAddTaskClick, tasks,
+      className, optionalTasks, showOptionalTasks, onAddTaskClick,
     } = this.props;
+
     return (
       <div className={classNames(className, styles['stretch-column'])}>
         <div
@@ -154,7 +168,7 @@ class LeftTaskPane extends React.Component {
           styleName="taskpane"
         >
           { showOptionalTasks
-            ? <OptionalTaskDetails onAddTaskClick={onAddTaskClick} tasks={tasks} />
+            ? <OptionalTaskDetails onAddTaskClick={onAddTaskClick} tasks={optionalTasks} />
             : this.renderContent() }
         </div>
       </div>
@@ -170,6 +184,7 @@ LeftTaskPane.propTypes = {
   onAddTaskClick: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
+  optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
   selectedTaskId: PropTypes.string,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
@@ -183,6 +198,7 @@ LeftTaskPane.defaultProps = {
   defaultState: 'open', // or 'closed'
   openWidth: '20rem',
   selectedTaskId: '',
+  optionalTasks: [],
 };
 
 export default LeftTaskPane;

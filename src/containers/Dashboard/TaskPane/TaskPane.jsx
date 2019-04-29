@@ -5,6 +5,7 @@ import { selectors } from 'ducks/config';
 import { operations as taskOperations, selectors as taskSelectors } from 'ducks/tasks-and-checklist';
 import LeftTaskPane from 'components/LeftTaskPane';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
+import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
 
 // const tasks = [
 //   {
@@ -110,6 +111,7 @@ class TaskPane extends React.PureComponent {
       selectedTaskId,
       storeTaskFilter,
       tasks,
+      optionalTasks,
       showOptionalTasks,
       onAddTaskClick,
     } = this.props;
@@ -120,6 +122,7 @@ class TaskPane extends React.PureComponent {
           dataLoadStatus={dataLoadStatus}
           onAddTaskClick={onAddTaskClick}
           onSubTaskClick={onSubTaskClick}
+          optionalTasks={optionalTasks}
           selectedTaskId={selectedTaskId}
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
@@ -137,6 +140,7 @@ const TestHooks = {
 TaskPane.defaultProps = {
   className: '',
   tasks: [],
+  optionalTasks: [],
 };
 
 TaskPane.propTypes = {
@@ -144,6 +148,7 @@ TaskPane.propTypes = {
   dataLoadStatus: PropTypes.string.isRequired,
   onAddTaskClick: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
+  optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
   selectedTaskId: PropTypes.string.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
@@ -155,6 +160,7 @@ const mapStateToProps = state => ({
   isAccessible: selectors.isTaskPaneAccessible(state),
   selectedTaskId: taskSelectors.getSelectedChecklistId(state),
   tasks: taskSelectors.getTaskTree(state).subTasks,
+  optionalTasks: taskSelectors.getOptionalTasks(state),
   showOptionalTasks: taskSelectors.shouldShowOptionalTasks(state),
 });
 

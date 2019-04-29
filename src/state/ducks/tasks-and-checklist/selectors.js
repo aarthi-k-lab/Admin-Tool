@@ -136,6 +136,8 @@ const shouldShowDisposition = (state) => {
 
 const getRootTaskId = R.pathOr('', ['tasksAndChecklist', 'rootTaskId']);
 
+const getOptionalTasks = R.pathOr([], ['tasksAndChecklist', 'optionalTasks']);
+
 const shouldShowOptionalTasks = R.pathOr('', ['tasksAndChecklist', 'showOptionalTasks']);
 
 const selectors = {
@@ -160,6 +162,7 @@ const selectors = {
   enableValidate,
   getDispositionComment,
   shouldShowInstructionsDialog,
+  getOptionalTasks,
   shouldShowOptionalTasks,
 };
 
