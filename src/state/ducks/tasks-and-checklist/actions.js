@@ -10,6 +10,7 @@ import {
   STORE_PROCESS_DETAILS,
   STORE_TASKS,
   STORE_TASK_FILTER,
+  STORE_OPTIONAL_TASKS,
   TOGGLE_INSTRUCTIONS,
   SHOW_OPTIONAL_TASKS,
   VALIDATION_DISPLAY,
@@ -82,6 +83,11 @@ const storeChecklistNavigation = navDataStructure => ({
   payload: navDataStructure,
 });
 
+const storeOptionalTasks = optionalTasks => ({
+  type: STORE_OPTIONAL_TASKS,
+  payload: optionalTasks,
+});
+
 const storeProcessDetails = (processId, rootTaskId) => ({
   type: STORE_PROCESS_DETAILS,
   payload: {
@@ -114,6 +120,7 @@ export {
   storeProcessDetails,
   storeTasks,
   storeTaskFilter,
+  storeOptionalTasks,
   toggleInstructions,
   showOptionalTasks,
   validationDisplayAction,

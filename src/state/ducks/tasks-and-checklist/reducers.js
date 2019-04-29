@@ -19,6 +19,7 @@ import {
   VALIDATION_DISPLAY,
   DISP_COMMENT,
   EMPTY_DISPOSITION_COMMENT,
+  STORE_OPTIONAL_TASKS,
 } from './types';
 
 const FAILED = 'failed';
@@ -37,6 +38,7 @@ const defaultState = {
   showInstructionsDialog: false,
   taskComment: {},
   showOptionalTasks: false,
+  optionalTasks: [],
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -156,6 +158,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskFilter: action.payload,
+      };
+    }
+    case STORE_OPTIONAL_TASKS: {
+      return {
+        ...state,
+        optionalTasks: action.payload,
       };
     }
     case STORE_MISC_TASK_COMMENT: {
