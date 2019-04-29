@@ -10,15 +10,20 @@ import CustomSnackBar from 'components/CustomSnackBar';
 import RouteAccess from 'lib/RouteAccess';
 import StagerPage from './StagerPage';
 
+
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { activeSearchTerm: '' };
+    this.state = {
+      activeSearchTerm: '',
+      stager: 'UNDERWRITER STAGER',
+    };
   }
 
   componentDidMount() {
     const { getDashboardCounts } = this.props;
-    getDashboardCounts();
+    const { stager } = this.state;
+    getDashboardCounts(stager);
   }
 
   onOrderClick(data) {
@@ -33,8 +38,13 @@ class StagerDashboard extends React.Component {
   onStatusCardClick(searchTerm, activeTile, activeTab) {
     const { getDashboardData, onCheckBoxClick, getDashboardCounts } = this.props;
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
-    getDashboardData(searchTerm);
-    getDashboardCounts();
+    const { activeSearchTerm, stager } = this.state;
+    const payload = {
+      activeSearchTerm,
+      stager,
+    };
+    getDashboardData(payload);
+    getDashboardCounts(stager);
     onCheckBoxClick([]);
   }
 
@@ -61,15 +71,36 @@ class StagerDashboard extends React.Component {
     onCheckBoxClick(selectedDataCopy);
   }
 
-  refreshDashboard() {
-    const { activeSearchTerm } = this.state;
+
+  onStagerChange(stager) {
     const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
-    if (activeSearchTerm) {
-      getDashboardData(activeSearchTerm);
-    }
-    getDashboardCounts();
+    this.setState({
+      activeSearchTerm: '',
+      stager,
+    });
+    const payload = {
+      activeSearchTerm: '',
+      stager,
+    };
+    getDashboardCounts(stager);
+    getDashboardData(payload);
     onCheckBoxClick([]);
   }
+
+  refreshDashboard() {
+    const { activeSearchTerm, stager } = this.state;
+    const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
+    const payload = {
+      activeSearchTerm,
+      stager,
+    };
+    if (activeSearchTerm) {
+      getDashboardData(payload);
+    }
+    getDashboardCounts(stager);
+    onCheckBoxClick([]);
+  }
+
 
   render() {
     const { groups } = this.props;
@@ -81,7 +112,7 @@ class StagerDashboard extends React.Component {
       loading, snackBarData, selectedData,
     } = this.props;
     const {
-      activeTab, activeTile,
+      activeTab, activeTile, stager,
     } = this.state;
     return (
       <>
@@ -100,6 +131,7 @@ class StagerDashboard extends React.Component {
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
           onOrderClick={data => this.onOrderClick(data)}
           onSelectAll={(isChecked, data) => this.onSelectAll(isChecked, data)}
+          onStagerChange={stagerValue => this.onStagerChange(stagerValue)}
           onStatusCardClick={
             (searchTerm,
               tileName,
@@ -107,6 +139,7 @@ class StagerDashboard extends React.Component {
           }
           refreshDashboard={() => this.refreshDashboard()}
           selectedData={selectedData}
+          stager={stager}
           tableData={tableData}
         />
       </>

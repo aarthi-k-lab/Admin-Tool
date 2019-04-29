@@ -12,37 +12,31 @@ import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
 const UNDER_WRITER = 'UNDERWRITER STAGER';
-const DOCS_OUT = 'Docs Out Stager';
+const DOCS_OUT = 'DOCSOUT STAGER';
 class StagerPage extends React.PureComponent {
-  constructor() {
-    super();
-    this.state = {
-      tasksStatus: UNDER_WRITER,
-    };
-    this.handleStatusChange = this.handleStatusChange.bind(this);
+  constructor(props) {
+    super(props);
+    this.onStagerChange = this.onStagerChange.bind(this);
   }
 
-  handleStatusChange(event) {
-    const selectedStatus = event.target.value;
-    this.setState({
-      tasksStatus: selectedStatus,
-    });
+  onStagerChange(event) {
+    const { onStagerChange } = this.props;
+    onStagerChange(event.target.value);
   }
 
   render() {
-    const { tasksStatus } = this.state;
     const {
       activeTab, activeTile, downloadCSVUri,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, onOrderClick, onSelectAll, selectedData,
-      refreshDashboard,
+      refreshDashboard, stager,
     } = this.props;
     return (
       <>
         <ContentHeader title={(<>
           <Select
-            onChange={this.handleStatusChange}
-            value={tasksStatus}
+            onChange={this.onStagerChange}
+            value={stager}
           >
             <MenuItem value={UNDER_WRITER}>{UNDER_WRITER}</MenuItem>
             <MenuItem value={DOCS_OUT}>{DOCS_OUT}</MenuItem>
@@ -110,9 +104,11 @@ StagerPage.propTypes = {
   onCheckBoxClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
+  onStagerChange: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
+  stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
 };
 

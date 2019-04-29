@@ -21,9 +21,20 @@ import {
 import selectors from './selectors';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
-function* fetchDashboardCounts() {
+function* fetchDashboardCounts(data) {
   try {
-    const newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
+    let newPayload;
+    switch (data.payload) {
+      case 'UNDERWRITER STAGER':
+        newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
+        break;
+      case 'DOCSOUT STAGER':
+        newPayload = {};
+        break;
+      default:
+        newPayload = {};
+        break;
+    }
     if (newPayload != null) {
       yield put({
         type: SET_STAGER_DATA_COUNTS,
@@ -38,9 +49,10 @@ function* fetchDashboardCounts() {
   }
 }
 
-function* fetchDashboardData(payload) {
+function* fetchDashboardData(data) {
   try {
-    const searchTerm = payload.payload;
+    const searchTerm = data.payload.activeSearchTerm;
+    const stagerValue = data.payload.stager;
     yield put({
       type: SET_STAGER_DATA_LOADING,
       payload: {
@@ -48,7 +60,18 @@ function* fetchDashboardData(payload) {
         loading: true,
       },
     });
-    const newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
+    let newPayload;
+    switch (stagerValue) {
+      case 'UNDERWRITER STAGER':
+        newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
+        break;
+      case 'DOCSOUT STAGER':
+        newPayload = {};
+        break;
+      default:
+        newPayload = {};
+        break;
+    }
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
