@@ -63,6 +63,15 @@ class ManagerDashboard extends Component {
       );
   }
 
+  renderTitle() {
+    const { selectedDashboard } = this.state;
+    switch (selectedDashboard) {
+      case 'FEUW Manager Dashboard': return 'Manager Dashboard';
+      case 'Leader Dashboard': return 'Leader Dashboard';
+      default: return '';
+    }
+  }
+
   render() {
     const { groups, powerBIConstants } = this.props;
     const { selectedDashboard } = this.state;
@@ -71,7 +80,7 @@ class ManagerDashboard extends Component {
     }
     return (
       <>
-        <ContentHeader title="Manager Dashboard">
+        <ContentHeader title={this.renderTitle()}>
           <DropDownSelect
             getDashboardItems={powerBIConstants}
             onChange={this.handleChange}
