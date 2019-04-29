@@ -3,8 +3,10 @@ import {
   triggerCheckboxSelect, triggerOrderCallAction,
 } from './actions';
 
-const getDashboardCounts = dispatch => () => dispatch(triggerDashboardCounts());
-const getDashboardData = dispatch => searchTerm => dispatch(triggerDashboardDataFetch(searchTerm));
+const getDashboardCounts = dispatch => selectedStager => dispatch(
+  triggerDashboardCounts(selectedStager),
+);
+const getDashboardData = dispatch => payload => dispatch(triggerDashboardDataFetch(payload));
 const onCheckBoxClick = dispatch => selectedData => dispatch(
   triggerCheckboxSelect(selectedData),
 );

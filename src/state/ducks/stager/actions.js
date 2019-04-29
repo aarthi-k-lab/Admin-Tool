@@ -3,13 +3,14 @@ import {
   TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
 } from './types';
 
-const triggerDashboardCounts = () => ({
+const triggerDashboardCounts = selectedStager => ({
   type: GET_DASHBOARD_COUNTS_SAGA,
+  payload: selectedStager,
 });
 
-const triggerDashboardDataFetch = searchTerm => ({
+const triggerDashboardDataFetch = payload => ({
   type: GET_DASHBOARD_DATA_SAGA,
-  payload: searchTerm,
+  payload,
 });
 
 const triggerCheckboxSelect = selectedData => ({
