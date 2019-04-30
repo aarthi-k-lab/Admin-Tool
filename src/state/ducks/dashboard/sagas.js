@@ -325,6 +325,14 @@ function getEvalId(taskDetails) {
   return R.path(['taskData', 'data', 'applicationId'], taskDetails);
 }
 
+function getProcessId(taskDetails) {
+  let value = R.path(['taskData', 'data', 'piid'], taskDetails);
+  if (value === undefined) {
+    value = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  }
+  return value;
+}
+
 function getChecklistId(taskDetails) {
   return R.pathOr('', ['taskData', 'data', 'taskCheckListId'], taskDetails);
 }
@@ -333,7 +341,7 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
-  const piid = R.path(['taskData', 'data', 'wfProcessId'], taskDetails);
+  const piid = getProcessId(taskDetails);
   return {
     loanNumber, evalId, taskId, piid,
   };
@@ -341,8 +349,8 @@ function getEvalPayload(taskDetails) {
 
 function getCommentPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
-  const processId = getEvalId(taskDetails);
-  const evalId = processId;
+  const processId = getProcessId(taskDetails);
+  const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
     applicationName: 'CMOD', processIdType: 'ProcessId', loanNumber, processId, evalId, taskId,
@@ -472,6 +480,10 @@ function* endShift(action) {
     payload.isFirstVisit = yield select(selectors.isFirstVisit);
     payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
     if (yield call(saveChecklistDisposition, payload)) {
+      const dispositionComment = yield select(checklistSelectors.getDispositionComment);
+      if (dispositionComment) {
+        yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
+      }
       yield put(resetChecklistData());
       yield put({ type: HIDE_LOADER });
       yield put({ type: SUCCESS_END_SHIFT });
