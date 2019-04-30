@@ -14,14 +14,19 @@ import {
   operations as dashboardOperations,
 } from 'ducks/dashboard';
 import { operations, selectors } from 'ducks/config';
+import * as R from 'ramda';
+import DropDownSelect from './DropDownSelect';
 
 class ManagerDashboard extends Component {
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = {
+      selectedDashboard: 'FEUW Manager Dashboard',
+    };
     this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -29,16 +34,20 @@ class ManagerDashboard extends Component {
     fetchPowerBIConstants();
   }
 
-  // Currently rendering report in 0th index as we have only one group.
-  // Will be expanded later after we get more info on report groups
+  handleChange(event) {
+    this.setState({ selectedDashboard: event.target.value });
+  }
+
   renderReport(powerBIConstants) {
+    const { selectedDashboard } = this.state;
+    const report = R.find(R.propEq('reportName', selectedDashboard))(powerBIConstants);
     return (this.accessToken && powerBIConstants && powerBIConstants.length > 0)
       ? (
         <Report
           accessToken={this.accessToken}
-          embedId={powerBIConstants[0] ? powerBIConstants[0].reportId : ''}
+          embedId={report ? report.reportId : ''}
           embedType="report"
-          embedUrl={powerBIConstants[0] ? powerBIConstants[0].reportUrl : ''}
+          embedUrl={report ? report.reportUrl : ''}
           permissions="All"
           style={this.reportStyle}
           tokenType="Aad"
@@ -55,18 +64,23 @@ class ManagerDashboard extends Component {
   }
 
   render() {
-    const { groups } = this.props;
-    const { powerBIConstants } = this.props;
+    const { groups, powerBIConstants } = this.props;
+    const { selectedDashboard } = this.state;
     if (!RouteAccess.hasManagerDashboardAccess(groups)) {
       return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
     }
     return (
       <>
-        <ContentHeader title="Manager Dashboard">
+        <ContentHeader title={selectedDashboard}>
+          <DropDownSelect
+            getDashboardItems={powerBIConstants}
+            onChange={this.handleChange}
+            selectedValue={selectedDashboard}
+          />
           <Controls />
         </ContentHeader>
         <div styleName="reportsDiv">
-          { this.renderReport(powerBIConstants) }
+          {this.renderReport(powerBIConstants)}
         </div>
       </>
     );

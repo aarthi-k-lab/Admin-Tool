@@ -7,6 +7,18 @@ import DocWidget from './DocWidget';
 import { selectors } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 
+function getDate(index) {
+  switch (index) {
+    case 0:
+      return '02/07/2019';
+    case 1:
+      return '02/05/2019';
+    case 2:
+      return '02/09/2019';
+    default:
+      return 2;
+  }
+}
 // MockData
 const getMockMonthlyData = (type) => {
   const data = [];
@@ -39,7 +51,7 @@ const getMockMonthlyData = (type) => {
         value: '$85.00',
       }, {
         header: 'Trial Due On',
-        value: `02/${index + 1 < 10 ? `${'0'}${index + 2}` : index + 1}/2019`,
+        value: getDate(index),
       }, {
         header: 'Deadline On',
         value: `02/${index + 10}/2019`,
