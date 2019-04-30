@@ -120,6 +120,7 @@ describe('getnext Success', () => {
       data: {
         id: '1234',
         applicationId: '34567',
+        wfProcessId: '34567',
         loanNumber: '12345',
       },
     },
@@ -194,7 +195,7 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.SAVE_EVALID_LOANNUMBER,
-        payload: { loanNumber: '12345', evalId: '34567', taskId: '1234' },
+        payload: { loanNumber: '12345', evalId: '34567', taskId: '1234', piid: '34567' },
       }));
   });
   it('getnext worker should trigger fetchtombstone action', () => {
@@ -487,6 +488,16 @@ describe('endShift worker', () => {
       .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
   });
 
+  it('should get checklist disposition comment', () => {
+    expect(saga.next(mockComment).value)
+      .toEqual(select(TestExports.checklistSelectors.getDispositionComment));
+  });
+
+  it('should get PUT disposition comment', () => {
+    const testComment = 'test';
+    expect(saga.next(testComment).value)
+      .toEqual(put({ type: POST_COMMENT_SAGA, payload: testComment }));
+  });
   it('should reset checklist data', () => {
     expect(saga.next(true).value)
       .toEqual(put(resetChecklistData()));
