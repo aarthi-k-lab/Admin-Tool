@@ -24,12 +24,19 @@ import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 function* fetchDashboardCounts(data) {
   try {
     let newPayload;
+    let countData;
     switch (data.payload) {
       case 'UNDERWRITER STAGER':
         newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
         break;
+      // Mock
       case 'DOCSOUT STAGER':
-        newPayload = {};
+        newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
+        countData = newPayload.counts;
+        countData.splice(0, 1);
+        countData.forEach((item) => {
+          item.data.splice(1, 1);
+        });
         break;
       default:
         newPayload = {};
@@ -50,6 +57,7 @@ function* fetchDashboardCounts(data) {
 }
 
 function* fetchDashboardData(data) {
+  let payload;
   try {
     const searchTerm = data.payload.activeSearchTerm;
     const stagerValue = data.payload.stager;
@@ -66,7 +74,7 @@ function* fetchDashboardData(data) {
         newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
         break;
       case 'DOCSOUT STAGER':
-        newPayload = {};
+        newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
         break;
       default:
         newPayload = {};
@@ -81,22 +89,26 @@ function* fetchDashboardData(data) {
       type: SET_STAGER_DOWNLOAD_CSV_URI,
       payload: downloadCSVUri,
     });
+
     if (newPayload != null) {
-      yield put({
-        type: SET_STAGER_DATA,
-        payload: {
-          error: false,
-          data: newPayload,
-        },
-      });
+      payload = {
+        error: false,
+        data: newPayload,
+      };
+    } else {
+      payload = {
+        error: false,
+      };
     }
   } catch (e) {
+    payload = {
+      error: true,
+      message: 'Oops. There is some issue in fetching the data now. Try again later',
+    };
+  } finally {
     yield put({
       type: SET_STAGER_DATA,
-      payload: {
-        error: true,
-        message: 'Oops. There is some issue in fetching the data now. Try again later',
-      },
+      payload,
     });
   }
 }

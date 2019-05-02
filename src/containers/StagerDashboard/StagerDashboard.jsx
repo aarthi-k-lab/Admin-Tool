@@ -38,9 +38,9 @@ class StagerDashboard extends React.Component {
   onStatusCardClick(searchTerm, activeTile, activeTab) {
     const { getDashboardData, onCheckBoxClick, getDashboardCounts } = this.props;
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
-    const { activeSearchTerm, stager } = this.state;
+    const { stager } = this.state;
     const payload = {
-      activeSearchTerm,
+      activeSearchTerm: searchTerm,
       stager,
     };
     getDashboardData(payload);
@@ -77,6 +77,8 @@ class StagerDashboard extends React.Component {
     this.setState({
       activeSearchTerm: '',
       stager,
+      activeTile: '',
+      activeTab: '',
     });
     const payload = {
       activeSearchTerm: '',
