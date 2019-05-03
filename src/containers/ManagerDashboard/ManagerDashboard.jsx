@@ -71,7 +71,7 @@ class ManagerDashboard extends Component {
     }
     return (
       <>
-        <ContentHeader title="Manager Dashboard">
+        <ContentHeader title={selectedDashboard}>
           <DropDownSelect
             getDashboardItems={powerBIConstants}
             onChange={this.handleChange}
