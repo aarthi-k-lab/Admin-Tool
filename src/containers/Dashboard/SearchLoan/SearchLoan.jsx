@@ -57,6 +57,10 @@ class SearchLoan extends React.PureComponent {
     return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
   }
 
+  getFrontEndGroup() {
+    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
+  }
+
   getLoanActivityPath() {
     const { user } = this.props;
     const groups = user && user.groupList;
@@ -81,23 +85,29 @@ class SearchLoan extends React.PureComponent {
   }
 
   handleRowClick(payload) {
-    const { onSelectEval } = this.props;
     if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
-      onSelectEval(payload);
+      const { onSelectEval, onGetGroupName } = this.props;
+      let group = '';
       switch (payload.taskName) {
         case 'Underwriting':
+          group = 'BEUW';
           this.redirectPath = '/backend-evaluation';
           break;
         case 'Processing':
+          group = 'PROC';
           this.redirectPath = '/doc-processor';
           break;
         case 'Trial Modification':
         case 'Forbearance':
+          group = 'LA';
           this.redirectPath = this.getLoanActivityPath();
           break;
         default:
           this.redirectPath = this.getFrontEndPath();
+          group = this.getFrontEndGroup();
       }
+      onGetGroupName(group);
+      onSelectEval(payload);
       this.setState({ isRedirect: true });
     }
   }
@@ -283,6 +293,7 @@ SearchLoan.propTypes = {
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
@@ -311,6 +322,7 @@ const mapDispatchToProps = dispatch => ({
   onEndShift: operations.onEndShift(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
+  onGetGroupName: operations.onGetGroupName(dispatch),
 });
 
 const SearchLoanContainer = connect(
