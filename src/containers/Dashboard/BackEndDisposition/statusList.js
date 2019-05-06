@@ -86,6 +86,39 @@ const status = [
     labelDisplay: 'none',
     expanded: false,
   },
+  {
+    id: 'nsianiasfno543df34',
+    name: 'SECOND LOOK HANDOFF',
+    activities: [
+      {
+        id: 'sadsoisdfjjasjfoi',
+        activityName: 'Second Look Offshore Review Required',
+        verbiage: 'Select this option if you are an onshore agent requesting for offshore to review. Please ensure the Eval is Active and the most recent Resolution case is open and the resolution substatus is not in "Referral", "Referral KB" or "Tax Transcript Ordered".',
+      },
+      {
+        id: 'sfsa23oidjasoajejcajsd',
+        activityName: 'Second Look Offshore Team Lead Review Required',
+        verbiage: 'Select this option if you are an offshore agent and need assistance from your Team Lead to complete the task.',
+      },
+      {
+        id: '7489asjdwdfsidjoajejcaj83',
+        activityName: 'Second Look Onshore Review Required',
+        verbiage: 'Select this option if you are an offshore team lead and need an onshore review for further assistance.',
+      },
+      {
+        id: 'joajejcajojw489asjdwdfsid',
+        activityName: 'Second Look Onshore Team Lead Review Required',
+        verbiage: 'Select this option if you have a team lead onshore that will assist with certain activities.',
+      },
+      {
+        id: 'wedjoajejcaj837489asjdni',
+        activityName: 'Second Look Manager Review Required',
+        verbiage: 'Select this option if you are an onshore agent and need your manager\'s help to review a file.',
+      },
+    ],
+    labelDisplay: 'none',
+    expanded: false,
+  },
 ];
 
 export default function getStatus() {
