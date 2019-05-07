@@ -42,14 +42,11 @@ function* getComments(payload) {
 function* postComment(payload) {
   try {
     const response = yield call(Api.callPost, '/api/utility/comment', payload.payload);
-    const failedResponse = response ? Number.isSafeInteger(response) : [];
-    if (failedResponse && failedResponse.length > 0) {
+    if (response.status !== 200) {
       const snackBarData = {};
-      snackBarData.message = 'Order call failed for Eval ID(s): ';
+      snackBarData.message = 'Order call failed ';
       snackBarData.type = 'error';
       snackBarData.open = true;
-      const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
-      snackBarData.message += failedEvalIds.toString();
       yield call(fireSnackBar, snackBarData);
     } else {
       const snackBarData = {};
