@@ -18,6 +18,24 @@ const callGet = function callGet(endpoint, params = {}) {
     });
 };
 
+const callGetText = function callGetText(endpoint, params = {}) {
+  let headers = {};
+  if (!R.isEmpty(params)) {
+    headers = params;
+  }
+  return fetch(endpoint,
+    {
+      method: 'GET',
+      headers,
+    })
+    .then((response) => {
+      if (R.prop('ok', response)) {
+        return response.text();
+      }
+      return null;
+    });
+};
+
 const callPost = function callPost(endpoint, body, params = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -62,6 +80,7 @@ function put(endpoint, body, params = {}) {
 
 export {
   callGet,
+  callGetText,
   callPost,
   put,
 };

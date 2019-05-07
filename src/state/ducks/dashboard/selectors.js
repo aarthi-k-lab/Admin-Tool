@@ -36,9 +36,11 @@ const processStatus = state => R.pathOr(null, ['dashboard', 'processStatus'], st
 
 const processName = state => R.pathOr(null, ['dashboard', 'processName'], state);
 
-const getActivityDetails = state => R.pathOr(null, ['dashboard', 'loanActivityDetails'], state);
+// const getActivityDetails = state => R.pathOr(null, ['dashboard', 'loanActivityDetails'], state);
 const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
+
+const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
 const enableGetNext = state => (
   ((isFirstVisit(state)
@@ -65,6 +67,12 @@ const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.c
 
 const getChecklistErrorCode = R.pathOr('', ['dashboard', 'checklistErrorCode']);
 
+const getTrialHeader = state => (state.dashboard.trialHeader ? state.dashboard.trialHeader : null);
+const getTrialsDetail = state => (state.dashboard.trialsDetail ? state.dashboard.trialsDetail : []);
+const getTrialLetter = state => (state.dashboard.trialsLetter ? state.dashboard.trialsLetter : []);
+const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUnderwriting
+  ? state.dashboard.resultUnderwriting : {});
+
 const selectors = {
   enableEndShift,
   enableGetNext,
@@ -87,13 +95,18 @@ const selectors = {
   processId,
   processStatus,
   processName,
-  getActivityDetails,
+  // getActivityDetails,
   isAssigned,
   clearSearch,
   comments,
   groupName,
   getChecklistDiscrepancies,
   getChecklistErrorCode,
+  getTrialHeader,
+  getTrialsDetail,
+  getTrialLetter,
+  taskStatus,
+  resultUnderwriting,
 };
 
 export default selectors;

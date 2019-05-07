@@ -21,6 +21,12 @@ class Controls extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handlegetNext = this.handlegetNext.bind(this);
+    this.handleSentToUnderwriting = this.handleSentToUnderwriting.bind(this);
+  }
+
+  handleSentToUnderwriting() {
+    const { onSentToUnderwriting } = this.props;
+    onSentToUnderwriting();
   }
 
   handlegetNext() {
@@ -79,7 +85,7 @@ class Controls extends React.PureComponent {
       ? <EndShift disabled={!enableEndShift || !enableValidate} onClick={onEndShiftClick} />
       : null;
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
-      ? <SendToUnderwriting /> : null;
+      ? <SendToUnderwriting onClick={this.handleSentToUnderwriting} /> : null;
     const expand = <Expand onClick={onExpand} />;
     if (showAssign != null && !showAssign) {
       assign = <Assign />;
@@ -109,6 +115,7 @@ Controls.defaultProps = {
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
+  onSentToUnderwriting: () => { },
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
@@ -130,6 +137,7 @@ Controls.propTypes = {
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
+  onSentToUnderwriting: PropTypes.func,
   showAssign: PropTypes.bool,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
@@ -171,6 +179,7 @@ const mapDispatchToProps = dispatch => ({
   onEndShift: operations.onEndShift(dispatch),
   validateDispositionTrigger: operations.validateDispositionTrigger(dispatch),
   onAssignLoan: operations.onAssignLoan(dispatch),
+  onSentToUnderwriting: operations.onSentToUnderwriting(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

@@ -2,6 +2,7 @@ import {
   select,
   take,
   takeEvery,
+  // takeLast,
   all,
   call,
   fork,
@@ -20,7 +21,7 @@ import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
-import { mockData } from '../../../containers/LoanActivity/LoanActivity';
+// import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
   END_SHIFT,
   GET_NEXT,
@@ -51,8 +52,15 @@ import {
   USER_NOTIF_MSG,
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
-  GET_LOAN_ACTIVITY_DETAILS,
+  // GET_LOAN_ACTIVITY_DETAILS,
+  LOAD_TRIALS_SAGA,
+  LOAD_TRIALHEADER_RESULT,
+  LOAD_TRIALSDETAIL_RESULT,
+  LOAD_TRIALLETTER_RESULT,
+  SET_TASK_UNDERWRITING,
+  SET_TASK_UNDERWRITING_RESULT,
   GETNEXT_PROCESSED,
+  PUT_PROCESS_NAME,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -203,16 +211,17 @@ function* fetchChecklistDetailsForSearchResult(searchItem) {
   }
 }
 
-function* fetchLoanActivityDetails(evalDetails) {
-  const { payload } = evalDetails;
-  const groupList = yield select(loginSelectors.getGroupList);
-  const hasLoanActivityAccess = RouteAccess.hasLoanActivityAccess(groupList);
-  if (hasLoanActivityAccess) {
-    // Here we need to get data from actual api
-    const response = mockData(R.equals(payload.taskName, 'Trial Modification') ? 'Trial' : payload.taskName);
-    yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
-  }
-}
+// function* fetchLoanActivityDetails(evalDetails) {
+//   const { payload } = evalDetails;
+//   const groupList = yield select(loginSelectors.getGroupList);
+//   const hasLoanActivityAccess = RouteAccess.hasLoanActivityAccess(groupList);
+//   if (hasLoanActivityAccess) {
+//     // Here we need to get data from actual api
+//     const response = mockData(R.equals(payload.taskName,
+//  'Trial Modification') ? 'Trial' : payload.taskName);
+//     yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
+//   }
+// }
 
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
@@ -224,9 +233,10 @@ function* selectEval(searchItem) {
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
-  if (R.equals(evalDetails.taskName, 'Trial Modification') || R.equals(evalDetails.taskName, 'Forbearance')) {
-    yield call(fetchLoanActivityDetails, searchItem);
-  }
+  // if (R.equals(evalDetails.taskName, 'Trial Modification')
+  //  || R.equals(evalDetails.taskName, 'Forbearance')) {
+  //   yield call(fetchLoanActivityDetails, searchItem);
+  // }
   try {
     yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
@@ -568,8 +578,188 @@ function* assignLoan() {
   }
 }
 
+function* loadTrials(payload) {
+  const evalId = payload.payload;
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callGet, `/api/cmodtrial/TrialHeaderData?EvalId=${evalId}`);
+    if (response !== null) {
+      yield put({
+        type: LOAD_TRIALHEADER_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: LOAD_TRIALHEADER_RESULT,
+        payload: { statusCode: 404 },
+      });
+    }
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
+    yield put({ type: LOAD_TRIALHEADER_RESULT, payload: { e, valid: false } });
+  }
+  const trialHeader = yield select(selectors.getTrialHeader);
+  const isTrialHeader = trialHeader ? trialHeader.trialName : '';
+  if (isTrialHeader) {
+    yield put({ type: PUT_PROCESS_NAME, payload: isTrialHeader });
+    try {
+      yield put({ type: SHOW_LOADER });
+      const response = yield call(Api.callGet, `/api/cmodtrial/TrialDetailData?EvalId=${evalId}`);
+      if (response !== null) {
+        yield put({
+          type: LOAD_TRIALSDETAIL_RESULT,
+          payload: response,
+        });
+      } else {
+        yield put({
+          type: LOAD_TRIALSDETAIL_RESULT,
+          payload: { statusCode: 404 },
+        });
+      }
+      yield put({ type: HIDE_LOADER });
+    } catch (e) {
+      yield put({ type: LOAD_TRIALSDETAIL_RESULT, payload: { e, valid: false } });
+    }
+
+    try {
+      yield put({ type: SHOW_LOADER });
+      const response = yield call(Api.callGet, `/api/cmodtrial/LetterData?EvalId=${evalId}`);
+      if (response !== null) {
+        yield put({
+          type: LOAD_TRIALLETTER_RESULT,
+          payload: response,
+        });
+      } else {
+        yield put({
+          type: LOAD_TRIALLETTER_RESULT,
+          payload: { statusCode: 404 },
+        });
+      }
+      yield put({ type: HIDE_LOADER });
+    } catch (e) {
+      yield put({ type: LOAD_TRIALLETTER_RESULT, payload: { e, valid: false } });
+    }
+    const processStatus = yield select(selectors.processStatus);
+    const taskStatus = yield select(selectors.taskStatus);
+
+    let message = '';
+    if (taskStatus === 'Active' && (processStatus !== 'Completed' || trialHeader.resolutionStatus !== 'Closed')) {
+      message = 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
+        + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
+    }
+    yield put({
+      type: SET_TASK_UNDERWRITING_RESULT,
+      payload: {
+        level: 'error',
+        status: message,
+      },
+    });
+  } else {
+    yield put({
+      type: SET_TASK_UNDERWRITING_RESULT,
+      payload: {
+        level: 'error',
+        status: 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
+        + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
+      },
+    });
+  }
+}
+
+function* sentToUnderwriting() {
+  const taskId = yield select(selectors.taskId);
+  // const taskId = 1759963;
+  const taskStatus = yield select(selectors.taskStatus);
+  const evalId = yield select(selectors.evalId);
+  const trialHeader = yield select(selectors.getTrialHeader);
+  const resolutionId = trialHeader.resolutionId ? trialHeader.resolutionId : '0';
+  let caseStatus;
+  let evalStatus;
+  if (taskStatus === 'Active') {
+    const key = JSON.parse('{"Ocp-Apim-Subscription-Key": "d4a602747f6f455aaa925cc356e180b7"}');
+    try {
+      yield put({ type: SHOW_LOADER });
+      const response = yield call(Api.callGetText, `/api/enterprise/tkamsnetcore/Eval/Status?EvalId=${evalId}`, key);
+      evalStatus = response !== null ? response : '';
+
+      const response1 = yield call(Api.callGetText, `/api/enterprise/tkamsnetcore/Case/Status?CaseId=${resolutionId}`, key);
+      caseStatus = response1 !== null ? response1 : '';
+      yield put({ type: HIDE_LOADER });
+    } catch (e) {
+      yield put({
+        type: SET_TASK_UNDERWRITING_RESULT,
+        payload:
+        {
+          level: 'error',
+          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        },
+      });
+    }
+    // console.log('DATA: evalStatus, taskStatus, caseStatus
+    // ------------------', evalStatus, taskStatus, caseStatus);
+    // if (evalStatus && caseStatus) {
+    if (evalStatus === 'Active' && caseStatus === 'Open') {
+      try {
+        yield put({ type: SHOW_LOADER });
+        const payload = JSON.parse(`{ "finishTask": {
+          "taskId": "${taskId}", 
+          "status": " Send to Underwriting ",
+          "currentStatus": "Received" 
+        }}`);
+        const key1 = JSON.parse('{"Ocp-Apim-Subscription-Key": "36873b5c8cc347be8390dae6f4854098"}');
+        const response = yield call(Api.callPost, '/api/enterprise/enterprise/automationfinishtask/finishTask', payload, key1);
+        const statusCode = R.pathOr(null, ['finishTaskResponse', 'statusCode'], response);
+        if (response !== null && statusCode === '200') {
+          yield put({
+            type: SET_TASK_UNDERWRITING_RESULT,
+            payload: {
+              level: 'success',
+              status: 'Trail has been Sent to Underwriting',
+            },
+          });
+        } else {
+          yield put({
+            type: SET_TASK_UNDERWRITING_RESULT,
+            payload: {
+              level: 'error',
+              status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+            },
+          });
+        }
+        yield put({ type: HIDE_LOADER });
+      } catch (e) {
+        yield put({ type: SET_TASK_UNDERWRITING_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
+      }
+    } else {
+      const message = 'Unable to send back to Underwriting because either eval is not '
+      + 'in Active status or Resolution is not in Open status.';
+      yield put({
+        type: SET_TASK_UNDERWRITING_RESULT,
+        payload: {
+          level: 'error',
+          status: message,
+        },
+      });
+    }
+  } else {
+    const message = 'Unable to send back to Underwriting because Trial task is not active.';
+    yield put({
+      type: SET_TASK_UNDERWRITING_RESULT,
+      payload: { level: 'error', status: message },
+    });
+  }
+}
+
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
+}
+
+function* watchLoadTrials() {
+  yield takeEvery(LOAD_TRIALS_SAGA, loadTrials);
+}
+
+function* watchSentToUnderwriting() {
+  yield takeEvery(SET_TASK_UNDERWRITING, sentToUnderwriting);
 }
 
 export const TestExports = {
@@ -596,6 +786,8 @@ export const TestExports = {
   watchUnassignLoan,
   watchAssignLoan,
   watchValidateDispositon,
+  watchSentToUnderwriting,
+  watchLoadTrials,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -610,5 +802,7 @@ export const combinedSaga = function* combinedSaga() {
     watchUnassignLoan(),
     watchAssignLoan(),
     watchValidateDispositon(),
+    watchLoadTrials(),
+    watchSentToUnderwriting(),
   ]);
 };
