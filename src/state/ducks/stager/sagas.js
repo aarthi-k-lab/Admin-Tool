@@ -30,40 +30,18 @@ function* fetchDashboardCounts(data) {
       case 'UNDERWRITER STAGER':
         newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
         break;
-      // Mock
+      // Mock data
       case 'DOCSOUT STAGER':
         newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
         countData = newPayload.counts;
-        countData.forEach((item, index) => {
+        countData.forEach((item) => {
           // eslint-disable-next-line no-param-reassign
-          if (item.displayName === 'Completed') { item.data = item.data.filter((k, i) => i % 2 === 0); } else { item.data.splice(1, 1); }
-          item.data.forEach((subItem, subIndex) => {
-            if (index === 0 && subIndex === 0) {
-              item.data[subIndex] = {
-                ...subItem,
-                slaBreached: item.displayName !== 'Completed' ? 20 : null,
-                total: 11,
-              };
-            } else if (index === 0 && subIndex === 1) {
-              item.data[subIndex] = {
-                ...subItem,
-                slaBreached: item.displayName !== 'Completed' ? '01' : null,
-                total: 1,
-              };
-            } else if (index === 1 && subIndex === 0) {
-              item.data[subIndex] = {
-                ...subItem,
-                slaBreached: item.displayName !== 'Completed' ? 17 : null,
-                total: 17,
-              };
-            } else {
-              item.data[subIndex] = {
-                ...subItem,
-                slaBreached: item.displayName !== 'Completed' ? 11 : null,
-                total: '1',
-              };
-            }
-          });
+          if (item.displayName === 'Completed') {
+            item.data.splice(1, 1);
+            item.data[2].displayName = 'CURRENT REVIEW';
+          } else {
+            item.data[1].displayName = 'CURRENT REVIEW';
+          }
         });
         break;
       default:
