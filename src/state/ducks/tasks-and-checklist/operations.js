@@ -9,6 +9,10 @@ import {
   showOptionalTasks,
   validationDisplayAction,
   dispositionCommentAction,
+  deleteTask,
+  updateChecklist,
+  showDeleteTaskConfirmation,
+  resetDeleteTaskConfirmation,
 } from './actions';
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
@@ -36,6 +40,20 @@ const handleToggleInstructions = dispatch => () => dispatch(toggleInstructions()
 
 const handleShowOptionalTasks = dispatch => () => dispatch(showOptionalTasks());
 
+const handleShowDeleteTaskConfirmation = dispatch => (payload) => {
+  dispatch(showDeleteTaskConfirmation(payload));
+};
+
+const handleDeleteTask = dispatch => (shouldDeleteTask) => {
+  dispatch(deleteTask(shouldDeleteTask));
+};
+
+const handleUpdateChecklist = dispatch => (payload) => {
+  dispatch(updateChecklist(payload));
+};
+
+const resetDeleteTaskConfirmationValues = dispatch => () => dispatch(resetDeleteTaskConfirmation());
+
 const operations = {
   fetchChecklist,
   fetchNextChecklist,
@@ -44,8 +62,12 @@ const operations = {
   handleChecklistItemValueChange,
   handleToggleInstructions,
   handleShowOptionalTasks,
+  handleShowDeleteTaskConfirmation,
   triggerValidationDisplay,
   dispositionCommentTrigger,
+  handleDeleteTask,
+  handleUpdateChecklist,
+  resetDeleteTaskConfirmationValues,
 };
 
 export default operations;

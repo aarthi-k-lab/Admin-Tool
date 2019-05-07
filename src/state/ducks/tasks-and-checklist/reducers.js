@@ -20,6 +20,9 @@ import {
   DISP_COMMENT,
   EMPTY_DISPOSITION_COMMENT,
   STORE_OPTIONAL_TASKS,
+  SHOW_DELETE_TASK_CONFIRMATION,
+  DELETE_TASK,
+  RESET_DELETE_TASK,
 } from './types';
 
 const FAILED = 'failed';
@@ -39,6 +42,10 @@ const defaultState = {
   taskComment: {},
   showOptionalTasks: false,
   optionalTasks: [],
+  deleteTaskConfirmationDialog: {
+    isOpen: false,
+  },
+  shouldDeleteTask: false,
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -194,6 +201,26 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         dispositionComment: null,
+      };
+    }
+    case SHOW_DELETE_TASK_CONFIRMATION: {
+      const { payload: { deleteTaskConfirmationDialog } } = action;
+      return {
+        ...state,
+        deleteTaskConfirmationDialog,
+      };
+    }
+    case DELETE_TASK: {
+      const { payload: { shouldDeleteTask } } = action;
+      return {
+        ...state,
+        shouldDeleteTask,
+      };
+    }
+    case RESET_DELETE_TASK: {
+      return {
+        ...state,
+        shouldDeleteTask: defaultState.shouldDeleteTask,
       };
     }
     default:

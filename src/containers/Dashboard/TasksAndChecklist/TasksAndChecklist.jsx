@@ -49,6 +49,11 @@ class TasksAndChecklist extends React.PureComponent {
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
       user,
       showAssign,
+      isDialogOpen,
+      getDialogContent,
+      dialogTitle,
+      handleDeleteTask,
+      handleShowDeleteTaskConfirmation,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -74,6 +79,11 @@ class TasksAndChecklist extends React.PureComponent {
     return (
       <Checklist
         checklistItems={checklistItems}
+        dialogContent={getDialogContent}
+        dialogTitle={dialogTitle}
+        handleDeleteTask={handleDeleteTask}
+        handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
+        isDialogOpen={isDialogOpen}
         onChange={onChecklistChange}
         styleName="checklist"
         title={checklistTitle}
@@ -159,6 +169,9 @@ TasksAndChecklist.defaultProps = {
   noTasksFound: false,
   isTasksLimitExceeded: false,
   taskFetchError: false,
+  isDialogOpen: false,
+  dialogTitle: '',
+  getDialogContent: '',
 };
 
 TasksAndChecklist.propTypes = {
@@ -178,13 +191,18 @@ TasksAndChecklist.propTypes = {
   checklistTitle: PropTypes.string.isRequired,
   closeSnackBar: PropTypes.func.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
+  dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
+  getDialogContent: PropTypes.string,
+  handleDeleteTask: PropTypes.func.isRequired,
+  handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
+  isDialogOpen: PropTypes.bool,
   isTasksLimitExceeded: PropTypes.bool,
   message: PropTypes.string,
   noTasksFound: PropTypes.bool,
@@ -280,6 +298,9 @@ function mapStateToProps(state) {
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
     taskFetchError,
     user: loginSelectors.getUser(state),
+    isDialogOpen: selectors.isDialogOpen(state),
+    getDialogContent: selectors.getDialogContent(state),
+    dialogTitle: selectors.getDialogTitle(state),
   };
 }
 
@@ -287,6 +308,8 @@ function mapDispatchToProps(dispatch) {
   return {
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
     closeSnackBar: notificationOperations.closeSnackBar(dispatch),
+    handleDeleteTask: operations.handleDeleteTask(dispatch),
+    handleShowDeleteTaskConfirmation: operations.handleShowDeleteTaskConfirmation(dispatch),
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),

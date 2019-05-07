@@ -2,52 +2,77 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import Grid from '@material-ui/core/Grid';
-import AddTask from '../LeftTaskPane/AddTask';
-import DeleteTask from '../LeftTaskPane/DeleteTask';
-import Close from '../LeftTaskPane/Close';
-import TaskStatusIcon from '../TaskStatusIcon/TaskStatusIcon';
+import AddTask from './AddTask';
+import DeleteTask from './DeleteTask';
+import Close from './Close';
+import TaskStatusIcon from '../../TaskStatusIcon/TaskStatusIcon';
 import './OptionalTaskDetails.css';
 
 class OptionalTaskDetails extends React.Component {
   constructor(props) {
     super(props);
     const { tasks } = this.props;
-    const isTaskAdded = new Array(tasks.length);
     this.state = {
-      isTaskAdded: isTaskAdded.fill(false),
+      isTaskAdded: tasks.map(task => task.visibility),
+    };
+    this.changedTask = {
+      taskIdx: 0,
+      task: {},
     };
   }
 
-  onAddTask(index) {
-    this.modifyTaskList(index);
+  componentDidUpdate(prevProps) {
+    const { shouldDeleteTask, resetDeleteTaskConfirmation } = this.props;
+    const { taskIdx, task } = this.changedTask;
+    if (prevProps.shouldDeleteTask !== shouldDeleteTask) {
+      if (shouldDeleteTask) {
+        this.modifyTaskList(taskIdx, task);
+        resetDeleteTaskConfirmation();
+      }
+    }
   }
 
-  onDeleteTask(task, index) {
-    this.modifyTaskList(index);
+  deleteTask(taskIdx, task) {
+    this.changedTask = Object.assign({}, this.changedTask, { taskIdx, task });
+    const { handleShowDeleteTaskConfirmation } = this.props;
+    const payload = {
+      deleteTaskConfirmationDialog: {
+        title: 'DELETE TASK',
+        isOpen: true,
+        content: 'Deleting a task will delete all the associated checklist information. Do you like to proceed?',
+      },
+    };
+    handleShowDeleteTaskConfirmation(payload);
   }
 
-  modifyTaskList(taskIdx) {
+  modifyTaskList(taskIdx, task) {
+    const { updateChecklist } = this.props;
     const { isTaskAdded } = this.state;
     const isTaskAddedList = isTaskAdded;
     isTaskAddedList[taskIdx] = !isTaskAddedList[taskIdx];
     this.setState({
       isTaskAdded: isTaskAddedList,
     });
+    const payload = {
+      task: Object.assign({}, task, { visibility: isTaskAdded[taskIdx] }),
+      fieldName: 'visibility',
+    };
+    updateChecklist(payload);
   }
 
-  static renderDeleteIcon() {
+  renderDeleteIcon(index, task) {
     return (
       <DeleteTask
         disabled={false}
         margin={{ 'margin-left': '4.2rem' }}
-        onClick={() => this.onDeleteTask()}
+        onClick={() => this.deleteTask(index, task)}
         toolTipPosition="left"
       />
     );
   }
 
   render() {
-    const { tasks, onAddTaskClick } = this.props;
+    const { tasks, handleShowOptionalTasks } = this.props;
     const { isTaskAdded } = this.state;
     return (
         <>
@@ -57,6 +82,7 @@ class OptionalTaskDetails extends React.Component {
           {
             tasks.map((task, index) => (
               <Grid
+                key={`Grid${task.name}`}
                 container
                 spacing={0}
                 styleName="task-group"
@@ -70,13 +96,13 @@ class OptionalTaskDetails extends React.Component {
                 </Grid>
                 <Grid alignItems="center" container item xs={2}>
                   {
-                      isTaskAdded[index] ? this.constructor.renderDeleteIcon()
+                      isTaskAdded[index] ? this.renderDeleteIcon(index, task)
                         : (
                           <span styleName="optional-task-details">
                             <AddTask
                               disabled={false}
                               margin={{ 'margin-left': '3rem' }}
-                              onClick={() => this.onAddTask(index)}
+                              onClick={() => this.modifyTaskList(index, task)}
                               toolTipPosition="left"
                             />
                           </span>
@@ -86,14 +112,18 @@ class OptionalTaskDetails extends React.Component {
               </Grid>
             ))
           }
-          <Close disabled={false} onClick={() => onAddTaskClick()} />
+          <Close disabled={false} onClick={() => handleShowOptionalTasks()} />
         </>);
   }
 }
 
 OptionalTaskDetails.propTypes = {
-  onAddTaskClick: PropTypes.func.isRequired,
+  handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  handleShowOptionalTasks: PropTypes.func.isRequired,
+  resetDeleteTaskConfirmation: PropTypes.func.isRequired,
+  shouldDeleteTask: PropTypes.bool.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape).isRequired,
+  updateChecklist: PropTypes.func.isRequired,
 };
 
 export default OptionalTaskDetails;
