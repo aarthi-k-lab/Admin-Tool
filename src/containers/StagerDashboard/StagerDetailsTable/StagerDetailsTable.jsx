@@ -14,7 +14,7 @@ import renderSkeletonLoader from './TableSkeletonLoader';
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = {};
     this.renderDataTable = this.renderDataTable.bind(this);
   }
 
@@ -44,7 +44,7 @@ class StagerDetailsTable extends React.PureComponent {
         <Grid item xs={8}>
           {noTableData ? null : (<><ListIcon styleName="no-preview-icon" />
             <br /></>)}
-          <span styleName="no-preview-message">{ noTableData ? 'No Loans Present' : 'No list selected to preview' }</span>
+          <span styleName="no-preview-message">{noTableData ? 'No Loans Present' : 'No list selected to preview'}</span>
         </Grid>
       </Grid>
     );
@@ -72,20 +72,35 @@ class StagerDetailsTable extends React.PureComponent {
                   <br />
                   <span styleName="details-table-document-status">{data.stagerTaskStatus && data.stagerTaskStatus.toUpperCase()}</span>
                 </Grid>
-                <Grid item xs={4} />
-                <Grid item xs={4}>
+                <Grid item xs={8}>
                   {
-                data.isManualOrder
-                  ? (
-                    <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-order-btn" variant="contained">
-                      { 'ORDER' }
-                    </Button>
-                  ) : null
-              }
+                    data.isManualOrder && data.stagerTaskType !== 'Current Review'
+                      ? (
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-btn" variant="contained">
+                          {'ORDER'}
+                        </Button>
+                      ) : null
+                  }
+                  {
+                    data.isManualOrder && data.stagerTaskType === 'Current Review'
+                      ? (
+                        <>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
+                            CONTINUE REVIEW
+                          </Button>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
+                            REJECT
+                          </Button>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
+                            SENT FOR REJECT
+                          </Button>
+                        </>
+                      ) : null
+                  }
                   <a download href={downloadCSVUri}>
                     <Button disabled={R.isNil(data.tableData) || (R.isEmpty(data.tableData))} styleName="details-table-download-btn">
                       <DownloadIcon styleName="details-table-download-icon" />
-                      { ' DOWNLOAD' }
+                      {' DOWNLOAD'}
                     </Button>
                   </a>
                 </Grid>
@@ -104,7 +119,7 @@ class StagerDetailsTable extends React.PureComponent {
             this.renderDataTable()
           ) : null
         }
-        </>
+      </>
     );
   }
 }

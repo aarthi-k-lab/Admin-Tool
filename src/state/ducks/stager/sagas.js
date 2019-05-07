@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable no-param-reassign */
 import {
   takeEvery,
@@ -79,8 +80,12 @@ function* fetchDashboardData(data) {
       case 'UNDERWRITER STAGER':
         newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
         break;
+      // Mock Data
       case 'DOCSOUT STAGER':
         newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
+        if (newPayload !== null) {
+          newPayload.stagerTaskType = 'Current Review';
+        }
         break;
       default:
         newPayload = {};
