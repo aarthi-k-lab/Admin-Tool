@@ -7,41 +7,11 @@ import DownloadIcon from '@material-ui/icons/SaveAlt';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
-import Typography from '@material-ui/core/Typography';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
-import Checkbox from '@material-ui/core/Checkbox';
-import WarningIcon from '@material-ui/icons/Warning';
-// import Loader from 'components/Loader/Loader';
 import CustomReactTable from 'components/CustomReactTable';
+import StagerPopup from '../StagerPopUp';
+// import Loader from 'components/Loader/Loader';
 import renderSkeletonLoader from './TableSkeletonLoader';
 
-const mockArray = [
-  {
-    id: 1,
-    loannumber: 2345675641234234567,
-    loantext: "EvalSubstatus should be 'Sent For Reject'",
-    loancheck: true,
-
-  },
-  {
-    id: 2,
-    loannumber: 2345675641234234567,
-    loantext: "Resolutionstatus should be 'Rejected'",
-    loancheck: true,
-
-  },
-  {
-    id: 3,
-    loannumber: 2345675641234234567,
-    loantext: "EvalSubstatus should be 'Sent For Reject'",
-    loancheck: false,
-
-  },
-];
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -150,57 +120,9 @@ class StagerDetailsTable extends React.PureComponent {
             this.renderDataTable()
           ) : null
         }
+        { data.isManualOrder && data.stagerTaskType === 'Current Review' ? (<StagerPopup />) : null }
 
-
-        <div>
-          <ExpansionPanel styleName="card-header">
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName="card-header-title" />} styleName="card-title">
-              <Typography styleName="card-header-title">2/5 Loans ordered successfully [SENT FOR REJECT]</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails styleName="card-success-title">
-              <Typography styleName="loans-ordered loans-font ">
-                <span styleName="sucessedloan">2</span>
-              </Typography>
-              <Typography styleName="loans-font"> Loans ordered successfully</Typography>
-              <RemoveRedEyeIcon styleName="eyeicon loans-font" />
-            </ExpansionPanelDetails>
-            <ExpansionPanelDetails styleName="card-failure-title">
-              <Typography styleName="loans-ordered loans-font ">
-                <span styleName="failedloan">3</span>
-              </Typography>
-              <Typography styleName="loans-font"> Loans Failed</Typography>
-              <Button color="primary" styleName="btnretry" variant="contained">
-                Retry
-              </Button>
-            </ExpansionPanelDetails>
-            {
-              mockArray.map(loanDetails => (
-                <ExpansionPanelDetails styleName="card-failure-title">
-                  <Grid
-                    container
-                  >
-                    <Grid item xs={1}>
-                      <Checkbox checked={loanDetails.loancheck} style={{ height: '15px' }} />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <span styleName="loans-font">{loanDetails.loannumber}</span>
-                    </Grid>
-                    <Grid item xs={7}>
-                      <span styleName="loans-font alert-font">
-                        <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
-                        {loanDetails.loantext}
-                      </span>
-                    </Grid>
-                  </Grid>
-                </ExpansionPanelDetails>
-              ))
-            }
-
-          </ExpansionPanel>
-        </div>
-
-
-      </>
+  </>
     );
   }
 }
