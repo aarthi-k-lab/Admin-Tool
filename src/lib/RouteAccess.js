@@ -59,7 +59,7 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['trial', 'trial-mgr'],
+  groups: ['allaccess', 'trial', 'trial-mgr'],
 };
 
 const links = [
@@ -73,6 +73,8 @@ const links = [
   loanActivity,
 ];
 
+const noIcons = ['/loan-activity'];
+
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
     return true;
@@ -85,7 +87,7 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
 }
 
 function shouldShowIcon(link, userGroups) {
-  return hasGroup(link.groups, userGroups, link.notInGroup);
+  return R.indexOf(link.path, noIcons) === -1 && hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendUnderwriterAccess(groups) {

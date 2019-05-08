@@ -24,6 +24,10 @@ const TOGGLE_INSTRUCTIONS = 'app/tasks-and-checklist/TOGGLE_INSTRUCTIONS';
 const SHOW_OPTIONAL_TASKS = 'app/tasks-and-checklist/SHOW_OPTIONAL_TASKS';
 const DISP_COMMENT_SAGA = 'app/tasks-and-checklist/DISP_COMMENT_SAGA';
 const EMPTY_DISPOSITION_COMMENT = 'app/tasks-and-checklist/EMPTY_DISPOSITION_COMMENT';
+const DELETE_TASK = 'app/tasks-and-checklist/DELETE_TASK';
+const UPDATE_CHECKLIST = 'app/tasks-and-checklist/UPDATE_CHECKLIST';
+const SHOW_DELETE_TASK_CONFIRMATION = 'app/tasks-and-checklist/SHOW_DELETE_TASK_CONFIRMATION';
+const RESET_DELETE_TASK = 'app/tasks-and-checklist/RESET_DELETE_TASK';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -52,4 +56,8 @@ export {
   VALIDATION_DISPLAY,
   DISP_COMMENT_SAGA,
   EMPTY_DISPOSITION_COMMENT,
+  DELETE_TASK,
+  UPDATE_CHECKLIST,
+  SHOW_DELETE_TASK_CONFIRMATION,
+  RESET_DELETE_TASK,
 };

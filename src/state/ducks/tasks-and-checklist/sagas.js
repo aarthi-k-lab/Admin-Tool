@@ -25,6 +25,7 @@ import {
   STORE_MISC_TASK_COMMENT,
   DISP_COMMENT_SAGA,
   DISP_COMMENT,
+  UPDATE_CHECKLIST,
 } from './types';
 import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
@@ -132,6 +133,8 @@ function filterOptionalTasks(allTasks) {
   const isOptionalTask = R.pathEq(['taskBlueprint', 'type'], 'user-triggered');
   const getOptionalTasks = R.compose(
     R.map(task => ({
+      id: R.prop('_id', task),
+      visibility: R.propOr(false, 'visibility', task),
       name: R.pathOr('', ['taskBlueprint', 'name'], task),
       description: R.pathOr('', ['taskBlueprint', 'description'], task),
       taskCode: R.pathOr('', ['taskBlueprint', 'taskCode'], task),
@@ -353,6 +356,28 @@ function* handleChecklistItemChange(action) {
   }
 }
 
+function* updateChecklist(action) {
+  try {
+    const { task, fieldName } = action.payload;
+    const requestBody = {
+      // eslint-disable-next-line no-underscore-dangle
+      id: task.id ? task.id : task._id,
+    };
+    const response = yield call(Api.put, `/api/task-engine/hierarchy/update?fieldName=${fieldName}&fieldValue=${task.visibility}`, requestBody);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    } else {
+      yield put({
+        type: GET_TASKS_SAGA,
+        payload: { depth: 3 },
+      });
+    }
+  } catch (e) {
+    yield call(handleSaveChecklistError, e);
+  }
+}
+
 function* watchChecklistItemChange() {
   yield takeEvery(HANDLE_CHECKLIST_ITEM_CHANGE, handleChecklistItemChange);
 }
@@ -377,6 +402,10 @@ function* watchDispositionComment() {
   yield takeEvery(DISP_COMMENT_SAGA, postDispositionComment);
 }
 
+function* watchUpdateChecklist() {
+  yield takeEvery(UPDATE_CHECKLIST, updateChecklist);
+}
+
 export const TestExports = {
   watchGetTasks,
 };
@@ -389,5 +418,6 @@ export function* combinedSaga() {
     watchGetPrevChecklist(),
     watchGetTasks(),
     watchDispositionComment(),
+    watchUpdateChecklist(),
   ]);
 }

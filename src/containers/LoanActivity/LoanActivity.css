@@ -28,10 +28,6 @@
   background: #555;
 }
 
-.loan-activity {
-  align-self: stretch;
-}
-
 .status-details-parent {
   display: flex;
   flex-direction: column;
@@ -40,9 +36,6 @@
 }
 
 .status-details {
-  flex-grow: 1;
-  flex-basis: 0;
-  overflow: auto;
   width: 60%;
   margin: auto;
 }
@@ -51,10 +44,4 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
-}
-
-.doc-widget {
-  flex-grow: 1;
-  flex-basis: 0;
-  overflow: auto;
 }

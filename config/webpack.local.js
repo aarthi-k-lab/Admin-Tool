@@ -145,6 +145,22 @@ const config = merge(
             '^/api/utility': '',
           },
         },
+        '/api/cmodtrial': {
+          target: 'https://cmodtrialdev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/cmodtrial': '',
+          },
+        },   
+        '/api/enterprise': {
+          target: 'https://mrcooperdev.azure-api.net',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/enterprise': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

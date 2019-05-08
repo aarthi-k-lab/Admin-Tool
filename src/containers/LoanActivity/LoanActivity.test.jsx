@@ -9,6 +9,6 @@ describe('<LoanActivity />', () => {
       <LoanActivity />,
     );
     const grid = wrapper.find('div');
-    expect(grid).toHaveLength(2);
+    expect(grid).toHaveLength(1);
   });
 });
