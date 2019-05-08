@@ -103,14 +103,29 @@ class StagerDetailsTable extends React.PureComponent {
                   <br />
                   <span styleName="details-table-document-status">{data.stagerTaskStatus && data.stagerTaskStatus.toUpperCase()}</span>
                 </Grid>
-                <Grid item xs={4} />
-                <Grid item xs={4}>
+                <Grid item xs={8}>
                   {
-                    data.isManualOrder
+                    data.isManualOrder && data.stagerTaskType !== 'Current Review'
                       ? (
-                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-order-btn" variant="contained">
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-btn" variant="contained">
                           {'ORDER'}
                         </Button>
+                      ) : null
+                  }
+                  {
+                    data.isManualOrder && data.stagerTaskType === 'Current Review'
+                      ? (
+                        <>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
+                            CONTINUE REVIEW
+                          </Button>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
+                            REJECT
+                          </Button>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
+                            SENT FOR REJECT
+                          </Button>
+                        </>
                       ) : null
                   }
                   <a download href={downloadCSVUri}>

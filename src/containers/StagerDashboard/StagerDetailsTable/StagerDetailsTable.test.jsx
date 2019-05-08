@@ -16,8 +16,8 @@ describe('<StagerDetailsTable />', () => {
     const wrapper = shallow(
       <TestExports.StagerDetailsTable data={data} onOrderClick={onOrderClick} selectedData={[]} />,
     );
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(4);
-    expect(wrapper.find('WithStyles(Button)')).toHaveLength(2);
+    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
+    expect(wrapper.find('WithStyles(Button)')).toHaveLength(3);
     wrapper.find('WithStyles(Button)').at(0).simulate('Click');
     expect(onOrderClick.mock.calls).toHaveLength(1);
     expect(wrapper.find('CustomReactTable')).toHaveLength(1);
