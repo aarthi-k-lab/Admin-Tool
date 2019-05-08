@@ -42,9 +42,9 @@ function* getComments(payload) {
 function* postComment(payload) {
   try {
     const response = yield call(Api.callPost, '/api/utility/comment', payload.payload);
-    if (response.status !== 200) {
+    if (!response) {
       const snackBarData = {};
-      snackBarData.message = 'Order call failed ';
+      snackBarData.message = 'Something went wrong!!';
       snackBarData.type = 'error';
       snackBarData.open = true;
       yield call(fireSnackBar, snackBarData);
