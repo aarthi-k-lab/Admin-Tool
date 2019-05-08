@@ -176,14 +176,22 @@ class StagerDetailsTable extends React.PureComponent {
             {
               mockArray.map(loanDetails => (
                 <ExpansionPanelDetails styleName="card-failure-title">
-                  <Typography styleName="loans-ordered loans-font ">
-                    <Checkbox checked={loanDetails.loancheck} style={{ height: '15px' }} />
-                  </Typography>
-                  <Typography styleName="loans-font loan-number">{loanDetails.loannumber}</Typography>
-                  <Typography styleName="loans-font alert-font">
-                    <WarningIcon style={{ fontSize: '15px' }} styleName="alert-font" />
-                    {loanDetails.loantext}
-                  </Typography>
+                  <Grid
+                    container
+                  >
+                    <Grid item xs={1}>
+                      <Checkbox checked={loanDetails.loancheck} style={{ height: '15px' }} />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <span styleName="loans-font">{loanDetails.loannumber}</span>
+                    </Grid>
+                    <Grid item xs={7}>
+                      <span styleName="loans-font alert-font">
+                        <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
+                        {loanDetails.loantext}
+                      </span>
+                    </Grid>
+                  </Grid>
                 </ExpansionPanelDetails>
               ))
             }

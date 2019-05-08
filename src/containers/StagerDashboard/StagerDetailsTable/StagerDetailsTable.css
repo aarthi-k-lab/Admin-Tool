@@ -87,7 +87,7 @@
 }
 
 .card-header {
-width: 50rem;
+  width: 75rem;
  }
  .card-title {
   background-color: #464444 !important;
@@ -104,7 +104,9 @@ width: 50rem;
 
  .card-failure-title {
   background-color:white !important;
-  padding: 10px 24px 0px !important; 
+  padding: 10px 24px 2px !important; 
+  max-height: 100px;
+  overflow: auto;
 }
 
 .eyeicon {
@@ -148,5 +150,5 @@ width: 50rem;
 }
 
 .loan-number {
-  width: 15rem;
+  width: 30rem !important;
 }
