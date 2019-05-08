@@ -85,3 +85,68 @@
   font-size: 0.7rem;
   padding: 0.2rem;
 }
+
+.card-header {
+width: 50rem;
+ }
+ .card-title {
+  background-color: #464444 !important;
+ }
+
+ .card-header-title {
+   color: white !important;
+ }
+
+ .card-success-title {
+   background-color: rgb(230, 230, 230) !important;
+   height: 3rem;
+ }
+
+ .card-failure-title {
+  background-color:white !important;
+  padding: 10px 24px 0px !important; 
+}
+
+.eyeicon {
+  position: relative;
+  left: 23rem;
+}
+
+.loans-ordered {
+  margin-right: 1.5rem !important; 
+}
+
+.loans-font {
+  font-size: 15px !important;
+}
+
+.sucessedloan {
+  border: 3px solid green;
+  background-color: green;
+  color: white;
+  border-radius: 3rem;
+}
+
+.failedloan {
+  border: 3px solid red;
+  background-color: red;
+  color: white;
+  border-radius: 3rem;
+}
+ 
+.btnretry {
+  position: relative;
+  left: 29rem;
+}
+
+.success-icon.success-icon {
+  color: var(--light-green-a700);
+}
+
+.alert-font {
+  color: red !important;
+}
+
+.loan-number {
+  width: 15rem;
+}
