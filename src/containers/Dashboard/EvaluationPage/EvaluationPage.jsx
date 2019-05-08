@@ -18,7 +18,7 @@ function isNotLoanActivity(group) {
   return group !== DashboardModel.LOAN_ACTIVITY;
 }
 function isTrialOrForbearance(taskName) {
-  return taskName === 'Trial Modification' ? 'Trial' : 'Forbearance';
+  return taskName && taskName.includes('Trial') ? 'Trial ' : 'Forbearance ';
 }
 class EvaluationPage extends React.PureComponent {
   renderDashboard() {

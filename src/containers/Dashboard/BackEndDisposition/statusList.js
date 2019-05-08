@@ -15,7 +15,7 @@ const status = [
     activities: [
       { id: 'ajsoidwenewdendjasoajejc', activityName: 'Send For QC Review', verbiage: 'If the review results in a potential approval, then select this option to handoff for final QC and approval review. Ensure the status of Remedy is in either a Sent for Approval resolution status with an Active Eval. Please note for Loan Modification and Forgiveness Modification the resolution cases should be in a Locked Resolution Status and for Government Trial the Resolution Status should be Closed.' },
       { id: 'jasjfoisawdeddsoij', activityName: 'Approval', verbiage: 'If the modification is approved then ensure the Eval Status is Approved and the resolution status is Closed. Please note for a Loan Modification and Forgiveness Modification case(s) ensure the resolution status is in Sent for Approval.' },
-      { id: 'ajsoidwedjasoajejc', activityName: 'Reject', verbiage: 'The Eval status should be "Rejected" and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.' },
+      { id: 'ajsoidwedjasoajejc', activityName: 'Reject', verbiage: 'The Eval status should be "Active" and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.' },
     ],
     labelDisplay: 'none',
     expanded: false,
@@ -82,15 +82,38 @@ const status = [
         activityName: 'Litigation',
         verbiage: 'Select this option if the loan requires the litigation team to review the file. The resolution status should be open and the substatus should be Litigation Handling',
       },
+    ],
+    labelDisplay: 'none',
+    expanded: false,
+  },
+  {
+    id: 'nsianiasfno543df34',
+    name: 'SECOND LOOK HANDOFF',
+    activities: [
       {
-        id: '489asjdwdfsidjoajejcaj837',
-        activityName: 'Sent for Reject',
-        verbiage: 'The Eval status should be Active and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.',
+        id: 'sadsoisdfjjasjfoi',
+        activityName: 'Second Look Offshore Review Required',
+        verbiage: 'Select this option if you are an onshore agent requesting for offshore to review. Please ensure the Eval is Active and the most recent Resolution case is open and the resolution substatus is not in "Referral", "Referral KB" or "Tax Transcript Ordered".',
       },
       {
-        id: 'jdwdfsidjoajejcaj837489as',
-        activityName: 'Send to Underwriting',
-        verbiage: 'Select this option if you are an agent reviewing "Sent for Reject" loans and want to hand back to the underwriter to re-review. Ensure you provide comments and that the Eval status is "Active", the Eval substatus is in "Referral" or "Referral KB" and the Resolution case is in \'open\' and the resolution substatus is in "Escrow KB.',
+        id: 'sfsa23oidjasoajejcajsd',
+        activityName: 'Second Look Offshore Team Lead Review Required',
+        verbiage: 'Select this option if you are an offshore agent and need assistance from your Team Lead to complete the task.',
+      },
+      {
+        id: '7489asjdwdfsidjoajejcaj83',
+        activityName: 'Second Look Onshore Review Required',
+        verbiage: 'Select this option if you are an offshore team lead and need an onshore review for further assistance.',
+      },
+      {
+        id: 'joajejcajojw489asjdwdfsid',
+        activityName: 'Second Look Onshore Team Lead Review Required',
+        verbiage: 'Select this option if you have a team lead onshore that will assist with certain activities.',
+      },
+      {
+        id: 'wedjoajejcaj837489asjdni',
+        activityName: 'Second Look Manager Review Required',
+        verbiage: 'Select this option if you are an onshore agent and need your manager\'s help to review a file.',
       },
     ],
     labelDisplay: 'none',

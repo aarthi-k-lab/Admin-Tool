@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const DialogBox = props => (
+const ConfirmationDialogBox = props => (
     <>
       <Dialog
         aria-describedby="alert-dialog-description"
@@ -22,8 +22,11 @@ const DialogBox = props => (
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus color="primary" onClick={props.onClose}>
-                OK
+          <Button autoFocus color="primary" onClick={() => props.onClose(false)}>
+                No
+          </Button>
+          <Button autoFocus onClick={() => props.onClose(true)}>
+                Yes
           </Button>
         </DialogActions>
       </Dialog>
@@ -31,4 +34,4 @@ const DialogBox = props => (
 );
 
 
-export default DialogBox;
+export default ConfirmationDialogBox;

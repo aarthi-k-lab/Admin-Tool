@@ -7,11 +7,11 @@ import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
-import OptionalTaskDetails from 'components/Tasks/OptionalTaskDetails';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
+import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
-import AddTask from './AddTask';
+import AddTask from '../Tasks/OptionalTask/AddTask';
 
 const ALL = 'All';
 const PENDING = 'Pending';
@@ -97,11 +97,14 @@ class LeftTaskPane extends React.Component {
     const { tasksStatus, isCollapsed } = this.state;
     const {
       dataLoadStatus,
-      onAddTaskClick,
+      handleShowOptionalTasks,
       onSubTaskClick,
+      resetDeleteTaskConfirmation,
       selectedTaskId,
       optionalTasks,
       tasks,
+      updateChecklist,
+      handleShowDeleteTaskConfirmation, shouldDeleteTask,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -125,7 +128,7 @@ class LeftTaskPane extends React.Component {
                     taskStatus={tasksStatus}
                   />
                   { shouldShowAddTaskButton(optionalTasks)
-                    ? <AddTask onClick={() => onAddTaskClick()} />
+                    ? <AddTask onClick={() => handleShowOptionalTasks()} />
                     : <div />
                   }
                 </>
@@ -145,10 +148,16 @@ class LeftTaskPane extends React.Component {
           </span>
         </div>
         <LeftParentTasks
+          handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
+          handleShowOptionalTasks={handleShowOptionalTasks}
           isCollapsed={isCollapsed}
           onSubTaskClick={onSubTaskClick}
+          optionalTasks={optionalTasks}
+          resetDeleteTaskConfirmation={resetDeleteTaskConfirmation}
           selectedTaskId={selectedTaskId}
+          shouldDeleteTask={shouldDeleteTask}
           tasks={tasks}
+          updateChecklist={updateChecklist}
         />
       </>
     );
@@ -157,7 +166,8 @@ class LeftTaskPane extends React.Component {
   render() {
     const { width } = this.state;
     const {
-      className, optionalTasks, showOptionalTasks, onAddTaskClick,
+      className, handleShowOptionalTasks, optionalTasks, showOptionalTasks, updateChecklist,
+      handleShowDeleteTaskConfirmation, shouldDeleteTask, resetDeleteTaskConfirmation,
     } = this.props;
 
     return (
@@ -168,7 +178,16 @@ class LeftTaskPane extends React.Component {
           styleName="taskpane"
         >
           { showOptionalTasks
-            ? <OptionalTaskDetails onAddTaskClick={onAddTaskClick} tasks={optionalTasks} />
+            ? (
+              <OptionalTaskDetails
+                handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
+                handleShowOptionalTasks={handleShowOptionalTasks}
+                resetDeleteTaskConfirmation={resetDeleteTaskConfirmation}
+                shouldDeleteTask={shouldDeleteTask}
+                tasks={optionalTasks}
+                updateChecklist={updateChecklist}
+              />
+            )
             : this.renderContent() }
         </div>
       </div>
@@ -181,14 +200,18 @@ LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
-  onAddTaskClick: PropTypes.func.isRequired,
+  handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  handleShowOptionalTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
+  resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string,
+  shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel).isRequired,
+  updateChecklist: PropTypes.func.isRequired,
 };
 
 LeftTaskPane.defaultProps = {
