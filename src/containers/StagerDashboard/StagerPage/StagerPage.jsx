@@ -28,7 +28,7 @@ class StagerPage extends React.PureComponent {
     const {
       activeTab, activeTile, downloadCSVUri,
       counts, loading, onStatusCardClick,
-      tableData, onCheckBoxClick, onOrderClick, onSelectAll, selectedData,
+      tableData, onCheckBoxClick, onOrderClick, onDocsOutClick, onSelectAll, selectedData,
       refreshDashboard, stager,
     } = this.props;
     return (
@@ -63,6 +63,7 @@ class StagerPage extends React.PureComponent {
               downloadCSVUri={downloadCSVUri}
               loading={loading}
               onCheckBoxClick={onCheckBoxClick}
+              onDocsOutClick={onDocsOutClick}
               onOrderClick={onOrderClick}
               onSelectAll={onSelectAll}
               selectedData={selectedData}
@@ -102,6 +103,7 @@ StagerPage.propTypes = {
   downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onDocsOutClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,

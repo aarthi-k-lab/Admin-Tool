@@ -19,6 +19,11 @@ import WarningIcon from '@material-ui/icons/Warning';
 import CustomReactTable from 'components/CustomReactTable';
 import renderSkeletonLoader from './TableSkeletonLoader';
 
+
+const CONTINUE_REVIEW = 'CONTINUE REVIEW';
+const SENT_FOR_REJECT = 'SENT FOR REJECT';
+const REJECT = 'REJECT';
+
 const mockArray = [
   {
     id: 1,
@@ -84,7 +89,7 @@ class StagerDetailsTable extends React.PureComponent {
   render() {
     const {
       data, loading, downloadCSVUri,
-      onOrderClick, selectedData,
+      onOrderClick, selectedData, onDocsOutClick,
     } = this.props;
     return (
       <>
@@ -116,14 +121,14 @@ class StagerDetailsTable extends React.PureComponent {
                     data.isManualOrder && data.stagerTaskType === 'Current Review'
                       ? (
                         <>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
-                            CONTINUE REVIEW
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
+                            {CONTINUE_REVIEW}
                           </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
-                            REJECT
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, REJECT)} styleName="details-table-btn" variant="contained">
+                            {REJECT}
                           </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} styleName="details-table-btn" variant="contained">
-                            SENT FOR REJECT
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, SENT_FOR_REJECT)} styleName="details-table-btn" variant="contained">
+                            {SENT_FOR_REJECT}
                           </Button>
                         </>
                       ) : null
@@ -214,6 +219,7 @@ StagerDetailsTable.propTypes = {
   downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onDocsOutClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
