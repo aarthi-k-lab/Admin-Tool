@@ -6,6 +6,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
 import Checkbox from '@material-ui/core/Checkbox';
+import PropTypes from 'prop-types';
 import WarningIcon from '@material-ui/icons/Warning';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -45,14 +46,12 @@ class StagerPopup extends React.PureComponent {
 
   getTotalloanCount() {
     const { mockArray } = this.state;
+    const { operationDetails } = this.props;
     let successcount = 0;
-    // eslint-disable-next-line no-unused-vars
-    let totalloanCount = 0;
     mockArray.forEach((loanDetails) => {
-      totalloanCount += loanDetails.loanCount;
       successcount += loanDetails.loanStatus === 'success' ? loanDetails.loanCount : 0;
     });
-    return (` ${successcount} / ${totalloanCount} Loans ordered successfully [SENT FOR REJECT]`);
+    return (` ${successcount} / ${operationDetails.totalCount} Loans ordered successfully [${operationDetails.type}]`);
   }
 
   render() {
@@ -68,12 +67,12 @@ class StagerPopup extends React.PureComponent {
 
           {mockArray.map(loanDetails => (
             <>
-              <ExpansionPanelDetails styleName="card-success-title">
+              <ExpansionPanelDetails styleName={loanDetails.loanStatus === 'success' ? 'card-success-title' : 'card-failure-title'}>
                 <Grid
                   container
                 >
                   <Grid item xs={1}>
-                    <span styleName="sucessedloan">{loanDetails.loanCount}</span>
+                    <span styleName={loanDetails.loanStatus === 'success' ? 'sucessedloan' : 'failedloan'}>{loanDetails.loanCount}</span>
                   </Grid>
                   <Grid item xs={10}>
                     <span styleName="loans-font">{this.getLoanStatus(loanDetails.loanStatus)}</span>
@@ -121,5 +120,9 @@ class StagerPopup extends React.PureComponent {
     );
   }
 }
+
+StagerPopup.propTypes = {
+  operationDetails: PropTypes.node.isRequired,
+};
 
 export default StagerPopup;

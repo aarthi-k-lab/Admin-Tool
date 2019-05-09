@@ -27,8 +27,21 @@ const REJECT = 'REJECT';
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isOperationRequested: false,
+    };
     this.renderDataTable = this.renderDataTable.bind(this);
+  }
+
+  handleOperationOnClick(event) {
+    const { selectedData } = this.props;
+    this.setState({
+      isOperationRequested: true,
+      responseDetails: {
+        type: event.currentTarget.textContent,
+        totalCount: selectedData.length,
+      },
+    });
   }
 
   renderDataTable() {
@@ -43,6 +56,7 @@ class StagerDetailsTable extends React.PureComponent {
       />
     );
   }
+
 
   static renderUnselectedMessage(noTableData = false) {
     return (
@@ -68,6 +82,7 @@ class StagerDetailsTable extends React.PureComponent {
       data, loading, downloadCSVUri,
       onOrderClick, selectedData, onDocsOutClick,
     } = this.props;
+    const { isOperationRequested, responseDetails } = this.state;
     return (
       <>
         {
@@ -98,6 +113,7 @@ class StagerDetailsTable extends React.PureComponent {
                     data.isManualOrder && data.stagerTaskType === 'Current Review'
                       ? (
                         <>
+<<<<<<< HEAD
                           <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
                             {CONTINUE_REVIEW}
                           </Button>
@@ -106,6 +122,16 @@ class StagerDetailsTable extends React.PureComponent {
                           </Button>
                           <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, SENT_FOR_REJECT)} styleName="details-table-btn" variant="contained">
                             {SENT_FOR_REJECT}
+=======
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={event => this.handleOperationOnClick(event)} styleName="details-table-btn" variant="contained">
+                            CONTINUE REVIEW
+                          </Button>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={event => this.handleOperationOnClick(event)} styleName="details-table-btn" variant="contained">
+                            REJECT
+                          </Button>
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={event => this.handleOperationOnClick(event)} styleName="details-table-btn" variant="contained">
+                            SENT FOR REJECT
+>>>>>>> 47b0e3beb30b34a7f451be1fb951d1f1c5bff619
                           </Button>
                         </>
                       ) : null
@@ -132,6 +158,7 @@ class StagerDetailsTable extends React.PureComponent {
             this.renderDataTable()
           ) : null
         }
+<<<<<<< HEAD
 
 
         <div>
@@ -182,6 +209,10 @@ class StagerDetailsTable extends React.PureComponent {
         </div>
 
 
+=======
+        {isOperationRequested ? (<StagerPopup operationDetails={responseDetails} />) : null}
+
+>>>>>>> 47b0e3beb30b34a7f451be1fb951d1f1c5bff619
       </>
     );
   }
