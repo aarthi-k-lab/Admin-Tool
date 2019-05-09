@@ -20,7 +20,9 @@ import {
   GROUP_NAME,
   SAVE_LOANNUMBER_PROCESSID,
   VALIDATE_DISPOSITION_SAGA,
-  GET_LOAN_ACTIVITY_DETAILS,
+  // GET_LOAN_ACTIVITY_DETAILS,
+  LOAD_TRIALS_SAGA,
+  SET_TASK_UNDERWRITING,
 } from './types';
 
 
@@ -120,11 +122,19 @@ const displayAssign = () => ({
   type: DISPLAY_ASSIGN,
 });
 
-const loanActivityDetails = payload => ({
-  type: GET_LOAN_ACTIVITY_DETAILS,
-  payload,
+// const loanActivityDetails = payload => ({
+//   type: GET_LOAN_ACTIVITY_DETAILS,
+//   payload,
+// });
+
+const loadTrialsAction = evalId => ({
+  type: LOAD_TRIALS_SAGA,
+  payload: evalId,
 });
 
+const onSentToUnderwritingAction = () => ({
+  type: SET_TASK_UNDERWRITING,
+});
 
 export {
   autoSave,
@@ -147,5 +157,7 @@ export {
   clearBEDisposition,
   getGroupName,
   validateDisposition,
-  loanActivityDetails,
+  // loanActivityDetails,
+  loadTrialsAction,
+  onSentToUnderwritingAction,
 };

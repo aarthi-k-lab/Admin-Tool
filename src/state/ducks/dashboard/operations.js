@@ -17,6 +17,8 @@ import {
   clearBEDisposition,
   getGroupName,
   validateDisposition,
+  loadTrialsAction,
+  onSentToUnderwritingAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -88,6 +90,12 @@ const onGetGroupName = dispatch => (payload) => {
   dispatch(getGroupName(payload));
 };
 
+const loadTrials = dispatch => evalId => dispatch(loadTrialsAction(evalId));
+
+const onSentToUnderwriting = dispatch => () => {
+  dispatch(onSentToUnderwritingAction());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -106,6 +114,8 @@ const operations = {
   onClearBEDisposition,
   onGetGroupName,
   validateDispositionTrigger,
+  loadTrials,
+  onSentToUnderwriting,
 };
 
 export default operations;

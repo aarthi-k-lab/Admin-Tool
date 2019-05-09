@@ -16,6 +16,10 @@ import {
   VALIDATION_DISPLAY,
   DISP_COMMENT_SAGA,
   EMPTY_DISPOSITION_COMMENT,
+  DELETE_TASK,
+  UPDATE_CHECKLIST,
+  SHOW_DELETE_TASK_CONFIRMATION,
+  RESET_DELETE_TASK,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -108,6 +112,25 @@ const emptyDispositionComment = () => ({
   type: EMPTY_DISPOSITION_COMMENT,
 });
 
+const deleteTask = shouldDeleteTask => ({
+  type: DELETE_TASK,
+  payload: {
+    shouldDeleteTask,
+  },
+});
+
+const updateChecklist = payload => ({
+  type: UPDATE_CHECKLIST,
+  payload,
+});
+
+const showDeleteTaskConfirmation = payload => ({
+  type: SHOW_DELETE_TASK_CONFIRMATION,
+  payload,
+});
+
+const resetDeleteTaskConfirmation = () => ({ type: RESET_DELETE_TASK });
+
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -126,4 +149,8 @@ export {
   validationDisplayAction,
   dispositionCommentAction,
   emptyDispositionComment,
+  deleteTask,
+  updateChecklist,
+  showDeleteTaskConfirmation,
+  resetDeleteTaskConfirmation,
 };

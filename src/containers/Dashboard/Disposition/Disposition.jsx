@@ -42,18 +42,19 @@ class Disposition extends Component {
   componentDidUpdate() {
     const {
       enableGetNext, selectedDisposition, onPostComment, AppName, LoanNumber, EvalId,
-      groupName, user, ProcIdType, TaskId,
+      groupName, user, ProcIdType, TaskId, ProcessId,
     } = this.props;
     const { activityName } = selectedDisposition;
     const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
+    const genericId = ProcIdType === 'ProcessId' ? ProcessId : EvalId;
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
         loanNumber: LoanNumber,
         processIdType: ProcIdType,
-        processId: EvalId,
+        processId: genericId,
         eventName,
         comment: this.savedComments,
         userName: user.userDetails.name,
@@ -307,6 +308,7 @@ Disposition.propTypes = {
   onClearBE: PropTypes.func.isRequired,
   onDispositionSaveTrigger: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
+  ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
   saveInProgress: PropTypes.bool,
   saveValidation: PropTypes.func.isRequired,
@@ -344,6 +346,7 @@ const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   isAssigned: selectors.isAssigned(state),
   EvalId: selectors.evalId(state),
+  ProcessId: selectors.processId(state),
   TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),

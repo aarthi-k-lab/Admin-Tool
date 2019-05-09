@@ -25,9 +25,14 @@ import {
   USER_NOTIF_MSG,
   DISPLAY_ASSIGN,
   CLEAR_ERROR_MESSAGE,
-  GET_LOAN_ACTIVITY_DETAILS,
+  // GET_LOAN_ACTIVITY_DETAILS,
+  LOAD_TRIALHEADER_RESULT,
+  LOAD_TRIALSDETAIL_RESULT,
+  LOAD_TRIALLETTER_RESULT,
+  SET_TASK_UNDERWRITING_RESULT,
   TASKS_LIMIT_EXCEEDED,
   GETNEXT_PROCESSED,
+  PUT_PROCESS_NAME,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -44,12 +49,12 @@ const reducer = (state = { firstVisit: true }, action) => {
         checklistDiscrepancies: action.payload,
       };
     }
-    case GET_LOAN_ACTIVITY_DETAILS: {
-      return {
-        ...state,
-        loanActivityDetails: action.payload,
-      };
-    }
+    // case GET_LOAN_ACTIVITY_DETAILS: {
+    //   return {
+    //     ...state,
+    //     loanActivityDetails: action.payload,
+    //   };
+    // }
     case CLEAR_DISPOSITION: {
       const newState = {
         ...state,
@@ -233,6 +238,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskId: action.payload.taskId,
         processId: action.payload.piid,
         processStatus: action.payload.pstatus,
+        taskStatus: action.payload.tstatus,
         processName: action.payload.taskName,
         showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
         taskFetchError: false,
@@ -289,6 +295,50 @@ const reducer = (state = { firstVisit: true }, action) => {
         checklistErrorCode: '',
       };
     }
+    case LOAD_TRIALHEADER_RESULT: {
+      const trialHeader = action.payload;
+      return {
+        ...state,
+        trialHeader,
+        loading: false,
+      };
+    }
+
+    case PUT_PROCESS_NAME: {
+      const processName = action.payload;
+      return {
+        ...state,
+        processName,
+        loading: false,
+      };
+    }
+    case LOAD_TRIALSDETAIL_RESULT: {
+      const trialsDetail = action.payload;
+      return {
+        ...state,
+        trialsDetail,
+        loading: false,
+      };
+    }
+
+    case LOAD_TRIALLETTER_RESULT: {
+      const trialsLetter = action.payload;
+      return {
+        ...state,
+        trialsLetter,
+        loading: false,
+      };
+    }
+
+    case SET_TASK_UNDERWRITING_RESULT: {
+      const resultUnderwriting = action.payload;
+      return {
+        ...state,
+        resultUnderwriting,
+        loading: false,
+      };
+    }
+
     default:
       return state;
   }

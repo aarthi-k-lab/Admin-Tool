@@ -6,7 +6,6 @@ import './Close.css';
 const Close = ({ disabled, onClick }) => (
   <Button
     className="material-ui-button"
-    color="green"
     disabled={disabled}
     onClick={onClick}
     styleName="close-task"

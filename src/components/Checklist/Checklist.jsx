@@ -7,6 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 import RadioButtons from './RadioButtons';
 import styles from './Checklist.css';
+import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
@@ -70,6 +71,19 @@ class Checklist extends React.PureComponent {
         multilineTextDirtyValues,
       });
     };
+  }
+
+  handleClose(isConfirmed) {
+    const payload = {
+      deleteTaskConfirmationDialog: {
+        title: 'DELETE TASK',
+        isOpen: false,
+        content: 'Deleting a task will delete all the associated checklist information. Do you like to proceed?',
+      },
+    };
+    const { handleDeleteTask, handleShowDeleteTaskConfirmation } = this.props;
+    handleDeleteTask(isConfirmed);
+    handleShowDeleteTaskConfirmation(payload);
   }
 
   renderChecklistItem({
@@ -139,7 +153,7 @@ class Checklist extends React.PureComponent {
   render() {
     const {
       checklistItems, children,
-      className, title,
+      className, title, isDialogOpen, dialogContent, dialogTitle,
     } = this.props;
     return (
       <section className={className}>
@@ -154,6 +168,12 @@ class Checklist extends React.PureComponent {
             }
           </Paper>
         </div>
+        <ConfirmationDialogBox
+          isOpen={isDialogOpen}
+          message={dialogContent}
+          onClose={isConfirmed => this.handleClose(isConfirmed)}
+          title={dialogTitle}
+        />
       </section>
     );
   }
@@ -161,6 +181,9 @@ class Checklist extends React.PureComponent {
 
 Checklist.defaultProps = {
   className: '',
+  dialogContent: '',
+  dialogTitle: 'MESSAGE',
+  isDialogOpen: false,
 };
 
 Checklist.propTypes = {
@@ -181,6 +204,11 @@ Checklist.propTypes = {
   ).isRequired,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  dialogContent: PropTypes.string,
+  dialogTitle: PropTypes.string,
+  handleDeleteTask: PropTypes.func.isRequired,
+  handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  isDialogOpen: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
 };

@@ -24,29 +24,6 @@ const CONTINUE_REVIEW = 'CONTINUE REVIEW';
 const SENT_FOR_REJECT = 'SENT FOR REJECT';
 const REJECT = 'REJECT';
 
-const mockArray = [
-  {
-    id: 1,
-    loannumber: 2345675641234234567,
-    loantext: "EvalSubstatus should be 'Sent For Reject'",
-    loancheck: true,
-
-  },
-  {
-    id: 2,
-    loannumber: 2345675641234234567,
-    loantext: "Resolutionstatus should be 'Rejected'",
-    loancheck: true,
-
-  },
-  {
-    id: 3,
-    loannumber: 2345675641234234567,
-    loantext: "EvalSubstatus should be 'Sent For Reject'",
-    loancheck: false,
-
-  },
-];
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
