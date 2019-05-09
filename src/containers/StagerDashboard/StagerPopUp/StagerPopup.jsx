@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -15,33 +16,45 @@ import './StagerPopup.css';
 class StagerPopup extends React.PureComponent {
   constructor(props) {
     super(props);
+    // this.getLoanStatus = this.getLoanStatus.bind(this);
     this.state = {
+
       mockArray: [
         {
-          id: 1,
-          loannumber: 2345675641234234567,
-          loantext: "EvalSubstatus should be 'Sent For Reject'",
-          loancheck: true,
-
+          loancount: 2,
+          loanStatus: 'success',
         },
         {
-          id: 2,
-          loannumber: 2345675641234234567,
-          loantext: "Resolutionstatus should be 'Rejected'",
-          loancheck: true,
-
-        },
-        {
-          id: 3,
-          loannumber: 2345675641234234567,
-          loantext: "EvalSubstatus should be 'Sent For Reject'",
-          loancheck: false,
-
+          loancount: 3,
+          loanStatus: 'failure',
+          loanArray: [{
+            loannnumber: 345657564,
+            loantext: "EvalSubstatus should be 'Sent For Reject'",
+          }],
         },
       ],
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getLoanStatus(status) {
+    if (status === 'success') {
+      return 'Loans ordered successfully';
+    }
+    return 'Loans Failed';
+  }
+
+  getTotalLoanCount() {
+    const { mockArray } = this.state;
+    let successcount = 0;
+    // eslint-disable-next-line no-unused-vars
+    let totalloancount = 0;
+    mockArray.forEach((loanDetails) => {
+      totalloancount += loanDetails.loancount;
+      successcount += loanDetails.loanStatus === 'success' ? loanDetails.loancount : 0;
+    });
+    return (` ${successcount} / ${totalloancount} Loans ordered successfully [SENT FOR REJECT]`);
+  }
 
   render() {
     const { mockArray } = this.state;
@@ -49,67 +62,62 @@ class StagerPopup extends React.PureComponent {
       <div>
         <ExpansionPanel styleName="card-header">
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName="card-header-title" />} styleName="card-title">
-            <Typography styleName="card-header-title">2/5 Loans ordered successfully [SENT FOR REJECT]</Typography>
+            <Typography styleName="card-header-title">
+              {this.getTotalLoanCount()}
+            </Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails styleName="card-success-title">
-            <Grid
-              container
-            >
-              <Grid item xs={1}>
-                <span styleName="sucessedloan">2</span>
-              </Grid>
-              <Grid item xs={10}>
-                <span styleName="loans-font"> Loans ordered successfully</span>
-              </Grid>
-              <Grid item xs={1}>
-                <span styleName="loans-font">
-                  <RemoveRedEyeIcon styleName="eyeicon" />
-                </span>
-              </Grid>
-            </Grid>
-          </ExpansionPanelDetails>
 
-          <ExpansionPanelDetails styleName="card-failure-title">
-            <Grid
-              container
-            >
-              <Grid item xs={1}>
-                <span styleName="failedloan">2</span>
-              </Grid>
-              <Grid item xs={10}>
-                <span styleName="loans-font"> Loans Failed</span>
-              </Grid>
-              <Grid item xs={1}>
-                <span styleName="loans-font">
-                  <Button color="primary" variant="contained">
-          Retry
-                  </Button>
-                </span>
-              </Grid>
-            </Grid>
-          </ExpansionPanelDetails>
-          {
-        mockArray.map(loanDetails => (
-          <ExpansionPanelDetails styleName="card-failure-title">
-            <Grid
-              container
-            >
-              <Grid item xs={1}>
-                <Checkbox checked={loanDetails.loancheck} style={{ height: '15px' }} />
-              </Grid>
-              <Grid item xs={4}>
-                <span styleName="loans-font">{loanDetails.loannumber}</span>
-              </Grid>
-              <Grid item xs={7}>
-                <span styleName="loans-font alert-font">
-                  <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
-                  {loanDetails.loantext}
-                </span>
-              </Grid>
-            </Grid>
-          </ExpansionPanelDetails>
-        ))
-      }
+          {mockArray.map(loanDetails => (
+            <>
+              <ExpansionPanelDetails styleName="card-success-title">
+                <Grid
+                  container
+                >
+                  <Grid item xs={1}>
+                    <span styleName="sucessedloan">{loanDetails.loancount}</span>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <span styleName="loans-font">{this.getLoanStatus(loanDetails.loanStatus)}</span>
+                  </Grid>
+                  <Grid item xs={1}>
+                    <span styleName="loans-font">
+                      {loanDetails.loanStatus === 'success' ? (<RemoveRedEyeIcon styleName="eyeicon" />) : (
+                        <Button color="primary" variant="contained">
+                          Retry
+                        </Button>
+                      )}
+                    </span>
+                  </Grid>
+                </Grid>
+              </ExpansionPanelDetails>
+
+              {loanDetails.loanStatus === 'failure' ? (
+                loanDetails.loanArray.map(loanArrayDetails => (
+                  <ExpansionPanelDetails styleName="card-failure-title">
+                    <Grid
+                      container
+                    >
+                      <Grid item xs={1}>
+                        <Checkbox style={{ height: '15px' }} />
+                      </Grid>
+                      <Grid item xs={4}>
+                        <span styleName="loans-font">{loanArrayDetails.loannumber}</span>
+                      </Grid>
+                      <Grid item xs={7}>
+                        <span styleName="loans-font alert-font">
+                          <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
+                          {loanArrayDetails.loantext}
+                        </span>
+                      </Grid>
+                    </Grid>
+                  </ExpansionPanelDetails>
+
+                ))
+              ) : null}
+            </>
+
+          ))
+          }
 
         </ExpansionPanel>
       </div>
