@@ -39,9 +39,11 @@ function* fetchDashboardCounts(data) {
           // eslint-disable-next-line no-param-reassign
           if (item.displayName === 'Completed') {
             item.data.splice(1, 1);
-            item.data[2].displayName = 'CURRENT REVIEW';
-          } else {
+            item.data.splice(2, 1);
+          } else if (item.displayName === 'To Order') {
             item.data[1].displayName = 'CURRENT REVIEW';
+          } else {
+            item.data.splice(1, 1);
           }
         });
         break;

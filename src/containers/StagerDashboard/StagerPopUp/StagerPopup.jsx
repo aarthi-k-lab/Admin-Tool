@@ -82,34 +82,34 @@ class StagerPopup extends React.PureComponent {
               <Grid item xs={1}>
                 <span styleName="loans-font">
                   <Button color="primary" variant="contained">
-          Retry
+                    Retry
                   </Button>
                 </span>
               </Grid>
             </Grid>
           </ExpansionPanelDetails>
           {
-        mockArray.map(loanDetails => (
-          <ExpansionPanelDetails styleName="card-failure-title">
-            <Grid
-              container
-            >
-              <Grid item xs={1}>
-                <Checkbox checked={loanDetails.loancheck} style={{ height: '15px' }} />
-              </Grid>
-              <Grid item xs={4}>
-                <span styleName="loans-font">{loanDetails.loannumber}</span>
-              </Grid>
-              <Grid item xs={7}>
-                <span styleName="loans-font alert-font">
-                  <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
-                  {loanDetails.loantext}
-                </span>
-              </Grid>
-            </Grid>
-          </ExpansionPanelDetails>
-        ))
-      }
+            mockArray.map(loanDetails => (
+              <ExpansionPanelDetails styleName="card-failure-title">
+                <Grid
+                  container
+                >
+                  <Grid item xs={1}>
+                    <Checkbox checked={loanDetails.loancheck} style={{ height: '15px', padding: '0px' }} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <span styleName="loans-font">{loanDetails.loannumber}</span>
+                  </Grid>
+                  <Grid item xs={7}>
+                    <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
+                    <span style={{ position: 'relative', top: '-4px' }} styleName="loans-font alert-font">
+                      {loanDetails.loantext}
+                    </span>
+                  </Grid>
+                </Grid>
+              </ExpansionPanelDetails>
+            ))
+          }
 
         </ExpansionPanel>
       </div>

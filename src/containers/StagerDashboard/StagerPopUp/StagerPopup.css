@@ -1,29 +1,30 @@
 .card-header {
-    width: 75rem;
+    width: 50%;
+    margin-left: 0.5rem !important;
    }
    .card-title {
     background-color: #464444 !important;
+    min-height: inherit !important;
    }
   
    .card-header-title {
      color: white !important;
-     font-size: 17px !important;
+     font-size: 1rem !important;
    }
   
    .card-success-title {
      background-color: rgb(230, 230, 230) !important;
      height: 4rem;
+     padding: 15px 24px 24px !important;
    }
   
    .card-failure-title {
     background-color:white !important;
     padding: 10px 24px 2px !important; 
-    max-height: 100px;
-    overflow: auto;
   }
   
   .loans-font {
-    font-size: 15px !important;
+    font-size: 1rem !important;
   }
   
   .sucessedloan {
@@ -33,6 +34,7 @@
     font-size: 1.3rem;
     font-weight: 900;
     padding: 0px 0.3rem 0 0.3rem;
+    border-radius: 0.25rem;
   }
   
   .failedloan {
@@ -42,6 +44,7 @@
     font-size: 1.3rem;
     font-weight: 900;
     padding: 0px 0.3rem 0 0.3rem;
+    border-radius: 0.25rem;
   }
   
   .alert-font {
