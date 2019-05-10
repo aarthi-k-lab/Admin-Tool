@@ -112,21 +112,29 @@ class TaskPane extends React.PureComponent {
       storeTaskFilter,
       tasks,
       optionalTasks,
+      shouldDeleteTask,
       showOptionalTasks,
-      onAddTaskClick,
+      handleShowOptionalTasks,
+      updateChecklist,
+      handleShowDeleteTaskConfirmation,
+      resetDeleteTaskConfirmation,
     } = this.props;
     return (
       (
         <LeftTaskPane
           className={className}
           dataLoadStatus={dataLoadStatus}
-          onAddTaskClick={onAddTaskClick}
+          handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
+          handleShowOptionalTasks={handleShowOptionalTasks}
           onSubTaskClick={onSubTaskClick}
           optionalTasks={optionalTasks}
+          resetDeleteTaskConfirmation={resetDeleteTaskConfirmation}
           selectedTaskId={selectedTaskId}
+          shouldDeleteTask={shouldDeleteTask}
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
           tasks={tasks}
+          updateChecklist={updateChecklist}
         />
       )
     );
@@ -146,13 +154,17 @@ TaskPane.defaultProps = {
 TaskPane.propTypes = {
   className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
-  onAddTaskClick: PropTypes.func.isRequired,
+  handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  handleShowOptionalTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
+  resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
+  shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(TaskModel),
+  updateChecklist: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -162,12 +174,16 @@ const mapStateToProps = state => ({
   tasks: taskSelectors.getTaskTree(state).subTasks,
   optionalTasks: taskSelectors.getOptionalTasks(state),
   showOptionalTasks: taskSelectors.shouldShowOptionalTasks(state),
+  shouldDeleteTask: taskSelectors.shouldDeleteTask(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onSubTaskClick: taskOperations.fetchChecklist(dispatch),
   storeTaskFilter: taskOperations.saveTaskFilter(dispatch),
-  onAddTaskClick: taskOperations.handleShowOptionalTasks(dispatch),
+  handleShowOptionalTasks: taskOperations.handleShowOptionalTasks(dispatch),
+  handleShowDeleteTaskConfirmation: taskOperations.handleShowDeleteTaskConfirmation(dispatch),
+  updateChecklist: taskOperations.handleUpdateChecklist(dispatch),
+  resetDeleteTaskConfirmation: taskOperations.resetDeleteTaskConfirmationValues(dispatch),
 });
 
 const TaskPaneContainer = connect(mapStateToProps, mapDispatchToProps)(TaskPane);

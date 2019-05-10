@@ -13,14 +13,14 @@ describe('<Task Components />', () => {
 
   it('LeftParentTasks renders correctly when expanded', () => {
     const tree = renderer
-      .create(<LeftParentTasks isCollapsed={false} tasks={[]} />)
+      .create(<LeftParentTasks isCollapsed={false} optionalTasks={[]} tasks={[]} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('LeftParentTasks renders correctly when collapsed', () => {
     const tree = renderer
-      .create(<LeftParentTasks isCollapsed tasks={[]} />)
+      .create(<LeftParentTasks isCollapsed optionalTasks={[]} tasks={[]} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });

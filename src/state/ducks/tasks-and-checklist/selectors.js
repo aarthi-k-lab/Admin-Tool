@@ -140,6 +140,14 @@ const getOptionalTasks = R.pathOr([], ['tasksAndChecklist', 'optionalTasks']);
 
 const shouldShowOptionalTasks = R.pathOr('', ['tasksAndChecklist', 'showOptionalTasks']);
 
+const shouldDeleteTask = R.pathOr('', ['tasksAndChecklist', 'shouldDeleteTask']);
+
+const isDialogOpen = R.pathOr(false, ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'isOpen']);
+
+const getDialogContent = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'content']);
+
+const getDialogTitle = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'title']);
+
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
@@ -155,6 +163,7 @@ const selectors = {
   getSelectedChecklistId,
   getTaskTree,
   getTaskComment,
+  shouldDeleteTask,
   shouldDisableNext,
   shouldDisablePrev,
   shouldShowDisposition,
@@ -164,6 +173,9 @@ const selectors = {
   shouldShowInstructionsDialog,
   getOptionalTasks,
   shouldShowOptionalTasks,
+  isDialogOpen,
+  getDialogContent,
+  getDialogTitle,
 };
 
 export default selectors;
