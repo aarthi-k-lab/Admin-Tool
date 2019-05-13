@@ -1,6 +1,7 @@
 import {
   SET_STAGER_DATA_COUNTS, SET_STAGER_DATA, SET_STAGER_DOWNLOAD_CSV_URI,
-  SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT, SET_STAGER_ACTIVE_SEARCH_TERM,
+  SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT,
+  SET_STAGER_ACTIVE_SEARCH_TERM, SET_DOCS_OUT_RESPONSE,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -50,6 +51,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         downloadCSVUri: action.payload,
+      };
+    }
+
+    case SET_DOCS_OUT_RESPONSE: {
+      return {
+        ...state,
+        docsOutResponse: action.payload,
       };
     }
 

@@ -46,7 +46,7 @@ class StagerPopup extends React.PureComponent {
 
   getTotalloanCount() {
     const { mockArray } = this.state;
-    const { operationDetails } = this.props;
+    const { operationDetails, popupData } = this.props;
     let successcount = 0;
     mockArray.forEach((loanDetails) => {
       successcount += loanDetails.loanStatus === 'success' ? loanDetails.loanCount : 0;
@@ -121,8 +121,17 @@ class StagerPopup extends React.PureComponent {
   }
 }
 
+StagerPopup.defaultProps = {
+  popupData: [],
+};
+
 StagerPopup.propTypes = {
   operationDetails: PropTypes.node.isRequired,
+  popupData: PropTypes.arrayOf(
+    PropTypes.shape({
+      error: PropTypes.bool,
+    }),
+  ),
 };
 
 export default StagerPopup;

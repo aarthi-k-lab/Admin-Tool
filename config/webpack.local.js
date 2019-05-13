@@ -66,7 +66,7 @@ const config = merge(
           },
         },
         '/api/stager': {
-          target: 'https://cmodstagerdev.int.mrcooper.io',
+          target: 'http://localhost:9090',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
