@@ -33,20 +33,6 @@ class StagerDashboard extends React.Component {
     triggerOrderCall(orderPayload);
   }
 
-  onDocsOutClick(data, action) {
-    const { triggerDocsOutCall } = this.props;
-    const docsOutPayload = R.map(dataUnit => ({
-      evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
-      taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
-    }), data);
-    const payload = {
-      type: 'DOCSOUT STAGER',
-      action,
-      data: docsOutPayload,
-    };
-    triggerDocsOutCall(payload);
-  }
-
   onStatusCardClick(searchTerm, activeTile, activeTab) {
     const { getDashboardData, onCheckBoxClick, getDashboardCounts } = this.props;
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
@@ -137,7 +123,6 @@ class StagerDashboard extends React.Component {
           downloadCSVUri={downloadCSVUri}
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
-          onDocsOutClick={(data, action) => this.onDocsOutClick(data, action)}
           onOrderClick={data => this.onOrderClick(data)}
           onSelectAll={(isChecked, data) => this.onSelectAll(isChecked, data)}
           onStagerChange={stagerValue => this.onStagerChange(stagerValue)}
@@ -203,7 +188,6 @@ StagerDashboard.propTypes = {
   onCheckBoxClick: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   tableData: PropTypes.node,
-  triggerDocsOutCall: PropTypes.func.isRequired,
   triggerOrderCall: PropTypes.func.isRequired,
 };
 

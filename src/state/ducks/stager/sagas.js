@@ -168,25 +168,21 @@ function* watchOrderCall() {
 
 function* makeDocsOutStagerCall(payload) {
   try {
-    console.log('DOCS OUT PAYLOAD>>>', payload);
     const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${payload.payload.action}`, payload.payload.data);
-    console.log(response);
-    const failedResponse = response ? response.filter(data => data.error === true) : [];
     yield call(fetchDashboardCounts, { payload: payload.type });
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
       payload:
-          { activeSearchTerm, stagerType: payload.payload.type },
+          { activeSearchTerm, stager: payload.payload.type },
     });
     yield call(onCheckboxSelect, { payload: [] });
-    yield call(setDocsOutData, failedResponse);
+    yield call(setDocsOutData, response);
   } catch (e) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
     snackBarData.type = 'error';
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
-    console.log(`${payload.action} Call error:`, e);
   }
 }
 
