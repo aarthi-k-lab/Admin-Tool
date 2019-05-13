@@ -169,11 +169,6 @@ function* watchOrderCall() {
 function* makeDocsOutStagerCall(payload) {
   try {
     console.log('DOCS OUT PAYLOAD>>>', payload);
-    const snackBar = {};
-    snackBar.message = `${payload.payload.action} in progress. Please wait... `;
-    snackBar.type = 'message';
-    snackBar.open = true;
-    yield call(fireSnackBar, snackBar);
     const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${payload.payload.action}`, payload.payload.data);
     console.log(response);
     const failedResponse = response ? response.filter(data => data.error === true) : [];
