@@ -1,4 +1,5 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable  */
+// eslint-disable
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -17,45 +18,33 @@ import './StagerPopup.css';
 class StagerPopup extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-
-      mockArray: [
-        {
-          loanCount: 2,
-          loanStatus: 'success',
-        },
-        {
-          loanCount: 3,
-          loanStatus: 'failure',
-          loanArray: [{
-            loanNumber: 345657564,
-            loanText: "EvalSubstatus should be 'Sent For Reject'",
-          }],
-        },
-      ],
-    };
+    this.getTotalloanCount = this.getTotalloanCount.bind(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
   getLoanStatus(status) {
-    if (status === 'success') {
+    if (!status) {
       return 'Loans ordered successfully';
     }
     return 'Loans Failed';
   }
 
   getTotalloanCount() {
-    const { mockArray } = this.state;
-    const { operationDetails, popupData } = this.props;
-    let successcount = 0;
-    mockArray.forEach((loanDetails) => {
-      successcount += loanDetails.loanStatus === 'success' ? loanDetails.loanCount : 0;
+    const { popupData, action } = this.props;
+    this.totalCount = 0;
+    popupData.forEach((dataValue) => {
+      if(!dataValue.error){
+        this.successCount = dataValue.data.length;
+      }
+      this.totalCount += dataValue.data.length;
     });
-    return (` ${successcount} / ${operationDetails.totalCount} Loans ordered successfully [${operationDetails.type}]`);
+    this.failureCount = this.totalCount - this.successCount;
+    return (` ${this.successCount} / ${this.totalCount} Loans ordered successfully [${action}]`);
   }
 
   render() {
-    const { mockArray } = this.state;
+    console.log('Stager popup', this.props);
+    const { popupData } = this.props;
     return (
       <div>
         <ExpansionPanel styleName="card-header">
@@ -65,54 +54,60 @@ class StagerPopup extends React.PureComponent {
             </Typography>
           </ExpansionPanelSummary>
 
-          {mockArray.map(loanDetails => (
-            <>
-              <ExpansionPanelDetails styleName={loanDetails.loanStatus === 'success' ? 'card-success-title' : 'card-failure-title'}>
-                <Grid
-                  container
-                >
-                  <Grid item xs={1}>
-                    <span styleName={loanDetails.loanStatus === 'success' ? 'sucessedloan' : 'failedloan'}>{loanDetails.loanCount}</span>
-                  </Grid>
-                  <Grid item xs={10}>
-                    <span styleName="loans-font">{this.getLoanStatus(loanDetails.loanStatus)}</span>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <span styleName="loans-font">
-                      {loanDetails.loanStatus === 'success' ? (<RemoveRedEyeIcon styleName="eyeicon" />) : (
-                        <Button color="primary" variant="contained">
-                          Retry
-                        </Button>
-                      )}
-                    </span>
-                  </Grid>
-                </Grid>
-              </ExpansionPanelDetails>
+          {popupData.map(loanDetails => (
+           <>
+           <ExpansionPanelDetails styleName={!loanDetails.error ? 'card-success-title' : 'card-failure-title'}>
+             <Grid
+               container
+             >
+               <Grid item xs={1}>
+                 <span styleName={!loanDetails.error ? 'sucessedloan' : 'failedloan'}>
+                 { !loanDetails.error ? this.successCount : this.failureCount}
+                 </span>
+               </Grid>
+               <Grid item xs={10}>
+                 <span styleName="loans-font">{this.getLoanStatus(loanDetails.error)}</span>
+               </Grid>
+               <Grid item xs={1}>
+                 <span styleName="loans-font">
+                   {!loanDetails.error ? (<RemoveRedEyeIcon onClick={this.onEyeIconClick} styleName="eyeicon" />) : (
+                     <Button color="primary" variant="contained">
+                       Retry
+                     </Button>
+                   )}
+                 </span>
+               </Grid>
+             </Grid>
+           </ExpansionPanelDetails>
 
-              {loanDetails.loanStatus === 'failure' ? (
-                loanDetails.loanArray.map(loanArrayDetails => (
-                  <ExpansionPanelDetails styleName="card-failure-title">
-                    <Grid
-                      container
-                    >
-                      <Grid item xs={1}>
-                        <Checkbox style={{ height: '15px', padding: '0px' }} />
-                      </Grid>
-                      <Grid item xs={4}>
-                        <span styleName="loans-font">{loanArrayDetails.loanNumber}</span>
-                      </Grid>
-                      <Grid item xs={7}>
-                        <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
-                        <span style={{ position: 'relative', top: '-4px' }} styleName="loans-font alert-font">
-                          {loanArrayDetails.loanText}
-                        </span>
-                      </Grid>
-                    </Grid>
-                  </ExpansionPanelDetails>
 
-                ))
-              ) : null}
-            </>
+           {
+             loanDetails.data.map(loanArrayDetails => (
+               <ExpansionPanelDetails styleName="card-failure-title">
+                 <Grid
+                   container
+                 >
+                   <Grid item xs={1}>
+                     { loanDetails.error? (<Checkbox style={{ height: '15px', padding: '0px' }} />) : null }
+                   </Grid>
+                   <Grid item xs={4}>
+                     <span styleName="loans-font">{loanArrayDetails.evalId}</span>
+                   </Grid>
+                   <Grid item xs={7}>
+                     { loanDetails.error ? (
+                       <>
+                         <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
+                         <span style={{ position: 'relative', top: '-4px' }} styleName="loans-font alert-font">
+                           {loanArrayDetails.taskId}
+                         </span>
+                         </>
+                     ) : null }
+                   </Grid>
+                 </Grid>
+               </ExpansionPanelDetails>
+             ))}
+
+         </>
           ))
           }
         </ExpansionPanel>

@@ -6,6 +6,8 @@ const getTableData = state => (state.stager.data ? state.stager.data : []);
 const getSelectedData = state => (state.stager.selectedData ? state.stager.selectedData : []);
 const getActiveSearchTerm = state => (state.stager && state.stager.activeSearchTerm);
 const getDownloadCSVUri = state => (state.stager && state.stager.downloadCSVUri);
+const getdocsOutAction = state => (state.stager && state.stager.docsOutAction);
+
 
 const selectors = {
   getCounts,
@@ -15,6 +17,7 @@ const selectors = {
   getActiveSearchTerm,
   getDownloadCSVUri,
   getDocsOutResponse,
+  getdocsOutAction,
 };
 
 export default selectors;
