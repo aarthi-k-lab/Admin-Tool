@@ -7,17 +7,10 @@ import DownloadIcon from '@material-ui/icons/SaveAlt';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
-import Typography from '@material-ui/core/Typography';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
-import Checkbox from '@material-ui/core/Checkbox';
-import WarningIcon from '@material-ui/icons/Warning';
 // import Loader from 'components/Loader/Loader';
 import CustomReactTable from 'components/CustomReactTable';
 import renderSkeletonLoader from './TableSkeletonLoader';
+import StagerPopup from '../StagerPopUp';
 
 
 const CONTINUE_REVIEW = 'CONTINUE REVIEW';
@@ -80,7 +73,7 @@ class StagerDetailsTable extends React.PureComponent {
   render() {
     const {
       data, loading, downloadCSVUri,
-      onOrderClick, selectedData, onDocsOutClick,
+      onOrderClick, selectedData, onDocsOutClick, popupData,
     } = this.props;
     const { isOperationRequested, responseDetails } = this.state;
     return (
@@ -113,7 +106,6 @@ class StagerDetailsTable extends React.PureComponent {
                     data.isManualOrder && data.stagerTaskType === 'Current Review'
                       ? (
                         <>
-<<<<<<< HEAD
                           <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
                             {CONTINUE_REVIEW}
                           </Button>
@@ -122,16 +114,6 @@ class StagerDetailsTable extends React.PureComponent {
                           </Button>
                           <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, SENT_FOR_REJECT)} styleName="details-table-btn" variant="contained">
                             {SENT_FOR_REJECT}
-=======
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={event => this.handleOperationOnClick(event)} styleName="details-table-btn" variant="contained">
-                            CONTINUE REVIEW
-                          </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={event => this.handleOperationOnClick(event)} styleName="details-table-btn" variant="contained">
-                            REJECT
-                          </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={event => this.handleOperationOnClick(event)} styleName="details-table-btn" variant="contained">
-                            SENT FOR REJECT
->>>>>>> 47b0e3beb30b34a7f451be1fb951d1f1c5bff619
                           </Button>
                         </>
                       ) : null
@@ -158,61 +140,9 @@ class StagerDetailsTable extends React.PureComponent {
             this.renderDataTable()
           ) : null
         }
-<<<<<<< HEAD
+        {isOperationRequested
+          ? (<StagerPopup operationDetails={responseDetails} popupData={popupData} />) : null}
 
-
-        <div>
-          <ExpansionPanel styleName="card-header">
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName="card-header-title" />} styleName="card-title">
-              <Typography styleName="card-header-title">2/5 Loans ordered successfully [SENT FOR REJECT]</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails styleName="card-success-title">
-              <Typography styleName="loans-ordered loans-font ">
-                <span styleName="sucessedloan">2</span>
-              </Typography>
-              <Typography styleName="loans-font"> Loans ordered successfully</Typography>
-              <RemoveRedEyeIcon styleName="eyeicon loans-font" />
-            </ExpansionPanelDetails>
-            <ExpansionPanelDetails styleName="card-failure-title">
-              <Typography styleName="loans-ordered loans-font ">
-                <span styleName="failedloan">3</span>
-              </Typography>
-              <Typography styleName="loans-font"> Loans Failed</Typography>
-              <Button color="primary" styleName="btnretry" variant="contained">
-                Retry
-              </Button>
-            </ExpansionPanelDetails>
-            {
-              mockArray.map(loanDetails => (
-                <ExpansionPanelDetails styleName="card-failure-title">
-                  <Grid
-                    container
-                  >
-                    <Grid item xs={1}>
-                      <Checkbox checked={loanDetails.loancheck} style={{ height: '15px' }} />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <span styleName="loans-font">{loanDetails.loannumber}</span>
-                    </Grid>
-                    <Grid item xs={7}>
-                      <span styleName="loans-font alert-font">
-                        <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
-                        {loanDetails.loantext}
-                      </span>
-                    </Grid>
-                  </Grid>
-                </ExpansionPanelDetails>
-              ))
-            }
-
-          </ExpansionPanel>
-        </div>
-
-
-=======
-        {isOperationRequested ? (<StagerPopup operationDetails={responseDetails} />) : null}
-
->>>>>>> 47b0e3beb30b34a7f451be1fb951d1f1c5bff619
       </>
     );
   }
@@ -220,6 +150,10 @@ class StagerDetailsTable extends React.PureComponent {
 
 const TestExports = {
   StagerDetailsTable,
+};
+
+StagerDetailsTable.defaultProps = {
+  popupData: [],
 };
 
 StagerDetailsTable.propTypes = {
@@ -230,6 +164,11 @@ StagerDetailsTable.propTypes = {
   onDocsOutClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
+  popupData: PropTypes.arrayOf(
+    PropTypes.shape({
+      error: PropTypes.bool,
+    }),
+  ),
   selectedData: PropTypes.node.isRequired,
 };
 

@@ -125,7 +125,7 @@ class StagerDashboard extends React.Component {
     }
     const {
       closeSnackBar, counts, tableData, downloadCSVUri,
-      loading, snackBarData, selectedData,
+      loading, snackBarData, selectedData, docsOutResponse,
     } = this.props;
     const {
       activeTab, activeTile, stager,
@@ -154,6 +154,7 @@ class StagerDashboard extends React.Component {
               tileName,
               tabName) => this.onStatusCardClick(searchTerm, tileName, tabName)
           }
+          popupData={docsOutResponse}
           refreshDashboard={() => this.refreshDashboard()}
           selectedData={selectedData}
           stager={stager}
@@ -171,6 +172,7 @@ const mapStateToProps = state => ({
   tableData: stagerSelectors.getTableData(state),
   selectedData: stagerSelectors.getSelectedData(state),
   snackBarData: notificationSelectors.getSnackBarState(state),
+  docsOutResponse: stagerSelectors.getDocsOutResponse(state),
   downloadCSVUri: stagerSelectors.getDownloadCSVUri(state),
 });
 
@@ -199,6 +201,11 @@ StagerDashboard.propTypes = {
       displayName: PropTypes.string,
     }),
   ),
+  docsOutResponse: PropTypes.arrayOf(
+    PropTypes.shape({
+      error: PropTypes.bool,
+    }),
+  ),
   downloadCSVUri: PropTypes.string,
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
@@ -217,6 +224,7 @@ StagerDashboard.defaultProps = {
   tableData: [],
   loading: false,
   downloadCSVUri: '',
+  docsOutResponse: [],
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDashboard);
