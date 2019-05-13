@@ -29,7 +29,7 @@ class StagerPage extends React.PureComponent {
       activeTab, activeTile, downloadCSVUri,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, onOrderClick, onDocsOutClick, onSelectAll, selectedData,
-      refreshDashboard, stager,
+      refreshDashboard, stager, popupData,
     } = this.props;
     return (
       <>
@@ -66,6 +66,7 @@ class StagerPage extends React.PureComponent {
               onDocsOutClick={onDocsOutClick}
               onOrderClick={onOrderClick}
               onSelectAll={onSelectAll}
+              popupData={popupData}
               selectedData={selectedData}
             />
           </Grid>
@@ -81,6 +82,7 @@ const TestExports = {
 
 StagerPage.defaultProps = {
   loading: true,
+  popupData: [],
 };
 
 StagerPage.propTypes = {
@@ -108,6 +110,11 @@ StagerPage.propTypes = {
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
+  popupData: PropTypes.arrayOf(
+    PropTypes.shape({
+      error: PropTypes.bool,
+    }),
+  ),
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   stager: PropTypes.string.isRequired,

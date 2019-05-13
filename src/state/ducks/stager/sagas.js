@@ -20,6 +20,7 @@ import {
   TRIGGER_DOCS_OUT_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_STAGER_DOWNLOAD_CSV_URI,
+  SET_DOCS_OUT_RESPONSE,
 } from './types';
 import selectors from './selectors';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
@@ -106,6 +107,13 @@ function* fireSnackBar(snackBarData) {
   });
 }
 
+function* setDocsOutData(data) {
+  yield put({
+    type: SET_DOCS_OUT_RESPONSE,
+    payload: data,
+  });
+}
+
 function* makeOrderBpmCall(payload) {
   try {
     const snackBar = {};
@@ -169,34 +177,14 @@ function* makeDocsOutStagerCall(payload) {
     const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${payload.payload.action}`, payload.payload.data);
     console.log(response);
     const failedResponse = response ? response.filter(data => data.error === true) : [];
-    yield call(fetchDashboardCounts({ payload: payload.payload.type }));
+    yield call(fetchDashboardCounts, { payload: payload.type });
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
       payload:
           { activeSearchTerm, stagerType: payload.payload.type },
     });
     yield call(onCheckboxSelect, { payload: [] });
-    if (failedResponse && failedResponse.length > 0) {
-      const snackBarData = {};
-      if (failedResponse.length > 5) {
-        snackBarData.message = `${payload.payload.action} call failed for more than 5 Eval ID(s): Contact Admin!`;
-        snackBarData.type = 'error';
-        snackBarData.open = true;
-      } else {
-        snackBarData.message = `${payload.payload.action} call failed for Eval ID(s): `;
-        snackBarData.type = 'error';
-        snackBarData.open = true;
-        const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
-        snackBarData.message += failedEvalIds.toString();
-      }
-      yield call(fireSnackBar, snackBarData);
-    } else {
-      const snackBarData = {};
-      snackBarData.message = `${payload.payload.action} Call Successful!`;
-      snackBarData.type = 'success';
-      snackBarData.open = true;
-      yield call(fireSnackBar, snackBarData);
-    }
+    yield call(setDocsOutData, failedResponse);
   } catch (e) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
