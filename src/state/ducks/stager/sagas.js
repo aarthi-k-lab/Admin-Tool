@@ -17,6 +17,7 @@ import {
   TABLE_CHECKBOX_SELECT,
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
+  TRIGGER_DOCS_OUT_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_STAGER_DOWNLOAD_CSV_URI,
 } from './types';
@@ -25,36 +26,12 @@ import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
 function* fetchDashboardCounts(data) {
   try {
-    let newPayload;
-    let countData;
-    switch (data.payload) {
-      case 'UNDERWRITER STAGER':
-        newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
-        break;
-      // Mock data
-      case 'DOCSOUT STAGER':
-        newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
-        countData = newPayload.counts;
-        countData.forEach((item) => {
-          // eslint-disable-next-line no-param-reassign
-          if (item.displayName === 'Completed') {
-            item.data.splice(1, 1);
-            item.data.splice(2, 1);
-          } else if (item.displayName === 'To Order') {
-            item.data[1].displayName = 'CURRENT REVIEW';
-          } else {
-            item.data.splice(1, 1);
-          }
-        });
-        break;
-      default:
-        newPayload = {};
-        break;
-    }
-    if (newPayload != null) {
+    const stagerType = data.payload;
+    const response = yield call(Api.callGet, `api/stager/dashboard/getCounts/${stagerType}`);
+    if (response != null) {
       yield put({
         type: SET_STAGER_DATA_COUNTS,
-        payload: newPayload,
+        payload: response,
       });
     }
   } catch (e) {
@@ -69,7 +46,7 @@ function* fetchDashboardData(data) {
   let payload;
   try {
     const searchTerm = data.payload.activeSearchTerm;
-    const stagerValue = data.payload.stager;
+    const stagerType = data.payload.stager;
     yield put({
       type: SET_STAGER_DATA_LOADING,
       payload: {
@@ -77,36 +54,21 @@ function* fetchDashboardData(data) {
         loading: true,
       },
     });
-    let newPayload;
-    switch (stagerValue) {
-      case 'UNDERWRITER STAGER':
-        newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
-        break;
-      // Mock Data
-      case 'DOCSOUT STAGER':
-        newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
-        if (newPayload !== null) {
-          newPayload.stagerTaskType = 'Current Review';
-        }
-        break;
-      default:
-        newPayload = {};
-        break;
-    }
+    const response = yield call(Api.callGet, `api/stager/dashboard/getData/${stagerType}/${searchTerm}`);
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
     });
-    const downloadCSVUri = `api/stager/dashboard/downloadData/${searchTerm}`;
+    const downloadCSVUri = `api/stager/dashboard/downloadData/${stagerType}/${searchTerm}`;
     yield put({
       type: SET_STAGER_DOWNLOAD_CSV_URI,
       payload: downloadCSVUri,
     });
 
-    if (newPayload != null) {
+    if (response != null) {
       payload = {
         error: false,
-        data: newPayload,
+        data: response,
       };
     } else {
       payload = {
@@ -196,6 +158,59 @@ function* watchOrderCall() {
   yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
 
+function* makeDocsOutStagerCall(payload) {
+  try {
+    console.log('DOCS OUT PAYLOAD>>>', payload);
+    const snackBar = {};
+    snackBar.message = `${payload.payload.action} in progress. Please wait... `;
+    snackBar.type = 'message';
+    snackBar.open = true;
+    yield call(fireSnackBar, snackBar);
+    const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${payload.payload.action}`, payload.payload.data);
+    console.log(response);
+    const failedResponse = response ? response.filter(data => data.error === true) : [];
+    yield call(fetchDashboardCounts({ payload: payload.payload.type }));
+    const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
+    yield call(fetchDashboardData, {
+      payload:
+          { activeSearchTerm, stagerType: payload.payload.type },
+    });
+    yield call(onCheckboxSelect, { payload: [] });
+    if (failedResponse && failedResponse.length > 0) {
+      const snackBarData = {};
+      if (failedResponse.length > 5) {
+        snackBarData.message = `${payload.payload.action} call failed for more than 5 Eval ID(s): Contact Admin!`;
+        snackBarData.type = 'error';
+        snackBarData.open = true;
+      } else {
+        snackBarData.message = `${payload.payload.action} call failed for Eval ID(s): `;
+        snackBarData.type = 'error';
+        snackBarData.open = true;
+        const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
+        snackBarData.message += failedEvalIds.toString();
+      }
+      yield call(fireSnackBar, snackBarData);
+    } else {
+      const snackBarData = {};
+      snackBarData.message = `${payload.payload.action} Call Successful!`;
+      snackBarData.type = 'success';
+      snackBarData.open = true;
+      yield call(fireSnackBar, snackBarData);
+    }
+  } catch (e) {
+    const snackBarData = {};
+    snackBarData.message = 'Something went wrong!!';
+    snackBarData.type = 'error';
+    snackBarData.open = true;
+    yield call(fireSnackBar, snackBarData);
+    console.log(`${payload.action} Call error:`, e);
+  }
+}
+
+function* watchDocsOutCall() {
+  yield takeEvery(TRIGGER_DOCS_OUT_SAGA, makeDocsOutStagerCall);
+}
+
 function* watchDashboardDataFetch() {
   yield takeEvery(GET_DASHBOARD_DATA_SAGA, fetchDashboardData);
 }
@@ -222,5 +237,6 @@ export function* combinedSaga() {
     watchDashboardDataFetch(),
     watchTableCheckboxSelect(),
     watchOrderCall(),
+    watchDocsOutCall(),
   ]);
 }
