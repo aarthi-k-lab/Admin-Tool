@@ -103,27 +103,27 @@ const status = [
       {
         id: 'beuw_Second_look_offshore_review_required',
         activityName: 'Second Look Offshore Review Required',
-        verbiage: 'Select this option if you are an onshore agent requesting for offshore to review. Please ensure the Eval is Active and the most recent Resolution case is open and the resolution substatus is not in "Referral", "Referral KB" or "Tax Transcript Ordered".',
+        verbiage: 'Select this option if you are an onshore second look agent requesting for offshore second look to review. Please ensure the Eval is Active, the Eval substatus is in "Sent for Reject" and the most recent Resolution case is Rejected. ',
       },
       {
         id: 'beuw_second_look_offshore_team_lead_review_required',
         activityName: 'Second Look Offshore Team Lead Review Required',
-        verbiage: 'Select this option if you are an offshore agent and need assistance from your Team Lead to complete the task.',
+        verbiage: 'Select this option if you are an offshore second look agent and need assistance from your Team Lead to complete the task. Please ensure the Eval is Active, the Eval substatus is in "Sent for Reject" and the most recent Resolution case is Rejected.',
       },
       {
         id: 'beuw_second_look_onshore_review_required',
         activityName: 'Second Look Onshore Review Required',
-        verbiage: 'Select this option if you are an offshore team lead and need an onshore review for further assistance.',
+        verbiage: 'Select this option if you are an offshore team lead and need an onshore second look review for further assistance. Please ensure the Eval is Active, the Eval substatus is in "Sent for Reject" and the most recent Resolution case is Rejected.',
       },
       {
         id: 'beuw_second_look_onshore_team_lead_review_required',
         activityName: 'Second Look Onshore Team Lead Review Required',
-        verbiage: 'Select this option if you have a team lead onshore that will assist with certain activities.',
+        verbiage: 'Select this option if you have a team lead onshore for second look that will assist with certain activities. Please ensure the Eval is Active, the Eval substatus is in "Sent for Reject" and the most recent Resolution case is Rejected.',
       },
       {
         id: 'beuw_second_look_manager_review_required',
         activityName: 'Second Look Manager Review Required',
-        verbiage: 'Select this option if you are an onshore agent and need your manager\'s help to review a file.',
+        verbiage: 'Select this option if you are an onshore second look agent and need your manager\'s help to review a file. Please ensure the Eval is Active, the Eval substatus is in "Sent for Reject" and the most recent Resolution case is Rejected.',
       },
     ],
     labelDisplay: 'none',
