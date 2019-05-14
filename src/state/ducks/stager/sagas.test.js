@@ -84,7 +84,7 @@ describe('fetchDashboardCounts ', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)(payload);
   it('call getCounts Api', () => {
     expect(saga.next(payload.payload).value)
-      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts'));
+      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts/UNDERWRITER STAGER'));
   });
   it('should update with returned payload ', () => {
     const data = { displayName: 'LegalFeeToOrder' };
@@ -117,7 +117,7 @@ describe('fetchDashboardData ', () => {
 
   it('call bpm audit data Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, `api/stager/dashboard/getData/${payload.payload.activeSearchTerm}`));
+      .toEqual(call(Api.callGet, `api/stager/dashboard/getData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`));
   });
 
   it('should update searchterm ', () => {
@@ -132,7 +132,7 @@ describe('fetchDashboardData ', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: SET_STAGER_DOWNLOAD_CSV_URI,
-        payload: `api/stager/dashboard/downloadData/${payload.payload.activeSearchTerm}`,
+        payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`,
       }));
   });
 
