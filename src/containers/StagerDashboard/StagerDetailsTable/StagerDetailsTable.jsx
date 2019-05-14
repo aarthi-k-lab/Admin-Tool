@@ -1,6 +1,7 @@
 /* eslint-disable no-dupe-keys */
 import React from 'react';
 import './StagerDetailsTable.css';
+import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DownloadIcon from '@material-ui/icons/SaveAlt';
@@ -9,6 +10,7 @@ import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
 // import Loader from 'components/Loader/Loader';
 import CustomReactTable from 'components/CustomReactTable';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import renderSkeletonLoader from './TableSkeletonLoader';
 import StagerPopup from '../StagerPopUp';
 
@@ -20,21 +22,21 @@ const REJECT = 'REJECT';
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      isOperationRequested: false,
-    };
     this.renderDataTable = this.renderDataTable.bind(this);
+    this.onDocsOutClick = this.onDocsOutClick.bind(this);
   }
 
-  handleOperationOnClick(event) {
-    const { selectedData } = this.props;
-    this.setState({
-      isOperationRequested: true,
-      responseDetails: {
-        type: event.currentTarget.textContent,
-        totalCount: selectedData.length,
-      },
-    });
+  onDocsOutClick(data, action) {
+    const { triggerDocsOutCall } = this.props;
+    const docsOutPayload = R.map(dataUnit => ({
+      evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
+      taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
+    }), data);
+    const payload = {
+      type: 'DOCSOUT STAGER',
+      data: docsOutPayload,
+    };
+    triggerDocsOutCall(payload, action);
   }
 
   renderDataTable() {
@@ -73,9 +75,9 @@ class StagerDetailsTable extends React.PureComponent {
   render() {
     const {
       data, loading, downloadCSVUri,
-      onOrderClick, selectedData, onDocsOutClick, popupData,
+      onOrderClick, selectedData, popupData, docsOutAction,
     } = this.props;
-    const { isOperationRequested, responseDetails } = this.state;
+
     return (
       <>
         {
@@ -106,13 +108,13 @@ class StagerDetailsTable extends React.PureComponent {
                     data.isManualOrder && data.stagerTaskType === 'Current Review'
                       ? (
                         <>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocsOutClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
                             {CONTINUE_REVIEW}
                           </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, REJECT)} styleName="details-table-btn" variant="contained">
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocsOutClick(selectedData, REJECT)} styleName="details-table-btn" variant="contained">
                             {REJECT}
                           </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onDocsOutClick(selectedData, SENT_FOR_REJECT)} styleName="details-table-btn" variant="contained">
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocsOutClick(selectedData, SENT_FOR_REJECT)} styleName="details-table-btn" variant="contained">
                             {SENT_FOR_REJECT}
                           </Button>
                         </>
@@ -140,8 +142,8 @@ class StagerDetailsTable extends React.PureComponent {
             this.renderDataTable()
           ) : null
         }
-        {isOperationRequested
-          ? (<StagerPopup operationDetails={responseDetails} popupData={popupData} />) : null}
+        {popupData && popupData.length > 0
+          ? (<StagerPopup action={docsOutAction} popupData={popupData} />) : null}
 
       </>
     );
@@ -158,10 +160,10 @@ StagerDetailsTable.defaultProps = {
 
 StagerDetailsTable.propTypes = {
   data: PropTypes.node.isRequired,
+  docsOutAction: PropTypes.func.isRequired,
   downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
-  onDocsOutClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   popupData: PropTypes.arrayOf(
@@ -170,7 +172,17 @@ StagerDetailsTable.propTypes = {
     }),
   ),
   selectedData: PropTypes.node.isRequired,
+  triggerDocsOutCall: PropTypes.func.isRequired,
 };
 
-export default StagerDetailsTable;
+const mapStateToProps = state => ({
+  docsOutAction: stagerSelectors.getdocsOutAction(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  triggerDocsOutCall: stagerOperations.triggerDocsOutCall(dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(StagerDetailsTable);
+
 export { TestExports };
