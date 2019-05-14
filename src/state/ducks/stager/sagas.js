@@ -168,7 +168,8 @@ function* watchOrderCall() {
 
 function* makeDocsOutStagerCall(payload) {
   try {
-    const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${payload.payload.action}`, payload.payload.data);
+    const docsOutAction = yield select(selectors.getdocsOutAction);
+    const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${docsOutAction}`, payload.payload.data);
     yield call(fetchDashboardCounts, { payload: payload.type });
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
