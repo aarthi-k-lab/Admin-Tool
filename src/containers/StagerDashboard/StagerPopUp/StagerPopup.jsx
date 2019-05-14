@@ -24,14 +24,6 @@ class StagerPopup extends React.PureComponent {
     this.getTotalloanCount = this.getTotalloanCount.bind(this);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  getLoanStatus(status) {
-    if (!status) {
-      return 'Loans ordered successfully';
-    }
-    return 'Loans Failed';
-  }
-
   onEyeIconClick() {
     this.setState(prevState => ({
       showSuccess: !prevState.showSuccess
@@ -76,7 +68,7 @@ class StagerPopup extends React.PureComponent {
                   </span>
                 </Grid>
                 <Grid item xs={10}>
-                  <span styleName="loans-font">{this.getLoanStatus(loanDetails.error)}</span>
+                  <span styleName="loans-font">{loanDetails.error ? 'Loans failed' : 'Loans ordered successfully'}</span>
                 </Grid>
                 <Grid item xs={1}>
                   <span styleName="loans-font">

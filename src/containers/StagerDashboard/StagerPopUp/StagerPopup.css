@@ -1,6 +1,6 @@
 .card-header {
     position: fixed !important;
-    bottom: 0;
+    bottom: 1.2rem;
     width: 40%;
     margin-left: 0.5rem !important;
    }
