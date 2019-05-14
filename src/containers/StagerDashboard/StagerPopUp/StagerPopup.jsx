@@ -102,25 +102,31 @@ class StagerPopup extends React.PureComponent {
                 <Grid
                   container
                 >
-                  <Grid item xs={1}>
+                  <Grid item xs={1} style={{ paddingBottom: '0.5rem'}}>
                     <span styleName={!loanDetails.error ? 'sucessedloan' : 'failedloan'}>
                       {!loanDetails.error ? this.successCount : this.failureCount}
                     </span>
                   </Grid>
-                  <Grid item xs={10}>
-                    <span styleName="loans-font">{this.getLoanStatus(loanDetails.error)}</span>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <span styleName="loans-font">
-                      {!loanDetails.error ? (<RemoveRedEyeIcon onClick={() => this.onEyeIconClick()} styleName="eyeicon" />) : (
-                        <Button color="primary" variant="contained" onClick={() => this.onRetryClick()} >
-                          Retry
-                     </Button>
-                      )}
-                    </span>
-                  </Grid>
+                <Grid item xs={10}>
+                  <span styleName="loans-font">{this.getLoanStatus(loanDetails.error)}</span>
                 </Grid>
-              </ExpansionPanelDetails>
+                <Grid item xs={1}>
+                  <span styleName="loans-font">
+                    {!loanDetails.error ? (<div styleName='viewHideIcon'><RemoveRedEyeIcon onClick={() => this.onEyeIconClick()} styleName="eyeicon" /></div>) : (
+                      (loanDetails.error && loanDetails.data.length !== 0) ?
+                        (
+                          <div styleName='retry'>
+                             <Button color="primary" variant="contained" onClick={() => this.onRetryClick()} >
+                                Retry
+                            </Button>
+                          </div>
+                        ) : null
+
+                    )}
+                  </span>
+                </Grid>
+                </Grid>
+            </ExpansionPanelDetails>
 
               <div styleName={loanDetails.error ? 'failed' : `success${showSuccess ? 'View' : 'Hide'}`}>
                 {
@@ -149,13 +155,13 @@ class StagerPopup extends React.PureComponent {
                           ) : null}
                         </Grid>
                       </Grid>
-                    </ExpansionPanelDetails>
-                  ))}
-              </div>
+                  </ExpansionPanelDetails>
+                ))}
+            </div>
 
             </>
-          ))
-          }
+        ))
+        }
         </ExpansionPanel>
       </div>
     );
