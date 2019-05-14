@@ -6,7 +6,7 @@ const BEUW = 'BEUW';
 const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
-
+const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const PAGE_LOOKUP = [
   {
     group: FEUW,
@@ -80,6 +80,7 @@ const DashboardModel = {
   PAGE_LOOKUP,
   getTitle,
   Messages,
+  ALLOW_IN_QUEUE,
 };
 
 export default DashboardModel;
