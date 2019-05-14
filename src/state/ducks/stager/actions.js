@@ -1,6 +1,7 @@
 import {
   GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
   TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA, TRIGGER_DOCS_OUT_SAGA, SET_DOCS_OUT_ACTION,
+  CLEAR_DOCS_OUT_RESPONSE,
 } from './types';
 
 const triggerDashboardCounts = selectedStager => ({
@@ -33,6 +34,10 @@ const setDocOutAction = action => ({
   action,
 });
 
+const clearDocOutAction = () => ({
+  type: CLEAR_DOCS_OUT_RESPONSE,
+});
+
 export {
   triggerDashboardCounts,
   triggerDashboardDataFetch,
@@ -40,4 +45,5 @@ export {
   triggerOrderCallAction,
   triggerDocsOutCallAction,
   setDocOutAction,
+  clearDocOutAction,
 };

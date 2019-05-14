@@ -34,7 +34,13 @@ class StagerDashboard extends React.Component {
   }
 
   onStatusCardClick(searchTerm, activeTile, activeTab) {
-    const { getDashboardData, onCheckBoxClick, getDashboardCounts } = this.props;
+    const {
+      getDashboardData,
+      onCheckBoxClick,
+      getDashboardCounts,
+      onClearDocsOutAction,
+    } = this.props;
+    onClearDocsOutAction();
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     const { stager } = this.state;
     const payload = {
@@ -158,6 +164,7 @@ const mapDispatchToProps = dispatch => ({
   onCheckBoxClick: stagerOperations.onCheckBoxClick(dispatch),
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerDocsOutCall: stagerOperations.triggerDocsOutCall(dispatch),
+  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
 });
 
 StagerDashboard.propTypes = {
@@ -186,6 +193,7 @@ StagerDashboard.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onClearDocsOutAction: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
