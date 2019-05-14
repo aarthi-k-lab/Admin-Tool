@@ -1,5 +1,7 @@
 .card-header {
-    width: 50%;
+    position: fixed !important;
+    bottom: 0;
+    width: 40%;
     margin-left: 0.5rem !important;
    }
    .card-title {
@@ -34,11 +36,23 @@
   .successView{
     display: block;
     border-bottom: 0.1rem solid rgb(230, 230, 230) !important;
-    margin-bottom:0.625rem;
+    padding-bottom: 0.5rem;
+    overflow: auto;
+    max-height: 30vh;
   }
   
   .failed{
     display: block;
+    overflow: auto;
+    max-height: 30vh;
+  }
+
+  .viewHideIcon:hover{
+    cursor: pointer;
+  }
+
+  .retry{
+    margin-left: -0.5rem;
   }
   
   .sucessedloan {
