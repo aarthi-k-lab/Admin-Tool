@@ -1,6 +1,9 @@
 import {
   triggerDashboardCounts, triggerDashboardDataFetch,
-  triggerCheckboxSelect, triggerOrderCallAction, triggerDocsOutCallAction, setDocOutAction,
+  triggerCheckboxSelect, triggerOrderCallAction,
+  triggerDocsOutCallAction,
+  setDocOutAction,
+  clearDocOutAction,
 } from './actions';
 
 const getDashboardCounts = dispatch => selectedStager => dispatch(
@@ -17,12 +20,15 @@ const triggerDocsOutCall = dispatch => (payload, action) => {
   dispatch(setDocOutAction(action));
 };
 
+const onClearDocsOutAction = dispatch => () => dispatch(clearDocOutAction());
+
 const operations = {
   getDashboardCounts,
   getDashboardData,
   onCheckBoxClick,
   triggerOrderCall,
   triggerDocsOutCall,
+  onClearDocsOutAction,
 };
 
 export default operations;
