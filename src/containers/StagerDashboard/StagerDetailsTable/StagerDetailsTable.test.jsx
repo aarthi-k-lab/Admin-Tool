@@ -11,7 +11,7 @@ describe('<StagerDetailsTable />', () => {
       displayName: 'LegalFee',
     }],
   };
-  it('shows StagerDetailsTable', () => {
+  it('shows StagerDetailsTable ', () => {
     const onOrderClick = jest.fn();
     const wrapper = shallow(
       <TestExports.StagerDetailsTable data={data} onOrderClick={onOrderClick} selectedData={[]} />,
@@ -22,6 +22,25 @@ describe('<StagerDetailsTable />', () => {
     expect(onOrderClick.mock.calls).toHaveLength(1);
     expect(wrapper.find('CustomReactTable')).toHaveLength(1);
   });
+
+  it('shows StagerDetailsTable - Tasktype - Current Review', () => {
+    data.stagerTaskType = 'Current Review';
+    const triggerDocsOutCall = jest.fn();
+    const wrapper = shallow(
+      <TestExports.StagerDetailsTable
+        data={data}
+        selectedData={[]}
+        triggerDocsOutCall={triggerDocsOutCall}
+      />,
+    );
+    console.debug('wrapper>>>', wrapper);
+    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
+    expect(wrapper.find('WithStyles(Button)')).toHaveLength(4);
+    wrapper.find('WithStyles(Button)').at(1).simulate('Click');
+    expect(triggerDocsOutCall.mock.calls).toHaveLength(1);
+    expect(wrapper.find('CustomReactTable')).toHaveLength(1);
+  });
+
   it('shows Unselected Message', () => {
     const onOrderClick = jest.fn();
     const wrapper = shallow(
