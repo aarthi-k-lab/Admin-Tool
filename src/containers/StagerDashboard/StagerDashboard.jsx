@@ -207,4 +207,10 @@ StagerDashboard.defaultProps = {
   docsOutResponse: [],
 };
 
+const TestExports = {
+  StagerDashboard,
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDashboard);
+
+export { TestExports };
