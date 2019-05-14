@@ -6,6 +6,7 @@ import * as R from 'ramda';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
+import DashboardModel from 'models/Dashboard';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
@@ -85,7 +86,7 @@ class SearchLoan extends React.PureComponent {
   }
 
   handleRowClick(payload) {
-    if (payload.assignee !== 'In Queue' && payload.assignee !== 'N/A') {
+    if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
       const { onSelectEval, onGetGroupName } = this.props;
       let group = '';
       switch (payload.taskName) {
