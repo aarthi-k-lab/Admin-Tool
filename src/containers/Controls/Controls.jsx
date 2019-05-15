@@ -16,6 +16,7 @@ import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
 import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
+import hideAssignForGroups from './hideAssignForGroups';
 
 class Controls extends React.PureComponent {
   constructor(props) {
@@ -87,11 +88,15 @@ class Controls extends React.PureComponent {
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
       ? <SendToUnderwriting onClick={this.handleSentToUnderwriting} /> : null;
     const expand = <Expand onClick={onExpand} />;
-    if (showAssign != null && !showAssign) {
+    if (showAssign != null && !showAssign && !hideAssignForGroups.includes(groupName)) {
       assign = <Assign />;
     }
     const groups = user && user.groupList;
-    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
+    if (
+      RouteAccess.hasManagerDashboardAccess(groups)
+      && showAssign
+      && !hideAssignForGroups.includes(groupName)
+    ) {
       assign = <Unassign />;
     }
     return (
