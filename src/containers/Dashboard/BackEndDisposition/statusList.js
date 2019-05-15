@@ -15,7 +15,11 @@ const status = [
     activities: [
       { id: 'beuw_send_for_qc_review', activityName: 'Send For QC Review', verbiage: 'If the review results in a potential approval, then select this option to handoff for final QC and approval review. Ensure the status of Remedy is in either a Sent for Approval resolution status with an Active Eval. Please note for Loan Modification and Forgiveness Modification the resolution cases should be in a Locked Resolution Status and for Government Trial the Resolution Status should be Closed.' },
       { id: 'beuw_approval', activityName: 'Approval', verbiage: 'If the modification is approved then ensure the Eval Status is Approved and the resolution status is Closed. Please note for a Loan Modification and Forgiveness Modification case(s) ensure the resolution status is in Sent for Approval.' },
-      { id: 'beuw_reject', activityName: 'Reject', verbiage: 'The Eval status should be "Rejected" and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.' },
+      {
+        id: 'beuw_sent_for_reject',
+        activityName: 'Sent for Reject',
+        verbiage: 'The Eval status should be Active and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.',
+      },
     ],
     labelDisplay: 'none',
     expanded: false,
@@ -82,16 +86,6 @@ const status = [
         activityName: 'Litigation',
         verbiage: 'Select this option if the loan requires the litigation team to review the file. The resolution status should be open and the substatus should be Litigation Handling',
       },
-      {
-        id: 'beuw_sent_for_reject',
-        activityName: 'Sent for Reject',
-        verbiage: 'The Eval status should be Active and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.',
-      },
-      {
-        id: 'beuw_sent_to_underwriting',
-        activityName: 'Send to Underwriting',
-        verbiage: 'Select this option if you are an agent reviewing "Sent for Reject" loans and want to hand back to the underwriter to re-review. Ensure you provide comments and that the Eval status is "Active", the Eval substatus is in "Referral" or "Referral KB" and the Resolution case is in "open" and the resolution substatus is in "Escrow KB".',
-      },
     ],
     labelDisplay: 'none',
     expanded: false,
@@ -124,6 +118,20 @@ const status = [
         id: 'beuw_second_look_manager_review_required',
         activityName: 'Second Look Manager Review Required',
         verbiage: 'Select this option if you are an onshore second look agent and need your manager\'s help to review a file. Please ensure the Eval is Active, the Eval substatus is in "Sent for Reject" and the most recent Resolution case is Rejected.',
+      },
+    ],
+    labelDisplay: 'none',
+    expanded: false,
+  },
+  {
+    id: 'beuw_second_look_decision',
+    name: 'SECOND LOOK DECISION',
+    activities: [
+      { id: 'beuw_reject', activityName: 'Reject', verbiage: 'The Eval status should be "Rejected" and the Eval Substatus should be "Sent for Reject". The most recent Resolution Case should be in a "Rejected" Status.' },
+      {
+        id: 'beuw_sent_to_underwriting',
+        activityName: 'Send to Underwriting',
+        verbiage: 'Select this option if you are an agent reviewing "Sent for Reject" loans and want to hand back to the underwriter to re-review. Ensure you provide comments and that the Eval status is "Active", the Eval substatus is in "Referral" or "Referral KB" and the Resolution case is in "open" and the resolution substatus is in "Escrow KB".',
       },
     ],
     labelDisplay: 'none',
