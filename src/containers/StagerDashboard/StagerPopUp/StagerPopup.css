@@ -1,31 +1,31 @@
-.card-header {
+.expansion-header {
     position: fixed !important;
     bottom: 1.2rem;
     width: 40%;
     margin-left: 0.5rem !important;
    }
-   .card-title {
+   .expansion-title {
     background-color: #464444 !important;
     min-height: inherit !important;
    }
   
-   .card-header-title {
+   .expansion-header-title {
      color: white !important;
      font-size: 1rem !important;
    }
   
-   .card-success-title {
+   .expansion-succeedLoan-title {
      background-color: rgb(230, 230, 230) !important;
      height: 4rem;
      padding: 15px 24px 24px !important;
    }
   
-   .card-failure-title {
+   .expansion-failedLoan-title {
     background-color:white !important;
     padding: 10px 24px 2px !important; 
   }
   
-  .loans-font {
+  .popup-font {
     font-size: 1rem !important;
   }
 
@@ -47,6 +47,14 @@
     max-height: 30vh;
   }
 
+  .open{
+    display: block;
+  }
+
+  .close{
+    display: none;
+  }
+
   .viewHideIcon:hover{
     cursor: pointer;
   }
@@ -55,7 +63,7 @@
     margin-left: -0.5rem;
   }
   
-  .sucessedloan {
+  .succeedloan {
     border: 3px solid green;
     background-color: green;
     color: white;
@@ -82,7 +90,4 @@
   .eyeicon {
     margin-left: 1.5rem !important;
   }
-  .margin {  
-
-    }
   
