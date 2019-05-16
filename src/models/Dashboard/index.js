@@ -34,7 +34,7 @@ const GROUP_INFO = [
     task: 'Processing',
     taskCode: 'PROC',
     path: '/doc-processor',
-    showAssignUnassign: false,
+    showAssignUnassign: true,
 
   },
   {
