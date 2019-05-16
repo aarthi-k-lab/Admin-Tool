@@ -39,7 +39,7 @@ class Disposition extends React.PureComponent {
       enableGetNext, onPostComment, LoanNumber, ProcIdType, EvalId,
       user, groupName, dispositionReason, AppName, TaskId,
     } = this.props;
-    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
     if (enableGetNext && this.savedComments) {

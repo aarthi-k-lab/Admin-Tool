@@ -39,7 +39,7 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const { location, group, taskName } = this.props;
-    const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
+    const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     const title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
     return (
       <>
