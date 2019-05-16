@@ -27,7 +27,6 @@ class TrialHeaderAndDetails extends React.PureComponent {
     return (
       <>
         <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
-          {console.log('resultUnderwriting++++++++++++++++++++++++++++++++++++', resultUnderwriting, resultUnderwriting.status, resultUnderwriting && resultUnderwriting.status)}
           {(resultUnderwriting && resultUnderwriting.status)
             ? <UserNotification level={resultUnderwriting.level} message={resultUnderwriting.status} type="alert-box" />
             : ''

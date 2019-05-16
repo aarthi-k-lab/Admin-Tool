@@ -639,11 +639,20 @@ function* loadTrials(payload) {
     } catch (e) {
       yield put({ type: LOAD_TRIALLETTER_RESULT, payload: { e, valid: false } });
     }
-    const processStatus = yield select(selectors.processStatus);
-    const taskStatus = yield select(selectors.taskStatus);
 
+    let evalStatus;
+    try {
+      yield put({ type: SHOW_LOADER });
+      const response = yield call(Api.callGetText, `/api/cmodnetcoretkams/Eval/Status?EvalId=${evalId}`);
+      evalStatus = response !== null ? response : '';
+      yield put({ type: HIDE_LOADER });
+    } catch (e) {
+      evalStatus = '';
+      yield put({ type: LOAD_TRIALLETTER_RESULT, payload: { e, valid: false } });
+    }
+    const taskStatus = yield select(selectors.taskStatus);
     let message = '';
-    if (taskStatus === 'Active' && (processStatus !== 'Completed' || trialHeader.resolutionStatus !== 'Closed')) {
+    if (taskStatus === 'Received' && (evalStatus !== 'Approved' || trialHeader.resolutionStatus !== 'Closed')) {
       message = 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
         + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
     }
@@ -668,7 +677,6 @@ function* loadTrials(payload) {
 
 function* sentToUnderwriting() {
   const taskId = yield select(selectors.taskId);
-  // const taskId = 1759963;
   const taskStatus = yield select(selectors.taskStatus);
   const evalId = yield select(selectors.evalId);
   const trialHeader = yield select(selectors.getTrialHeader);
@@ -676,13 +684,12 @@ function* sentToUnderwriting() {
   let caseStatus;
   let evalStatus;
   if (taskStatus === 'Active') {
-    const key = JSON.parse('{"Ocp-Apim-Subscription-Key": "d4a602747f6f455aaa925cc356e180b7"}');
     try {
       yield put({ type: SHOW_LOADER });
-      const response = yield call(Api.callGetText, `/api/enterprise/tkamsnetcore/Eval/Status?EvalId=${evalId}`, key);
+      const response = yield call(Api.callGetText, `/api/cmodnetcoretkams/Eval/Status?EvalId=${evalId}`);
       evalStatus = response !== null ? response : '';
 
-      const response1 = yield call(Api.callGetText, `/api/enterprise/tkamsnetcore/Case/Status?CaseId=${resolutionId}`, key);
+      const response1 = yield call(Api.callGetText, `/api/cmodnetcoretkams/Case/Status?CaseId=${resolutionId}`);
       caseStatus = response1 !== null ? response1 : '';
       yield put({ type: HIDE_LOADER });
     } catch (e) {
@@ -695,19 +702,15 @@ function* sentToUnderwriting() {
         },
       });
     }
-    // console.log('DATA: evalStatus, taskStatus, caseStatus
-    // ------------------', evalStatus, taskStatus, caseStatus);
-    // if (evalStatus && caseStatus) {
     if (evalStatus === 'Active' && caseStatus === 'Open') {
       try {
         yield put({ type: SHOW_LOADER });
-        const payload = JSON.parse(`{ "finishTask": {
+        const payload = JSON.parse(`{
           "taskId": "${taskId}", 
-          "status": " Send to Underwriting ",
+          "status": "Send to Underwriting",
           "currentStatus": "Received" 
-        }}`);
-        const key1 = JSON.parse('{"Ocp-Apim-Subscription-Key": "36873b5c8cc347be8390dae6f4854098"}');
-        const response = yield call(Api.callPost, '/api/enterprise/enterprise/automationfinishtask/finishTask', payload, key1);
+        }`);
+        const response = yield call(Api.callPost, '/api/cmodtrial/SendToUnderwriting', payload);
         const statusCode = R.pathOr(null, ['finishTaskResponse', 'statusCode'], response);
         if (response !== null && statusCode === '200') {
           yield put({
