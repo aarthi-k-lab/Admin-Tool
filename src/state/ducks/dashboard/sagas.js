@@ -679,40 +679,19 @@ function* sentToUnderwriting() {
   const taskId = yield select(selectors.taskId);
   const taskStatus = yield select(selectors.taskStatus);
   const evalId = yield select(selectors.evalId);
-  const trialHeader = yield select(selectors.getTrialHeader);
-  const resolutionId = trialHeader.resolutionId ? trialHeader.resolutionId : '0';
-  let caseStatus;
-  let evalStatus;
   if (taskStatus === 'Active') {
     try {
       yield put({ type: SHOW_LOADER });
-      const response = yield call(Api.callGetText, `/api/cmodnetcoretkams/Eval/Status?EvalId=${evalId}`);
-      evalStatus = response !== null ? response : '';
-
-      const response1 = yield call(Api.callGetText, `/api/cmodnetcoretkams/Case/Status?CaseId=${resolutionId}`);
-      caseStatus = response1 !== null ? response1 : '';
-      yield put({ type: HIDE_LOADER });
-    } catch (e) {
-      yield put({
-        type: SET_TASK_UNDERWRITING_RESULT,
-        payload:
-        {
-          level: 'error',
-          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
-        },
-      });
-    }
-    if (evalStatus === 'Active' && caseStatus === 'Open') {
-      try {
-        yield put({ type: SHOW_LOADER });
+      const response = yield call(Api.callGet, `/api/cmodtrial/ValidateSendToUnderwriting?EvalId=${evalId}`);
+      if (response !== null && response.isValid === true && response.evalStatus === 'Active' && response.caseStatus === 'Open') {
         const payload = JSON.parse(`{
-          "taskId": "${taskId}", 
-          "status": "Send to Underwriting",
-          "currentStatus": "Received" 
-        }`);
-        const response = yield call(Api.callPost, '/api/cmodtrial/SendToUnderwriting', payload);
-        const statusCode = R.pathOr(null, ['finishTaskResponse', 'statusCode'], response);
-        if (response !== null && statusCode === '200') {
+              "taskId": "${taskId}", 
+              "status": "Send to Underwriting",
+              "currentStatus": "Received" 
+            }`);
+        const responseSend = yield call(Api.callPost, '/api/cmodtrial/SendToUnderwriting', payload);
+        const statusCode = R.pathOr(null, ['finishTaskResponse', 'statusCode'], responseSend);
+        if (responseSend !== null && statusCode === '200') {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
@@ -729,18 +708,25 @@ function* sentToUnderwriting() {
             },
           });
         }
-        yield put({ type: HIDE_LOADER });
-      } catch (e) {
-        yield put({ type: SET_TASK_UNDERWRITING_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
+      } else {
+        const message = 'Unable to send back to Underwriting because either eval is not '
+          + 'in Active status or Resolution is not in Open status.';
+        yield put({
+          type: SET_TASK_UNDERWRITING_RESULT,
+          payload: {
+            level: 'error',
+            status: message,
+          },
+        });
       }
-    } else {
-      const message = 'Unable to send back to Underwriting because either eval is not '
-      + 'in Active status or Resolution is not in Open status.';
+      yield put({ type: HIDE_LOADER });
+    } catch (e) {
       yield put({
         type: SET_TASK_UNDERWRITING_RESULT,
-        payload: {
+        payload:
+        {
           level: 'error',
-          status: message,
+          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
       });
     }
