@@ -83,7 +83,7 @@ class TrialDetails extends React.PureComponent {
       currency: 'USD',
       minimumFractionDigits: 2,
     });
-    const trialsDetailData = trialsDetail && R.sort(R.ascend(R.prop('sequence')), trialsDetail);
+    const trialsDetailData = trialsDetail && R.sortBy(R.prop('number'), trialsDetail);
     return (
       <>
         <div styleName="detail-list">
