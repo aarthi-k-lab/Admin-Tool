@@ -37,7 +37,8 @@
 
 .status-details {
   width: 60%;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .report-downloader {

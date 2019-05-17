@@ -153,12 +153,12 @@ const config = merge(
             '^/api/cmodtrial': '',
           },
         },   
-        '/api/enterprise': {
-          target: 'https://mrcooperdev.azure-api.net',
+        '/api/cmodnetcoretkams': {
+          target: 'https://cmodnetcoretkamsdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/enterprise': '',
+            '^/api/cmodnetcoretkams': '',
           },
         },
       },
