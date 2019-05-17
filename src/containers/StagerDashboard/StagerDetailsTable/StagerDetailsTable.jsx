@@ -26,17 +26,23 @@ class StagerDetailsTable extends React.PureComponent {
     this.onDocsOutClick = this.onDocsOutClick.bind(this);
   }
 
-  onDocsOutClick(data, action) {
-    const { triggerDocsOutCall } = this.props;
+  static getDispositionOperationPayload(data) {
     const docsOutPayload = R.map(dataUnit => ({
       evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
       taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
     }), data);
     const payload = {
-      type: 'DOCSOUT STAGER',
-      data: docsOutPayload,
+      taskList: docsOutPayload,
+      group: 'STAGER',
     };
-    triggerDocsOutCall(payload, action);
+    return payload;
+  }
+
+  onDocsOutClick(data, action) {
+    const { triggerDispositionOperationCall } = this.props;
+    triggerDispositionOperationCall(
+      StagerDetailsTable.getDispositionOperationPayload(data), action,
+    );
   }
 
   renderDataTable() {
@@ -142,7 +148,7 @@ class StagerDetailsTable extends React.PureComponent {
             this.renderDataTable()
           ) : null
         }
-        {popupData && popupData.length > 0
+        {popupData && !R.isEmpty(Object.keys(popupData))
           ? (<StagerPopup action={docsOutAction} popupData={popupData} />) : null}
 
       </>
@@ -172,7 +178,7 @@ StagerDetailsTable.propTypes = {
     }),
   ),
   selectedData: PropTypes.node.isRequired,
-  triggerDocsOutCall: PropTypes.func.isRequired,
+  triggerDispositionOperationCall: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -180,7 +186,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  triggerDocsOutCall: stagerOperations.triggerDocsOutCall(dispatch),
+  triggerDispositionOperationCall: stagerOperations.triggerDispositionOperationCall(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDetailsTable);

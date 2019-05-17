@@ -8,6 +8,8 @@ import {
   put,
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
+import * as R from 'ramda';
+import { selectors as loginSelectors } from 'ducks/login/index';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
   SET_STAGER_DATA_COUNTS,
@@ -17,12 +19,13 @@ import {
   TABLE_CHECKBOX_SELECT,
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
-  TRIGGER_DOCS_OUT_SAGA,
+  TRIGGER_DISPOSITION_OPERATION_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_STAGER_DOWNLOAD_CSV_URI,
   SET_DOCS_OUT_RESPONSE,
 } from './types';
 import selectors from './selectors';
+import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
 function* fetchDashboardCounts(data) {
@@ -166,19 +169,23 @@ function* watchOrderCall() {
   yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
 
-function* makeDocsOutStagerCall(payload) {
+function* makeDispositionOperationCall(payload) {
   try {
     const docsOutAction = yield select(selectors.getdocsOutAction);
-    const response = yield call(Api.callPost, `api/stager/stager/dashboard/docsout/${docsOutAction}`, payload.payload.data);
-    yield call(fetchDashboardCounts, { payload: payload.type });
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docsOutAction}`, { taskList: payload.payload.taskList });
+    const errorMessages = Disposition.getBulkErrorMessages(response.failedLoans);
+    response.failedLoans = errorMessages;
+    yield call(fetchDashboardCounts, { payload: 'DOCSOUT STAGER' });
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
       payload:
-          { activeSearchTerm, stager: payload.payload.type },
+        { activeSearchTerm, stager: 'DOCSOUT STAGER' },
     });
     yield call(onCheckboxSelect, { payload: [] });
     yield call(setDocsOutData, response);
-  } catch (e) {
+  } catch (err) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
     snackBarData.type = 'error';
@@ -187,8 +194,8 @@ function* makeDocsOutStagerCall(payload) {
   }
 }
 
-function* watchDocsOutCall() {
-  yield takeEvery(TRIGGER_DOCS_OUT_SAGA, makeDocsOutStagerCall);
+function* watchDispositionOperationCall() {
+  yield takeEvery(TRIGGER_DISPOSITION_OPERATION_SAGA, makeDispositionOperationCall);
 }
 
 function* watchDashboardDataFetch() {
@@ -217,6 +224,6 @@ export function* combinedSaga() {
     watchDashboardDataFetch(),
     watchTableCheckboxSelect(),
     watchOrderCall(),
-    watchDocsOutCall(),
+    watchDispositionOperationCall(),
   ]);
 }
