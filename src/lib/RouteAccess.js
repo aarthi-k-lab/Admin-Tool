@@ -40,7 +40,7 @@ const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['proc', 'proc-mgr'],
+  groups: ['proc', 'proc-mgr', 'allaccess'],
 };
 
 const feuwTasksAndChecklist = {

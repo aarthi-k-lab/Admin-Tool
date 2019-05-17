@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import EvalTableCell from './EvalTableCell';
+import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
 class EvalTableRow extends React.PureComponent {
@@ -23,7 +24,7 @@ class EvalTableRow extends React.PureComponent {
       let styles = '';
       if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
         styles = 'redText pointer';
-      } else if (row.original.assignee && (row.original.assignee === 'In Queue' || row.original.assignee === 'N/A')) {
+      } else if (row.original.assignee && ((row.original.assignee === 'In Queue' && !DashboardModel.ALLOW_IN_QUEUE.includes(row.original.taskName)) || row.original.assignee === 'N/A')) {
         styles = 'blackText';
       } else {
         styles = 'blackText pointer';
