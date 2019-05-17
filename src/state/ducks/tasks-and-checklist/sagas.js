@@ -26,6 +26,7 @@ import {
   DISP_COMMENT_SAGA,
   DISP_COMMENT,
   UPDATE_CHECKLIST,
+  SUBTASK_CLEARANCE,
 } from './types';
 import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
@@ -378,6 +379,31 @@ function* updateChecklist(action) {
   }
 }
 
+function* subTaskClearance(action) {
+  try {
+    const { id, taskBlueprintCode } = action.payload;
+    const requestBody = {
+      id, taskBlueprintCode,
+    };
+    const response = yield call(Api.put, '/api/task-engine/task/initialReset', requestBody);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    } else {
+      yield put({
+        type: GET_TASKS_SAGA,
+        payload: { depth: 3 },
+      });
+      yield put({
+        type: GET_CHECKLIST_SAGA,
+        payload: { taskId: id },
+      });
+    }
+  } catch (e) {
+    yield call(handleSaveChecklistError, e);
+  }
+}
+
 function* watchChecklistItemChange() {
   yield takeEvery(HANDLE_CHECKLIST_ITEM_CHANGE, handleChecklistItemChange);
 }
@@ -406,6 +432,10 @@ function* watchUpdateChecklist() {
   yield takeEvery(UPDATE_CHECKLIST, updateChecklist);
 }
 
+function* watchSubtaskClearance() {
+  yield takeEvery(SUBTASK_CLEARANCE, subTaskClearance);
+}
+
 export const TestExports = {
   watchGetTasks,
 };
@@ -419,5 +449,6 @@ export function* combinedSaga() {
     watchGetTasks(),
     watchDispositionComment(),
     watchUpdateChecklist(),
+    watchSubtaskClearance(),
   ]);
 }

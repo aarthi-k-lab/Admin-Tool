@@ -22,6 +22,15 @@ import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
 
 class TasksAndChecklist extends React.PureComponent {
+  handleSubTaskClearance(isConfirmed) {
+    if (isConfirmed) {
+      const { handleClearSubTask } = this.props;
+      const { selectedTaskId } = this.props;
+      const { selectedTaskBlueprintCode } = this.props;
+      handleClearSubTask(selectedTaskId, selectedTaskBlueprintCode);
+    }
+  }
+
   renderTaskErrorMessage() {
     const { checklistErrorMessage } = this.props;
     if (checklistErrorMessage) {
@@ -81,6 +90,7 @@ class TasksAndChecklist extends React.PureComponent {
         checklistItems={checklistItems}
         dialogContent={getDialogContent}
         dialogTitle={dialogTitle}
+        handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
         handleDeleteTask={handleDeleteTask}
         handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
         isDialogOpen={isDialogOpen}
@@ -197,6 +207,7 @@ TasksAndChecklist.propTypes = {
   disposition: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
   getDialogContent: PropTypes.string,
+  handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
@@ -210,6 +221,8 @@ TasksAndChecklist.propTypes = {
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  selectedTaskBlueprintCode: PropTypes.string.isRequired,
+  selectedTaskId: PropTypes.string.isRequired,
   showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
@@ -301,6 +314,8 @@ function mapStateToProps(state) {
     isDialogOpen: selectors.isDialogOpen(state),
     getDialogContent: selectors.getDialogContent(state),
     dialogTitle: selectors.getDialogTitle(state),
+    selectedTaskId: selectors.selectedTaskId(state),
+    selectedTaskBlueprintCode: selectors.selectedTaskBlueprintCode(state),
   };
 }
 
@@ -313,6 +328,7 @@ function mapDispatchToProps(dispatch) {
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),
+    handleClearSubTask: operations.handleSubTaskClearance(dispatch),
   };
 }
 

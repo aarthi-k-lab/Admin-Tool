@@ -5,9 +5,11 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
+import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
+
 
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
@@ -20,9 +22,22 @@ class Checklist extends React.PureComponent {
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClear = this.handleClear.bind(this);
     this.state = {
       multilineTextDirtyValues: {},
+      isDialogOpen: false,
+      dialogContent: '',
+      dialogTitle: '',
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      isDialogOpen: newProps.isDialogOpen,
+      dialogContent: newProps.dialogContent,
+      dialogTitle: newProps.dialogTitle,
+    });
   }
 
   getMultilineTextValue(id, initialValue) {
@@ -73,6 +88,30 @@ class Checklist extends React.PureComponent {
     };
   }
 
+  handleOpen() {
+    this.setState({
+      isDialogOpen: true,
+      dialogContent: 'You want to clear all the checklist?',
+      dialogTitle: 'CLEAR CHECKLIST',
+    });
+  }
+
+  handleCloseDialog(isConfirmed, dialogTitle) {
+    switch (dialogTitle) {
+      case 'DELETE TASK': this.handleClose(isConfirmed); break;
+      case 'CLEAR CHECKLIST': this.handleClear(isConfirmed); break;
+      default: this.handleClear(isConfirmed); break;
+    }
+  }
+
+  handleClear(isConfirmed) {
+    const { handleClearSubTask } = this.props;
+    handleClearSubTask(isConfirmed);
+    this.setState({
+      isDialogOpen: false,
+    });
+  }
+
   handleClose(isConfirmed) {
     const payload = {
       deleteTaskConfirmationDialog: {
@@ -84,6 +123,9 @@ class Checklist extends React.PureComponent {
     const { handleDeleteTask, handleShowDeleteTaskConfirmation } = this.props;
     handleDeleteTask(isConfirmed);
     handleShowDeleteTaskConfirmation(payload);
+    this.setState({
+      isDialogOpen: false,
+    });
   }
 
   renderChecklistItem({
@@ -152,13 +194,25 @@ class Checklist extends React.PureComponent {
 
   render() {
     const {
-      checklistItems, children,
-      className, title, isDialogOpen, dialogContent, dialogTitle,
+      checklistItems, children, title,
+      className,
     } = this.props;
+    const {
+      isDialogOpen, dialogContent, dialogTitle,
+    } = this.state;
     return (
       <section className={className}>
-        { children }
-        <Typography styleName="checklist-title" variant="h5">{title}</Typography>
+        {children}
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <div style={{ flexGrow: 4, flexBasis: 0 }}>
+            <Typography styleName="checklist-title" variant="h5">{title}</Typography>
+          </div>
+          <div style={{ flexGrow: 0, flexBasis: 0, alignSelf: 'flex-end' }}>
+            <Button onClick={this.handleOpen}>
+              Clear
+            </Button>
+          </div>
+        </div>
         <div styleName="scrollable-checklist">
           <Paper elevation={1} styleName="checklist-form-controls">
             {
@@ -171,7 +225,7 @@ class Checklist extends React.PureComponent {
         <ConfirmationDialogBox
           isOpen={isDialogOpen}
           message={dialogContent}
-          onClose={isConfirmed => this.handleClose(isConfirmed)}
+          onClose={isConfirmed => this.handleCloseDialog(isConfirmed, dialogTitle)}
           title={dialogTitle}
         />
       </section>
@@ -181,9 +235,6 @@ class Checklist extends React.PureComponent {
 
 Checklist.defaultProps = {
   className: '',
-  dialogContent: '',
-  dialogTitle: 'MESSAGE',
-  isDialogOpen: false,
 };
 
 Checklist.propTypes = {
@@ -204,12 +255,11 @@ Checklist.propTypes = {
   ).isRequired,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  dialogContent: PropTypes.string,
-  dialogTitle: PropTypes.string,
+  handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
-  isDialogOpen: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+
   title: PropTypes.string.isRequired,
 };
 
