@@ -1,6 +1,7 @@
 import {
   GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
-  TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA, TRIGGER_DOCS_OUT_SAGA, SET_DOCS_OUT_ACTION,
+  TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
+  TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOCS_OUT_ACTION,
   CLEAR_DOCS_OUT_RESPONSE,
 } from './types';
 
@@ -24,8 +25,8 @@ const triggerOrderCallAction = payload => ({
   payload,
 });
 
-const triggerDocsOutCallAction = payload => ({
-  type: TRIGGER_DOCS_OUT_SAGA,
+const triggerDispositionOperationCallAction = payload => ({
+  type: TRIGGER_DISPOSITION_OPERATION_SAGA,
   payload,
 });
 
@@ -43,7 +44,7 @@ export {
   triggerDashboardDataFetch,
   triggerCheckboxSelect,
   triggerOrderCallAction,
-  triggerDocsOutCallAction,
+  triggerDispositionOperationCallAction,
   setDocOutAction,
   clearDocOutAction,
 };

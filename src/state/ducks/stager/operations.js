@@ -1,7 +1,7 @@
 import {
   triggerDashboardCounts, triggerDashboardDataFetch,
   triggerCheckboxSelect, triggerOrderCallAction,
-  triggerDocsOutCallAction,
+  triggerDispositionOperationCallAction,
   setDocOutAction,
   clearDocOutAction,
 } from './actions';
@@ -15,9 +15,9 @@ const onCheckBoxClick = dispatch => selectedData => dispatch(
 );
 const triggerOrderCall = dispatch => payload => dispatch(triggerOrderCallAction(payload));
 
-const triggerDocsOutCall = dispatch => (payload, action) => {
-  dispatch(triggerDocsOutCallAction(payload));
+const triggerDispositionOperationCall = dispatch => (payload, action) => {
   dispatch(setDocOutAction(action));
+  dispatch(triggerDispositionOperationCallAction(payload));
 };
 
 const onClearDocsOutAction = dispatch => () => dispatch(clearDocOutAction());
@@ -27,7 +27,7 @@ const operations = {
   getDashboardData,
   onCheckBoxClick,
   triggerOrderCall,
-  triggerDocsOutCall,
+  triggerDispositionOperationCall,
   onClearDocsOutAction,
 };
 

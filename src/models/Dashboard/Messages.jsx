@@ -89,6 +89,7 @@ function renderErrorNotification(
 
 const Messages = {
   renderErrorNotification,
+  reduceMessageListToMessage,
 };
 
 export default Messages;

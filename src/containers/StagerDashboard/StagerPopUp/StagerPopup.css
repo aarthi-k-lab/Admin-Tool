@@ -55,7 +55,7 @@
     display: none;
   }
 
-  .viewHideIcon:hover{
+  .eye-icon-div:hover{
     cursor: pointer;
   }
 
@@ -87,7 +87,7 @@
     color: red !important;
   }
   
-  .eyeicon {
+  .eye-icon {
     margin-left: 1.5rem !important;
   }
   

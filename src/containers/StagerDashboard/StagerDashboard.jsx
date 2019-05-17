@@ -163,7 +163,6 @@ const mapDispatchToProps = dispatch => ({
   getDashboardData: stagerOperations.getDashboardData(dispatch),
   onCheckBoxClick: stagerOperations.onCheckBoxClick(dispatch),
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
-  triggerDocsOutCall: stagerOperations.triggerDocsOutCall(dispatch),
   onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
 });
 
@@ -184,7 +183,8 @@ StagerDashboard.propTypes = {
   ),
   docsOutResponse: PropTypes.arrayOf(
     PropTypes.shape({
-      error: PropTypes.bool,
+      failedLoans: PropTypes.array.isRequired,
+      succeedLoans: PropTypes.array.isRequired,
     }),
   ),
   downloadCSVUri: PropTypes.string,
@@ -204,7 +204,7 @@ StagerDashboard.defaultProps = {
   tableData: [],
   loading: false,
   downloadCSVUri: '',
-  docsOutResponse: [],
+  docsOutResponse: {},
 };
 
 const TestExports = {

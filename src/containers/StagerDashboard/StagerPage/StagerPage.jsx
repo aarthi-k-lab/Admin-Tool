@@ -82,7 +82,7 @@ const TestExports = {
 
 StagerPage.defaultProps = {
   loading: true,
-  popupData: [],
+  popupData: {},
 };
 
 StagerPage.propTypes = {
@@ -110,11 +110,10 @@ StagerPage.propTypes = {
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
-  popupData: PropTypes.arrayOf(
-    PropTypes.shape({
-      error: PropTypes.bool,
-    }),
-  ),
+  popupData: PropTypes.shape({
+    failedLoans: PropTypes.array.isRequired,
+    succeedLoans: PropTypes.array.isRequired,
+  }),
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   stager: PropTypes.string.isRequired,
