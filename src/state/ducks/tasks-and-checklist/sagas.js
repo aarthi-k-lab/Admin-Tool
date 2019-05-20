@@ -254,7 +254,7 @@ function* postComment(action) {
     const loanNumber = yield select(dashboardSelectors.loanNumber);
     const user = yield select(loginSelectors.getUser);
     const groupName = yield select(dashboardSelectors.groupName);
-    const page = DashboardModel.PAGE_LOOKUP.find(group => group === groupName);
+    const page = DashboardModel.GROUP_INFO.find(group => group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
     const taskId = yield select(dashboardSelectors.taskId);
@@ -290,7 +290,7 @@ function* postDispositionComment(action) {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const user = yield select(loginSelectors.getUser);
   const groupName = yield select(dashboardSelectors.groupName);
-  const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+  const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
   const eventName = !R.isNil(page) ? page.taskCode : '';
   const taskName = !R.isNil(page) ? page.task : '';
   const taskId = yield select(dashboardSelectors.taskId);
