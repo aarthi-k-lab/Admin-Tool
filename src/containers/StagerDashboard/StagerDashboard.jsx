@@ -95,7 +95,10 @@ class StagerDashboard extends React.Component {
 
   refreshDashboard() {
     const { activeSearchTerm, stager } = this.state;
-    const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
+    const {
+      getDashboardData, getDashboardCounts,
+      onCheckBoxClick, onClearDocsOutAction,
+    } = this.props;
     const payload = {
       activeSearchTerm,
       stager,
@@ -105,6 +108,7 @@ class StagerDashboard extends React.Component {
     }
     getDashboardCounts(stager);
     onCheckBoxClick([]);
+    onClearDocsOutAction();
   }
 
 

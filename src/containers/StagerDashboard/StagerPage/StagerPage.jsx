@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import ContentHeader from 'components/ContentHeader';
 import Grid from '@material-ui/core/Grid';
 import Controls from 'containers/Controls';
@@ -7,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { operations as stagerOperations } from 'ducks/stager';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
@@ -20,8 +22,9 @@ class StagerPage extends React.PureComponent {
   }
 
   onStagerChange(event) {
-    const { onStagerChange } = this.props;
+    const { onStagerChange, onClearDocsOutAction } = this.props;
     onStagerChange(event.target.value);
+    onClearDocsOutAction();
   }
 
   render() {
@@ -105,6 +108,7 @@ StagerPage.propTypes = {
   downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onClearDocsOutAction: PropTypes.func.isRequired,
   onDocsOutClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
@@ -120,5 +124,9 @@ StagerPage.propTypes = {
   tableData: PropTypes.node.isRequired,
 };
 
-export default StagerPage;
+const mapDispatchToProps = dispatch => ({
+  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(StagerPage);
 export { TestExports };
