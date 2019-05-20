@@ -45,7 +45,7 @@ class Disposition extends Component {
       groupName, user, ProcIdType, TaskId, ProcessId,
     } = this.props;
     const { activityName } = selectedDisposition;
-    const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+    const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
     const genericId = ProcIdType === 'ProcessId' ? ProcessId : EvalId;
