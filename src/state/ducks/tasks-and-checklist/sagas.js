@@ -26,7 +26,7 @@ import {
   DISP_COMMENT_SAGA,
   DISP_COMMENT,
   UPDATE_CHECKLIST,
-  SUBTASK_CLEARANCE,
+  CLEAR_SUBTASK,
 } from './types';
 import { USER_NOTIF_MSG } from '../dashboard/types';
 import { SET_GET_NEXT_STATUS } from '../dashboard/types';
@@ -385,7 +385,7 @@ function* subTaskClearance(action) {
     const requestBody = {
       id, taskBlueprintCode,
     };
-    const response = yield call(Api.put, '/api/task-engine/task/initialReset', requestBody);
+    const response = yield call(Api.put, '/api/task-engine/task/clearSubTask', requestBody);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -433,7 +433,7 @@ function* watchUpdateChecklist() {
 }
 
 function* watchSubtaskClearance() {
-  yield takeEvery(SUBTASK_CLEARANCE, subTaskClearance);
+  yield takeEvery(CLEAR_SUBTASK, subTaskClearance);
 }
 
 export const TestExports = {

@@ -20,7 +20,7 @@ import {
   UPDATE_CHECKLIST,
   SHOW_DELETE_TASK_CONFIRMATION,
   RESET_DELETE_TASK,
-  SUBTASK_CLEARANCE,
+  CLEAR_SUBTASK,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -133,7 +133,7 @@ const showDeleteTaskConfirmation = payload => ({
 const resetDeleteTaskConfirmation = () => ({ type: RESET_DELETE_TASK });
 
 const subTaskClearance = (taskId, taskBluePrintCode) => ({
-  type: SUBTASK_CLEARANCE,
+  type: CLEAR_SUBTASK,
   payload: {
     id: taskId,
     taskBlueprintCode: taskBluePrintCode,

@@ -10,7 +10,9 @@ import RadioButtons from './RadioButtons';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 
-
+const DIALOG_TITLE = 'You want to clear all the checklist?';
+const DELETE_TASK = 'DELETE TASK';
+const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
 
@@ -22,8 +24,6 @@ class Checklist extends React.PureComponent {
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClear = this.handleClear.bind(this);
     this.state = {
       multilineTextDirtyValues: {},
       isDialogOpen: false,
@@ -32,12 +32,15 @@ class Checklist extends React.PureComponent {
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      isDialogOpen: newProps.isDialogOpen,
-      dialogContent: newProps.dialogContent,
-      dialogTitle: newProps.dialogTitle,
-    });
+  static getDerivedStateFromProps(props) {
+    if (props.isDialogOpen) {
+      return {
+        isDialogOpen: props.isDialogOpen,
+        dialogContent: props.dialogContent,
+        dialogTitle: props.dialogTitle,
+      };
+    }
+    return null;
   }
 
   getMultilineTextValue(id, initialValue) {
@@ -91,15 +94,15 @@ class Checklist extends React.PureComponent {
   handleOpen() {
     this.setState({
       isDialogOpen: true,
-      dialogContent: 'You want to clear all the checklist?',
-      dialogTitle: 'CLEAR CHECKLIST',
+      dialogContent: CLEAR_CHECKLIST,
+      dialogTitle: DIALOG_TITLE,
     });
   }
 
   handleCloseDialog(isConfirmed, dialogTitle) {
     switch (dialogTitle) {
-      case 'DELETE TASK': this.handleClose(isConfirmed); break;
-      case 'CLEAR CHECKLIST': this.handleClear(isConfirmed); break;
+      case DELETE_TASK: this.handleClose(isConfirmed); break;
+      case CLEAR_CHECKLIST: this.handleClear(isConfirmed); break;
       default: this.handleClear(isConfirmed); break;
     }
   }
@@ -115,7 +118,7 @@ class Checklist extends React.PureComponent {
   handleClose(isConfirmed) {
     const payload = {
       deleteTaskConfirmationDialog: {
-        title: 'DELETE TASK',
+        title: DELETE_TASK,
         isOpen: false,
         content: 'Deleting a task will delete all the associated checklist information. Do you like to proceed?',
       },
@@ -208,7 +211,7 @@ class Checklist extends React.PureComponent {
             <Typography styleName="checklist-title" variant="h5">{title}</Typography>
           </div>
           <div style={{ flexGrow: 0, flexBasis: 0, alignSelf: 'flex-end' }}>
-            <Button onClick={this.handleOpen}>
+            <Button onClick={() => this.handleOpen()}>
               Clear
             </Button>
           </div>
