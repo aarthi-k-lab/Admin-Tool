@@ -13,6 +13,7 @@ import {
   updateChecklist,
   showDeleteTaskConfirmation,
   resetDeleteTaskConfirmation,
+  subTaskClearance,
 } from './actions';
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
@@ -54,6 +55,10 @@ const handleUpdateChecklist = dispatch => (payload) => {
 
 const resetDeleteTaskConfirmationValues = dispatch => () => dispatch(resetDeleteTaskConfirmation());
 
+const handleSubTaskClearance = dispatch => (taskId, taskBluePrintCode) => {
+  dispatch(subTaskClearance(taskId, taskBluePrintCode));
+};
+
 const operations = {
   fetchChecklist,
   fetchNextChecklist,
@@ -68,6 +73,7 @@ const operations = {
   handleDeleteTask,
   handleUpdateChecklist,
   resetDeleteTaskConfirmationValues,
+  handleSubTaskClearance,
 };
 
 export default operations;
