@@ -28,6 +28,8 @@ class EvaluationPage extends React.PureComponent {
         return <BackendDisposition />;
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
+      case DashboardModel.BEUW_TASKS_AND_CHECKLIST:
+        return <TasksAndChecklist />;
       case DashboardModel.PROC:
         return <TasksAndChecklist />;
       case DashboardModel.LOAN_ACTIVITY:
