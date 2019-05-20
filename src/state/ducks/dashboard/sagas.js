@@ -678,11 +678,11 @@ function* loadTrials(payload) {
 
 function* sentToUnderwriting() {
   const taskId = yield select(selectors.taskId);
-  const taskStatus = yield select(selectors.taskStatus);
   const evalId = yield select(selectors.evalId);
-  if (taskStatus === 'Active') {
-    try {
-      yield put({ type: SHOW_LOADER });
+  try {
+    yield put({ type: SHOW_LOADER });
+    const responseTask = yield call(Api.callGet, `/api/bpm-audit/audit/task/${taskId}`);
+    if (responseTask !== null && responseTask.currentStatus && responseTask.currentStatus === 'Received') {
       const response = yield call(Api.callGet, `/api/cmodtrial/ValidateSendToUnderwriting?EvalId=${evalId}`);
       if (response !== null && response.isValid === true && response.evalStatus === 'Active' && response.caseStatus === 'Open') {
         const payload = JSON.parse(`{
@@ -720,22 +720,22 @@ function* sentToUnderwriting() {
           },
         });
       }
-      yield put({ type: HIDE_LOADER });
-    } catch (e) {
+    } else {
+      const message = 'Unable to send back to Underwriting because Trial task is not active.';
       yield put({
         type: SET_TASK_UNDERWRITING_RESULT,
-        payload:
-        {
-          level: 'error',
-          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
-        },
+        payload: { level: 'error', status: message },
       });
     }
-  } else {
-    const message = 'Unable to send back to Underwriting because Trial task is not active.';
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
-      payload: { level: 'error', status: message },
+      payload:
+      {
+        level: 'error',
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
     });
   }
 }
