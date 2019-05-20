@@ -351,9 +351,10 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
+  const taskIterationCounter = R.path(['taskData', 'data', 'taskIterationCounter'], taskDetails);
   const piid = getProcessId(taskDetails);
   return {
-    loanNumber, evalId, taskId, piid,
+    loanNumber, evalId, taskId, taskIterationCounter, piid,
   };
 }
 
