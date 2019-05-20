@@ -35,14 +35,20 @@
   overflow: auto;
 }
 
-.status-details {
-  width: 60%;
-  margin-left: auto;
-  margin-right: auto;
+.loan-activity {
+  align-self: stretch;
 }
 
+.status-details {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  width: 60%;
+  margin: auto;
+}
 .report-downloader {
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  height: 99%;
 }

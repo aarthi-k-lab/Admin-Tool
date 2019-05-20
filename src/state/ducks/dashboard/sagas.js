@@ -650,9 +650,9 @@ function* loadTrials(payload) {
       evalStatus = '';
       yield put({ type: LOAD_TRIALLETTER_RESULT, payload: { e, valid: false } });
     }
-    const taskStatus = yield select(selectors.taskStatus);
+
     let message = '';
-    if (taskStatus === 'Received' && (evalStatus !== 'Approved' || trialHeader.resolutionStatus !== 'Closed')) {
+    if (evalStatus !== 'Approved' || trialHeader.resolutionStatus !== 'Closed') {
       message = 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
         + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
     }
