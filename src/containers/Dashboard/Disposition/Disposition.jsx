@@ -42,7 +42,7 @@ class Disposition extends Component {
   componentDidUpdate() {
     const {
       enableGetNext, selectedDisposition, onPostComment, AppName, LoanNumber, EvalId,
-      groupName, user, ProcIdType, TaskId, ProcessId,
+      groupName, user, ProcIdType, TaskId, taskIterationCounter, ProcessId,
     } = this.props;
     const { activityName } = selectedDisposition;
     const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
@@ -62,6 +62,7 @@ class Disposition extends Component {
         commentContext: JSON.stringify({
           TASK: taskName,
           TASK_ID: TaskId,
+          TASK_ITRN_CNTR: taskIterationCounter,
           TASK_ACTN: activityName,
           DSPN_IND: 1,
         }),
@@ -328,6 +329,7 @@ Disposition.propTypes = {
   })).isRequired,
   taskFetchError: PropTypes.bool,
   TaskId: PropTypes.number.isRequired,
+  taskIterationCounter: PropTypes.number.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
@@ -346,6 +348,7 @@ const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   isAssigned: selectors.isAssigned(state),
   EvalId: selectors.evalId(state),
+  taskIterationCounter: selectors.taskIterationCounter(state),
   ProcessId: selectors.processId(state),
   TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
