@@ -1,10 +1,17 @@
 module.exports = {
   elements: {
     cmodLogo: '[alt="logo"]',
-    header: '[class*="components-AppHeader-Header__name"]',
-    search: '[class*="components-AppHeader-Header__search"]',
+    header: {
+      selector: '//span[text()="Disha George2"]',
+      locateStrategy: 'xpath',
+    },
+    search: '[class*="components-AppHeader-Header__searchS"]',
     profile: '[alt="profile"]',
-    agentPage: '[href="/loan-evaluation"]',
+    docProcessor: '[href="/doc-processor"]',
+    frontendChecklist: '[href="/frontend-checklist"]',
+    backendUnderwriter: '[href="/backend-evaluation"]',
+    stagerPage: 'a[href="/stager"]',
+    moveForwardPage: 'a[href="/move-forward"]',
     getNext: '[class*="GetNext"]',
     profileName: {
       selector: '//p[text()="Name: "]/following-sibling::p',
@@ -22,6 +29,10 @@ module.exports = {
       selector: '//span[text()="We have something more to show here...still baking!!!"]',
       locateStrategy: 'xpath',
     },
+    Validate: {
+      selector: '//span[text()="Validate"]',
+      locateStrategy: 'xpath',
+    },
     endshiftdisbaled: {
       selector: '//button[@disabled and contains(@class,"EndShift")]',
       locateStrategy: 'xpath',
@@ -32,6 +43,11 @@ module.exports = {
     },
     loanNbr: {
       selector: '//span[text()="Loan #"]',
+      locateStrategy: 'xpath',
+    },
+    tombstone: '[class*="components-Tombstone-Item-Item__title"]',
+    loanLimitReached: {
+      selector: '//span[text()="You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again."]',
       locateStrategy: 'xpath',
     },
     evalId: {
@@ -62,10 +78,38 @@ module.exports = {
       selector: '//span[text()="Next Payment Due Date"]/following-sibling::span',
       locateStrategy: 'xpath',
     },
-    missingDocumentDisp: {
+    // ///////////////////////////////////////////////////////////////////////////////////////////
+    // Disposition Group
+    DispositionGroupDecision: {
+      selector: '//input[@value="Decision"]',
+      locateStrategy: 'xpath',
+    },
+    DispositionGroupActionRequired: {
+      selector: '//input[@value="Action Required"]',
+      locateStrategy: 'xpath',
+    },
+    DispositionGroupHandoff: {
+      selector: '//input[@value="Handoff"]',
+      locateStrategy: 'xpath',
+    },
+
+    // select Disposition
+    selectDispositionMissingDocuments: {
       selector: '//span[text()="Missing Documents"]',
       locateStrategy: 'xpath',
     },
+    selectDispositionReferral: {
+      selector: '//span[text()="Referral"]',
+      locateStrategy: 'xpath',
+    },
+    selectDispositionReject: {
+      selector: '//span[text()="Reject"]',
+      locateStrategy: 'xpath',
+    },
+
+    // Disposition Comments Area
+    DispositionCommentsArea: '#textarea',
+    // ///////////////////////////////////////////////////////////////////////////////////////////
     taxTranscriptOrderedDisp: {
       selector: '//span[text()="Tax Transcript Ordered"]',
       locateStrategy: 'xpath',
@@ -102,6 +146,8 @@ module.exports = {
       selector: '//span[text()="Save"]',
       locateStrategy: 'xpath',
     },
+    
+
     missingDocsErrorMessage: {
       selector: '//span[text()="\'EvalSubStatus\' should be \'Missing Docs\'"]',
       locateStrategy: 'xpath',
