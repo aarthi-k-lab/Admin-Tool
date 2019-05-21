@@ -1,5 +1,5 @@
 module.exports = {
-  waitForConditionTimeout: 10000,
+  waitForConditionTimeout: 20000,
   waitForHeaderTimeout: 20000,
   waitForConditionPollInterval: 300,
 };
