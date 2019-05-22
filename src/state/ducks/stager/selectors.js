@@ -7,7 +7,7 @@ const getSelectedData = state => (state.stager.selectedData ? state.stager.selec
 const getActiveSearchTerm = state => (state.stager && state.stager.activeSearchTerm);
 const getDownloadCSVUri = state => (state.stager && state.stager.downloadCSVUri);
 const getdocsOutAction = state => (state.stager && state.stager.docsOutAction);
-
+const getStagerValue = state => (state.stager && state.stager.stagerValue);
 
 const selectors = {
   getCounts,
@@ -18,6 +18,7 @@ const selectors = {
   getDownloadCSVUri,
   getDocsOutResponse,
   getdocsOutAction,
+  getStagerValue,
 };
 
 export default selectors;

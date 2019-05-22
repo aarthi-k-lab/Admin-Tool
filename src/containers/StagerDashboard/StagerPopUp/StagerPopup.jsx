@@ -160,7 +160,7 @@ class StagerPopup extends React.PureComponent {
                             <>
                               <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
                               <span style={{ position: 'relative', top: '-4px' }} styleName="popup-font alert-font">
-                                {details.message[0]}
+                                {details.message}
                               </span>
                             </>
                           ) : null}

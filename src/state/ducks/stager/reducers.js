@@ -5,6 +5,7 @@ import {
   SET_DOCS_OUT_RESPONSE,
   SET_DOCS_OUT_ACTION,
   CLEAR_DOCS_OUT_RESPONSE,
+  SET_STAGER_VALUE,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -75,6 +76,13 @@ const reducer = (state = {}, action) => {
         docsOutResponse: null,
       };
     }
+    case SET_STAGER_VALUE: {
+      return {
+        ...state,
+        stagerValue: action.payload,
+      };
+    }
+
 
     default:
       return state;

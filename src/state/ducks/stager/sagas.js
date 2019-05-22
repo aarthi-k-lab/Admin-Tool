@@ -28,9 +28,9 @@ import selectors from './selectors';
 import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
-function* fetchDashboardCounts(data) {
+function* fetchDashboardCounts() {
   try {
-    const stagerType = data.payload;
+    const stagerType = yield select(selectors.getStagerValue);
     const response = yield call(Api.callGet, `api/stager/dashboard/getCounts/${stagerType}`);
     if (response != null) {
       yield put({
@@ -172,16 +172,17 @@ function* watchOrderCall() {
 function* makeDispositionOperationCall(payload) {
   try {
     const docsOutAction = yield select(selectors.getdocsOutAction);
+    const stagerValue = yield select(selectors.getStagerValue);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docsOutAction}`, { taskList: payload.payload.taskList });
     const errorMessages = Disposition.getBulkErrorMessages(response.failedLoans);
     response.failedLoans = errorMessages;
-    yield call(fetchDashboardCounts, { payload: 'DOCSOUT STAGER' });
+    yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
       payload:
-        { activeSearchTerm, stager: 'DOCSOUT STAGER' },
+        { activeSearchTerm, stager: stagerValue },
     });
     yield call(onCheckboxSelect, { payload: [] });
     yield call(setDocsOutData, response);

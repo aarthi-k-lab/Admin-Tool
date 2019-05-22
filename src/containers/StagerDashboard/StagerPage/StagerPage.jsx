@@ -13,8 +13,9 @@ import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
-const UNDER_WRITER = 'UNDERWRITER STAGER';
-const DOCS_OUT = 'DOCSOUT STAGER';
+const UW_STAGER = 'UNDERWRITER STAGER';
+const DOCSOUT_STAGER = 'DOCSOUT STAGER';
+
 class StagerPage extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -41,8 +42,8 @@ class StagerPage extends React.PureComponent {
             onChange={this.onStagerChange}
             value={stager}
           >
-            <MenuItem value={UNDER_WRITER}>{UNDER_WRITER}</MenuItem>
-            <MenuItem value={DOCS_OUT}>{DOCS_OUT}</MenuItem>
+            <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
+            <MenuItem value="DOCSOUT_STAGER">{DOCSOUT_STAGER}</MenuItem>
           </Select>
           <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
             <RefreshIcon />
@@ -97,7 +98,6 @@ StagerPage.propTypes = {
         PropTypes.shape({
           aboutToBreach: PropTypes.number,
           displayName: PropTypes.string,
-          searchTerm: PropTypes.string,
           slaBreached: PropTypes.number,
           total: PropTypes.number,
         }),

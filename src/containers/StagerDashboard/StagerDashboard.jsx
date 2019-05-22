@@ -6,6 +6,7 @@ import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
+import DashboardModel from 'models/Dashboard';
 import StagerPage from './StagerPage';
 
 
@@ -14,14 +15,15 @@ class StagerDashboard extends React.Component {
     super(props);
     this.state = {
       activeSearchTerm: '',
-      stager: 'UNDERWRITER STAGER',
+      stager: 'UW_STAGER',
     };
   }
 
   componentDidMount() {
-    const { getDashboardCounts } = this.props;
+    const { getDashboardCounts, triggerStagerValue } = this.props;
     const { stager } = this.state;
-    getDashboardCounts(stager);
+    triggerStagerValue(stager);
+    getDashboardCounts();
   }
 
   onOrderClick(data) {
@@ -33,7 +35,9 @@ class StagerDashboard extends React.Component {
     triggerOrderCall(orderPayload);
   }
 
-  onStatusCardClick(searchTerm, activeTile, activeTab) {
+  onStatusCardClick(activeTile, activeTab) {
+    const value = `${activeTile}${activeTab}`;
+    const searchTerm = value.replace(/ /g, '');
     const {
       getDashboardData,
       onCheckBoxClick,
@@ -48,7 +52,7 @@ class StagerDashboard extends React.Component {
       stager,
     };
     getDashboardData(payload);
-    getDashboardCounts(stager);
+    getDashboardCounts();
     onCheckBoxClick([]);
   }
 
@@ -77,18 +81,23 @@ class StagerDashboard extends React.Component {
 
 
   onStagerChange(stager) {
-    const { getDashboardData, getDashboardCounts, onCheckBoxClick } = this.props;
+    const stagerValue = DashboardModel.STAGER_VALUE;
+    const {
+      getDashboardData, getDashboardCounts,
+      onCheckBoxClick, triggerStagerValue,
+    } = this.props;
     this.setState({
       activeSearchTerm: '',
-      stager,
+      stager: stagerValue[stager],
       activeTile: '',
       activeTab: '',
     });
     const payload = {
       activeSearchTerm: '',
-      stager,
+      stager: stagerValue[stager],
     };
-    getDashboardCounts(stager);
+    triggerStagerValue(stagerValue[stager]);
+    getDashboardCounts();
     getDashboardData(payload);
     onCheckBoxClick([]);
   }
@@ -106,7 +115,7 @@ class StagerDashboard extends React.Component {
     if (activeSearchTerm) {
       getDashboardData(payload);
     }
-    getDashboardCounts(stager);
+    getDashboardCounts();
     onCheckBoxClick([]);
     onClearDocsOutAction();
   }
@@ -137,9 +146,8 @@ class StagerDashboard extends React.Component {
           onSelectAll={(isChecked, data) => this.onSelectAll(isChecked, data)}
           onStagerChange={stagerValue => this.onStagerChange(stagerValue)}
           onStatusCardClick={
-            (searchTerm,
-              tileName,
-              tabName) => this.onStatusCardClick(searchTerm, tileName, tabName)
+            (tileName,
+              tabName) => this.onStatusCardClick(tileName, tabName)
           }
           popupData={docsOutResponse}
           refreshDashboard={() => this.refreshDashboard()}
@@ -167,6 +175,7 @@ const mapDispatchToProps = dispatch => ({
   getDashboardData: stagerOperations.getDashboardData(dispatch),
   onCheckBoxClick: stagerOperations.onCheckBoxClick(dispatch),
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
+  triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
   onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
 });
 
@@ -201,6 +210,7 @@ StagerDashboard.propTypes = {
   selectedData: PropTypes.node.isRequired,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
+  triggerStagerValue: PropTypes.func.isRequired,
 };
 
 StagerDashboard.defaultProps = {

@@ -39,7 +39,8 @@ class StagerDetailsTable extends React.PureComponent {
   }
 
   onDocsOutClick(data, action) {
-    const { triggerDispositionOperationCall } = this.props;
+    const { triggerDispositionOperationCall, onClearDocsOutAction } = this.props;
+    onClearDocsOutAction();
     triggerDispositionOperationCall(
       StagerDetailsTable.getDispositionOperationPayload(data), action,
     );
@@ -103,7 +104,7 @@ class StagerDetailsTable extends React.PureComponent {
                 </Grid>
                 <Grid item xs={8}>
                   {
-                    data.isManualOrder && data.stagerTaskType !== 'Current Review'
+                    data.isManualOrder && data.stagerTaskType !== 'CurrentReview'
                       ? (
                         <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-btn" variant="contained">
                           {'ORDER'}
@@ -111,7 +112,7 @@ class StagerDetailsTable extends React.PureComponent {
                       ) : null
                   }
                   {
-                    data.isManualOrder && data.stagerTaskType === 'Current Review'
+                    data.isManualOrder && data.stagerTaskType === 'CurrentReview'
                       ? (
                         <>
                           <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocsOutClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
@@ -170,6 +171,7 @@ StagerDetailsTable.propTypes = {
   downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onClearDocsOutAction: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   popupData: PropTypes.arrayOf(
@@ -187,6 +189,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   triggerDispositionOperationCall: stagerOperations.triggerDispositionOperationCall(dispatch),
+  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDetailsTable);
