@@ -7,13 +7,13 @@
     "page_objects_path": "pages",
     "selenium": {
       "start_process": true,
-      "server_path": "./node_modules/selenium-server/lib/runner/selenium-server-standalone-3.14.0.jar",
+      "server_path": "./node_modules/selenium-server/lib/runner/selenium-server-standalone-3.141.59.jar",
       "start_session": true,
       "log_path": "log/",
       "host": "127.0.0.1",
       "port": 4444,
       "cli_args": {
-        "webdriver.chrome.driver": "./node_modules/chromedriver/lib/chromedriver/chromedriver"
+        "webdriver.chrome.driver": "./node_modules/chromedriver/lib/chromedriver/chromedriver.exe"
       }
     },
     "test_workers": {
@@ -38,7 +38,6 @@
                   "disable-web-security",
                  "ignore-certificate-errors",
                  "--start-maximized",
-                 "--headless",
                  "disable-infobars",
                  "--test-type"
                 ]
