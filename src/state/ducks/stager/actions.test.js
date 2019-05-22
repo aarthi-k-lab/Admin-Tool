@@ -10,12 +10,10 @@ import {
 
 describe('Ducks :: Stager -> actions', () => {
   it('triggerDashboardCounts', () => {
-    const selectedStager = 'UNDERWRITER STAGER';
     const expectedAction = {
       type: GET_DASHBOARD_COUNTS_SAGA,
-      payload: selectedStager,
     };
-    const action = triggerDashboardCounts(selectedStager);
+    const action = triggerDashboardCounts();
     expect(action).toEqual(expectedAction);
   });
 
