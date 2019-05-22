@@ -740,6 +740,7 @@ function* sentToUnderwriting() {
   }
 }
 
+
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
