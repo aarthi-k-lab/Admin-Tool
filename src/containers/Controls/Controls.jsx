@@ -5,6 +5,7 @@ import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
+import DashboardModel from 'models/Dashboard';
 import {
   operations,
   selectors,
@@ -14,14 +15,17 @@ import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
+import * as R from 'ramda';
 import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
+
 
 class Controls extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handlegetNext = this.handlegetNext.bind(this);
     this.handleSentToUnderwriting = this.handleSentToUnderwriting.bind(this);
+    this.showAssignForThisGroup = this.showAssignForThisGroup.bind(this);
   }
 
   handleSentToUnderwriting() {
@@ -44,6 +48,11 @@ class Controls extends React.PureComponent {
       group: groupName,
     };
     validateDispositionTrigger(payload);
+  }
+
+  showAssignForThisGroup() {
+    const { groupName } = this.props;
+    return R.prop('showAssignUnassign', R.find(R.propEq('group', groupName), DashboardModel.GROUP_INFO));
   }
 
   render() {
@@ -87,11 +96,19 @@ class Controls extends React.PureComponent {
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
       ? <SendToUnderwriting onClick={this.handleSentToUnderwriting} /> : null;
     const expand = <Expand onClick={onExpand} />;
-    if (showAssign != null && !showAssign) {
+    if (
+      showAssign != null
+      && !showAssign
+      && this.showAssignForThisGroup()
+    ) {
       assign = <Assign />;
     }
     const groups = user && user.groupList;
-    if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
+    if (
+      RouteAccess.hasManagerDashboardAccess(groups)
+      && showAssign
+      && this.showAssignForThisGroup()
+    ) {
       assign = <Unassign />;
     }
     return (

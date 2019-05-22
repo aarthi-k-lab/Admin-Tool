@@ -4,6 +4,7 @@ import Auth from 'lib/Auth';
 import * as R from 'ramda';
 import waterfallLookup from './waterfallLookup';
 import { getUserPersona } from '../AppGroupName';
+import DashboardModel from '../Dashboard/index';
 
 export const NA = 'NA';
 
@@ -254,7 +255,7 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails) {
+  prioritizationDetails, groupName) {
   const dataGenerator = [
     getLoanItem,
     getEvalIdItem,
@@ -264,8 +265,6 @@ function getTombstoneItems(loanDetails,
     getBorrowerItem,
     getSsnItem,
     getSuccessorInInterestStatus,
-    getEvalType,
-    getBoardingDate,
     getBrandNameItem,
     getInvestorItem,
     getLoanTypeDescription,
@@ -279,6 +278,9 @@ function getTombstoneItems(loanDetails,
     getCFPBExpirationDate,
     getDaysUntilCFPB,
   ];
+  if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
+    dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
+  }
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
     previousDispositionDetails,

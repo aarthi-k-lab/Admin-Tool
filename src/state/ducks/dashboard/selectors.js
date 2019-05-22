@@ -20,6 +20,8 @@ const saveInProgress = state => R.pathOr(false, ['dashboard', 'saveInProgress'],
 
 const evalId = state => R.pathOr(null, ['dashboard', 'evalId'], state);
 
+const taskIterationCounter = state => R.pathOr(null, ['dashboard', 'taskIterationCounter'], state);
+
 const taskId = state => R.pathOr(null, ['dashboard', 'taskId'], state);
 
 const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'], state);
@@ -77,6 +79,7 @@ const selectors = {
   enableEndShift,
   enableGetNext,
   evalId,
+  taskIterationCounter,
   noTasksFound,
   taskId,
   expandView,

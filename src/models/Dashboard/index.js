@@ -11,42 +11,50 @@ const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCSOUT_STAGER: 'DOCSOUT_STAGER',
 };
-const PAGE_LOOKUP = [
+const GROUP_INFO = [
   {
     group: FEUW,
     task: 'Income Calculation',
     taskCode: 'UW',
     path: '/frontend-evaluation',
+    showAssignUnassign: true,
   },
   {
     group: BEUW,
     task: 'Underwriting',
     taskCode: 'UW',
     path: '/backend-evaluation',
+    showAssignUnassign: true,
   },
   {
     group: FEUW_TASKS_AND_CHECKLIST,
     task: 'Income Calculation (beta)',
     taskCode: 'UW',
     path: '/frontend-checklist',
+    showAssignUnassign: true,
   },
   {
     group: PROC,
     task: 'Processing',
     taskCode: 'PROC',
     path: '/doc-processor',
+    showAssignUnassign: true,
+
   },
   {
     // TO-DO
     group: LOAN_ACTIVITY,
     task: 'Loan Activity',
     path: '/loan-activity',
+    showAssignUnassign: false,
+
   },
   {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
     path: '',
+    showAssignUnassign: false,
   },
 ];
 const GROUPS = {
@@ -81,7 +89,7 @@ const DashboardModel = {
   LOAN_ACTIVITY,
   FEUW_TASKS_AND_CHECKLIST,
   GROUPS,
-  PAGE_LOOKUP,
+  GROUP_INFO,
   getTitle,
   Messages,
   ALLOW_IN_QUEUE,

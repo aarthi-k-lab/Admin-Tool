@@ -24,7 +24,7 @@ class Assign extends React.Component {
 
   handleClick() {
     const { onAssignLoan, location, onGetGroupName } = this.props;
-    const el = DashboardModel.PAGE_LOOKUP.find(page => page.path === location.pathname);
+    const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     onGetGroupName(el.group);
     onAssignLoan();
   }

@@ -13,13 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "chromedriver": "^2.44.0",
-    "exceljs": "^1.6.2",
-    "geckodriver": "^1.10.0",
+    "exceljs": "^1.6.3",
     "handlebars": "^4.0.12",
-    "iedriver": "3.9.2",
     "nightwatch": "^0.9.20",
-    "rest-assured": "^0.1.0",
-    "save": "^2.3.2",
+    "save": "^2.3.3",
     "selenium-server": "^3.14.0"
   }
 }

@@ -148,6 +148,9 @@ const getDialogContent = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmat
 
 const getDialogTitle = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'title']);
 
+const selectedTaskId = state => R.pathOr('', ['tasksAndChecklist', 'checklist', '_id'], state);
+const selectedTaskBlueprintCode = state => R.pathOr('', ['tasksAndChecklist', 'checklist', 'taskBlueprintCode'], state);
+
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
@@ -176,6 +179,8 @@ const selectors = {
   isDialogOpen,
   getDialogContent,
   getDialogTitle,
+  selectedTaskId,
+  selectedTaskBlueprintCode,
 };
 
 export default selectors;
