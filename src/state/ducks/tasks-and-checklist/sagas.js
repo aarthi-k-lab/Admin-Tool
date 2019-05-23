@@ -28,8 +28,10 @@ import {
   UPDATE_CHECKLIST,
   CLEAR_SUBTASK,
 } from './types';
-import { USER_NOTIF_MSG } from '../dashboard/types';
-import { SET_GET_NEXT_STATUS } from '../dashboard/types';
+import {
+  USER_NOTIF_MSG,
+  SET_GET_NEXT_STATUS,
+} from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
 } from '../notifications/types';
@@ -46,7 +48,7 @@ function* getChecklist(action) {
     yield put({
       type: LOADING_CHECKLIST,
     });
-    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -154,7 +156,7 @@ function* getTasks(action) {
       type: LOADING_TASKS,
     });
     const rootTaskId = yield select(selectors.getRootTaskId);
-    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
