@@ -80,14 +80,17 @@ describe('onCheckboxSelect ', () => {
 });
 
 describe('fetchDashboardCounts ', () => {
-  const payload = { payload: 'UNDERWRITER STAGER' };
-  const saga = cloneableGenerator(TestExports.fetchDashboardCounts)(payload);
+  const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
+  it('should select Stager type ', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getStagerValue));
+  });
   it('call getCounts Api', () => {
-    expect(saga.next(payload.payload).value)
-      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts/UNDERWRITER STAGER'));
+    expect(saga.next('UW_STAGER').value)
+      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts/UW_STAGER'));
   });
   it('should update with returned payload ', () => {
-    const data = { displayName: 'LegalFeeToOrder' };
+    const data = { displayName: 'CurrentReview' };
     expect(saga.next(data).value)
       .toEqual(put({ type: SET_STAGER_DATA_COUNTS, payload: data }));
   });

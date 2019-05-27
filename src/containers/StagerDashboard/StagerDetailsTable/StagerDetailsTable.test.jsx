@@ -24,11 +24,14 @@ describe('<StagerDetailsTable />', () => {
   });
 
   it('shows StagerDetailsTable - Tasktype - Current Review', () => {
-    data.stagerTaskType = 'Current Review';
+    data.stagerTaskType = 'CurrentReview';
+    data.isManualOrder = true;
     const triggerDispositionOperationCall = jest.fn();
+    const onClearDocsOutAction = jest.fn();
     const wrapper = shallow(
       <TestExports.StagerDetailsTable
         data={data}
+        onClearDocsOutAction={onClearDocsOutAction}
         selectedData={[]}
         triggerDispositionOperationCall={triggerDispositionOperationCall}
       />,
