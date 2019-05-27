@@ -5,12 +5,15 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
 import RadioButtons from './RadioButtons';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 
 const RADIO_BUTTONS = 'radio';
 const MULTILINE_TEXT = 'multiline-text';
+const NUMBER = 'number';
 
 class Checklist extends React.PureComponent {
   constructor(props) {
@@ -140,6 +143,40 @@ class Checklist extends React.PureComponent {
           </Tooltip>
         );
       }
+      case NUMBER: {
+        // const refCallback = this.handleBlur(id, taskCode);
+        const textField = (
+          <FormControl component="fieldset">
+            <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
+            <TextField
+              disabled={disabled}
+           // inputRef={refCallback}
+              onChange={this.handleTextChange(id)}
+              styleName="componentMargin"
+              type="number"
+              value={this.getMultilineTextValue(id, value)}
+              variant="outlined"
+            />
+          </FormControl>
+        );
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
       default:
         return (
           <div>
@@ -198,7 +235,7 @@ Checklist.propTypes = {
       }),
       taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
+      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT, NUMBER]).isRequired,
       value: PropTypes.any,
     }),
   ).isRequired,

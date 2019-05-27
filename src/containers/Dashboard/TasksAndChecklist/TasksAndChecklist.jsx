@@ -160,7 +160,10 @@ class TasksAndChecklist extends React.PureComponent {
 }
 
 const RADIO_BUTTONS = 'radio';
+const TEXT = 'text';
 const MULTILINE_TEXT = 'multiline-text';
+const NUMBER = 'number';
+const DATE = 'date';
 
 TasksAndChecklist.defaultProps = {
   enableGetNext: false,
@@ -185,7 +188,7 @@ TasksAndChecklist.propTypes = {
         value: PropTypes.string.isRequired,
       }),
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
+      type: PropTypes.oneOf([RADIO_BUTTONS, TEXT, MULTILINE_TEXT, NUMBER, DATE]).isRequired,
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
