@@ -26,9 +26,12 @@ import {
   DISP_COMMENT_SAGA,
   DISP_COMMENT,
   UPDATE_CHECKLIST,
+  CLEAR_SUBTASK,
 } from './types';
-import { USER_NOTIF_MSG } from '../dashboard/types';
-import { SET_GET_NEXT_STATUS } from '../dashboard/types';
+import {
+  USER_NOTIF_MSG,
+  SET_GET_NEXT_STATUS,
+} from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
 } from '../notifications/types';
@@ -45,7 +48,7 @@ function* getChecklist(action) {
     yield put({
       type: LOADING_CHECKLIST,
     });
-    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -153,7 +156,7 @@ function* getTasks(action) {
       type: LOADING_TASKS,
     });
     const rootTaskId = yield select(selectors.getRootTaskId);
-    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -254,7 +257,7 @@ function* postComment(action) {
     const loanNumber = yield select(dashboardSelectors.loanNumber);
     const user = yield select(loginSelectors.getUser);
     const groupName = yield select(dashboardSelectors.groupName);
-    const page = DashboardModel.PAGE_LOOKUP.find(group => group === groupName);
+    const page = DashboardModel.GROUP_INFO.find(group => group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
     const taskId = yield select(dashboardSelectors.taskId);
@@ -290,7 +293,7 @@ function* postDispositionComment(action) {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const user = yield select(loginSelectors.getUser);
   const groupName = yield select(dashboardSelectors.groupName);
-  const page = DashboardModel.PAGE_LOOKUP.find(pageInstance => pageInstance.group === groupName);
+  const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
   const eventName = !R.isNil(page) ? page.taskCode : '';
   const taskName = !R.isNil(page) ? page.task : '';
   const taskId = yield select(dashboardSelectors.taskId);
@@ -378,6 +381,31 @@ function* updateChecklist(action) {
   }
 }
 
+function* subTaskClearance(action) {
+  try {
+    const { id, taskBlueprintCode } = action.payload;
+    const requestBody = {
+      id, taskBlueprintCode,
+    };
+    const response = yield call(Api.put, '/api/task-engine/task/clearSubTask', requestBody);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    } else {
+      yield put({
+        type: GET_TASKS_SAGA,
+        payload: { depth: 3 },
+      });
+      yield put({
+        type: GET_CHECKLIST_SAGA,
+        payload: { taskId: id },
+      });
+    }
+  } catch (e) {
+    yield call(handleSaveChecklistError, e);
+  }
+}
+
 function* watchChecklistItemChange() {
   yield takeEvery(HANDLE_CHECKLIST_ITEM_CHANGE, handleChecklistItemChange);
 }
@@ -406,6 +434,10 @@ function* watchUpdateChecklist() {
   yield takeEvery(UPDATE_CHECKLIST, updateChecklist);
 }
 
+function* watchSubtaskClearance() {
+  yield takeEvery(CLEAR_SUBTASK, subTaskClearance);
+}
+
 export const TestExports = {
   watchGetTasks,
 };
@@ -419,5 +451,6 @@ export function* combinedSaga() {
     watchGetTasks(),
     watchDispositionComment(),
     watchUpdateChecklist(),
+    watchSubtaskClearance(),
   ]);
 }

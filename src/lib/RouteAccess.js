@@ -4,7 +4,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr'],
 };
 
 const stager = {
@@ -40,7 +40,7 @@ const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['proc', 'proc-mgr'],
+  groups: ['proc', 'proc-mgr', 'allaccess'],
 };
 
 const feuwTasksAndChecklist = {
@@ -66,7 +66,7 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'trial', 'trial-mgr'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr'],
 };
 
 const links = [
