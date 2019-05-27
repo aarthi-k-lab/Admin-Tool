@@ -30,17 +30,18 @@ class StagerTiles extends React.PureComponent {
                 </Grid>
                 <Grid item styleName="stagerGroupItem">
                   <Grid container direction="row" spacing={8} styleName="tiles-grid">
-                    {R.sort(R.ascend(R.prop('displayName')), stagerTaskGroupData.data).map(tileData => (
-                      <Grid item styleName="status-tile" xs={6}>
-                        <StagerDocumentStatusCard
-                          active={this.isActiveCard(
-                            tileData.displayName, stagerTaskGroupData.displayName,
-                          )}
-                          data={tileData}
-                          onStatusCardClick={onStatusCardClick}
-                          tabName={stagerTaskGroupData.displayName}
-                        />
-                      </Grid>
+                    {stagerTaskGroupData.data.sort((current, next) => (
+                      (current.order > next.order) ? 1 : -1)).map(tileData => (
+                        <Grid item styleName="status-tile" xs={6}>
+                          <StagerDocumentStatusCard
+                            active={this.isActiveCard(
+                              tileData.displayName, stagerTaskGroupData.displayName,
+                            )}
+                            data={tileData}
+                            onStatusCardClick={onStatusCardClick}
+                            tabName={stagerTaskGroupData.displayName}
+                          />
+                        </Grid>
                     ))}
                   </Grid>
                 </Grid>

@@ -30,6 +30,7 @@ class StagerDetailsTable extends React.PureComponent {
     const docsOutPayload = R.map(dataUnit => ({
       evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
       taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
+      loanNumber: dataUnit['Loan Number'] && dataUnit['Loan Number'].toString(),
     }), data);
     const payload = {
       taskList: docsOutPayload,

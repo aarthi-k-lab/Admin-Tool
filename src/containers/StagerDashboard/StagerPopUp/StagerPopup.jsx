@@ -28,9 +28,6 @@ class StagerPopup extends React.PureComponent {
       checkedData: [],
       isPopupClose: true,
     };
-    this.getTotalLoanCount = this.getTotalLoanCount.bind(this);
-    this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.onCloseClick = this.onCloseClick.bind(this);
   }
 
   onEyeIconClick() {
@@ -77,7 +74,7 @@ class StagerPopup extends React.PureComponent {
   handleCheckbox(event, loanDetails) {
     const { checkedData } = this.state;
     if (event.target.checked) {
-      checkedData.push({ 'Eval ID': loanDetails.evalId, TKIID: loanDetails.taskId });
+      checkedData.push({ 'Eval ID': loanDetails.evalId, TKIID: loanDetails.taskId, 'Loan Number': loanDetails.loanNumber });
     } else {
       const index = checkedData.findIndex(data => data['Eval ID'] === loanDetails.evalId);
       checkedData.splice(index, 1);
@@ -152,7 +149,10 @@ class StagerPopup extends React.PureComponent {
                             />
                           ) : null}
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={2}>
+                          <span styleName="popup-font">{details.loanNumber}</span>
+                        </Grid>
+                        <Grid item xs={2}>
                           <span styleName="popup-font">{details.evalId}</span>
                         </Grid>
                         <Grid item xs={7}>

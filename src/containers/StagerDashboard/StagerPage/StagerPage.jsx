@@ -17,11 +17,6 @@ const UW_STAGER = 'UNDERWRITER STAGER';
 const DOCSOUT_STAGER = 'DOCSOUT STAGER';
 
 class StagerPage extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.onStagerChange = this.onStagerChange.bind(this);
-  }
-
   onStagerChange(event) {
     const { onStagerChange, onClearDocsOutAction } = this.props;
     onStagerChange(event.target.value);
@@ -39,7 +34,7 @@ class StagerPage extends React.PureComponent {
       <>
         <ContentHeader title={(<>
           <Select
-            onChange={this.onStagerChange}
+            onChange={event => this.onStagerChange(event)}
             value={stager}
           >
             <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
