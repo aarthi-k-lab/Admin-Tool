@@ -14,8 +14,10 @@ import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
-import { actions as checklistActions } from 'ducks/tasks-and-checklist/index';
-import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
+import {
+  actions as checklistActions,
+  selectors as checklistSelectors,
+} from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -166,7 +168,7 @@ function* fetchChecklistDetails(checklistId) {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -739,6 +741,7 @@ function* sentToUnderwriting() {
     });
   }
 }
+
 
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
