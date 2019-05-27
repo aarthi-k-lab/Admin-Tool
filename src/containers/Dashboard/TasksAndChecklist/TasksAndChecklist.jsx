@@ -20,6 +20,7 @@ import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
+import componentTypes from '../../../constants/componentTypes';
 
 class TasksAndChecklist extends React.PureComponent {
   handleSubTaskClearance(isConfirmed) {
@@ -169,12 +170,6 @@ class TasksAndChecklist extends React.PureComponent {
   }
 }
 
-const RADIO_BUTTONS = 'radio';
-const TEXT = 'text';
-const MULTILINE_TEXT = 'multiline-text';
-const NUMBER = 'number';
-const DATE = 'date';
-
 TasksAndChecklist.defaultProps = {
   enableGetNext: false,
   inProgress: false,
@@ -198,7 +193,7 @@ TasksAndChecklist.propTypes = {
         value: PropTypes.string.isRequired,
       }),
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, TEXT, MULTILINE_TEXT, NUMBER, DATE]).isRequired,
+      type: PropTypes.oneOf([Object.values(componentTypes)]).isRequired,
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,

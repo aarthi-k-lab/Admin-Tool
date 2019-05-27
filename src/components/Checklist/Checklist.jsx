@@ -11,13 +11,11 @@ import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
+import HTMLElements from '../../constants/componentTypes';
 
 const DIALOG_TITLE = 'You want to clear all the checklist?';
 const DELETE_TASK = 'DELETE TASK';
 const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
-const RADIO_BUTTONS = 'radio';
-const MULTILINE_TEXT = 'multiline-text';
-const NUMBER = 'number';
 
 class Checklist extends React.PureComponent {
   constructor(props) {
@@ -143,6 +141,9 @@ class Checklist extends React.PureComponent {
     taskCode,
     value,
   }) {
+    const {
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE,
+    } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode);
@@ -189,16 +190,83 @@ class Checklist extends React.PureComponent {
         );
       }
       case NUMBER: {
-        // const refCallback = this.handleBlur(id, taskCode);
+        const refCallback = this.handleBlur(id, taskCode);
         const textField = (
           <FormControl component="fieldset">
             <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
             <TextField
               disabled={disabled}
-           // inputRef={refCallback}
+              inputRef={refCallback}
               onChange={this.handleTextChange(id)}
               styleName="componentMargin"
               type="number"
+              value={this.getMultilineTextValue(id, value)}
+              variant="outlined"
+            />
+          </FormControl>
+        );
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
+      case DATE: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const textField = (
+          <FormControl component="fieldset">
+            <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
+            <TextField
+              disabled={disabled}
+              inputRef={refCallback}
+              onChange={this.handleTextChange(id)}
+              styleName="componentMargin"
+              type="date"
+              value={this.getMultilineTextValue(id, value)}
+              variant="outlined"
+            />
+          </FormControl>
+        );
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
+      case TEXT: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const textField = (
+          <FormControl component="fieldset">
+            <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
+            <TextField
+              disabled={disabled}
+              inputRef={refCallback}
+              onChange={this.handleTextChange(id)}
+              styleName="componentMargin"
               value={this.getMultilineTextValue(id, value)}
               variant="outlined"
             />
@@ -289,7 +357,7 @@ Checklist.propTypes = {
       }),
       taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT, NUMBER]).isRequired,
+      type: PropTypes.oneOf([Object.values(HTMLElements)]).isRequired,
       value: PropTypes.any,
     }),
   ).isRequired,
