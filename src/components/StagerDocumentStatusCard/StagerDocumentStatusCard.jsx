@@ -14,7 +14,7 @@ const StagerDocumentStatusCard = ({
   const slaToBeBreachedCount = data.aboutToBreach;
   const { slaDays } = data;
   return (
-    <Paper onClick={() => onStatusCardClick(data.searchTerm, data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
+    <Paper onClick={() => onStatusCardClick(data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
       <Grid container direction="column" spacing={4} xs={12}>
         <Grid item>
           <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>
@@ -31,31 +31,31 @@ const StagerDocumentStatusCard = ({
               </span>
             </Grid>
             <Grid item styleName="info-items" xs={8}>
-              { !R.isNil(slaBreachedCount)
+              {!R.isNil(slaBreachedCount)
                 ? (
                   <span styleName={slaBreachedCount ? 'sla-breached-chip info-chip' : 'info-chip info-chip-0-count'}>
                     {`${(`0${slaBreachedCount}`).slice(-2)} SLA BREACHED`}
                   </span>
-                ) : null }
+                ) : null}
               <div styleName="line_break" />
-              { !R.isNil(slaToBeBreachedCount)
+              {!R.isNil(slaToBeBreachedCount)
                 ? (
                   <span styleName={slaToBeBreachedCount ? 'info-chip' : 'info-chip info-chip-0-count'}>
                     {`${(`0${slaToBeBreachedCount}`).slice(-2)} SLA ABOUT TO BREACH`}
                   </span>
-                ) : null }
+                ) : null}
             </Grid>
           </Grid>
         </Grid>
-        { slaDays ? (
-            <>
-              <div styleName="slaDaysFooter">
-                {'SLA '}
-                <span styleName="slaDays">
-                  {slaDays > 1 ? `${slaDays} BUSINESS DAYS` : `${slaDays} BUSINESS DAY`}
-                </span>
-              </div>
-            </>
+        {slaDays ? (
+          <>
+            <div styleName="slaDaysFooter">
+              {'SLA '}
+              <span styleName="slaDays">
+                {slaDays > 1 ? `${slaDays} BUSINESS DAYS` : `${slaDays} BUSINESS DAY`}
+              </span>
+            </div>
+          </>
         ) : null}
       </Grid>
     </Paper>

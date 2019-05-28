@@ -4,15 +4,15 @@
   color: #333940;
 }
 
-.details-table-order-btn.details-table-order-btn {
+.details-table-btn.details-table-btn {
   background-color: #1b6c92;
   color: #fff;
   box-shadow: none;
-  width: 8rem;
-  height: 2rem;
-  font-size: 14px;
+  height: 2.9rem;
+  font-size: 1rem;
   border-radius: 0;
   float: right;
+  margin-right: 1rem;
 }
 
 .details-table-order-btn.details-table-order-btn:hover {
@@ -21,7 +21,7 @@
 
 .details-table-download-btn.details-table-download-btn {
   float: right;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .details-table-document-status {
@@ -85,3 +85,4 @@
   font-size: 0.7rem;
   padding: 0.2rem;
 }
+

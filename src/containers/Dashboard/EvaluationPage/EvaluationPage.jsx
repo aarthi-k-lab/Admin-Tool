@@ -9,8 +9,10 @@ import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
 import DashboardModel from 'models/Dashboard';
+import * as R from 'ramda';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { selectors as loginSelectors } from 'ducks/login';
 import { selectors } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
@@ -21,6 +23,12 @@ function isTrialOrForbearance(taskName) {
   return taskName && taskName.includes('Trial') ? 'Trial ' : 'Forbearance ';
 }
 class EvaluationPage extends React.PureComponent {
+  haveGroupTrial() {
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    return R.indexOf('trial', groups) !== -1 || R.indexOf('trial-mgr', groups) !== -1;
+  }
+
   renderDashboard() {
     const { group } = this.props;
     switch (group) {
@@ -47,7 +55,7 @@ class EvaluationPage extends React.PureComponent {
           <Controls
             showEndShift={isNotLoanActivity(group)}
             showGetNext={isNotLoanActivity(group)}
-            showSendToUnderWritingIcon={!isNotLoanActivity(group)}
+            showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
             showValidate={isNotLoanActivity(group)}
           />
         </ContentHeader>
@@ -70,9 +78,19 @@ EvaluationPage.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
   taskName: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 const mapStateToProps = state => ({
   taskName: selectors.processName(state),
+  user: loginSelectors.getUser(state),
 });
 
 const container = connect(mapStateToProps, null)(EvaluationPage);

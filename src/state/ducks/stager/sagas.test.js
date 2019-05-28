@@ -81,12 +81,16 @@ describe('onCheckboxSelect ', () => {
 
 describe('fetchDashboardCounts ', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
-  it('call getCounts Api', () => {
+  it('should select Stager type ', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts'));
+      .toEqual(select(selectors.getStagerValue));
+  });
+  it('call getCounts Api', () => {
+    expect(saga.next('UW_STAGER').value)
+      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts/UW_STAGER'));
   });
   it('should update with returned payload ', () => {
-    const data = { displayName: 'LegalFeeToOrder' };
+    const data = { displayName: 'CurrentReview' };
     expect(saga.next(data).value)
       .toEqual(put({ type: SET_STAGER_DATA_COUNTS, payload: data }));
   });
@@ -94,12 +98,17 @@ describe('fetchDashboardCounts ', () => {
 
 
 describe('fetchDashboardData ', () => {
-  const payload = { payload: 'LegalFeeToOrder' };
+  const payload = {
+    payload: {
+      activeSearchTerm: 'LegalFeeToOrder',
+      stager: 'UNDERWRITER STAGER',
+    },
+  };
   const newPayload = [];
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
 
   it('should update as loading ', () => {
-    expect(saga.next(payload.payload).value)
+    expect(saga.next(payload).value)
       .toEqual(put({
         type: SET_STAGER_DATA_LOADING,
         payload: {
@@ -110,8 +119,8 @@ describe('fetchDashboardData ', () => {
   });
 
   it('call bpm audit data Api', () => {
-    expect(saga.next(payload.payload).value)
-      .toEqual(call(Api.callGet, `api/stager/dashboard/getData/${payload.payload}`));
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, `api/stager/dashboard/getData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`));
   });
 
   it('should update searchterm ', () => {
@@ -126,7 +135,7 @@ describe('fetchDashboardData ', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: SET_STAGER_DOWNLOAD_CSV_URI,
-        payload: `api/stager/dashboard/downloadData/${payload.payload}`,
+        payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`,
       }));
   });
 

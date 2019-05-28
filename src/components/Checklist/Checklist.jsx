@@ -206,15 +206,15 @@ class Checklist extends React.PureComponent {
     return (
       <section className={className}>
         {children}
-        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-          <div style={{ flexGrow: 4, flexBasis: 0 }}>
-            <Typography styleName="checklist-title" variant="h5">{title}</Typography>
+        <div styleName="subTaskDescParent">
+          <div styleName="subTaskDescription">
+            <Typography styleName="checklist-title">{title}</Typography>
           </div>
-          <div style={{ flexGrow: 0, flexBasis: 0, alignSelf: 'flex-end' }}>
-            <Button onClick={() => this.handleOpen()}>
-              Clear
-            </Button>
-          </div>
+        </div>
+        <div styleName="clearButton">
+          <Button onClick={() => this.handleOpen()}>
+            Clear
+          </Button>
         </div>
         <div styleName="scrollable-checklist">
           <Paper elevation={1} styleName="checklist-form-controls">
