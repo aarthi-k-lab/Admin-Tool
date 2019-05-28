@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
@@ -168,7 +167,7 @@ class Checklist extends React.PureComponent {
           type: MULTILINE_TEXT,
           value: getValue,
         };
-        const textField = (<TextField {...prop} />);
+        const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
