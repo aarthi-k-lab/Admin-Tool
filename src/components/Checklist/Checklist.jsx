@@ -5,10 +5,9 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
+import TextFields from './TextFields';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 import HTMLElements from '../../constants/componentTypes';
@@ -159,18 +158,17 @@ class Checklist extends React.PureComponent {
       }
       case MULTILINE_TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
-        const textField = (
-          <TextField
-            disabled={disabled}
-            inputRef={refCallback}
-            label={title}
-            maxRows={10}
-            multiline
-            onChange={this.handleTextChange(id)}
-            rows={5}
-            value={this.getMultilineTextValue(id, value)}
-          />
-        );
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: MULTILINE_TEXT,
+          value: getValue,
+        };
+        const textField = (<TextField {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -191,20 +189,17 @@ class Checklist extends React.PureComponent {
       }
       case NUMBER: {
         const refCallback = this.handleBlur(id, taskCode);
-        const textField = (
-          <FormControl component="fieldset">
-            <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
-            <TextField
-              disabled={disabled}
-              inputRef={refCallback}
-              onChange={this.handleTextChange(id)}
-              styleName="componentMargin"
-              type="number"
-              value={this.getMultilineTextValue(id, value)}
-              variant="outlined"
-            />
-          </FormControl>
-        );
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: NUMBER,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -225,20 +220,17 @@ class Checklist extends React.PureComponent {
       }
       case DATE: {
         const refCallback = this.handleBlur(id, taskCode);
-        const textField = (
-          <FormControl component="fieldset">
-            <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
-            <TextField
-              disabled={disabled}
-              inputRef={refCallback}
-              onChange={this.handleTextChange(id)}
-              styleName="componentMargin"
-              type="date"
-              value={this.getMultilineTextValue(id, value)}
-              variant="outlined"
-            />
-          </FormControl>
-        );
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: DATE,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -259,19 +251,17 @@ class Checklist extends React.PureComponent {
       }
       case TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
-        const textField = (
-          <FormControl component="fieldset">
-            <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
-            <TextField
-              disabled={disabled}
-              inputRef={refCallback}
-              onChange={this.handleTextChange(id)}
-              styleName="componentMargin"
-              value={this.getMultilineTextValue(id, value)}
-              variant="outlined"
-            />
-          </FormControl>
-        );
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: TEXT,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
