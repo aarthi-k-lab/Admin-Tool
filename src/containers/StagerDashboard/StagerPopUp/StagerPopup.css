@@ -1,0 +1,93 @@
+.expansion-header {
+    position: fixed !important;
+    bottom: 1.2rem;
+    width: 40%;
+    margin-left: 0.5rem !important;
+   }
+   .expansion-title {
+    background-color: #464444 !important;
+    min-height: inherit !important;
+   }
+  
+   .expansion-header-title {
+     color: white !important;
+     font-size: 1rem !important;
+   }
+  
+   .expansion-succeedLoan-title {
+     background-color: rgb(230, 230, 230) !important;
+     height: 4rem;
+     padding: 15px 24px 24px !important;
+   }
+  
+   .expansion-failedLoan-title {
+    background-color:white !important;
+    padding: 10px 24px 2px !important; 
+  }
+  
+  .popup-font {
+    font-size: 1rem !important;
+  }
+
+  .successHide{
+    display: none;
+  }
+
+  .successView{
+    display: block;
+    border-bottom: 0.1rem solid rgb(230, 230, 230) !important;
+    padding-bottom: 0.5rem;
+    overflow: auto;
+    max-height: 30vh;
+  }
+  
+  .failed{
+    display: block;
+    overflow: auto;
+    max-height: 30vh;
+  }
+
+  .open{
+    display: block;
+  }
+
+  .close{
+    display: none;
+  }
+
+  .eye-icon-div:hover{
+    cursor: pointer;
+  }
+
+  .retry{
+    margin-left: -0.5rem;
+  }
+  
+  .succeedloan {
+    border: 3px solid green;
+    background-color: green;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 900;
+    padding: 0px 0.3rem 0 0.3rem;
+    border-radius: 0.25rem;
+  }
+  
+  .failedloan {
+    border: 3px solid red;
+    background-color: red;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 900;
+    padding: 0px 0.3rem 0 0.3rem;
+    border-radius: 0.25rem;
+  }
+  
+  .alert-font {
+    color: red !important;
+  }
+  
+  .eye-icon {
+    margin-left: 1.5rem !important;
+  }
+  

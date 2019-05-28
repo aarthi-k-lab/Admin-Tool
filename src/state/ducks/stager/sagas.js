@@ -1,3 +1,5 @@
+/* eslint-disable dot-notation */
+/* eslint-disable no-param-reassign */
 import {
   takeEvery,
   all,
@@ -6,6 +8,8 @@ import {
   put,
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
+import * as R from 'ramda';
+import { selectors as loginSelectors } from 'ducks/login/index';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
   SET_STAGER_DATA_COUNTS,
@@ -15,19 +19,23 @@ import {
   TABLE_CHECKBOX_SELECT,
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
+  TRIGGER_DISPOSITION_OPERATION_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_STAGER_DOWNLOAD_CSV_URI,
+  SET_DOCS_OUT_RESPONSE,
 } from './types';
 import selectors from './selectors';
+import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
 function* fetchDashboardCounts() {
   try {
-    const newPayload = yield call(Api.callGet, 'api/stager/dashboard/getCounts');
-    if (newPayload != null) {
+    const stagerType = yield select(selectors.getStagerValue);
+    const response = yield call(Api.callGet, `api/stager/dashboard/getCounts/${stagerType}`);
+    if (response != null) {
       yield put({
         type: SET_STAGER_DATA_COUNTS,
-        payload: newPayload,
+        payload: response,
       });
     }
   } catch (e) {
@@ -38,9 +46,11 @@ function* fetchDashboardCounts() {
   }
 }
 
-function* fetchDashboardData(payload) {
+function* fetchDashboardData(data) {
+  let payload;
   try {
-    const searchTerm = payload.payload;
+    const searchTerm = data.payload.activeSearchTerm;
+    const stagerType = data.payload.stager;
     yield put({
       type: SET_STAGER_DATA_LOADING,
       payload: {
@@ -48,32 +58,36 @@ function* fetchDashboardData(payload) {
         loading: true,
       },
     });
-    const newPayload = yield call(Api.callGet, `api/stager/dashboard/getData/${searchTerm}`);
+    const response = yield call(Api.callGet, `api/stager/dashboard/getData/${stagerType}/${searchTerm}`);
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
     });
-    const downloadCSVUri = `api/stager/dashboard/downloadData/${searchTerm}`;
+    const downloadCSVUri = `api/stager/dashboard/downloadData/${stagerType}/${searchTerm}`;
     yield put({
       type: SET_STAGER_DOWNLOAD_CSV_URI,
       payload: downloadCSVUri,
     });
-    if (newPayload != null) {
-      yield put({
-        type: SET_STAGER_DATA,
-        payload: {
-          error: false,
-          data: newPayload,
-        },
-      });
+
+    if (response != null) {
+      payload = {
+        error: false,
+        data: response,
+      };
+    } else {
+      payload = {
+        error: false,
+      };
     }
   } catch (e) {
+    payload = {
+      error: true,
+      message: 'Oops. There is some issue in fetching the data now. Try again later',
+    };
+  } finally {
     yield put({
       type: SET_STAGER_DATA,
-      payload: {
-        error: true,
-        message: 'Oops. There is some issue in fetching the data now. Try again later',
-      },
+      payload,
     });
   }
 }
@@ -93,6 +107,13 @@ function* fireSnackBar(snackBarData) {
   yield put({
     type: SET_SNACK_BAR_VALUES_SAGA,
     payload: snackBarData,
+  });
+}
+
+function* setDocsOutData(data) {
+  yield put({
+    type: SET_DOCS_OUT_RESPONSE,
+    payload: data,
   });
 }
 
@@ -148,6 +169,36 @@ function* watchOrderCall() {
   yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
 
+function* makeDispositionOperationCall(payload) {
+  try {
+    const docsOutAction = yield select(selectors.getdocsOutAction);
+    const stagerValue = yield select(selectors.getStagerValue);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docsOutAction}`, { taskList: payload.payload.taskList });
+    const errorMessages = Disposition.getBulkErrorMessages(response.failedLoans);
+    response.failedLoans = errorMessages;
+    yield call(fetchDashboardCounts);
+    const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
+    yield call(fetchDashboardData, {
+      payload:
+        { activeSearchTerm, stager: stagerValue },
+    });
+    yield call(onCheckboxSelect, { payload: [] });
+    yield call(setDocsOutData, response);
+  } catch (err) {
+    const snackBarData = {};
+    snackBarData.message = 'Something went wrong!!';
+    snackBarData.type = 'error';
+    snackBarData.open = true;
+    yield call(fireSnackBar, snackBarData);
+  }
+}
+
+function* watchDispositionOperationCall() {
+  yield takeEvery(TRIGGER_DISPOSITION_OPERATION_SAGA, makeDispositionOperationCall);
+}
+
 function* watchDashboardDataFetch() {
   yield takeEvery(GET_DASHBOARD_DATA_SAGA, fetchDashboardData);
 }
@@ -174,5 +225,6 @@ export function* combinedSaga() {
     watchDashboardDataFetch(),
     watchTableCheckboxSelect(),
     watchOrderCall(),
+    watchDispositionOperationCall(),
   ]);
 }
