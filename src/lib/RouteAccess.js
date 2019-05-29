@@ -58,7 +58,7 @@ const beuwTasksAndChecklist = {
 };
 
 const checkListGroups = {
-  groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr'],
+  groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw'],
 };
 
 // TO DO
