@@ -1,11 +1,13 @@
 const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
+const BEUW = 'BEUW';
 const DOC_PROCESSOR = 'PROC';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
   FEUW_TASKS_AND_CHECKLIST,
   BEUW_TASKS_AND_CHECKLIST,
+  BEUW,
 ];
 
 const appGroupNameToUserPersonaMap = {
@@ -30,4 +32,5 @@ module.exports = {
   FEUW_TASKS_AND_CHECKLIST,
   getUserPersona,
   hasChecklist,
+  BEUW,
 };

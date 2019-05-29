@@ -132,11 +132,13 @@ const showDeleteTaskConfirmation = payload => ({
 
 const resetDeleteTaskConfirmation = () => ({ type: RESET_DELETE_TASK });
 
-const subTaskClearance = (taskId, taskBluePrintCode) => ({
+const subTaskClearance = (taskId, rootTaskId, taskBluePrintCode) => ({
   type: CLEAR_SUBTASK,
   payload: {
     id: taskId,
+    rootTaskId,
     taskBlueprintCode: taskBluePrintCode,
+
   },
 });
 
