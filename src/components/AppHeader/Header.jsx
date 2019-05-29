@@ -43,6 +43,13 @@ class Header extends React.Component {
     }
   }
 
+  /* eslint class-methods-use-this: 0 */
+  /* eslint no-nested-ternary: 0 */
+  getEnv() {
+    const host = window.location.hostname.toUpperCase().split('.')[0].replace('CMOD', '');
+    return host === 'PROD' ? '' : (host === 'LOCALHOST' ? ' - LOCAL' : `- ${host}`);
+  }
+
   handleSearchLoan(event) {
     if (event.charCode === 13 || event.key === 'Enter') {
       this.handleSearchLoanClick();
@@ -110,6 +117,9 @@ class Header extends React.Component {
         <Link onClick={this.handleLandingpage} to="/">
           <img alt="logo" src="/static/img/logo.png" styleName="logo" />
         </Link>
+        <span styleName="env">
+          {this.getEnv()}
+        </span>
         <span styleName="spacer" />
         <TextField
           InputProps={{
