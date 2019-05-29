@@ -4,7 +4,6 @@ import ContentHeader from 'components/ContentHeader';
 import FullHeightColumn from 'components/FullHeightColumn';
 import Controls from 'containers/Controls';
 import FrontEndDisposition from 'containers/Dashboard/FrontEndDisposition';
-import { BackendDisposition } from 'containers/Dashboard/BackEndDisposition';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
@@ -33,7 +32,7 @@ class EvaluationPage extends React.PureComponent {
     const { group } = this.props;
     switch (group) {
       case DashboardModel.BEUW:
-        return <BackendDisposition />;
+        return <TasksAndChecklist />;
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
       case DashboardModel.BEUW_TASKS_AND_CHECKLIST:

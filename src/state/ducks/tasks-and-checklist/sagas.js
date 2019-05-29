@@ -383,9 +383,9 @@ function* updateChecklist(action) {
 
 function* subTaskClearance(action) {
   try {
-    const { id, taskBlueprintCode } = action.payload;
+    const { id, rootTaskId, taskBlueprintCode } = action.payload;
     const requestBody = {
-      id, taskBlueprintCode,
+      id, rootTaskId, taskBlueprintCode,
     };
     const response = yield call(Api.put, '/api/task-engine/task/clearSubTask', requestBody);
     const didErrorOccur = response === null;
@@ -393,12 +393,12 @@ function* subTaskClearance(action) {
       throw new Error('Api call failed');
     } else {
       yield put({
-        type: GET_TASKS_SAGA,
-        payload: { depth: 3 },
-      });
-      yield put({
         type: GET_CHECKLIST_SAGA,
         payload: { taskId: id },
+      });
+      yield put({
+        type: GET_TASKS_SAGA,
+        payload: { depth: 3 },
       });
     }
   } catch (e) {

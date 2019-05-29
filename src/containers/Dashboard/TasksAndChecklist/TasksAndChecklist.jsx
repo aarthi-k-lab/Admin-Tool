@@ -25,10 +25,12 @@ import componentTypes from '../../../constants/componentTypes';
 class TasksAndChecklist extends React.PureComponent {
   handleSubTaskClearance(isConfirmed) {
     if (isConfirmed) {
-      const { handleClearSubTask } = this.props;
-      const { selectedTaskId } = this.props;
-      const { selectedTaskBlueprintCode } = this.props;
-      handleClearSubTask(selectedTaskId, selectedTaskBlueprintCode);
+      const {
+        handleClearSubTask,
+        rootTaskId, selectedTaskId,
+        selectedTaskBlueprintCode,
+      } = this.props;
+      handleClearSubTask(selectedTaskId, rootTaskId, selectedTaskBlueprintCode);
     }
   }
 
@@ -118,6 +120,7 @@ class TasksAndChecklist extends React.PureComponent {
 
   render() {
     const {
+      commentsRequired,
       instructions,
       disableNext,
       disablePrev,
@@ -147,6 +150,7 @@ class TasksAndChecklist extends React.PureComponent {
           {this.renderChecklist()}
           {this.renderSnackBar()}
           <DialogCard
+            commentsRequired={commentsRequired}
             dialogContent={instructions}
             dialogHeader="Steps to Resolve"
             message={disposition}
@@ -198,6 +202,7 @@ TasksAndChecklist.propTypes = {
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
   closeSnackBar: PropTypes.func.isRequired,
+  commentsRequired: PropTypes.bool.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
@@ -219,6 +224,7 @@ TasksAndChecklist.propTypes = {
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  rootTaskId: PropTypes.func.isRequired,
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
   showAssign: PropTypes.bool.isRequired,
@@ -291,6 +297,8 @@ function mapStateToProps(state) {
       noTasksFound,
       isTasksLimitExceeded,
     ),
+    rootTaskId: selectors.getRootTaskId(state),
+    commentsRequired: selectors.showComment(state),
     snackBarData: notificationSelectors.getSnackBarState(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
