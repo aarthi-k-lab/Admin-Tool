@@ -27,6 +27,7 @@ import {
   DISP_COMMENT,
   UPDATE_CHECKLIST,
   CLEAR_SUBTASK,
+  GET_HISTORICAL_CHECKLIST,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -61,6 +62,38 @@ function* getChecklist(action) {
     yield put({
       type: ERROR_LOADING_CHECKLIST,
     });
+    const snackBar = {
+      message: 'Checklist fetch failed.',
+      type: 'error',
+      open: true,
+    };
+    yield put({
+      type: SET_SNACK_BAR_VALUES,
+      payload: snackBar,
+    });
+  }
+}
+
+function* getHistoricalChecklist(action) {
+  try {
+    const { payload: { checkListId } } = action;
+    yield put({
+      type: LOADING_CHECKLIST,
+    });
+    const response = yield call(Api.callGet, `/api/genereatePdf/${checkListId}`);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    }
+    // yield put({
+    //   type: STORE_CHECKLIST,
+    //   payload: response,
+    // });
+    console.log('response for checkList Id is', response);
+  } catch (e) {
+    // yield put({
+    //   type: ERROR_LOADING_CHECKLIST,
+    // });
     const snackBar = {
       message: 'Checklist fetch failed.',
       type: 'error',
@@ -155,8 +188,8 @@ function* getTasks(action) {
     yield put({
       type: LOADING_TASKS,
     });
-    const rootTaskId = yield select(selectors.getRootTaskId);
-    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
+    // const rootTaskId = yield select(selectors.getRootTaskId);
+    const response = yield call(Api.callGet, `/api/task-engine/task/5cee56a55b95415a7ce905f7?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -414,6 +447,10 @@ function* watchGetChecklist() {
   yield takeEvery(GET_CHECKLIST_SAGA, getChecklist);
 }
 
+function* watchGetHistoricalChecklist() {
+  yield takeEvery(GET_HISTORICAL_CHECKLIST, getHistoricalChecklist);
+}
+
 function* watchGetNextChecklist() {
   yield takeEvery(GET_NEXT_CHECKLIST, getNextChecklist);
 }
@@ -451,6 +488,7 @@ export function* combinedSaga() {
     watchGetTasks(),
     watchDispositionComment(),
     watchUpdateChecklist(),
+    watchGetHistoricalChecklist(),
     watchSubtaskClearance(),
   ]);
 }

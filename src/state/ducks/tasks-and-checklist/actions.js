@@ -2,6 +2,7 @@ import {
   GET_NEXT_CHECKLIST,
   GET_PREV_CHECKLIST,
   GET_CHECKLIST_SAGA,
+  GET_HISTORICAL_CHECKLIST,
   GET_TASKS_SAGA,
   HANDLE_CHECKLIST_ITEM_CHANGE,
   RESET_DATA,
@@ -44,6 +45,13 @@ const getChecklist = taskId => ({
   type: GET_CHECKLIST_SAGA,
   payload: {
     taskId,
+  },
+});
+
+const getHistoricalCheckList = checkListId => ({
+  type: GET_HISTORICAL_CHECKLIST,
+  payload: {
+    checkListId,
   },
 });
 
@@ -163,4 +171,5 @@ export {
   showDeleteTaskConfirmation,
   resetDeleteTaskConfirmation,
   subTaskClearance,
+  getHistoricalCheckList,
 };
