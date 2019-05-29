@@ -36,6 +36,7 @@ class DialogCard extends Component {
 
   render() {
     const {
+      commentsRequired,
       className,
       dialogContent,
       dialogHeader,
@@ -79,6 +80,7 @@ class DialogCard extends Component {
           <DispositionComment
             activeIcon={activeIcon}
             allTaskScenario={message === 'All Tasks Completed'}
+            commentsRequired={commentsRequired}
             content={dialogContent}
             expanded={expanded}
             header={dialogHeader}
@@ -98,6 +100,7 @@ DialogCard.defaultProps = {
 DialogCard.propTypes = {
   ...propertyValidation,
   className: PropTypes.string,
+  commentsRequired: PropTypes.bool.isRequired,
   onDialogToggle: PropTypes.func.isRequired,
   shouldShow: PropTypes.bool,
 };
