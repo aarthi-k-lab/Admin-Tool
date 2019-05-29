@@ -13,7 +13,7 @@ const TextFields = (props) => {
   };
   return (
     <FormControl component="fieldset">
-      <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
+      <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
       <TextField {...properties} />
     </FormControl>
   );
