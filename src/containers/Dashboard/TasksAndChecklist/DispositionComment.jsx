@@ -51,10 +51,10 @@ class DispositionComment extends Component {
 
   renderCommentBox() {
     const { content } = this.state;
-    const { expanded, allTaskScenario } = this.props;
+    const { expanded, allTaskScenario, commentsRequired } = this.props;
     return (
         <>
-          {(!content && !allTaskScenario)
+          {(!content && !allTaskScenario && commentsRequired)
             && (
             <p
               id="text-Area"
@@ -114,6 +114,7 @@ DispositionComment.defaultProps = {
 DispositionComment.propTypes = {
   activeIcon: PropTypes.string.isRequired,
   allTaskScenario: PropTypes.bool.isRequired,
+  commentsRequired: PropTypes.bool.isRequired,
   content: PropTypes.string,
   dispositionCommentTrigger: PropTypes.func.isRequired,
   expanded: PropTypes.bool,

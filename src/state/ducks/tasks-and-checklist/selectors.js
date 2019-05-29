@@ -134,6 +134,13 @@ const shouldShowDisposition = (state) => {
   return shouldShow;
 };
 
+const showComment = (state) => {
+  if (R.path(['tasksAndChecklist', 'taskTree', 'value', 'disposition'], state) === 'Approval' && dashboardSelectors.groupName(state) === 'BEUW') {
+    return false;
+  }
+  return true;
+};
+
 const getRootTaskId = R.pathOr('', ['tasksAndChecklist', 'rootTaskId']);
 
 const getOptionalTasks = R.pathOr([], ['tasksAndChecklist', 'optionalTasks']);
@@ -181,6 +188,8 @@ const selectors = {
   getDialogTitle,
   selectedTaskId,
   selectedTaskBlueprintCode,
+  showComment,
+
 };
 
 export default selectors;

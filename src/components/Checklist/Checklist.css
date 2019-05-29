@@ -24,10 +24,13 @@
 .checklist-title.checklist-title {
   color: var(--grey-650);
   margin-top: 1rem;
-  width: 90%;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-align: justify;
   font-weight: bold;
+  margin-left: -6rem;
+  margin-right: -7rem;
+  display: flex;
+  justify-content: center;
 }
 
 .subTaskDescription.subTaskDescription{
@@ -51,4 +54,22 @@
 
 .tooltip {
   font-size: 0.8rem;
+}
+
+.text-label {
+  width: 200;
+}
+
+.radio-control-label.radio-control-label {
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.componentMargin.componentMargin {
+  margin-top: 0.5rem;
+}
+
+.componentMargin.componentMargin div > input {
+  padding: 5.5px 5px;
 }

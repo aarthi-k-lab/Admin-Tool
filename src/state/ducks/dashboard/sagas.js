@@ -77,6 +77,7 @@ import {
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
+  'beuw-task-checklist': 'BEUW',
 };
 
 function getUserPersona(appGroupName) {

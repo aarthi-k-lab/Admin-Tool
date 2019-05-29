@@ -1,20 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
+import TextFields from './TextFields';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
+import HTMLElements from '../../constants/componentTypes';
 
 const DIALOG_TITLE = 'You want to clear all the checklist?';
 const DELETE_TASK = 'DELETE TASK';
 const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
-const RADIO_BUTTONS = 'radio';
-const MULTILINE_TEXT = 'multiline-text';
 
 class Checklist extends React.PureComponent {
   constructor(props) {
@@ -140,6 +139,9 @@ class Checklist extends React.PureComponent {
     taskCode,
     value,
   }) {
+    const {
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE,
+    } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode);
@@ -155,18 +157,110 @@ class Checklist extends React.PureComponent {
       }
       case MULTILINE_TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
-        const textField = (
-          <TextField
-            disabled={disabled}
-            inputRef={refCallback}
-            label={title}
-            maxRows={10}
-            multiline
-            onChange={this.handleTextChange(id)}
-            rows={5}
-            value={this.getMultilineTextValue(id, value)}
-          />
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: MULTILINE_TEXT,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
         );
+      }
+      case NUMBER: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: NUMBER,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
+      case DATE: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: DATE,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
+      case TEXT: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: TEXT,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -252,7 +346,7 @@ Checklist.propTypes = {
       }),
       taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
+      type: PropTypes.oneOf([Object.values(HTMLElements)]).isRequired,
       value: PropTypes.any,
     }),
   ).isRequired,

@@ -1,0 +1,13 @@
+.text-label.text-label {
+    color: #000;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .componentMargin.componentMargin {
+    margin-top: 0.5rem;
+  }
+  
+  .componentMargin.componentMargin div > input {
+    padding: 5.5px 5px;
+  }
