@@ -180,8 +180,6 @@ const mapStateToProps = (state) => {
   const enableValidate = checklistSelectors.enableValidate(state);
   const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
   const showComment = checklistSelectors.showComment(state);
-  console.log('isnotassign/!showdisp/!enablevalid', isNotAssigned, !showDisposition, !enableValidate, 'disableValidation', isNotAssigned || !showDisposition || !enableValidate);
-  console.log('showComment', showComment);
   return {
     disableValidation,
     enableValidate,
