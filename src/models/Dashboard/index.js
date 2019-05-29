@@ -6,6 +6,8 @@ const BEUW = 'BEUW';
 const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
+const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
+
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
@@ -42,6 +44,12 @@ const GROUP_INFO = [
 
   },
   {
+    group: BEUW_TASKS_AND_CHECKLIST,
+    task: 'Underwriting (beta)',
+    taskCode: 'UW',
+    path: '/backend-checklist',
+  },
+  {
     // TO-DO
     group: LOAN_ACTIVITY,
     task: 'Loan Activity',
@@ -60,6 +68,7 @@ const GROUP_INFO = [
 const GROUPS = {
   '/frontend-evaluation': FEUW,
   '/backend-evaluation': BEUW,
+  '/backend-checklist': BEUW_TASKS_AND_CHECKLIST,
   // TO-DO'S
   '/loan-activity': LOAN_ACTIVITY,
   '/doc-processor': PROC,
@@ -73,6 +82,8 @@ function getTitle(location) {
       return 'Income Calculation';
     case '/frontend-checklist':
       return 'Income Calculation (beta)';
+    case '/backend-checklist':
+      return 'Underwriting (beta)';
     case '/doc-processor':
       return 'Processing';
     case '/loan-activity':
@@ -88,6 +99,7 @@ const DashboardModel = {
   PROC,
   LOAN_ACTIVITY,
   FEUW_TASKS_AND_CHECKLIST,
+  BEUW_TASKS_AND_CHECKLIST,
   GROUPS,
   GROUP_INFO,
   getTitle,
