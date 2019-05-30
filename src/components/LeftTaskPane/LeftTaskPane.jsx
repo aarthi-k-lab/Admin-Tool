@@ -10,7 +10,7 @@ import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
 import History from '@material-ui/icons/History';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
@@ -113,7 +113,9 @@ class LeftTaskPane extends React.Component {
   }
 
   handleHistoricalCheclistClick(checklistId) {
+    const { getHistoricalCheckList } = this.props;
     console.log(checklistId);
+    getHistoricalCheckList('5cee415e6dc1d4270a6a63e8');
     this.handleClose();
   }
 
@@ -142,10 +144,8 @@ class LeftTaskPane extends React.Component {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     return (
-      <div>
-        <IconButton onClick={this.handleChecklistOpen}>
-          <History />
-        </IconButton>
+      <>
+        <History onClick={this.handleChecklistOpen} styleName="task-pane-controls" />
         <Menu
           anchorEl={anchorEl}
           id="long-menu"
@@ -153,23 +153,25 @@ class LeftTaskPane extends React.Component {
           open={open}
           PaperProps={{
             style: {
-              width: 200,
+              // width: 200,
             },
           }}
         >
           {historicalData.map(option => (
-            <MenuItem onClick={() => this.handleHistoricalCheclistClick(option.checklistId)}>
-              <div>
-                {option.description}
-                <br />
-                <span>
-                  {option.time}
-                </span>
-              </div>
-            </MenuItem>
+            <a download href="http://127.0.0.1:7601/api/download/5cee415e6dc1d4270a6a63e8">
+              <MenuItem onClick={() => this.handleHistoricalCheclistClick(option.checklistId)}>
+                <div>
+                  {option.description}
+                  <br />
+                  <span>
+                    {option.time}
+                  </span>
+                </div>
+              </MenuItem>
+            </a>
           ))}
         </Menu>
-      </div>
+      </>
     );
   }
 
@@ -283,6 +285,7 @@ LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
+  getHistoricalCheckList: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,

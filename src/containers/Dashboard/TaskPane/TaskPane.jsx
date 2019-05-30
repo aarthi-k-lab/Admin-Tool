@@ -118,12 +118,14 @@ class TaskPane extends React.PureComponent {
       updateChecklist,
       handleShowDeleteTaskConfirmation,
       resetDeleteTaskConfirmation,
+      fetchHistoricalCheckList,
     } = this.props;
     return (
       (
         <LeftTaskPane
           className={className}
           dataLoadStatus={dataLoadStatus}
+          getHistoricalCheckList={fetchHistoricalCheckList}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}
           onSubTaskClick={onSubTaskClick}
@@ -154,6 +156,7 @@ TaskPane.defaultProps = {
 TaskPane.propTypes = {
   className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
+  fetchHistoricalCheckList: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
@@ -183,6 +186,7 @@ const mapDispatchToProps = dispatch => ({
   handleShowOptionalTasks: taskOperations.handleShowOptionalTasks(dispatch),
   handleShowDeleteTaskConfirmation: taskOperations.handleShowDeleteTaskConfirmation(dispatch),
   updateChecklist: taskOperations.handleUpdateChecklist(dispatch),
+  fetchHistoricalCheckList: taskOperations.fetchHistoricalCheckList(dispatch),
   resetDeleteTaskConfirmation: taskOperations.resetDeleteTaskConfirmationValues(dispatch),
 });
 

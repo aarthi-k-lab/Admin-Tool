@@ -1,5 +1,6 @@
 const RESET_DATA = 'app/tasks-and-checklist/RESET_DATA';
 const GET_CHECKLIST_SAGA = 'app/tasks-and-checklist/GET_CHECKLIST_SAGA';
+const GET_HISTORICAL_CHECKLIST = 'app/tasks-and-checklist/GET_HISTORICAL_CHECKLIST';
 const GET_NEXT_CHECKLIST = 'app/tasks-and-checklist/GET_NEXT_CHECKLIST';
 const GET_PREV_CHECKLIST = 'app/tasks-and-checklist/GET_PREV_CHECKLIST';
 const GET_TASKS_SAGA = 'app/tasks-and-checklist/GET_TASKS_SAGA';
@@ -62,4 +63,5 @@ export {
   SHOW_DELETE_TASK_CONFIRMATION,
   RESET_DELETE_TASK,
   CLEAR_SUBTASK,
+  GET_HISTORICAL_CHECKLIST,
 };

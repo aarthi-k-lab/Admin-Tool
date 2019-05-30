@@ -169,7 +169,7 @@ function* fetchChecklistDetails(checklistId) {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/5cee56a55b95415a7ce905f6?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, '/api/task-engine/process/5cee56a55b95415a7ce905f6?shouldGetTaskTree=false');
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');

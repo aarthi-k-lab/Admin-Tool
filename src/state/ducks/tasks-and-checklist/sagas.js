@@ -49,7 +49,7 @@ function* getChecklist(action) {
     yield put({
       type: LOADING_CHECKLIST,
     });
-    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -77,10 +77,11 @@ function* getChecklist(action) {
 function* getHistoricalChecklist(action) {
   try {
     const { payload: { checkListId } } = action;
+    console.log('checvkList here', checkListId);
     yield put({
       type: LOADING_CHECKLIST,
     });
-    const response = yield call(Api.callGet, `/api/genereatePdf/${checkListId}`);
+    const response = yield call(Api.callGet, `/api/generatePdf/${checkListId}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -91,6 +92,7 @@ function* getHistoricalChecklist(action) {
     // });
     console.log('response for checkList Id is', response);
   } catch (e) {
+    console.log('error', e);
     // yield put({
     //   type: ERROR_LOADING_CHECKLIST,
     // });
@@ -189,7 +191,7 @@ function* getTasks(action) {
       type: LOADING_TASKS,
     });
     // const rootTaskId = yield select(selectors.getRootTaskId);
-    const response = yield call(Api.callGet, `/api/task-engine/task/5cee56a55b95415a7ce905f7?depth=${depth}&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/5cee56a55b95415a7ce905f7?depth=${depth}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
