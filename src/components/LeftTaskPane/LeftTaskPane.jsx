@@ -9,9 +9,30 @@ import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
+import History from '@material-ui/icons/History';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
 import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
 import AddTask from '../Tasks/OptionalTask/AddTask';
+
+const historicalData = [
+  {
+    checklistId: '5ce7143f69daeb6ed3ffdb4c',
+    description: 'BEUW-Suspicious Activity Review',
+    time: '27 May 2019 08:30pm',
+  },
+  {
+    checklistId: '5ce7143f69daeb6ed3ffdb4c',
+    description: 'BEUW-Suspicious Activity Review',
+    time: '27 May 2019 08:30pm',
+  },
+  {
+    checklistId: '5ce7143f69daeb6ed3ffdb4c',
+    description: 'FEUW-Suspicious Activity Review',
+    time: '27 May 2019 08:30pm',
+  },
+];
 
 const ALL = 'All';
 const PENDING = 'Pending';
@@ -48,6 +69,7 @@ function StatusMenu({ onChange, taskStatus }) {
   );
 }
 
+
 function shouldShowAddTaskButton(optionalTasks) {
   return optionalTasks.length > 0;
 }
@@ -66,12 +88,19 @@ class LeftTaskPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      anchorEl: null,
       tasksStatus: ALL,
       width: props.defaultState === OPEN ? props.openWidth : props.closedWidth,
       isCollapsed: props.defaultState !== OPEN,
+      // eslint-disable-next-line react/no-unused-state
+      selectedHistoricalChecklist: null,
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.checklistHistoryMenu = this.checklistHistoryMenu.bind(this);
+    this.handleHistoricalCheclistClick = this.handleHistoricalCheclistClick.bind(this);
+    this.handleChecklistOpen = this.handleChecklistOpen.bind(this);
   }
 
   handleStatusChange(event) {
@@ -83,6 +112,12 @@ class LeftTaskPane extends React.Component {
     storeTaskFilter(statusMap[selectedStatus]);
   }
 
+  handleHistoricalCheclistClick(checklistId) {
+    console.log(checklistId);
+    this.handleClose();
+  }
+
+
   handleClick() {
     const { isCollapsed } = this.state;
     const { openWidth, closedWidth } = this.props;
@@ -90,6 +125,52 @@ class LeftTaskPane extends React.Component {
       width: isCollapsed ? openWidth : closedWidth,
       isCollapsed: !isCollapsed,
     });
+  }
+
+
+  handleClose() {
+    this.setState({ anchorEl: null });
+  }
+
+  handleChecklistOpen(event) {
+    this.setState({
+      anchorEl: event.currentTarget,
+    });
+  }
+
+  checklistHistoryMenu() {
+    const { anchorEl } = this.state;
+    const open = Boolean(anchorEl);
+    return (
+      <div>
+        <IconButton onClick={this.handleChecklistOpen}>
+          <History />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          id="long-menu"
+          onClose={value => this.handleClose(value)}
+          open={open}
+          PaperProps={{
+            style: {
+              width: 200,
+            },
+          }}
+        >
+          {historicalData.map(option => (
+            <MenuItem onClick={() => this.handleHistoricalCheclistClick(option.checklistId)}>
+              <div>
+                {option.description}
+                <br />
+                <span>
+                  {option.time}
+                </span>
+              </div>
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+    );
   }
 
 
@@ -127,6 +208,7 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
+                  {this.checklistHistoryMenu()}
                   { shouldShowAddTaskButton(optionalTasks)
                     ? <AddTask onClick={() => handleShowOptionalTasks()} />
                     : <div />
@@ -162,6 +244,7 @@ class LeftTaskPane extends React.Component {
       </>
     );
   }
+
 
   render() {
     const { width } = this.state;

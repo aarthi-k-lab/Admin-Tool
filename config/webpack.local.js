@@ -130,6 +130,7 @@ const config = merge(
           },
         },
         '/api/task-engine': {
+          // target: 'http://127.0.0.1:7600',
           target: 'https://cmodtaskenginedev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
@@ -152,13 +153,21 @@ const config = merge(
           pathRewrite: {
             '^/api/cmodtrial': '',
           },
-        },   
+        },
         '/api/cmodnetcoretkams': {
           target: 'https://cmodnetcoretkamsdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
             '^/api/cmodnetcoretkams': '',
+          },
+        },
+        '/api/genereatePdf': {
+          target: 'http://127.0.0.1:7600',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/genereatePdf': '',
           },
         },
       },
