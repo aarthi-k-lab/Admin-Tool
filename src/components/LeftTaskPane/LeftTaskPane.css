@@ -49,3 +49,15 @@
 .loader {
   margin: auto;
 }
+
+.icons {
+  width: min-content;
+  height: min-content;
+  align-items: center;
+  display: flex;
+}
+
+.checklist-history-icon {
+  display: flex;
+  position: fixed;
+}

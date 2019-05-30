@@ -10,7 +10,7 @@ import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
 import History from '@material-ui/icons/History';
-// import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
@@ -145,7 +145,9 @@ class LeftTaskPane extends React.Component {
     const open = Boolean(anchorEl);
     return (
       <>
-        <History onClick={this.handleChecklistOpen} styleName="task-pane-controls" />
+        <IconButton onClick={this.handleChecklistOpen}>
+          <History styleName="task-pane-controls" />
+        </IconButton>
         <Menu
           anchorEl={anchorEl}
           id="long-menu"
@@ -211,11 +213,15 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
-                  {this.checklistHistoryMenu()}
-                  { shouldShowAddTaskButton(optionalTasks)
-                    ? <AddTask onClick={() => handleShowOptionalTasks()} />
-                    : <div />
+                  <div styleName="icons">
+                    <div styleName="checklist-history-icon">
+                      {this.checklistHistoryMenu()}
+                    </div>
+                    { shouldShowAddTaskButton(optionalTasks)
+                      ? <AddTask onClick={() => handleShowOptionalTasks()} />
+                      : <div />
                   }
+                  </div>
                 </>
               )
               : null
