@@ -158,7 +158,8 @@ class LeftTaskPane extends React.Component {
           }}
         >
           {historicalData.map(option => (
-            <a download href="http://127.0.0.1:7601/api/download/5cee415e6dc1d4270a6a63e8">
+            // eslint-disable-next-line react/jsx-no-target-blank
+            <a href="http://127.0.0.1:7601/api/download/5cee415e6dc1d4270a6a63e8" target="_blank">
               <MenuItem onClick={() => this.handleHistoricalCheclistClick(option.checklistId)}>
                 <div>
                   {option.description}
