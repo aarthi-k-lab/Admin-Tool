@@ -14,8 +14,10 @@ import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
-import { actions as checklistActions } from 'ducks/tasks-and-checklist/index';
-import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
+import {
+  actions as checklistActions,
+  selectors as checklistSelectors,
+} from 'ducks/tasks-and-checklist/index';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -75,6 +77,7 @@ import {
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
+  'beuw-task-checklist': 'BEUW',
 };
 
 function getUserPersona(appGroupName) {
@@ -166,7 +169,7 @@ function* fetchChecklistDetails(checklistId) {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false`);
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -194,7 +197,7 @@ function* fetchChecklistDetails(checklistId) {
 }
 
 function* shouldRetriveChecklist(searchItem) {
-  const checklistTaskNames = ['FrontEnd Review', 'Processing'];
+  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting'];
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
@@ -351,9 +354,10 @@ function getEvalPayload(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
+  const taskIterationCounter = R.path(['taskData', 'data', 'taskIterationCounter'], taskDetails);
   const piid = getProcessId(taskDetails);
   return {
-    loanNumber, evalId, taskId, piid,
+    loanNumber, evalId, taskId, taskIterationCounter, piid,
   };
 }
 
@@ -639,11 +643,20 @@ function* loadTrials(payload) {
     } catch (e) {
       yield put({ type: LOAD_TRIALLETTER_RESULT, payload: { e, valid: false } });
     }
-    const processStatus = yield select(selectors.processStatus);
-    const taskStatus = yield select(selectors.taskStatus);
+
+    let evalStatus;
+    try {
+      yield put({ type: SHOW_LOADER });
+      const response = yield call(Api.callGetText, `/api/cmodnetcoretkams/Eval/Status?EvalId=${evalId}`);
+      evalStatus = response !== null ? response : '';
+      yield put({ type: HIDE_LOADER });
+    } catch (e) {
+      evalStatus = '';
+      yield put({ type: LOAD_TRIALLETTER_RESULT, payload: { e, valid: false } });
+    }
 
     let message = '';
-    if (taskStatus === 'Active' && (processStatus !== 'Completed' || trialHeader.resolutionStatus !== 'Closed')) {
+    if (evalStatus !== 'Approved' || trialHeader.resolutionStatus !== 'Closed') {
       message = 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
         + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
     }
@@ -668,48 +681,21 @@ function* loadTrials(payload) {
 
 function* sentToUnderwriting() {
   const taskId = yield select(selectors.taskId);
-  // const taskId = 1759963;
-  const taskStatus = yield select(selectors.taskStatus);
   const evalId = yield select(selectors.evalId);
-  const trialHeader = yield select(selectors.getTrialHeader);
-  const resolutionId = trialHeader.resolutionId ? trialHeader.resolutionId : '0';
-  let caseStatus;
-  let evalStatus;
-  if (taskStatus === 'Active') {
-    const key = JSON.parse('{"Ocp-Apim-Subscription-Key": "d4a602747f6f455aaa925cc356e180b7"}');
-    try {
-      yield put({ type: SHOW_LOADER });
-      const response = yield call(Api.callGetText, `/api/enterprise/tkamsnetcore/Eval/Status?EvalId=${evalId}`, key);
-      evalStatus = response !== null ? response : '';
-
-      const response1 = yield call(Api.callGetText, `/api/enterprise/tkamsnetcore/Case/Status?CaseId=${resolutionId}`, key);
-      caseStatus = response1 !== null ? response1 : '';
-      yield put({ type: HIDE_LOADER });
-    } catch (e) {
-      yield put({
-        type: SET_TASK_UNDERWRITING_RESULT,
-        payload:
-        {
-          level: 'error',
-          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
-        },
-      });
-    }
-    // console.log('DATA: evalStatus, taskStatus, caseStatus
-    // ------------------', evalStatus, taskStatus, caseStatus);
-    // if (evalStatus && caseStatus) {
-    if (evalStatus === 'Active' && caseStatus === 'Open') {
-      try {
-        yield put({ type: SHOW_LOADER });
-        const payload = JSON.parse(`{ "finishTask": {
-          "taskId": "${taskId}", 
-          "status": " Send to Underwriting ",
-          "currentStatus": "Received" 
-        }}`);
-        const key1 = JSON.parse('{"Ocp-Apim-Subscription-Key": "36873b5c8cc347be8390dae6f4854098"}');
-        const response = yield call(Api.callPost, '/api/enterprise/enterprise/automationfinishtask/finishTask', payload, key1);
-        const statusCode = R.pathOr(null, ['finishTaskResponse', 'statusCode'], response);
-        if (response !== null && statusCode === '200') {
+  try {
+    yield put({ type: SHOW_LOADER });
+    const responseTask = yield call(Api.callGet, `/api/bpm-audit/audit/task/${taskId}`);
+    if (responseTask !== null && responseTask.currentStatus && responseTask.currentStatus === 'Received') {
+      const response = yield call(Api.callGet, `/api/cmodtrial/ValidateSendToUnderwriting?EvalId=${evalId}`);
+      if (response !== null && response.isValid === true && response.evalStatus === 'Active' && response.caseStatus === 'Open') {
+        const payload = JSON.parse(`{
+              "taskId": "${taskId}", 
+              "status": "Send to Underwriting",
+              "currentStatus": "Received" 
+            }`);
+        const responseSend = yield call(Api.callPost, '/api/cmodtrial/SendToUnderwriting', payload);
+        const statusCode = R.pathOr(null, ['finishTaskResponse', 'statusCode'], responseSend);
+        if (responseSend !== null && statusCode === '200') {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
@@ -726,29 +712,37 @@ function* sentToUnderwriting() {
             },
           });
         }
-        yield put({ type: HIDE_LOADER });
-      } catch (e) {
-        yield put({ type: SET_TASK_UNDERWRITING_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
+      } else {
+        const message = 'Unable to send back to Underwriting because either eval is not '
+          + 'in Active status or Resolution is not in Open status.';
+        yield put({
+          type: SET_TASK_UNDERWRITING_RESULT,
+          payload: {
+            level: 'error',
+            status: message,
+          },
+        });
       }
     } else {
-      const message = 'Unable to send back to Underwriting because either eval is not '
-      + 'in Active status or Resolution is not in Open status.';
+      const message = 'Unable to send back to Underwriting because Trial task is not active.';
       yield put({
         type: SET_TASK_UNDERWRITING_RESULT,
-        payload: {
-          level: 'error',
-          status: message,
-        },
+        payload: { level: 'error', status: message },
       });
     }
-  } else {
-    const message = 'Unable to send back to Underwriting because Trial task is not active.';
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
-      payload: { level: 'error', status: message },
+      payload:
+      {
+        level: 'error',
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
     });
   }
 }
+
 
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);

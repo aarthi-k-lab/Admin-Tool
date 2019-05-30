@@ -10,21 +10,23 @@ import {
 
 describe('Ducks :: Stager -> actions', () => {
   it('triggerDashboardCounts', () => {
-    const loanNumber = 596401265;
     const expectedAction = {
       type: GET_DASHBOARD_COUNTS_SAGA,
     };
-    const action = triggerDashboardCounts(loanNumber);
+    const action = triggerDashboardCounts();
     expect(action).toEqual(expectedAction);
   });
 
   it('triggerDashboardDataFetch', () => {
-    const searchTerm = 'LegalFeeToOrder';
+    const payload = {
+      activeSearchTerm: 'LegalFeeToOrder',
+      stager: 'DOCSOUT STAGER',
+    };
     const expectedAction = {
       type: GET_DASHBOARD_DATA_SAGA,
-      payload: searchTerm,
+      payload,
     };
-    const action = triggerDashboardDataFetch(searchTerm);
+    const action = triggerDashboardDataFetch(payload);
     expect(action).toEqual(expectedAction);
   });
 

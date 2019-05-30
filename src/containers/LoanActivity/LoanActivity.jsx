@@ -27,7 +27,7 @@ class LoanActivity extends React.PureComponent {
     const isTrialHeader = trialHeader ? trialHeader.trialName : '';
     return (
       <>
-        <Grid alignItems="stretch" container>
+        <Grid alignItems="stretch" container styleName="loan-activity">
           <Grid item styleName="status-details-parent" xs={8}>
             <div styleName="status-details">
               <TrialHeaderAndDetails

@@ -44,6 +44,7 @@ class ProtectedRoutes extends React.Component {
     this.renderFrontendChecklistRoute = this.renderFrontendChecklistRoute.bind(this);
     this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
     this.renderLoanActivity = this.renderLoanActivity.bind(this);
+    this.renderBackendChecklistRoute = this.renderBackendChecklistRoute.bind(this);
   }
 
   componentDidMount() {
@@ -108,6 +109,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderBackendChecklistRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasBackendChecklistAccess(groups)
+        ? <Dashboard group={DashboardModel.BEUW_TASKS_AND_CHECKLIST} />
+        : <Redirect to="/unauthorized?error=BACKEND_UNDERWRITER_ACCESS_NEEDED" />
+    );
+  }
+
   renderLoanActivity() {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
@@ -149,6 +159,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-processor" render={this.renderDocProcessorRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
+          <Route path="/backend-checklist" render={this.renderBackendChecklistRoute} />
           <Route exact path="/loan-activity" render={this.renderLoanActivity} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />

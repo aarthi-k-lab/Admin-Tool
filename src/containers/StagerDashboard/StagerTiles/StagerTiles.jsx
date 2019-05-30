@@ -22,29 +22,32 @@ class StagerTiles extends React.PureComponent {
       <>
         <Grid container styleName="stager-tiles-main-container" xs={12}>
           {!countsData.length ? <Loader /> : null}
-          {countsData.map(stagerTaskGroupData => (
-            <>
-              <Grid item styleName="taskStatusTitle" xs={12}>
-                {stagerTaskGroupData.displayName}
-              </Grid>
-              <Grid item styleName="stagerGroupItem">
-                <Grid container direction="row" spacing={8} styleName="tiles-grid">
-                  {R.sort(R.ascend(R.prop('displayName')), stagerTaskGroupData.data).map(tileData => (
-                    <Grid item styleName="status-tile" xs={6}>
-                      <StagerDocumentStatusCard
-                        active={this.isActiveCard(
-                          tileData.displayName, stagerTaskGroupData.displayName,
-                        )}
-                        data={tileData}
-                        onStatusCardClick={onStatusCardClick}
-                        tabName={stagerTaskGroupData.displayName}
-                      />
-                    </Grid>
-                  ))}
+          <div>
+            {countsData.map(stagerTaskGroupData => (
+              <>
+                <Grid item styleName="taskStatusTitle" xs={12}>
+                  {stagerTaskGroupData.displayName}
                 </Grid>
-              </Grid>
-            </>
-          ))}
+                <Grid item styleName="stagerGroupItem">
+                  <Grid container direction="row" spacing={8} styleName="tiles-grid">
+                    {stagerTaskGroupData.data.sort((current, next) => (
+                      (current.order > next.order) ? 1 : -1)).map(tileData => (
+                        <Grid item styleName="status-tile" xs={6}>
+                          <StagerDocumentStatusCard
+                            active={this.isActiveCard(
+                              tileData.displayName, stagerTaskGroupData.displayName,
+                            )}
+                            data={tileData}
+                            onStatusCardClick={onStatusCardClick}
+                            tabName={stagerTaskGroupData.displayName}
+                          />
+                        </Grid>
+                    ))}
+                  </Grid>
+                </Grid>
+              </>
+            ))}
+          </div>
         </Grid>
       </>
     );

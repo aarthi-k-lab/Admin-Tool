@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
+import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
+import TextFields from './TextFields';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
+import HTMLElements from '../../constants/componentTypes';
 
-const RADIO_BUTTONS = 'radio';
-const MULTILINE_TEXT = 'multiline-text';
+const DIALOG_TITLE = 'You want to clear all the checklist?';
+const DELETE_TASK = 'DELETE TASK';
+const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
 
 class Checklist extends React.PureComponent {
   constructor(props) {
@@ -22,7 +25,21 @@ class Checklist extends React.PureComponent {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.state = {
       multilineTextDirtyValues: {},
+      isDialogOpen: false,
+      dialogContent: '',
+      dialogTitle: '',
     };
+  }
+
+  static getDerivedStateFromProps(props) {
+    if (props.isDialogOpen) {
+      return {
+        isDialogOpen: props.isDialogOpen,
+        dialogContent: props.dialogContent,
+        dialogTitle: props.dialogTitle,
+      };
+    }
+    return null;
   }
 
   getMultilineTextValue(id, initialValue) {
@@ -73,10 +90,34 @@ class Checklist extends React.PureComponent {
     };
   }
 
+  handleOpen() {
+    this.setState({
+      isDialogOpen: true,
+      dialogContent: CLEAR_CHECKLIST,
+      dialogTitle: DIALOG_TITLE,
+    });
+  }
+
+  handleCloseDialog(isConfirmed, dialogTitle) {
+    switch (dialogTitle) {
+      case DELETE_TASK: this.handleClose(isConfirmed); break;
+      case CLEAR_CHECKLIST: this.handleClear(isConfirmed); break;
+      default: this.handleClear(isConfirmed); break;
+    }
+  }
+
+  handleClear(isConfirmed) {
+    const { handleClearSubTask } = this.props;
+    handleClearSubTask(isConfirmed);
+    this.setState({
+      isDialogOpen: false,
+    });
+  }
+
   handleClose(isConfirmed) {
     const payload = {
       deleteTaskConfirmationDialog: {
-        title: 'DELETE TASK',
+        title: DELETE_TASK,
         isOpen: false,
         content: 'Deleting a task will delete all the associated checklist information. Do you like to proceed?',
       },
@@ -84,6 +125,9 @@ class Checklist extends React.PureComponent {
     const { handleDeleteTask, handleShowDeleteTaskConfirmation } = this.props;
     handleDeleteTask(isConfirmed);
     handleShowDeleteTaskConfirmation(payload);
+    this.setState({
+      isDialogOpen: false,
+    });
   }
 
   renderChecklistItem({
@@ -95,6 +139,9 @@ class Checklist extends React.PureComponent {
     taskCode,
     value,
   }) {
+    const {
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE,
+    } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode);
@@ -110,18 +157,110 @@ class Checklist extends React.PureComponent {
       }
       case MULTILINE_TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
-        const textField = (
-          <TextField
-            disabled={disabled}
-            inputRef={refCallback}
-            label={title}
-            maxRows={10}
-            multiline
-            onChange={this.handleTextChange(id)}
-            rows={5}
-            value={this.getMultilineTextValue(id, value)}
-          />
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: MULTILINE_TEXT,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
         );
+      }
+      case NUMBER: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: NUMBER,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
+      case DATE: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: DATE,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
+      case TEXT: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          type: TEXT,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -152,13 +291,25 @@ class Checklist extends React.PureComponent {
 
   render() {
     const {
-      checklistItems, children,
-      className, title, isDialogOpen, dialogContent, dialogTitle,
+      checklistItems, children, title,
+      className,
     } = this.props;
+    const {
+      isDialogOpen, dialogContent, dialogTitle,
+    } = this.state;
     return (
       <section className={className}>
-        { children }
-        <Typography styleName="checklist-title" variant="h5">{title}</Typography>
+        {children}
+        <div styleName="subTaskDescParent">
+          <div styleName="subTaskDescription">
+            <Typography styleName="checklist-title">{title}</Typography>
+          </div>
+        </div>
+        <div styleName="clearButton">
+          <Button onClick={() => this.handleOpen()}>
+            Clear
+          </Button>
+        </div>
         <div styleName="scrollable-checklist">
           <Paper elevation={1} styleName="checklist-form-controls">
             {
@@ -171,7 +322,7 @@ class Checklist extends React.PureComponent {
         <ConfirmationDialogBox
           isOpen={isDialogOpen}
           message={dialogContent}
-          onClose={isConfirmed => this.handleClose(isConfirmed)}
+          onClose={isConfirmed => this.handleCloseDialog(isConfirmed, dialogTitle)}
           title={dialogTitle}
         />
       </section>
@@ -181,9 +332,6 @@ class Checklist extends React.PureComponent {
 
 Checklist.defaultProps = {
   className: '',
-  dialogContent: '',
-  dialogTitle: 'MESSAGE',
-  isDialogOpen: false,
 };
 
 Checklist.propTypes = {
@@ -198,18 +346,17 @@ Checklist.propTypes = {
       }),
       taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
+      type: PropTypes.oneOf([Object.values(HTMLElements)]).isRequired,
       value: PropTypes.any,
     }),
   ).isRequired,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  dialogContent: PropTypes.string,
-  dialogTitle: PropTypes.string,
+  handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
-  isDialogOpen: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+
   title: PropTypes.string.isRequired,
 };
 

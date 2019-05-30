@@ -20,8 +20,20 @@ import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
+import componentTypes from '../../../constants/componentTypes';
 
 class TasksAndChecklist extends React.PureComponent {
+  handleSubTaskClearance(isConfirmed) {
+    if (isConfirmed) {
+      const {
+        handleClearSubTask,
+        rootTaskId, selectedTaskId,
+        selectedTaskBlueprintCode,
+      } = this.props;
+      handleClearSubTask(selectedTaskId, rootTaskId, selectedTaskBlueprintCode);
+    }
+  }
+
   renderTaskErrorMessage() {
     const { checklistErrorMessage } = this.props;
     if (checklistErrorMessage) {
@@ -81,6 +93,7 @@ class TasksAndChecklist extends React.PureComponent {
         checklistItems={checklistItems}
         dialogContent={getDialogContent}
         dialogTitle={dialogTitle}
+        handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
         handleDeleteTask={handleDeleteTask}
         handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
         isDialogOpen={isDialogOpen}
@@ -107,6 +120,7 @@ class TasksAndChecklist extends React.PureComponent {
 
   render() {
     const {
+      commentsRequired,
       instructions,
       disableNext,
       disablePrev,
@@ -136,6 +150,7 @@ class TasksAndChecklist extends React.PureComponent {
           {this.renderChecklist()}
           {this.renderSnackBar()}
           <DialogCard
+            commentsRequired={commentsRequired}
             dialogContent={instructions}
             dialogHeader="Steps to Resolve"
             message={disposition}
@@ -158,9 +173,6 @@ class TasksAndChecklist extends React.PureComponent {
     );
   }
 }
-
-const RADIO_BUTTONS = 'radio';
-const MULTILINE_TEXT = 'multiline-text';
 
 TasksAndChecklist.defaultProps = {
   enableGetNext: false,
@@ -185,11 +197,12 @@ TasksAndChecklist.propTypes = {
         value: PropTypes.string.isRequired,
       }),
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([RADIO_BUTTONS, MULTILINE_TEXT]).isRequired,
+      type: PropTypes.oneOf([Object.values(componentTypes)]).isRequired,
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
   closeSnackBar: PropTypes.func.isRequired,
+  commentsRequired: PropTypes.bool.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
@@ -197,6 +210,7 @@ TasksAndChecklist.propTypes = {
   disposition: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
   getDialogContent: PropTypes.string,
+  handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
@@ -210,6 +224,9 @@ TasksAndChecklist.propTypes = {
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  rootTaskId: PropTypes.func.isRequired,
+  selectedTaskBlueprintCode: PropTypes.string.isRequired,
+  selectedTaskId: PropTypes.string.isRequired,
   showAssign: PropTypes.bool.isRequired,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
@@ -280,6 +297,8 @@ function mapStateToProps(state) {
       noTasksFound,
       isTasksLimitExceeded,
     ),
+    rootTaskId: selectors.getRootTaskId(state),
+    commentsRequired: selectors.showComment(state),
     snackBarData: notificationSelectors.getSnackBarState(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
@@ -301,6 +320,8 @@ function mapStateToProps(state) {
     isDialogOpen: selectors.isDialogOpen(state),
     getDialogContent: selectors.getDialogContent(state),
     dialogTitle: selectors.getDialogTitle(state),
+    selectedTaskId: selectors.selectedTaskId(state),
+    selectedTaskBlueprintCode: selectors.selectedTaskBlueprintCode(state),
   };
 }
 
@@ -313,6 +334,7 @@ function mapDispatchToProps(dispatch) {
     onNext: operations.fetchNextChecklist(dispatch),
     onPrev: operations.fetchPrevChecklist(dispatch),
     onInstuctionDialogToggle: operations.handleToggleInstructions(dispatch),
+    handleClearSubTask: operations.handleSubTaskClearance(dispatch),
   };
 }
 

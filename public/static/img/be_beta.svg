@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  <g id="be_BETA_option2" transform="translate(-19 -221)">
+    <text id="BE" transform="translate(24 250)" fill="#fff" font-size="15" font-family="Lato-Bold, Lato" font-weight="700"><tspan x="0" y="0">BE</tspan></text>
+    <g id="Rectangle_3" data-name="Rectangle 3" transform="translate(19 225)" fill="none" stroke="#fff" stroke-width="2">
+      <rect width="32" height="32" rx="3" stroke="none"/>
+      <rect x="1" y="1" width="30" height="30" rx="2" fill="none"/>
+    </g>
+    <circle id="Ellipse_4" data-name="Ellipse 4" cx="2.4" cy="2.4" r="2.4" transform="translate(25 232.2)" fill="#fff"/>
+    <circle id="Ellipse_5" data-name="Ellipse 5" cx="2.4" cy="2.4" r="2.4" transform="translate(30.6 232.2)" fill="#5a6674"/>
+    <circle id="Ellipse_6" data-name="Ellipse 6" cx="2.4" cy="2.4" r="2.4" transform="translate(36.2 232.2)" fill="#5a6674"/>
+    <g id="Rectangle_799" data-name="Rectangle 799" transform="translate(33 221)" fill="#323941" stroke="#fff" stroke-width="1">
+      <rect width="22" height="10" rx="5" stroke="none"/>
+      <rect x="0.5" y="0.5" width="21" height="9" rx="4.5" fill="none"/>
+    </g>
+    <text id="BETA" transform="translate(37 228)" fill="#fff" font-size="6" font-family="Lato-Regular, Lato"><tspan x="0" y="0">BETA</tspan></text>
+  </g>
+</svg>

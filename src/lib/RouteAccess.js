@@ -40,7 +40,7 @@ const docProcessor = {
   path: '/doc-processor',
   name: 'doc-processor',
   img: '/static/img/doc-processor.svg',
-  groups: ['proc', 'proc-mgr'],
+  groups: ['proc', 'proc-mgr', 'allaccess'],
 };
 
 const feuwTasksAndChecklist = {
@@ -49,9 +49,16 @@ const feuwTasksAndChecklist = {
   img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
 };
+// commented for demo purpose
+// const beuwTasksAndChecklist = {
+//   path: '/backend-checklist',
+//   name: 'backend-checklist',
+//   img: '/static/img/be_beta.svg',
+//   groups: ['allaccess', 'beuw-beta', 'beta'],
+// };
 
 const checkListGroups = {
-  groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr'],
+  groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw'],
 };
 
 // TO DO
@@ -59,7 +66,7 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'trial', 'trial-mgr'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr'],
 };
 
 const links = [
@@ -68,6 +75,7 @@ const links = [
   frontendUnderwriter,
   feuwTasksAndChecklist,
   backendUnderwriter,
+  // beuwTasksAndChecklist,
   stager,
   moveForward,
   loanActivity,
@@ -97,6 +105,10 @@ function hasFrontendUnderwriterAccess(groups) {
 function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
+
+// function hasBackendChecklistAccess(groups) {
+//   return hasGroup(beuwTasksAndChecklist.groups, groups);
+// }
 
 function hasChecklistAccess(groups) {
   return hasGroup(checkListGroups.groups, groups);
@@ -131,6 +143,7 @@ module.exports = {
   hasBackendUnderwriterAccess,
   hasDocProcessorAccess,
   hasFrontendUnderwriterAccess,
+  // hasBackendChecklistAccess,
   hasFrontendChecklistAccess,
   hasManagerDashboardAccess,
   hasMoveForwardAccess,

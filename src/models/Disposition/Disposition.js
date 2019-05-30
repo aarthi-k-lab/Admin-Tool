@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import { arrayToString } from 'lib/ArrayUtils';
+import DashboardModel from '../Dashboard';
 
 const ONE_OF = 'oneOf';
 
@@ -22,8 +23,30 @@ function getErrorMessages(discrepancies) {
   return [];
 }
 
+function getStagerErrorMessages(item) {
+  if (item.source === 'VALIDATION') {
+    const errorMessages = getErrorMessages(item.message.discrepancies);
+    return R.is(Array, errorMessages)
+      ? errorMessages.reduce(DashboardModel.Messages.reduceMessageListToMessage, [])
+      : errorMessages;
+  }
+  return item.message;
+}
+
+function getBulkErrorMessages(data) {
+  const errorResponse = R.map((item) => {
+    const result = { ...item };
+    const error = getStagerErrorMessages(result);
+    result.message = error;
+    return result;
+  }, data);
+
+  return errorResponse;
+}
+
 const Disposition = {
   getErrorMessages,
+  getBulkErrorMessages,
 };
 
 export default Disposition;
