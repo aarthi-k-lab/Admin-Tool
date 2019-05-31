@@ -23,15 +23,29 @@ import {
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_STAGER_DOWNLOAD_CSV_URI,
   SET_DOCS_OUT_RESPONSE,
+
 } from './types';
 import selectors from './selectors';
 import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
+  const fromDate = R.propOr({}, 'fromDate', stagerStartEndDate);
+  const toDate = R.propOr({}, 'toDate', stagerStartEndDate);
+  const dateValue = {
+    fromDate,
+    toDate,
+    stagerType,
+    searchTerm,
+  };
+  return dateValue;
+}
 function* fetchDashboardCounts() {
   try {
     const stagerType = yield select(selectors.getStagerValue);
-    const response = yield call(Api.callGet, `api/stager/dashboard/getCounts/${stagerType}`);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
     if (response != null) {
       yield put({
         type: SET_STAGER_DATA_COUNTS,
@@ -58,7 +72,9 @@ function* fetchDashboardData(data) {
         loading: true,
       },
     });
-    const response = yield call(Api.callGet, `api/stager/dashboard/getData/${stagerType}/${searchTerm}`);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', dateValue);
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,

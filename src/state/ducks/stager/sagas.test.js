@@ -78,16 +78,25 @@ describe('onCheckboxSelect ', () => {
       }));
   });
 });
-
+const dateValue = {
+  fromDate: '2019-01-05',
+  stagerType: 'UNDERWRITER STAGER',
+  toDate: '2019-01-05',
+  searchTerm: null,
+};
 describe('fetchDashboardCounts ', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
   it('should select Stager type ', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerValue));
   });
+  it('should select Stager date ', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
+      .toEqual(select(selectors.getStagerStartEndDate));
+  });
   it('call getCounts Api', () => {
-    expect(saga.next('UW_STAGER').value)
-      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts/UW_STAGER'));
+    expect(saga.next(dateValue).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
   it('should update with returned payload ', () => {
     const data = { displayName: 'CurrentReview' };
@@ -102,7 +111,15 @@ describe('fetchDashboardData ', () => {
     payload: {
       activeSearchTerm: 'LegalFeeToOrder',
       stager: 'UNDERWRITER STAGER',
+      toDate: '2019-01-05',
+      fromDate: '2019-01-05',
     },
+  };
+  const date = {
+    fromDate: '2019-01-05',
+    stagerType: 'UNDERWRITER STAGER',
+    searchTerm: 'LegalFeeToOrder',
+    toDate: '2019-01-05',
   };
   const newPayload = [];
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
@@ -117,10 +134,13 @@ describe('fetchDashboardData ', () => {
         },
       }));
   });
-
+  it('should select Stager date ', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
+      .toEqual(select(selectors.getStagerStartEndDate));
+  });
   it('call bpm audit data Api', () => {
-    expect(saga.next().value)
-      .toEqual(call(Api.callGet, `api/stager/dashboard/getData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`));
+    expect(saga.next(date).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
 
   it('should update searchterm ', () => {

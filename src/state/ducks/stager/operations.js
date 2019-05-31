@@ -4,6 +4,7 @@ import {
   triggerDispositionOperationCallAction,
   setDocOutAction,
   setStagerValue,
+  setStartEndDate,
   clearDocOutAction,
 } from './actions';
 
@@ -23,6 +24,8 @@ const triggerDispositionOperationCall = dispatch => (payload, action) => {
 
 const triggerStagerValue = dispatch => payload => dispatch(setStagerValue(payload));
 
+const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payload));
+
 const onClearDocsOutAction = dispatch => () => dispatch(clearDocOutAction());
 
 const operations = {
@@ -33,6 +36,7 @@ const operations = {
   triggerDispositionOperationCall,
   onClearDocsOutAction,
   triggerStagerValue,
+  triggerStartEndDate,
 };
 
 export default operations;
