@@ -2,7 +2,6 @@ import React from 'react';
 import DateTimeRangeContainer from 'react-advanced-datetimerange-picker';
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
-import './DatePicker.css';
 import { connect } from 'react-redux';
 import { operations as stagerOperations } from 'ducks/stager';
 import PropTypes from 'prop-types';
