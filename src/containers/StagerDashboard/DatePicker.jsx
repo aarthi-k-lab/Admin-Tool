@@ -1,6 +1,9 @@
 import React from 'react';
 import DateTimeRangeContainer from 'react-advanced-datetimerange-picker';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import CalendarIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { operations as stagerOperations } from 'ducks/stager';
@@ -67,7 +70,15 @@ class DatePicker extends React.PureComponent {
             start={fromDate}
           >
             <TextField
-              placeholder="Enter text"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                    <IconButton style={{ padding: '4px', color: 'var(--grey-900)' }}>
+                      <CalendarIcon style={{ width: '18px', height: '18px' }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               style={{ cursor: 'pointer' }}
               type="text"
               value={value}
