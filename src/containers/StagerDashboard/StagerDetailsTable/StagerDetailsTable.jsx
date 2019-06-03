@@ -86,7 +86,7 @@ class StagerDetailsTable extends React.PureComponent {
       data, loading,
       onOrderClick, selectedData, popupData, docsOutAction, getActiveSearchTerm, getStagerValue,
     } = this.props;
-    const FileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
+    const downloadFileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
     return (
       <>
         {
@@ -133,7 +133,7 @@ class StagerDetailsTable extends React.PureComponent {
                     <CSVLink
                       data={data.tableData}
                       disabled={R.isNil(data.tableData) || (R.isEmpty(data.tableData))}
-                      filename={FileName}
+                      filename={downloadFileName}
                       styleName="download-btn"
                     >
                       <DownloadIcon styleName="details-table-download-icon" />
