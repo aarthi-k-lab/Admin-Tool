@@ -31,6 +31,7 @@
     "ramda": "^0.25.0",
     "react": "^16.5.1",
     "react-advanced-datetimerange-picker": "^0.1.12",
+    "react-csv": "^1.1.1",
     "react-dom": "^16.5.1",
     "react-hot-loader": "^4.3.8",
     "react-idle-timer": "^4.1.3",
