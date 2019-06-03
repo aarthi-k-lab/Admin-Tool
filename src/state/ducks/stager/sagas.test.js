@@ -151,13 +151,14 @@ describe('fetchDashboardData ', () => {
       }));
   });
 
-  it('should update csv download Url ', () => {
-    expect(saga.next().value)
-      .toEqual(put({
-        type: SET_STAGER_DOWNLOAD_CSV_URI,
-        payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`,
-      }));
-  });
+  // it('should update csv download Url ', () => {
+  //   expect(saga.next().value)
+  //     .toEqual(put({
+  //       type: SET_STAGER_DOWNLOAD_CSV_URI,
+  //       payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/
+  //       ${payload.payload.activeSearchTerm}`,
+  //     }));
+  // });
 
   it('should update payload ', () => {
     expect(saga.next().value)
