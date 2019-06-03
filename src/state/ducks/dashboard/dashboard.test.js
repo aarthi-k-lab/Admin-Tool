@@ -113,6 +113,7 @@ describe('getnext Success', () => {
     userDetails: {
       email: 'brent@mrcooper.com',
     },
+    groupList: ['allaccess', 'cmod-dev-beta'],
   };
 
   const mockTaskDetails = {
@@ -170,7 +171,7 @@ describe('getnext Success', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
   });
 
   it('should YIELD PUT ALL Comments', () => {
@@ -243,6 +244,7 @@ describe('getnext Failure -  no tasks found', () => {
     userDetails: {
       email: 'brent@mrcooper.com',
     },
+    groupList: ['allaccess', 'cmod-dev-beta'],
   };
 
   const mockTaskDetails = {
@@ -292,7 +294,7 @@ describe('getnext Failure -  no tasks found', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
   });
 
   it('should YIELD PUT ALL Comments', () => {
@@ -342,6 +344,7 @@ describe('getnext Failure -  task fetch failure', () => {
     userDetails: {
       email: 'brent@mrcooper.com',
     },
+    groupList: ['allaccess', 'cmod-dev-beta'],
   };
 
   const mockTaskDetails = null;
@@ -389,7 +392,7 @@ describe('getnext Failure -  task fetch failure', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com'));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
   });
 
   it('should YIELD PUT ALL Comments', () => {

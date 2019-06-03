@@ -424,7 +424,8 @@ function* getNext(action) {
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}`);
+      const groupList = R.pathOr([], ['groupList'], user);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}`);
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
           if (R.keys(allTasksComments[taskComment]).length) {

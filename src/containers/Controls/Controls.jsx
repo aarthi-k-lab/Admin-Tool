@@ -70,7 +70,6 @@ class Controls extends React.PureComponent {
       showAssign,
       showValidate,
       isFirstVisit,
-      showComment,
       user,
     } = this.props;
     let assign = null;
@@ -81,7 +80,7 @@ class Controls extends React.PureComponent {
       <Control
         className={classNames(styles.controls, styles.spacer)}
         controlAction={() => this.validateDisposition()}
-        disableValidation={disableValidation && showComment}
+        disableValidation={disableValidation}
         label="Validate"
       />) : null;
     const getNext = showGetNext
@@ -157,7 +156,6 @@ Controls.propTypes = {
   onGetNext: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   showAssign: PropTypes.bool,
-  showComment: PropTypes.bool.isRequired,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
@@ -177,13 +175,12 @@ Controls.propTypes = {
 const mapStateToProps = (state) => {
   const showDisposition = checklistSelectors.shouldShowDisposition(state);
   const isNotAssigned = !selectors.isAssigned(state);
-  const enableValidate = checklistSelectors.enableValidate(state);
+  const enableValidate = !checklistSelectors.showComment(state)
+    ? true : checklistSelectors.enableValidate(state);
   const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
-  const showComment = checklistSelectors.showComment(state);
   return {
     disableValidation,
     enableValidate,
-    showComment,
     enableEndShift: selectors.enableEndShift(state),
     enableGetNext: selectors.enableGetNext(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),

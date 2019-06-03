@@ -37,6 +37,7 @@
                 "args": [
                   "disable-web-security",
                  "ignore-certificate-errors",
+                 "--headless",
                  "--start-maximized",
                  "disable-infobars",
                  "--test-type"

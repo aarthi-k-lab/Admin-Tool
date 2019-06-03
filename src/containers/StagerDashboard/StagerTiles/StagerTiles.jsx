@@ -5,6 +5,7 @@ import StagerDocumentStatusCard from 'components/StagerDocumentStatusCard';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
+import DatePicker from '../DatePicker';
 
 class StagerTiles extends React.PureComponent {
   isActiveCard(tileName, tabName) {
@@ -26,7 +27,16 @@ class StagerTiles extends React.PureComponent {
             {countsData.map(stagerTaskGroupData => (
               <>
                 <Grid item styleName="taskStatusTitle" xs={12}>
-                  {stagerTaskGroupData.displayName}
+                  <Grid>
+                    <span>
+                      {stagerTaskGroupData.displayName}
+                    </span>
+                    {stagerTaskGroupData.displayName === 'Completed' ? (
+                      <span>
+                        <DatePicker />
+                      </span>
+                    ) : null }
+                  </Grid>
                 </Grid>
                 <Grid item styleName="stagerGroupItem">
                   <Grid container direction="row" spacing={8} styleName="tiles-grid">
