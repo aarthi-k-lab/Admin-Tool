@@ -21,7 +21,12 @@
 
 .details-table-download-btn.details-table-download-btn {
   float: right;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.download-btn {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 
 .details-table-document-status {
@@ -48,8 +53,7 @@
 
 .details-table-download-icon.details-table-download-icon {
   width: 1.2rem;
-  margin-right: 4px;
-}
+  margin: 0rem 0.3rem -0.4rem 0rem !important;}
 
 .center-grid {
   min-height: 75vh;

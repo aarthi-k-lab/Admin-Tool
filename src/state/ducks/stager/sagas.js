@@ -21,7 +21,6 @@ import {
   TRIGGER_ORDER_SAGA,
   TRIGGER_DISPOSITION_OPERATION_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_STAGER_DOWNLOAD_CSV_URI,
   SET_DOCS_OUT_RESPONSE,
 
 } from './types';
@@ -79,12 +78,6 @@ function* fetchDashboardData(data) {
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
     });
-    const downloadCSVUri = `api/stager/dashboard/downloadData/${stagerType}/${searchTerm}`;
-    yield put({
-      type: SET_STAGER_DOWNLOAD_CSV_URI,
-      payload: downloadCSVUri,
-    });
-
     if (response != null) {
       payload = {
         error: false,

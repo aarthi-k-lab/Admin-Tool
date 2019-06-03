@@ -8,6 +8,7 @@ import DownloadIcon from '@material-ui/icons/SaveAlt';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
+import { CSVLink } from 'react-csv';
 // import Loader from 'components/Loader/Loader';
 import CustomReactTable from 'components/CustomReactTable';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
@@ -82,10 +83,10 @@ class StagerDetailsTable extends React.PureComponent {
 
   render() {
     const {
-      data, loading, downloadCSVUri,
-      onOrderClick, selectedData, popupData, docsOutAction,
+      data, loading,
+      onOrderClick, selectedData, popupData, docsOutAction, getActiveSearchTerm, getStagerValue,
     } = this.props;
-
+    const FileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
     return (
       <>
         {
@@ -128,12 +129,17 @@ class StagerDetailsTable extends React.PureComponent {
                         </>
                       ) : null
                   }
-                  <a download href={downloadCSVUri}>
-                    <Button disabled={R.isNil(data.tableData) || (R.isEmpty(data.tableData))} styleName="details-table-download-btn">
+                  <Button disabled={R.isNil(data.tableData) || (R.isEmpty(data.tableData))} styleName="details-table-download-btn">
+                    <CSVLink
+                      data={data.tableData}
+                      disabled={R.isNil(data.tableData) || (R.isEmpty(data.tableData))}
+                      filename={FileName}
+                      styleName="download-btn"
+                    >
                       <DownloadIcon styleName="details-table-download-icon" />
                       {' DOWNLOAD'}
-                    </Button>
-                  </a>
+                    </CSVLink>
+                  </Button>
                 </Grid>
               </Grid>
             ) : null
@@ -169,7 +175,8 @@ StagerDetailsTable.defaultProps = {
 StagerDetailsTable.propTypes = {
   data: PropTypes.node.isRequired,
   docsOutAction: PropTypes.func.isRequired,
-  downloadCSVUri: PropTypes.string.isRequired,
+  getActiveSearchTerm: PropTypes.string.isRequired,
+  getStagerValue: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocsOutAction: PropTypes.func.isRequired,
@@ -186,6 +193,8 @@ StagerDetailsTable.propTypes = {
 
 const mapStateToProps = state => ({
   docsOutAction: stagerSelectors.getdocsOutAction(state),
+  getStagerValue: stagerSelectors.getStagerValue(state),
+  getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
 });
 
 const mapDispatchToProps = dispatch => ({
