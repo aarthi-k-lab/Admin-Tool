@@ -56,7 +56,7 @@ describe('<StagerTiles />', () => {
     const wrapper = shallow(
       <TestExports.StagerTiles activeTab={tabName} activeTile={tileName} counts={counts} />,
     );
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(8);
+    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(7);
     expect(wrapper.find('StagerDocumentStatusCard')).toHaveLength(3);
   });
 });
