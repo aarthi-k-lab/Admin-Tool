@@ -16,3 +16,16 @@
   height: calc(100% - 4.688rem);
   position: fixed !important;
 }
+
+.right-app-bar-enlargedWidth {
+  margin-bottom: 0;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: white;
+  display: inline-flex;
+  right: 4.9rem;
+  width: 40rem;
+  height: calc(100% - 4.688rem);
+  position: fixed !important;
+}

@@ -2,7 +2,7 @@
   width: 4.8rem;
   height: 4rem;
   cursor: pointer;
-  background: rgb(238, 238, 238);
+  background: #ccced0;
 }
 
 .component-not-selected {
