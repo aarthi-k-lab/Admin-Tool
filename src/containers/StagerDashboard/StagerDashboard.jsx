@@ -28,8 +28,8 @@ class StagerDashboard extends React.Component {
     const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
     const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0));
     const payload = {
-      fromDate: start.format('YYYY-MM-DD'),
-      toDate: end.format('YYYY-MM-DD'),
+      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
+      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
     };
     triggerStartEndDate(payload);
     triggerStagerValue(stager);

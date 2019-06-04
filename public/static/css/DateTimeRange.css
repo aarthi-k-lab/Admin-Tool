@@ -1,6 +1,3 @@
-.daterangepickercontainer {
-}
-
 .daterangepicker {
     position: absolute;
     display: flex;
@@ -8,15 +5,14 @@
     background-color: #fff;
     border-radius: 4px;
     padding: 4px;
-    margin-top: 1px;
-    top: 100px;
-    left: 20px;
+    bottom: 1rem !important;
+    top: auto !important;
+    left: auto !important;
     max-width: 680px;
     z-index: 3001;
     border: 1px solid rgba(0,0,0,0.15);
     background-clip: padding-box;
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
-    margin: 10rem 0rem 0rem 30rem !important;
 }
 
 .rangecontainer {
@@ -62,20 +58,17 @@
   margin: 4px;
 }
 
-.fromDateHourContainer {
-  border: 1px solid #f5f5f5;
-  border-radius: 4px;
+.fromDateHourContainer{
+  margin-left: 8px;
 }
 
 .dateTimeLabel {
-  text-align: center;
   font-weight: bold;
   padding-bottom: 5px;
 }
 
 .inputDate {
   height: 30px;
-  margin-left: 6.9rem !important;
 }
 
 .calendarAddon {
@@ -89,7 +82,8 @@
 
 .timeSelectContainer {
   margin : 8px;
-  display: none !important;
+  display: flex;
+  margin-left: -1px;
 }
 
 .timeIconStyle {
@@ -149,9 +143,9 @@
 }
 
 .monthYearContainer {
-  margin : 5px;
-  margin-top: 15px;
-  display: flex;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 8px;
 }
 
 .leftChevron {
