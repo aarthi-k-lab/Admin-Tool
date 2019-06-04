@@ -26,7 +26,7 @@ class StagerDashboard extends React.Component {
     const now = new Date();
     const CurrentDate = moment().startOf('month').format('DD');
     const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0));
+    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
     const payload = {
       fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
       toDate: end.format('YYYY-MM-DD HH:mm:ss'),
