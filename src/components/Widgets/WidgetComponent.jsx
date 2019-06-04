@@ -7,8 +7,8 @@ const WidgetComponent = (props) => {
     rightAppBar, rightAppBarSelected,
   } = props;
   return (
-    <div styleName="right-app-bar">
-      <div>
+    <div styleName={rightAppBarSelected === 'customCommunicationLetter' ? 'right-app-bar-enlargedWidth' : 'right-app-bar'}>
+      <div style={{ width: '100%' }}>
         <div styleName="comment-area-bottom">
           {
               rightAppBar.find(data => (
