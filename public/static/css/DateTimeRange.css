@@ -82,7 +82,8 @@
 
 .timeSelectContainer {
   margin : 8px;
-  display: none !important;
+  display: flex;
+  margin-left: -1px;
 }
 
 .timeIconStyle {

@@ -24,16 +24,17 @@ class DatePicker extends React.PureComponent {
   }
 
   applyCallback(fromDate, toDate) {
-    const { triggerStartEndDate } = this.props;
+    const { triggerStartEndDate, getDashboardCounts } = this.props;
     this.setState({
       start: fromDate,
       end: toDate,
     });
     const payload = {
-      fromDate: fromDate.format('YYYY-MM-DD'),
-      toDate: toDate.format('YYYY-MM-DD'),
+      fromDate: fromDate.format('YYYY-MM-DD HH:mm:ss'),
+      toDate: toDate.format('YYYY-MM-DD HH:mm:ss'),
     };
     triggerStartEndDate(payload);
+    getDashboardCounts();
   }
 
   render() {
@@ -54,11 +55,14 @@ class DatePicker extends React.PureComponent {
       ],
       'Last 7 Days': [moment(end).subtract(7, 'days'), moment(end)],
       'Last 30 Days ': [moment(end).subtract(1, 'months'), moment(end)],
+      'Month Till Date ': [moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0)),
+        moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0))],
     };
     const local = {
       format: 'DD-MM-YYYY',
       sundayFirst: false,
     };
+    const maxDate = moment(end).add(23, 'hour');
     return (
       <>
         <div>
@@ -66,6 +70,7 @@ class DatePicker extends React.PureComponent {
             applyCallback={this.applyCallback}
             end={toDate}
             local={local}
+            maxDate={maxDate}
             ranges={ranges}
             start={fromDate}
           >
@@ -91,11 +96,12 @@ class DatePicker extends React.PureComponent {
 }
 
 DatePicker.propTypes = {
+  getDashboardCounts: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
-
 };
 const mapDispatchToProps = dispatch => ({
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
+  getDashboardCounts: stagerOperations.getDashboardCounts(dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(DatePicker);
