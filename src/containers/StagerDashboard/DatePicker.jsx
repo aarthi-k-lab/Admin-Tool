@@ -15,7 +15,7 @@ class DatePicker extends React.PureComponent {
     const now = new Date();
     const CurrentDate = moment().startOf('month').format('DD');
     const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0));
+    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
     this.state = {
       start,
       end,
@@ -46,9 +46,9 @@ class DatePicker extends React.PureComponent {
     const CurrentDate = moment().startOf('month').format('DD');
     const fromDate = moment(new Date(now.getFullYear(),
       now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const toDate = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0));
+    const toDate = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
     const ranges = {
-      'Today ': [moment(end), moment(end)],
+      'Today ': [fromDate, end],
       'Yesterday ': [
         moment(end).subtract(1, 'days'),
         moment(end).subtract(1, 'days'),
@@ -56,13 +56,13 @@ class DatePicker extends React.PureComponent {
       'Last 7 Days': [moment(end).subtract(7, 'days'), moment(end)],
       'Last 30 Days ': [moment(end).subtract(1, 'months'), moment(end)],
       'Month Till Date ': [moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0)),
-        moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0))],
+        moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0))],
     };
     const local = {
       format: 'DD-MM-YYYY',
       sundayFirst: false,
     };
-    const maxDate = moment(end).add(23, 'hour');
+    const maxDate = moment(end);
     return (
       <>
         <div>
