@@ -9,30 +9,10 @@ import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
-import History from '@material-ui/icons/History';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
 import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
 import AddTask from '../Tasks/OptionalTask/AddTask';
-
-const historicalData = [
-  {
-    checklistId: '5cee56a55b95415a7ce905f6',
-    description: 'BEUW-Suspicious Activity Review',
-    time: '27 May 2019 08:30pm',
-  },
-  {
-    checklistId: '5cee415e6dc1d4270a6a63e8',
-    description: 'FEUW-Suspicious Activity Review',
-    time: '27 May 2019 08:30pm',
-  },
-  {
-    checklistId: '5ce7143f69daeb6ed3ffdb4c',
-    description: 'FEUW-Suspicious Activity Review',
-    time: '27 May 2019 08:30pm',
-  },
-];
+import ChecklistHistory from '../Checklist/ChecklistHistory';
 
 const ALL = 'All';
 const PENDING = 'Pending';
@@ -88,19 +68,17 @@ class LeftTaskPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      anchorEl: null,
       tasksStatus: ALL,
       width: props.defaultState === OPEN ? props.openWidth : props.closedWidth,
       isCollapsed: props.defaultState !== OPEN,
       // eslint-disable-next-line react/no-unused-state
-      selectedHistoricalChecklist: null,
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.checklistHistoryMenu = this.checklistHistoryMenu.bind(this);
-    this.handleHistoricalCheclistClick = this.handleHistoricalCheclistClick.bind(this);
-    this.handleChecklistOpen = this.handleChecklistOpen.bind(this);
+    // this.handleClose = this.handleClose.bind(this);
+    // this.checklistHistoryMenu = this.checklistHistoryMenu.bind(this);
+    // this.handleHistoricalCheclistClick = this.handleHistoricalCheclistClick.bind(this);
+    // this.handleChecklistOpen = this.handleChecklistOpen.bind(this);
   }
 
   handleStatusChange(event) {
@@ -112,13 +90,6 @@ class LeftTaskPane extends React.Component {
     storeTaskFilter(statusMap[selectedStatus]);
   }
 
-  handleHistoricalCheclistClick(checklistId) {
-    const { getHistoricalCheckList } = this.props;
-    console.log(checklistId);
-    getHistoricalCheckList('5cee415e6dc1d4270a6a63e8');
-    this.handleClose();
-  }
-
 
   handleClick() {
     const { isCollapsed } = this.state;
@@ -127,55 +98,6 @@ class LeftTaskPane extends React.Component {
       width: isCollapsed ? openWidth : closedWidth,
       isCollapsed: !isCollapsed,
     });
-  }
-
-
-  handleClose() {
-    this.setState({ anchorEl: null });
-  }
-
-  handleChecklistOpen(event) {
-    this.setState({
-      anchorEl: event.currentTarget,
-    });
-  }
-
-  checklistHistoryMenu() {
-    const { anchorEl } = this.state;
-    const open = Boolean(anchorEl);
-    return (
-      <>
-        <IconButton onClick={this.handleChecklistOpen}>
-          <History styleName="task-pane-controls" />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          id="long-menu"
-          onClose={value => this.handleClose(value)}
-          open={open}
-          PaperProps={{
-            style: {
-              // width: 200,
-            },
-          }}
-        >
-          {historicalData.map(option => (
-            // eslint-disable-next-line react/jsx-no-target-blank
-            <a href={`http://127.0.0.1:7601/api/download/${option.checklistId}`} target="_blank">
-              <MenuItem onClick={() => this.handleHistoricalCheclistClick(option.checklistId)}>
-                <div>
-                  {option.description}
-                  <br />
-                  <span>
-                    {option.time}
-                  </span>
-                </div>
-              </MenuItem>
-            </a>
-          ))}
-        </Menu>
-      </>
-    );
   }
 
 
@@ -215,7 +137,9 @@ class LeftTaskPane extends React.Component {
                   />
                   <div styleName="icons">
                     <div styleName="checklist-history-icon">
-                      {this.checklistHistoryMenu()}
+                      <ChecklistHistory
+                        margin={{ 'margin-left': '5rem' }}
+                      />
                     </div>
                     { shouldShowAddTaskButton(optionalTasks)
                       ? <AddTask onClick={() => handleShowOptionalTasks()} />
@@ -292,7 +216,6 @@ LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
-  getHistoricalCheckList: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
