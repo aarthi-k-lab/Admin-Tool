@@ -14,7 +14,7 @@ import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
 const UW_STAGER = 'UNDERWRITER STAGER';
-const DOCSOUT_STAGER = 'DOCS OUT STAGER';
+const DOCSOUT_STAGER = 'DOC GEN STAGER';
 
 class StagerPage extends React.PureComponent {
   onStagerChange(event) {
