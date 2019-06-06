@@ -5,6 +5,7 @@ import {
   SET_DOCS_OUT_RESPONSE,
   SET_DOCS_OUT_ACTION,
   CLEAR_DOCS_OUT_RESPONSE,
+  SET_START_END_DATE,
   SET_STAGER_VALUE,
 } from './types';
 
@@ -83,6 +84,12 @@ const reducer = (state = {}, action) => {
       };
     }
 
+    case SET_START_END_DATE: {
+      return {
+        ...state,
+        stagerStartEndDate: action.payload,
+      };
+    }
 
     default:
       return state;

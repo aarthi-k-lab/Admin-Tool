@@ -2,12 +2,12 @@ module.exports = {
   signIn: function signIn(browser) {
     const signInPage = browser.page.signInPage();
     browser
-    // .url('https://cmoddev.int.mrcooper.io/reports')
+      // .url('https://cmoddev.int.mrcooper.io/reports')
       .url('https://cmodqa.int.mrcooper.io/reports')
       .waitForElementVisible('body');
     signInPage.assert.title('Sign in to your account');
     signInPage.waitForElementVisible('@signInAccount');
-    signInPage.setValue('@signInAccount', 'rajesh.chidambaram@mrcooper.com');
+    signInPage.setValue('@signInAccount', 'Rajesh.chidambaram@mrcooper.com');
     signInPage.waitForElementVisible('@signInAccountNext');
     signInPage.click('@signInAccountNext');
   },

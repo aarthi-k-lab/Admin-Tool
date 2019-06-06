@@ -6,12 +6,14 @@ describe('<StagerDashboard />', () => {
   it('shows StagerPage', () => {
     const getDashboardCounts = jest.fn();
     const triggerStagerValue = jest.fn();
+    const triggerStartEndDate = jest.fn();
     const groups = ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'];
     const wrapper = shallow(
       <TestExports.StagerDashboard
         getDashboardCounts={getDashboardCounts}
         groups={groups}
         triggerStagerValue={triggerStagerValue}
+        triggerStartEndDate={triggerStartEndDate}
       />,
     );
     console.debug('wrapper>>>', wrapper);

@@ -4,16 +4,18 @@ import Loader from 'components/Loader/Loader';
 import './TrialLetter.css';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
+import { connect } from 'react-redux';
+import { selectors } from '../../../state/ducks/dashboard';
 
 const TrialLetterHeader = () => (
   <Grid container style={{ display: 'flex' }} styleName="widgetHeaderAndContent">
     <Grid item xs={2}>
       <span styleName="header-style">Case Id</span>
     </Grid>
-    <Grid item xs={5}>
+    <Grid item xs={4}>
       <span styleName="header-style">Case Type</span>
     </Grid>
-    <Grid item xs={2}>
+    <Grid item xs={3}>
       <span style={{ textAlign: 'center' }} styleName="header-style">Case Status</span>
     </Grid>
     <Grid item xs={3}>
@@ -28,10 +30,10 @@ const TrialLetterDetails = props => (
       <Grid item xs={2}>
         <span styleName="tableData-style">{doc.resolutionId}</span>
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={4}>
         <span styleName="tableData-style">{doc.resolutionChoiceType}</span>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <span styleName="tableData-style">{doc.resolutionStatus}</span>
       </Grid>
       <Grid item xs={3}>
@@ -83,4 +85,12 @@ TrialLetter.propTypes = {
     }),
   ),
 };
-export default TrialLetter;
+
+const mapStateToProps = state => ({
+  inProgress: selectors.inProgress(state),
+  trialsLetter: selectors.getTrialLetter(state),
+});
+
+const TrialLetterContainer = connect(mapStateToProps, null)(TrialLetter);
+
+export default TrialLetterContainer;
