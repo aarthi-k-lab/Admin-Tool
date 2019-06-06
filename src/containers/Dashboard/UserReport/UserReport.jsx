@@ -1,32 +1,30 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Report from 'powerbi-report-component';
 import Auth from 'lib/Auth';
 import ContentHeader from 'components/ContentHeader';
 import Center from 'components/Center';
 import Controls from 'containers/Controls';
-import './ManagerDashboard.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import RouteAccess from 'lib/RouteAccess';
-import {
-  operations as dashboardOperations,
-} from 'ducks/dashboard';
+import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from 'ducks/config';
 import * as R from 'ramda';
-import DropDownSelect from './DropDownSelect';
+import './UserReport.css';
 
-class ManagerDashboard extends Component {
+class UserReport extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedDashboard: 'Manager Dashboard',
+    this.mapRepo = {
+      '/frontend-checklist': 'INCOME CALCULATION Agent Dashboard',
+      '/frontend-evaluation': 'INCOME CALCULATION Agent Dashboard',
+      '/backend-evaluation': 'UNDERWRITNG Agent Dashboard',
+      '/doc-processor': 'PROCESSING Agent Dashboard',
     };
     this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -34,13 +32,10 @@ class ManagerDashboard extends Component {
     fetchPowerBIConstants();
   }
 
-  handleChange(event) {
-    this.setState({ selectedDashboard: event.target.value });
-  }
-
   renderReport(powerBIConstants) {
-    const { selectedDashboard } = this.state;
-    const report = R.find(R.propEq('reportName', selectedDashboard))(powerBIConstants);
+    const { location } = this.props;
+    const nameRepo = this.mapRepo[location.pathname];
+    const report = R.find(R.propEq('reportName', nameRepo))(powerBIConstants);
     return (this.accessToken && powerBIConstants && powerBIConstants.length > 0)
       ? (
         <Report
@@ -63,21 +58,20 @@ class ManagerDashboard extends Component {
       );
   }
 
+  renderTitle() {
+    const { location } = this.props;
+    const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
+    return el.task;
+  }
+
   render() {
-    const { groups, powerBIConstants } = this.props;
-    const { selectedDashboard } = this.state;
-    if (!RouteAccess.hasManagerDashboardAccess(groups)) {
-      return <Redirect to="/unauthorized?error=MANAGER_ACCESS_NEEDED" />;
-    }
+    const { powerBIConstants } = this.props;
     return (
       <>
-        <ContentHeader title={selectedDashboard}>
-          <DropDownSelect
-            getDashboardItems={powerBIConstants}
-            onChange={this.handleChange}
-            selectedValue={selectedDashboard}
+        <ContentHeader title={this.renderTitle()}>
+          <Controls
+            showGetNext
           />
-          <Controls />
         </ContentHeader>
         <div styleName="reportsDiv">
           {this.renderReport(powerBIConstants)}
@@ -87,20 +81,18 @@ class ManagerDashboard extends Component {
   }
 }
 
-ManagerDashboard.propTypes = {
-  fetchPowerBIConstants: PropTypes.func.isRequired,
-};
-
 const mapStateToProps = state => ({
   powerBIConstants: selectors.powerBIConstants(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchPowerBIConstants: operations.fetchPowerBIConstants(dispatch),
-  onExpandTrigger: dashboardOperations.onExpand(dispatch),
 });
 
-ManagerDashboard.defaultProps = {
+UserReport.defaultProps = {
+  location: {
+    pathname: '',
+  },
   powerBIConstants: [
     {
       groupId: 'Loan #',
@@ -111,8 +103,12 @@ ManagerDashboard.defaultProps = {
   ],
 };
 
-ManagerDashboard.propTypes = {
-  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+UserReport.propTypes = {
+  fetchPowerBIConstants: PropTypes.func.isRequired,
+  // groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
   powerBIConstants: PropTypes.arrayOf(
     PropTypes.shape({
       groupId: PropTypes.string.isRequired,
@@ -123,4 +119,11 @@ ManagerDashboard.propTypes = {
   ),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerDashboard);
+const TestHooks = {
+  UserReport,
+};
+
+const UserReportContainer = connect(mapStateToProps, mapDispatchToProps)(UserReport);
+export default withRouter(UserReportContainer);
+
+export { TestHooks };

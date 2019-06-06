@@ -18,13 +18,15 @@ class DropDownSelect extends Component {
 
   renderDropDown() {
     const { getDashboardItems, selectedValue } = this.props;
+    const getDashboardItemsReports = getDashboardItems.length > 0
+      ? [getDashboardItems[0], getDashboardItems[1]] : [];
     return (
       <FormControl>
         <Select
           onChange={this.handleChange}
           value={selectedValue}
         >
-          {getDashboardItems.map(items => (
+          {getDashboardItemsReports.map(items => (
             <MenuItem value={items.reportName}>{items.reportName}</MenuItem>
           ))}
         </Select>
