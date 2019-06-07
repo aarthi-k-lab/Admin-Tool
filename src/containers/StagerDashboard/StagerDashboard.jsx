@@ -207,8 +207,8 @@ StagerDashboard.propTypes = {
   ),
   docsOutResponse: PropTypes.arrayOf(
     PropTypes.shape({
-      failedLoans: PropTypes.array.isRequired,
-      succeedLoans: PropTypes.array.isRequired,
+      hitLoans: PropTypes.array.isRequired,
+      missedLoans: PropTypes.array.isRequired,
     }),
   ),
   downloadCSVUri: PropTypes.string,

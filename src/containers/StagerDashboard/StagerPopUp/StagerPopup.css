@@ -14,7 +14,7 @@
      font-size: 1rem !important;
    }
   
-   .expansion-succeedLoan-title {
+   .expansion-succeededLoan-title {
      background-color: rgb(230, 230, 230) !important;
      height: 4rem;
      padding: 15px 24px 24px !important;
@@ -63,7 +63,7 @@
     margin-left: -0.5rem;
   }
   
-  .succeedloan {
+  .succeededLoan {
     border: 3px solid green;
     background-color: green;
     color: white;
@@ -73,7 +73,7 @@
     border-radius: 0.25rem;
   }
   
-  .failedloan {
+  .failedLoan {
     border: 3px solid red;
     background-color: red;
     color: white;
