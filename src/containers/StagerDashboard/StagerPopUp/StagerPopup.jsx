@@ -55,20 +55,20 @@ class StagerPopup extends React.PureComponent {
   getTotalLoanCount() {
     const { popupData, action } = this.props;
     this.totalLoansCount = 0;
-    this.succeedLoancount = 0;
+    this.succeededLoancount = 0;
     Object.keys(popupData).forEach((status) => {
-      if (this.isSucceedLoan(status)) {
-        this.succeedLoancount = popupData[status].length;
+      if (this.isSucceededLoan(status)) {
+        this.succeededLoancount = popupData[status].length;
       }
       this.totalLoansCount += popupData[status].length;
     });
-    this.failedLoancount = this.totalLoansCount - this.succeedLoancount;
+    this.failedLoancount = this.totalLoansCount - this.succeededLoancount;
     if (this.failedLoancount === 0) {
       setTimeout(() => {
         this.onCloseClick();
       }, 5000);
     }
-    return (` ${this.succeedLoancount} / ${this.totalLoansCount} Loans ordered successfully [${action}]`);
+    return (` ${this.succeededLoancount} / ${this.totalLoansCount} Loans ordered successfully [${action}]`);
   }
 
   handleCheckbox(event, loanDetails) {
@@ -83,8 +83,8 @@ class StagerPopup extends React.PureComponent {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  isSucceedLoan(loanStatus) {
-    return R.equals(loanStatus, 'succeedLoans');
+  isSucceededLoan(loanStatus) {
+    return R.equals(loanStatus, 'hitLoans');
   }
 
   render() {
@@ -99,25 +99,25 @@ class StagerPopup extends React.PureComponent {
             </Typography>
           </ExpansionPanelSummary>
 
-          {Object.keys(popupData).map(loanStatus => (
+          {Object.keys(popupData).sort().map(loanStatus => (
             <>
-              <ExpansionPanelDetails styleName={this.isSucceedLoan(loanStatus) ? 'expansion-succeedLoan-title' : 'expansion-failedLoan-title'}>
+              <ExpansionPanelDetails styleName={this.isSucceededLoan(loanStatus) ? 'expansion-succeededLoan-title' : 'expansion-failedLoan-title'}>
                 <Grid
                   container
                 >
                   <Grid item style={{ paddingBottom: '0.5rem' }} xs={1}>
-                    <span styleName={this.isSucceedLoan(loanStatus) ? 'succeedloan' : 'failedloan'}>
-                      {this.isSucceedLoan(loanStatus)
-                        ? this.succeedLoancount : this.failedLoancount}
+                    <span styleName={this.isSucceededLoan(loanStatus) ? 'succeededLoan' : 'failedLoan'}>
+                      {this.isSucceededLoan(loanStatus)
+                        ? this.succeededLoancount : this.failedLoancount}
                     </span>
                   </Grid>
                   <Grid item xs={10}>
-                    <span styleName="popup-font">{this.isSucceedLoan(loanStatus) ? 'Loans ordered successfully' : 'Loans failed'}</span>
+                    <span styleName="popup-font">{this.isSucceededLoan(loanStatus) ? 'Loans ordered successfully' : 'Loans failed'}</span>
                   </Grid>
                   <Grid item xs={1}>
                     <span styleName="popup-font">
-                      {this.isSucceedLoan(loanStatus) ? (<div styleName="eye-icon-div"><RemoveRedEyeIcon onClick={() => this.onEyeIconClick()} styleName="eye-icon" /></div>) : (
-                        (!this.isSucceedLoan(loanStatus) && !R.isEmpty(popupData.failedLoans))
+                      {this.isSucceededLoan(loanStatus) ? (<div styleName="eye-icon-div"><RemoveRedEyeIcon onClick={() => this.onEyeIconClick()} styleName="eye-icon" /></div>) : (
+                        (!this.isSucceededLoan(loanStatus) && !R.isEmpty(popupData.missedLoans))
                           ? (
                             <div styleName="retry">
                               <Button color="primary" onClick={() => this.onRetryClick()} variant="contained">
@@ -130,7 +130,7 @@ class StagerPopup extends React.PureComponent {
                   </Grid>
                 </Grid>
               </ExpansionPanelDetails>
-              <div styleName={!this.isSucceedLoan(loanStatus) ? 'failed' : `success${showSuccess ? 'View' : 'Hide'}`}>
+              <div styleName={!this.isSucceededLoan(loanStatus) ? 'failed' : `success${showSuccess ? 'View' : 'Hide'}`}>
                 {
                   popupData[loanStatus].map(details => (
                     <ExpansionPanelDetails styleName="expansion-failedLoan-title">
@@ -138,7 +138,7 @@ class StagerPopup extends React.PureComponent {
                         container
                       >
                         <Grid item xs={1}>
-                          {!this.isSucceedLoan(loanStatus) ? (
+                          {!this.isSucceededLoan(loanStatus) ? (
                             <Checkbox
                               checked={checkedData.find(
                                 data => data.evalId === details.evalId,
@@ -156,7 +156,7 @@ class StagerPopup extends React.PureComponent {
                           <span styleName="popup-font">{details.evalId}</span>
                         </Grid>
                         <Grid item xs={7}>
-                          {!this.isSucceedLoan(loanStatus) ? (
+                          {!this.isSucceededLoan(loanStatus) ? (
                             <>
                               <WarningIcon style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} styleName="alert-font" />
                               <span style={{ position: 'relative', top: '-4px' }} styleName="popup-font alert-font">
@@ -191,8 +191,8 @@ StagerPopup.propTypes = {
   action: PropTypes.string.isRequired,
   onClearDocsOutAction: PropTypes.func.isRequired,
   popupData: PropTypes.shape({
-    failedLoans: PropTypes.array.isRequired,
-    succeedLoans: PropTypes.array.isRequired,
+    hitLoans: PropTypes.array.isRequired,
+    missedLoans: PropTypes.array.isRequired,
   }),
   triggerDispositionOperationCall: PropTypes.func.isRequired,
 };
