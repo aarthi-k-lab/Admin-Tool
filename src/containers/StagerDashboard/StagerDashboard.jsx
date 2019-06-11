@@ -7,6 +7,7 @@ import { selectors as stagerSelectors, operations as stagerOperations } from 'du
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
 import DashboardModel from 'models/Dashboard';
+import moment from 'moment';
 import StagerPage from './StagerPage';
 
 
@@ -20,8 +21,17 @@ class StagerDashboard extends React.Component {
   }
 
   componentDidMount() {
-    const { getDashboardCounts, triggerStagerValue } = this.props;
+    const { getDashboardCounts, triggerStagerValue, triggerStartEndDate } = this.props;
     const { stager } = this.state;
+    const now = new Date();
+    const CurrentDate = moment().startOf('month').format('DD');
+    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
+    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
+    const payload = {
+      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
+      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
+    };
+    triggerStartEndDate(payload);
     triggerStagerValue(stager);
     getDashboardCounts();
   }
@@ -177,6 +187,7 @@ const mapDispatchToProps = dispatch => ({
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
   onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
+  triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
 });
 
 StagerDashboard.propTypes = {
@@ -196,8 +207,8 @@ StagerDashboard.propTypes = {
   ),
   docsOutResponse: PropTypes.arrayOf(
     PropTypes.shape({
-      failedLoans: PropTypes.array.isRequired,
-      succeedLoans: PropTypes.array.isRequired,
+      hitLoans: PropTypes.array.isRequired,
+      missedLoans: PropTypes.array.isRequired,
     }),
   ),
   downloadCSVUri: PropTypes.string,
@@ -211,6 +222,7 @@ StagerDashboard.propTypes = {
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
+  triggerStartEndDate: PropTypes.func.isRequired,
 };
 
 StagerDashboard.defaultProps = {

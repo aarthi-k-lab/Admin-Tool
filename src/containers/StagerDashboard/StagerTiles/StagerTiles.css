@@ -21,6 +21,12 @@
   margin-left: 1rem;
   margin-top: 1rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+input[type = text] {
+  width: 150px !important;
 }
 
 .tiles-grid {

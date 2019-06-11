@@ -176,11 +176,11 @@ module.exports = {
       locateStrategy: 'xpath',
     },
     datagridTitleText: {
-      selector: '//div[text()="To Order"]/following-sibling::div/../..//..//span[contains(@class,"containers-StagerDashboard-StagerDetailsTable-StagerDetailsTable__details-table-document-type")]',
+      selector: '//span[contains(@class,"containers-StagerDashboard-StagerDetailsTable-StagerDetailsTable__details-table-document-type")]',
       locateStrategy: 'xpath',
     },
     datagridSubTitleText: {
-      selector: '//div[text()="To Order"]/following-sibling::div/../..//..//span[contains(@class,"containers-StagerDashboard-StagerDetailsTable-StagerDetailsTable__details-table-document-status")]',
+      selector: '//span[contains(@class,"containers-StagerDashboard-StagerDetailsTable-StagerDetailsTable__details-table-document-status")]',
       locateStrategy: 'xpath',
     },
     datagridLoanNumberDropdown: '[class*= "components-CustomReactTable-CustomReactTable__filterDropDown"]',

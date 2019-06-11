@@ -1,0 +1,29 @@
+.landing-page {
+  align-items: center;
+  background-color: var(--grey-200);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing-page span {
+  color: var(--grey-500);
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+.message {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: crimson;
+}
+
+.reportsDiv {
+  height: 100%;
+}
+
+.reportsDiv iframe {
+  border: none;
+}

@@ -14,7 +14,7 @@ import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
 const UW_STAGER = 'UNDERWRITER STAGER';
-const DOCSOUT_STAGER = 'Docs Out Stager';
+const DOCSOUT_STAGER = 'DOC GEN STAGER';
 
 class StagerPage extends React.PureComponent {
   onStagerChange(event) {
@@ -110,8 +110,8 @@ StagerPage.propTypes = {
   onStagerChange: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
   popupData: PropTypes.shape({
-    failedLoans: PropTypes.array.isRequired,
-    succeedLoans: PropTypes.array.isRequired,
+    hitLoans: PropTypes.array.isRequired,
+    missedLoans: PropTypes.array.isRequired,
   }),
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,

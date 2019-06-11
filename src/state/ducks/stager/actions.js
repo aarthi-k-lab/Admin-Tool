@@ -2,7 +2,7 @@ import {
   GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
   TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
   TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOCS_OUT_ACTION, SET_STAGER_VALUE,
-  CLEAR_DOCS_OUT_RESPONSE,
+  SET_START_END_DATE, CLEAR_DOCS_OUT_RESPONSE,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -39,6 +39,10 @@ const setStagerValue = payload => ({
   payload,
 });
 
+const setStartEndDate = payload => ({
+  type: SET_START_END_DATE,
+  payload,
+});
 
 const clearDocOutAction = () => ({
   type: CLEAR_DOCS_OUT_RESPONSE,
@@ -53,4 +57,5 @@ export {
   setDocOutAction,
   clearDocOutAction,
   setStagerValue,
+  setStartEndDate,
 };
