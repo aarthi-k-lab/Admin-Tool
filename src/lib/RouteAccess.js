@@ -26,7 +26,6 @@ const frontendUnderwriter = {
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
   groups: ['feuw', 'feuw-mgr'],
-  notInGroup: ['beta'],
 };
 
 const backendUnderwriter = {
