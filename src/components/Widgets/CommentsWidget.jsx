@@ -190,13 +190,6 @@ class CommentsWidget extends Component {
               <div styleName="check-icon-style">
                 <CheckCircleIcon styleName="check-circle-icon" />
                 <span styleName="disposition-selected">{getContextData(comment.commentContext)}</span>
-                <div
-                  onClick={this.displayEditPopUp}
-                  role="presentation"
-                  styleName={comment.userName === User.userDetails.name ? 'ellipsis-current-user' : 'ellipsis-other-user'}
-                >
-                  ...
-                </div>
               </div>
             </div>
           </div>

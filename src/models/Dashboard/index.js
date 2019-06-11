@@ -52,7 +52,7 @@ const GROUP_INFO = [
   {
     // TO-DO
     group: LOAN_ACTIVITY,
-    task: 'Loan Activity',
+    task: 'Trial',
     taskCode: 'LA',
     path: '/loan-activity',
     showAssignUnassign: false,
