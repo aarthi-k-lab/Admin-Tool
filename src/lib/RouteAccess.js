@@ -48,6 +48,7 @@ const feuwTasksAndChecklist = {
   name: 'frontend-checklist',
   img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
+  notInGroup: ['feuw', 'feuw-mgr'],
 };
 
 const beuwTasksAndChecklist = {
