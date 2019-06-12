@@ -218,7 +218,7 @@ function* makeDispositionOperationCall(payload) {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docGenAction}`, { taskList: payload.payload.taskList });
-    const prevResponse = yield select(selectors.getDocsOutResponse);
+    const prevResponse = yield select(selectors.getdocGenResponse);
     const prevSuccessList = !R.isNil(prevResponse.hitLoans) ? prevResponse.hitLoans : [];
     const latestSuccessList = R.concat(prevSuccessList, response.hitLoans || []);
     response.hitLoans = latestSuccessList;
