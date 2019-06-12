@@ -136,12 +136,11 @@
 }
 
 .check-icon-style {
-  margin-left: -0.8rem;
   margin-top: -1rem;
 }
 
 .check-circle-icon {
-  margin-left: 0.3rem;
+  margin-left: -0.4rem;
   height: 1.2em !important;
   padding-top: 0.9rem;
   font-size: 1.9rem !important;
