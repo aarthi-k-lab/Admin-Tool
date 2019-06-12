@@ -45,11 +45,11 @@ class StagerPopup extends React.PureComponent {
   }
 
   onCloseClick() {
-    const { onClearDocsOutAction } = this.props;
+    const { onClearDocGenAction } = this.props;
     this.setState({
       isPopupClose: false,
     });
-    onClearDocsOutAction();
+    onClearDocGenAction();
   }
 
   getTotalLoanCount() {
@@ -189,7 +189,7 @@ StagerPopup.defaultProps = {
 
 StagerPopup.propTypes = {
   action: PropTypes.string.isRequired,
-  onClearDocsOutAction: PropTypes.func.isRequired,
+  onClearDocGenAction: PropTypes.func.isRequired,
   popupData: PropTypes.shape({
     hitLoans: PropTypes.array.isRequired,
     missedLoans: PropTypes.array.isRequired,
@@ -199,7 +199,7 @@ StagerPopup.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   triggerDispositionOperationCall: stagerOperations.triggerDispositionOperationCall(dispatch),
-  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
+  onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(StagerPopup);

@@ -39,27 +39,30 @@ class DatePicker extends React.PureComponent {
 
   render() {
     const { start, end } = this.state;
-    const value = `${start.format('DD-MM-YYYY')
+    const value = `${start.format('MM-DD-YYYY')
     }  to  ${
-      end.format('DD-MM-YYYY')}`;
+      end.format('MM-DD-YYYY')}`;
     const now = new Date();
     const CurrentDate = moment().startOf('month').format('DD');
     const fromDate = moment(new Date(now.getFullYear(),
       now.getMonth(), CurrentDate, 0, 0, 0, 0));
     const toDate = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
+    const customeDate = moment(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
+    );
     const ranges = {
-      'Today ': [fromDate, end],
+      'Today ': [customeDate, end],
       'Yesterday ': [
-        moment(end).subtract(1, 'days'),
+        moment(customeDate).subtract(1, 'days'),
         moment(end).subtract(1, 'days'),
       ],
-      'Last 7 Days': [moment(end).subtract(7, 'days'), moment(end)],
-      'Last 30 Days ': [moment(end).subtract(1, 'months'), moment(end)],
+      'Last 7 Days': [moment(customeDate).subtract(7, 'days'), moment(end)],
+      'Last 30 Days ': [moment(customeDate).subtract(1, 'months'), moment(end)],
       'Month Till Date ': [moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0)),
         moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0))],
     };
     const local = {
-      format: 'DD-MM-YYYY',
+      format: 'MM-DD-YYYY',
       sundayFirst: false,
     };
     const maxDate = moment(end);

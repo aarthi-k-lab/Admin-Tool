@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import CustomReactTable from './CustomReactTable';
+import { TestExports } from './CustomReactTable';
 
 const data = {
   stagerTaskType: 'Value',
@@ -24,7 +24,7 @@ const data = {
 describe('<CustomReactTable />', () => {
   it('shows CustomReactTable', () => {
     const wrapper = shallow(
-      <CustomReactTable
+      <TestExports.CustomReactTable
         data={data}
         onCheckBoxClick={() => {}}
         onSelectAll={() => {}}
@@ -34,5 +34,6 @@ describe('<CustomReactTable />', () => {
     wrapper.setProps({ data, selectedData: [] });
     expect(wrapper.find('br')).toHaveLength(1);
     expect(wrapper.find('ReactTable')).toHaveLength(1);
+    expect(wrapper.find('WithStyles(MobileStepper)')).toHaveLength(1);
   });
 });

@@ -17,7 +17,6 @@ import {
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_STAGER_DOWNLOAD_CSV_URI,
 } from './types';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
@@ -120,6 +119,12 @@ describe('fetchDashboardData ', () => {
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
     toDate: '2019-01-05',
+    stagerPageOffSet: 1,
+    maxFetchCount: 10,
+  };
+  const pagePayload = {
+    PageCount: 1,
+    maxFetchCount: 10,
   };
   const newPayload = [];
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
@@ -135,11 +140,15 @@ describe('fetchDashboardData ', () => {
       }));
   });
   it('should select Stager date ', () => {
-    expect(saga.next('UNDERWRITER STAGER').value)
+    expect(saga.next('UW_STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('call bpm audit data Api', () => {
+  it('should select Max Page Count ', () => {
     expect(saga.next(date).value)
+      .toEqual(select(selectors.getStagerPageCount));
+  });
+  it('call bpm audit data Api', () => {
+    expect(saga.next(pagePayload).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
 
@@ -150,15 +159,6 @@ describe('fetchDashboardData ', () => {
         payload: 'LegalFeeToOrder',
       }));
   });
-
-  // it('should update csv download Url ', () => {
-  //   expect(saga.next().value)
-  //     .toEqual(put({
-  //       type: SET_STAGER_DOWNLOAD_CSV_URI,
-  //       payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/
-  //       ${payload.payload.activeSearchTerm}`,
-  //     }));
-  // });
 
   it('should update payload ', () => {
     expect(saga.next().value)

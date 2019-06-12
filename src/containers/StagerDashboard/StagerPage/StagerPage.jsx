@@ -14,20 +14,21 @@ import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
 const UW_STAGER = 'UNDERWRITER STAGER';
-const DOCSOUT_STAGER = 'DOC GEN STAGER';
+const DOCGEN_STAGER = 'DOC GEN STAGER';
+const STAGER_ALL = 'ALL';
 
 class StagerPage extends React.PureComponent {
   onStagerChange(event) {
-    const { onStagerChange, onClearDocsOutAction } = this.props;
+    const { onStagerChange, onClearDocGenAction } = this.props;
     onStagerChange(event.target.value);
-    onClearDocsOutAction();
+    onClearDocGenAction();
   }
 
   render() {
     const {
-      activeTab, activeTile, downloadCSVUri,
+      activeTab, activeTile,
       counts, loading, onStatusCardClick,
-      tableData, onCheckBoxClick, onOrderClick, onDocsOutClick, onSelectAll, selectedData,
+      tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
       refreshDashboard, stager, popupData,
     } = this.props;
     return (
@@ -38,7 +39,8 @@ class StagerPage extends React.PureComponent {
             value={stager}
           >
             <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-            <MenuItem value="DOCSOUT_STAGER">{DOCSOUT_STAGER}</MenuItem>
+            <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+            <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
           </Select>
           <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
             <RefreshIcon />
@@ -59,10 +61,9 @@ class StagerPage extends React.PureComponent {
           <Grid container direction="column" item xs={9}>
             <StagerDetailsTable
               data={tableData}
-              downloadCSVUri={downloadCSVUri}
               loading={loading}
               onCheckBoxClick={onCheckBoxClick}
-              onDocsOutClick={onDocsOutClick}
+              onDocGenClick={onDocGenClick}
               onOrderClick={onOrderClick}
               onSelectAll={onSelectAll}
               popupData={popupData}
@@ -100,11 +101,10 @@ StagerPage.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
-  downloadCSVUri: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
-  onClearDocsOutAction: PropTypes.func.isRequired,
-  onDocsOutClick: PropTypes.func.isRequired,
+  onClearDocGenAction: PropTypes.func.isRequired,
+  onDocGenClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,
@@ -120,7 +120,7 @@ StagerPage.propTypes = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
+  onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(StagerPage);

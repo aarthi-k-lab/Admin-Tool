@@ -44,3 +44,19 @@
   font-weight: 700;
   margin-top: 1.1rem;
 }
+
+.pagination-btn.pagination-btn {
+  box-shadow: none;
+  height: 2.9rem;
+  font-size: 1rem;
+  border-radius: 0;
+  float: right;
+  margin-right: 1rem;
+}
+
+.pageCountDetails{
+  margin: auto;
+  position: relative;
+  top: 2.5rem;
+  font-size: 1.2rem;
+ }

@@ -20,7 +20,7 @@ describe('Ducks :: Stager -> actions', () => {
   it('triggerDashboardDataFetch', () => {
     const payload = {
       activeSearchTerm: 'LegalFeeToOrder',
-      stager: 'DOCSOUT STAGER',
+      stager: 'DOCGEN STAGER',
     };
     const expectedAction = {
       type: GET_DASHBOARD_DATA_SAGA,

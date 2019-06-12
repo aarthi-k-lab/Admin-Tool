@@ -7,11 +7,13 @@ const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
+const STAGER_TABLE_PAGE_COUNT = 10;
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
-  DOCSOUT_STAGER: 'DOCSOUT_STAGER',
+  DOCGEN_STAGER: 'DOCGEN_STAGER',
+  STAGER_ALL: 'STAGER_ALL',
 };
 const GROUP_INFO = [
   {
@@ -107,6 +109,7 @@ const DashboardModel = {
   Messages,
   ALLOW_IN_QUEUE,
   STAGER_VALUE,
+  STAGER_TABLE_PAGE_COUNT,
 };
 
 export default DashboardModel;
