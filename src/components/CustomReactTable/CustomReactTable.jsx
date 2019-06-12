@@ -73,11 +73,12 @@ class CustomReactTable extends React.PureComponent {
           <Checkbox
             checked={isSelected}
             onChange={e => onCheckBoxClick(e.target.checked, original)}
+            styleName="checkbox"
           />
         );
       },
       Header: () => (
-        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} />
+        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkbox" />
       ),
       sortable: false,
       filterable: false,
