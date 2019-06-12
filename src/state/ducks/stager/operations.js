@@ -3,10 +3,10 @@ import {
   triggerCheckboxSelect, triggerOrderCallAction,
   triggerDispositionOperationCallAction,
   triggerDownloadDataFetch,
-  setDocOutAction,
+  setDocGenAction,
   setStagerValue,
   setStartEndDate,
-  clearDocOutAction,
+  clearDocGenAction,
   setPageCount,
 } from './actions';
 
@@ -21,7 +21,7 @@ const onCheckBoxClick = dispatch => selectedData => dispatch(
 const triggerOrderCall = dispatch => payload => dispatch(triggerOrderCallAction(payload));
 
 const triggerDispositionOperationCall = dispatch => (payload, action) => {
-  dispatch(setDocOutAction(action));
+  dispatch(setDocGenAction(action));
   dispatch(triggerDispositionOperationCallAction(payload));
 };
 
@@ -29,7 +29,7 @@ const triggerStagerValue = dispatch => payload => dispatch(setStagerValue(payloa
 
 const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payload));
 
-const onClearDocGenAction = dispatch => () => dispatch(clearDocOutAction());
+const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
 const triggerStagerPageCount = dispatch => payload => dispatch(setPageCount(payload));
 
 const operations = {

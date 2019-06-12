@@ -34,7 +34,7 @@ const triggerDispositionOperationCallAction = payload => ({
   payload,
 });
 
-const setDocOutAction = action => ({
+const setDocGenAction = action => ({
   type: SET_DOC_GEN_ACTION,
   action,
 });
@@ -49,7 +49,7 @@ const setStartEndDate = payload => ({
   payload,
 });
 
-const clearDocOutAction = () => ({
+const clearDocGenAction = () => ({
   type: CLEAR_DOC_GEN_RESPONSE,
 });
 
@@ -65,8 +65,8 @@ export {
   triggerCheckboxSelect,
   triggerOrderCallAction,
   triggerDispositionOperationCallAction,
-  setDocOutAction,
-  clearDocOutAction,
+  setDocGenAction,
+  clearDocGenAction,
   setStagerValue,
   setStartEndDate,
   setPageCount,
