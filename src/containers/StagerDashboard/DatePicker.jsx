@@ -72,7 +72,7 @@ class DatePicker extends React.PureComponent {
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
-                    <IconButton style={{ padding: '4px', color: 'var(--grey-900)' }}>
+                    <IconButton style={{ color: 'var(--grey-900)' }}>
                       <CalendarIcon style={{ width: '18px', height: '18px' }} />
                     </IconButton>
                   </InputAdornment>
