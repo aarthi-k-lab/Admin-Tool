@@ -2,15 +2,15 @@
   margin-top: 1.2rem;
 }
 
-.checkbox {
-  padding: 7px !important;
-}
-
 .filterDropDown {
   width: 100%;
   text-align: center;
   height: 2.25rem;
   overflow-y: auto;
+}
+
+.checkbox {
+  padding: 7px !important;
 }
 
 .days-until-sla-red {
