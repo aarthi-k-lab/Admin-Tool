@@ -15,11 +15,10 @@ class DispositionComment extends Component {
   }
 
   componentDidMount() {
-    const { allTaskScenario, triggerValidationDisplay, message } = this.props;
+    const { allTaskScenario, triggerValidationDisplay } = this.props;
     if (!allTaskScenario) {
       triggerValidationDisplay(false);
     } else {
-      // this.setState({ content: message });
       triggerValidationDisplay(true);
     }
   }
@@ -33,12 +32,12 @@ class DispositionComment extends Component {
   }
 
   onCommentChange(event) {
-    const { triggerValidationDisplay, allTaskScenario, changeDispositionComments } = this.props;
+    const { triggerValidationDisplay, allTaskScenario, dispositionCommentTrigger } = this.props;
     if (event.target.value !== '') {
-      changeDispositionComments(event.target.value);
+      dispositionCommentTrigger(event.target.value);
       triggerValidationDisplay(true);
     } else {
-      changeDispositionComments(null);
+      dispositionCommentTrigger(null);
       if (!allTaskScenario) {
         triggerValidationDisplay(false);
       }
@@ -47,26 +46,21 @@ class DispositionComment extends Component {
 
   onCommentBlur() {
     const {
-      message, allTaskScenario, getChangedComments,
-      changeDispositionComments, dispositionCommentTrigger,
+      message, allTaskScenario, dispositionComment,
+      dispositionCommentTrigger,
     } = this.props;
-    // const { content } = this.state;
-    // console.log(R.isEmpty(getChangedComments), message,
-    // allTaskScenario, changeDispositionComments);
-    if ((R.isEmpty(getChangedComments) || R.isNil(getChangedComments)) && allTaskScenario) {
-      changeDispositionComments(message);
-      // dispositionCommentTrigger(message);
-    }
-    console.log('sent Comments>>>', getChangedComments);
-    dispositionCommentTrigger(getChangedComments);
+    const { comment } = dispositionComment;
+    if ((R.isEmpty(comment) || R.isNil(comment)) && allTaskScenario) {
+      dispositionCommentTrigger(message);
+    } else dispositionCommentTrigger(comment);
   }
 
   renderCommentBox() {
-    const { getChangedComments } = this.props;
+    const { dispositionComment: { comment } } = this.props;
     const { expanded, allTaskScenario, commentsRequired } = this.props;
     return (
         <>
-          {(!(getChangedComments) && !allTaskScenario && commentsRequired)
+          {(comment && !allTaskScenario && commentsRequired)
             && (
             <p
               id="text-Area"
@@ -78,7 +72,7 @@ class DispositionComment extends Component {
           <div
             styleName={expanded ? 'expanded-comment-box' : 'comment-box'}
           >
-            <textarea cols="40" id="textarea" multiline name="textarea" onBlur={this.onCommentBlur} onChange={this.onCommentChange} placeholder="Write Your Comment Here" rows="8" value={getChangedComments} />
+            <textarea cols="40" id="textarea" multiline name="textarea" onBlur={this.onCommentBlur} onChange={this.onCommentChange} placeholder="Write Your Comment Here" rows="8" value={comment} />
           </div>
           </>
     );
@@ -118,37 +112,28 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-  getDispositionComment: selectors.getDispositionComment(state),
-  getChangedComments: selectors.getChangedComments(state),
+  dispositionComment: selectors.getDispositionComment(state),
 });
 
 DispositionComment.defaultProps = {
-  getChangedComments: '',
-  getDispositionComment: null,
+  dispositionComment: null,
   expanded: false,
   header: 'Steps to Resolve',
   content: 'Please ensure that the eval substatus and case substatus are in missing documents.',
-  message: '',
 };
 
 DispositionComment.propTypes = {
   activeIcon: PropTypes.string.isRequired,
   allTaskScenario: PropTypes.bool.isRequired,
-  changeDispositionComments: PropTypes.func.isRequired,
   commentsRequired: PropTypes.bool.isRequired,
   content: PropTypes.string,
-  dispositionCommentTrigger: PropTypes.func.isRequired,
-  expanded: PropTypes.bool,
-  getChangedComments: PropTypes.string,
-  getDispositionComment: PropTypes.shape({
+  dispositionComment: PropTypes.shape({
     comment: PropTypes.string,
   }),
+  dispositionCommentTrigger: PropTypes.func.isRequired,
+  expanded: PropTypes.bool,
   header: PropTypes.string,
-<<<<<<< HEAD
-  message: PropTypes.string,
-=======
   message: PropTypes.string.isRequired,
->>>>>>> master
   triggerValidationDisplay: PropTypes.func.isRequired,
 };
 

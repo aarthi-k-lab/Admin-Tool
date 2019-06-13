@@ -208,9 +208,10 @@ const reducer = (state = defaultState, action) => {
       };
     }
     case EMPTY_CHECKLIST_COMMENT: {
+      const { dispositionComment } = state;
       return {
         ...state,
-        checklistComments: '',
+        dispositionComment: Object.assign({}, dispositionComment, { comment: null }),
       };
     }
 

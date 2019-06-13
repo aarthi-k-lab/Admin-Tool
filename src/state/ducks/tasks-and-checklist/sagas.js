@@ -197,7 +197,7 @@ function* getTasks(action) {
     const disposition = autoDispositions.find(disp => disp.dispositionCode === R.pathOr(null, ['value', 'dispositionCode'], response));
     if (disposition) {
       yield put(actions.validationDisplayAction(true));
-      yield put(actions.dispositionComments(disposition.dispositionComment));
+      yield put(actions.dispositionCommentAction(disposition.dispositionComment));
     } else {
       yield put(actions.validationDisplayAction(false));
       yield put({ type: EMPTY_CHECKLIST_COMMENT });
