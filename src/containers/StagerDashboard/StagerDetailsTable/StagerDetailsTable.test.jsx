@@ -24,7 +24,7 @@ describe('<StagerDetailsTable />', () => {
   });
 
   it('shows StagerDetailsTable - Tasktype - Current Review', () => {
-    data.stagerTaskType = 'CurrentReview';
+    data.stagerTaskType = 'Current Review';
     data.isManualOrder = true;
     const triggerDispositionOperationCall = jest.fn();
     const onClearDocGenAction = jest.fn();

@@ -273,7 +273,7 @@ CommentsWidget.propTypes = {
 
 CommentsWidget.defaultProps = {
   AppName: 'CMOD',
-  ProcIdType: 'ProcessId',
+  ProcIdType: 'WF_PRCS_ID',
   groupName: '',
 };
 

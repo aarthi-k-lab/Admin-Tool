@@ -38,9 +38,9 @@ class StagerPage extends React.PureComponent {
             onChange={event => this.onStagerChange(event)}
             value={stager}
           >
+            <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
             <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
             <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
-            <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
           </Select>
           <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
             <RefreshIcon />
