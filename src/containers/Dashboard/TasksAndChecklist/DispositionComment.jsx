@@ -56,8 +56,11 @@ class DispositionComment extends Component {
   }
 
   renderCommentBox() {
-    const { dispositionComment: { comment } } = this.props;
-    const { expanded, allTaskScenario, commentsRequired } = this.props;
+    const {
+      expanded, allTaskScenario, commentsRequired, dispositionComment,
+    } = this.props;
+    const comment = (dispositionComment) ? dispositionComment.comment : null;
+
     return (
         <>
           {(comment && !allTaskScenario && commentsRequired)
