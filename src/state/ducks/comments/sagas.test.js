@@ -53,8 +53,8 @@ describe('get Comments', () => {
   };
   const saga = cloneableGenerator(TestExports.getComments)(payload);
   it('call comments Api', () => {
-    expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/utility/comment?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=ProcessId'));
+    expect(saga.next(payload).value)
+      .toEqual(call(Api.callGet, '/api/utility/comment?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=WF_PRCS_ID'));
   });
 
   it('should trigger get comments result action', () => {

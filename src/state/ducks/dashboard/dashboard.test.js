@@ -215,7 +215,7 @@ describe('getnext Success', () => {
         applicationName: 'CMOD',
         loanNumber: '12345',
         processId: '34567',
-        processIdType: 'WF_PRCS_ID',
+        processIdType: 'ProcessId',
         evalId: '34567',
         taskId: '1234',
       },
