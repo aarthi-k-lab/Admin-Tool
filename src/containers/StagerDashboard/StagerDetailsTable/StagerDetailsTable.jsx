@@ -113,7 +113,7 @@ class StagerDetailsTable extends React.PureComponent {
                 </Grid>
                 <Grid item xs={8}>
                   {
-                    data.isManualOrder && data.stagerTaskType !== 'CurrentReview'
+                    data.isManualOrder && data.stagerTaskType !== 'Current Review'
                       ? (
                         <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-btn" variant="contained">
                           {'ORDER'}
@@ -121,7 +121,7 @@ class StagerDetailsTable extends React.PureComponent {
                       ) : null
                   }
                   {
-                    data.isManualOrder && data.stagerTaskType === 'CurrentReview'
+                    data.isManualOrder && data.stagerTaskType === 'Current Review'
                       ? (
                         <>
                           <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">

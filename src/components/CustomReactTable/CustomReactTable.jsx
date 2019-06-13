@@ -173,7 +173,7 @@ class CustomReactTable extends React.PureComponent {
             columns={this.getColumnData(tableData.stagerTaskType,
               tableData.stagerTaskStatus, tableData.isManualOrder, tableData.tableData)}
             data={tableData.tableData}
-            defaultPageSize={10}
+            defaultPageSize={100}
             defaultSorted={tableData.defaultSorted ? [
               {
                 id: tableData.defaultSorted,
@@ -204,6 +204,7 @@ class CustomReactTable extends React.PureComponent {
             )}
             position="static"
             steps={getStagerPageCount.pageSize}
+            styleName="pagination-Footer"
             variant="text"
           >
             Test

@@ -10,28 +10,20 @@ import DashboardModel from 'models/Dashboard';
 import moment from 'moment';
 import StagerPage from './StagerPage';
 
-
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeSearchTerm: '',
-      stager: 'UW_STAGER',
+      stager: 'STAGER_ALL',
     };
   }
 
   componentDidMount() {
     const { getDashboardCounts, triggerStagerValue, triggerStartEndDate } = this.props;
     const { stager } = this.state;
-    const now = new Date();
-    const CurrentDate = moment().startOf('month').format('DD');
-    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
-    const payload = {
-      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
-      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
-    };
-    triggerStartEndDate(payload);
+    const datePayload = this.getDatePayload();
+    triggerStartEndDate(datePayload);
     triggerStagerValue(stager);
     getDashboardCounts();
   }
@@ -104,8 +96,9 @@ class StagerDashboard extends React.Component {
   onStagerChange(stager) {
     const stagerValue = DashboardModel.STAGER_VALUE;
     const {
-      getDashboardData, getDashboardCounts,
+      getDashboardCounts,
       onCheckBoxClick, triggerStagerValue,
+      triggerStartEndDate,
     } = this.props;
     this.setState({
       activeSearchTerm: '',
@@ -113,14 +106,24 @@ class StagerDashboard extends React.Component {
       activeTile: '',
       activeTab: '',
     });
-    const payload = {
-      activeSearchTerm: '',
-      stager: stagerValue[stager],
-    };
+    const datePayload = this.getDatePayload();
+    triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
-    getDashboardData(payload);
     onCheckBoxClick([]);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getDatePayload() {
+    const now = new Date();
+    const CurrentDate = moment().startOf('month').format('DD');
+    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
+    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
+    const payload = {
+      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
+      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
+    };
+    return payload;
   }
 
   refreshDashboard() {
