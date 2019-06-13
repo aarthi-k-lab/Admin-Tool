@@ -48,7 +48,7 @@ class Disposition extends Component {
     const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
-    const genericId = ProcIdType === 'ProcessId' ? ProcessId : EvalId;
+    const genericId = ProcIdType === 'WF_PRCS_ID' ? ProcessId : EvalId;
     if (enableGetNext && this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,
@@ -291,7 +291,7 @@ Disposition.defaultProps = {
   isTasksLimitExceeded: false,
   taskFetchError: false,
   AppName: 'CMOD',
-  ProcIdType: 'ProcessId',
+  ProcIdType: 'WF_PRCS_ID',
   groupName: '',
 };
 Disposition.propTypes = {

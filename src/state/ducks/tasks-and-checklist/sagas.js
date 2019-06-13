@@ -267,7 +267,7 @@ function* postComment(action) {
     const commentPayload = {
       applicationName: 'CMOD',
       loanNumber,
-      processIdType: 'ProcessId',
+      processIdType: 'WF_PRCS_ID',
       processId,
       eventName,
       comment: action.payload.value,
@@ -302,7 +302,7 @@ function* postDispositionComment(action) {
   const commentPayload = {
     applicationName: 'CMOD',
     loanNumber,
-    processIdType: 'ProcessId',
+    processIdType: 'WF_PRCS_ID',
     processId,
     eventName,
     comment: action.payload,
