@@ -166,7 +166,7 @@ function* getTasks(action) {
       type: LOADING_TASKS,
     });
     const rootTaskId = yield select(selectors.getRootTaskId);
-    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);   
+    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
