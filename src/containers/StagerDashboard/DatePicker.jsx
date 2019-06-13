@@ -49,7 +49,7 @@ class DatePicker extends React.PureComponent {
       ],
       'Last 7 Days': [moment(customeDate).subtract(7, 'days'), moment(end)],
       'Last 30 Days ': [moment(customeDate).subtract(1, 'months'), moment(end)],
-      'Month Till Date ': [moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0)),
+      'Month To Date ': [moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0)),
         moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0))],
     };
     const local = {
@@ -72,7 +72,7 @@ class DatePicker extends React.PureComponent {
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
-                    <IconButton style={{ padding: '1px', color: 'var(--grey-900)' }}>
+                    <IconButton style={{ color: 'var(--grey-900)' }}>
                       <CalendarIcon style={{ width: '18px', height: '18px' }} />
                     </IconButton>
                   </InputAdornment>

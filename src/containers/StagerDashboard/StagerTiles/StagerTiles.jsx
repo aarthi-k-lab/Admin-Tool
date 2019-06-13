@@ -27,7 +27,7 @@ class StagerTiles extends React.PureComponent {
             {countsData.map(stagerTaskGroupData => (
               <>
                 <Grid item styleName="taskStatusTitle" xs={12}>
-                  <div style={{ flexGrow: '0.95' }}>
+                  <div style={{ flexGrow: '0.75' }}>
                     {stagerTaskGroupData.displayName}
                   </div>
                   <div>

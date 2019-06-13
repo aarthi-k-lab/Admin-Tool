@@ -25,14 +25,14 @@ const frontendUnderwriter = {
   path: '/frontend-evaluation',
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
-  groups: ['deprecated'],
+  groups: ['feuw', 'feuw-mgr', 'feuw-beta'],
 };
 
 const backendUnderwriter = {
   path: '/backend-evaluation',
   name: 'backend-evaluation',
   img: '/static/img/backend.svg',
-  groups: ['deprecated'],
+  groups: ['beuw', 'beuw-mgr', 'beuw-beta'],
 };
 
 const docProcessor = {
@@ -71,9 +71,7 @@ const loanActivity = {
 const links = [
   managerDashboard,
   docProcessor,
-  frontendUnderwriter,
   feuwTasksAndChecklist,
-  backendUnderwriter,
   beuwTasksAndChecklist,
   stager,
   moveForward,
