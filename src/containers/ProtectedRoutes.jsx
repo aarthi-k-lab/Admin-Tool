@@ -113,7 +113,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasBackendChecklistAccess(groups)
-        ? <Dashboard group={DashboardModel.BEUW_TASKS_AND_CHECKLIST} />
+        ? <Dashboard group={DashboardModel.BEUW} />
         : <Redirect to="/unauthorized?error=BACKEND_UNDERWRITER_ACCESS_NEEDED" />
     );
   }

@@ -72,7 +72,7 @@ const GROUP_INFO = [
 const GROUPS = {
   '/frontend-evaluation': FEUW,
   '/backend-evaluation': BEUW,
-  '/backend-checklist': BEUW_TASKS_AND_CHECKLIST,
+  '/backend-checklist': BEUW,
   // TO-DO'S
   '/loan-activity': LOAN_ACTIVITY,
   '/doc-processor': PROC,
