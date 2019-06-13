@@ -48,6 +48,15 @@ const feuwTasksAndChecklist = {
   name: 'frontend-checklist',
   img: '/static/img/fe_beta.svg',
   groups: ['allaccess', 'feuw-beta', 'beta'],
+  // notInGroup: ['feuw', 'feuw-mgr'],
+};
+
+const beuwTasksAndChecklist = {
+  path: '/backend-checklist',
+  name: 'backend-checklist',
+  img: '/static/img/be_beta.svg',
+  groups: ['allaccess', 'beuw-beta'],
+  notInGroup: ['beuw', 'beuw-mgr'],
 };
 // commented for demo purpose
 // const beuwTasksAndChecklist = {
@@ -75,7 +84,7 @@ const links = [
   frontendUnderwriter,
   feuwTasksAndChecklist,
   backendUnderwriter,
-  // beuwTasksAndChecklist,
+  beuwTasksAndChecklist,
   stager,
   moveForward,
   loanActivity,

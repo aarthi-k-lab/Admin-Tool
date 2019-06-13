@@ -23,6 +23,8 @@ import {
   SHOW_DELETE_TASK_CONFIRMATION,
   DELETE_TASK,
   RESET_DELETE_TASK,
+  UPDATE_COMMENTS,
+  EMPTY_CHECKLIST_COMMENT,
 } from './types';
 
 const FAILED = 'failed';
@@ -185,6 +187,14 @@ const reducer = (state = defaultState, action) => {
         dispositionComment: action.payload,
       };
     }
+
+    case UPDATE_COMMENTS: {
+      return {
+        ...state,
+        checklistComments: action.payload,
+      };
+    }
+
     case TOGGLE_INSTRUCTIONS: {
       return {
         ...state,
@@ -197,6 +207,13 @@ const reducer = (state = defaultState, action) => {
         showOptionalTasks: !state.showOptionalTasks,
       };
     }
+    case EMPTY_CHECKLIST_COMMENT: {
+      return {
+        ...state,
+        checklistComments: '',
+      };
+    }
+
     case EMPTY_DISPOSITION_COMMENT: {
       return {
         ...state,

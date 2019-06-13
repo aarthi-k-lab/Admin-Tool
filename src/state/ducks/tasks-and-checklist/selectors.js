@@ -121,6 +121,8 @@ const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'valu
 
 const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
 
+const getChangedComments = R.pathOr(null, ['tasksAndChecklist', 'checklistComments']);
+
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
 
 const shouldShowDisposition = (state) => {
@@ -189,7 +191,7 @@ const selectors = {
   selectedTaskId,
   selectedTaskBlueprintCode,
   showComment,
-
+  getChangedComments,
 };
 
 export default selectors;
