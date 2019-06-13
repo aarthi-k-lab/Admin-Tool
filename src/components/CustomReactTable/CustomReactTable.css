@@ -9,8 +9,17 @@
   overflow-y: auto;
 }
 
+.checkboxHeader {
+  padding: 0px !important;
+  position: relative !important;
+  top:3px;
+}
+
 .checkbox {
-  padding: 7px !important;
+  padding: 0px !important;
+  position: relative !important;
+  left: 7px;
+  top:4px;
 }
 
 .days-until-sla-red {
