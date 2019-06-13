@@ -22,7 +22,7 @@ const mockComment = {
     applicationName: 'AppName',
     loanNumber: 'LoanNumber',
     processIdType: 'ProcIdType',
-    processId: 'ProcessId',
+    processId: 'WF_PRCS_ID',
     eventName: 'EventName',
     comment: 'test',
     userName: 'Deepan Kumaresan',

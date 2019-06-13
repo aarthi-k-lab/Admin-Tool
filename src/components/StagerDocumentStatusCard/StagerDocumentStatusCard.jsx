@@ -14,7 +14,7 @@ const StagerDocumentStatusCard = ({
   const slaToBeBreachedCount = data.aboutToBreach;
   const { slaDays } = data;
   return (
-    <Paper onClick={() => onStatusCardClick(data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
+    <Paper onClick={() => onStatusCardClick(data.displayName, tabName, data.total)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
       <Grid container direction="column" spacing={4} xs={12}>
         <Grid item>
           <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>

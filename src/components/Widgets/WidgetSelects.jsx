@@ -1,6 +1,8 @@
 import React from 'react';
 import ChatIcon from '@material-ui/icons/Chat';
+import TrailButton from '@material-ui/icons/Email';
 import CommentsWidget from './CommentsWidget';
+import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
 
 const widgets = [
   {
@@ -10,7 +12,22 @@ const widgets = [
     show: true,
   },
 ];
-
-export default function getWidgets() {
+let loanActivityWidgets = {
+  id: 'customCommunicationLetter',
+  icon: <TrailButton />,
+  component: <TrialLetter />,
+  show: true,
+};
+loanActivityWidgets = [loanActivityWidgets, ...widgets];
+function getWidgets() {
   return widgets;
 }
+
+function getLoanActivityWidgets() {
+  return loanActivityWidgets;
+}
+
+export {
+  getWidgets,
+  getLoanActivityWidgets,
+};

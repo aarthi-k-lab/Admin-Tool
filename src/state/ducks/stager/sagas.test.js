@@ -17,7 +17,6 @@ import {
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_STAGER_DOWNLOAD_CSV_URI,
 } from './types';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
@@ -78,16 +77,25 @@ describe('onCheckboxSelect ', () => {
       }));
   });
 });
-
+const dateValue = {
+  fromDate: '2019-01-05',
+  stagerType: 'UNDERWRITER STAGER',
+  toDate: '2019-01-05',
+  searchTerm: null,
+};
 describe('fetchDashboardCounts ', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
   it('should select Stager type ', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerValue));
   });
+  it('should select Stager date ', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
+      .toEqual(select(selectors.getStagerStartEndDate));
+  });
   it('call getCounts Api', () => {
-    expect(saga.next('UW_STAGER').value)
-      .toEqual(call(Api.callGet, 'api/stager/dashboard/getCounts/UW_STAGER'));
+    expect(saga.next(dateValue).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
   it('should update with returned payload ', () => {
     const data = { displayName: 'CurrentReview' };
@@ -102,7 +110,21 @@ describe('fetchDashboardData ', () => {
     payload: {
       activeSearchTerm: 'LegalFeeToOrder',
       stager: 'UNDERWRITER STAGER',
+      toDate: '2019-01-05',
+      fromDate: '2019-01-05',
     },
+  };
+  const date = {
+    fromDate: '2019-01-05',
+    stagerType: 'UNDERWRITER STAGER',
+    searchTerm: 'LegalFeeToOrder',
+    toDate: '2019-01-05',
+    stagerPageOffSet: 1,
+    maxFetchCount: 10,
+  };
+  const pagePayload = {
+    PageCount: 1,
+    maxFetchCount: 10,
   };
   const newPayload = [];
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
@@ -117,10 +139,17 @@ describe('fetchDashboardData ', () => {
         },
       }));
   });
-
+  it('should select Stager date ', () => {
+    expect(saga.next('UW_STAGER').value)
+      .toEqual(select(selectors.getStagerStartEndDate));
+  });
+  it('should select Max Page Count ', () => {
+    expect(saga.next(date).value)
+      .toEqual(select(selectors.getStagerPageCount));
+  });
   it('call bpm audit data Api', () => {
-    expect(saga.next().value)
-      .toEqual(call(Api.callGet, `api/stager/dashboard/getData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`));
+    expect(saga.next(pagePayload).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
 
   it('should update searchterm ', () => {
@@ -128,14 +157,6 @@ describe('fetchDashboardData ', () => {
       .toEqual(put({
         type: SET_STAGER_ACTIVE_SEARCH_TERM,
         payload: 'LegalFeeToOrder',
-      }));
-  });
-
-  it('should update csv download Url ', () => {
-    expect(saga.next().value)
-      .toEqual(put({
-        type: SET_STAGER_DOWNLOAD_CSV_URI,
-        payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/${payload.payload.activeSearchTerm}`,
       }));
   });
 

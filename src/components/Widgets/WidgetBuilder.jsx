@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import getWidgets from './WidgetSelects';
+import { connect } from 'react-redux';
+import * as R from 'ramda';
+import { getWidgets, getLoanActivityWidgets } from './WidgetSelects';
 import WidgetIcon from './WidgetIcon';
 import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
+import { selectors } from '../../state/ducks/dashboard';
+
 
 class WidgetBuilder extends Component {
   constructor(props) {
@@ -17,6 +21,20 @@ class WidgetBuilder extends Component {
     this.changeAppBarState = this.changeAppBarState.bind(this);
     this.renderComponent = this.renderComponent.bind(this);
     this.renderIcon = this.renderIcon.bind(this);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { rightAppBarSelected } = state;
+    const { trialHeader } = props;
+    const isTrialHeader = trialHeader ? trialHeader.trialName : '';
+    if (props.groupName === 'LA' && R.isEmpty(rightAppBarSelected) && isTrialHeader) {
+      return {
+        rightAppBarSelected: 'customCommunicationLetter',
+        rightAppBarOpen: true,
+        rightAppBar: getLoanActivityWidgets(),
+      };
+    }
+    return null;
   }
 
   changeAppBarState(widgetId) {
@@ -32,11 +50,11 @@ class WidgetBuilder extends Component {
   renderComponent() {
     const { rightAppBarSelected, rightAppBarOpen, rightAppBar } = this.state;
     const rightAppBarOpened = rightAppBar && rightAppBarSelected
-    && rightAppBar.length && rightAppBarOpen;
+      && rightAppBar.length && rightAppBarOpen;
     return (
       rightAppBarOpened
       && (
-      <WidgetComponent id="widget-component" rightAppBar={rightAppBar} rightAppBarSelected={rightAppBarSelected} />
+        <WidgetComponent id="widget-component" rightAppBar={rightAppBar} rightAppBarSelected={rightAppBarSelected} />
       )
     );
   }
@@ -73,7 +91,7 @@ class WidgetBuilder extends Component {
               id="show"
               styleName="show"
             >
-              { this.renderIcon() }
+              {this.renderIcon()}
             </div>
           }
         </div>
@@ -86,9 +104,28 @@ const TestHooks = {
   WidgetBuilder,
 };
 
-WidgetBuilder.propTypes = {
-  className: PropTypes.string.isRequired,
+WidgetBuilder.defaultProps = {
+  trialHeader: {},
 };
 
-export default WidgetBuilder;
+WidgetBuilder.propTypes = {
+  className: PropTypes.string.isRequired,
+  trialHeader: PropTypes.shape({
+    downPayment: PropTypes.number,
+    evalId: PropTypes.number,
+    fhaTrialLetterReceivedDate: PropTypes.string,
+    loanId: PropTypes.number,
+    resolutionChoiceType: PropTypes.string,
+    resolutionId: PropTypes.number,
+    trialAcceptanceDate: PropTypes.string,
+    trialName: PropTypes.string,
+  }),
+};
+const mapStateToProps = state => ({
+  groupName: selectors.groupName(state),
+  trialHeader: selectors.getTrialHeader(state),
+});
+
+const WidgetBuilderContainer = connect(mapStateToProps, null)(WidgetBuilder);
+export default WidgetBuilderContainer;
 export { TestHooks };

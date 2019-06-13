@@ -7,21 +7,23 @@ import { selectors as stagerSelectors, operations as stagerOperations } from 'du
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
 import DashboardModel from 'models/Dashboard';
+import moment from 'moment';
 import StagerPage from './StagerPage';
-
 
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeSearchTerm: '',
-      stager: 'UW_STAGER',
+      stager: 'STAGER_ALL',
     };
   }
 
   componentDidMount() {
-    const { getDashboardCounts, triggerStagerValue } = this.props;
+    const { getDashboardCounts, triggerStagerValue, triggerStartEndDate } = this.props;
     const { stager } = this.state;
+    const datePayload = this.getDatePayload();
+    triggerStartEndDate(datePayload);
     triggerStagerValue(stager);
     getDashboardCounts();
   }
@@ -35,22 +37,33 @@ class StagerDashboard extends React.Component {
     triggerOrderCall(orderPayload);
   }
 
-  onStatusCardClick(activeTile, activeTab) {
+  onStatusCardClick(activeTile, activeTab, totalCount) {
     const value = `${activeTile}${activeTab}`;
     const searchTerm = value.replace(/ /g, '');
+    const stagerPageCount = 0;
+    const stagerTablePageCount = DashboardModel.STAGER_TABLE_PAGE_COUNT;
+    const pageSize = Math.ceil(totalCount / stagerTablePageCount);
     const {
       getDashboardData,
       onCheckBoxClick,
       getDashboardCounts,
-      onClearDocsOutAction,
+      onClearDocGenAction,
+      triggerStagerPageCount,
     } = this.props;
-    onClearDocsOutAction();
+    onClearDocGenAction();
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     const { stager } = this.state;
     const payload = {
       activeSearchTerm: searchTerm,
       stager,
     };
+    const stagerPayload = {
+      PageCount: stagerPageCount,
+      pageNo: 1,
+      maxFetchCount: stagerTablePageCount,
+      pageSize,
+    };
+    triggerStagerPageCount(stagerPayload);
     getDashboardData(payload);
     getDashboardCounts();
     onCheckBoxClick([]);
@@ -83,8 +96,9 @@ class StagerDashboard extends React.Component {
   onStagerChange(stager) {
     const stagerValue = DashboardModel.STAGER_VALUE;
     const {
-      getDashboardData, getDashboardCounts,
+      getDashboardCounts,
       onCheckBoxClick, triggerStagerValue,
+      triggerStartEndDate,
     } = this.props;
     this.setState({
       activeSearchTerm: '',
@@ -92,21 +106,31 @@ class StagerDashboard extends React.Component {
       activeTile: '',
       activeTab: '',
     });
-    const payload = {
-      activeSearchTerm: '',
-      stager: stagerValue[stager],
-    };
+    const datePayload = this.getDatePayload();
+    triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
-    getDashboardData(payload);
     onCheckBoxClick([]);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getDatePayload() {
+    const now = new Date();
+    const CurrentDate = moment().startOf('month').format('DD');
+    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
+    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
+    const payload = {
+      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
+      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
+    };
+    return payload;
   }
 
   refreshDashboard() {
     const { activeSearchTerm, stager } = this.state;
     const {
       getDashboardData, getDashboardCounts,
-      onCheckBoxClick, onClearDocsOutAction,
+      onCheckBoxClick, onClearDocGenAction,
     } = this.props;
     const payload = {
       activeSearchTerm,
@@ -117,7 +141,7 @@ class StagerDashboard extends React.Component {
     }
     getDashboardCounts();
     onCheckBoxClick([]);
-    onClearDocsOutAction();
+    onClearDocGenAction();
   }
 
 
@@ -127,8 +151,8 @@ class StagerDashboard extends React.Component {
       return <Redirect to="/unauthorized?error=STAGER_DASHBOARD_ACCESS_NEEDED" />;
     }
     const {
-      counts, tableData, downloadCSVUri,
-      loading, selectedData, docsOutResponse,
+      counts, tableData,
+      loading, selectedData, docGenResponse,
     } = this.props;
     const {
       activeTab, activeTile, stager,
@@ -139,7 +163,6 @@ class StagerDashboard extends React.Component {
           activeTab={activeTab}
           activeTile={activeTile}
           counts={counts}
-          downloadCSVUri={downloadCSVUri}
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
           onOrderClick={data => this.onOrderClick(data)}
@@ -147,9 +170,9 @@ class StagerDashboard extends React.Component {
           onStagerChange={stagerValue => this.onStagerChange(stagerValue)}
           onStatusCardClick={
             (tileName,
-              tabName) => this.onStatusCardClick(tileName, tabName)
+              tabName, totalCount) => this.onStatusCardClick(tileName, tabName, totalCount)
           }
-          popupData={docsOutResponse}
+          popupData={docGenResponse}
           refreshDashboard={() => this.refreshDashboard()}
           selectedData={selectedData}
           stager={stager}
@@ -166,8 +189,7 @@ const mapStateToProps = state => ({
   loading: stagerSelectors.getLoaderInfo(state),
   tableData: stagerSelectors.getTableData(state),
   selectedData: stagerSelectors.getSelectedData(state),
-  docsOutResponse: stagerSelectors.getDocsOutResponse(state),
-  downloadCSVUri: stagerSelectors.getDownloadCSVUri(state),
+  docGenResponse: stagerSelectors.getdocGenResponse(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -176,7 +198,9 @@ const mapDispatchToProps = dispatch => ({
   onCheckBoxClick: stagerOperations.onCheckBoxClick(dispatch),
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
-  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
+  onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
+  triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
+  triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
 });
 
 StagerDashboard.propTypes = {
@@ -194,31 +218,31 @@ StagerDashboard.propTypes = {
       displayName: PropTypes.string,
     }),
   ),
-  docsOutResponse: PropTypes.arrayOf(
+  docGenResponse: PropTypes.arrayOf(
     PropTypes.shape({
-      failedLoans: PropTypes.array.isRequired,
-      succeedLoans: PropTypes.array.isRequired,
+      hitLoans: PropTypes.array.isRequired,
+      missedLoans: PropTypes.array.isRequired,
     }),
   ),
-  downloadCSVUri: PropTypes.string,
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
-  onClearDocsOutAction: PropTypes.func.isRequired,
+  onClearDocGenAction: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
+  triggerStagerPageCount: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
+  triggerStartEndDate: PropTypes.func.isRequired,
 };
 
 StagerDashboard.defaultProps = {
   counts: [],
   tableData: [],
   loading: false,
-  downloadCSVUri: '',
-  docsOutResponse: {},
+  docGenResponse: {},
 };
 
 const TestExports = {

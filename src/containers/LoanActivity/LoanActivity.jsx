@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import TrialHeaderAndDetails from './TrialHeaderAndDetails';
-import TrialLetter from './TrialLetter';
 import { selectors, operations } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
+import WidgetBuilder from '../../components/Widgets/WidgetBuilder';
 
 class LoanActivity extends React.PureComponent {
   componentWillMount() {
@@ -21,14 +21,12 @@ class LoanActivity extends React.PureComponent {
   render() {
     const { trialHeader } = this.props;
     const { trialsDetail } = this.props;
-    const { trialsLetter } = this.props;
     const { inProgress } = this.props;
     const { resultUnderwriting } = this.props;
-    const isTrialHeader = trialHeader ? trialHeader.trialName : '';
     return (
       <>
         <Grid alignItems="stretch" container styleName="loan-activity">
-          <Grid item styleName="status-details-parent" xs={8}>
+          <Grid item styleName="status-details-parent" xs={9}>
             <div styleName="status-details">
               <TrialHeaderAndDetails
                 inProgress={inProgress}
@@ -38,17 +36,8 @@ class LoanActivity extends React.PureComponent {
               />
             </div>
           </Grid>
-          {isTrialHeader && (
-          <Grid item style={{ flexGrow: 1, display: 'flex', alignItems: 'stretch' }} xs={4}>
-            <div style={{ flexGrow: 1 }} styleName="report-downloader">
-              <TrialLetter
-                inProgress={inProgress}
-                trialsLetter={trialsLetter}
-              />
-            </div>
-          </Grid>
-          )}
         </Grid>
+        <WidgetBuilder />
       </>
     );
   }
@@ -72,7 +61,6 @@ LoanActivity.defaultProps = {
   resultUnderwriting: { level: '', status: '' },
   trialHeader: {},
   trialsDetail: [],
-  trialsLetter: [],
 };
 
 LoanActivity.propTypes = {
@@ -107,20 +95,6 @@ LoanActivity.propTypes = {
       trialDueOn: PropTypes.string,
       trialName: PropTypes.string,
       trialPmtMonthYear: PropTypes.string,
-    }),
-  ),
-  trialsLetter: PropTypes.arrayOf(
-    PropTypes.shape({
-      evalId: PropTypes.number,
-      evalStatus: PropTypes.string,
-      evalSubStatus: PropTypes.string,
-      letterFlag: PropTypes.string,
-      loanId: PropTypes.number,
-      resolutionChoiceType: PropTypes.string,
-      resolutionId: PropTypes.number,
-      resolutionStatus: PropTypes.string,
-      resolutionSubStatus: PropTypes.string,
-      trialLetterSentDate: PropTypes.string,
     }),
   ),
 };

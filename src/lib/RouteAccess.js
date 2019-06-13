@@ -25,15 +25,14 @@ const frontendUnderwriter = {
   path: '/frontend-evaluation',
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
-  groups: ['feuw', 'feuw-mgr'],
-  notInGroup: ['beta'],
+  groups: ['feuw', 'feuw-mgr', 'feuw-beta'],
 };
 
 const backendUnderwriter = {
   path: '/backend-evaluation',
   name: 'backend-evaluation',
   img: '/static/img/backend.svg',
-  groups: ['beuw', 'beuw-mgr', 'allaccess'],
+  groups: ['beuw', 'beuw-mgr', 'beuw-beta'],
 };
 
 const docProcessor = {
@@ -46,25 +45,16 @@ const docProcessor = {
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/fe_beta.svg',
-  groups: ['allaccess', 'feuw-beta', 'beta'],
-  // notInGroup: ['feuw', 'feuw-mgr'],
+  img: '/static/img/frontend.svg',
+  groups: ['allaccess', 'feuw-beta', 'beta', 'feuw', 'feuw-mgr'],
 };
 
 const beuwTasksAndChecklist = {
   path: '/backend-checklist',
   name: 'backend-checklist',
-  img: '/static/img/be_beta.svg',
-  groups: ['allaccess', 'beuw-beta'],
-  notInGroup: ['beuw', 'beuw-mgr'],
+  img: '/static/img/backend.svg',
+  groups: ['allaccess', 'beuw-beta', 'beuw', 'beuw-mgr'],
 };
-// commented for demo purpose
-// const beuwTasksAndChecklist = {
-//   path: '/backend-checklist',
-//   name: 'backend-checklist',
-//   img: '/static/img/be_beta.svg',
-//   groups: ['allaccess', 'beuw-beta', 'beta'],
-// };
 
 const checkListGroups = {
   groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw'],
@@ -81,9 +71,7 @@ const loanActivity = {
 const links = [
   managerDashboard,
   docProcessor,
-  frontendUnderwriter,
   feuwTasksAndChecklist,
-  backendUnderwriter,
   beuwTasksAndChecklist,
   stager,
   moveForward,
@@ -115,9 +103,9 @@ function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
 
-// function hasBackendChecklistAccess(groups) {
-//   return hasGroup(beuwTasksAndChecklist.groups, groups);
-// }
+function hasBackendChecklistAccess(groups) {
+  return hasGroup(beuwTasksAndChecklist.groups, groups);
+}
 
 function hasChecklistAccess(groups) {
   return hasGroup(checkListGroups.groups, groups);
@@ -152,7 +140,7 @@ module.exports = {
   hasBackendUnderwriterAccess,
   hasDocProcessorAccess,
   hasFrontendUnderwriterAccess,
-  // hasBackendChecklistAccess,
+  hasBackendChecklistAccess,
   hasFrontendChecklistAccess,
   hasManagerDashboardAccess,
   hasMoveForwardAccess,

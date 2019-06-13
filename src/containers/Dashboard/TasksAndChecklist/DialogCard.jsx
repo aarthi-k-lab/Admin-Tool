@@ -19,6 +19,8 @@ const propertyValidation = {
   title: PropTypes.string.isRequired,
 };
 
+const dispositions = ['All Tasks Completed', 'Approval'];
+
 class DialogCard extends Component {
   constructor(props) {
     super(props);
@@ -79,11 +81,12 @@ class DialogCard extends Component {
           </IconButton>
           <DispositionComment
             activeIcon={activeIcon}
-            allTaskScenario={message === 'All Tasks Completed'}
+            allTaskScenario={dispositions.includes(message)}
             commentsRequired={commentsRequired}
             content={dialogContent}
             expanded={expanded}
             header={dialogHeader}
+            message={message}
           />
         </div>
       </>

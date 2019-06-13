@@ -15,13 +15,21 @@ class DispositionComment extends Component {
   }
 
   componentDidMount() {
-    const { allTaskScenario, triggerValidationDisplay } = this.props;
+    const { allTaskScenario, triggerValidationDisplay, message } = this.props;
     if (!allTaskScenario) {
       triggerValidationDisplay(false);
     } else {
       // this.setState({ content: message });
       triggerValidationDisplay(true);
     }
+  }
+
+  static getDerivedStateFromProps(props) {
+    const { allTaskScenario, message } = props;
+    if (allTaskScenario) {
+      return ({ content: message });
+    }
+    return ({ content: '' });
   }
 
   onCommentChange(event) {
@@ -136,7 +144,11 @@ DispositionComment.propTypes = {
     comment: PropTypes.string,
   }),
   header: PropTypes.string,
+<<<<<<< HEAD
   message: PropTypes.string,
+=======
+  message: PropTypes.string.isRequired,
+>>>>>>> master
   triggerValidationDisplay: PropTypes.func.isRequired,
 };
 

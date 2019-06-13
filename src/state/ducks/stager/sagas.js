@@ -12,6 +12,7 @@ import * as R from 'ramda';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
+  GET_DOWNLOAD_DATA_SAGA,
   SET_STAGER_DATA_COUNTS,
   GET_DASHBOARD_DATA_SAGA,
   SET_STAGER_DATA,
@@ -21,17 +22,33 @@ import {
   TRIGGER_ORDER_SAGA,
   TRIGGER_DISPOSITION_OPERATION_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_STAGER_DOWNLOAD_CSV_URI,
-  SET_DOCS_OUT_RESPONSE,
+  SET_DOC_GEN_RESPONSE,
+  SET_DOWNLOAD_DATA,
+
 } from './types';
 import selectors from './selectors';
 import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm, stagerPageOffSet, maxFetchCount) {
+  const fromDate = R.propOr({}, 'fromDate', stagerStartEndDate);
+  const toDate = R.propOr({}, 'toDate', stagerStartEndDate);
+  const dateValue = {
+    fromDate,
+    toDate,
+    stagerType,
+    searchTerm,
+    stagerPageOffSet,
+    maxFetchCount,
+  };
+  return dateValue;
+}
 function* fetchDashboardCounts() {
   try {
     const stagerType = yield select(selectors.getStagerValue);
-    const response = yield call(Api.callGet, `api/stager/dashboard/getCounts/${stagerType}`);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
     if (response != null) {
       yield put({
         type: SET_STAGER_DATA_COUNTS,
@@ -58,17 +75,20 @@ function* fetchDashboardData(data) {
         loading: true,
       },
     });
-    const response = yield call(Api.callGet, `api/stager/dashboard/getData/${stagerType}/${searchTerm}`);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const stagerPageOffSet = yield select(selectors.getStagerPageCount);
+    const stagerPageOffValue = R.propOr({}, 'PageCount', stagerPageOffSet);
+    const maxFetchCount = R.propOr({}, 'maxFetchCount', stagerPageOffSet);
+    const dateValue = buildDateObj(
+      stagerType, stagerStartEndDate,
+      searchTerm, stagerPageOffValue,
+      maxFetchCount,
+    );
+    const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', dateValue);
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
     });
-    const downloadCSVUri = `api/stager/dashboard/downloadData/${stagerType}/${searchTerm}`;
-    yield put({
-      type: SET_STAGER_DOWNLOAD_CSV_URI,
-      payload: downloadCSVUri,
-    });
-
     if (response != null) {
       payload = {
         error: false,
@@ -92,6 +112,28 @@ function* fetchDashboardData(data) {
   }
 }
 
+function* fetchDownloadData(callBack) {
+  try {
+    const stagerType = yield select(selectors.getStagerValue);
+    const searchTerm = yield select(selectors.getActiveSearchTerm);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', dateValue);
+    if (response != null) {
+      yield put({
+        type: SET_DOWNLOAD_DATA,
+        payload: response,
+      });
+      callBack.payload.call();
+    }
+  } catch (e) {
+    yield put({
+      type: SET_DOWNLOAD_DATA,
+      payload: {},
+    });
+  }
+}
+
 function* onCheckboxSelect(data) {
   const selectedData = data.payload;
   yield put({
@@ -110,9 +152,9 @@ function* fireSnackBar(snackBarData) {
   });
 }
 
-function* setDocsOutData(data) {
+function* setDocGenData(data) {
   yield put({
-    type: SET_DOCS_OUT_RESPONSE,
+    type: SET_DOC_GEN_RESPONSE,
     payload: data,
   });
 }
@@ -171,13 +213,17 @@ function* watchOrderCall() {
 
 function* makeDispositionOperationCall(payload) {
   try {
-    const docsOutAction = yield select(selectors.getdocsOutAction);
+    const docGenAction = yield select(selectors.getdocGenAction);
     const stagerValue = yield select(selectors.getStagerValue);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docsOutAction}`, { taskList: payload.payload.taskList });
-    const errorMessages = Disposition.getBulkErrorMessages(response.failedLoans);
-    response.failedLoans = errorMessages;
+    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docGenAction}`, { taskList: payload.payload.taskList });
+    const prevResponse = yield select(selectors.getdocGenResponse);
+    const prevSuccessList = !R.isNil(prevResponse.hitLoans) ? prevResponse.hitLoans : [];
+    const latestSuccessList = R.concat(prevSuccessList, response.hitLoans || []);
+    response.hitLoans = latestSuccessList;
+    const errorMessages = Disposition.getBulkErrorMessages(response.missedLoans || []);
+    response.missedLoans = errorMessages;
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
@@ -185,7 +231,7 @@ function* makeDispositionOperationCall(payload) {
         { activeSearchTerm, stager: stagerValue },
     });
     yield call(onCheckboxSelect, { payload: [] });
-    yield call(setDocsOutData, response);
+    yield call(setDocGenData, response);
   } catch (err) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
@@ -201,6 +247,10 @@ function* watchDispositionOperationCall() {
 
 function* watchDashboardDataFetch() {
   yield takeEvery(GET_DASHBOARD_DATA_SAGA, fetchDashboardData);
+}
+
+function* watchDownloadDataFetch() {
+  yield takeEvery(GET_DOWNLOAD_DATA_SAGA, fetchDownloadData);
 }
 
 function* watchTableCheckboxSelect() {
@@ -222,6 +272,7 @@ export const TestExports = {
 export function* combinedSaga() {
   yield all([
     watchDashboardCountsFetch(),
+    watchDownloadDataFetch(),
     watchDashboardDataFetch(),
     watchTableCheckboxSelect(),
     watchOrderCall(),

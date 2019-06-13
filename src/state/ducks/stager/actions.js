@@ -1,8 +1,8 @@
 import {
   GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
-  TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
-  TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOCS_OUT_ACTION, SET_STAGER_VALUE,
-  CLEAR_DOCS_OUT_RESPONSE,
+  GET_DOWNLOAD_DATA_SAGA, TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
+  TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOC_GEN_ACTION, SET_STAGER_VALUE,
+  SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_PAGE_COUNT,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -11,6 +11,11 @@ const triggerDashboardCounts = () => ({
 
 const triggerDashboardDataFetch = payload => ({
   type: GET_DASHBOARD_DATA_SAGA,
+  payload,
+});
+
+const triggerDownloadDataFetch = payload => ({
+  type: GET_DOWNLOAD_DATA_SAGA,
   payload,
 });
 
@@ -29,8 +34,8 @@ const triggerDispositionOperationCallAction = payload => ({
   payload,
 });
 
-const setDocOutAction = action => ({
-  type: SET_DOCS_OUT_ACTION,
+const setDocGenAction = action => ({
+  type: SET_DOC_GEN_ACTION,
   action,
 });
 
@@ -39,18 +44,30 @@ const setStagerValue = payload => ({
   payload,
 });
 
+const setStartEndDate = payload => ({
+  type: SET_START_END_DATE,
+  payload,
+});
 
-const clearDocOutAction = () => ({
-  type: CLEAR_DOCS_OUT_RESPONSE,
+const clearDocGenAction = () => ({
+  type: CLEAR_DOC_GEN_RESPONSE,
+});
+
+const setPageCount = payload => ({
+  type: SET_PAGE_COUNT,
+  payload,
 });
 
 export {
   triggerDashboardCounts,
   triggerDashboardDataFetch,
+  triggerDownloadDataFetch,
   triggerCheckboxSelect,
   triggerOrderCallAction,
   triggerDispositionOperationCallAction,
-  setDocOutAction,
-  clearDocOutAction,
+  setDocGenAction,
+  clearDocGenAction,
   setStagerValue,
+  setStartEndDate,
+  setPageCount,
 };

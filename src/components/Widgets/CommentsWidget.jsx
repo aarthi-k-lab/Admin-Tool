@@ -190,13 +190,6 @@ class CommentsWidget extends Component {
               <div styleName="check-icon-style">
                 <CheckCircleIcon styleName="check-circle-icon" />
                 <span styleName="disposition-selected">{getContextData(comment.commentContext)}</span>
-                <div
-                  onClick={this.displayEditPopUp}
-                  role="presentation"
-                  styleName={comment.userName === User.userDetails.name ? 'ellipsis-current-user' : 'ellipsis-other-user'}
-                >
-                ...
-                </div>
               </div>
             </div>
           </div>
@@ -209,40 +202,40 @@ class CommentsWidget extends Component {
     const { comments, LoanNumber, EvalId } = this.props;
     const { content } = this.state;
     return (
-    <>
-      <div styleName="comment-header">Comments</div>
-      <div id="comment_main" styleName="comment-main-style">
-        <div ref={(ref) => { this.commentArea = ref; }} styleName="comment-area">
-          { comments && comments.length ? this.showCommentsArea() : renderNoCommentsArea()}
-        </div>
-        <div id="send_area" styleName="send-area">
-          <div id="send_text_area" styleName="send-text-area">
-            <TextField
-              InputProps={{ style: { fontSize: '1.1rem' } }}
-              multiline
-              onChange={event => this.onCommentChange(event)}
-              onKeyPress={event => this.onCommentChange(event)}
-              placeholder="Enter Comment"
-              rowsMax="4"
-              style={{ width: '100%', height: '5.75rem' }}
-              value={content}
-            />
+      <>
+        <div styleName="comment-header">Comments</div>
+        <div id="comment_main" styleName="comment-main-style">
+          <div ref={(ref) => { this.commentArea = ref; }} styleName="comment-area">
+            { comments && comments.length ? this.showCommentsArea() : renderNoCommentsArea()}
           </div>
-          <div id="send_button_area" styleName="send-button-area">
-            <Button
-              color="primary"
-              disabled={content.length === 0 || LoanNumber === null || EvalId === null}
-              id="post_button"
-              onClick={this.saveComments}
-              styleName="post-button"
-              variant="contained"
-            >
-            POST
-            </Button>
+          <div id="send_area" styleName="send-area">
+            <div id="send_text_area" styleName="send-text-area">
+              <TextField
+                InputProps={{ style: { fontSize: '1.1rem' } }}
+                multiline
+                onChange={event => this.onCommentChange(event)}
+                onKeyPress={event => this.onCommentChange(event)}
+                placeholder="Enter Comment"
+                rowsMax="4"
+                style={{ width: '100%', height: '5.75rem' }}
+                value={content}
+              />
+            </div>
+            <div id="send_button_area" styleName="send-button-area">
+              <Button
+                color="primary"
+                disabled={content.length === 0 || LoanNumber === null || EvalId === null}
+                id="post_button"
+                onClick={this.saveComments}
+                styleName="post-button"
+                variant="contained"
+              >
+                POST
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-  </>);
+      </>);
   }
 
   render() {
@@ -265,7 +258,7 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
-  LoanNumber: PropTypes.number.isRequired,
+  LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
   ProcessId: PropTypes.number.isRequired,
@@ -280,7 +273,7 @@ CommentsWidget.propTypes = {
 
 CommentsWidget.defaultProps = {
   AppName: 'CMOD',
-  ProcIdType: 'ProcessId',
+  ProcIdType: 'WF_PRCS_ID',
   groupName: '',
 };
 

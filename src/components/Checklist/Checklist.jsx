@@ -11,7 +11,7 @@ import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 import HTMLElements from '../../constants/componentTypes';
 
-const DIALOG_TITLE = 'You want to clear all the checklist?';
+const DIALOG_TITLE = 'Do you want to clear current checklist?';
 const DELETE_TASK = 'DELETE TASK';
 const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
 

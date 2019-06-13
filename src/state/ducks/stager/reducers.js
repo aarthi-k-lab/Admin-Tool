@@ -1,11 +1,14 @@
 import {
-  SET_STAGER_DATA_COUNTS, SET_STAGER_DATA, SET_STAGER_DOWNLOAD_CSV_URI,
+  SET_STAGER_DATA_COUNTS, SET_STAGER_DATA,
   SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_DOCS_OUT_RESPONSE,
-  SET_DOCS_OUT_ACTION,
-  CLEAR_DOCS_OUT_RESPONSE,
+  SET_DOC_GEN_RESPONSE,
+  SET_DOC_GEN_ACTION,
+  CLEAR_DOC_GEN_RESPONSE,
+  SET_START_END_DATE,
   SET_STAGER_VALUE,
+  SET_DOWNLOAD_DATA,
+  SET_PAGE_COUNT,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -24,6 +27,13 @@ const reducer = (state = {}, action) => {
         ...state,
         data,
         loading: false,
+      };
+    }
+
+    case SET_DOWNLOAD_DATA: {
+      return {
+        ...state,
+        csvData: action.payload.tableData,
       };
     }
 
@@ -51,29 +61,22 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_STAGER_DOWNLOAD_CSV_URI: {
+    case SET_DOC_GEN_RESPONSE: {
       return {
         ...state,
-        downloadCSVUri: action.payload,
+        docGenResponse: action.payload,
       };
     }
-
-    case SET_DOCS_OUT_RESPONSE: {
+    case SET_DOC_GEN_ACTION: {
       return {
         ...state,
-        docsOutResponse: action.payload,
+        docGenAction: action.action,
       };
     }
-    case SET_DOCS_OUT_ACTION: {
+    case CLEAR_DOC_GEN_RESPONSE: {
       return {
         ...state,
-        docsOutAction: action.action,
-      };
-    }
-    case CLEAR_DOCS_OUT_RESPONSE: {
-      return {
-        ...state,
-        docsOutResponse: null,
+        docGenResponse: null,
       };
     }
     case SET_STAGER_VALUE: {
@@ -83,7 +86,19 @@ const reducer = (state = {}, action) => {
       };
     }
 
+    case SET_START_END_DATE: {
+      return {
+        ...state,
+        stagerStartEndDate: action.payload,
+      };
+    }
 
+    case SET_PAGE_COUNT: {
+      return {
+        ...state,
+        stagerDataPageCount: action.payload,
+      };
+    }
     default:
       return state;
   }

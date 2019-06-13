@@ -2,37 +2,47 @@ import {
   triggerDashboardCounts, triggerDashboardDataFetch,
   triggerCheckboxSelect, triggerOrderCallAction,
   triggerDispositionOperationCallAction,
-  setDocOutAction,
+  triggerDownloadDataFetch,
+  setDocGenAction,
   setStagerValue,
-  clearDocOutAction,
+  setStartEndDate,
+  clearDocGenAction,
+  setPageCount,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
   triggerDashboardCounts(),
 );
 const getDashboardData = dispatch => payload => dispatch(triggerDashboardDataFetch(payload));
+const onDownloadData = dispatch => payload => dispatch(triggerDownloadDataFetch(payload));
 const onCheckBoxClick = dispatch => selectedData => dispatch(
   triggerCheckboxSelect(selectedData),
 );
 const triggerOrderCall = dispatch => payload => dispatch(triggerOrderCallAction(payload));
 
 const triggerDispositionOperationCall = dispatch => (payload, action) => {
-  dispatch(setDocOutAction(action));
+  dispatch(setDocGenAction(action));
   dispatch(triggerDispositionOperationCallAction(payload));
 };
 
 const triggerStagerValue = dispatch => payload => dispatch(setStagerValue(payload));
 
-const onClearDocsOutAction = dispatch => () => dispatch(clearDocOutAction());
+const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payload));
+
+const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
+const triggerStagerPageCount = dispatch => payload => dispatch(setPageCount(payload));
 
 const operations = {
   getDashboardCounts,
   getDashboardData,
   onCheckBoxClick,
+  onDownloadData,
   triggerOrderCall,
   triggerDispositionOperationCall,
-  onClearDocsOutAction,
+  onClearDocGenAction,
   triggerStagerValue,
+  triggerStartEndDate,
+  triggerStagerPageCount,
 };
 
 export default operations;
