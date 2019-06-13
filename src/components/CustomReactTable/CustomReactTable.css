@@ -61,6 +61,9 @@
 .pageCountDetails{
   margin: auto;
   position: relative;
-  top: 2.5rem;
+  top: 0.5rem;
   font-size: 1.2rem;
  }
+.pagination-Footer {
+  margin:  -30px 0px 0px 0px !important;
+}

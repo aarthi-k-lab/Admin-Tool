@@ -6,29 +6,17 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { operations as stagerOperations } from 'ducks/stager';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import PropTypes from 'prop-types';
 
 class DatePicker extends React.PureComponent {
   constructor(props) {
     super(props);
-    const now = new Date();
-    const CurrentDate = moment().startOf('month').format('DD');
-    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
-    this.state = {
-      start,
-      end,
-    };
     this.applyCallback = this.applyCallback.bind(this);
   }
 
   applyCallback(fromDate, toDate) {
     const { triggerStartEndDate, getDashboardCounts } = this.props;
-    this.setState({
-      start: fromDate,
-      end: toDate,
-    });
     const payload = {
       fromDate: fromDate.format('YYYY-MM-DD HH:mm:ss'),
       toDate: toDate.format('YYYY-MM-DD HH:mm:ss'),
@@ -38,7 +26,9 @@ class DatePicker extends React.PureComponent {
   }
 
   render() {
-    const { start, end } = this.state;
+    const { getStagerStartEndDate } = this.props;
+    const start = moment(getStagerStartEndDate.fromDate);
+    const end = moment(getStagerStartEndDate.toDate);
     const value = `${start.format('MM-DD-YYYY')
     }  to  ${
       end.format('MM-DD-YYYY')}`;
@@ -46,7 +36,8 @@ class DatePicker extends React.PureComponent {
     const CurrentDate = moment().startOf('month').format('DD');
     const fromDate = moment(new Date(now.getFullYear(),
       now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const toDate = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
+    const toDate = moment(new Date(now.getFullYear(), now.getMonth(),
+      now.getDate(), 23, 59, 0, 0));
     const customeDate = moment(
       new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
     );
@@ -98,13 +89,23 @@ class DatePicker extends React.PureComponent {
   }
 }
 
+DatePicker.defaultProps = {
+  getStagerStartEndDate: [],
+};
+
 DatePicker.propTypes = {
   getDashboardCounts: PropTypes.func.isRequired,
+  getStagerStartEndDate: PropTypes.node,
   triggerStartEndDate: PropTypes.func.isRequired,
+
 };
 const mapDispatchToProps = dispatch => ({
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   getDashboardCounts: stagerOperations.getDashboardCounts(dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(DatePicker);
+const mapStateToProps = state => ({
+  getStagerStartEndDate: stagerSelectors.getStagerStartEndDate(state),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DatePicker);

@@ -1,3 +1,6 @@
+.daterangepickercontainer {
+  width: 14rem !important;
+}
 .daterangepicker {
     position: absolute;
     display: flex;
