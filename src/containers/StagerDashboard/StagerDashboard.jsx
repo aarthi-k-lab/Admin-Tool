@@ -15,7 +15,7 @@ class StagerDashboard extends React.Component {
     super(props);
     this.state = {
       activeSearchTerm: '',
-      stager: 'UW_STAGER',
+      stager: 'STAGER_ALL',
     };
   }
 
