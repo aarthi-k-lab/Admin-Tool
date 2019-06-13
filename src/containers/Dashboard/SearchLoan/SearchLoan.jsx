@@ -58,6 +58,10 @@ class SearchLoan extends React.PureComponent {
     return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
   }
 
+  getBackendEndPath() {
+    return RouteAccess.hasBackendChecklistAccess(this.getGroups()) ? '/backend-checklist' : '/backend-evaluation';
+  }
+
   getFrontEndGroup() {
     return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
   }
@@ -92,7 +96,7 @@ class SearchLoan extends React.PureComponent {
       switch (payload.taskName) {
         case 'Underwriting':
           group = 'BEUW';
-          this.redirectPath = '/backend-evaluation';
+          this.redirectPath = this.getBackendEndPath();
           break;
         case 'Processing':
           group = 'PROC';
