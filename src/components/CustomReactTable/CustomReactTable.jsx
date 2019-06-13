@@ -204,6 +204,7 @@ class CustomReactTable extends React.PureComponent {
             )}
             position="static"
             steps={getStagerPageCount.pageSize}
+            styleName="pagination-Footer"
             variant="text"
           >
             Test
