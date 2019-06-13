@@ -47,7 +47,7 @@ const GROUP_INFO = [
   },
   {
     group: BEUW_TASKS_AND_CHECKLIST,
-    task: 'Underwriting (beta)',
+    task: 'Underwriting',
     taskCode: 'UW',
     path: '/backend-checklist',
   },
