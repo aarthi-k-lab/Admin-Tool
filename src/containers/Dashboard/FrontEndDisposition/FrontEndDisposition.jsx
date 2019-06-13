@@ -216,7 +216,7 @@ Disposition.defaultProps = {
   inProgress: false,
   saveInProgress: false,
   AppName: 'CMOD',
-  ProcIdType: 'ProcessId',
+  ProcIdType: 'WF_PRCS_ID',
   groupName: '',
 };
 

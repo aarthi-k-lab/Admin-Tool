@@ -38,7 +38,7 @@ describe('get Comments', () => {
   const payload = {
     payload: {
       applicationName: 'CMOD',
-      processIdType: 'ProcessId',
+      processIdType: 'WF_PRCS_ID',
       processId: 47898,
       eventName: 'UW',
       loanNumber: 34473856,
@@ -70,7 +70,7 @@ describe('post Comment', () => {
   const payload = {
     payload: {
       applicationName: 'CMOD',
-      processIdType: 'ProcessId',
+      processIdType: 'WF_PRCS_ID',
       processId: 47898,
       eventName: 'UW',
       loanNumber: 34473856,
