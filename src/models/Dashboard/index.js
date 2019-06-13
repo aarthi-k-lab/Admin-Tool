@@ -32,7 +32,7 @@ const GROUP_INFO = [
   },
   {
     group: FEUW_TASKS_AND_CHECKLIST,
-    task: 'Income Calculation (beta)',
+    task: 'Income Calculation',
     taskCode: 'UW',
     path: '/frontend-checklist',
     showAssignUnassign: true,
@@ -47,7 +47,7 @@ const GROUP_INFO = [
   },
   {
     group: BEUW_TASKS_AND_CHECKLIST,
-    task: 'Underwriting (beta)',
+    task: 'Underwriting',
     taskCode: 'UW',
     path: '/backend-checklist',
   },

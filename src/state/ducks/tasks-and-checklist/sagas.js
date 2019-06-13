@@ -21,6 +21,8 @@ import {
   STORE_CHECKLIST,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
+  EMPTY_CHECKLIST_COMMENT,
+  // EMPTY_DISPOSITION_COMMENT,
   STORE_OPTIONAL_TASKS,
   STORE_MISC_TASK_COMMENT,
   DISP_COMMENT_SAGA,
@@ -42,6 +44,14 @@ import { selectors as loginSelectors } from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
 
 const MISCTSK_CHK2 = 'MISCTSK_CHK2';
+const autoDispositions = [{
+  dispositionCode: 'allTasksCompleted',
+  dispositionComment: 'All Tasks Completed',
+}, {
+  dispositionCode: 'approval',
+  dispositionComment: 'approval',
+},
+];
 function* getChecklist(action) {
   try {
     const { payload: { taskId } } = action;
@@ -180,13 +190,18 @@ function* getTasks(action) {
       ]);
     }
     yield put(checklistNavAction);
-    if (R.pathOr(null, ['value', 'dispositionCode'], response) === 'allTasksCompleted') {
-      yield put(actions.validationDisplayAction(true));
-    }
     yield put({
       type: STORE_TASKS,
       payload: response,
     });
+    const disposition = autoDispositions.find(disp => disp.dispositionCode === R.pathOr(null, ['value', 'dispositionCode'], response));
+    if (disposition) {
+      yield put(actions.validationDisplayAction(true));
+      yield put(actions.dispositionCommentAction(disposition.dispositionComment));
+    } else {
+      yield put(actions.validationDisplayAction(false));
+      yield put({ type: EMPTY_CHECKLIST_COMMENT });
+    }
   } catch (e) {
     yield put({
       type: ERROR_LOADING_TASKS,

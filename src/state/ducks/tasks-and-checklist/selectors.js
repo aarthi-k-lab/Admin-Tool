@@ -189,7 +189,6 @@ const selectors = {
   selectedTaskId,
   selectedTaskBlueprintCode,
   showComment,
-
 };
 
 export default selectors;

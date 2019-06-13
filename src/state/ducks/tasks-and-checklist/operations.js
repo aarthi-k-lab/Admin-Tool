@@ -14,6 +14,8 @@ import {
   showDeleteTaskConfirmation,
   resetDeleteTaskConfirmation,
   subTaskClearance,
+  emptyDispositionComment,
+  dispositionComments,
 } from './actions';
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
@@ -26,6 +28,9 @@ const dispositionCommentTrigger = dispatch => payload => (
   dispatch(dispositionCommentAction(payload))
 );
 
+const changeDispositionComments = dispatch => payload => (
+  dispatch(dispositionComments(payload))
+);
 const fetchChecklist = dispatch => (taskId) => {
   dispatch(setSelectedChecklist(taskId));
   dispatch(getChecklist(taskId));
@@ -38,6 +43,8 @@ const handleChecklistItemValueChange = dispatch => (id, value, taskCode) => {
 };
 
 const handleToggleInstructions = dispatch => () => dispatch(toggleInstructions());
+
+const clearDispositionComments = dispatch => () => dispatch(emptyDispositionComment());
 
 const handleShowOptionalTasks = dispatch => () => dispatch(showOptionalTasks());
 
@@ -74,6 +81,8 @@ const operations = {
   handleUpdateChecklist,
   resetDeleteTaskConfirmationValues,
   handleSubTaskClearance,
+  clearDispositionComments,
+  changeDispositionComments,
 };
 
 export default operations;
