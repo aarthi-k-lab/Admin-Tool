@@ -19,7 +19,7 @@ class DropDownSelect extends Component {
   renderDropDown() {
     const { getDashboardItems, selectedValue } = this.props;
     const getDashboardItemsReports = getDashboardItems.length > 0
-      ? [getDashboardItems[0], getDashboardItems[1]] : [];
+      ? [getDashboardItems[0], getDashboardItems[1], getDashboardItems[2]] : [];
     return (
       <FormControl>
         <Select
