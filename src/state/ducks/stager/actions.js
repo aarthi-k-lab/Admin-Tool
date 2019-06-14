@@ -24,9 +24,10 @@ const triggerCheckboxSelect = selectedData => ({
   payload: selectedData,
 });
 
-const triggerOrderCallAction = payload => ({
+const triggerOrderCallAction = (payload, endPoint) => ({
   type: TRIGGER_ORDER_SAGA,
   payload,
+  endPoint,
 });
 
 const triggerDispositionOperationCallAction = payload => ({
