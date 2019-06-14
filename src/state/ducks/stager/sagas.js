@@ -166,7 +166,7 @@ function* makeOrderBpmCall(payload) {
     snackBar.type = 'message';
     snackBar.open = true;
     yield call(fireSnackBar, snackBar);
-    const response = yield call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload);
+    const response = yield call(Api.callPost, `api/stager/stager/dashboard/order/${payload.endPoint}`, payload.payload);
     const failedResponse = response ? response.filter(data => data.error === true) : [];
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);

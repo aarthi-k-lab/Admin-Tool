@@ -18,7 +18,10 @@ const onDownloadData = dispatch => payload => dispatch(triggerDownloadDataFetch(
 const onCheckBoxClick = dispatch => selectedData => dispatch(
   triggerCheckboxSelect(selectedData),
 );
-const triggerOrderCall = dispatch => payload => dispatch(triggerOrderCallAction(payload));
+
+const triggerOrderCall = dispatch => (payload, endPoint) => dispatch(
+  triggerOrderCallAction(payload, endPoint),
+);
 
 const triggerDispositionOperationCall = dispatch => (payload, action) => {
   dispatch(setDocGenAction(action));

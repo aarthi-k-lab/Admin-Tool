@@ -7,6 +7,7 @@ import { selectors as stagerSelectors, operations as stagerOperations } from 'du
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
 import DashboardModel from 'models/Dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
 import moment from 'moment';
 import StagerPage from './StagerPage';
 
@@ -28,13 +29,19 @@ class StagerDashboard extends React.Component {
     getDashboardCounts();
   }
 
-  onOrderClick(data) {
-    const { triggerOrderCall } = this.props;
+  onOrderClick(data, searchTerm) {
+    const { triggerOrderCall, user } = this.props;
+    const userPrincipalName = user.userDetails.email;
+    const endPoint = R.contains('Reclass', searchTerm) ? 'reclass' : 'valuation';
     const orderPayload = R.map(dataUnit => ({
       evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
       taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
     }), data);
-    triggerOrderCall(orderPayload);
+    const payload = {
+      taskData: orderPayload,
+      userPrincipalName,
+    };
+    triggerOrderCall(payload, endPoint);
   }
 
   onStatusCardClick(activeTile, activeTab, totalCount) {
@@ -165,7 +172,7 @@ class StagerDashboard extends React.Component {
           counts={counts}
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
-          onOrderClick={data => this.onOrderClick(data)}
+          onOrderClick={(data, searchTerm) => this.onOrderClick(data, searchTerm)}
           onSelectAll={(isChecked, data) => this.onSelectAll(isChecked, data)}
           onStagerChange={stagerValue => this.onStagerChange(stagerValue)}
           onStatusCardClick={
@@ -190,6 +197,7 @@ const mapStateToProps = state => ({
   tableData: stagerSelectors.getTableData(state),
   selectedData: stagerSelectors.getSelectedData(state),
   docGenResponse: stagerSelectors.getdocGenResponse(state),
+  user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -236,6 +244,14 @@ StagerDashboard.propTypes = {
   triggerStagerPageCount: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 StagerDashboard.defaultProps = {
