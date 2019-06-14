@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import CustomSnackBar from 'components/CustomSnackBar';
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
 import DashboardModel from 'models/Dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import moment from 'moment';
 import StagerPage from './StagerPage';
 
@@ -151,6 +153,17 @@ class StagerDashboard extends React.Component {
     onClearDocGenAction();
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
 
   render() {
     const { groups } = this.props;
@@ -164,8 +177,10 @@ class StagerDashboard extends React.Component {
     const {
       activeTab, activeTile, stager,
     } = this.state;
+
     return (
       <>
+        { this.renderSnackBar() }
         <StagerPage
           activeTab={activeTab}
           activeTile={activeTile}
@@ -197,6 +212,7 @@ const mapStateToProps = state => ({
   tableData: stagerSelectors.getTableData(state),
   selectedData: stagerSelectors.getSelectedData(state),
   docGenResponse: stagerSelectors.getdocGenResponse(state),
+  snackBarData: notificationSelectors.getSnackBarState(state),
   user: loginSelectors.getUser(state),
 });
 
@@ -209,9 +225,11 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
+  closeSnackBar: notificationOperations.closeSnackBar(dispatch),
 });
 
 StagerDashboard.propTypes = {
+  closeSnackBar: PropTypes.func,
   counts: PropTypes.arrayOf(
     PropTypes.shape({
       data: PropTypes.arrayOf(
@@ -239,6 +257,7 @@ StagerDashboard.propTypes = {
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
+  snackBarData: PropTypes.node,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
   triggerStagerPageCount: PropTypes.func.isRequired,
@@ -257,7 +276,9 @@ StagerDashboard.propTypes = {
 StagerDashboard.defaultProps = {
   counts: [],
   tableData: [],
+  snackBarData: null,
   loading: false,
+  closeSnackBar: () => {},
   docGenResponse: {},
 };
 
