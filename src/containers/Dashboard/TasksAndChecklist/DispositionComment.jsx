@@ -63,7 +63,7 @@ class DispositionComment extends Component {
 
     return (
         <>
-          {(comment && !allTaskScenario && commentsRequired)
+          {(!comment && !allTaskScenario && commentsRequired)
             && (
             <p
               id="text-Area"
