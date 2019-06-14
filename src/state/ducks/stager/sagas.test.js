@@ -198,6 +198,7 @@ describe('makeOrderBpmCall', () => {
   snackBarData.message = 'Order call failed for Eval ID(s): ';
   snackBarData.type = 'error';
   snackBarData.open = true;
+  const stagerPayload = { activeSearchTerm: 'LegalFeeToOrder', stager: 'UW_STAGER' };
   it('should call firesnackbar ', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.fireSnackBar, message));
@@ -218,9 +219,14 @@ describe('makeOrderBpmCall', () => {
       .toEqual(select(selectors.getActiveSearchTerm));
   });
 
-  it('should call fetchDashboardData ', () => {
+  it('should select StagerType ', () => {
     expect(saga.next('LegalFeeToOrder').value)
-      .toEqual(call(TestExports.fetchDashboardData, { payload: 'LegalFeeToOrder' }));
+      .toEqual(select(selectors.getStagerValue));
+  });
+
+  it('should call fetchDashboardData ', () => {
+    expect(saga.next('UW_STAGER').value)
+      .toEqual(call(TestExports.fetchDashboardData, { payload: stagerPayload }));
   });
   it('should call onCheckboxSelect ', () => {
     expect(saga.next('LegalFeeToOrder').value)
