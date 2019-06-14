@@ -187,7 +187,7 @@ describe('fetchDashboardData error', () => {
 });
 
 describe('makeOrderBpmCall', () => {
-  const payload = { payload: 'LegalFeeToOrder' };
+  const payload = { payload: 'LegalFeeToOrder', endPoint: 'valuation' };
   const message = {
     message: 'Ordering. Please wait... ',
     open: true,
@@ -205,7 +205,7 @@ describe('makeOrderBpmCall', () => {
 
   it('call stager Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload));
+      .toEqual(call(Api.callPost, `api/stager/stager/dashboard/order/${payload.endPoint}`, payload.payload));
   });
 
   it('should call fetchDashboardCounts ', () => {

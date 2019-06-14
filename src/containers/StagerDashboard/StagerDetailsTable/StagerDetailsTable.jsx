@@ -115,7 +115,7 @@ class StagerDetailsTable extends React.PureComponent {
                   {
                     data.isManualOrder && data.stagerTaskType !== 'Current Review'
                       ? (
-                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData)} styleName="details-table-btn" variant="contained">
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData, getActiveSearchTerm)} styleName="details-table-btn" variant="contained">
                           {'ORDER'}
                         </Button>
                       ) : null
