@@ -1,10 +1,12 @@
 const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
+const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const DOC_PROCESSOR = 'PROC';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
+  FEUW,
   FEUW_TASKS_AND_CHECKLIST,
   BEUW_TASKS_AND_CHECKLIST,
   BEUW,
