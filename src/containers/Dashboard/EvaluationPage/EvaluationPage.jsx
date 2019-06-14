@@ -34,6 +34,7 @@ class EvaluationPage extends React.PureComponent {
       case DashboardModel.BEUW:
         return <TasksAndChecklist />;
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
+      case DashboardModel.FEUW:
         return <TasksAndChecklist />;
       case DashboardModel.BEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
