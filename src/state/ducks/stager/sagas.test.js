@@ -188,12 +188,13 @@ describe('fetchDashboardData error', () => {
 
 describe('makeOrderBpmCall', () => {
   const payload = { payload: 'LegalFeeToOrder' };
+  const endPoint = 'valuation';
   const message = {
     message: 'Ordering. Please wait... ',
     open: true,
     type: 'message',
   };
-  const saga = cloneableGenerator(TestExports.makeOrderBpmCall)(payload);
+  const saga = cloneableGenerator(TestExports.makeOrderBpmCall)(payload, endPoint);
   const snackBarData = {};
   snackBarData.message = 'Order call failed for Eval ID(s): ';
   snackBarData.type = 'error';
@@ -205,7 +206,7 @@ describe('makeOrderBpmCall', () => {
 
   it('call stager Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload));
+      .toEqual(call(Api.callPost, `api/stager/stager/dashboard/order/${endPoint}`, payload.payload));
   });
 
   it('should call fetchDashboardCounts ', () => {
