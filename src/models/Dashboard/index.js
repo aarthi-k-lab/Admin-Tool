@@ -31,7 +31,7 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
-    group: FEUW_TASKS_AND_CHECKLIST,
+    group: FEUW,
     task: 'Income Calculation',
     taskCode: 'UW',
     path: '/frontend-checklist',

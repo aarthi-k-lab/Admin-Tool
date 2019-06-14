@@ -270,7 +270,7 @@ Auth.homePage = [
   },
   {
     groupName: FRONTEND_UNDERWRITER,
-    path: '/frontend-evaluation',
+    path: '/frontend-checklist',
   },
   {
     groupName: BACKEND_UNDERWRITER,

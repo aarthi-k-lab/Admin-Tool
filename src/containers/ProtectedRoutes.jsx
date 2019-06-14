@@ -86,7 +86,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasFrontendChecklistAccess(groups)
-        ? <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />
+        ? <Dashboard group={DashboardModel.FEUW} />
         : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
     );
   }
