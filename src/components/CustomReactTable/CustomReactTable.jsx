@@ -99,7 +99,8 @@ class CustomReactTable extends React.PureComponent {
               {columnName.toUpperCase()}
             </div>
           );
-          columnObj.minWidth = 150;
+          const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
+          columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
           columnObj.Cell = row => this.constructor.getCellContent(row);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
