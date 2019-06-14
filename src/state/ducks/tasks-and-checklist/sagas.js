@@ -276,6 +276,7 @@ function* postComment(action) {
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
     const taskId = yield select(dashboardSelectors.taskId);
+    const taskIterationCounter = yield select(dashboardSelectors.taskIterationCounter);
     // const evalId = yield select(dashboardSelectors.evalId);
     const processId = yield select(dashboardSelectors.processId);
     const disposition = yield select(selectors.getDisposition);
@@ -292,6 +293,7 @@ function* postComment(action) {
         TASK: taskName,
         TASK_ID: taskId,
         TASK_ACTN: disposition,
+        TASK_ITRN_CNTR: taskIterationCounter,
         DSPN_IND: 1,
       }),
     };
@@ -312,6 +314,7 @@ function* postDispositionComment(action) {
   const eventName = !R.isNil(page) ? page.taskCode : '';
   const taskName = !R.isNil(page) ? page.task : '';
   const taskId = yield select(dashboardSelectors.taskId);
+  const taskIterationCounter = yield select(dashboardSelectors.taskIterationCounter);
   const processId = yield select(dashboardSelectors.processId);
   const disposition = yield select(selectors.getDisposition);
   const commentPayload = {
@@ -327,6 +330,7 @@ function* postDispositionComment(action) {
       TASK: taskName,
       TASK_ID: taskId,
       TASK_ACTN: disposition,
+      TASK_ITRN_CNTR: taskIterationCounter,
       DSPN_IND: 1,
     }),
   };
