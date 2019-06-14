@@ -170,7 +170,9 @@ function* makeOrderBpmCall(payload) {
     const failedResponse = response ? response.filter(data => data.error === true) : [];
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
-    yield call(fetchDashboardData, { payload: activeSearchTerm });
+    const stager = yield select(selectors.getStagerValue);
+    const stagerPayload = { activeSearchTerm, stager };
+    yield call(fetchDashboardData, { payload: stagerPayload });
     yield call(onCheckboxSelect, { payload: [] });
     if (failedResponse && failedResponse.length > 0) {
       const snackBarData = {};
