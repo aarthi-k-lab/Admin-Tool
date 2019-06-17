@@ -176,7 +176,11 @@ function* makeOrderBpmCall(payload) {
     yield call(onCheckboxSelect, { payload: [] });
     if (failedResponse && failedResponse.length > 0) {
       const snackBarData = {};
-      if (failedResponse.length > 5) {
+      if (R.any(data => R.contains('Ordering in Progress.', data.message), failedResponse)) {
+        snackBarData.message = 'Ordering in Progress...';
+        snackBarData.type = 'warning';
+        snackBarData.open = true;
+      } else if (failedResponse.length > 5) {
         snackBarData.message = 'Order call failed for more than 5 Eval ID(s): Contact Admin!';
         snackBarData.type = 'error';
         snackBarData.open = true;
