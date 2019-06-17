@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
+import DashboardModel from 'models/Dashboard';
 import { connect } from 'react-redux';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import PropTypes from 'prop-types';
@@ -16,13 +17,31 @@ class DatePicker extends React.PureComponent {
   }
 
   applyCallback(fromDate, toDate) {
-    const { triggerStartEndDate, getDashboardCounts } = this.props;
-    const payload = {
+    const {
+      triggerStartEndDate, getDashboardCounts,
+      getDashboardData, getActiveSearchTerm,
+      getStagerValue, triggerStagerPageCount,
+      getStagerPageCount,
+    } = this.props;
+    const stagerTablePageCount = DashboardModel.STAGER_TABLE_PAGE_COUNT;
+    const pagepayload = {
       fromDate: fromDate.format('YYYY-MM-DD HH:mm:ss'),
       toDate: toDate.format('YYYY-MM-DD HH:mm:ss'),
     };
-    triggerStartEndDate(payload);
+    const payload = {
+      activeSearchTerm: getActiveSearchTerm,
+      stager: getStagerValue,
+    };
+    const stagerPayload = {
+      PageCount: 0,
+      pageNo: 1,
+      maxFetchCount: stagerTablePageCount,
+      pageSize: getStagerPageCount.pageSize,
+    };
+    triggerStartEndDate(pagepayload);
     getDashboardCounts();
+    triggerStagerPageCount(stagerPayload);
+    getDashboardData(payload);
   }
 
   render() {
@@ -91,21 +110,34 @@ class DatePicker extends React.PureComponent {
 
 DatePicker.defaultProps = {
   getStagerStartEndDate: [],
+  getStagerPageCount: [],
 };
 
 DatePicker.propTypes = {
+  getActiveSearchTerm: PropTypes.string.isRequired,
   getDashboardCounts: PropTypes.func.isRequired,
+  getDashboardData: PropTypes.func.isRequired,
+  getStagerPageCount: PropTypes.node,
   getStagerStartEndDate: PropTypes.node,
+  getStagerValue: PropTypes.string.isRequired,
+  triggerStagerPageCount: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
 
 };
 const mapDispatchToProps = dispatch => ({
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   getDashboardCounts: stagerOperations.getDashboardCounts(dispatch),
+  getDashboardData: stagerOperations.getDashboardData(dispatch),
+  triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
+
 });
 
 const mapStateToProps = state => ({
   getStagerStartEndDate: stagerSelectors.getStagerStartEndDate(state),
+  getStagerValue: stagerSelectors.getStagerValue(state),
+  getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
+  tableData: stagerSelectors.getTableData(state),
+  getStagerPageCount: stagerSelectors.getStagerPageCount(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatePicker);
