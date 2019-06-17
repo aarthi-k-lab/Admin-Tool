@@ -210,7 +210,7 @@ describe('makeOrderBpmCall', () => {
   });
 
   it('should call fetchDashboardCounts ', () => {
-    expect(saga.next([{ error: true, data: [{ evalId: 123456 }] }]).value)
+    expect(saga.next([{ error: true, data: [{ evalId: 123456 }], message: 'Order call failed for Eval ID(s): ' }]).value)
       .toEqual(call(TestExports.fetchDashboardCounts));
   });
 
