@@ -28,10 +28,6 @@ class DatePicker extends React.PureComponent {
       fromDate: fromDate.format('YYYY-MM-DD HH:mm:ss'),
       toDate: toDate.format('YYYY-MM-DD HH:mm:ss'),
     };
-    const payload = {
-      activeSearchTerm: getActiveSearchTerm,
-      stager: getStagerValue,
-    };
     const stagerPayload = {
       PageCount: 0,
       pageNo: 1,
@@ -41,7 +37,13 @@ class DatePicker extends React.PureComponent {
     triggerStartEndDate(pagepayload);
     getDashboardCounts();
     triggerStagerPageCount(stagerPayload);
-    getDashboardData(payload);
+    if (getActiveSearchTerm) {
+      const payload = {
+        activeSearchTerm: getActiveSearchTerm,
+        stager: getStagerValue,
+      };
+      getDashboardData(payload);
+    }
   }
 
   render() {
@@ -60,6 +62,9 @@ class DatePicker extends React.PureComponent {
     const customeDate = moment(
       new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
     );
+    const maxDate = moment(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0),
+    );
     const ranges = {
       'Today ': [customeDate, end],
       'Yesterday ': [
@@ -75,7 +80,6 @@ class DatePicker extends React.PureComponent {
       format: 'MM-DD-YYYY',
       sundayFirst: false,
     };
-    const maxDate = moment(end);
     return (
       <>
         <div>
