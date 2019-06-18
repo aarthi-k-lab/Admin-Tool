@@ -34,14 +34,15 @@ const StagerDocumentStatusCard = ({
               {!R.isNil(slaBreachedCount)
                 ? (
                   <span styleName={slaBreachedCount ? 'sla-breached-chip info-chip' : 'info-chip info-chip-0-count'}>
-                    {`${(`${slaBreachedCount}`)} SLA BREACHED`}
+                    { `${slaBreachedCount <= 9 ? (`0${slaBreachedCount}`) : (`${slaBreachedCount}`)}  SLA BREACHED`}
+
                   </span>
                 ) : null}
               <div styleName="line_break" />
               {!R.isNil(slaToBeBreachedCount)
                 ? (
                   <span styleName={slaToBeBreachedCount ? 'info-chip' : 'info-chip info-chip-0-count'}>
-                    {`${(`${slaToBeBreachedCount}`)} SLA ABOUT TO BREACH`}
+                    { `${slaToBeBreachedCount <= 9 ? (`0${slaToBeBreachedCount}`) : (`${slaToBeBreachedCount}`)} SLA ABOUT TO BREACH`}
                   </span>
                 ) : null}
             </Grid>
