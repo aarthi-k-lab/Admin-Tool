@@ -27,6 +27,7 @@ import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
+import IdleUserHandle from './IdleUserHandler';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -152,6 +153,7 @@ class ProtectedRoutes extends React.Component {
     }
     return (
       <App expandView={expandView} location={location.pathname} user={user}>
+        <IdleUserHandle />
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
