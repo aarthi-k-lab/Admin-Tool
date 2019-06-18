@@ -68,7 +68,10 @@ class StagerPopup extends React.PureComponent {
         this.onCloseClick();
       }, 5000);
     }
-    return (` ${this.succeededLoancount} / ${this.totalLoansCount} Loans ordered successfully [${action}]`);
+    return ({
+      totalCountText: `${this.succeededLoancount} / ${this.totalLoansCount} Loans ordered successfully [${action}]`,
+      failedCounts: `${this.failedLoancount}`,
+    });
   }
 
   handleCheckbox(event, loanDetails) {
@@ -90,12 +93,14 @@ class StagerPopup extends React.PureComponent {
   render() {
     const { popupData } = this.props;
     const { showSuccess, checkedData, isPopupClose } = this.state;
+    const { totalCountText, failedCounts } = this.getTotalLoanCount();
+    const expandedPopup = failedCounts > 0;
     return (
       <div styleName={isPopupClose ? 'open' : 'close'}>
-        <ExpansionPanel styleName="expansion-header">
+        <ExpansionPanel expanded={expandedPopup} styleName="expansion-header">
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName="expansion-header-title" />} styleName="expansion-title">
             <Typography styleName="expansion-header-title">
-              {this.getTotalLoanCount()}
+              {totalCountText}
             </Typography>
           </ExpansionPanelSummary>
 
