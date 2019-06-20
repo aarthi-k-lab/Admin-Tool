@@ -29,7 +29,9 @@ class StagerPopup extends React.PureComponent {
       isPopupClose: true,
       expandPopup: true,
       enableRetryBtn: true,
+      isclicked: 0,
     };
+    this.expandValue = false;
   }
 
   onEyeIconClick() {
@@ -72,6 +74,10 @@ class StagerPopup extends React.PureComponent {
         this.onCloseClick();
       }, 5000);
     }
+    const { isclicked } = this.state;
+    if (isclicked === 0) {
+      this.expandValue = this.failedLoancount !== 0;
+    }
     return ({
       totalCountText: `${this.succeededLoancount} / ${this.totalLoansCount} Loans ordered successfully [${action}]`,
       failedCounts: this.failedLoancount,
@@ -97,8 +103,9 @@ class StagerPopup extends React.PureComponent {
   }
 
   handlePopUp() {
-    const { expandPopup } = this.state;
-    this.setState({ expandPopup: !expandPopup });
+    const { expandPopup, isclicked } = this.state;
+    this.expandValue = !this.expandValue;
+    this.setState({ expandPopup: !expandPopup, isclicked: isclicked + 1 });
   }
 
   render() {
@@ -109,10 +116,9 @@ class StagerPopup extends React.PureComponent {
       enableRetryBtn,
     } = this.state;
     const { totalCountText, failedCounts } = this.getTotalLoanCount();
-    this.expandValue = !(failedCounts === 0 && expandPopup);
     return (
       <div styleName={isPopupClose ? 'open' : 'close'}>
-        <ExpansionPanel expanded={this.expandValue} onChange={() => this.handlePopUp()} styleName="expansion-header">
+        <ExpansionPanel expanded={this.expandValue} onChange={() => this.handlePopUp(expandPopup)} styleName="expansion-header">
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName={failedCounts === 0 ? 'expansion-header-Icon' : 'expansion-header-title'} />} styleName="expansion-title">
             <Typography styleName="expansion-header-title">
               {totalCountText}
