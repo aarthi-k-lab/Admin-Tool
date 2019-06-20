@@ -27,6 +27,8 @@ class StagerPopup extends React.PureComponent {
       showSuccess: false,
       checkedData: [],
       isPopupClose: true,
+      expandPopup: true,
+      enableRetryBtn: true,
     };
   }
 
@@ -38,10 +40,12 @@ class StagerPopup extends React.PureComponent {
 
   onRetryClick() {
     const { checkedData } = this.state;
-    const { triggerDispositionOperationCall, action } = this.props;
+    const { triggerDispositionOperationCall, action, onClearDocGenAction } = this.props;
     triggerDispositionOperationCall(
       StagerDetailsTable.getDispositionOperationPayload(checkedData), action,
     );
+    onClearDocGenAction();
+    this.setState({ enableRetryBtn: true });
   }
 
   onCloseClick() {
@@ -70,7 +74,7 @@ class StagerPopup extends React.PureComponent {
     }
     return ({
       totalCountText: `${this.succeededLoancount} / ${this.totalLoansCount} Loans ordered successfully [${action}]`,
-      failedCounts: `${this.failedLoancount}`,
+      failedCounts: this.failedLoancount,
     });
   }
 
@@ -78,11 +82,13 @@ class StagerPopup extends React.PureComponent {
     const { checkedData } = this.state;
     if (event.target.checked) {
       checkedData.push({ 'Eval ID': loanDetails.evalId, TKIID: loanDetails.taskId, 'Loan Number': loanDetails.loanNumber });
+      this.enableRetryBtn = false;
     } else {
       const index = checkedData.findIndex(data => data['Eval ID'] === loanDetails.evalId);
       checkedData.splice(index, 1);
+      this.enableRetryBtn = true;
     }
-    this.setState({ checkedData });
+    this.setState({ checkedData, enableRetryBtn: this.enableRetryBtn });
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -90,15 +96,24 @@ class StagerPopup extends React.PureComponent {
     return R.equals(loanStatus, 'hitLoans');
   }
 
+  handlePopUp() {
+    const { expandPopup } = this.state;
+    this.setState({ expandPopup: !expandPopup });
+  }
+
   render() {
     const { popupData } = this.props;
-    const { showSuccess, checkedData, isPopupClose } = this.state;
+    const {
+      showSuccess, checkedData,
+      isPopupClose, expandPopup,
+      enableRetryBtn,
+    } = this.state;
     const { totalCountText, failedCounts } = this.getTotalLoanCount();
-    const expandedPopup = failedCounts > 0;
+    this.expandValue = !(failedCounts === 0 && expandPopup);
     return (
       <div styleName={isPopupClose ? 'open' : 'close'}>
-        <ExpansionPanel expanded={expandedPopup} styleName="expansion-header">
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName="expansion-header-title" />} styleName="expansion-title">
+        <ExpansionPanel expanded={this.expandValue} onChange={() => this.handlePopUp()} styleName="expansion-header">
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon styleName={failedCounts === 0 ? 'expansion-header-Icon' : 'expansion-header-title'} />} styleName="expansion-title">
             <Typography styleName="expansion-header-title">
               {totalCountText}
             </Typography>
@@ -125,7 +140,7 @@ class StagerPopup extends React.PureComponent {
                         (!this.isSucceededLoan(loanStatus) && !R.isEmpty(popupData.missedLoans))
                           ? (
                             <div styleName="retry">
-                              <Button color="primary" onClick={() => this.onRetryClick()} variant="contained">
+                              <Button color="primary" disabled={enableRetryBtn} onClick={() => this.onRetryClick()} variant="contained">
                                 Retry
                               </Button>
                             </div>

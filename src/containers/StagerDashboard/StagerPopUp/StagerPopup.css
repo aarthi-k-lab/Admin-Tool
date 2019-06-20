@@ -3,67 +3,74 @@
     bottom: 1.2rem;
     width: 40%;
     margin-left: 0.5rem !important;
-   }
-   .expansion-title {
+}
+
+.expansion-title {
     background-color: #464444 !important;
     min-height: inherit !important;
-   }
-  
-   .expansion-header-title {
-     color: white !important;
-     font-size: 1rem !important;
-   }
-  
-   .expansion-succeededLoan-title {
-     background-color: rgb(230, 230, 230) !important;
-     height: 4rem;
-     padding: 15px 24px 24px !important;
-   }
-  
-   .expansion-failedLoan-title {
-    background-color:white !important;
-    padding: 10px 24px 2px !important; 
-  }
-  
-  .popup-font {
+}
+
+.expansion-header-title {
+    color: white !important;
     font-size: 1rem !important;
-  }
+}
 
-  .successHide{
+.expansion-header-Icon {
+    color: white !important;
+    font-size: 1rem !important;
+    visibility: hidden !important;
+}
+
+.expansion-succeededLoan-title {
+    background-color: rgb(230, 230, 230) !important;
+    height: 4rem;
+    padding: 15px 24px 24px !important;
+}
+
+.expansion-failedLoan-title {
+    background-color: white !important;
+    padding: 10px 24px 2px !important;
+}
+
+.popup-font {
+    font-size: 1rem !important;
+}
+
+.successHide {
     display: none;
-  }
+}
 
-  .successView{
+.successView {
     display: block;
     border-bottom: 0.1rem solid rgb(230, 230, 230) !important;
     padding-bottom: 0.5rem;
     overflow: auto;
     max-height: 30vh;
-  }
-  
-  .failed{
+}
+
+.failed {
     display: block;
     overflow: auto;
     max-height: 30vh;
-  }
+}
 
-  .open{
+.open {
     display: block;
-  }
+}
 
-  .close{
+.close {
     display: none;
-  }
+}
 
-  .eye-icon-div:hover{
+.eye-icon-div:hover {
     cursor: pointer;
-  }
+}
 
-  .retry{
+.retry {
     margin-left: -0.5rem;
-  }
-  
-  .succeededLoan {
+}
+
+.succeededLoan {
     border: 3px solid green;
     background-color: green;
     color: white;
@@ -71,9 +78,9 @@
     font-weight: 900;
     padding: 0px 0.3rem 0 0.3rem;
     border-radius: 0.25rem;
-  }
-  
-  .failedLoan {
+}
+
+.failedLoan {
     border: 3px solid red;
     background-color: red;
     color: white;
@@ -81,13 +88,12 @@
     font-weight: 900;
     padding: 0px 0.3rem 0 0.3rem;
     border-radius: 0.25rem;
-  }
-  
-  .alert-font {
+}
+
+.alert-font {
     color: red !important;
-  }
-  
-  .eye-icon {
+}
+
+.eye-icon {
     margin-left: 1.5rem !important;
-  }
-  
+}
