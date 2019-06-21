@@ -7,7 +7,7 @@ const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
-const STAGER_TABLE_PAGE_COUNT = 10;
+const STAGER_TABLE_PAGE_COUNT = 50;
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
