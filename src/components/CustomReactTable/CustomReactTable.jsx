@@ -174,7 +174,7 @@ class CustomReactTable extends React.PureComponent {
             columns={this.getColumnData(tableData.stagerTaskType,
               tableData.stagerTaskStatus, tableData.isManualOrder, tableData.tableData)}
             data={tableData.tableData}
-            defaultPageSize={100}
+            defaultPageSize={DashboardModel.STAGER_TABLE_PAGE_COUNT}
             defaultSorted={tableData.defaultSorted ? [
               {
                 id: tableData.defaultSorted,
