@@ -32,10 +32,10 @@ import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm, stagerPageOffSet, maxFetchCount) {
-  const fromDateUTC = R.propOr({}, 'fromDate', stagerStartEndDate);
-  const toDateUTC = R.propOr({}, 'toDate', stagerStartEndDate);
-  const fromDate = new Date(fromDateUTC).toISOString().replace(/T/, ' ').replace(/\..+/, '');
-  const toDate = new Date(toDateUTC).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+  const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
+  const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
+  const fromDate = new Date(fromDateMoment).toISOString();
+  const toDate = new Date(toDateMoment).toISOString();
   const dateValue = {
     fromDate,
     toDate,
