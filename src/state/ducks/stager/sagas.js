@@ -33,9 +33,11 @@ import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm, stagerPageOffSet, maxFetchCount) {
   const fromDate = R.propOr({}, 'fromDate', stagerStartEndDate);
   const toDate = R.propOr({}, 'toDate', stagerStartEndDate);
+  const fromDateUTC = new Date(fromDate).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+  const toDateUTC = new Date(toDate).toISOString().replace(/T/, ' ').replace(/\..+/, '');
   const dateValue = {
-    fromDate,
-    toDate,
+    fromDateUTC,
+    toDateUTC,
     stagerType,
     searchTerm,
     stagerPageOffSet,
