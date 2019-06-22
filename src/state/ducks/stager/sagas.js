@@ -26,18 +26,19 @@ import {
   SET_DOWNLOAD_DATA,
 
 } from './types';
+
 import selectors from './selectors';
 import Disposition from '../../../models/Disposition';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm, stagerPageOffSet, maxFetchCount) {
-  const fromDate = R.propOr({}, 'fromDate', stagerStartEndDate);
-  const toDate = R.propOr({}, 'toDate', stagerStartEndDate);
-  const fromDateUTC = new Date(fromDate).toISOString().replace(/T/, ' ').replace(/\..+/, '');
-  const toDateUTC = new Date(toDate).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+  const fromDateUTC = R.propOr({}, 'fromDate', stagerStartEndDate);
+  const toDateUTC = R.propOr({}, 'toDate', stagerStartEndDate);
+  const fromDate = new Date(fromDateUTC).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+  const toDate = new Date(toDateUTC).toISOString().replace(/T/, ' ').replace(/\..+/, '');
   const dateValue = {
-    fromDateUTC,
-    toDateUTC,
+    fromDate,
+    toDate,
     stagerType,
     searchTerm,
     stagerPageOffSet,

@@ -78,6 +78,13 @@ describe('onCheckboxSelect ', () => {
   });
 });
 const dateValue = {
+  fromDate: '2019-01-05 00:00:00',
+  stagerType: 'UNDERWRITER STAGER',
+  toDate: '2019-01-05 00:00:00',
+  searchTerm: null,
+};
+
+const dateUTCValue = {
   fromDate: '2019-01-05',
   stagerType: 'UNDERWRITER STAGER',
   toDate: '2019-01-05',
@@ -94,7 +101,7 @@ describe('fetchDashboardCounts ', () => {
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('call getCounts Api', () => {
-    expect(saga.next(dateValue).value)
+    expect(saga.next(dateUTCValue).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
   it('should update with returned payload ', () => {
@@ -115,11 +122,19 @@ describe('fetchDashboardData ', () => {
     },
   };
   const date = {
+    fromDate: '2019-01-05 00:00:00',
+    stagerType: 'UNDERWRITER STAGER',
+    searchTerm: 'LegalFeeToOrder',
+    toDate: '2019-01-05 00:00:00',
+    stagerPageOffSet: 1,
+    maxFetchCount: 10,
+  };
+  const dateUtc = {
     fromDate: '2019-01-05',
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
     toDate: '2019-01-05',
-    stagerPageOffSet: 1,
+    PageCount: 1,
     maxFetchCount: 10,
   };
   const pagePayload = {
@@ -144,7 +159,7 @@ describe('fetchDashboardData ', () => {
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('should select Max Page Count ', () => {
-    expect(saga.next(date).value)
+    expect(saga.next(dateUtc).value)
       .toEqual(select(selectors.getStagerPageCount));
   });
   it('call bpm audit data Api', () => {
