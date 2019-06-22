@@ -78,9 +78,9 @@ describe('onCheckboxSelect ', () => {
   });
 });
 const dateValue = {
-  fromDate: '2019-01-05 00:00:00',
+  fromDate: '2019-01-05T00:00:00.000Z',
   stagerType: 'UNDERWRITER STAGER',
-  toDate: '2019-01-05 00:00:00',
+  toDate: '2019-01-05T00:00:00.000Z',
   searchTerm: null,
 };
 
@@ -122,10 +122,10 @@ describe('fetchDashboardData ', () => {
     },
   };
   const date = {
-    fromDate: '2019-01-05 00:00:00',
+    fromDate: '2019-01-05T00:00:00.000Z',
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
-    toDate: '2019-01-05 00:00:00',
+    toDate: '2019-01-05T00:00:00.000Z',
     stagerPageOffSet: 1,
     maxFetchCount: 10,
   };
