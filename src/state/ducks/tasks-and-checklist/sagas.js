@@ -27,7 +27,9 @@ import {
   DISP_COMMENT,
   UPDATE_CHECKLIST,
   CLEAR_SUBTASK,
-  GET_HISTORICAL_CHECKLIST,
+  HISTORICAL_CHECKLIST_DATA,
+  GET_HISTORICAL_CHECKLIST_DATA,
+  ERROR_LOADING_HISTORICAL_CHECKLIST,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -73,41 +75,6 @@ function* getChecklist(action) {
     });
   }
 }
-
-function* getHistoricalChecklist(action) {
-  try {
-    const { payload: { checkListId } } = action;
-    console.log('checvkList here', checkListId);
-    yield put({
-      type: LOADING_CHECKLIST,
-    });
-    const response = yield call(Api.callGet, `/api/generatePdf/${checkListId}`);
-    const didErrorOccur = response === null;
-    if (didErrorOccur) {
-      throw new Error('Api call failed');
-    }
-    // yield put({
-    //   type: STORE_CHECKLIST,
-    //   payload: response,
-    // });
-    console.log('response for checkList Id is', response);
-  } catch (e) {
-    console.log('error', e);
-    // yield put({
-    //   type: ERROR_LOADING_CHECKLIST,
-    // });
-    const snackBar = {
-      message: 'Checklist fetch failed.',
-      type: 'error',
-      open: true,
-    };
-    yield put({
-      type: SET_SNACK_BAR_VALUES,
-      payload: snackBar,
-    });
-  }
-}
-
 
 function* callAndPut(fn, ...args) {
   return yield put(yield call(fn, ...args));
@@ -282,6 +249,21 @@ function* handleSaveChecklistError(e) {
   });
 }
 
+function* handleGetHistoricalChecklistError(e) {
+  yield put({
+    type: ERROR_LOADING_HISTORICAL_CHECKLIST,
+  });
+  const snackBar = {};
+  snackBar.message = `Get Historical Checklist failed: ${e.message}`;
+  snackBar.type = 'error';
+  snackBar.open = true;
+  yield put({
+    type: SET_SNACK_BAR_VALUES,
+    payload: snackBar,
+  });
+}
+
+
 function isValidTaskPayload(action, taskCodeRef) {
   return !R.isNil(action.payload.taskCode)
     && !R.isEmpty(action.payload.taskCode) && R.equals(action.payload.taskCode, taskCodeRef);
@@ -416,6 +398,19 @@ function* updateChecklist(action) {
   }
 }
 
+function* getHistoricalChecklistData(action) {
+  try {
+    const { processId } = action.payload;
+    const response = yield call(Api.callGet, `/api/dataservice/getTaskDetailsForProcessIds/${processId}`);
+    yield put({
+      type: HISTORICAL_CHECKLIST_DATA,
+      payload: response,
+    });
+  } catch (e) {
+    yield call(handleGetHistoricalChecklistError, e);
+  }
+}
+
 function* subTaskClearance(action) {
   try {
     const { id, rootTaskId, taskBlueprintCode } = action.payload;
@@ -449,8 +444,8 @@ function* watchGetChecklist() {
   yield takeEvery(GET_CHECKLIST_SAGA, getChecklist);
 }
 
-function* watchGetHistoricalChecklist() {
-  yield takeEvery(GET_HISTORICAL_CHECKLIST, getHistoricalChecklist);
+function* watchGetHistoricalChecklistData() {
+  yield takeEvery(GET_HISTORICAL_CHECKLIST_DATA, getHistoricalChecklistData);
 }
 
 function* watchGetNextChecklist() {
@@ -490,7 +485,7 @@ export function* combinedSaga() {
     watchGetTasks(),
     watchDispositionComment(),
     watchUpdateChecklist(),
-    watchGetHistoricalChecklist(),
+    watchGetHistoricalChecklistData(),
     watchSubtaskClearance(),
   ]);
 }

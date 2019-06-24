@@ -118,16 +118,16 @@ class TaskPane extends React.PureComponent {
       updateChecklist,
       handleShowDeleteTaskConfirmation,
       resetDeleteTaskConfirmation,
-      fetchHistoricalCheckList,
+      historicalCheckListData,
     } = this.props;
     return (
       (
         <LeftTaskPane
           className={className}
           dataLoadStatus={dataLoadStatus}
-          getHistoricalCheckList={fetchHistoricalCheckList}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}
+          historicalCheckListData={historicalCheckListData}
           onSubTaskClick={onSubTaskClick}
           optionalTasks={optionalTasks}
           resetDeleteTaskConfirmation={resetDeleteTaskConfirmation}
@@ -156,9 +156,9 @@ TaskPane.defaultProps = {
 TaskPane.propTypes = {
   className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
-  fetchHistoricalCheckList: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
+  historicalCheckListData: PropTypes.arrayOf(Object).isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
@@ -176,6 +176,7 @@ const mapStateToProps = state => ({
   selectedTaskId: taskSelectors.getSelectedChecklistId(state),
   tasks: taskSelectors.getTaskTree(state).subTasks,
   optionalTasks: taskSelectors.getOptionalTasks(state),
+  historicalCheckListData: taskSelectors.getHistoricalChecklistData(state),
   showOptionalTasks: taskSelectors.shouldShowOptionalTasks(state),
   shouldDeleteTask: taskSelectors.shouldDeleteTask(state),
 });
@@ -186,7 +187,6 @@ const mapDispatchToProps = dispatch => ({
   handleShowOptionalTasks: taskOperations.handleShowOptionalTasks(dispatch),
   handleShowDeleteTaskConfirmation: taskOperations.handleShowDeleteTaskConfirmation(dispatch),
   updateChecklist: taskOperations.handleUpdateChecklist(dispatch),
-  fetchHistoricalCheckList: taskOperations.fetchHistoricalCheckList(dispatch),
   resetDeleteTaskConfirmation: taskOperations.resetDeleteTaskConfirmationValues(dispatch),
 });
 

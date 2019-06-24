@@ -1,6 +1,5 @@
 import {
   getNextChecklist,
-  getHistoricalCheckList,
   getPrevChecklist,
   getChecklist,
   storeTaskFilter,
@@ -16,8 +15,6 @@ import {
   resetDeleteTaskConfirmation,
   subTaskClearance,
 } from './actions';
-
-const fetchHistoricalCheckList = dispatch => payload => dispatch(getHistoricalCheckList(payload));
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
 
@@ -77,7 +74,6 @@ const operations = {
   handleUpdateChecklist,
   resetDeleteTaskConfirmationValues,
   handleSubTaskClearance,
-  fetchHistoricalCheckList,
 };
 
 export default operations;

@@ -113,6 +113,7 @@ class LeftTaskPane extends React.Component {
       tasks,
       updateChecklist,
       handleShowDeleteTaskConfirmation, shouldDeleteTask,
+      historicalCheckListData,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -138,6 +139,7 @@ class LeftTaskPane extends React.Component {
                   <div styleName="icons">
                     <div styleName="checklist-history-icon">
                       <ChecklistHistory
+                        checkListData={historicalCheckListData}
                         margin={{ 'margin-left': '5rem' }}
                       />
                     </div>
@@ -218,6 +220,7 @@ LeftTaskPane.propTypes = {
   defaultState: PropTypes.string,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
+  historicalCheckListData: PropTypes.arrayOf(Object).isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),

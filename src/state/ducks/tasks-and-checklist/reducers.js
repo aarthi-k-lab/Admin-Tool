@@ -23,6 +23,8 @@ import {
   SHOW_DELETE_TASK_CONFIRMATION,
   DELETE_TASK,
   RESET_DELETE_TASK,
+  HISTORICAL_CHECKLIST_DATA,
+  ERROR_LOADING_HISTORICAL_CHECKLIST,
 } from './types';
 
 const FAILED = 'failed';
@@ -113,6 +115,16 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         taskLoadingStatus: LOADING,
+      };
+    case HISTORICAL_CHECKLIST_DATA:
+      return {
+        ...state,
+        historicalCheckList: action.payload,
+      };
+    case ERROR_LOADING_HISTORICAL_CHECKLIST:
+      return {
+        ...state,
+        historicalCheckList: {},
       };
     case REMOVE_DIRTY_CHECKLIST:
       return removeDirtyChecklistItem(state);

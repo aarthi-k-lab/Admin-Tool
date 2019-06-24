@@ -29,23 +29,23 @@ const styles = theme => ({
   },
 });
 
-const historicalData = [
-  {
-    checklistId: '5cee56a55b95415a7ce905f6',
-    description: 'BEUW-Suspicious Activity Review',
-    time: '27 May 2019 08:30pm',
-  },
-  {
-    checklistId: '5cee415e6dc1d4270a6a63e8',
-    description: 'FEUW-Suspicious Activity Review',
-    time: '27 May 2019 08:30pm',
-  },
-  {
-    checklistId: '5ce7143f69daeb6ed3ffdb4c',
-    description: 'FEUW-Suspicious Activity Review',
-    time: '27 May 2019 08:30pm',
-  },
-];
+// const historicalData = [
+//   {
+//     checklistId: '5cee56a55b95415a7ce905f6',
+//     description: 'BEUW-Suspicious Activity Review',
+//     time: '27 May 2019 08:30pm',
+//   },
+//   {
+//     checklistId: '5cee415e6dc1d4270a6a63e8',
+//     description: 'FEUW-Suspicious Activity Review',
+//     time: '27 May 2019 08:30pm',
+//   },
+//   {
+//     checklistId: '5ce7143f69daeb6ed3ffdb4c',
+//     description: 'FEUW-Suspicious Activity Review',
+//     time: '27 May 2019 08:30pm',
+//   },
+// ];
 
 
 class ChecklistHistory extends React.Component {
@@ -70,8 +70,8 @@ class ChecklistHistory extends React.Component {
 
   render() {
     const { anchorEl } = this.state;
+    const { checkListData: historicalData } = this.props;
     const open = Boolean(anchorEl);
-
     const {
       margin, toolTipPosition, classes,
     } = this.props;
@@ -100,20 +100,23 @@ class ChecklistHistory extends React.Component {
             },
           }}
         >
-          {historicalData.map(option => (
-            // eslint-disable-next-line react/jsx-no-target-blank
-            <a href={`http://127.0.0.1:7601/api/download/${option.checklistId}?event=BEUW&disposition=MissingDocs`} target="_blank">
-              <MenuItem className="menuItem">
-                <div>
-                  {option.description}
-                  <br />
-                  <span>
-                    {option.time}
-                  </span>
-                </div>
-              </MenuItem>
-            </a>
-          ))}
+          {
+            (historicalData)
+              ? historicalData.map(option => (
+                // eslint-disable-next-line react/jsx-no-target-blank
+                <a href={`http://127.0.0.1:7601/api/download/${option.taskCheckListId}?event=BEUW&disposition=${option.dispositionCode}`} target="_blank">
+                  <MenuItem className="menuItem">
+                    <div>
+                      {option.taskCheckListId}
+                      <br />
+                      <span>
+                        {option.taskCheckListTemplateName}
+                      </span>
+                    </div>
+                  </MenuItem>
+                </a>
+              ))
+              : null}
         </Menu>
       </>
     );
@@ -129,8 +132,8 @@ ChecklistHistory.defaultProps = {
 };
 
 ChecklistHistory.propTypes = {
+  checkListData: PropTypes.arrayOf(Object).isRequired,
   classes: PropTypes.shape.isRequired,
-
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,
   }),

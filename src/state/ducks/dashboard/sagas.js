@@ -69,6 +69,7 @@ import {
   getTasks,
   resetChecklistData,
   storeProcessDetails,
+  getHistoricalCheckListData,
 } from '../tasks-and-checklist/actions';
 import {
   ERROR_LOADING_CHECKLIST,
@@ -452,6 +453,9 @@ function* getNext(action) {
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}`);
+      // const { taskData: { data: { wfProcessId: processId = null } } } = taskDetails;
+      // yield put(getHistoricalCheckListData(processId));
+      yield put(getHistoricalCheckListData('211671'));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
           if (R.keys(allTasksComments[taskComment]).length) {
