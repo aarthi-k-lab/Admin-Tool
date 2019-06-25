@@ -2,7 +2,7 @@ import {
   GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
   GET_DOWNLOAD_DATA_SAGA, TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
   TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOC_GEN_ACTION, SET_STAGER_VALUE,
-  SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_PAGE_COUNT,
+  SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_PAGE_COUNT, SET_STAGER_GROUP,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -59,6 +59,11 @@ const setPageCount = payload => ({
   payload,
 });
 
+const setStagerGroup = payload => ({
+  type: SET_STAGER_GROUP,
+  payload,
+});
+
 export {
   triggerDashboardCounts,
   triggerDashboardDataFetch,
@@ -71,4 +76,5 @@ export {
   setStagerValue,
   setStartEndDate,
   setPageCount,
+  setStagerGroup,
 };
