@@ -8,6 +8,9 @@ import Close from './Close';
 import TaskStatusIcon from '../../TaskStatusIcon/TaskStatusIcon';
 import './OptionalTaskDetails.css';
 
+const ADD = 'ADD';
+const DELETE = 'DELETE';
+
 class OptionalTaskDetails extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +29,7 @@ class OptionalTaskDetails extends React.Component {
     const { taskIdx, task } = this.changedTask;
     if (prevProps.shouldDeleteTask !== shouldDeleteTask) {
       if (shouldDeleteTask) {
-        this.modifyTaskList(taskIdx, task);
+        this.modifyTaskList(taskIdx, task, DELETE);
         resetDeleteTaskConfirmation();
       }
     }
@@ -45,7 +48,7 @@ class OptionalTaskDetails extends React.Component {
     handleShowDeleteTaskConfirmation(payload);
   }
 
-  modifyTaskList(taskIdx, task) {
+  modifyTaskList(taskIdx, task, type) {
     const { updateChecklist } = this.props;
     const { isTaskAdded } = this.state;
     const isTaskAddedList = isTaskAdded;
@@ -56,6 +59,7 @@ class OptionalTaskDetails extends React.Component {
     const payload = {
       task: Object.assign({}, task, { visibility: isTaskAdded[taskIdx] }),
       fieldName: 'visibility',
+      type,
     };
     updateChecklist(payload);
   }
@@ -102,7 +106,7 @@ class OptionalTaskDetails extends React.Component {
                             <AddTask
                               disabled={false}
                               margin={{ 'margin-left': '3rem' }}
-                              onClick={() => this.modifyTaskList(index, task)}
+                              onClick={() => this.modifyTaskList(index, task, ADD)}
                               toolTipPosition="left"
                             />
                           </span>

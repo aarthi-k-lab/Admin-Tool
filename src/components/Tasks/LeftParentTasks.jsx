@@ -27,7 +27,7 @@ class LeftParentTasks extends React.Component {
     const { taskIdx, task } = this.changedTask;
     if (prevProps.shouldDeleteTask !== shouldDeleteTask) {
       if (shouldDeleteTask) {
-        this.modifyTaskList(taskIdx, task);
+        this.modifyTaskList(taskIdx, task, 'DELETE');
         resetDeleteTaskConfirmation();
       }
     }
@@ -46,7 +46,7 @@ class LeftParentTasks extends React.Component {
     handleShowDeleteTaskConfirmation(payload);
   }
 
-  modifyTaskList(taskIdx, task) {
+  modifyTaskList(taskIdx, task, type) {
     const { updateChecklist } = this.props;
     const { isTaskAdded } = this.state;
     const isTaskAddedList = isTaskAdded;
@@ -57,6 +57,7 @@ class LeftParentTasks extends React.Component {
     const payload = {
       task: Object.assign({}, task, { visibility: isTaskAdded[taskIdx] }),
       fieldName: 'visibility',
+      type,
     };
     updateChecklist(payload);
   }

@@ -8,6 +8,7 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import {
+  SET_SELECTED_CHECKLIST,
   GET_NEXT_CHECKLIST,
   GET_PREV_CHECKLIST,
   GET_CHECKLIST_SAGA,
@@ -43,6 +44,8 @@ import { selectors as dashboardSelectors } from '../dashboard';
 import { selectors as loginSelectors } from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
 
+const ADD = 'ADD';
+// const DELETE = 'DELETE';
 const MISCTSK_CHK2 = 'MISCTSK_CHK2';
 const autoDispositions = [{
   dispositionCode: 'allTasksCompleted',
@@ -118,7 +121,8 @@ function createNavigationDataStructure(ids, prev) {
 }
 
 function prependChecklistItemForNavigationWhenNoChecklistItemIsSelected(arr) {
-  const firstInProgressChecklist = R.find(R.propEq('state', 'in-progress'), arr);
+  const inProgressChecklists = R.filter(R.propEq('state', 'in-progress'), arr);
+  const firstInProgressChecklist = inProgressChecklists[inProgressChecklists.length - 1];
   if (R.isNil(firstInProgressChecklist)) {
     return R.prepend(R.head(arr), arr);
   }
@@ -151,6 +155,7 @@ function filterOptionalTasks(allTasks) {
       name: R.pathOr('', ['taskBlueprint', 'name'], task),
       description: R.pathOr('', ['taskBlueprint', 'description'], task),
       taskCode: R.pathOr('', ['taskBlueprint', 'taskCode'], task),
+      subTasks: R.propOr([], 'subTasks', task),
     })),
     R.filter(isOptionalTask),
     R.propOr([], 'subTasks'),
@@ -378,22 +383,47 @@ function* handleChecklistItemChange(action) {
   }
 }
 
+function* updateAndFetchTasks(fieldName, task, requestBody) {
+  const response = yield call(Api.put, `/api/task-engine/hierarchy/update?fieldName=${fieldName}&fieldValue=${task.visibility}`, requestBody);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  }
+  yield put({
+    type: SET_SELECTED_CHECKLIST,
+    payload: {
+      taskId: 'nothing',
+    },
+  });
+  yield put({
+    type: GET_TASKS_SAGA,
+    payload: { depth: 3 },
+  });
+}
+
 function* updateChecklist(action) {
   try {
-    const { task, fieldName } = action.payload;
+    const { task, fieldName, type } = action.payload;
     const requestBody = {
       // eslint-disable-next-line no-underscore-dangle
       id: task.id ? task.id : task._id,
     };
-    const response = yield call(Api.put, `/api/task-engine/hierarchy/update?fieldName=${fieldName}&fieldValue=${task.visibility}`, requestBody);
-    const didErrorOccur = response === null;
-    if (didErrorOccur) {
-      throw new Error('Api call failed');
+    if (type === ADD) {
+      yield* updateAndFetchTasks(fieldName, task, requestBody, type);
     } else {
-      yield put({
-        type: GET_TASKS_SAGA,
-        payload: { depth: 3 },
-      });
+      const rootTaskId = yield select(selectors.getRootTaskId);
+      const id = yield select(selectors.getSelectedChecklistId);
+      const clearSubTaskRequestBody = {
+        id,
+        rootTaskId,
+        taskBlueprintCode: task.taskBlueprintCode ? task.taskBlueprintCode : task.taskCode,
+      };
+      const response = yield call(Api.put, '/api/task-engine/task/clearSubTask', clearSubTaskRequestBody);
+      const didErrorOccur = response === null;
+      if (didErrorOccur) {
+        throw new Error('Api call failed');
+      }
+      yield* updateAndFetchTasks(fieldName, task, requestBody, type);
     }
   } catch (e) {
     yield call(handleSaveChecklistError, e);
