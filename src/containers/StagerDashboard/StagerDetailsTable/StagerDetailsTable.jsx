@@ -42,11 +42,12 @@ class StagerDetailsTable extends React.PureComponent {
   }
 
   onDocGenClick(data, action, stagerTaskType) {
-    const { triggerDispositionOperationCall, onClearDocGenAction } = this.props;
+    const { triggerDispositionOperationCall, onClearDocGenAction, triggerStagerGroup } = this.props;
     onClearDocGenAction();
     triggerDispositionOperationCall(
       StagerDetailsTable.getDispositionOperationPayload(data, stagerTaskType.toUpperCase()), action,
     );
+    triggerStagerGroup(stagerTaskType.toUpperCase());
   }
 
   onDownloadCSV() {
@@ -202,6 +203,7 @@ StagerDetailsTable.propTypes = {
   ),
   selectedData: PropTypes.node.isRequired,
   triggerDispositionOperationCall: PropTypes.func.isRequired,
+  triggerStagerGroup: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -215,6 +217,7 @@ const mapDispatchToProps = dispatch => ({
   triggerDispositionOperationCall: stagerOperations.triggerDispositionOperationCall(dispatch),
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   onDownloadData: stagerOperations.onDownloadData(dispatch),
+  triggerStagerGroup: stagerOperations.triggerStagerGroup(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDetailsTable);

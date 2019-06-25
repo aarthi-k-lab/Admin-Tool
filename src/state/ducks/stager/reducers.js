@@ -9,6 +9,7 @@ import {
   SET_STAGER_VALUE,
   SET_DOWNLOAD_DATA,
   SET_PAGE_COUNT,
+  SET_STAGER_GROUP,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -97,6 +98,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         stagerDataPageCount: action.payload,
+      };
+    }
+
+    case SET_STAGER_GROUP: {
+      return {
+        ...state,
+        stagerGroup: action.payload,
       };
     }
     default:

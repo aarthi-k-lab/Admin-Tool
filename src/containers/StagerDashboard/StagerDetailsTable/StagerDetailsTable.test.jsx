@@ -27,6 +27,7 @@ describe('<StagerDetailsTable />', () => {
     data.stagerTaskType = 'Current Review';
     data.isManualOrder = true;
     const triggerDispositionOperationCall = jest.fn();
+    const triggerStagerGroup = jest.fn();
     const onClearDocGenAction = jest.fn();
     const wrapper = shallow(
       <TestExports.StagerDetailsTable
@@ -34,6 +35,7 @@ describe('<StagerDetailsTable />', () => {
         onClearDocGenAction={onClearDocGenAction}
         selectedData={[]}
         triggerDispositionOperationCall={triggerDispositionOperationCall}
+        triggerStagerGroup={triggerStagerGroup}
       />,
     );
     expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
