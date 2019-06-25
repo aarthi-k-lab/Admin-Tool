@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import WarningIcon from '@material-ui/icons/Warning';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { operations as stagerOperations } from 'ducks/stager';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import Button from '@material-ui/core/Button';
 import './StagerPopup.css';
 import * as R from 'ramda';
@@ -42,9 +42,11 @@ class StagerPopup extends React.PureComponent {
 
   onRetryClick() {
     const { checkedData } = this.state;
-    const { triggerDispositionOperationCall, action, onClearDocGenAction } = this.props;
+    const {
+      triggerDispositionOperationCall, action, onClearDocGenAction, getStagerGroup,
+    } = this.props;
     triggerDispositionOperationCall(
-      StagerDetailsTable.getDispositionOperationPayload(checkedData), action,
+      StagerDetailsTable.getDispositionOperationPayload(checkedData, getStagerGroup), action,
     );
     onClearDocGenAction();
     this.setState({ enableRetryBtn: true });
@@ -215,6 +217,7 @@ StagerPopup.defaultProps = {
 
 StagerPopup.propTypes = {
   action: PropTypes.string.isRequired,
+  getStagerGroup: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
   popupData: PropTypes.shape({
     hitLoans: PropTypes.array.isRequired,
@@ -223,9 +226,13 @@ StagerPopup.propTypes = {
   triggerDispositionOperationCall: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => ({
+  getStagerGroup: stagerSelectors.getStagerGroup(state),
+});
+
 const mapDispatchToProps = dispatch => ({
   triggerDispositionOperationCall: stagerOperations.triggerDispositionOperationCall(dispatch),
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(StagerPopup);
+export default connect(mapStateToProps, mapDispatchToProps)(StagerPopup);
