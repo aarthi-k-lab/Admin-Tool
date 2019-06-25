@@ -28,7 +28,7 @@ class StagerDetailsTable extends React.PureComponent {
     this.onDocGenClick = this.onDocGenClick.bind(this);
   }
 
-  static getDispositionOperationPayload(data) {
+  static getDispositionOperationPayload(data, stagerTaskType) {
     const docGenPayload = R.map(dataUnit => ({
       evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
       taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
@@ -36,16 +36,16 @@ class StagerDetailsTable extends React.PureComponent {
     }), data);
     const payload = {
       taskList: docGenPayload,
-      group: 'STAGER',
+      group: stagerTaskType,
     };
     return payload;
   }
 
-  onDocGenClick(data, action) {
+  onDocGenClick(data, action, stagerTaskType) {
     const { triggerDispositionOperationCall, onClearDocGenAction } = this.props;
     onClearDocGenAction();
     triggerDispositionOperationCall(
-      StagerDetailsTable.getDispositionOperationPayload(data), action,
+      StagerDetailsTable.getDispositionOperationPayload(data, stagerTaskType.toUpperCase()), action,
     );
   }
 
@@ -113,25 +113,29 @@ class StagerDetailsTable extends React.PureComponent {
                 </Grid>
                 <Grid item xs={8}>
                   {
-                    data.isManualOrder && data.stagerTaskType !== 'Current Review'
+                    data.isManualOrder && data.stagerTaskType !== 'Current Review' && !(data.stagerTaskStatus === 'Ordered' && data.stagerTaskType === 'Reclass')
                       ? (
-                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData, getActiveSearchTerm)} styleName="details-table-btn" variant="contained">
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData, getActiveSearchTerm, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
                           {'ORDER'}
                         </Button>
                       ) : null
                   }
                   {
+                    data.isManualOrder && (data.stagerTaskType === 'Current Review' || data.stagerTaskType === 'Reclass') ? (
+                      <>
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, REJECT, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
+                          {REJECT}
+                        </Button>
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, SENT_FOR_REJECT, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
+                          {SENT_FOR_REJECT}
+                        </Button> </>) : null
+                  }
+                  {
                     data.isManualOrder && data.stagerTaskType === 'Current Review'
                       ? (
                         <>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, CONTINUE_REVIEW)} styleName="details-table-btn" variant="contained">
+                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, CONTINUE_REVIEW, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
                             {CONTINUE_REVIEW}
-                          </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, REJECT)} styleName="details-table-btn" variant="contained">
-                            {REJECT}
-                          </Button>
-                          <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, SENT_FOR_REJECT)} styleName="details-table-btn" variant="contained">
-                            {SENT_FOR_REJECT}
                           </Button>
                         </>
                       ) : null
