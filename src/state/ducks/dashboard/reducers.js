@@ -244,6 +244,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskFetchError: false,
         noTasksFound: false,
         isAssigned: action.payload.isSearch ? action.payload.isAssigned : true,
+        taskIterationCounter: action.payload.taskIterationCounter,
       };
       return newState;
     }
