@@ -7,6 +7,7 @@ const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
 const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
+const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
@@ -62,6 +63,13 @@ const GROUP_INFO = [
 
   },
   {
+    group: DOC_GEN,
+    task: 'Income Calculation',
+    taskCode: 'UW',
+    path: '/doc-gen',
+    showAssignUnassign: true,
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -76,6 +84,7 @@ const GROUPS = {
   // TO-DO'S
   '/loan-activity': LOAN_ACTIVITY,
   '/doc-processor': PROC,
+  '/doc-gen': DOC_GEN,
 };
 
 function getTitle(location) {
@@ -92,6 +101,8 @@ function getTitle(location) {
       return 'Processing';
     case '/loan-activity':
       return 'Loan Activity';
+    case '/doc-gen':
+      return 'Doc Gen';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -101,6 +112,7 @@ const DashboardModel = {
   FEUW,
   BEUW,
   PROC,
+  DOC_GEN,
   LOAN_ACTIVITY,
   FEUW_TASKS_AND_CHECKLIST,
   BEUW_TASKS_AND_CHECKLIST,

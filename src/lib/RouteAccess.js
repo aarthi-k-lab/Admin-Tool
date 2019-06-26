@@ -68,6 +68,13 @@ const loanActivity = {
   groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr'],
 };
 
+const docGen = {
+  path: '/doc-gen',
+  name: 'doc-gen',
+  img: '/static/img/doc_gen.svg',
+  groups: ['allaccess', 'feuw', 'beta'],
+};
+
 const links = [
   managerDashboard,
   docProcessor,
@@ -76,6 +83,7 @@ const links = [
   stager,
   moveForward,
   loanActivity,
+  docGen,
 ];
 
 const noIcons = ['/loan-activity'];
@@ -123,6 +131,10 @@ function hasDocProcessorAccess(groups) {
   return hasGroup(docProcessor.groups, groups);
 }
 
+function hasDocGenAccess(groups) {
+  return hasGroup(docGen.groups, groups);
+}
+
 function hasManagerDashboardAccess(groups) {
   return hasGroup(managerDashboard.groups, groups);
 }
@@ -148,4 +160,5 @@ module.exports = {
   hasLoanActivityAccess,
   shouldShowIcon,
   hasChecklistAccess,
+  hasDocGenAccess,
 };

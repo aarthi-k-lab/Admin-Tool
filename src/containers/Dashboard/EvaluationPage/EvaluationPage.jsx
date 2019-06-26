@@ -42,6 +42,8 @@ class EvaluationPage extends React.PureComponent {
         return <TasksAndChecklist />;
       case DashboardModel.LOAN_ACTIVITY:
         return <LoanActivity />;
+      case DashboardModel.DOC_GEN:
+        return <TasksAndChecklist />;
       default:
         return <FrontEndDisposition />;
     }
