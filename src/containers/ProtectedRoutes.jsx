@@ -46,6 +46,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
     this.renderLoanActivity = this.renderLoanActivity.bind(this);
     this.renderBackendChecklistRoute = this.renderBackendChecklistRoute.bind(this);
+    this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
   }
 
   componentDidMount() {
@@ -119,6 +120,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderDocGenChecklistRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasDocGenAccess(groups)
+        ? <Dashboard group={DashboardModel.DOC_GEN} />
+        : <Redirect to="/unauthorized?error=DOC_GEN_ACCESS_NEEDED" />
+    );
+  }
+
   renderLoanActivity() {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
@@ -163,6 +173,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
           <Route path="/backend-checklist" render={this.renderBackendChecklistRoute} />
           <Route exact path="/loan-activity" render={this.renderLoanActivity} />
+          <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

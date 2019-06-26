@@ -107,6 +107,10 @@ class SearchLoan extends React.PureComponent {
           group = 'LA';
           this.redirectPath = this.getLoanActivityPath();
           break;
+        case 'Document Generation':
+          group = 'DOCGEN';
+          this.redirectPath = '/doc-gen';
+          break;
         default:
           this.redirectPath = this.getFrontEndPath();
           group = this.getFrontEndGroup();

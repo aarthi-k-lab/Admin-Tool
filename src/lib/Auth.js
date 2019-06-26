@@ -5,6 +5,7 @@ import {
   BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER, DOC_PROCESSOR,
   FRONTEND_UNDERWRITER_BETA,
   LOAN_ACTIVITY,
+  DOC_GEN,
 } from './Groups';
 import Redirect from './Redirect';
 
@@ -283,6 +284,10 @@ Auth.homePage = [
   {
     groupName: LOAN_ACTIVITY,
     path: '/loan-activity',
+  },
+  {
+    groupName: DOC_GEN,
+    path: '/doc-gen',
   },
 ];
 

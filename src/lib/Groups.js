@@ -8,3 +8,4 @@ export const STAGER_MANAGER = 'stager-mgr';
 export const FRONTEND_UNDERWRITER_BETA = 'beta';
 export const DOC_PROCESSOR = 'proc';
 export const LOAN_ACTIVITY = 'la';
+export const DOC_GEN = 'dg';
