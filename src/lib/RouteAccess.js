@@ -71,7 +71,7 @@ const loanActivity = {
 const docGen = {
   path: '/doc-gen',
   name: 'doc-gen',
-  img: '/static/img/doc_gen.svg',
+  img: '/static/img/doc-gen.svg',
   groups: ['allaccess', 'feuw', 'beta'],
 };
 
