@@ -275,6 +275,7 @@ const mapStateToProps = state => ({
   TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
+  taskIterationCounter: selectors.taskIterationCounter(state),
 });
 
 const mapDispatchToProps = dispatch => ({

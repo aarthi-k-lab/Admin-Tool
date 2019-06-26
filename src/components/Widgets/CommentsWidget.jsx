@@ -140,7 +140,7 @@ class CommentsWidget extends Component {
       ProcessId,
       ProcIdType,
       TaskId,
-      TaskIterationCounter,
+      taskIterationCounter,
       User,
       onPostComment,
       groupName,
@@ -161,7 +161,7 @@ class CommentsWidget extends Component {
         TASK: taskName,
         TASK_ID: TaskId,
         processId: ProcessId,
-        TASK_ITRN_CNTR: TaskIterationCounter,
+        TASK_ITRN_CNTR: taskIterationCounter,
       }),
       userName: User.userDetails.name,
       createdDate: new Date().toJSON(),
@@ -266,7 +266,7 @@ CommentsWidget.propTypes = {
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
   TaskId: PropTypes.number.isRequired,
-  TaskIterationCounter: PropTypes.number.isRequired,
+  taskIterationCounter: PropTypes.number.isRequired,
   User: PropTypes.shape({
     userDetails: PropTypes.shape({
       name: PropTypes.string,
@@ -288,6 +288,7 @@ const mapStateToProps = state => ({
   LoanNumber: dashboardSelectors.loanNumber(state),
   ProcessId: dashboardSelectors.processId(state),
   groupName: dashboardSelectors.groupName(state),
+  taskIterationCounter: dashboardSelectors.taskIterationCounter(state),
   User: loginSelectors.getUser(state),
 });
 

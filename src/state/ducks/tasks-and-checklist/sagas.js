@@ -335,8 +335,8 @@ function* postDispositionComment(action) {
       TASK: taskName,
       TASK_ID: taskId,
       TASK_ACTN: disposition,
-      TASK_ITRN_CNTR: taskIterationCounter,
       DSPN_IND: 1,
+      TASK_ITRN_CNTR: taskIterationCounter,
     }),
   };
   yield put({
