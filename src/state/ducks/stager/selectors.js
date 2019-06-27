@@ -1,7 +1,7 @@
 const getCounts = state => state.stager.counts;
 const getLoaderInfo = state => state.stager.loading;
-const getdocGenResponse = state => (state.stager.docGenResponse ?
-    state.stager.docGenResponse : []);
+const getdocGenResponse = state => (state.stager.docGenResponse
+  ? state.stager.docGenResponse : []);
 const getTableData = state => (state.stager.data ? state.stager.data : []);
 const getSelectedData = state => (state.stager.selectedData ? state.stager.selectedData : []);
 const getActiveSearchTerm = state => (state.stager && state.stager.activeSearchTerm);
@@ -12,17 +12,17 @@ const getDownloadData = state => (state.stager && state.stager.csvData);
 const getStagerGroup = state => (state.stager && state.stager.stagerGroup);
 
 const selectors = {
-    getCounts,
-    getLoaderInfo,
-    getTableData,
-    getSelectedData,
-    getActiveSearchTerm,
-    getDownloadData,
-    getdocGenResponse,
-    getdocGenAction,
-    getStagerValue,
-    getStagerStartEndDate,
-    getStagerGroup,
+  getCounts,
+  getLoaderInfo,
+  getTableData,
+  getSelectedData,
+  getActiveSearchTerm,
+  getDownloadData,
+  getdocGenResponse,
+  getdocGenAction,
+  getStagerValue,
+  getStagerStartEndDate,
+  getStagerGroup,
 };
 
 export default selectors;

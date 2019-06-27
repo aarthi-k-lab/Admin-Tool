@@ -9,7 +9,6 @@ class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
     this.getCheckBox = this.getCheckBox.bind(this);
-    this.paginationLoad = this.paginationLoad.bind(this);
   }
 
   onSelectAllOption(checked) {
