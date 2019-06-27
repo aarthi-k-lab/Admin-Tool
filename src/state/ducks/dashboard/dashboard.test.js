@@ -818,6 +818,7 @@ describe('assign Loan', () => {
     userDetails: {
       email: 'bren@mrcooper.com',
     },
+    groupList: ['feuw', 'beta'],
   };
 
   const mockResponse = {
@@ -865,7 +866,7 @@ describe('assign Loan', () => {
   });
   it('should call assign Api', () => {
     expect(saga.next(18008401081).value)
-      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW', {}));
+      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta', {}));
   });
 
   it('should call ASSIGN_LOAN_RESULT', () => {
