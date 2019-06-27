@@ -5,7 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
-import DashboardModel from 'models/Dashboard';
 import { connect } from 'react-redux';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import PropTypes from 'prop-types';
@@ -20,23 +19,14 @@ class DatePicker extends React.PureComponent {
     const {
       triggerStartEndDate, getDashboardCounts,
       getDashboardData, getActiveSearchTerm,
-      getStagerValue, triggerStagerPageCount,
-      getStagerPageCount,
+      getStagerValue,
     } = this.props;
-    const stagerTablePageCount = DashboardModel.STAGER_TABLE_PAGE_COUNT;
     const pagepayload = {
       fromDate: fromDate.format('YYYY-MM-DD HH:mm:ss'),
       toDate: toDate.format('YYYY-MM-DD HH:mm:ss'),
     };
-    const stagerPayload = {
-      PageCount: 0,
-      pageNo: 1,
-      maxFetchCount: stagerTablePageCount,
-      pageSize: getStagerPageCount.pageSize,
-    };
     triggerStartEndDate(pagepayload);
     getDashboardCounts();
-    triggerStagerPageCount(stagerPayload);
     if (getActiveSearchTerm) {
       const payload = {
         activeSearchTerm: getActiveSearchTerm,
@@ -114,17 +104,14 @@ class DatePicker extends React.PureComponent {
 
 DatePicker.defaultProps = {
   getStagerStartEndDate: [],
-  getStagerPageCount: [],
 };
 
 DatePicker.propTypes = {
   getActiveSearchTerm: PropTypes.string.isRequired,
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
-  getStagerPageCount: PropTypes.node,
   getStagerStartEndDate: PropTypes.node,
   getStagerValue: PropTypes.string.isRequired,
-  triggerStagerPageCount: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
 
 };
@@ -132,7 +119,6 @@ const mapDispatchToProps = dispatch => ({
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   getDashboardCounts: stagerOperations.getDashboardCounts(dispatch),
   getDashboardData: stagerOperations.getDashboardData(dispatch),
-  triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
 
 });
 

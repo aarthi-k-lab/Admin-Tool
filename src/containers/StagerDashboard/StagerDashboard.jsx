@@ -46,18 +46,14 @@ class StagerDashboard extends React.Component {
     triggerOrderCall(payload, endPoint);
   }
 
-  onStatusCardClick(activeTile, activeTab, totalCount) {
+  onStatusCardClick(activeTile, activeTab) {
     const value = `${activeTile}${activeTab}`;
     const searchTerm = value.replace(/ /g, '');
-    const stagerPageCount = 0;
-    const stagerTablePageCount = DashboardModel.STAGER_TABLE_PAGE_COUNT;
-    const pageSize = Math.ceil(totalCount / stagerTablePageCount);
     const {
       getDashboardData,
       onCheckBoxClick,
       getDashboardCounts,
       onClearDocGenAction,
-      triggerStagerPageCount,
     } = this.props;
     onClearDocGenAction();
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
@@ -66,13 +62,6 @@ class StagerDashboard extends React.Component {
       activeSearchTerm: searchTerm,
       stager,
     };
-    const stagerPayload = {
-      PageCount: stagerPageCount,
-      pageNo: 1,
-      maxFetchCount: stagerTablePageCount,
-      pageSize,
-    };
-    triggerStagerPageCount(stagerPayload);
     getDashboardData(payload);
     getDashboardCounts();
     onCheckBoxClick([]);
@@ -224,7 +213,6 @@ const mapDispatchToProps = dispatch => ({
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
-  triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
 });
 
@@ -260,7 +248,6 @@ StagerDashboard.propTypes = {
   snackBarData: PropTypes.node,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
-  triggerStagerPageCount: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
   user: PropTypes.shape({
