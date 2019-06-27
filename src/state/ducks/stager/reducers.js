@@ -9,7 +9,7 @@ import {
   SET_STAGER_VALUE,
   SET_DOWNLOAD_DATA,
   SET_PAGE_COUNT,
-  SET_STAGER_GROUP,
+  SET_STAGER_GROUP,SEARCH_STAGER_LOAN_NUMBER,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -105,6 +105,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         stagerGroup: action.payload,
+      };
+    }
+    case SEARCH_STAGER_LOAN_NUMBER: {
+      return {
+        ...state,
+        searchStagerLoanResponse: action.payload,
+
       };
     }
     default:

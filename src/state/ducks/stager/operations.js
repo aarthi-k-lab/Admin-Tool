@@ -9,6 +9,7 @@ import {
   clearDocGenAction,
   setPageCount,
   setStagerGroup,
+  setStagerLoanNumber,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
@@ -36,6 +37,7 @@ const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payl
 const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
 const triggerStagerPageCount = dispatch => payload => dispatch(setPageCount(payload));
 const triggerStagerGroup = dispatch => payload => dispatch(setStagerGroup(payload));
+const triggerStagerSearchLoan = dispatch => payload => dispatch(setStagerLoanNumber(payload));
 
 
 const operations = {
@@ -50,6 +52,7 @@ const operations = {
   triggerStartEndDate,
   triggerStagerPageCount,
   triggerStagerGroup,
+  triggerStagerSearchLoan,
 };
 
 export default operations;

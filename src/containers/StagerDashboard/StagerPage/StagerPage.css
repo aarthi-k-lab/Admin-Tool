@@ -21,3 +21,29 @@
   overflow-y: hidden;
   max-width: 100%;
 }
+
+.searchIcon {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  height: 10px;
+  color: black !important;
+}
+
+.searchStyle {
+  background-color: white !important;
+  border: solid 1px grey !important;
+  margin-top: 1rem !important;
+  height: 2.3rem !important;
+  border-radius: 5px;
+  width: 180px;
+  margin-right: 10rem;
+}
+
+.searchStyle input {
+  color: black !important;
+  margin-left: 2rem;
+}
+
+.select-width {
+  min-width: 80px !important;
+}

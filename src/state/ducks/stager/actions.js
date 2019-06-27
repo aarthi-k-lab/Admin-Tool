@@ -3,6 +3,7 @@ import {
   GET_DOWNLOAD_DATA_SAGA, TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
   TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOC_GEN_ACTION, SET_STAGER_VALUE,
   SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_PAGE_COUNT, SET_STAGER_GROUP,
+  GET_STAGER_LOAN_NUMBER,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -64,6 +65,11 @@ const setStagerGroup = payload => ({
   payload,
 });
 
+const setStagerLoanNumber = payload => ({
+  type: GET_STAGER_LOAN_NUMBER,
+  payload,
+});
+
 export {
   triggerDashboardCounts,
   triggerDashboardDataFetch,
@@ -77,4 +83,5 @@ export {
   setStartEndDate,
   setPageCount,
   setStagerGroup,
+  setStagerLoanNumber,
 };

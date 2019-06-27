@@ -24,6 +24,8 @@ import {
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_DOC_GEN_RESPONSE,
   SET_DOWNLOAD_DATA,
+  SEARCH_STAGER_LOAN_NUMBER,
+  GET_STAGER_LOAN_NUMBER,
 
 } from './types';
 
@@ -219,6 +221,21 @@ function* watchDashboardCountsFetch() {
 function* watchOrderCall() {
   yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
+function* makeStagerSearchLoanCall(payload) {
+  try {
+    console.log('ewrerwerwe', payload);
+    const response = yield call(Api.callGet, 'api/search-svc/search/12345');
+    yield put({
+      type: SEARCH_STAGER_LOAN_NUMBER,
+      payload: response,
+    });
+  } catch (err) {
+    yield put({
+      type: SEARCH_STAGER_LOAN_NUMBER,
+      payload: {},
+    });
+  }
+}
 
 function* makeDispositionOperationCall(payload) {
   try {
@@ -266,6 +283,10 @@ function* watchTableCheckboxSelect() {
   yield takeEvery(TABLE_CHECKBOX_SELECT_TRIGGER, onCheckboxSelect);
 }
 
+function* watchStagerSearchLoanCall() {
+  yield takeEvery(GET_STAGER_LOAN_NUMBER, makeStagerSearchLoanCall);
+}
+
 export const TestExports = {
   watchDashboardCountsFetch,
   fetchDashboardCounts,
@@ -286,5 +307,6 @@ export function* combinedSaga() {
     watchTableCheckboxSelect(),
     watchOrderCall(),
     watchDispositionOperationCall(),
+    watchStagerSearchLoanCall(),
   ]);
 }
