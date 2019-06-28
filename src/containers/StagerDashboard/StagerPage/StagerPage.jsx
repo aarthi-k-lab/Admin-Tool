@@ -46,8 +46,10 @@ class StagerPage extends React.PureComponent {
 
   handleSearchLoanClick() {
     const { searchText } = this.state;
+    const { triggerStagerSearchLoan } = this.props;
     if (searchText) {
       this.shouldSearchLoan = true;
+      triggerStagerSearchLoan(searchText);
     }
   }
 
@@ -178,10 +180,12 @@ StagerPage.propTypes = {
   selectedData: PropTypes.node.isRequired,
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
+  triggerStagerSearchLoan: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
+  triggerStagerSearchLoan: stagerOperations.triggerStagerSearchLoan(dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(StagerPage);

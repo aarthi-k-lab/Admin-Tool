@@ -1,11 +1,14 @@
 import React from 'react';
 import './StagerTiles.css';
+import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import StagerDocumentStatusCard from 'components/StagerDocumentStatusCard';
 import PropTypes from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
+import { selectors as stagerSelectors } from 'ducks/stager';
 import DatePicker from '../DatePicker';
+
 
 class StagerTiles extends React.PureComponent {
   isActiveCard(tileName, tabName) {
@@ -14,6 +17,24 @@ class StagerTiles extends React.PureComponent {
       return true;
     }
     return false;
+  }
+
+  ishighlightCard() {
+    const { getStagerSearchResponse, counts } = this.props;
+    const stagerHighlightedValue = {};
+    const titleName = [];
+    const tabName = new Set();
+    counts.forEach((tileNameValue) => {
+      titleName.push(tileNameValue.displayName);
+      tileNameValue.data.forEach((tabNamevalue) => {
+        tabName.add(tabNamevalue.displayName);
+        stagerHighlightedValue.tabName = tabName;
+        stagerHighlightedValue.tileName = titleName;
+        return ({ stagerHigh: stagerHighlightedValue });
+      });
+    });
+    console.log('getStagerSearchResponse', getStagerSearchResponse);
+    console.log('stagerHighlightedValue', stagerHighlightedValue);
   }
 
   render() {
@@ -46,6 +67,7 @@ class StagerTiles extends React.PureComponent {
                               tileData.displayName, stagerTaskGroupData.displayName,
                             )}
                             data={tileData}
+                            highlightTile={this.ishighlightCard()}
                             onStatusCardClick={onStatusCardClick}
                             tabName={stagerTaskGroupData.displayName}
                           />
@@ -82,8 +104,13 @@ StagerTiles.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
+  getStagerSearchResponse: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
 };
 
-export default StagerTiles;
+const mapStateToProps = state => ({
+  getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
+});
+
+export default connect(mapStateToProps, null)(StagerTiles);
 export { TestExports };

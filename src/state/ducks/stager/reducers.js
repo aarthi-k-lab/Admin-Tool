@@ -9,7 +9,7 @@ import {
   SET_STAGER_VALUE,
   SET_DOWNLOAD_DATA,
   SET_PAGE_COUNT,
-  SET_STAGER_GROUP,SEARCH_STAGER_LOAN_NUMBER,
+  SET_STAGER_GROUP, SEARCH_STAGER_LOAN_NUMBER,
 } from './types';
 
 const reducer = (state = {}, action) => {
