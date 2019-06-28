@@ -306,7 +306,7 @@ class Checklist extends React.PureComponent {
           </div>
         </div>
         <div styleName="clearButton">
-          <Button onClick={() => this.handleOpen()}>
+          <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
             Clear
           </Button>
         </div>

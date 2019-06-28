@@ -201,7 +201,9 @@ class CommentsWidget extends Component {
   }
 
   renderCommentsActivity() {
-    const { comments, LoanNumber, EvalId } = this.props;
+    const {
+      comments, LoanNumber, EvalId, isAssigned,
+    } = this.props;
     const { content } = this.state;
     return (
       <>
@@ -226,7 +228,8 @@ class CommentsWidget extends Component {
             <div id="send_button_area" styleName="send-button-area">
               <Button
                 color="primary"
-                disabled={content.length === 0 || LoanNumber === null || EvalId === null}
+                disabled={content.length === 0
+                  || LoanNumber === null || EvalId === null || !isAssigned}
                 id="post_button"
                 onClick={this.saveComments}
                 styleName="post-button"
@@ -260,6 +263,7 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
+  isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
@@ -290,6 +294,7 @@ const mapStateToProps = state => ({
   groupName: dashboardSelectors.groupName(state),
   taskIterationCounter: dashboardSelectors.taskIterationCounter(state),
   User: loginSelectors.getUser(state),
+  isAssigned: dashboardSelectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({

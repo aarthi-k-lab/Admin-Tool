@@ -97,6 +97,7 @@ class LeftTaskPane extends React.Component {
     const { tasksStatus, isCollapsed } = this.state;
     const {
       dataLoadStatus,
+      disableModifyOptionalTasks,
       handleShowOptionalTasks,
       onSubTaskClick,
       resetDeleteTaskConfirmation,
@@ -128,7 +129,12 @@ class LeftTaskPane extends React.Component {
                     taskStatus={tasksStatus}
                   />
                   { shouldShowAddTaskButton(optionalTasks)
-                    ? <AddTask onClick={() => handleShowOptionalTasks()} />
+                    ? (
+                      <AddTask
+                        disabled={disableModifyOptionalTasks}
+                        onClick={() => handleShowOptionalTasks()}
+                      />
+                    )
                     : <div />
                   }
                 </>
@@ -148,6 +154,7 @@ class LeftTaskPane extends React.Component {
           </span>
         </div>
         <LeftParentTasks
+          disableModifyOptionalTasks={disableModifyOptionalTasks}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}
           isCollapsed={isCollapsed}
@@ -200,6 +207,7 @@ LeftTaskPane.propTypes = {
   closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
+  disableModifyOptionalTasks: PropTypes.bool.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
