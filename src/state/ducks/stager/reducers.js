@@ -1,6 +1,8 @@
 import {
-  SET_STAGER_DATA_COUNTS, SET_STAGER_DATA,
-  SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT,
+  SET_STAGER_DATA_COUNTS,
+  SET_STAGER_DATA,
+  SET_STAGER_DATA_LOADING,
+  TABLE_CHECKBOX_SELECT,
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_DOC_GEN_RESPONSE,
   SET_DOC_GEN_ACTION,
@@ -8,13 +10,13 @@ import {
   SET_START_END_DATE,
   SET_STAGER_VALUE,
   SET_DOWNLOAD_DATA,
-  SET_PAGE_COUNT,
   SET_STAGER_GROUP,
 } from './types';
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
-    case SET_STAGER_DATA_COUNTS: {
+    case SET_STAGER_DATA_COUNTS:
+    {
       const { counts } = action.payload ? action.payload : {};
       return {
         ...state,
@@ -22,7 +24,8 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_STAGER_DATA: {
+    case SET_STAGER_DATA:
+    {
       const data = action.payload.data ? action.payload.data : action.payload.error;
       return {
         ...state,
@@ -31,14 +34,16 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_DOWNLOAD_DATA: {
+    case SET_DOWNLOAD_DATA:
+    {
       return {
         ...state,
         csvData: action.payload.tableData,
       };
     }
 
-    case SET_STAGER_DATA_LOADING: {
+    case SET_STAGER_DATA_LOADING:
+    {
       const loading = action.payload.loading ? action.payload.loading : action.payload.error;
       return {
         ...state,
@@ -46,7 +51,8 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case TABLE_CHECKBOX_SELECT: {
+    case TABLE_CHECKBOX_SELECT:
+    {
       const selectedData = action.payload.selectedData
         ? action.payload.selectedData : action.payload.selectedData;
       return {
@@ -55,53 +61,54 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_STAGER_ACTIVE_SEARCH_TERM: {
+    case SET_STAGER_ACTIVE_SEARCH_TERM:
+    {
       return {
         ...state,
         activeSearchTerm: action.payload,
       };
     }
 
-    case SET_DOC_GEN_RESPONSE: {
+    case SET_DOC_GEN_RESPONSE:
+    {
       return {
         ...state,
         docGenResponse: action.payload,
       };
     }
-    case SET_DOC_GEN_ACTION: {
+    case SET_DOC_GEN_ACTION:
+    {
       return {
         ...state,
         docGenAction: action.action,
       };
     }
-    case CLEAR_DOC_GEN_RESPONSE: {
+    case CLEAR_DOC_GEN_RESPONSE:
+    {
       return {
         ...state,
         docGenResponse: null,
       };
     }
-    case SET_STAGER_VALUE: {
+    case SET_STAGER_VALUE:
+    {
       return {
         ...state,
         stagerValue: action.payload,
       };
     }
 
-    case SET_START_END_DATE: {
+    case SET_START_END_DATE:
+    {
       return {
         ...state,
         stagerStartEndDate: action.payload,
       };
     }
 
-    case SET_PAGE_COUNT: {
-      return {
-        ...state,
-        stagerDataPageCount: action.payload,
-      };
-    }
 
-    case SET_STAGER_GROUP: {
+    case SET_STAGER_GROUP:
+    {
       return {
         ...state,
         stagerGroup: action.payload,

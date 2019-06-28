@@ -1,13 +1,14 @@
 import {
-  triggerDashboardCounts, triggerDashboardDataFetch,
-  triggerCheckboxSelect, triggerOrderCallAction,
+  triggerDashboardCounts,
+  triggerDashboardDataFetch,
+  triggerCheckboxSelect,
+  triggerOrderCallAction,
   triggerDispositionOperationCallAction,
   triggerDownloadDataFetch,
   setDocGenAction,
   setStagerValue,
   setStartEndDate,
   clearDocGenAction,
-  setPageCount,
   setStagerGroup,
 } from './actions';
 
@@ -34,7 +35,6 @@ const triggerStagerValue = dispatch => payload => dispatch(setStagerValue(payloa
 const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payload));
 
 const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
-const triggerStagerPageCount = dispatch => payload => dispatch(setPageCount(payload));
 const triggerStagerGroup = dispatch => payload => dispatch(setStagerGroup(payload));
 
 
@@ -48,7 +48,6 @@ const operations = {
   onClearDocGenAction,
   triggerStagerValue,
   triggerStartEndDate,
-  triggerStagerPageCount,
   triggerStagerGroup,
 };
 

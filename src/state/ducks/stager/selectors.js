@@ -9,7 +9,6 @@ const getdocGenAction = state => (state.stager && state.stager.docGenAction);
 const getStagerValue = state => (state.stager && state.stager.stagerValue);
 const getStagerStartEndDate = state => (state.stager && state.stager.stagerStartEndDate);
 const getDownloadData = state => (state.stager && state.stager.csvData);
-const getStagerPageCount = state => (state.stager && state.stager.stagerDataPageCount);
 const getStagerGroup = state => (state.stager && state.stager.stagerGroup);
 
 const selectors = {
@@ -23,7 +22,6 @@ const selectors = {
   getdocGenAction,
   getStagerValue,
   getStagerStartEndDate,
-  getStagerPageCount,
   getStagerGroup,
 };
 
