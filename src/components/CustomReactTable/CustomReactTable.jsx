@@ -119,8 +119,8 @@ class CustomReactTable extends React.PureComponent {
   }
 
   render() {
-    const { tableData } = this.props;
-    const returnVal = tableData ? (
+    const { data } = this.props;
+    const returnVal = data ? (
       <div styleName="stager-table-container">
         <div styleName="stager-table-height-limiter">
           <ReactTable
@@ -128,13 +128,13 @@ class CustomReactTable extends React.PureComponent {
               this.table = reactTable;
             }}
             className="-highlight"
-            columns={this.getColumnData(tableData.stagerTaskType,
-              tableData.stagerTaskStatus, tableData.isManualOrder, tableData.tableData)}
-            data={tableData.tableData}
+            columns={this.getColumnData(data.stagerTaskType,
+              data.stagerTaskStatus, data.isManualOrder, data.tableData)}
+            data={data.tableData}
             defaultPageSize={100}
-            defaultSorted={tableData.defaultSorted ? [
+            defaultSorted={data.defaultSorted ? [
               {
-                id: tableData.defaultSorted,
+                id: data.defaultSorted,
                 asc: true,
               },
             ] : []}
@@ -152,13 +152,13 @@ const TestExports = {
   CustomReactTable,
 };
 CustomReactTable.defaultProps = {
-  tableData: [],
+  data: [],
 };
 CustomReactTable.propTypes = {
+  data: PropTypes.node,
   onCheckBoxClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
-  tableData: PropTypes.node,
 };
 
 export default CustomReactTable;
