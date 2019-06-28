@@ -126,20 +126,12 @@ describe('fetchDashboardData ', () => {
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
     toDate: '2019-01-05T00:00:00.000Z',
-    stagerPageOffSet: 1,
-    maxFetchCount: 10,
   };
   const dateUtc = {
     fromDate: '2019-01-05',
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
     toDate: '2019-01-05',
-    PageCount: 1,
-    maxFetchCount: 10,
-  };
-  const pagePayload = {
-    PageCount: 1,
-    maxFetchCount: 10,
   };
   const newPayload = [];
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
@@ -158,12 +150,8 @@ describe('fetchDashboardData ', () => {
     expect(saga.next('UW_STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('should select Max Page Count ', () => {
-    expect(saga.next(dateUtc).value)
-      .toEqual(select(selectors.getStagerPageCount));
-  });
   it('call bpm audit data Api', () => {
-    expect(saga.next(pagePayload).value)
+    expect(saga.next(dateUtc).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
 
