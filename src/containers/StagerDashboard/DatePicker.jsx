@@ -127,7 +127,6 @@ const mapStateToProps = state => ({
   getStagerValue: stagerSelectors.getStagerValue(state),
   getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
   tableData: stagerSelectors.getTableData(state),
-  getStagerPageCount: stagerSelectors.getStagerPageCount(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatePicker);
