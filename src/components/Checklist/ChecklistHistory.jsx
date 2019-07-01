@@ -104,14 +104,20 @@ class ChecklistHistory extends React.Component {
             (historicalData)
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
-                <a href={`http://127.0.0.1:7601/api/download/${option.taskCheckListId}?event=BEUW&disposition=${option.dispositionCode}`} target="_blank">
+                <a
+                  href={`http://127.0.0.1:7601/api/download/${
+                    option.taskCheckListId
+                    }?event=${option.taskCheckListTemplateName}&disposition=${
+                    option.dispositionCode
+                    }`}
+                  // eslint-disable-next-line react/jsx-no-target-blank
+                  target="_blank"
+                >
                   <MenuItem className="menuItem">
                     <div>
-                      {option.taskCheckListId}
+                      {option.taskCheckListTemplateName}
                       <br />
-                      <span>
-                        {option.taskCheckListTemplateName}
-                      </span>
+                      <span>{option.dispositionDate}</span>
                     </div>
                   </MenuItem>
                 </a>
