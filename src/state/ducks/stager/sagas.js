@@ -26,6 +26,8 @@ import {
   SET_STAGER_ACTIVE_SEARCH_TERM,
   SET_DOC_GEN_RESPONSE,
   SET_DOWNLOAD_DATA,
+  SEARCH_STAGER_LOAN_NUMBER,
+  GET_STAGER_LOAN_NUMBER,
 
 } from './types';
 
@@ -225,6 +227,22 @@ function* watchDashboardCountsFetch() {
 function* watchOrderCall() {
   yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
+function* makeStagerSearchLoanCall(payload) {
+  try {
+    const searchLoanNumber = payload.payload;
+    const stagerType = yield select(selectors.getStagerValue);
+    const response = yield call(Api.callGet, `/api/stager/dashboard/getSearchLoanNumber/${stagerType}/${searchLoanNumber}`);
+    yield put({
+      type: SEARCH_STAGER_LOAN_NUMBER,
+      payload: response,
+    });
+  } catch (err) {
+    yield put({
+      type: SEARCH_STAGER_LOAN_NUMBER,
+      payload: {},
+    });
+  }
+}
 
 function* makeDispositionOperationCall(payload) {
   try {
@@ -278,6 +296,10 @@ function* watchTableCheckboxSelect() {
   yield takeEvery(TABLE_CHECKBOX_SELECT_TRIGGER, onCheckboxSelect);
 }
 
+function* watchStagerSearchLoanCall() {
+  yield takeEvery(GET_STAGER_LOAN_NUMBER, makeStagerSearchLoanCall);
+}
+
 export const TestExports = {
   watchDashboardCountsFetch,
   fetchDashboardCounts,
@@ -298,5 +320,6 @@ export function* combinedSaga() {
     watchTableCheckboxSelect(),
     watchOrderCall(),
     watchDispositionOperationCall(),
+    watchStagerSearchLoanCall(),
   ]);
 }

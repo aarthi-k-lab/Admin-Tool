@@ -7,9 +7,15 @@ import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
 import DatePicker from '../DatePicker';
 
+
 class StagerTiles extends React.PureComponent {
   isActiveCard(tileName, tabName) {
-    const { activeTab, activeTile } = this.props;
+    const { activeTab, activeTile, searchResponse } = this.props;
+    let searchTileName = null;
+    if (searchResponse && searchResponse[tabName]) {
+      searchTileName = searchResponse[tabName].split(',');
+      return R.contains(tileName, searchTileName);
+    }
     if (tileName === activeTile && tabName === activeTab) {
       return true;
     }
@@ -64,7 +70,9 @@ class StagerTiles extends React.PureComponent {
 const TestExports = {
   StagerTiles,
 };
-
+StagerTiles.defaultProps = {
+  searchResponse: {},
+};
 StagerTiles.propTypes = {
   activeTab: PropTypes.string.isRequired,
   activeTile: PropTypes.string.isRequired,
@@ -83,7 +91,12 @@ StagerTiles.propTypes = {
     }),
   ).isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
-};
+  searchResponse: PropTypes.shape({
+    loanNumber: PropTypes.array.isRequired,
+    titleType: PropTypes.array.isRequired,
+    titleValue: PropTypes.array.isRequired,
 
+  }),
+};
 export default StagerTiles;
 export { TestExports };

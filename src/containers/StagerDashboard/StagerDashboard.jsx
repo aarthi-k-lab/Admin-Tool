@@ -54,8 +54,10 @@ class StagerDashboard extends React.Component {
       onCheckBoxClick,
       getDashboardCounts,
       onClearDocGenAction,
+      onClearSearchResponse,
     } = this.props;
     onClearDocGenAction();
+    onClearSearchResponse();
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     const { stager } = this.state;
     const payload = {
@@ -96,7 +98,7 @@ class StagerDashboard extends React.Component {
     const {
       getDashboardCounts,
       onCheckBoxClick, triggerStagerValue,
-      triggerStartEndDate,
+      triggerStartEndDate, onClearStagerResponse,
     } = this.props;
     this.setState({
       activeSearchTerm: '',
@@ -105,6 +107,7 @@ class StagerDashboard extends React.Component {
       activeTab: '',
     });
     const datePayload = this.getDatePayload();
+    onClearStagerResponse();
     triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
@@ -129,6 +132,7 @@ class StagerDashboard extends React.Component {
     const {
       getDashboardData, getDashboardCounts,
       onCheckBoxClick, onClearDocGenAction,
+      onClearStagerResponse,
     } = this.props;
     const payload = {
       activeSearchTerm,
@@ -139,6 +143,7 @@ class StagerDashboard extends React.Component {
     }
     getDashboardCounts();
     onCheckBoxClick([]);
+    onClearStagerResponse();
     onClearDocGenAction();
   }
 
@@ -212,8 +217,11 @@ const mapDispatchToProps = dispatch => ({
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
+  onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+
 });
 
 StagerDashboard.propTypes = {
@@ -244,6 +252,8 @@ StagerDashboard.propTypes = {
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
+  onClearSearchResponse: PropTypes.func.isRequired,
+  onClearStagerResponse: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   snackBarData: PropTypes.node,
   tableData: PropTypes.node,

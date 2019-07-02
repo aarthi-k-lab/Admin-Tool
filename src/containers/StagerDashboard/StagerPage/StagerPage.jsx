@@ -8,7 +8,10 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { operations as stagerOperations } from 'ducks/stager';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
+import SearchIcon from '@material-ui/icons/Search';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
@@ -18,10 +21,43 @@ const DOCGEN_STAGER = 'DOC GEN STAGER';
 const STAGER_ALL = 'ALL';
 
 class StagerPage extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchText: '',
+    };
+    this.handleSearchLoanClick = this.handleSearchLoanClick.bind(this);
+    this.handleSearchLoan = this.handleSearchLoan.bind(this);
+    this.onSearchTextChange = this.onSearchTextChange.bind(this);
+  }
+
   onStagerChange(event) {
-    const { onStagerChange, onClearDocGenAction } = this.props;
+    const { onStagerChange, onClearDocGenAction, onClearStagerResponse } = this.props;
     onStagerChange(event.target.value);
     onClearDocGenAction();
+    onClearStagerResponse();
+  }
+
+  onSearchTextChange(event) {
+    const re = /^[0-9\b]+$/;
+    if (event.target.value === '' || re.test(event.target.value)) {
+      this.setState({ searchText: event.target.value });
+    }
+  }
+
+  handleSearchLoanClick() {
+    const { searchText } = this.state;
+    const { triggerStagerSearchLoan } = this.props;
+    if (searchText) {
+      this.shouldSearchLoan = true;
+      triggerStagerSearchLoan(searchText);
+    }
+  }
+
+  handleSearchLoan(event) {
+    if (event.charCode === 13 || event.key === 'Enter') {
+      this.handleSearchLoanClick();
+    }
   }
 
   render() {
@@ -29,24 +65,61 @@ class StagerPage extends React.PureComponent {
       activeTab, activeTile,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
-      refreshDashboard, stager, popupData,
+      refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
+    const { searchText } = this.state;
     return (
       <>
         <ContentHeader title={(<>
-          <Select
-            onChange={event => this.onStagerChange(event)}
-            value={stager}
-          >
-            <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
-            <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-            <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
-          </Select>
-          <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
-            <RefreshIcon />
-          </IconButton></>
+          <Grid container direction="row">
+            <Grid item styleName="select-width">
+              <Select
+                onChange={event => this.onStagerChange(event)}
+                value={stager}
+              >
+                <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
+                <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
+                <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+              </Select>
+            </Grid>
+            <Grid item styleName="scroll-area">
+              <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
+                <RefreshIcon />
+              </IconButton>
+            </Grid>
+            <Grid item styleName="scroll-area">
+              <TextField
+                InputProps={{
+                  disableUnderline: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={this.handleSearchLoanClick}>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                onChange={this.onSearchTextChange}
+                onKeyPress={this.handleSearchLoan}
+                placeholder="Search (Loan No)"
+                styleName="searchStyle"
+                value={searchText}
+                varirant="filled"
+              />
+            </Grid>
+            {getStagerSearchResponse
+              && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
+              ? (
+                <Grid item>
+                  <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+                </Grid>
+              ) : null
+            }
+          </Grid>
+        </>
         )}
         >
+
           <Controls />
         </ContentHeader>
         <Grid container direction="row">
@@ -56,6 +129,7 @@ class StagerPage extends React.PureComponent {
               activeTile={activeTile}
               counts={counts}
               onStatusCardClick={onStatusCardClick}
+              searchResponse={getStagerSearchResponse}
             />
           </Grid>
           <Grid container direction="column" item xs={9}>
@@ -101,9 +175,11 @@ StagerPage.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
+  getStagerSearchResponse: PropTypes.node.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
+  onClearStagerResponse: PropTypes.func.isRequired,
   onDocGenClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
@@ -117,11 +193,20 @@ StagerPage.propTypes = {
   selectedData: PropTypes.node.isRequired,
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
+  triggerStagerSearchLoan: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
+  triggerStagerSearchLoan: stagerOperations.triggerStagerSearchLoan(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(StagerPage);
+const mapStateToProps = state => ({
+  getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
+
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(StagerPage);
 export { TestExports };

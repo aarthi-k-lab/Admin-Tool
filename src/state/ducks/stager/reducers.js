@@ -10,7 +10,7 @@ import {
   SET_START_END_DATE,
   SET_STAGER_VALUE,
   SET_DOWNLOAD_DATA,
-  SET_STAGER_GROUP,
+  SET_STAGER_GROUP, SEARCH_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE, CLEAR_STAGER_RESPONSE,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -31,6 +31,13 @@ const reducer = (state = {}, action) => {
         ...state,
         data,
         loading: false,
+      };
+    }
+    case CLEAR_STAGER_RESPONSE:
+    {
+      return {
+        ...state,
+        data: null,
       };
     }
 
@@ -90,6 +97,13 @@ const reducer = (state = {}, action) => {
         docGenResponse: null,
       };
     }
+    case CLEAR_SEARCH_RESPONE:
+    {
+      return {
+        ...state,
+        searchStagerLoanResponse: null,
+      };
+    }
     case SET_STAGER_VALUE:
     {
       return {
@@ -112,6 +126,12 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         stagerGroup: action.payload,
+      };
+    }
+    case SEARCH_STAGER_LOAN_NUMBER: {
+      return {
+        ...state,
+        searchStagerLoanResponse: action.payload,
       };
     }
     default:

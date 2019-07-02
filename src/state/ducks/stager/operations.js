@@ -10,6 +10,9 @@ import {
   setStartEndDate,
   clearDocGenAction,
   setStagerGroup,
+  setStagerLoanNumber,
+  clearSearchResponse,
+  clearStagerResponse,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
@@ -36,6 +39,9 @@ const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payl
 
 const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
 const triggerStagerGroup = dispatch => payload => dispatch(setStagerGroup(payload));
+const triggerStagerSearchLoan = dispatch => payload => dispatch(setStagerLoanNumber(payload));
+const onClearSearchResponse = dispatch => () => dispatch(clearSearchResponse());
+const onClearStagerResponse = dispatch => () => dispatch(clearStagerResponse());
 
 
 const operations = {
@@ -49,6 +55,9 @@ const operations = {
   triggerStagerValue,
   triggerStartEndDate,
   triggerStagerGroup,
+  triggerStagerSearchLoan,
+  onClearSearchResponse,
+  onClearStagerResponse,
 };
 
 export default operations;
