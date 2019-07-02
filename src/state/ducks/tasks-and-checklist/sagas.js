@@ -170,6 +170,10 @@ function* getTasks(action) {
     yield put({
       type: LOADING_TASKS,
     });
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
     const rootTaskId = yield select(selectors.getRootTaskId);
     const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
