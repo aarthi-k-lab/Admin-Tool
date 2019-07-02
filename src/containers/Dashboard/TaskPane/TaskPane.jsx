@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { selectors } from 'ducks/config';
 import { operations as taskOperations, selectors as taskSelectors } from 'ducks/tasks-and-checklist';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import LeftTaskPane from 'components/LeftTaskPane';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
@@ -107,6 +108,7 @@ class TaskPane extends React.PureComponent {
     const {
       className,
       dataLoadStatus,
+      isAssigned,
       onSubTaskClick,
       selectedTaskId,
       storeTaskFilter,
@@ -124,6 +126,7 @@ class TaskPane extends React.PureComponent {
         <LeftTaskPane
           className={className}
           dataLoadStatus={dataLoadStatus}
+          disableModifyOptionalTasks={!isAssigned}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}
           onSubTaskClick={onSubTaskClick}
@@ -156,6 +159,7 @@ TaskPane.propTypes = {
   dataLoadStatus: PropTypes.string.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
@@ -175,6 +179,7 @@ const mapStateToProps = state => ({
   optionalTasks: taskSelectors.getOptionalTasks(state),
   showOptionalTasks: taskSelectors.shouldShowOptionalTasks(state),
   shouldDeleteTask: taskSelectors.shouldDeleteTask(state),
+  isAssigned: dashboardSelectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({

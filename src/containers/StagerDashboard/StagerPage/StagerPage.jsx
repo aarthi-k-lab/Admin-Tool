@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { operations as stagerOperations } from 'ducks/stager';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
@@ -32,9 +32,10 @@ class StagerPage extends React.PureComponent {
   }
 
   onStagerChange(event) {
-    const { onStagerChange, onClearDocGenAction } = this.props;
+    const { onStagerChange, onClearDocGenAction, onClearStagerResponse } = this.props;
     onStagerChange(event.target.value);
     onClearDocGenAction();
+    onClearStagerResponse();
   }
 
   onSearchTextChange(event) {
@@ -64,14 +65,14 @@ class StagerPage extends React.PureComponent {
       activeTab, activeTile,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
-      refreshDashboard, stager, popupData,
+      refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
     const { searchText } = this.state;
     return (
       <>
         <ContentHeader title={(<>
-          <Grid container xs={12}>
-            <Grid container item styleName="select-width" xs={5}>
+          <Grid container direction="row">
+            <Grid item styleName="select-width">
               <Select
                 onChange={event => this.onStagerChange(event)}
                 value={stager}
@@ -81,12 +82,12 @@ class StagerPage extends React.PureComponent {
                 <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
               </Select>
             </Grid>
-            <Grid container item styleName="scroll-area" xs={2}>
+            <Grid item styleName="scroll-area">
               <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
                 <RefreshIcon />
               </IconButton>
             </Grid>
-            <Grid container item styleName="scroll-area" xs={5}>
+            <Grid item styleName="scroll-area">
               <TextField
                 InputProps={{
                   disableUnderline: true,
@@ -106,10 +107,19 @@ class StagerPage extends React.PureComponent {
                 varirant="filled"
               />
             </Grid>
+            {getStagerSearchResponse
+              && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
+              ? (
+                <Grid item>
+                  <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+                </Grid>
+              ) : null
+            }
           </Grid>
         </>
         )}
         >
+
           <Controls />
         </ContentHeader>
         <Grid container direction="row">
@@ -119,6 +129,7 @@ class StagerPage extends React.PureComponent {
               activeTile={activeTile}
               counts={counts}
               onStatusCardClick={onStatusCardClick}
+              searchResponse={getStagerSearchResponse}
             />
           </Grid>
           <Grid container direction="column" item xs={9}>
@@ -164,9 +175,11 @@ StagerPage.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
+  getStagerSearchResponse: PropTypes.node.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
+  onClearStagerResponse: PropTypes.func.isRequired,
   onDocGenClick: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
@@ -186,7 +199,14 @@ StagerPage.propTypes = {
 const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   triggerStagerSearchLoan: stagerOperations.triggerStagerSearchLoan(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(StagerPage);
+const mapStateToProps = state => ({
+  getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
+
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(StagerPage);
 export { TestExports };

@@ -26,13 +26,14 @@ const styles = theme => ({
 });
 
 const AddTask = ({
-  classes, onClick, toolTipPosition, margin,
+  classes, disabled, onClick, toolTipPosition, margin,
 }) => (
   <Tooltip aria-label="Add Task" placement={toolTipPosition} title="Add Task">
     <Fab
       aria-label="Add"
       className={classes.custom}
       color="secondary"
+      disabled={disabled}
       onClick={onClick}
       style={margin}
     >
@@ -42,6 +43,7 @@ const AddTask = ({
 );
 
 AddTask.defaultProps = {
+  disabled: false,
   margin: {
     'margin-left': '10rem',
   },
@@ -51,6 +53,7 @@ AddTask.defaultProps = {
 
 AddTask.propTypes = {
   classes: PropTypes.shape.isRequired,
+  disabled: PropTypes.bool,
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,
   }),

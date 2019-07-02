@@ -1,22 +1,14 @@
 import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
-import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import PropTypes from 'prop-types';
-import MobileStepper from '@material-ui/core/MobileStepper';
-import Button from '@material-ui/core/Button';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import * as R from 'ramda';
-import DashboardModel from 'models/Dashboard';
-import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import './CustomReactTable.css';
 
 class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
     this.getCheckBox = this.getCheckBox.bind(this);
-    this.paginationLoad = this.paginationLoad.bind(this);
   }
 
   onSelectAllOption(checked) {
@@ -126,44 +118,9 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
-  paginationLoad(action) {
-    const {
-      triggerStagerPageCount,
-      getDashboardData,
-      getActiveSearchTerm,
-      getStagerValue,
-      getStagerPageCount,
-    } = this.props;
-    const stagerTablePageCount = DashboardModel.STAGER_TABLE_PAGE_COUNT;
-    let { PageCount } = getStagerPageCount;
-    let Pages = getStagerPageCount.pageNo;
-    if (action === 'back') {
-      PageCount -= stagerTablePageCount;
-      Pages -= 1;
-    } else {
-      PageCount += stagerTablePageCount;
-      Pages += 1;
-    }
-    const payload = {
-      activeSearchTerm: getActiveSearchTerm,
-      stager: getStagerValue,
-    };
-    const stagerPayload = {
-      PageCount,
-      pageNo: Pages,
-      maxFetchCount: stagerTablePageCount,
-      pageSize: getStagerPageCount.pageSize,
-    };
-    triggerStagerPageCount(stagerPayload);
-    getDashboardData(payload);
-  }
-
   render() {
-    const {
-      tableData,
-      getStagerPageCount,
-    } = this.props;
-    const returnVal = tableData ? (
+    const { data } = this.props;
+    const returnVal = data ? (
       <div styleName="stager-table-container">
         <div styleName="stager-table-height-limiter">
           <ReactTable
@@ -171,45 +128,19 @@ class CustomReactTable extends React.PureComponent {
               this.table = reactTable;
             }}
             className="-highlight"
-            columns={this.getColumnData(tableData.stagerTaskType,
-              tableData.stagerTaskStatus, tableData.isManualOrder, tableData.tableData)}
-            data={tableData.tableData}
-            defaultPageSize={DashboardModel.STAGER_TABLE_PAGE_COUNT}
-            defaultSorted={tableData.defaultSorted ? [
+            columns={this.getColumnData(data.stagerTaskType,
+              data.stagerTaskStatus, data.isManualOrder, data.tableData)}
+            data={data.tableData}
+            defaultPageSize={100}
+            defaultSorted={data.defaultSorted ? [
               {
-                id: tableData.defaultSorted,
+                id: data.defaultSorted,
                 asc: true,
               },
             ] : []}
             filterable
-            showPagination={false}
             styleName="stagerTable"
           />
-          <br />
-          <div styleName="pageCountDetails">
-            {`${getStagerPageCount.pageNo} / ${getStagerPageCount.pageSize}`}
-          </div>
-          <MobileStepper
-            activeStep={1}
-            backButton={(
-              <Button disabled={getStagerPageCount.pageNo === 1} onClick={() => this.paginationLoad('back')} styleName="pagination-btn">
-                <KeyboardArrowLeft />
-                Previous
-              </Button>
-            )}
-            nextButton={(
-              <Button disabled={getStagerPageCount.pageNo === getStagerPageCount.pageSize} onClick={() => this.paginationLoad('next')} styleName="pagination-btn">
-                Next
-                <KeyboardArrowRight />
-              </Button>
-            )}
-            position="static"
-            steps={getStagerPageCount.pageSize}
-            styleName="pagination-Footer"
-            variant="text"
-          >
-            Test
-          </MobileStepper>
         </div>
       </div>
     ) : null;
@@ -221,33 +152,14 @@ const TestExports = {
   CustomReactTable,
 };
 CustomReactTable.defaultProps = {
-  tableData: [],
-  getStagerPageCount: [],
+  data: [],
 };
 CustomReactTable.propTypes = {
-  getActiveSearchTerm: PropTypes.string.isRequired,
-  getDashboardData: PropTypes.func.isRequired,
-  getStagerPageCount: PropTypes.node,
-  getStagerValue: PropTypes.string.isRequired,
+  data: PropTypes.node,
   onCheckBoxClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
-  tableData: PropTypes.node,
-  triggerStagerPageCount: PropTypes.func.isRequired,
-
 };
 
-const mapDispatchToProps = dispatch => ({
-  getDashboardData: stagerOperations.getDashboardData(dispatch),
-  triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
-});
-
-const mapStateToProps = state => ({
-  getStagerValue: stagerSelectors.getStagerValue(state),
-  getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
-  tableData: stagerSelectors.getTableData(state),
-  getStagerPageCount: stagerSelectors.getStagerPageCount(state),
-
-});
-export default connect(mapStateToProps, mapDispatchToProps)(CustomReactTable);
+export default CustomReactTable;
 export { TestExports };

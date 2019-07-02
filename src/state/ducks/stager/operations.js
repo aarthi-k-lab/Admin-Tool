@@ -1,15 +1,18 @@
 import {
-  triggerDashboardCounts, triggerDashboardDataFetch,
-  triggerCheckboxSelect, triggerOrderCallAction,
+  triggerDashboardCounts,
+  triggerDashboardDataFetch,
+  triggerCheckboxSelect,
+  triggerOrderCallAction,
   triggerDispositionOperationCallAction,
   triggerDownloadDataFetch,
   setDocGenAction,
   setStagerValue,
   setStartEndDate,
   clearDocGenAction,
-  setPageCount,
   setStagerGroup,
   setStagerLoanNumber,
+  clearSearchResponse,
+  clearStagerResponse,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
@@ -35,9 +38,10 @@ const triggerStagerValue = dispatch => payload => dispatch(setStagerValue(payloa
 const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payload));
 
 const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
-const triggerStagerPageCount = dispatch => payload => dispatch(setPageCount(payload));
 const triggerStagerGroup = dispatch => payload => dispatch(setStagerGroup(payload));
 const triggerStagerSearchLoan = dispatch => payload => dispatch(setStagerLoanNumber(payload));
+const onClearSearchResponse = dispatch => () => dispatch(clearSearchResponse());
+const onClearStagerResponse = dispatch => () => dispatch(clearStagerResponse());
 
 
 const operations = {
@@ -50,9 +54,10 @@ const operations = {
   onClearDocGenAction,
   triggerStagerValue,
   triggerStartEndDate,
-  triggerStagerPageCount,
   triggerStagerGroup,
   triggerStagerSearchLoan,
+  onClearSearchResponse,
+  onClearStagerResponse,
 };
 
 export default operations;

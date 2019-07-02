@@ -32,8 +32,6 @@ describe('<CustomReactTable />', () => {
       />,
     );
     wrapper.setProps({ data, selectedData: [] });
-    expect(wrapper.find('br')).toHaveLength(1);
     expect(wrapper.find('ReactTable')).toHaveLength(1);
-    expect(wrapper.find('WithStyles(MobileStepper)')).toHaveLength(1);
   });
 });

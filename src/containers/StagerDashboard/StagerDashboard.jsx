@@ -46,33 +46,24 @@ class StagerDashboard extends React.Component {
     triggerOrderCall(payload, endPoint);
   }
 
-  onStatusCardClick(activeTile, activeTab, totalCount) {
+  onStatusCardClick(activeTile, activeTab) {
     const value = `${activeTile}${activeTab}`;
     const searchTerm = value.replace(/ /g, '');
-    const stagerPageCount = 0;
-    const stagerTablePageCount = DashboardModel.STAGER_TABLE_PAGE_COUNT;
-    const pageSize = Math.ceil(totalCount / stagerTablePageCount);
     const {
       getDashboardData,
       onCheckBoxClick,
       getDashboardCounts,
       onClearDocGenAction,
-      triggerStagerPageCount,
+      onClearSearchResponse,
     } = this.props;
     onClearDocGenAction();
+    onClearSearchResponse();
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     const { stager } = this.state;
     const payload = {
       activeSearchTerm: searchTerm,
       stager,
     };
-    const stagerPayload = {
-      PageCount: stagerPageCount,
-      pageNo: 1,
-      maxFetchCount: stagerTablePageCount,
-      pageSize,
-    };
-    triggerStagerPageCount(stagerPayload);
     getDashboardData(payload);
     getDashboardCounts();
     onCheckBoxClick([]);
@@ -107,7 +98,7 @@ class StagerDashboard extends React.Component {
     const {
       getDashboardCounts,
       onCheckBoxClick, triggerStagerValue,
-      triggerStartEndDate,
+      triggerStartEndDate, onClearStagerResponse,
     } = this.props;
     this.setState({
       activeSearchTerm: '',
@@ -116,6 +107,7 @@ class StagerDashboard extends React.Component {
       activeTab: '',
     });
     const datePayload = this.getDatePayload();
+    onClearStagerResponse();
     triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
@@ -140,6 +132,7 @@ class StagerDashboard extends React.Component {
     const {
       getDashboardData, getDashboardCounts,
       onCheckBoxClick, onClearDocGenAction,
+      onClearStagerResponse,
     } = this.props;
     const payload = {
       activeSearchTerm,
@@ -150,6 +143,7 @@ class StagerDashboard extends React.Component {
     }
     getDashboardCounts();
     onCheckBoxClick([]);
+    onClearStagerResponse();
     onClearDocGenAction();
   }
 
@@ -223,9 +217,11 @@ const mapDispatchToProps = dispatch => ({
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
+  onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
-  triggerStagerPageCount: stagerOperations.triggerStagerPageCount(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+
 });
 
 StagerDashboard.propTypes = {
@@ -256,11 +252,12 @@ StagerDashboard.propTypes = {
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
+  onClearSearchResponse: PropTypes.func.isRequired,
+  onClearStagerResponse: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   snackBarData: PropTypes.node,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
-  triggerStagerPageCount: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
   user: PropTypes.shape({

@@ -9,7 +9,9 @@ import {
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
 import * as R from 'ramda';
-import { selectors as loginSelectors } from 'ducks/login/index';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login/index';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
   GET_DOWNLOAD_DATA_SAGA,
@@ -31,9 +33,11 @@ import {
 
 import selectors from './selectors';
 import Disposition from '../../../models/Disposition';
-import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
+import {
+  SET_SNACK_BAR_VALUES_SAGA,
+} from '../notifications/types';
 
-function buildDateObj(stagerType, stagerStartEndDate, searchTerm, stagerPageOffSet, maxFetchCount) {
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
   const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
   const fromDate = new Date(fromDateMoment).toISOString();
@@ -43,11 +47,10 @@ function buildDateObj(stagerType, stagerStartEndDate, searchTerm, stagerPageOffS
     toDate,
     stagerType,
     searchTerm,
-    stagerPageOffSet,
-    maxFetchCount,
   };
   return dateValue;
 }
+
 function* fetchDashboardCounts() {
   try {
     const stagerType = yield select(selectors.getStagerValue);
@@ -81,13 +84,9 @@ function* fetchDashboardData(data) {
       },
     });
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const stagerPageOffSet = yield select(selectors.getStagerPageCount);
-    const stagerPageOffValue = R.propOr({}, 'PageCount', stagerPageOffSet);
-    const maxFetchCount = R.propOr({}, 'maxFetchCount', stagerPageOffSet);
     const dateValue = buildDateObj(
       stagerType, stagerStartEndDate,
-      searchTerm, stagerPageOffValue,
-      maxFetchCount,
+      searchTerm,
     );
     const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', dateValue);
     yield put({
@@ -176,9 +175,16 @@ function* makeOrderBpmCall(payload) {
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     const stager = yield select(selectors.getStagerValue);
-    const stagerPayload = { activeSearchTerm, stager };
-    yield call(fetchDashboardData, { payload: stagerPayload });
-    yield call(onCheckboxSelect, { payload: [] });
+    const stagerPayload = {
+      activeSearchTerm,
+      stager,
+    };
+    yield call(fetchDashboardData, {
+      payload: stagerPayload,
+    });
+    yield call(onCheckboxSelect, {
+      payload: [],
+    });
     if (failedResponse && failedResponse.length > 0) {
       const snackBarData = {};
       if (R.any(data => R.contains('Ordering in Progress.', data.message), failedResponse)) {
@@ -223,8 +229,9 @@ function* watchOrderCall() {
 }
 function* makeStagerSearchLoanCall(payload) {
   try {
-    console.log('ewrerwerwe', payload);
-    const response = yield call(Api.callGet, 'api/search-svc/search/12345');
+    const searchLoanNumber = payload.payload;
+    const stagerType = yield select(selectors.getStagerValue);
+    const response = yield call(Api.callGet, `/api/stager/dashboard/getSearchLoanNumber/${stagerType}/${searchLoanNumber}`);
     yield put({
       type: SEARCH_STAGER_LOAN_NUMBER,
       payload: response,
@@ -243,7 +250,9 @@ function* makeDispositionOperationCall(payload) {
     const stagerValue = yield select(selectors.getStagerValue);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docGenAction}`, { taskList: payload.payload.taskList });
+    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docGenAction}`, {
+      taskList: payload.payload.taskList,
+    });
     const prevResponse = yield select(selectors.getdocGenResponse);
     const prevSuccessList = !R.isNil(prevResponse.hitLoans) ? prevResponse.hitLoans : [];
     const latestSuccessList = R.concat(prevSuccessList, response.hitLoans || []);
@@ -253,10 +262,14 @@ function* makeDispositionOperationCall(payload) {
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
-      payload:
-        { activeSearchTerm, stager: stagerValue },
+      payload: {
+        activeSearchTerm,
+        stager: stagerValue,
+      },
     });
-    yield call(onCheckboxSelect, { payload: [] });
+    yield call(onCheckboxSelect, {
+      payload: [],
+    });
     yield call(setDocGenData, response);
   } catch (err) {
     const snackBarData = {};

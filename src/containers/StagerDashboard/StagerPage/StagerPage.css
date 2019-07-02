@@ -14,6 +14,7 @@
 
 .refresh-button.refresh-button {
   margin-left: 0.5rem;
+  margin-top: -5px !important;
 }
 
 .scroll-area {
@@ -32,7 +33,7 @@
 .searchStyle {
   background-color: white !important;
   border: solid 1px grey !important;
-  margin-top: 1rem !important;
+  margin-top: 0.7rem !important;
   height: 2.3rem !important;
   border-radius: 5px;
   width: 180px;
@@ -45,5 +46,12 @@
 }
 
 .select-width {
-  min-width: 80px !important;
+ margin-top: 0.7rem !important;
+}
+
+.errormsg {
+  margin-top: 1.5rem !important;
+  margin-left: 0.7rem !important;
+  color: red !important;
+  font-size: 1.2rem !important;
 }
