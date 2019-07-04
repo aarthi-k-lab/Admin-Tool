@@ -231,7 +231,10 @@ function* makeStagerSearchLoanCall(payload) {
   try {
     const searchLoanNumber = payload.payload;
     const stagerType = yield select(selectors.getStagerValue);
-    const response = yield call(Api.callGet, `/api/stager/dashboard/getSearchLoanNumber/${stagerType}/${searchLoanNumber}`);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    dateValue.loanNumber = searchLoanNumber;
+    const response = yield call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', dateValue);
     yield put({
       type: SEARCH_STAGER_LOAN_NUMBER,
       payload: response,
