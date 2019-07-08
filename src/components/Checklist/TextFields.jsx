@@ -1,16 +1,45 @@
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
+import moment from 'moment-timezone';
 import React from 'react';
 import HTMLElements from '../../constants/componentTypes';
 import './TextFields.css';
 
+
+function getCurrentDate() {
+  const date = new Date();
+  const dateTime = moment(date).format('YYYY-MM-DD');
+  return dateTime;
+}
+
+function getProps(type, props) {
+  const { MULTILINE_TEXT, DATE, NUMBER } = HTMLElements;
+  switch (type) {
+    case DATE: {
+      return { ...props, inputProps: { type: 'date', max: getCurrentDate(), onKeyDown: e => e.preventDefault() } };
+    }
+    case MULTILINE_TEXT: {
+      return {
+        ...props, maxRows: 10, multiline: true, rows: 5,
+      };
+    }
+    case NUMBER: {
+      return {
+        ...props,
+        inputProps: {
+          type: 'number',
+          min: '0',
+        },
+      };
+    }
+    default: return { ...props };
+  }
+}
+
 const TextFields = (props) => {
-  const { MULTILINE_TEXT } = HTMLElements;
   const { type, title } = props;
-  const properties = type !== MULTILINE_TEXT ? props : {
-    ...props, maxRows: 10, multiline: true, rows: 5,
-  };
+  const properties = getProps(type, props);
   return (
     <FormControl component="fieldset">
       <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
