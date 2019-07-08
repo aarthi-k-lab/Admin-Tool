@@ -416,7 +416,7 @@ function* updateChecklist(action) {
       yield* updateAndFetchTasks(fieldName, task, requestBody, type);
     } else {
       const rootTaskId = yield select(selectors.getRootTaskId);
-      const id = yield select(selectors.getSelectedChecklistId);
+      const { id } = requestBody;
       const clearSubTaskRequestBody = {
         id,
         rootTaskId,
