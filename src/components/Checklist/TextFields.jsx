@@ -1,6 +1,7 @@
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
+import moment from 'moment-timezone';
 import React from 'react';
 import HTMLElements from '../../constants/componentTypes';
 import './TextFields.css';
@@ -8,16 +9,8 @@ import './TextFields.css';
 
 function getCurrentDate() {
   const date = new Date();
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let dt = date.getDate();
-  if (dt < 10) {
-    dt = `0${dt}`;
-  }
-  if (month < 10) {
-    month = `0${month}`;
-  }
-  return `${year}-${month}-${dt}`;
+  const dateTime = moment(date).format('YYYY-MM-DD');
+  return dateTime;
 }
 
 function getProps(type, props) {
