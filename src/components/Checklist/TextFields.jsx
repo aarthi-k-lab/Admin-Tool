@@ -24,7 +24,7 @@ function getProps(type, props) {
   const { MULTILINE_TEXT, DATE, NUMBER } = HTMLElements;
   switch (type) {
     case DATE: {
-      return { ...props, inputProps: { type: 'date', max: getCurrentDate() } };
+      return { ...props, inputProps: { type: 'date', max: getCurrentDate(), onKeyDown: e => e.preventDefault() } };
     }
     case MULTILINE_TEXT: {
       return {
