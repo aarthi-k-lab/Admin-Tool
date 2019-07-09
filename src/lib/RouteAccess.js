@@ -25,15 +25,14 @@ const frontendUnderwriter = {
   path: '/frontend-evaluation',
   name: 'frontend-evaluation',
   img: '/static/img/frontend.svg',
-  groups: ['feuw', 'feuw-mgr'],
-  notInGroup: ['beta'],
+  groups: ['feuw', 'feuw-mgr', 'feuw-beta'],
 };
 
 const backendUnderwriter = {
   path: '/backend-evaluation',
   name: 'backend-evaluation',
   img: '/static/img/backend.svg',
-  groups: ['beuw', 'beuw-mgr'],
+  groups: ['beuw', 'beuw-mgr', 'beuw-beta'],
 };
 
 const docProcessor = {
@@ -46,16 +45,15 @@ const docProcessor = {
 const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
-  img: '/static/img/fe_beta.svg',
-  groups: ['allaccess', 'feuw-beta', 'beta'],
+  img: '/static/img/frontend.svg',
+  groups: ['allaccess', 'feuw-beta', 'beta', 'feuw', 'feuw-mgr'],
 };
 
 const beuwTasksAndChecklist = {
   path: '/backend-checklist',
   name: 'backend-checklist',
-  img: '/static/img/be_beta.svg',
-  groups: ['allaccess', 'beuw-beta'],
-  notInGroup: ['beuw', 'beuw-mgr'],
+  img: '/static/img/backend.svg',
+  groups: ['allaccess', 'beuw-beta', 'beuw', 'beuw-mgr'],
 };
 
 const checkListGroups = {
@@ -70,16 +68,22 @@ const loanActivity = {
   groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr'],
 };
 
+const docGen = {
+  path: '/doc-gen',
+  name: 'doc-gen',
+  img: '/static/img/doc-gen.svg',
+  groups: ['allaccess', 'feuw', 'beta'],
+};
+
 const links = [
   managerDashboard,
   docProcessor,
-  frontendUnderwriter,
   feuwTasksAndChecklist,
-  backendUnderwriter,
   beuwTasksAndChecklist,
   stager,
   moveForward,
   loanActivity,
+  docGen,
 ];
 
 const noIcons = ['/loan-activity'];
@@ -127,6 +131,10 @@ function hasDocProcessorAccess(groups) {
   return hasGroup(docProcessor.groups, groups);
 }
 
+function hasDocGenAccess(groups) {
+  return hasGroup(docGen.groups, groups);
+}
+
 function hasManagerDashboardAccess(groups) {
   return hasGroup(managerDashboard.groups, groups);
 }
@@ -152,4 +160,5 @@ module.exports = {
   hasLoanActivityAccess,
   shouldShowIcon,
   hasChecklistAccess,
+  hasDocGenAccess,
 };

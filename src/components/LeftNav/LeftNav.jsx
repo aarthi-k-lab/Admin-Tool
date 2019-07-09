@@ -7,6 +7,8 @@ import * as R from 'ramda';
 import classNames from 'classnames';
 import EndShift from 'models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
+import { operations as stagerOperations } from '../../state/ducks/stager';
+
 import styles from './LeftNav.css';
 
 class LeftNav extends React.PureComponent {
@@ -22,18 +24,22 @@ class LeftNav extends React.PureComponent {
     });
   }
 
-  handleLandingpage() {
+  handleLandingpage(path) {
     const {
       onAutoSave,
       onEndShift,
       enableGetNext,
       evalId,
       isAssigned,
+      onClearStagerResponse,
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+    if (path === '/stager') {
+      onClearStagerResponse();
+    }
   }
 
   render() {
@@ -48,7 +54,7 @@ class LeftNav extends React.PureComponent {
             ? (
               <Link
                 className={this.constructor.getIconStyle(path, link.path)}
-                onClick={() => this.handleLandingpage()}
+                onClick={() => this.handleLandingpage(link.path)}
                 to={link.path}
               >
                 <img alt={link.name} src={link.img} />
@@ -69,6 +75,7 @@ LeftNav.propTypes = {
   evalId: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
+  onClearStagerResponse: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   path: PropTypes.string.isRequired,
   user: PropTypes.shape({
@@ -90,6 +97,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+
 });
 const LeftNavContainer = connect(
   mapStateToProps,

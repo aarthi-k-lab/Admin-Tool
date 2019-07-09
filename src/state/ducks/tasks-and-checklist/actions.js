@@ -22,6 +22,7 @@ import {
   SHOW_DELETE_TASK_CONFIRMATION,
   RESET_DELETE_TASK,
   CLEAR_SUBTASK,
+  UPDATE_COMMENTS,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -37,6 +38,10 @@ const validationDisplayAction = payload => ({
   payload,
 });
 
+const dispositionComments = payload => ({
+  type: UPDATE_COMMENTS,
+  payload,
+});
 const dispositionCommentAction = payload => ({
   type: DISP_COMMENT_SAGA,
   payload,
@@ -174,4 +179,5 @@ export {
   resetDeleteTaskConfirmation,
   subTaskClearance,
   getHistoricalCheckListData,
+  dispositionComments,
 };

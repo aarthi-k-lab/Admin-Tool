@@ -37,7 +37,7 @@ class Disposition extends React.PureComponent {
   componentDidUpdate() {
     const {
       enableGetNext, onPostComment, LoanNumber, ProcIdType, EvalId,
-      user, groupName, dispositionReason, AppName, TaskId,
+      user, groupName, dispositionReason, AppName, TaskId, taskIterationCounter,
     } = this.props;
     const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
@@ -56,6 +56,7 @@ class Disposition extends React.PureComponent {
           TASK: taskName,
           TASK_ID: TaskId,
           TASK_ACTN: dispositionReason,
+          TASK_ITRN_CNTR: taskIterationCounter,
           DSPN_IND: 1,
         }),
       };
@@ -216,7 +217,7 @@ Disposition.defaultProps = {
   inProgress: false,
   saveInProgress: false,
   AppName: 'CMOD',
-  ProcIdType: 'ProcessId',
+  ProcIdType: 'WF_PRCS_ID',
   groupName: '',
 };
 
@@ -243,6 +244,7 @@ Disposition.propTypes = {
   snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   TaskId: PropTypes.number.isRequired,
+  taskIterationCounter: PropTypes.number.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
@@ -273,6 +275,7 @@ const mapStateToProps = state => ({
   TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
+  taskIterationCounter: selectors.taskIterationCounter(state),
 });
 
 const mapDispatchToProps = dispatch => ({

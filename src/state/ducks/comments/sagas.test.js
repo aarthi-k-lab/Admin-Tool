@@ -38,7 +38,7 @@ describe('get Comments', () => {
   const payload = {
     payload: {
       applicationName: 'CMOD',
-      processIdType: 'ProcessId',
+      processIdType: 'WF_PRCS_ID',
       processId: 47898,
       eventName: 'UW',
       loanNumber: 34473856,
@@ -53,8 +53,8 @@ describe('get Comments', () => {
   };
   const saga = cloneableGenerator(TestExports.getComments)(payload);
   it('call comments Api', () => {
-    expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/utility/comment?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=ProcessId'));
+    expect(saga.next(payload).value)
+      .toEqual(call(Api.callGet, '/api/utility/comment?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=WF_PRCS_ID'));
   });
 
   it('should trigger get comments result action', () => {
@@ -70,7 +70,7 @@ describe('post Comment', () => {
   const payload = {
     payload: {
       applicationName: 'CMOD',
-      processIdType: 'ProcessId',
+      processIdType: 'WF_PRCS_ID',
       processId: 47898,
       eventName: 'UW',
       loanNumber: 34473856,

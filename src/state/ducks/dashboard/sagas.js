@@ -198,7 +198,7 @@ function* fetchChecklistDetails(checklistId) {
 }
 
 function* shouldRetriveChecklist(searchItem) {
-  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting'];
+  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation'];
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
@@ -368,7 +368,7 @@ function getCommentPayload(taskDetails) {
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'ProcessId', loanNumber, processId, evalId, taskId,
+    applicationName: 'CMOD', processIdType: 'WF_PRCS_ID', loanNumber, processId, evalId, taskId,
   };
 }
 
@@ -595,7 +595,8 @@ function* assignLoan() {
     const processId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}`, {});
+    const userGroups = R.pathOr([], ['groupList'], user);
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}`, {});
     if (response !== null) {
       yield put({
         type: ASSIGN_LOAN_RESULT,

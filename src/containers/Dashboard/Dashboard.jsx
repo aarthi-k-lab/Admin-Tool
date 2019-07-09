@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { selectors as dashboardSelectors, operations } from 'ducks/dashboard';
-import LandingPage from './LandingPage';
+// import LandingPage from './LandingPage';
 import EvaluationPage from './EvaluationPage';
+import UserReport from './UserReport';
 
 function getPage(isFirstVisit, group) {
-  return isFirstVisit && group !== 'LA' ? <LandingPage /> : <EvaluationPage group={group} />;
+  // return isFirstVisit && group !== 'LA' ? <LandingPage /> : <EvaluationPage group={group} />;
+  return isFirstVisit && group !== 'LA' ? <UserReport /> : <EvaluationPage group={group} />;
 }
 
 function Dashboard(props) {

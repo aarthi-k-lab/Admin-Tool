@@ -29,8 +29,7 @@
   text-align: justify;
   background: rgb(238, 238, 238);
   padding: 0.6rem;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-break: break-word;
   font-weight: 500;
 }
 
@@ -41,8 +40,7 @@
   text-align: justify;
   background: rgba(62, 162, 199, 0.27);
   padding: 0.6rem;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-break: break-word;
   font-weight: 500;
 }
 
@@ -101,6 +99,7 @@
 .disposition-selected {
   font-size: 1rem;
   vertical-align: text-bottom;
+  word-break: break-word;
 }
 
 .user-name {
@@ -137,12 +136,11 @@
 }
 
 .check-icon-style {
-  margin-left: -0.8rem;
   margin-top: -1rem;
 }
 
 .check-circle-icon {
-  margin-left: 0.3rem;
+  margin-left: -0.4rem;
   height: 1.2em !important;
   padding-top: 0.9rem;
   font-size: 1.9rem !important;

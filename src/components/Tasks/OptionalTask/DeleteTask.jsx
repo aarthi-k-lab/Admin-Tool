@@ -26,13 +26,14 @@ const styles = theme => ({
 });
 
 const DeleteTask = ({
-  classes, onClick, toolTipPosition, margin,
+  classes, disabled, onClick, toolTipPosition, margin,
 }) => (
   <Tooltip aria-label="Delete Task" placement={toolTipPosition} title="Delete Task">
     <Fab
       aria-label="Delete"
       className={classes.custom}
       color="secondary"
+      disabled={disabled}
       onClick={onClick}
       style={margin}
     >
@@ -51,6 +52,7 @@ DeleteTask.defaultProps = {
 
 DeleteTask.propTypes = {
   classes: PropTypes.shape.isRequired,
+  disabled: PropTypes.bool.isRequired,
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,
   }),

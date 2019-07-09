@@ -4,45 +4,46 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import CustomSnackBar from 'components/CustomSnackBar';
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
 import DashboardModel from 'models/Dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import moment from 'moment';
 import StagerPage from './StagerPage';
-
 
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeSearchTerm: '',
-      stager: 'UW_STAGER',
+      stager: 'STAGER_ALL',
     };
   }
 
   componentDidMount() {
     const { getDashboardCounts, triggerStagerValue, triggerStartEndDate } = this.props;
     const { stager } = this.state;
-    const now = new Date();
-    const CurrentDate = moment().startOf('month').format('DD');
-    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
-    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
-    const payload = {
-      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
-      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
-    };
-    triggerStartEndDate(payload);
+    const datePayload = this.getDatePayload();
+    triggerStartEndDate(datePayload);
     triggerStagerValue(stager);
     getDashboardCounts();
   }
 
-  onOrderClick(data) {
-    const { triggerOrderCall } = this.props;
+  onOrderClick(data, searchTerm) {
+    const { triggerOrderCall, user } = this.props;
+    const userPrincipalName = user.userDetails.email;
+    const endPoint = R.contains('Reclass', searchTerm) ? 'reclass' : 'valuation';
     const orderPayload = R.map(dataUnit => ({
       evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
       taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
     }), data);
-    triggerOrderCall(orderPayload);
+    const payload = {
+      taskData: orderPayload,
+      userPrincipalName,
+    };
+    triggerOrderCall(payload, endPoint);
   }
 
   onStatusCardClick(activeTile, activeTab) {
@@ -52,9 +53,11 @@ class StagerDashboard extends React.Component {
       getDashboardData,
       onCheckBoxClick,
       getDashboardCounts,
-      onClearDocsOutAction,
+      onClearDocGenAction,
+      onClearSearchResponse,
     } = this.props;
-    onClearDocsOutAction();
+    onClearDocGenAction();
+    onClearSearchResponse();
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     const { stager } = this.state;
     const payload = {
@@ -93,8 +96,9 @@ class StagerDashboard extends React.Component {
   onStagerChange(stager) {
     const stagerValue = DashboardModel.STAGER_VALUE;
     const {
-      getDashboardData, getDashboardCounts,
+      getDashboardCounts,
       onCheckBoxClick, triggerStagerValue,
+      triggerStartEndDate, onClearStagerResponse, onClearSearchResponse,
     } = this.props;
     this.setState({
       activeSearchTerm: '',
@@ -102,21 +106,34 @@ class StagerDashboard extends React.Component {
       activeTile: '',
       activeTab: '',
     });
-    const payload = {
-      activeSearchTerm: '',
-      stager: stagerValue[stager],
-    };
+    const datePayload = this.getDatePayload();
+    onClearStagerResponse();
+    onClearSearchResponse();
+    triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
-    getDashboardData(payload);
     onCheckBoxClick([]);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getDatePayload() {
+    const now = new Date();
+    const CurrentDate = moment().startOf('month').format('DD');
+    const start = moment(new Date(now.getFullYear(), now.getMonth(), CurrentDate, 0, 0, 0, 0));
+    const end = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0, 0));
+    const payload = {
+      fromDate: start.format('YYYY-MM-DD HH:mm:ss'),
+      toDate: end.format('YYYY-MM-DD HH:mm:ss'),
+    };
+    return payload;
   }
 
   refreshDashboard() {
     const { activeSearchTerm, stager } = this.state;
     const {
       getDashboardData, getDashboardCounts,
-      onCheckBoxClick, onClearDocsOutAction,
+      onCheckBoxClick, onClearDocGenAction,
+      onClearStagerResponse, onClearSearchResponse,
     } = this.props;
     const payload = {
       activeSearchTerm,
@@ -127,9 +144,22 @@ class StagerDashboard extends React.Component {
     }
     getDashboardCounts();
     onCheckBoxClick([]);
-    onClearDocsOutAction();
+    onClearStagerResponse();
+    onClearSearchResponse();
+    onClearDocGenAction();
   }
 
+  renderSnackBar() {
+    const { snackBarData, closeSnackBar } = this.props;
+    return (
+      <CustomSnackBar
+        message={snackBarData && snackBarData.message}
+        onClose={closeSnackBar}
+        open={snackBarData && snackBarData.open}
+        type={snackBarData && snackBarData.type}
+      />
+    );
+  }
 
   render() {
     const { groups } = this.props;
@@ -137,29 +167,30 @@ class StagerDashboard extends React.Component {
       return <Redirect to="/unauthorized?error=STAGER_DASHBOARD_ACCESS_NEEDED" />;
     }
     const {
-      counts, tableData, downloadCSVUri,
-      loading, selectedData, docsOutResponse,
+      counts, tableData,
+      loading, selectedData, docGenResponse,
     } = this.props;
     const {
       activeTab, activeTile, stager,
     } = this.state;
+
     return (
       <>
+        { this.renderSnackBar() }
         <StagerPage
           activeTab={activeTab}
           activeTile={activeTile}
           counts={counts}
-          downloadCSVUri={downloadCSVUri}
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
-          onOrderClick={data => this.onOrderClick(data)}
+          onOrderClick={(data, searchTerm) => this.onOrderClick(data, searchTerm)}
           onSelectAll={(isChecked, data) => this.onSelectAll(isChecked, data)}
           onStagerChange={stagerValue => this.onStagerChange(stagerValue)}
           onStatusCardClick={
             (tileName,
-              tabName) => this.onStatusCardClick(tileName, tabName)
+              tabName, totalCount) => this.onStatusCardClick(tileName, tabName, totalCount)
           }
-          popupData={docsOutResponse}
+          popupData={docGenResponse}
           refreshDashboard={() => this.refreshDashboard()}
           selectedData={selectedData}
           stager={stager}
@@ -176,8 +207,9 @@ const mapStateToProps = state => ({
   loading: stagerSelectors.getLoaderInfo(state),
   tableData: stagerSelectors.getTableData(state),
   selectedData: stagerSelectors.getSelectedData(state),
-  docsOutResponse: stagerSelectors.getDocsOutResponse(state),
-  downloadCSVUri: stagerSelectors.getDownloadCSVUri(state),
+  docGenResponse: stagerSelectors.getdocGenResponse(state),
+  snackBarData: notificationSelectors.getSnackBarState(state),
+  user: loginSelectors.getUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -186,11 +218,16 @@ const mapDispatchToProps = dispatch => ({
   onCheckBoxClick: stagerOperations.onCheckBoxClick(dispatch),
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
-  onClearDocsOutAction: stagerOperations.onClearDocsOutAction(dispatch),
+  onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
+  onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
+  closeSnackBar: notificationOperations.closeSnackBar(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+
 });
 
 StagerDashboard.propTypes = {
+  closeSnackBar: PropTypes.func,
   counts: PropTypes.arrayOf(
     PropTypes.shape({
       data: PropTypes.arrayOf(
@@ -205,32 +242,43 @@ StagerDashboard.propTypes = {
       displayName: PropTypes.string,
     }),
   ),
-  docsOutResponse: PropTypes.arrayOf(
+  docGenResponse: PropTypes.arrayOf(
     PropTypes.shape({
-      failedLoans: PropTypes.array.isRequired,
-      succeedLoans: PropTypes.array.isRequired,
+      hitLoans: PropTypes.array.isRequired,
+      missedLoans: PropTypes.array.isRequired,
     }),
   ),
-  downloadCSVUri: PropTypes.string,
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
-  onClearDocsOutAction: PropTypes.func.isRequired,
+  onClearDocGenAction: PropTypes.func.isRequired,
+  onClearSearchResponse: PropTypes.func.isRequired,
+  onClearStagerResponse: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
+  snackBarData: PropTypes.node,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 StagerDashboard.defaultProps = {
   counts: [],
   tableData: [],
+  snackBarData: null,
   loading: false,
-  downloadCSVUri: '',
-  docsOutResponse: {},
+  closeSnackBar: () => {},
+  docGenResponse: {},
 };
 
 const TestExports = {

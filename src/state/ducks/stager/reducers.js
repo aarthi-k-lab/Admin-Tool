@@ -1,17 +1,22 @@
 import {
-  SET_STAGER_DATA_COUNTS, SET_STAGER_DATA, SET_STAGER_DOWNLOAD_CSV_URI,
-  SET_STAGER_DATA_LOADING, TABLE_CHECKBOX_SELECT,
+  SET_STAGER_DATA_COUNTS,
+  SET_STAGER_DATA,
+  SET_STAGER_DATA_LOADING,
+  TABLE_CHECKBOX_SELECT,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_DOCS_OUT_RESPONSE,
-  SET_DOCS_OUT_ACTION,
-  CLEAR_DOCS_OUT_RESPONSE,
+  SET_DOC_GEN_RESPONSE,
+  SET_DOC_GEN_ACTION,
+  CLEAR_DOC_GEN_RESPONSE,
   SET_START_END_DATE,
   SET_STAGER_VALUE,
+  SET_DOWNLOAD_DATA,
+  SET_STAGER_GROUP, SEARCH_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE, CLEAR_STAGER_RESPONSE,
 } from './types';
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
-    case SET_STAGER_DATA_COUNTS: {
+    case SET_STAGER_DATA_COUNTS:
+    {
       const { counts } = action.payload ? action.payload : {};
       return {
         ...state,
@@ -19,7 +24,8 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_STAGER_DATA: {
+    case SET_STAGER_DATA:
+    {
       const data = action.payload.data ? action.payload.data : action.payload.error;
       return {
         ...state,
@@ -27,8 +33,24 @@ const reducer = (state = {}, action) => {
         loading: false,
       };
     }
+    case CLEAR_STAGER_RESPONSE:
+    {
+      return {
+        ...state,
+        data: null,
+      };
+    }
 
-    case SET_STAGER_DATA_LOADING: {
+    case SET_DOWNLOAD_DATA:
+    {
+      return {
+        ...state,
+        csvData: action.payload.tableData,
+      };
+    }
+
+    case SET_STAGER_DATA_LOADING:
+    {
       const loading = action.payload.loading ? action.payload.loading : action.payload.error;
       return {
         ...state,
@@ -36,7 +58,8 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case TABLE_CHECKBOX_SELECT: {
+    case TABLE_CHECKBOX_SELECT:
+    {
       const selectedData = action.payload.selectedData
         ? action.payload.selectedData : action.payload.selectedData;
       return {
@@ -45,52 +68,72 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_STAGER_ACTIVE_SEARCH_TERM: {
+    case SET_STAGER_ACTIVE_SEARCH_TERM:
+    {
       return {
         ...state,
         activeSearchTerm: action.payload,
       };
     }
 
-    case SET_STAGER_DOWNLOAD_CSV_URI: {
+    case SET_DOC_GEN_RESPONSE:
+    {
       return {
         ...state,
-        downloadCSVUri: action.payload,
+        docGenResponse: action.payload,
       };
     }
-
-    case SET_DOCS_OUT_RESPONSE: {
+    case SET_DOC_GEN_ACTION:
+    {
       return {
         ...state,
-        docsOutResponse: action.payload,
+        docGenAction: action.action,
       };
     }
-    case SET_DOCS_OUT_ACTION: {
+    case CLEAR_DOC_GEN_RESPONSE:
+    {
       return {
         ...state,
-        docsOutAction: action.action,
+        docGenResponse: null,
       };
     }
-    case CLEAR_DOCS_OUT_RESPONSE: {
+    case CLEAR_SEARCH_RESPONE:
+    {
       return {
         ...state,
-        docsOutResponse: null,
+        searchStagerLoanResponse: null,
       };
     }
-    case SET_STAGER_VALUE: {
+    case SET_STAGER_VALUE:
+    {
       return {
         ...state,
         stagerValue: action.payload,
       };
     }
 
-    case SET_START_END_DATE: {
+    case SET_START_END_DATE:
+    {
       return {
         ...state,
         stagerStartEndDate: action.payload,
       };
     }
 
+
+    case SET_STAGER_GROUP:
+    {
+      return {
+        ...state,
+        stagerGroup: action.payload,
+      };
+    }
+    case SEARCH_STAGER_LOAN_NUMBER: {
+      return {
+        ...state,
+        searchStagerLoanResponse: action.payload,
+      };
+    }
     default:
       return state;
   }
