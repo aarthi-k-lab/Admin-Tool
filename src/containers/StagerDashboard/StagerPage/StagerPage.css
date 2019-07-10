@@ -12,10 +12,6 @@
   padding-left: 2rem;
 }
 
-.refresh-button.refresh-button {
-  margin-left: 0.5rem;
-  margin-top: -5px !important;
-}
 
 .scroll-area {
   overflow-x: hidden;

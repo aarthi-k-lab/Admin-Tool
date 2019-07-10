@@ -98,7 +98,7 @@ class StagerDashboard extends React.Component {
     const {
       getDashboardCounts,
       onCheckBoxClick, triggerStagerValue,
-      triggerStartEndDate, onClearStagerResponse,
+      triggerStartEndDate, onClearStagerResponse, onClearSearchResponse,
     } = this.props;
     this.setState({
       activeSearchTerm: '',
@@ -108,6 +108,7 @@ class StagerDashboard extends React.Component {
     });
     const datePayload = this.getDatePayload();
     onClearStagerResponse();
+    onClearSearchResponse();
     triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
@@ -132,7 +133,7 @@ class StagerDashboard extends React.Component {
     const {
       getDashboardData, getDashboardCounts,
       onCheckBoxClick, onClearDocGenAction,
-      onClearStagerResponse,
+      onClearStagerResponse, onClearSearchResponse,
     } = this.props;
     const payload = {
       activeSearchTerm,
@@ -144,6 +145,7 @@ class StagerDashboard extends React.Component {
     getDashboardCounts();
     onCheckBoxClick([]);
     onClearStagerResponse();
+    onClearSearchResponse();
     onClearDocGenAction();
   }
 

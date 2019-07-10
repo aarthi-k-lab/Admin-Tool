@@ -33,6 +33,7 @@ class StagerPage extends React.PureComponent {
 
   onStagerChange(event) {
     const { onStagerChange, onClearDocGenAction, onClearStagerResponse } = this.props;
+    this.setState({ searchText: '' });
     onStagerChange(event.target.value);
     onClearDocGenAction();
     onClearStagerResponse();
@@ -83,7 +84,7 @@ class StagerPage extends React.PureComponent {
               </Select>
             </Grid>
             <Grid item styleName="scroll-area">
-              <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard} styleName="refresh-button">
+              <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
                 <RefreshIcon />
               </IconButton>
             </Grid>

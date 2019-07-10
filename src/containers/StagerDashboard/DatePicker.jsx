@@ -19,12 +19,13 @@ class DatePicker extends React.PureComponent {
     const {
       triggerStartEndDate, getDashboardCounts,
       getDashboardData, getActiveSearchTerm,
-      getStagerValue,
+      getStagerValue, onClearSearchResponse,
     } = this.props;
     const pagepayload = {
       fromDate: fromDate.format('YYYY-MM-DD HH:mm:ss'),
       toDate: toDate.format('YYYY-MM-DD HH:mm:ss'),
     };
+    onClearSearchResponse();
     triggerStartEndDate(pagepayload);
     getDashboardCounts();
     if (getActiveSearchTerm) {
@@ -112,6 +113,7 @@ DatePicker.propTypes = {
   getDashboardData: PropTypes.func.isRequired,
   getStagerStartEndDate: PropTypes.node,
   getStagerValue: PropTypes.string.isRequired,
+  onClearSearchResponse: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
 
 };
@@ -119,6 +121,7 @@ const mapDispatchToProps = dispatch => ({
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   getDashboardCounts: stagerOperations.getDashboardCounts(dispatch),
   getDashboardData: stagerOperations.getDashboardData(dispatch),
+  onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
 
 });
 
