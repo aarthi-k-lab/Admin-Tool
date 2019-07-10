@@ -453,8 +453,8 @@ function* updateChecklist(action) {
 
 function* getHistoricalChecklistData(action) {
   try {
-    const { processId } = action.payload;
-    const response = yield call(Api.callGet, `/api/dataservice/getTaskDetailsForProcessIds/${processId}`);
+    const { taskId } = action.payload;
+    const response = yield call(Api.callGet, `/api/dataservice/getTaskDetailsForTaskIds/${taskId}`);
     yield put({
       type: HISTORICAL_CHECKLIST_DATA,
       payload: response,

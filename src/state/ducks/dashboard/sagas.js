@@ -170,7 +170,7 @@ function* fetchChecklistDetails(checklistId) {
       });
       return;
     }
-    const response = yield call(Api.callGet, '/api/task-engine/process/5cee56a55b95415a7ce905f6?shouldGetTaskTree=false');
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -422,40 +422,14 @@ function* getNext(action) {
         yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
       }
       yield put(resetChecklistData());
-      // const { appGroupName } = action.payload;
-      // const user = yield select(loginSelectors.getUser);
-      // const userPrincipalName = R.path(['userDetails', 'email'], user);
-      // const taskDetails = {
-      //   taskData: {
-      //     data: {
-      //       id: '1778232',
-      //       wfProcessId: '230421',
-      //       wfTaskMileStoneName: '',
-      //       taskCheckListId: '5cee415e6dc1d4270a6a63e8',
-      //       taskCheckListTemplateName: 'FEUW_v1.13',
-      //       hardAssignIndicator: false,
-      //       createdOn: '2019-05-15T13:22:15.464+0000',
-      //       taskCreatedByUsername: 'Deepan.Kumaresan@mrcooper.com',
-      //       taskDueDate: '2019-05-20T05:00:55.000+0000',
-      //       taskStatus: 'Assigned',
-      //       taskStatusUpdatedOn: '2019-05-29T09:28:23.798+0000',
-      //       taskUpdatedByUsername: 'Deepan.Kumaresan@mrcooper.com',
-      //       taskLastUpdatedOn: '2019-05-29T09:28:23.798+0000',
-      //       applicationId: '2010628',
-      //       loanNumber: '636336521',
-      //       assignedTo: 'Deepan.Kumaresan@mrcooper.com',
-      //       processStatus: null,
-      //     },
-      //   },
-      // };
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}`);
-      // const { taskData: { data: { wfProcessId: processId = null } } } = taskDetails;
-      // yield put(getHistoricalCheckListData(processId));
-      yield put(getHistoricalCheckListData('211671'));
+      const { taskData: { data: { id: taskId = null } } } = taskDetails;
+      yield put(getHistoricalCheckListData(taskId));
+      // yield put(getHistoricalCheckListData('211671'));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
           if (R.keys(allTasksComments[taskComment]).length) {
