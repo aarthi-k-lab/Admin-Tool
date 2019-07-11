@@ -153,11 +153,13 @@ const TestExports = {
 };
 CustomReactTable.defaultProps = {
   data: [],
+  // searchLoanNumber: null,
 };
 CustomReactTable.propTypes = {
   data: PropTypes.node,
   onCheckBoxClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
+  // searchLoanNumber: PropTypes.node,
   selectedData: PropTypes.node.isRequired,
 };
 

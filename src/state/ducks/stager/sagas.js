@@ -28,6 +28,7 @@ import {
   SET_DOWNLOAD_DATA,
   SEARCH_STAGER_LOAN_NUMBER,
   GET_STAGER_LOAN_NUMBER,
+  SET_STAGER_LOAN_NUMBER,
 
 } from './types';
 
@@ -238,6 +239,10 @@ function* makeStagerSearchLoanCall(payload) {
     yield put({
       type: SEARCH_STAGER_LOAN_NUMBER,
       payload: response,
+    });
+    yield put({
+      type: SET_STAGER_LOAN_NUMBER,
+      payload: searchLoanNumber,
     });
   } catch (err) {
     yield put({

@@ -57,12 +57,18 @@ class StagerDetailsTable extends React.PureComponent {
 
   renderDataTable() {
     const { data } = this.props;
-    const { onCheckBoxClick, onSelectAll, selectedData } = this.props;
+    const {
+      onCheckBoxClick,
+      onSelectAll,
+      selectedData,
+      // getSearchStagerLoanNumber,
+    } = this.props;
     return (
       <CustomReactTable
         data={data}
         onCheckBoxClick={onCheckBoxClick}
         onSelectAll={onSelectAll}
+        // searchLoanNumber={getsSearchStagerLoanNumber}
         selectedData={selectedData}
       />
     );
@@ -182,6 +188,7 @@ const TestExports = {
 
 StagerDetailsTable.defaultProps = {
   popupData: [],
+  // getSearchStagerLoanNumber: null,
 };
 
 StagerDetailsTable.propTypes = {
@@ -189,6 +196,7 @@ StagerDetailsTable.propTypes = {
   docGenAction: PropTypes.func.isRequired,
   downloadedData: PropTypes.node.isRequired,
   getActiveSearchTerm: PropTypes.string.isRequired,
+  // getSearchStagerLoanNumber: PropTypes.node,
   getStagerValue: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
@@ -211,6 +219,7 @@ const mapStateToProps = state => ({
   getStagerValue: stagerSelectors.getStagerValue(state),
   getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
   downloadedData: stagerSelectors.getDownloadData(state),
+  // getSearchStagerLoanNumber: stagerSelectors.getSearchStagerLoanNumber(state),
 });
 
 const mapDispatchToProps = dispatch => ({
