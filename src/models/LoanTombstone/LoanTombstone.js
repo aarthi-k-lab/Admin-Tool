@@ -199,6 +199,14 @@ function getEvalType(_, evalDetails) {
   const evalType = getOr('evalType', evalDetails, NA);
   return generateTombstoneItem('Evaluation Type', evalType);
 }
+function getEvalFlag(_, evalDetails) {
+  let evalType = getOr('evalType', evalDetails, NA);
+  const evalTypeArray = ['PreApproved', 'Disaster', 'Inflight', 'StateReview', 'NonDelegated'];
+  if (evalType !== 'NA' && !evalTypeArray.includes(evalType)) {
+    evalType = 'Standard';
+  }
+  return generateTombstoneItem('Eval Flag', evalType);
+}
 function mlstnDateSortDesc(d1, d2) {
   const a = new Date(d1.mlstnDttm);
   const b = new Date(d2.mlstnDttm);
@@ -285,7 +293,7 @@ function getTombstoneItems(loanDetails,
       getLoanItem,
       getInvestorLoanItem,
       getEvalIdItem,
-      getEvalType,
+      getEvalFlag,
       getLoanTypeDescription,
       getInvestorItem,
       getLienPosition,
@@ -302,7 +310,7 @@ function getTombstoneItems(loanDetails,
       getFLDD,
       getCFPBExpirationDate,
       getDaysUntilCFPB,
-      getUPBItem,
+      getBoardingDate,
     ];
   }
   if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
