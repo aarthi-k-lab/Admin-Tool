@@ -60,7 +60,7 @@ class StagerDashboard extends React.Component {
     onClearDocGenAction();
     if (getStagerSearchResponse && !R.isEmpty(getStagerSearchResponse)
       && !getStagerSearchResponse.error && !getStagerSearchResponse.noContents) {
-      const stagerValues = getStagerSearchResponse[activeTab].split(',');
+      const stagerValues = getStagerSearchResponse[activeTab] ? getStagerSearchResponse[activeTab].split(',') : [];
       if (stagerValues.indexOf(activeTile) === -1) {
         onClearSearchResponse();
       }
