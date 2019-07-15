@@ -118,6 +118,22 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
+  // eslint-disable-next-line no-unused-vars
+  getTrPropsType(state, rowInfo, column) {
+    const { searchResponse } = this.props;
+    if (rowInfo) {
+      const { original } = rowInfo;
+      if (original['Loan Number'] === searchResponse) {
+        return {
+          style: {
+            background: '#e67300',
+          },
+        };
+      }
+    }
+    return {};
+  }
+
   render() {
     const { data } = this.props;
     const returnVal = data ? (
@@ -139,6 +155,7 @@ class CustomReactTable extends React.PureComponent {
               },
             ] : []}
             filterable
+            getTrProps={(state, rowInfo, column) => this.getTrPropsType(state, rowInfo, column)}
             styleName="stagerTable"
           />
         </div>
@@ -158,7 +175,9 @@ CustomReactTable.propTypes = {
   data: PropTypes.node,
   onCheckBoxClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
+  searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
+
 };
 
 export default CustomReactTable;
