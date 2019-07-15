@@ -22,6 +22,7 @@ class UserReport extends React.PureComponent {
       '/backend-evaluation': 'UNDERWRITNG Agent Dashboard',
       '/backend-checklist': 'UNDERWRITNG Agent Dashboard',
       '/doc-processor': 'PROCESSING Agent Dashboard',
+      '/doc-gen': 'INCOME CALCULATION Agent Dashboard',
     };
     this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };

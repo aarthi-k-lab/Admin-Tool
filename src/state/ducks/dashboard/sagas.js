@@ -231,8 +231,20 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
-  evalDetails.isAssigned = !R.isNil(evalDetails.assignee)
-  && userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
+  evalDetails.isAssigned = false;
+  let assignedTo = [];
+  const name = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.') : null;
+  assignedTo = name[0].concat(' ', name[1]);
+  if (!R.isNil(evalDetails.assignee) && assignedTo === evalDetails.assignee.toLowerCase()) {
+    evalDetails.isAssigned = true;
+    if (evalDetails.taskId) {
+      try {
+        yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalDetails.evalId}&assignedTo=${userDetails.email}&taskStatus=Assigned&taskId=${evalDetails.taskId}`, {});
+      } catch (e) {
+        yield put({ type: HIDE_LOADER });
+      }
+    }
+  }
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
