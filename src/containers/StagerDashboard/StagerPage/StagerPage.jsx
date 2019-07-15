@@ -41,7 +41,7 @@ class StagerPage extends React.PureComponent {
 
   onSearchTextChange(event) {
     const re = /^[0-9\b]+$/;
-    if (event.target.value === '' || re.test(event.target.value)) {
+    if (event.target.value !== '' && re.test(event.target.value)) {
       this.setState({ searchText: event.target.value });
     }
   }
@@ -50,7 +50,6 @@ class StagerPage extends React.PureComponent {
     const { searchText } = this.state;
     const { triggerStagerSearchLoan } = this.props;
     if (searchText) {
-      this.shouldSearchLoan = true;
       triggerStagerSearchLoan(searchText);
     }
   }
@@ -59,6 +58,14 @@ class StagerPage extends React.PureComponent {
     if (event.charCode === 13 || event.key === 'Enter') {
       this.handleSearchLoanClick();
     }
+  }
+
+  buildSearchResponse(response) {
+    if (response && !response.error && !response.noContents) {
+      const { searchText } = this.state;
+      return searchText;
+    }
+    return null;
   }
 
   render() {
@@ -142,6 +149,7 @@ class StagerPage extends React.PureComponent {
               onOrderClick={onOrderClick}
               onSelectAll={onSelectAll}
               popupData={popupData}
+              searchResponse={this.buildSearchResponse(getStagerSearchResponse)}
               selectedData={selectedData}
             />
           </Grid>

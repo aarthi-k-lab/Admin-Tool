@@ -57,12 +57,15 @@ class StagerDetailsTable extends React.PureComponent {
 
   renderDataTable() {
     const { data } = this.props;
-    const { onCheckBoxClick, onSelectAll, selectedData } = this.props;
+    const {
+      onCheckBoxClick, onSelectAll, selectedData, searchResponse,
+    } = this.props;
     return (
       <CustomReactTable
         data={data}
         onCheckBoxClick={onCheckBoxClick}
         onSelectAll={onSelectAll}
+        searchResponse={searchResponse}
         selectedData={selectedData}
       />
     );
@@ -201,6 +204,7 @@ StagerDetailsTable.propTypes = {
       error: PropTypes.bool,
     }),
   ),
+  searchResponse: PropTypes.string.isRequired,
   selectedData: PropTypes.node.isRequired,
   triggerDispositionOperationCall: PropTypes.func.isRequired,
   triggerStagerGroup: PropTypes.func.isRequired,
