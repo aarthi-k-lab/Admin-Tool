@@ -30,6 +30,8 @@ import {
   DISP_COMMENT,
   UPDATE_CHECKLIST,
   CLEAR_SUBTASK,
+  FETCH_DROPDOWN_OPTIONS_SAGA,
+  SAVE_DROPDOWN_OPTIONS,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -43,6 +45,7 @@ import selectors from './selectors';
 import { selectors as dashboardSelectors } from '../dashboard';
 import { selectors as loginSelectors } from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
+// import DropDownSelect from 'containers';
 
 const ADD = 'ADD';
 // const DELETE = 'DELETE';
@@ -459,6 +462,18 @@ function* subTaskClearance(action) {
   }
 }
 
+function* getdropDownOptions(action) {
+  const options = yield call(Api.callPost, '/api/task-engine/getData', action.payload);
+  try {
+    yield put({
+      type: SAVE_DROPDOWN_OPTIONS,
+      payload: options,
+    });
+  } catch (e) {
+    yield call(handleSaveChecklistError, e);
+  }
+}
+
 function* watchChecklistItemChange() {
   yield takeEvery(HANDLE_CHECKLIST_ITEM_CHANGE, handleChecklistItemChange);
 }
@@ -491,6 +506,9 @@ function* watchSubtaskClearance() {
   yield takeEvery(CLEAR_SUBTASK, subTaskClearance);
 }
 
+function* watchDropDownOption() {
+  yield takeEvery(FETCH_DROPDOWN_OPTIONS_SAGA, getdropDownOptions);
+}
 export const TestExports = {
   watchGetTasks,
 };
@@ -505,5 +523,6 @@ export function* combinedSaga() {
     watchDispositionComment(),
     watchUpdateChecklist(),
     watchSubtaskClearance(),
+    watchDropDownOption(),
   ]);
 }

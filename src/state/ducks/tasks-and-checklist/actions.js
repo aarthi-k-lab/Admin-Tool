@@ -22,6 +22,7 @@ import {
   RESET_DELETE_TASK,
   CLEAR_SUBTASK,
   UPDATE_COMMENTS,
+  FETCH_DROPDOWN_OPTIONS_SAGA,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -147,6 +148,13 @@ const subTaskClearance = (taskId, rootTaskId, taskBluePrintCode) => ({
   },
 });
 
+const getDropDownOptions = (source, additionalInfo) => ({
+  type: FETCH_DROPDOWN_OPTIONS_SAGA,
+  payload: {
+    source,
+    additionalInfo,
+  },
+});
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -171,4 +179,5 @@ export {
   resetDeleteTaskConfirmation,
   subTaskClearance,
   dispositionComments,
+  getDropDownOptions,
 };

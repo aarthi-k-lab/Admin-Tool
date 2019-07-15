@@ -25,6 +25,7 @@ import {
   RESET_DELETE_TASK,
   UPDATE_COMMENTS,
   EMPTY_CHECKLIST_COMMENT,
+  SAVE_DROPDOWN_OPTIONS,
 } from './types';
 
 const FAILED = 'failed';
@@ -239,6 +240,17 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         shouldDeleteTask: defaultState.shouldDeleteTask,
+      };
+    }
+    case SAVE_DROPDOWN_OPTIONS: {
+      const options = R.concat([{
+        displayName: '',
+        id: '',
+      }], action.payload);
+
+      return {
+        ...state,
+        dropDownOptions: options,
       };
     }
     default:

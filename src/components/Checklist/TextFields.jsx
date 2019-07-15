@@ -1,8 +1,11 @@
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
+import { operations, selectors } from 'ducks/tasks-and-checklist';
 import moment from 'moment-timezone';
+import * as R from 'ramda';
 import React from 'react';
+import { connect } from 'react-redux';
 import HTMLElements from '../../constants/componentTypes';
 import './TextFields.css';
 
@@ -14,10 +17,12 @@ function getCurrentDate() {
 }
 
 function getProps(type, props) {
-  const { MULTILINE_TEXT, DATE, NUMBER } = HTMLElements;
+  const {
+    MULTILINE_TEXT, DATE, NUMBER, DROPDOWN,
+  } = HTMLElements;
   switch (type) {
     case DATE: {
-      return { ...props, inputProps: { type: 'date', max: getCurrentDate(), onKeyDown: e => e.preventDefault() } };
+      return { ...props, inputProps: { type: 'date', max: getCurrentDate() } };
     }
     case MULTILINE_TEXT: {
       return {
@@ -33,19 +38,78 @@ function getProps(type, props) {
         },
       };
     }
+
+    case DROPDOWN: {
+      return {
+        ...props,
+        inputProps: {
+          type: 'select',
+          SelectProps: {
+            native: true,
+          },
+        },
+      };
+    }
     default: return { ...props };
   }
 }
 
-const TextFields = (props) => {
-  const { type, title } = props;
-  const properties = getProps(type, props);
-  return (
-    <FormControl component="fieldset">
-      <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
-      <TextField {...properties} />
-    </FormControl>
-  );
-};
+class TextFields extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = '';
+  }
 
-export default TextFields;
+  componentWillMount() {
+    const { source, additionalInfo, fetchDropDownOption } = this.props;
+    if (!R.isEmpty(source)) {
+      fetchDropDownOption(source, additionalInfo);
+    }
+  }
+
+  getDropDownOptions() {
+    const { getDropDownOptions } = this.props;
+    return (getDropDownOptions ? getDropDownOptions.map(option => (
+      <option key={option.id} value={option.displayName}>
+        {option.displayName}
+      </option>
+    )) : null);
+  }
+
+  getControl(type) {
+    const { DROPDOWN } = HTMLElements;
+    const properties = getProps(type, this.props);
+    return (type === DROPDOWN) ? (
+      <TextField
+        {...this.props}
+        margin="normal"
+        select
+        SelectProps={{
+          native: true,
+        }}
+      >
+        { this.getDropDownOptions() }
+      </TextField>
+    ) : (<TextField {...properties} />);
+  }
+
+  render() {
+    const { type, title } = this.props;
+    return (
+      <FormControl component="fieldset">
+        <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
+        {this.getControl(type)}
+      </FormControl>
+    );
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchDropDownOption: operations.fetchDropDownOptions(dispatch),
+});
+
+const mapStateToProps = state => ({
+  getDropDownOptions: selectors.getDropDownOptions(state),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TextFields);
