@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
 import { CSVLink } from 'react-csv';
-// import Loader from 'components/Loader/Loader';
 import CustomReactTable from 'components/CustomReactTable';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import renderSkeletonLoader from './TableSkeletonLoader';
@@ -55,17 +54,25 @@ class StagerDetailsTable extends React.PureComponent {
     onDownloadData(() => this.csvLink.link.click());
   }
 
+  buildSearchResponse(response) {
+    const { getSearchStagerLoanNumber } = this.props;
+    if (response && !R.isEmpty(response) && !response.error && !response.noContents) {
+      return getSearchStagerLoanNumber;
+    }
+    return null;
+  }
+
   renderDataTable() {
     const { data } = this.props;
     const {
-      onCheckBoxClick, onSelectAll, selectedData, searchResponse,
+      onCheckBoxClick, onSelectAll, selectedData, getStagerSearchResponse,
     } = this.props;
     return (
       <CustomReactTable
         data={data}
         onCheckBoxClick={onCheckBoxClick}
         onSelectAll={onSelectAll}
-        searchResponse={searchResponse}
+        searchResponse={this.buildSearchResponse(getStagerSearchResponse)}
         selectedData={selectedData}
       />
     );
@@ -192,6 +199,8 @@ StagerDetailsTable.propTypes = {
   docGenAction: PropTypes.func.isRequired,
   downloadedData: PropTypes.node.isRequired,
   getActiveSearchTerm: PropTypes.string.isRequired,
+  getSearchStagerLoanNumber: PropTypes.node.isRequired,
+  getStagerSearchResponse: PropTypes.node.isRequired,
   getStagerValue: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
@@ -204,7 +213,6 @@ StagerDetailsTable.propTypes = {
       error: PropTypes.bool,
     }),
   ),
-  searchResponse: PropTypes.string.isRequired,
   selectedData: PropTypes.node.isRequired,
   triggerDispositionOperationCall: PropTypes.func.isRequired,
   triggerStagerGroup: PropTypes.func.isRequired,
@@ -215,6 +223,8 @@ const mapStateToProps = state => ({
   getStagerValue: stagerSelectors.getStagerValue(state),
   getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
   downloadedData: stagerSelectors.getDownloadData(state),
+  getSearchStagerLoanNumber: stagerSelectors.getSearchStagerLoanNumber(state),
+  getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
 });
 
 const mapDispatchToProps = dispatch => ({

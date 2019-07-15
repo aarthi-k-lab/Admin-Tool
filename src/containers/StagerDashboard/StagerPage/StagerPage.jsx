@@ -60,14 +60,6 @@ class StagerPage extends React.PureComponent {
     }
   }
 
-  buildSearchResponse(response) {
-    if (response && !response.error && !response.noContents) {
-      const { searchText } = this.state;
-      return searchText;
-    }
-    return null;
-  }
-
   render() {
     const {
       activeTab, activeTile,
@@ -149,7 +141,6 @@ class StagerPage extends React.PureComponent {
               onOrderClick={onOrderClick}
               onSelectAll={onSelectAll}
               popupData={popupData}
-              searchResponse={this.buildSearchResponse(getStagerSearchResponse)}
               selectedData={selectedData}
             />
           </Grid>
