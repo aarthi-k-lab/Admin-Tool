@@ -60,6 +60,8 @@ const enableEndShift = state => (
 
 const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
 
+const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
+
 const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
 
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
@@ -93,6 +95,7 @@ const selectors = {
   isTasksLimitExceeded,
   searchLoanResult,
   showAssign,
+  showContinueMyReview,
   unassignResult,
   assignResult,
   processId,

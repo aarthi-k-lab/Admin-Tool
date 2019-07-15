@@ -33,6 +33,7 @@ import {
   TASKS_LIMIT_EXCEEDED,
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
+  CONTINUE_MY_REVIEW_RESULT,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -245,6 +246,17 @@ const reducer = (state = { firstVisit: true }, action) => {
         noTasksFound: false,
         isAssigned: action.payload.isSearch ? action.payload.isAssigned : true,
         taskIterationCounter: action.payload.taskIterationCounter,
+        showContinueMyReview: action.payload.isSearch ? action.payload.showContinueMyReview : false,
+      };
+      return newState;
+    }
+
+    case CONTINUE_MY_REVIEW_RESULT: {
+      const newState = {
+        ...state,
+        isAssigned: action.payload,
+        showContinueMyReview: !action.payload,
+        showAssign: null,
       };
       return newState;
     }
@@ -264,6 +276,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         showAssign: false,
         isAssigned: !R.isEmpty(assignLoanResponse),
+        showContinueMyReview: false,
       };
     }
 

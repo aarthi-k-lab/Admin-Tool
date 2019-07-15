@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
+  EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting, ContinueMyReview,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -26,11 +26,17 @@ class Controls extends React.PureComponent {
     this.handlegetNext = this.handlegetNext.bind(this);
     this.handleSentToUnderwriting = this.handleSentToUnderwriting.bind(this);
     this.showAssignForThisGroup = this.showAssignForThisGroup.bind(this);
+    this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
   }
 
   handleSentToUnderwriting() {
     const { onSentToUnderwriting } = this.props;
     onSentToUnderwriting();
+  }
+
+  handleContinueMyReview() {
+    const { onContinueMyReview } = this.props;
+    onContinueMyReview('Assigned');
   }
 
   handlegetNext() {
@@ -67,6 +73,7 @@ class Controls extends React.PureComponent {
       showEndShift,
       showGetNext,
       showSendToUnderWritingIcon,
+      showContinueMyReview,
       showAssign,
       showValidate,
       isFirstVisit,
@@ -111,6 +118,8 @@ class Controls extends React.PureComponent {
     ) {
       assign = <Unassign />;
     }
+    const getContinueMyReviewButton = showContinueMyReview
+      ? <ContinueMyReview onClick={this.handleContinueMyReview} /> : null;
     return (
       <>
         {assign}
@@ -118,6 +127,7 @@ class Controls extends React.PureComponent {
         {endShift}
         {getNext}
         {getSendToUnderWritingButton}
+        {getContinueMyReviewButton}
         {expand}
       </>
     );
@@ -133,9 +143,11 @@ Controls.defaultProps = {
   onExpand: () => { },
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
+  onContinueMyReview: () => { },
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
+  showContinueMyReview: null,
   showAssign: null,
   showValidate: false,
 };
@@ -151,11 +163,13 @@ Controls.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  onContinueMyReview: PropTypes.func,
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   showAssign: PropTypes.bool,
+  showContinueMyReview: PropTypes.bool,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
@@ -186,6 +200,7 @@ const mapStateToProps = (state) => {
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),
     showAssign: selectors.showAssign(state),
+    showContinueMyReview: selectors.showContinueMyReview(state),
     user: loginSelectors.getUser(state),
     groupName: selectors.groupName(state),
   };
@@ -198,6 +213,7 @@ const mapDispatchToProps = dispatch => ({
   validateDispositionTrigger: operations.validateDispositionTrigger(dispatch),
   onAssignLoan: operations.onAssignLoan(dispatch),
   onSentToUnderwriting: operations.onSentToUnderwriting(dispatch),
+  onContinueMyReview: operations.onContinueMyReview(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);
