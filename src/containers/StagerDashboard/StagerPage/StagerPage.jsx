@@ -50,7 +50,6 @@ class StagerPage extends React.PureComponent {
     const { searchText } = this.state;
     const { triggerStagerSearchLoan } = this.props;
     if (searchText) {
-      this.shouldSearchLoan = true;
       triggerStagerSearchLoan(searchText);
     }
   }

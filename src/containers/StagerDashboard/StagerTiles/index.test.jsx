@@ -49,7 +49,7 @@ describe('<StagerTiles />', () => {
     );
     expect(wrapper.find('Loader')).toHaveLength(1);
     expect(wrapper.find('WithStyles(Grid)')).toHaveLength(1);
-    expect(wrapper.instance().isActiveCard(tileName, tabName)).toBe(false);
+    expect(wrapper.instance().isActiveCard(tileName, tabName)).toBe(true);
     expect(wrapper.instance().isActiveCard('Legal', tabName)).toBe(false);
   });
   it('shows StagerDashboard', () => {
