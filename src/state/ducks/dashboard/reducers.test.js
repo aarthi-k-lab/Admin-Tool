@@ -131,6 +131,12 @@ describe('Ducks :: dashboard -> reducer', () => {
       noTasksFound: false,
       showAssign: null,
       isAssigned: true,
+      processId: '1234',
+      processStatus: null,
+      taskStatus: null,
+      processName: null,
+      taskIterationCounter: '1',
+      showContinueMyReview: false,
     };
     expect(reducer(state, saveEvalIdLoanNumberAction)).toEqual(expectedState);
   });
