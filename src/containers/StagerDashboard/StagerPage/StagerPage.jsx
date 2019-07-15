@@ -41,7 +41,7 @@ class StagerPage extends React.PureComponent {
 
   onSearchTextChange(event) {
     const re = /^[0-9\b]+$/;
-    if (event.target.value !== '' && re.test(event.target.value)) {
+    if (event.target.value === '' || re.test(event.target.value)) {
       this.setState({ searchText: event.target.value });
     }
   }
