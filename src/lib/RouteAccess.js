@@ -72,7 +72,7 @@ const docGen = {
   path: '/doc-gen',
   name: 'doc-gen',
   img: '/static/img/doc-gen.svg',
-  groups: ['allaccess', 'feuw', 'beta'],
+  groups: ['allaccess', 'docgen', 'docgen-mgr'],
 };
 
 const links = [
