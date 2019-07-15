@@ -64,7 +64,7 @@ const GROUP_INFO = [
   },
   {
     group: DOC_GEN,
-    task: 'Income Calculation',
+    task: 'DOC GENERATION',
     taskCode: 'UW',
     path: '/doc-gen',
     showAssignUnassign: true,
