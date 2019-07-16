@@ -76,6 +76,8 @@ const getTrialsDetail = state => (state.dashboard.trialsDetail ? state.dashboard
 const getTrialLetter = state => (state.dashboard.trialsLetter ? state.dashboard.trialsLetter : []);
 const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUnderwriting
   ? state.dashboard.resultUnderwriting : {});
+const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
+  ? state.dashboard.resultOperation : {});
 
 const selectors = {
   enableEndShift,
@@ -113,6 +115,7 @@ const selectors = {
   getTrialLetter,
   taskStatus,
   resultUnderwriting,
+  resultOperation,
 };
 
 export default selectors;

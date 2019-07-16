@@ -23,6 +23,8 @@ import {
   // GET_LOAN_ACTIVITY_DETAILS,
   LOAD_TRIALS_SAGA,
   SET_TASK_UNDERWRITING,
+  SET_TASK_SENDTO_DOCGEN,
+  CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
 } from './types';
 
@@ -123,11 +125,6 @@ const displayAssign = () => ({
   type: DISPLAY_ASSIGN,
 });
 
-// const loanActivityDetails = payload => ({
-//   type: GET_LOAN_ACTIVITY_DETAILS,
-//   payload,
-// });
-
 const loadTrialsAction = evalId => ({
   type: LOAD_TRIALS_SAGA,
   payload: evalId,
@@ -137,6 +134,14 @@ const onSentToUnderwritingAction = () => ({
   type: SET_TASK_UNDERWRITING,
 });
 
+const onSendToDocGenAction = isStager => ({
+  type: SET_TASK_SENDTO_DOCGEN,
+  payload: isStager,
+});
+
+const cleanResult = () => ({
+  type: CLEAN_RESULT,
+});
 const continueMyReview = taskStatus => ({
   type: CONTINUE_MY_REVIEW,
   payload: taskStatus,
@@ -163,8 +168,9 @@ export {
   clearBEDisposition,
   getGroupName,
   validateDisposition,
-  // loanActivityDetails,
   loadTrialsAction,
   onSentToUnderwritingAction,
+  onSendToDocGenAction,
+  cleanResult,
   continueMyReview,
 };

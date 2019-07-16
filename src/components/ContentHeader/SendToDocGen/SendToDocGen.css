@@ -1,0 +1,8 @@
+.send-to-doc-gen.send-to-doc-gen {
+  background-color: var(--light-blue-900);
+  margin-right: 0.5rem;
+}
+
+.send-to-doc-gen.send-to-doc-gen:hover {
+  background-color: var(--blue-900);
+}

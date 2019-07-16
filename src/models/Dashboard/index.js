@@ -9,6 +9,7 @@ const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
 const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
+const DOC_GEN_BACK = 'DGB';
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
@@ -54,13 +55,19 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
-    // TO-DO
     group: LOAN_ACTIVITY,
     task: 'Trial',
     taskCode: 'LA',
     path: '/loan-activity',
     showAssignUnassign: false,
 
+  },
+  {
+    group: DOC_GEN_BACK,
+    task: 'Approved for Doc Generation',
+    taskCode: 'DGB',
+    path: '/doc-gen-back',
+    showAssignUnassign: true,
   },
   {
     group: DOC_GEN,
