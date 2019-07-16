@@ -791,14 +791,14 @@ function* sendToDocGen(payload) {
         "evalid": "${evalId}",
         "eventname": "sendToDocGen${isStager ? 'Stager' : ''}"
       }`);
-      const responseSend = yield call(Api.callPost, '/api/activateserv/api/process/activate2', payload1);
+      const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
       const currentStatus = responseSend && responseSend.updateInstanceStatusResponse.statusCode;
       if (currentStatus !== null && currentStatus === '200') {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
             level: 'success',
-            status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ''}`,
+            status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ' queue for rework'}`,
           },
         });
       } else {
@@ -811,7 +811,7 @@ function* sendToDocGen(payload) {
         });
       }
     } else {
-      const message = `Unable to send back to Doc Gen ${isStager ? 'Stager' : ''}. Eval status should be Approved, and the Eval Sub Status should be Referral or Referral KB and the most recent Resolution case (within the eval) Status should Open`;
+      const message = `Unable to send back to Doc Gen ${isStager ? 'Stager' : ''}. Eval status should be Approved, and the Eval Sub Status should be Referral or Referral KB and the most recent Resolution case (within the eval) Status should ${isStager ? 'be Open' : 'not be Open or Rejected'}`;
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {

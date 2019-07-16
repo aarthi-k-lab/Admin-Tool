@@ -161,14 +161,6 @@ const config = merge(
             '^/api/cmodnetcoretkams': '',
           },
         },
-        '/api/activateserv': {
-          target: 'https://cmodactivateservdev.int.mrcooper.io',
-          secure: false,
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api/activateserv': '',
-          },
-        },
       },
       publicPath: '/',
       noInfo: false,
