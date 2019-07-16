@@ -63,6 +63,8 @@ import {
   SET_TASK_UNDERWRITING_RESULT,
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
+  CONTINUE_MY_REVIEW,
+  CONTINUE_MY_REVIEW_RESULT,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -235,16 +237,8 @@ function* selectEval(searchItem) {
   let assignedTo = [];
   const name = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.') : null;
   assignedTo = name[0].concat(' ', name[1]);
-  if (!R.isNil(evalDetails.assignee) && assignedTo === evalDetails.assignee.toLowerCase()) {
-    evalDetails.isAssigned = true;
-    if (evalDetails.taskId) {
-      try {
-        yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalDetails.evalId}&assignedTo=${userDetails.email}&taskStatus=Assigned&taskId=${evalDetails.taskId}`, {});
-      } catch (e) {
-        yield put({ type: HIDE_LOADER });
-      }
-    }
-  }
+  evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
+  && assignedTo === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -262,6 +256,32 @@ function* selectEval(searchItem) {
 function* watchTombstoneLoan() {
   yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
+
+const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
+  try {
+    const taskStatusUpdate = R.propOr({}, 'payload', taskStatus);
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    if (taskId) {
+      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}`, {});
+      if (response !== null) {
+        yield put({
+          type: CONTINUE_MY_REVIEW_RESULT,
+          payload: true,
+        });
+      }
+    }
+  } catch (e) {
+    yield put({ type: CONTINUE_MY_REVIEW_RESULT, payload: true });
+  }
+};
+
+function* watchContinueMyReview() {
+  yield takeEvery(CONTINUE_MY_REVIEW, continueMyReviewResult);
+}
+
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
   try {
@@ -796,6 +816,7 @@ export const TestExports = {
   watchValidateDispositon,
   watchSentToUnderwriting,
   watchLoadTrials,
+  watchContinueMyReview,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -812,5 +833,6 @@ export const combinedSaga = function* combinedSaga() {
     watchValidateDispositon(),
     watchLoadTrials(),
     watchSentToUnderwriting(),
+    watchContinueMyReview(),
   ]);
 };

@@ -23,6 +23,7 @@ import {
   // GET_LOAN_ACTIVITY_DETAILS,
   LOAD_TRIALS_SAGA,
   SET_TASK_UNDERWRITING,
+  CONTINUE_MY_REVIEW,
 } from './types';
 
 
@@ -136,6 +137,11 @@ const onSentToUnderwritingAction = () => ({
   type: SET_TASK_UNDERWRITING,
 });
 
+const continueMyReview = taskStatus => ({
+  type: CONTINUE_MY_REVIEW,
+  payload: taskStatus,
+});
+
 export {
   autoSave,
   clearDisposition,
@@ -160,4 +166,5 @@ export {
   // loanActivityDetails,
   loadTrialsAction,
   onSentToUnderwritingAction,
+  continueMyReview,
 };
