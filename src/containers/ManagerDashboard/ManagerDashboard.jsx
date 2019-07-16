@@ -79,7 +79,7 @@ class ManagerDashboard extends Component {
           />
           <Controls />
         </ContentHeader>
-        <div styleName="reportsDiv">
+        <div styleName="report">
           {this.renderReport(powerBIConstants)}
         </div>
       </>

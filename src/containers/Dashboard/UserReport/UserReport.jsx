@@ -22,7 +22,6 @@ class UserReport extends React.PureComponent {
       '/backend-evaluation': 'UNDERWRITNG Agent Dashboard',
       '/backend-checklist': 'UNDERWRITNG Agent Dashboard',
       '/doc-processor': 'PROCESSING Agent Dashboard',
-      '/doc-gen': 'INCOME CALCULATION Agent Dashboard',
     };
     this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };
@@ -38,6 +37,15 @@ class UserReport extends React.PureComponent {
     const { location } = this.props;
     const nameRepo = this.mapRepo[location.pathname];
     const report = R.find(R.propEq('reportName', nameRepo))(powerBIConstants);
+    if (R.isNil(report)) {
+      return (
+        <Center>
+          <span styleName="error-message">
+            Report is under Construction...
+          </span>
+        </Center>
+      );
+    }
     return (this.accessToken && powerBIConstants && powerBIConstants.length > 0)
       ? (
         <Report
@@ -75,7 +83,7 @@ class UserReport extends React.PureComponent {
             showGetNext
           />
         </ContentHeader>
-        <div styleName="reportsDiv">
+        <div styleName="report">
           {this.renderReport(powerBIConstants)}
         </div>
       </>
