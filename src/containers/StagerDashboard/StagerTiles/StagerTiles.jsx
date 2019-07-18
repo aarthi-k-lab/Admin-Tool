@@ -16,7 +16,7 @@ class StagerTiles extends React.PureComponent {
       searchTileName = searchResponse[tabName].split(',');
       return R.contains(tileName, searchTileName);
     }
-    if (!searchResponse && tileName === activeTile && tabName === activeTab) {
+    if (R.isEmpty(searchResponse) && tileName === activeTile && tabName === activeTab) {
       return true;
     }
     return false;

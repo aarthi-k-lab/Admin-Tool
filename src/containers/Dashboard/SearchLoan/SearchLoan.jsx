@@ -119,6 +119,14 @@ class SearchLoan extends React.PureComponent {
       onSelectEval(payload);
       this.setState({ isRedirect: true });
     }
+    // Approved for Doc Generation
+    if (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation') {
+      const { onSelectEval, onGetGroupName } = this.props;
+      this.redirectPath = '/doc-gen-back';
+      onGetGroupName('DGB');
+      onSelectEval(payload);
+      this.setState({ isRedirect: true });
+    }
   }
 
   validateLoanNumber() {

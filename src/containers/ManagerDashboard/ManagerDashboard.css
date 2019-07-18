@@ -7,10 +7,10 @@
   color: crimson;
 }
 
-.reportsDiv {
+.report {
   height: 100%;
 }
 
-.reportsDiv iframe {
+.report iframe {
   border: none;
 }

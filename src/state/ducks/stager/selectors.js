@@ -11,6 +11,7 @@ const getStagerStartEndDate = state => (state.stager && state.stager.stagerStart
 const getDownloadData = state => (state.stager && state.stager.csvData);
 const getStagerGroup = state => (state.stager && state.stager.stagerGroup);
 const getStagerSearchResponse = state => (state.stager && state.stager.searchStagerLoanResponse);
+const getSearchStagerLoanNumber = state => (state.stager && state.stager.searchStagerLoanNumber);
 
 const selectors = {
   getCounts,
@@ -25,6 +26,7 @@ const selectors = {
   getStagerStartEndDate,
   getStagerGroup,
   getStagerSearchResponse,
+  getSearchStagerLoanNumber,
 };
 
 export default selectors;

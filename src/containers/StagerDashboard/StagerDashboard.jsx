@@ -55,9 +55,16 @@ class StagerDashboard extends React.Component {
       getDashboardCounts,
       onClearDocGenAction,
       onClearSearchResponse,
+      getStagerSearchResponse,
     } = this.props;
     onClearDocGenAction();
-    onClearSearchResponse();
+    if (getStagerSearchResponse && !R.isEmpty(getStagerSearchResponse)
+      && !getStagerSearchResponse.error && !getStagerSearchResponse.noContents) {
+      const stagerValues = getStagerSearchResponse[activeTab] ? getStagerSearchResponse[activeTab].split(',') : [];
+      if (stagerValues.indexOf(activeTile) === -1) {
+        onClearSearchResponse();
+      }
+    }
     this.setState({ activeTab, activeTile, activeSearchTerm: searchTerm });
     const { stager } = this.state;
     const payload = {
@@ -107,11 +114,11 @@ class StagerDashboard extends React.Component {
       activeTab: '',
     });
     const datePayload = this.getDatePayload();
-    onClearStagerResponse();
-    onClearSearchResponse();
     triggerStartEndDate(datePayload);
     triggerStagerValue(stagerValue[stager]);
     getDashboardCounts();
+    onClearStagerResponse();
+    onClearSearchResponse();
     onCheckBoxClick([]);
   }
 
@@ -134,6 +141,7 @@ class StagerDashboard extends React.Component {
       getDashboardData, getDashboardCounts,
       onCheckBoxClick, onClearDocGenAction,
       onClearStagerResponse, onClearSearchResponse,
+      triggerStartEndDate, triggerStagerValue,
     } = this.props;
     const payload = {
       activeSearchTerm,
@@ -142,10 +150,14 @@ class StagerDashboard extends React.Component {
     if (activeSearchTerm) {
       getDashboardData(payload);
     }
-    getDashboardCounts();
-    onCheckBoxClick([]);
+    const datePayload = this.getDatePayload();
+    const stagerValue = DashboardModel.STAGER_VALUE;
     onClearStagerResponse();
     onClearSearchResponse();
+    triggerStartEndDate(datePayload);
+    triggerStagerValue(stagerValue[stager]);
+    getDashboardCounts();
+    onCheckBoxClick([]);
     onClearDocGenAction();
   }
 
@@ -176,7 +188,7 @@ class StagerDashboard extends React.Component {
 
     return (
       <>
-        { this.renderSnackBar() }
+        {this.renderSnackBar()}
         <StagerPage
           activeTab={activeTab}
           activeTile={activeTile}
@@ -209,6 +221,7 @@ const mapStateToProps = state => ({
   selectedData: stagerSelectors.getSelectedData(state),
   docGenResponse: stagerSelectors.getdocGenResponse(state),
   snackBarData: notificationSelectors.getSnackBarState(state),
+  getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
   user: loginSelectors.getUser(state),
 });
 
@@ -250,6 +263,7 @@ StagerDashboard.propTypes = {
   ),
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
+  getStagerSearchResponse: PropTypes.node.isRequired,
   groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
@@ -277,7 +291,7 @@ StagerDashboard.defaultProps = {
   tableData: [],
   snackBarData: null,
   loading: false,
-  closeSnackBar: () => {},
+  closeSnackBar: () => { },
   docGenResponse: {},
 };
 

@@ -68,11 +68,18 @@ const loanActivity = {
   groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr'],
 };
 
+const docGenBack = {
+  path: '/doc-gen-back',
+  name: 'doc-gen-back',
+  img: '/static/img/doc_gen.svg',
+  groups: ['allaccess', 'docgen', 'docgen-mgr'],
+};
+
 const docGen = {
   path: '/doc-gen',
   name: 'doc-gen',
   img: '/static/img/doc-gen.svg',
-  groups: ['allaccess', 'feuw', 'beta'],
+  groups: ['allaccess', 'docgen', 'docgen-mgr'],
 };
 
 const links = [
@@ -83,10 +90,11 @@ const links = [
   stager,
   moveForward,
   loanActivity,
+  docGenBack,
   docGen,
 ];
 
-const noIcons = ['/loan-activity'];
+const noIcons = ['/loan-activity', '/doc-gen-back'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
@@ -100,7 +108,7 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
 }
 
 function shouldShowIcon(link, userGroups) {
-  return R.indexOf(link.path, noIcons) === -1 && hasGroup(link.groups, userGroups, link.notInGroup);
+  return !noIcons.includes(link.path) && hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendUnderwriterAccess(groups) {
@@ -147,6 +155,10 @@ function hasMoveForwardAccess(groups) {
   return hasGroup(moveForward.groups, groups);
 }
 
+function hasDocGenBackAccess(groups) {
+  return hasGroup(docGenBack.groups, groups);
+}
+
 module.exports = {
   links,
   hasBackendUnderwriterAccess,
@@ -160,5 +172,6 @@ module.exports = {
   hasLoanActivityAccess,
   shouldShowIcon,
   hasChecklistAccess,
+  hasDocGenBackAccess,
   hasDocGenAccess,
 };
