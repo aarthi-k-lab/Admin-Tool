@@ -154,9 +154,11 @@ Tombstone.propTypes = {
 
 
 Tombstone.getItems = function getItems(items) {
+  const screenWidth = window.innerWidth;
+  const arrayLength = items.length;
   return items.map(({ content, title }) => (
     (
-      <td styleName="itemTd">
+      <td style={{ maxWidth: screenWidth / arrayLength }} styleName="itemTd">
         <Item key={title} content={content} title={title} />
       </td>)
   ));
