@@ -446,7 +446,7 @@ function* saveChecklistDisposition(payload) {
       processStatus,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
-    if (!R.isNil(saveResponse)) {
+    if (R.isNil(saveResponse)) {
       return false;
     }
     const { tkamsValidation, skillValidation } = saveResponse;
