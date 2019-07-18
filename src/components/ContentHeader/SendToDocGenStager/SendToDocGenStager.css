@@ -1,0 +1,8 @@
+.send-to-doc-gen-stager.send-to-doc-gen-stager {
+  background-color: var(--light-blue-900);
+  margin-right: 0.5rem;
+}
+
+.send-to-doc-gen-stager.send-to-doc-gen-stager:hover {
+  background-color: var(--blue-900);
+}

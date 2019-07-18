@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting, ContinueMyReview,
+  EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
+  SendToDocGen, SendToDocGenStager, ContinueMyReview,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -26,12 +27,24 @@ class Controls extends React.PureComponent {
     this.handlegetNext = this.handlegetNext.bind(this);
     this.handleSentToUnderwriting = this.handleSentToUnderwriting.bind(this);
     this.showAssignForThisGroup = this.showAssignForThisGroup.bind(this);
+    this.handleSendToDocGen = this.handleSendToDocGen.bind(this);
+    this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
   }
 
   handleSentToUnderwriting() {
     const { onSentToUnderwriting } = this.props;
     onSentToUnderwriting();
+  }
+
+  handleSendToDocGen() {
+    const { onSendToDocGen } = this.props;
+    onSendToDocGen(false);
+  }
+
+  handleSendToDocGenStager() {
+    const { onSendToDocGen } = this.props;
+    onSendToDocGen(true);
   }
 
   handleContinueMyReview() {
@@ -73,6 +86,8 @@ class Controls extends React.PureComponent {
       showEndShift,
       showGetNext,
       showSendToUnderWritingIcon,
+      showSendToDocGenStager,
+      showSendToDocGen,
       showContinueMyReview,
       showAssign,
       showValidate,
@@ -102,6 +117,10 @@ class Controls extends React.PureComponent {
       : null;
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
       ? <SendToUnderwriting onClick={this.handleSentToUnderwriting} /> : null;
+    const getSendToDocGenStagerButton = showSendToDocGenStager
+      ? <SendToDocGenStager onClick={this.handleSendToDocGenStager} /> : null;
+    const getSendToDocGenButton = showSendToDocGen
+      ? <SendToDocGen onClick={this.handleSendToDocGen} /> : null;
     const expand = <Expand onClick={onExpand} />;
     if (
       showAssign != null
@@ -127,6 +146,8 @@ class Controls extends React.PureComponent {
         {endShift}
         {getNext}
         {getSendToUnderWritingButton}
+        {getSendToDocGenButton}
+        {getSendToDocGenStagerButton}
         {getContinueMyReviewButton}
         {expand}
       </>
@@ -143,10 +164,13 @@ Controls.defaultProps = {
   onExpand: () => { },
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
-  onContinueMyReview: () => { },
+  onSendToDocGen: () => { },
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
+  showSendToDocGen: false,
+  showSendToDocGenStager: false,
+  onContinueMyReview: () => { },
   showContinueMyReview: null,
   showAssign: null,
   showValidate: false,
@@ -167,11 +191,14 @@ Controls.propTypes = {
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
+  onSendToDocGen: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   showAssign: PropTypes.bool,
   showContinueMyReview: PropTypes.bool,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
+  showSendToDocGen: PropTypes.bool,
+  showSendToDocGenStager: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
@@ -213,6 +240,7 @@ const mapDispatchToProps = dispatch => ({
   validateDispositionTrigger: operations.validateDispositionTrigger(dispatch),
   onAssignLoan: operations.onAssignLoan(dispatch),
   onSentToUnderwriting: operations.onSentToUnderwriting(dispatch),
+  onSendToDocGen: operations.onSendToDocGen(dispatch),
   onContinueMyReview: operations.onContinueMyReview(dispatch),
 });
 

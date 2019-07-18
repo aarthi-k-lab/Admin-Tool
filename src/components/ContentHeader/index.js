@@ -5,4 +5,6 @@ export { default as GetNext } from './GetNext';
 export { default as Assign } from './Assign';
 export { default as Unassign } from './Unassign';
 export { default as SendToUnderwriting } from './SendToUnderwriting';
+export { default as SendToDocGen } from './SendToDocGen';
+export { default as SendToDocGenStager } from './SendToDocGenStager';
 export { default as ContinueMyReview } from './ContinueMyReview';

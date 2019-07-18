@@ -63,6 +63,8 @@ import {
   SET_TASK_UNDERWRITING_RESULT,
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
+  SET_TASK_SENDTO_DOCGEN,
+  SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
 } from './types';
@@ -777,6 +779,59 @@ function* sentToUnderwriting() {
   }
 }
 
+function* sendToDocGen(payload) {
+  // const taskId = yield select(selectors.taskId);
+  const evalId = yield select(selectors.evalId);
+  const isStager = payload.payload;
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocGen/DocGen${isStager ? 'Stager' : ''}?EvalId=${evalId}`);
+    if (response !== null && response === true) {
+      const payload1 = JSON.parse(`{
+        "evalid": "${evalId}",
+        "eventname": "sendToDocGen${isStager ? 'Stager' : ''}"
+      }`);
+      const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
+      const currentStatus = responseSend && responseSend.updateInstanceStatusResponse.statusCode;
+      if (currentStatus !== null && currentStatus === '200') {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: 'success',
+            status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ' queue for rework'}`,
+          },
+        });
+      } else {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: 'error',
+            status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          },
+        });
+      }
+    } else {
+      const message = `Unable to send back to Doc Gen ${isStager ? 'Stager' : ''}. Eval status should be Approved, and the Eval Sub Status should be Referral or Referral KB and the most recent Resolution case (within the eval) Status should ${isStager ? 'be Open' : 'not be Open or Rejected'}`;
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: 'error',
+          status: message,
+        },
+      });
+    }
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload:
+      {
+        level: 'error',
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
 
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
@@ -788,6 +843,10 @@ function* watchLoadTrials() {
 
 function* watchSentToUnderwriting() {
   yield takeEvery(SET_TASK_UNDERWRITING, sentToUnderwriting);
+}
+
+function* watchSendToDocGen() {
+  yield takeEvery(SET_TASK_SENDTO_DOCGEN, sendToDocGen);
 }
 
 export const TestExports = {
@@ -816,6 +875,7 @@ export const TestExports = {
   watchValidateDispositon,
   watchSentToUnderwriting,
   watchLoadTrials,
+  watchSendToDocGen,
   watchContinueMyReview,
 };
 
@@ -833,6 +893,7 @@ export const combinedSaga = function* combinedSaga() {
     watchValidateDispositon(),
     watchLoadTrials(),
     watchSentToUnderwriting(),
+    watchSendToDocGen(),
     watchContinueMyReview(),
   ]);
 };

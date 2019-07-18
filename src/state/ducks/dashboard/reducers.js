@@ -33,6 +33,8 @@ import {
   TASKS_LIMIT_EXCEEDED,
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
+  SET_RESULT_OPERATION,
+  CLEAN_RESULT,
   CONTINUE_MY_REVIEW_RESULT,
 } from './types';
 
@@ -349,6 +351,24 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         resultUnderwriting,
+        loading: false,
+      };
+    }
+
+    case SET_RESULT_OPERATION: {
+      const resultOperation = action.payload;
+      return {
+        ...state,
+        resultOperation,
+        loading: false,
+      };
+    }
+
+    case CLEAN_RESULT: {
+      const resultOperation = {};
+      return {
+        ...state,
+        resultOperation,
         loading: false,
       };
     }
