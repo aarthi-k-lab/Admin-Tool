@@ -16,6 +16,7 @@ import {
   subTaskClearance,
   emptyDispositionComment,
   dispositionComments,
+  getDropDownOptions,
 } from './actions';
 
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
@@ -66,6 +67,9 @@ const handleSubTaskClearance = dispatch => (taskId, taskBluePrintCode) => {
   dispatch(subTaskClearance(taskId, taskBluePrintCode));
 };
 
+const fetchDropDownOptions = dispatch => (source, additionalInfo) => {
+  dispatch(getDropDownOptions(source, additionalInfo));
+};
 const operations = {
   fetchChecklist,
   fetchNextChecklist,
@@ -83,6 +87,7 @@ const operations = {
   handleSubTaskClearance,
   clearDispositionComments,
   changeDispositionComments,
+  fetchDropDownOptions,
 };
 
 export default operations;

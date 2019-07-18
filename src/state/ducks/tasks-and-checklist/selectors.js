@@ -67,6 +67,8 @@ const getChecklistItems = state => R.compose(
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
     type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
     value: getCurrentChecklistValue(checklistItem, state),
+    source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
+    additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
   })),
   R.pathOr([], ['tasksAndChecklist', 'checklist', 'subTasks']),
 )(state);
@@ -119,6 +121,8 @@ const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 
 
 const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
+const getAgentName = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'agentName']);
+
 const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
 
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
@@ -158,6 +162,8 @@ const getDialogTitle = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmatio
 const selectedTaskId = state => R.pathOr('', ['tasksAndChecklist', 'checklist', '_id'], state);
 const selectedTaskBlueprintCode = state => R.pathOr('', ['tasksAndChecklist', 'checklist', 'taskBlueprintCode'], state);
 
+const getDropDownOptions = state => R.pathOr([], ['tasksAndChecklist', 'dropDownOptions'], state);
+
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
@@ -189,6 +195,8 @@ const selectors = {
   selectedTaskId,
   selectedTaskBlueprintCode,
   showComment,
+  getDropDownOptions,
+  getAgentName,
 };
 
 export default selectors;

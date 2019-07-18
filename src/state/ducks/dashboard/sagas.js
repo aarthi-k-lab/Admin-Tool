@@ -290,30 +290,47 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     yield put({ type: SHOW_SAVING_LOADER });
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
-    const group = getUserPersona(R.propOr({}, 'group', payload));
+    const groupName = getUserPersona(R.propOr({}, 'group', payload));
     const evalId = yield select(selectors.evalId);
-    const user = yield select(loginSelectors.getUser);
-    const taskId = yield select(selectors.taskId);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callGet, `/api/disposition/validate-disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    const wfTaskId = yield select(selectors.taskId);
+    const userName = yield select(checklistSelectors.getAgentName);
+    const wfProcessId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
+    const validateAgent = !R.isNil(userName) && !R.isEmpty(userName);
+    const request = {
+      evalId,
+      disposition,
+      groupName,
+      validateAgent,
+      userName,
+      wfTaskId,
+      wfProcessId,
+      processStatus,
+    };
+    const response = yield call(Api.callPost, '/api/disposition/validate-disposition', request);
+    const { tkamsValidation, skillValidation } = response;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: response.enableGetNext,
+      payload: tkamsValidation.enableGetNext,
     });
-    if (!response.enableGetNext) {
+    if (!tkamsValidation.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'error',
-          data: response.discrepancies,
+          data: tkamsValidation.discrepancies,
         },
       });
     } else {
+      let message = 'Validation successful!';
+      if (validateAgent) {
+        ({ message } = skillValidation);
+      }
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'success',
-          msg: 'Validation successful!',
+          msg: message,
         },
       });
     }
@@ -410,26 +427,57 @@ function* saveChecklistDisposition(payload) {
   if (!payload.isFirstVisit && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
-    const taskId = yield select(selectors.taskId);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const group = getUserPersona(payload.appGroupName);
+    const groupName = getUserPersona(payload.appGroupName);
+    const agentName = yield select(checklistSelectors.getAgentName);
+    const wfTaskId = yield select(selectors.taskId);
+    const wfProcessId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
+    const validateAgent = !R.isNil(agentName) && !R.isEmpty(agentName);
     const disposition = payload.dispositionCode;
-    const saveResponse = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    const request = {
+      evalId,
+      disposition,
+      groupName,
+      validateAgent,
+      userName: validateAgent ? agentName : userPrincipalName,
+      wfTaskId,
+      wfProcessId,
+      processStatus,
+    };
+    const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
+    if (!R.isNil(saveResponse)) {
+      return false;
+    }
+    const { tkamsValidation, skillValidation } = saveResponse;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: saveResponse.enableGetNext,
+      payload: tkamsValidation.enableGetNext,
     });
-    if (!saveResponse.enableGetNext) {
+    if (!tkamsValidation.enableGetNext) {
       yield put({ type: HIDE_LOADER });
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'error',
-          data: saveResponse.discrepancies,
+          data: tkamsValidation.discrepancies,
         },
       });
       return false;
     }
+    let message = 'Validation successful!';
+    let type = 'success';
+    if (validateAgent) {
+      type = skillValidation.canAssign ? 'success' : 'error';
+      ({ message } = skillValidation);
+    }
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+        type,
+        msg: message,
+      },
+    });
   }
   return true;
 }

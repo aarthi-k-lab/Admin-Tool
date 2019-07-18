@@ -31,6 +31,8 @@ const RESET_DELETE_TASK = 'app/tasks-and-checklist/RESET_DELETE_TASK';
 const CLEAR_SUBTASK = 'app/tasks-and-checklist/CLEAR_SUBTASK';
 const UPDATE_COMMENTS = 'app/tasks-and-checklist/UPDATE_COMMENTS';
 const EMPTY_CHECKLIST_COMMENT = 'app/tasks-and-checklist/EMPTY_CHECKLIST_COMMENT';
+const FETCH_DROPDOWN_OPTIONS_SAGA = 'app/tasks-and-checklist/FETCH_DROPDOWN_OPTIONS_SAGA';
+const SAVE_DROPDOWN_OPTIONS = 'app/tasks-and-checklist/SAVE_DROPDOWN_OPTIONS';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -66,4 +68,6 @@ export {
   CLEAR_SUBTASK,
   UPDATE_COMMENTS,
   EMPTY_CHECKLIST_COMMENT,
+  FETCH_DROPDOWN_OPTIONS_SAGA,
+  SAVE_DROPDOWN_OPTIONS,
 };

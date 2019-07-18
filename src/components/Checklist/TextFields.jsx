@@ -1,22 +1,115 @@
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
+import { operations, selectors } from 'ducks/tasks-and-checklist';
+import moment from 'moment-timezone';
+import * as R from 'ramda';
 import React from 'react';
+import { connect } from 'react-redux';
 import HTMLElements from '../../constants/componentTypes';
 import './TextFields.css';
 
-const TextFields = (props) => {
-  const { MULTILINE_TEXT } = HTMLElements;
-  const { type, title } = props;
-  const properties = type !== MULTILINE_TEXT ? props : {
-    ...props, maxRows: 10, multiline: true, rows: 5,
-  };
-  return (
-    <FormControl component="fieldset">
-      <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
-      <TextField {...properties} />
-    </FormControl>
-  );
-};
 
-export default TextFields;
+function getCurrentDate() {
+  const date = new Date();
+  const dateTime = moment(date).format('YYYY-MM-DD');
+  return dateTime;
+}
+
+function getProps(type, props) {
+  const {
+    MULTILINE_TEXT, DATE, NUMBER, DROPDOWN,
+  } = HTMLElements;
+  switch (type) {
+    case DATE: {
+      return { ...props, inputProps: { type: 'date', max: getCurrentDate() } };
+    }
+    case MULTILINE_TEXT: {
+      return {
+        ...props, maxRows: 10, multiline: true, rows: 5,
+      };
+    }
+    case NUMBER: {
+      return {
+        ...props,
+        inputProps: {
+          type: 'number',
+          min: '0',
+        },
+      };
+    }
+
+    case DROPDOWN: {
+      return {
+        ...props,
+        inputProps: {
+          type: 'select',
+          SelectProps: {
+            native: true,
+          },
+        },
+      };
+    }
+    default: return { ...props };
+  }
+}
+
+class TextFields extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = '';
+  }
+
+  componentWillMount() {
+    const { source, additionalInfo, fetchDropDownOption } = this.props;
+    if (!R.isEmpty(source)) {
+      fetchDropDownOption(source, additionalInfo);
+    }
+  }
+
+  getDropDownOptions() {
+    const { getDropDownOptions } = this.props;
+    return (getDropDownOptions ? getDropDownOptions.map(option => (
+      <option key={option.id} value={option.mail}>
+        {option.displayName}
+      </option>
+    )) : null);
+  }
+
+  getControl(type) {
+    const { DROPDOWN } = HTMLElements;
+    const properties = getProps(type, this.props);
+    return (type === DROPDOWN) ? (
+      <TextField
+        {...this.props}
+        margin="normal"
+        select
+        SelectProps={{
+          native: true,
+        }}
+      >
+        { this.getDropDownOptions() }
+      </TextField>
+    ) : (<TextField {...properties} />);
+  }
+
+  render() {
+    const { type, title } = this.props;
+    return (
+      <FormControl component="fieldset">
+        <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
+        {this.getControl(type)}
+      </FormControl>
+    );
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchDropDownOption: operations.fetchDropDownOptions(dispatch),
+});
+
+const mapStateToProps = state => ({
+  getDropDownOptions: selectors.getDropDownOptions(state),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TextFields);
