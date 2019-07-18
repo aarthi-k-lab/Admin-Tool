@@ -462,8 +462,36 @@ function* subTaskClearance(action) {
   }
 }
 
+// const groupToADGroupsMap = {
+//   docgen: [
+//     'cmod-qa-docgen',
+//     'cmod-qa-docgen-mgr',
+//   ],
+// };
+
+// TO-DO get groups from mapping
+const getUsersForGroup = () => {
+  // const { group } = additionalInfo;
+  // const adGroups = groupToADGroupsMap[group];
+  const requestData = {
+    url: '/api/auth/ad/groups/cmod-qa-docgen/users',
+    method: Api.callGet,
+    body: {},
+  };
+  return requestData;
+};
+
+const sourceToMethodMapping = {
+  adgroup: getUsersForGroup,
+};
+
+
 function* getdropDownOptions(action) {
-  const options = yield call(Api.callPost, '/api/task-engine/getData', action.payload);
+  const { source, additionalInfo } = action.payload;
+  const dataFetchMethod = sourceToMethodMapping[source];
+  const requestData = dataFetchMethod(additionalInfo);
+  const { url, method, body } = requestData;
+  const options = yield call(method, url, body);
   try {
     yield put({
       type: SAVE_DROPDOWN_OPTIONS,

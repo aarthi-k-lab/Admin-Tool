@@ -70,7 +70,7 @@ class TextFields extends React.Component {
   getDropDownOptions() {
     const { getDropDownOptions } = this.props;
     return (getDropDownOptions ? getDropDownOptions.map(option => (
-      <option key={option.id} value={option.displayName}>
+      <option key={option.id} value={option.mail}>
         {option.displayName}
       </option>
     )) : null);

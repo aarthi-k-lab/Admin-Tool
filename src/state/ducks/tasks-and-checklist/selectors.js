@@ -121,6 +121,8 @@ const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 
 
 const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
+const getAgentName = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'agentName']);
+
 const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
 
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
@@ -194,6 +196,7 @@ const selectors = {
   selectedTaskBlueprintCode,
   showComment,
   getDropDownOptions,
+  getAgentName,
 };
 
 export default selectors;
