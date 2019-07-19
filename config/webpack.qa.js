@@ -164,12 +164,12 @@ const config = merge(
             '^/api/cmodnetcoretkams': '',
           },
         },
-        '/api/genereatePdf': {
-          target: 'http://127.0.0.1:7601',
+        '/api/dataservice': {
+          target: 'https://cmoddataservqa.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/genereatePdf': '',
+            '^/api/dataservice': '/api',
           },
         },
       },
