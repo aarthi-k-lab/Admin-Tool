@@ -122,7 +122,9 @@ class ChecklistHistory extends React.Component {
                   </MenuItem>
                 </a>
               ))
-              : null}
+              : <>
+                No historical checklists are available
+              </>}
         </Menu>
       </>
     );

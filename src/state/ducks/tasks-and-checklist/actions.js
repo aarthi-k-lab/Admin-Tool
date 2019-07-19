@@ -48,10 +48,10 @@ const getChecklist = taskId => ({
   },
 });
 
-const getHistoricalCheckListData = processId => ({
+const getHistoricalCheckListData = taskId => ({
   type: GET_HISTORICAL_CHECKLIST_DATA,
   payload: {
-    processId,
+    taskId,
   },
 });
 
