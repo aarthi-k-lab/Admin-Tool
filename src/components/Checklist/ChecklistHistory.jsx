@@ -107,9 +107,9 @@ class ChecklistHistory extends React.Component {
                 <a
                   href={`http://127.0.0.1:7601/api/download/${
                     option.taskCheckListId
-                    }?event=${option.taskCheckListTemplateName}&disposition=${
+                  }?event=${option.taskCheckListTemplateName}&disposition=${
                     option.dispositionCode
-                    }`}
+                  }`}
                   // eslint-disable-next-line react/jsx-no-target-blank
                   target="_blank"
                 >
@@ -117,7 +117,7 @@ class ChecklistHistory extends React.Component {
                     <div>
                       {option.taskCheckListTemplateName}
                       <br />
-                      <span>{option.dispositionDate}</span>
+                      <span>{option.taskCheckListDateTime}</span>
                     </div>
                   </MenuItem>
                 </a>
