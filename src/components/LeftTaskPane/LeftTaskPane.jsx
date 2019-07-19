@@ -55,7 +55,7 @@ function shouldShowAddTaskButton(optionalTasks) {
 }
 
 StatusMenu.defaultProps = {
-  onChange: () => {},
+  onChange: () => { },
   taskStatus: ALL,
 };
 
@@ -71,14 +71,9 @@ class LeftTaskPane extends React.Component {
       tasksStatus: ALL,
       width: props.defaultState === OPEN ? props.openWidth : props.closedWidth,
       isCollapsed: props.defaultState !== OPEN,
-      // eslint-disable-next-line react/no-unused-state
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
-    // this.handleClose = this.handleClose.bind(this);
-    // this.checklistHistoryMenu = this.checklistHistoryMenu.bind(this);
-    // this.handleHistoricalCheclistClick = this.handleHistoricalCheclistClick.bind(this);
-    // this.handleChecklistOpen = this.handleChecklistOpen.bind(this);
   }
 
   handleStatusChange(event) {
@@ -144,15 +139,15 @@ class LeftTaskPane extends React.Component {
                         margin={{ 'margin-left': '5rem' }}
                       />
                     </div>
-                    { shouldShowAddTaskButton(optionalTasks)
+                    {shouldShowAddTaskButton(optionalTasks)
                       ? (
                         <AddTask
                           disabled={disableModifyOptionalTasks}
                           onClick={() => handleShowOptionalTasks()}
                         />
                       )
-                      : <div />
-                  }
+                      : null
+                    }
                   </div>
                 </>
               )
@@ -202,7 +197,7 @@ class LeftTaskPane extends React.Component {
           style={{ width }}
           styleName="taskpane"
         >
-          { showOptionalTasks
+          {showOptionalTasks
             ? (
               <OptionalTaskDetails
                 handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
@@ -213,7 +208,7 @@ class LeftTaskPane extends React.Component {
                 updateChecklist={updateChecklist}
               />
             )
-            : this.renderContent() }
+            : this.renderContent()}
         </div>
       </div>
     );

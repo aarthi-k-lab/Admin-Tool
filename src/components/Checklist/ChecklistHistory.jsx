@@ -6,8 +6,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
-import './ChecklistHistory.css';
 
+const { TASKTREE_PDF_URL } = process.env;
 
 const styles = theme => ({
   margin: {
@@ -28,25 +28,6 @@ const styles = theme => ({
     },
   },
 });
-
-// const historicalData = [
-//   {
-//     checklistId: '5cee56a55b95415a7ce905f6',
-//     description: 'BEUW-Suspicious Activity Review',
-//     time: '27 May 2019 08:30pm',
-//   },
-//   {
-//     checklistId: '5cee415e6dc1d4270a6a63e8',
-//     description: 'FEUW-Suspicious Activity Review',
-//     time: '27 May 2019 08:30pm',
-//   },
-//   {
-//     checklistId: '5ce7143f69daeb6ed3ffdb4c',
-//     description: 'FEUW-Suspicious Activity Review',
-//     time: '27 May 2019 08:30pm',
-//   },
-// ];
-
 
 class ChecklistHistory extends React.Component {
   constructor(props) {
@@ -105,7 +86,7 @@ class ChecklistHistory extends React.Component {
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
                 <a
-                  href={`http://127.0.0.1:7601/api/download/${
+                  href={`${TASKTREE_PDF_URL}/${
                     option.taskCheckListId
                   }?event=${option.taskCheckListTemplateName}&disposition=${
                     option.dispositionCode
