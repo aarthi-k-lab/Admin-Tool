@@ -65,7 +65,7 @@ function* getChecklist(action) {
     yield put({
       type: LOADING_CHECKLIST,
     });
-    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2`);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${taskId}?depth=2&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
