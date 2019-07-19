@@ -8,7 +8,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { connect } from 'react-redux';
 import Item from './Item';
 import Selector from '../../state/ducks/tombstone/selectors';
-import dashboardSelector from '../../state/ducks/dashboard/selectors';
 import styles from './Tombstone.css';
 
 class Tombstone extends React.Component {
@@ -69,7 +68,7 @@ class Tombstone extends React.Component {
   }
 
   render() {
-    const { onOpenWindow, groupName } = this.props;
+    const { onOpenWindow } = this.props;
     const { tombStoneArray, anchorEl, menuItem } = this.state;
     const open = Boolean(anchorEl);
     let menuDiv = <div />;
@@ -109,7 +108,7 @@ class Tombstone extends React.Component {
       <section id="container" styleName="tombstone">
         <table styleName="tombstone-table" width={tableWidth}>
           <tr>
-            {Tombstone.getItems(tombStoneArray, groupName)}
+            {Tombstone.getItems(tombStoneArray)}
             <td>{menuDiv}</td>
             <td>
               <div styleName="spacer" />
@@ -144,7 +143,6 @@ Tombstone.defaultProps = {
 };
 
 Tombstone.propTypes = {
-  groupName: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       content: PropTypes.string.isRequired,
@@ -155,20 +153,19 @@ Tombstone.propTypes = {
 };
 
 
-Tombstone.getItems = function getItems(items, groupName) {
+Tombstone.getItems = function getItems(items) {
+  const screenWidth = window.innerWidth;
+  const arrayLength = items.length;
   return items.map(({ content, title }) => (
-    ((title === 'Evaluation Type' || title === 'Boarding Date') && groupName !== 'LA')
-      ? null
-      : (
-        <td styleName="itemTd">
-          <Item key={title} content={content} title={title} />
-        </td>)
+    (
+      <td style={{ maxWidth: screenWidth / arrayLength }} styleName="itemTd">
+        <Item key={title} content={content} title={title} />
+      </td>)
   ));
 };
 
 const mapStateToProps = state => ({
   items: Selector.getTombstoneData(state),
-  groupName: dashboardSelector.groupName(state),
 });
 const TombstoneContainer = connect(
   mapStateToProps,

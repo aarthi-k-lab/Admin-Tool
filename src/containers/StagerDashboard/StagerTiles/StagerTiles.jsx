@@ -7,10 +7,16 @@ import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
 import DatePicker from '../DatePicker';
 
+
 class StagerTiles extends React.PureComponent {
   isActiveCard(tileName, tabName) {
-    const { activeTab, activeTile } = this.props;
-    if (tileName === activeTile && tabName === activeTab) {
+    const { activeTab, activeTile, searchResponse } = this.props;
+    let searchTileName = null;
+    if (searchResponse && searchResponse[tabName]) {
+      searchTileName = searchResponse[tabName].split(',');
+      return R.contains(tileName, searchTileName);
+    }
+    if (R.isEmpty(searchResponse) && tileName === activeTile && tabName === activeTab) {
       return true;
     }
     return false;
@@ -27,7 +33,7 @@ class StagerTiles extends React.PureComponent {
             {countsData.map(stagerTaskGroupData => (
               <>
                 <Grid item styleName="taskStatusTitle" xs={12}>
-                  <div style={{ flexGrow: '0.95' }}>
+                  <div style={{ flexGrow: '0.75' }}>
                     {stagerTaskGroupData.displayName}
                   </div>
                   <div>
@@ -64,7 +70,9 @@ class StagerTiles extends React.PureComponent {
 const TestExports = {
   StagerTiles,
 };
-
+StagerTiles.defaultProps = {
+  searchResponse: {},
+};
 StagerTiles.propTypes = {
   activeTab: PropTypes.string.isRequired,
   activeTile: PropTypes.string.isRequired,
@@ -83,7 +91,12 @@ StagerTiles.propTypes = {
     }),
   ).isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
-};
+  searchResponse: PropTypes.shape({
+    loanNumber: PropTypes.array.isRequired,
+    titleType: PropTypes.array.isRequired,
+    titleValue: PropTypes.array.isRequired,
 
+  }),
+};
 export default StagerTiles;
 export { TestExports };

@@ -25,6 +25,9 @@ import {
   RESET_DELETE_TASK,
   HISTORICAL_CHECKLIST_DATA,
   ERROR_LOADING_HISTORICAL_CHECKLIST,
+  UPDATE_COMMENTS,
+  EMPTY_CHECKLIST_COMMENT,
+  SAVE_DROPDOWN_OPTIONS,
 } from './types';
 
 const FAILED = 'failed';
@@ -197,6 +200,14 @@ const reducer = (state = defaultState, action) => {
         dispositionComment: action.payload,
       };
     }
+
+    case UPDATE_COMMENTS: {
+      return {
+        ...state,
+        checklistComments: action.payload,
+      };
+    }
+
     case TOGGLE_INSTRUCTIONS: {
       return {
         ...state,
@@ -209,6 +220,14 @@ const reducer = (state = defaultState, action) => {
         showOptionalTasks: !state.showOptionalTasks,
       };
     }
+    case EMPTY_CHECKLIST_COMMENT: {
+      const { dispositionComment } = state;
+      return {
+        ...state,
+        dispositionComment: Object.assign({}, dispositionComment, { comment: null }),
+      };
+    }
+
     case EMPTY_DISPOSITION_COMMENT: {
       return {
         ...state,
@@ -233,6 +252,17 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         shouldDeleteTask: defaultState.shouldDeleteTask,
+      };
+    }
+    case SAVE_DROPDOWN_OPTIONS: {
+      const options = R.concat([{
+        displayName: '',
+        id: '',
+      }], action.payload);
+
+      return {
+        ...state,
+        dropDownOptions: options,
       };
     }
     default:

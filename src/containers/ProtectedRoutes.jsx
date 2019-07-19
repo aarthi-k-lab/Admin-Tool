@@ -27,6 +27,8 @@ import Dashboard from './Dashboard';
 import SearchLoan from './Dashboard/SearchLoan';
 import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
+import IdleUserHandle from './IdleUserHandler';
+import DocGenGoBack from './Dashboard/DocGenGoBack';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -45,6 +47,8 @@ class ProtectedRoutes extends React.Component {
     this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
     this.renderLoanActivity = this.renderLoanActivity.bind(this);
     this.renderBackendChecklistRoute = this.renderBackendChecklistRoute.bind(this);
+    this.renderDocGenBackRoute = this.renderDocGenBackRoute.bind(this);
+    this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
   }
 
   componentDidMount() {
@@ -86,7 +90,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasFrontendChecklistAccess(groups)
-        ? <Dashboard group={DashboardModel.FEUW_TASKS_AND_CHECKLIST} />
+        ? <Dashboard group={DashboardModel.FEUW} />
         : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
     );
   }
@@ -113,8 +117,29 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasBackendChecklistAccess(groups)
-        ? <Dashboard group={DashboardModel.BEUW_TASKS_AND_CHECKLIST} />
+        ? <Dashboard group={DashboardModel.BEUW} />
         : <Redirect to="/unauthorized?error=BACKEND_UNDERWRITER_ACCESS_NEEDED" />
+    );
+  }
+
+  renderDocGenBackRoute() {
+    const { items, loanNumber } = this.props;
+    const groups = this.getGroups();
+    let renderComponent = null;
+    if (RouteAccess.hasDocGenBackAccess(groups)) {
+      renderComponent = (items.length > 0 || loanNumber) ? <DocGenGoBack /> : <Redirect to="/" />;
+    } else {
+      renderComponent = <Redirect to="/unauthorized?error=DOC_GEN_ACCESS_NEEDED" />;
+    }
+    return renderComponent;
+  }
+
+  renderDocGenChecklistRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasDocGenAccess(groups)
+        ? <Dashboard group={DashboardModel.DOC_GEN} />
+        : <Redirect to="/unauthorized?error=DOC_GEN_ACCESS_NEEDED" />
     );
   }
 
@@ -152,6 +177,7 @@ class ProtectedRoutes extends React.Component {
     }
     return (
       <App expandView={expandView} location={location.pathname} user={user}>
+        <IdleUserHandle />
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
@@ -161,6 +187,8 @@ class ProtectedRoutes extends React.Component {
           <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
           <Route path="/backend-checklist" render={this.renderBackendChecklistRoute} />
           <Route exact path="/loan-activity" render={this.renderLoanActivity} />
+          <Route path="/doc-gen-back" render={this.renderDocGenBackRoute} />
+          <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

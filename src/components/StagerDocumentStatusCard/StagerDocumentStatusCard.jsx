@@ -12,9 +12,9 @@ const StagerDocumentStatusCard = ({
 }) => {
   const slaBreachedCount = data.slaBreached;
   const slaToBeBreachedCount = data.aboutToBreach;
-  const { slaDays } = data;
+  const { slaDays, slaDaysCategory } = data;
   return (
-    <Paper onClick={() => onStatusCardClick(data.displayName, tabName)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
+    <Paper onClick={() => onStatusCardClick(data.displayName, tabName, data.total)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
       <Grid container direction="column" spacing={4} xs={12}>
         <Grid item>
           <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>
@@ -34,14 +34,15 @@ const StagerDocumentStatusCard = ({
               {!R.isNil(slaBreachedCount)
                 ? (
                   <span styleName={slaBreachedCount ? 'sla-breached-chip info-chip' : 'info-chip info-chip-0-count'}>
-                    {`${(`0${slaBreachedCount}`).slice(-2)} SLA BREACHED`}
+                    { `${slaBreachedCount <= 9 ? (`0${slaBreachedCount}`) : (`${slaBreachedCount}`)}  SLA BREACHED`}
+
                   </span>
                 ) : null}
               <div styleName="line_break" />
               {!R.isNil(slaToBeBreachedCount)
                 ? (
                   <span styleName={slaToBeBreachedCount ? 'info-chip' : 'info-chip info-chip-0-count'}>
-                    {`${(`0${slaToBeBreachedCount}`).slice(-2)} SLA ABOUT TO BREACH`}
+                    { `${slaToBeBreachedCount <= 9 ? (`0${slaToBeBreachedCount}`) : (`${slaToBeBreachedCount}`)} SLA ABOUT TO BREACH`}
                   </span>
                 ) : null}
             </Grid>
@@ -52,7 +53,7 @@ const StagerDocumentStatusCard = ({
             <div styleName="slaDaysFooter">
               {'SLA '}
               <span styleName="slaDays">
-                {slaDays > 1 ? `${slaDays} BUSINESS DAYS` : `${slaDays} BUSINESS DAY`}
+                {slaDays > 1 ? `${slaDays} ${slaDaysCategory.split(' ')[0].toUpperCase()} DAYS` : `${slaDays} ${slaDaysCategory.split(' ')[0].toUpperCase()} DAY`}
               </span>
             </div>
           </>

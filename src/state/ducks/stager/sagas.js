@@ -9,9 +9,12 @@ import {
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
 import * as R from 'ramda';
-import { selectors as loginSelectors } from 'ducks/login/index';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login/index';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
+  GET_DOWNLOAD_DATA_SAGA,
   SET_STAGER_DATA_COUNTS,
   GET_DASHBOARD_DATA_SAGA,
   SET_STAGER_DATA,
@@ -21,16 +24,25 @@ import {
   TRIGGER_ORDER_SAGA,
   TRIGGER_DISPOSITION_OPERATION_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_DOCS_OUT_RESPONSE,
+  SET_DOC_GEN_RESPONSE,
+  SET_DOWNLOAD_DATA,
+  SEARCH_STAGER_LOAN_NUMBER,
+  GET_STAGER_LOAN_NUMBER,
+  SET_STAGER_LOAN_NUMBER,
 
 } from './types';
+
 import selectors from './selectors';
 import Disposition from '../../../models/Disposition';
-import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
+import {
+  SET_SNACK_BAR_VALUES_SAGA,
+} from '../notifications/types';
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
-  const fromDate = R.propOr({}, 'fromDate', stagerStartEndDate);
-  const toDate = R.propOr({}, 'toDate', stagerStartEndDate);
+  const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
+  const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
+  const fromDate = new Date(fromDateMoment).toISOString();
+  const toDate = new Date(toDateMoment).toISOString();
   const dateValue = {
     fromDate,
     toDate,
@@ -39,6 +51,7 @@ function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   };
   return dateValue;
 }
+
 function* fetchDashboardCounts() {
   try {
     const stagerType = yield select(selectors.getStagerValue);
@@ -72,7 +85,10 @@ function* fetchDashboardData(data) {
       },
     });
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
+    const dateValue = buildDateObj(
+      stagerType, stagerStartEndDate,
+      searchTerm,
+    );
     const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', dateValue);
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
@@ -101,6 +117,28 @@ function* fetchDashboardData(data) {
   }
 }
 
+function* fetchDownloadData(callBack) {
+  try {
+    const stagerType = yield select(selectors.getStagerValue);
+    const searchTerm = yield select(selectors.getActiveSearchTerm);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', dateValue);
+    if (response != null) {
+      yield put({
+        type: SET_DOWNLOAD_DATA,
+        payload: response,
+      });
+      callBack.payload.call();
+    }
+  } catch (e) {
+    yield put({
+      type: SET_DOWNLOAD_DATA,
+      payload: {},
+    });
+  }
+}
+
 function* onCheckboxSelect(data) {
   const selectedData = data.payload;
   yield put({
@@ -119,9 +157,9 @@ function* fireSnackBar(snackBarData) {
   });
 }
 
-function* setDocsOutData(data) {
+function* setDocGenData(data) {
   yield put({
-    type: SET_DOCS_OUT_RESPONSE,
+    type: SET_DOC_GEN_RESPONSE,
     payload: data,
   });
 }
@@ -133,15 +171,28 @@ function* makeOrderBpmCall(payload) {
     snackBar.type = 'message';
     snackBar.open = true;
     yield call(fireSnackBar, snackBar);
-    const response = yield call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload);
+    const response = yield call(Api.callPost, `api/stager/stager/dashboard/order/${payload.endPoint}`, payload.payload);
     const failedResponse = response ? response.filter(data => data.error === true) : [];
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
-    yield call(fetchDashboardData, { payload: activeSearchTerm });
-    yield call(onCheckboxSelect, { payload: [] });
+    const stager = yield select(selectors.getStagerValue);
+    const stagerPayload = {
+      activeSearchTerm,
+      stager,
+    };
+    yield call(fetchDashboardData, {
+      payload: stagerPayload,
+    });
+    yield call(onCheckboxSelect, {
+      payload: [],
+    });
     if (failedResponse && failedResponse.length > 0) {
       const snackBarData = {};
-      if (failedResponse.length > 5) {
+      if (R.any(data => R.contains('Ordering in Progress.', data.message), failedResponse)) {
+        snackBarData.message = 'Ordering in Progress...';
+        snackBarData.type = 'warning';
+        snackBarData.open = true;
+      } else if (failedResponse.length > 5) {
         snackBarData.message = 'Order call failed for more than 5 Eval ID(s): Contact Admin!';
         snackBarData.type = 'error';
         snackBarData.open = true;
@@ -177,24 +228,57 @@ function* watchDashboardCountsFetch() {
 function* watchOrderCall() {
   yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
 }
+function* makeStagerSearchLoanCall(payload) {
+  try {
+    const searchLoanNumber = payload.payload;
+    const stagerType = yield select(selectors.getStagerValue);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    dateValue.loanNumber = searchLoanNumber;
+    const response = yield call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', dateValue);
+    yield put({
+      type: SEARCH_STAGER_LOAN_NUMBER,
+      payload: response,
+    });
+    yield put({
+      type: SET_STAGER_LOAN_NUMBER,
+      payload: searchLoanNumber,
+    });
+  } catch (err) {
+    yield put({
+      type: SEARCH_STAGER_LOAN_NUMBER,
+      payload: {},
+    });
+  }
+}
 
 function* makeDispositionOperationCall(payload) {
   try {
-    const docsOutAction = yield select(selectors.getdocsOutAction);
+    const docGenAction = yield select(selectors.getdocGenAction);
     const stagerValue = yield select(selectors.getStagerValue);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docsOutAction}`, { taskList: payload.payload.taskList });
-    const errorMessages = Disposition.getBulkErrorMessages(response.failedLoans);
-    response.failedLoans = errorMessages;
+    const response = yield call(Api.callPost, `api/disposition/disposition/bulk?assignedTo=${userPrincipalName}&group=${payload.payload.group}&disposition=${docGenAction}`, {
+      taskList: payload.payload.taskList,
+    });
+    const prevResponse = yield select(selectors.getdocGenResponse);
+    const prevSuccessList = !R.isNil(prevResponse.hitLoans) ? prevResponse.hitLoans : [];
+    const latestSuccessList = R.concat(prevSuccessList, response.hitLoans || []);
+    response.hitLoans = latestSuccessList;
+    const errorMessages = Disposition.getBulkErrorMessages(response.missedLoans || []);
+    response.missedLoans = errorMessages;
     yield call(fetchDashboardCounts);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
     yield call(fetchDashboardData, {
-      payload:
-        { activeSearchTerm, stager: stagerValue },
+      payload: {
+        activeSearchTerm,
+        stager: stagerValue,
+      },
     });
-    yield call(onCheckboxSelect, { payload: [] });
-    yield call(setDocsOutData, response);
+    yield call(onCheckboxSelect, {
+      payload: [],
+    });
+    yield call(setDocGenData, response);
   } catch (err) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
@@ -212,8 +296,16 @@ function* watchDashboardDataFetch() {
   yield takeEvery(GET_DASHBOARD_DATA_SAGA, fetchDashboardData);
 }
 
+function* watchDownloadDataFetch() {
+  yield takeEvery(GET_DOWNLOAD_DATA_SAGA, fetchDownloadData);
+}
+
 function* watchTableCheckboxSelect() {
   yield takeEvery(TABLE_CHECKBOX_SELECT_TRIGGER, onCheckboxSelect);
+}
+
+function* watchStagerSearchLoanCall() {
+  yield takeEvery(GET_STAGER_LOAN_NUMBER, makeStagerSearchLoanCall);
 }
 
 export const TestExports = {
@@ -231,9 +323,11 @@ export const TestExports = {
 export function* combinedSaga() {
   yield all([
     watchDashboardCountsFetch(),
+    watchDownloadDataFetch(),
     watchDashboardDataFetch(),
     watchTableCheckboxSelect(),
     watchOrderCall(),
     watchDispositionOperationCall(),
+    watchStagerSearchLoanCall(),
   ]);
 }

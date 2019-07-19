@@ -8,6 +8,7 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import {
+  SET_SELECTED_CHECKLIST,
   GET_NEXT_CHECKLIST,
   GET_PREV_CHECKLIST,
   GET_CHECKLIST_SAGA,
@@ -30,6 +31,8 @@ import {
   HISTORICAL_CHECKLIST_DATA,
   GET_HISTORICAL_CHECKLIST_DATA,
   ERROR_LOADING_HISTORICAL_CHECKLIST,
+  FETCH_DROPDOWN_OPTIONS_SAGA,
+  SAVE_DROPDOWN_OPTIONS,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -43,8 +46,19 @@ import selectors from './selectors';
 import { selectors as dashboardSelectors } from '../dashboard';
 import { selectors as loginSelectors } from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
+// import DropDownSelect from 'containers';
 
+const ADD = 'ADD';
+// const DELETE = 'DELETE';
 const MISCTSK_CHK2 = 'MISCTSK_CHK2';
+const autoDispositions = [{
+  dispositionCode: 'allTasksCompleted',
+  dispositionComment: 'All Tasks Completed',
+}, {
+  dispositionCode: 'approval',
+  dispositionComment: 'approval',
+},
+];
 function* getChecklist(action) {
   try {
     const { payload: { taskId } } = action;
@@ -110,7 +124,8 @@ function createNavigationDataStructure(ids, prev) {
 }
 
 function prependChecklistItemForNavigationWhenNoChecklistItemIsSelected(arr) {
-  const firstInProgressChecklist = R.find(R.propEq('state', 'in-progress'), arr);
+  const inProgressChecklists = R.filter(R.propEq('state', 'in-progress'), arr);
+  const firstInProgressChecklist = inProgressChecklists[inProgressChecklists.length - 1];
   if (R.isNil(firstInProgressChecklist)) {
     return R.prepend(R.head(arr), arr);
   }
@@ -143,6 +158,7 @@ function filterOptionalTasks(allTasks) {
       name: R.pathOr('', ['taskBlueprint', 'name'], task),
       description: R.pathOr('', ['taskBlueprint', 'description'], task),
       taskCode: R.pathOr('', ['taskBlueprint', 'taskCode'], task),
+      subTasks: R.propOr([], 'subTasks', task),
     })),
     R.filter(isOptionalTask),
     R.propOr([], 'subTasks'),
@@ -157,8 +173,12 @@ function* getTasks(action) {
     yield put({
       type: LOADING_TASKS,
     });
-    // const rootTaskId = yield select(selectors.getRootTaskId);
-    const response = yield call(Api.callGet, `/api/task-engine/task/5cee56a55b95415a7ce905f7?depth=${depth}`);
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    const rootTaskId = yield select(selectors.getRootTaskId);
+    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -182,13 +202,17 @@ function* getTasks(action) {
       ]);
     }
     yield put(checklistNavAction);
-    if (R.pathOr(null, ['value', 'dispositionCode'], response) === 'allTasksCompleted') {
-      yield put(actions.validationDisplayAction(true));
-    }
     yield put({
       type: STORE_TASKS,
       payload: response,
     });
+    const disposition = autoDispositions.find(disp => disp.dispositionCode === R.pathOr(null, ['value', 'dispositionCode'], response));
+    if (disposition) {
+      yield put(actions.validationDisplayAction(true));
+      yield put(actions.dispositionCommentAction(disposition.dispositionComment));
+    } else if (!R.isNil(yield select(selectors.getChecklistComment))) {
+      yield put(actions.validationDisplayAction(true));
+    } else yield put(actions.validationDisplayAction(false));
   } catch (e) {
     yield put({
       type: ERROR_LOADING_TASKS,
@@ -278,13 +302,14 @@ function* postComment(action) {
     const eventName = !R.isNil(page) ? page.taskCode : '';
     const taskName = !R.isNil(page) ? page.task : '';
     const taskId = yield select(dashboardSelectors.taskId);
+    const taskIterationCounter = yield select(dashboardSelectors.taskIterationCounter);
     // const evalId = yield select(dashboardSelectors.evalId);
     const processId = yield select(dashboardSelectors.processId);
     const disposition = yield select(selectors.getDisposition);
     const commentPayload = {
       applicationName: 'CMOD',
       loanNumber,
-      processIdType: 'ProcessId',
+      processIdType: 'WF_PRCS_ID',
       processId,
       eventName,
       comment: action.payload.value,
@@ -294,6 +319,7 @@ function* postComment(action) {
         TASK: taskName,
         TASK_ID: taskId,
         TASK_ACTN: disposition,
+        TASK_ITRN_CNTR: taskIterationCounter,
         DSPN_IND: 1,
       }),
     };
@@ -314,12 +340,13 @@ function* postDispositionComment(action) {
   const eventName = !R.isNil(page) ? page.taskCode : '';
   const taskName = !R.isNil(page) ? page.task : '';
   const taskId = yield select(dashboardSelectors.taskId);
+  const taskIterationCounter = yield select(dashboardSelectors.taskIterationCounter);
   const processId = yield select(dashboardSelectors.processId);
   const disposition = yield select(selectors.getDisposition);
   const commentPayload = {
     applicationName: 'CMOD',
     loanNumber,
-    processIdType: 'ProcessId',
+    processIdType: 'WF_PRCS_ID',
     processId,
     eventName,
     comment: action.payload,
@@ -330,6 +357,7 @@ function* postDispositionComment(action) {
       TASK_ID: taskId,
       TASK_ACTN: disposition,
       DSPN_IND: 1,
+      TASK_ITRN_CNTR: taskIterationCounter,
     }),
   };
   yield put({
@@ -376,22 +404,47 @@ function* handleChecklistItemChange(action) {
   }
 }
 
+function* updateAndFetchTasks(fieldName, task, requestBody) {
+  const response = yield call(Api.put, `/api/task-engine/hierarchy/update?fieldName=${fieldName}&fieldValue=${task.visibility}`, requestBody);
+  const didErrorOccur = response === null;
+  if (didErrorOccur) {
+    throw new Error('Api call failed');
+  }
+  yield put({
+    type: SET_SELECTED_CHECKLIST,
+    payload: {
+      taskId: 'nothing',
+    },
+  });
+  yield put({
+    type: GET_TASKS_SAGA,
+    payload: { depth: 3 },
+  });
+}
+
 function* updateChecklist(action) {
   try {
-    const { task, fieldName } = action.payload;
+    const { task, fieldName, type } = action.payload;
     const requestBody = {
       // eslint-disable-next-line no-underscore-dangle
       id: task.id ? task.id : task._id,
     };
-    const response = yield call(Api.put, `/api/task-engine/hierarchy/update?fieldName=${fieldName}&fieldValue=${task.visibility}`, requestBody);
-    const didErrorOccur = response === null;
-    if (didErrorOccur) {
-      throw new Error('Api call failed');
+    if (type === ADD) {
+      yield* updateAndFetchTasks(fieldName, task, requestBody, type);
     } else {
-      yield put({
-        type: GET_TASKS_SAGA,
-        payload: { depth: 3 },
-      });
+      const rootTaskId = yield select(selectors.getRootTaskId);
+      const { id } = requestBody;
+      const clearSubTaskRequestBody = {
+        id,
+        rootTaskId,
+        taskBlueprintCode: task.taskBlueprintCode ? task.taskBlueprintCode : task.taskCode,
+      };
+      const response = yield call(Api.put, '/api/task-engine/task/clearSubTask', clearSubTaskRequestBody);
+      const didErrorOccur = response === null;
+      if (didErrorOccur) {
+        throw new Error('Api call failed');
+      }
+      yield* updateAndFetchTasks(fieldName, task, requestBody, type);
     }
   } catch (e) {
     yield call(handleSaveChecklistError, e);
@@ -436,6 +489,55 @@ function* subTaskClearance(action) {
   }
 }
 
+const groupToADGroupsMap = {
+  docgen: [
+    'cmod-qa-docgen',
+    'cmod-qa-docgen-mgr',
+  ],
+};
+
+function* sortUniqueUsers(usersList) {
+  const currentUser = yield select(loginSelectors.getUser);
+  const currentUserMail = R.path(['userDetails', 'email'], currentUser);
+  return R.sortBy(a => a.mail, R.filter(user => user.mail !== currentUserMail, R.uniq(usersList)));
+}
+
+const getUsersForGroup = (additionalInfo) => {
+  const { group } = additionalInfo;
+  const adGroups = groupToADGroupsMap[group];
+  const requestData = {
+    url: '/api/auth/ad/usersByGroups',
+    method: Api.callPost,
+    body: { groups: adGroups },
+    formatResponse: sortUniqueUsers,
+  };
+  return requestData;
+};
+
+const sourceToMethodMapping = {
+  adgroup: getUsersForGroup,
+};
+
+
+function* getdropDownOptions(action) {
+  const { source, additionalInfo } = action.payload;
+  const dataFetchMethod = sourceToMethodMapping[source];
+  const requestData = dataFetchMethod(additionalInfo);
+  const {
+    url, method, body, formatResponse,
+  } = requestData;
+  const options = yield call(method, url, body);
+  const formattedOptions = yield formatResponse(options);
+  try {
+    yield put({
+      type: SAVE_DROPDOWN_OPTIONS,
+      payload: formattedOptions,
+    });
+  } catch (e) {
+    yield call(handleSaveChecklistError, e);
+  }
+}
+
 function* watchChecklistItemChange() {
   yield takeEvery(HANDLE_CHECKLIST_ITEM_CHANGE, handleChecklistItemChange);
 }
@@ -472,6 +574,9 @@ function* watchSubtaskClearance() {
   yield takeEvery(CLEAR_SUBTASK, subTaskClearance);
 }
 
+function* watchDropDownOption() {
+  yield takeEvery(FETCH_DROPDOWN_OPTIONS_SAGA, getdropDownOptions);
+}
 export const TestExports = {
   watchGetTasks,
 };
@@ -487,5 +592,6 @@ export function* combinedSaga() {
     watchUpdateChecklist(),
     watchGetHistoricalChecklistData(),
     watchSubtaskClearance(),
+    watchDropDownOption(),
   ]);
 }

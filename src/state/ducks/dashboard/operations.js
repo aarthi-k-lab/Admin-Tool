@@ -19,6 +19,9 @@ import {
   validateDisposition,
   loadTrialsAction,
   onSentToUnderwritingAction,
+  onSendToDocGenAction,
+  cleanResult,
+  continueMyReview,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -96,6 +99,13 @@ const onSentToUnderwriting = dispatch => () => {
   dispatch(onSentToUnderwritingAction());
 };
 
+const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isStager));
+
+const onCleanResult = dispatch => () => dispatch(cleanResult());
+const onContinueMyReview = dispatch => (taskStatus) => {
+  dispatch(continueMyReview(taskStatus));
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -116,6 +126,9 @@ const operations = {
   validateDispositionTrigger,
   loadTrials,
   onSentToUnderwriting,
+  onSendToDocGen,
+  onCleanResult,
+  onContinueMyReview,
 };
 
 export default operations;

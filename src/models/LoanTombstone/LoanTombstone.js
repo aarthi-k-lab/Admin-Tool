@@ -199,6 +199,14 @@ function getEvalType(_, evalDetails) {
   const evalType = getOr('evalType', evalDetails, NA);
   return generateTombstoneItem('Evaluation Type', evalType);
 }
+function getEvalFlag(_, evalDetails) {
+  let evalType = getOr('evalType', evalDetails, NA);
+  const evalTypeArray = ['PreApproved', 'Disaster', 'Inflight', 'StateReview', 'NonDelegated'];
+  if (evalType !== 'NA' && !evalTypeArray.includes(evalType)) {
+    evalType = 'Standard';
+  }
+  return generateTombstoneItem('Eval Flag', evalType);
+}
 function mlstnDateSortDesc(d1, d2) {
   const a = new Date(d1.mlstnDttm);
   const b = new Date(d2.mlstnDttm);
@@ -256,28 +264,55 @@ function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
   prioritizationDetails, groupName) {
-  const dataGenerator = [
-    getLoanItem,
-    getEvalIdItem,
-    getPreviousDisposition,
-    getLatestHandOffDisposition,
-    getInvestorLoanItem,
-    getBorrowerItem,
-    getSsnItem,
-    getSuccessorInInterestStatus,
-    getBrandNameItem,
-    getInvestorItem,
-    getLoanTypeDescription,
-    getUPBItem,
-    getNextPaymentDueDateItem,
-    getWaterfallName,
-    getModificationType,
-    getForeclosureSalesDate,
-    getFLDD,
-    getLienPosition,
-    getCFPBExpirationDate,
-    getDaysUntilCFPB,
-  ];
+  let dataGenerator = [];
+  if (!R.equals(groupName, DashboardModel.DOC_GEN)) {
+    dataGenerator = [
+      getLoanItem,
+      getEvalIdItem,
+      getPreviousDisposition,
+      getLatestHandOffDisposition,
+      getInvestorLoanItem,
+      getBorrowerItem,
+      getSsnItem,
+      getSuccessorInInterestStatus,
+      getBrandNameItem,
+      getInvestorItem,
+      getLoanTypeDescription,
+      getUPBItem,
+      getNextPaymentDueDateItem,
+      getWaterfallName,
+      getModificationType,
+      getForeclosureSalesDate,
+      getFLDD,
+      getLienPosition,
+      getCFPBExpirationDate,
+      getDaysUntilCFPB,
+    ];
+  } else {
+    dataGenerator = [
+      getLoanItem,
+      getInvestorLoanItem,
+      getEvalIdItem,
+      getEvalFlag,
+      getLoanTypeDescription,
+      getInvestorItem,
+      getLienPosition,
+      getPreviousDisposition,
+      getLatestHandOffDisposition,
+      getBorrowerItem,
+      getSsnItem,
+      getSuccessorInInterestStatus,
+      getBrandNameItem,
+      getWaterfallName,
+      getModificationType,
+      getNextPaymentDueDateItem,
+      getForeclosureSalesDate,
+      getFLDD,
+      getCFPBExpirationDate,
+      getDaysUntilCFPB,
+      getBoardingDate,
+    ];
+  }
   if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
   }

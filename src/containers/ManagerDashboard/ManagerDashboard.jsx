@@ -21,7 +21,7 @@ class ManagerDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDashboard: 'FEUW Manager Dashboard',
+      selectedDashboard: 'Manager Dashboard',
     };
     this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };
@@ -79,7 +79,7 @@ class ManagerDashboard extends Component {
           />
           <Controls />
         </ContentHeader>
-        <div styleName="reportsDiv">
+        <div styleName="report">
           {this.renderReport(powerBIConstants)}
         </div>
       </>

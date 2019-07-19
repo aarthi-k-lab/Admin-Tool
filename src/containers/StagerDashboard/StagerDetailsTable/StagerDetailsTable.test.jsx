@@ -24,19 +24,20 @@ describe('<StagerDetailsTable />', () => {
   });
 
   it('shows StagerDetailsTable - Tasktype - Current Review', () => {
-    data.stagerTaskType = 'CurrentReview';
+    data.stagerTaskType = 'Current Review';
     data.isManualOrder = true;
     const triggerDispositionOperationCall = jest.fn();
-    const onClearDocsOutAction = jest.fn();
+    const triggerStagerGroup = jest.fn();
+    const onClearDocGenAction = jest.fn();
     const wrapper = shallow(
       <TestExports.StagerDetailsTable
         data={data}
-        onClearDocsOutAction={onClearDocsOutAction}
+        onClearDocGenAction={onClearDocGenAction}
         selectedData={[]}
         triggerDispositionOperationCall={triggerDispositionOperationCall}
+        triggerStagerGroup={triggerStagerGroup}
       />,
     );
-    console.debug('wrapper>>>', wrapper);
     expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
     expect(wrapper.find('WithStyles(Button)')).toHaveLength(4);
     wrapper.find('WithStyles(Button)').at(1).simulate('Click');

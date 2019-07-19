@@ -140,6 +140,7 @@ class CommentsWidget extends Component {
       ProcessId,
       ProcIdType,
       TaskId,
+      taskIterationCounter,
       User,
       onPostComment,
       groupName,
@@ -160,6 +161,7 @@ class CommentsWidget extends Component {
         TASK: taskName,
         TASK_ID: TaskId,
         processId: ProcessId,
+        TASK_ITRN_CNTR: taskIterationCounter,
       }),
       userName: User.userDetails.name,
       createdDate: new Date().toJSON(),
@@ -190,13 +192,6 @@ class CommentsWidget extends Component {
               <div styleName="check-icon-style">
                 <CheckCircleIcon styleName="check-circle-icon" />
                 <span styleName="disposition-selected">{getContextData(comment.commentContext)}</span>
-                <div
-                  onClick={this.displayEditPopUp}
-                  role="presentation"
-                  styleName={comment.userName === User.userDetails.name ? 'ellipsis-current-user' : 'ellipsis-other-user'}
-                >
-                  ...
-                </div>
               </div>
             </div>
           </div>
@@ -206,7 +201,9 @@ class CommentsWidget extends Component {
   }
 
   renderCommentsActivity() {
-    const { comments, LoanNumber, EvalId } = this.props;
+    const {
+      comments, LoanNumber, EvalId, isAssigned,
+    } = this.props;
     const { content } = this.state;
     return (
       <>
@@ -231,7 +228,8 @@ class CommentsWidget extends Component {
             <div id="send_button_area" styleName="send-button-area">
               <Button
                 color="primary"
-                disabled={content.length === 0 || LoanNumber === null || EvalId === null}
+                disabled={content.length === 0
+                  || LoanNumber === null || EvalId === null || !isAssigned}
                 id="post_button"
                 onClick={this.saveComments}
                 styleName="post-button"
@@ -265,12 +263,14 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
+  isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
   TaskId: PropTypes.number.isRequired,
+  taskIterationCounter: PropTypes.number.isRequired,
   User: PropTypes.shape({
     userDetails: PropTypes.shape({
       name: PropTypes.string,
@@ -280,7 +280,7 @@ CommentsWidget.propTypes = {
 
 CommentsWidget.defaultProps = {
   AppName: 'CMOD',
-  ProcIdType: 'ProcessId',
+  ProcIdType: 'WF_PRCS_ID',
   groupName: '',
 };
 
@@ -292,7 +292,9 @@ const mapStateToProps = state => ({
   LoanNumber: dashboardSelectors.loanNumber(state),
   ProcessId: dashboardSelectors.processId(state),
   groupName: dashboardSelectors.groupName(state),
+  taskIterationCounter: dashboardSelectors.taskIterationCounter(state),
   User: loginSelectors.getUser(state),
+  isAssigned: dashboardSelectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({

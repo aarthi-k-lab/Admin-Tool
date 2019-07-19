@@ -27,7 +27,7 @@ class LeftParentTasks extends React.Component {
     const { taskIdx, task } = this.changedTask;
     if (prevProps.shouldDeleteTask !== shouldDeleteTask) {
       if (shouldDeleteTask) {
-        this.modifyTaskList(taskIdx, task);
+        this.modifyTaskList(taskIdx, task, 'DELETE');
         resetDeleteTaskConfirmation();
       }
     }
@@ -46,7 +46,7 @@ class LeftParentTasks extends React.Component {
     handleShowDeleteTaskConfirmation(payload);
   }
 
-  modifyTaskList(taskIdx, task) {
+  modifyTaskList(taskIdx, task, type) {
     const { updateChecklist } = this.props;
     const { isTaskAdded } = this.state;
     const isTaskAddedList = isTaskAdded;
@@ -57,18 +57,19 @@ class LeftParentTasks extends React.Component {
     const payload = {
       task: Object.assign({}, task, { visibility: isTaskAdded[taskIdx] }),
       fieldName: 'visibility',
+      type,
     };
     updateChecklist(payload);
   }
 
   renderDeleteIcon(task) {
-    const { optionalTasks } = this.props;
+    const { disableModifyOptionalTasks, optionalTasks } = this.props;
     // eslint-disable-next-line no-underscore-dangle
     const index = optionalTasks.findIndex(optTask => optTask.id === task._id);
     if (index !== -1) {
       return (
         <DeleteTask
-          disabled={false}
+          disabled={disableModifyOptionalTasks}
           margin={{ 'margin-right': '2.2rem' }}
           onClick={() => this.deleteTask(index, task)}
           toolTipPosition="left"
@@ -178,10 +179,12 @@ class LeftParentTasks extends React.Component {
 }
 
 LeftParentTasks.defaultProps = {
+  disableModifyOptionalTasks: false,
   selectedTaskId: '',
 };
 
 LeftParentTasks.propTypes = {
+  disableModifyOptionalTasks: PropTypes.bool,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   isCollapsed: PropTypes.bool.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,

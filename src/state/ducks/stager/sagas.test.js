@@ -17,7 +17,6 @@ import {
   TABLE_CHECKBOX_SELECT_TRIGGER,
   TRIGGER_ORDER_SAGA,
   SET_STAGER_ACTIVE_SEARCH_TERM,
-  SET_STAGER_DOWNLOAD_CSV_URI,
 } from './types';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
 
@@ -79,6 +78,13 @@ describe('onCheckboxSelect ', () => {
   });
 });
 const dateValue = {
+  fromDate: '2019-01-05T00:00:00.000Z',
+  stagerType: 'UNDERWRITER STAGER',
+  toDate: '2019-01-05T00:00:00.000Z',
+  searchTerm: null,
+};
+
+const dateUTCValue = {
   fromDate: '2019-01-05',
   stagerType: 'UNDERWRITER STAGER',
   toDate: '2019-01-05',
@@ -95,7 +101,7 @@ describe('fetchDashboardCounts ', () => {
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('call getCounts Api', () => {
-    expect(saga.next(dateValue).value)
+    expect(saga.next(dateUTCValue).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
   it('should update with returned payload ', () => {
@@ -116,6 +122,12 @@ describe('fetchDashboardData ', () => {
     },
   };
   const date = {
+    fromDate: '2019-01-05T00:00:00.000Z',
+    stagerType: 'UNDERWRITER STAGER',
+    searchTerm: 'LegalFeeToOrder',
+    toDate: '2019-01-05T00:00:00.000Z',
+  };
+  const dateUtc = {
     fromDate: '2019-01-05',
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
@@ -135,11 +147,11 @@ describe('fetchDashboardData ', () => {
       }));
   });
   it('should select Stager date ', () => {
-    expect(saga.next('UNDERWRITER STAGER').value)
+    expect(saga.next('UW_STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('call bpm audit data Api', () => {
-    expect(saga.next(date).value)
+    expect(saga.next(dateUtc).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
 
@@ -150,15 +162,6 @@ describe('fetchDashboardData ', () => {
         payload: 'LegalFeeToOrder',
       }));
   });
-
-  // it('should update csv download Url ', () => {
-  //   expect(saga.next().value)
-  //     .toEqual(put({
-  //       type: SET_STAGER_DOWNLOAD_CSV_URI,
-  //       payload: `api/stager/dashboard/downloadData/UNDERWRITER STAGER/
-  //       ${payload.payload.activeSearchTerm}`,
-  //     }));
-  // });
 
   it('should update payload ', () => {
     expect(saga.next().value)
@@ -187,7 +190,7 @@ describe('fetchDashboardData error', () => {
 });
 
 describe('makeOrderBpmCall', () => {
-  const payload = { payload: 'LegalFeeToOrder' };
+  const payload = { payload: 'LegalFeeToOrder', endPoint: 'valuation' };
   const message = {
     message: 'Ordering. Please wait... ',
     open: true,
@@ -198,6 +201,7 @@ describe('makeOrderBpmCall', () => {
   snackBarData.message = 'Order call failed for Eval ID(s): ';
   snackBarData.type = 'error';
   snackBarData.open = true;
+  const stagerPayload = { activeSearchTerm: 'LegalFeeToOrder', stager: 'UW_STAGER' };
   it('should call firesnackbar ', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.fireSnackBar, message));
@@ -205,11 +209,11 @@ describe('makeOrderBpmCall', () => {
 
   it('call stager Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, 'api/stager/stager/dashboard/order/valuation', payload.payload));
+      .toEqual(call(Api.callPost, `api/stager/stager/dashboard/order/${payload.endPoint}`, payload.payload));
   });
 
   it('should call fetchDashboardCounts ', () => {
-    expect(saga.next([{ error: true, data: [{ evalId: 123456 }] }]).value)
+    expect(saga.next([{ error: true, data: [{ evalId: 123456 }], message: 'Order call failed for Eval ID(s): ' }]).value)
       .toEqual(call(TestExports.fetchDashboardCounts));
   });
 
@@ -218,9 +222,14 @@ describe('makeOrderBpmCall', () => {
       .toEqual(select(selectors.getActiveSearchTerm));
   });
 
-  it('should call fetchDashboardData ', () => {
+  it('should select StagerType ', () => {
     expect(saga.next('LegalFeeToOrder').value)
-      .toEqual(call(TestExports.fetchDashboardData, { payload: 'LegalFeeToOrder' }));
+      .toEqual(select(selectors.getStagerValue));
+  });
+
+  it('should call fetchDashboardData ', () => {
+    expect(saga.next('UW_STAGER').value)
+      .toEqual(call(TestExports.fetchDashboardData, { payload: stagerPayload }));
   });
   it('should call onCheckboxSelect ', () => {
     expect(saga.next('LegalFeeToOrder').value)

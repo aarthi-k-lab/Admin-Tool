@@ -8,7 +8,6 @@ import './CustomReactTable.css';
 class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = { };
     this.getCheckBox = this.getCheckBox.bind(this);
   }
 
@@ -38,10 +37,10 @@ class CustomReactTable extends React.PureComponent {
       case 'Loan Number':
         return (
           <div styleName={this.getRowStyleName(row.original['Days Until SLA'])}>
-            { this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-red'
+            {this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-red'
               ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
             }
-            { this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-gray'
+            {this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-gray'
               ? <img alt="alert-icon" src="/static/img/warning.svg" /> : null
             }
             {`  ${row.value}`}
@@ -50,7 +49,7 @@ class CustomReactTable extends React.PureComponent {
       default:
         return (
           <div styleName="tableRow">
-            { row.value }
+            {row.value}
           </div>
         );
     }
@@ -66,11 +65,12 @@ class CustomReactTable extends React.PureComponent {
           <Checkbox
             checked={isSelected}
             onChange={e => onCheckBoxClick(e.target.checked, original)}
+            styleName="checkbox"
           />
         );
       },
       Header: () => (
-        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} />
+        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
       ),
       sortable: false,
       filterable: false,
@@ -81,7 +81,6 @@ class CustomReactTable extends React.PureComponent {
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
     const columnData = [];
     const columnObject = {};
-    // columnObject.Header = `${stagerTaskType} - ${stagerTaskStatus}`;
     let columns = [];
     if (data && data[0]) {
       columns = R.compose(
@@ -89,10 +88,11 @@ class CustomReactTable extends React.PureComponent {
           const columnObj = {};
           columnObj.Header = (
             <div styleName="tableHeader">
-              { columnName.toUpperCase() }
+              {columnName.toUpperCase()}
             </div>
           );
-          columnObj.minWidth = 150;
+          const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
+          columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
           columnObj.Cell = row => this.constructor.getCellContent(row);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
@@ -118,6 +118,22 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
+  // eslint-disable-next-line no-unused-vars
+  getTrPropsType(state, rowInfo, column) {
+    const { searchResponse } = this.props;
+    if (rowInfo) {
+      const { original } = rowInfo;
+      if (original['Loan Number'] === searchResponse) {
+        return {
+          style: {
+            background: '#e67300',
+          },
+        };
+      }
+    }
+    return {};
+  }
+
   render() {
     const { data } = this.props;
     const returnVal = data ? (
@@ -131,7 +147,7 @@ class CustomReactTable extends React.PureComponent {
             columns={this.getColumnData(data.stagerTaskType,
               data.stagerTaskStatus, data.isManualOrder, data.tableData)}
             data={data.tableData}
-            defaultPageSize={10}
+            defaultPageSize={100}
             defaultSorted={data.defaultSorted ? [
               {
                 id: data.defaultSorted,
@@ -139,9 +155,9 @@ class CustomReactTable extends React.PureComponent {
               },
             ] : []}
             filterable
+            getTrProps={(state, rowInfo, column) => this.getTrPropsType(state, rowInfo, column)}
             styleName="stagerTable"
           />
-          <br />
         </div>
       </div>
     ) : null;
@@ -149,11 +165,20 @@ class CustomReactTable extends React.PureComponent {
   }
 }
 
+const TestExports = {
+  CustomReactTable,
+};
+CustomReactTable.defaultProps = {
+  data: [],
+};
 CustomReactTable.propTypes = {
-  data: PropTypes.node.isRequired,
+  data: PropTypes.node,
   onCheckBoxClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
+  searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
+
 };
 
 export default CustomReactTable;
+export { TestExports };

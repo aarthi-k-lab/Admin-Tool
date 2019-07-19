@@ -63,6 +63,10 @@ import {
   SET_TASK_UNDERWRITING_RESULT,
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
+  SET_TASK_SENDTO_DOCGEN,
+  SET_RESULT_OPERATION,
+  CONTINUE_MY_REVIEW,
+  CONTINUE_MY_REVIEW_RESULT,
 } from './types';
 import { errorTombstoneFetch } from './actions';
 import {
@@ -198,7 +202,7 @@ function* fetchChecklistDetails(checklistId) {
 }
 
 function* shouldRetriveChecklist(searchItem) {
-  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting'];
+  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation'];
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
@@ -232,8 +236,12 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
-  evalDetails.isAssigned = !R.isNil(evalDetails.assignee)
-  && userDetails.name.toLowerCase() === evalDetails.assignee.toLowerCase();
+  evalDetails.isAssigned = false;
+  let assignedTo = [];
+  const name = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.') : null;
+  assignedTo = name[0].concat(' ', name[1]);
+  evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
+  && assignedTo === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -252,35 +260,78 @@ function* watchTombstoneLoan() {
   yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
 
+const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
+  try {
+    const taskStatusUpdate = R.propOr({}, 'payload', taskStatus);
+    const evalId = yield select(selectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const taskId = yield select(selectors.taskId);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    if (taskId) {
+      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}`, {});
+      if (response !== null) {
+        yield put({
+          type: CONTINUE_MY_REVIEW_RESULT,
+          payload: true,
+        });
+      }
+    }
+  } catch (e) {
+    yield put({ type: CONTINUE_MY_REVIEW_RESULT, payload: true });
+  }
+};
+
+function* watchContinueMyReview() {
+  yield takeEvery(CONTINUE_MY_REVIEW, continueMyReviewResult);
+}
+
+
 const validateDisposition = function* validateDiposition(dispositionPayload) {
   try {
     yield put({ type: SHOW_SAVING_LOADER });
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
-    const group = getUserPersona(R.propOr({}, 'group', payload));
+    const groupName = getUserPersona(R.propOr({}, 'group', payload));
     const evalId = yield select(selectors.evalId);
-    const user = yield select(loginSelectors.getUser);
-    const taskId = yield select(selectors.taskId);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const response = yield call(Api.callGet, `/api/disposition/validate-disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    const wfTaskId = yield select(selectors.taskId);
+    const userName = yield select(checklistSelectors.getAgentName);
+    const wfProcessId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
+    const validateAgent = !R.isNil(userName) && !R.isEmpty(userName);
+    const request = {
+      evalId,
+      disposition,
+      groupName,
+      validateAgent,
+      userName,
+      wfTaskId,
+      wfProcessId,
+      processStatus,
+    };
+    const response = yield call(Api.callPost, '/api/disposition/validate-disposition', request);
+    const { tkamsValidation, skillValidation } = response;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: response.enableGetNext,
+      payload: tkamsValidation.enableGetNext,
     });
-    if (!response.enableGetNext) {
+    if (!tkamsValidation.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'error',
-          data: response.discrepancies,
+          data: tkamsValidation.discrepancies,
         },
       });
     } else {
+      let message = 'Validation successful!';
+      if (validateAgent) {
+        ({ message } = skillValidation);
+      }
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'success',
-          msg: 'Validation successful!',
+          msg: message,
         },
       });
     }
@@ -368,7 +419,7 @@ function getCommentPayload(taskDetails) {
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'ProcessId', loanNumber, processId, evalId, taskId,
+    applicationName: 'CMOD', processIdType: 'WF_PRCS_ID', loanNumber, processId, evalId, taskId,
   };
 }
 
@@ -377,26 +428,54 @@ function* saveChecklistDisposition(payload) {
   if (!payload.isFirstVisit && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
-    const taskId = yield select(selectors.taskId);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const group = getUserPersona(payload.appGroupName);
+    const groupName = getUserPersona(payload.appGroupName);
+    const agentName = yield select(checklistSelectors.getAgentName);
+    const wfTaskId = yield select(selectors.taskId);
+    const wfProcessId = yield select(selectors.processId);
+    const processStatus = yield select(selectors.processStatus);
+    const validateAgent = !R.isNil(agentName) && !R.isEmpty(agentName);
     const disposition = payload.dispositionCode;
-    const saveResponse = yield call(Api.callPost, `/api/disposition/disposition?evalCaseId=${evalId}&disposition=${disposition}&assignedTo=${userPrincipalName}&taskId=${taskId}&group=${group}`, {});
+    const request = {
+      evalId,
+      disposition,
+      groupName,
+      validateAgent,
+      userName: validateAgent ? agentName : userPrincipalName,
+      wfTaskId,
+      wfProcessId,
+      processStatus,
+    };
+    const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
+    const { tkamsValidation, skillValidation } = saveResponse;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: saveResponse.enableGetNext,
+      payload: tkamsValidation.enableGetNext,
     });
-    if (!saveResponse.enableGetNext) {
+    if (!tkamsValidation.enableGetNext) {
       yield put({ type: HIDE_LOADER });
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
           type: 'error',
-          data: saveResponse.discrepancies,
+          data: tkamsValidation.discrepancies,
         },
       });
       return false;
     }
+    let message = 'Validation successful!';
+    let type = 'success';
+    if (validateAgent) {
+      type = skillValidation.hasSkill ? 'success' : 'error';
+      ({ message } = skillValidation);
+    }
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+        type,
+        msg: message,
+      },
+    });
   }
   return true;
 }
@@ -595,7 +674,8 @@ function* assignLoan() {
     const processId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}`, {});
+    const userGroups = R.pathOr([], ['groupList'], user);
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}`, {});
     if (response !== null) {
       yield put({
         type: ASSIGN_LOAN_RESULT,
@@ -774,6 +854,59 @@ function* sentToUnderwriting() {
   }
 }
 
+function* sendToDocGen(payload) {
+  // const taskId = yield select(selectors.taskId);
+  const evalId = yield select(selectors.evalId);
+  const isStager = payload.payload;
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocGen/DocGen${isStager ? 'Stager' : ''}?EvalId=${evalId}`);
+    if (response !== null && response === true) {
+      const payload1 = JSON.parse(`{
+        "evalid": "${evalId}",
+        "eventname": "sendToDocGen${isStager ? 'Stager' : ''}"
+      }`);
+      const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
+      const currentStatus = responseSend && responseSend.updateInstanceStatusResponse.statusCode;
+      if (currentStatus !== null && currentStatus === '200') {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: 'success',
+            status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ' queue for rework'}`,
+          },
+        });
+      } else {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: 'error',
+            status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          },
+        });
+      }
+    } else {
+      const message = `Unable to send back to Doc Gen ${isStager ? 'Stager' : ''}. Eval status should be Approved, and the Eval Sub Status should be Referral or Referral KB and the most recent Resolution case (within the eval) Status should ${isStager ? 'be Open' : 'not be Open or Rejected'}`;
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: 'error',
+          status: message,
+        },
+      });
+    }
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload:
+      {
+        level: 'error',
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
 
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
@@ -785,6 +918,10 @@ function* watchLoadTrials() {
 
 function* watchSentToUnderwriting() {
   yield takeEvery(SET_TASK_UNDERWRITING, sentToUnderwriting);
+}
+
+function* watchSendToDocGen() {
+  yield takeEvery(SET_TASK_SENDTO_DOCGEN, sendToDocGen);
 }
 
 export const TestExports = {
@@ -813,6 +950,8 @@ export const TestExports = {
   watchValidateDispositon,
   watchSentToUnderwriting,
   watchLoadTrials,
+  watchSendToDocGen,
+  watchContinueMyReview,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -829,5 +968,7 @@ export const combinedSaga = function* combinedSaga() {
     watchValidateDispositon(),
     watchLoadTrials(),
     watchSentToUnderwriting(),
+    watchSendToDocGen(),
+    watchContinueMyReview(),
   ]);
 };

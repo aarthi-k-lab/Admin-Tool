@@ -47,7 +47,7 @@ class Header extends React.Component {
   /* eslint no-nested-ternary: 0 */
   getEnv() {
     const host = window.location.hostname.toUpperCase().split('.')[0].replace('CMOD', '');
-    return host === 'PROD' ? '' : (host === 'LOCALHOST' ? ' - LOCAL' : `- ${host}`);
+    return (host === 'PROD' || host === '') ? '' : ((host === 'LOCALHOST' || host === '127') ? ' - LOCAL' : ` - ${host}`);
   }
 
   handleSearchLoan(event) {

@@ -60,6 +60,8 @@ const enableEndShift = state => (
 
 const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
 
+const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
+
 const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
 
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
@@ -74,6 +76,8 @@ const getTrialsDetail = state => (state.dashboard.trialsDetail ? state.dashboard
 const getTrialLetter = state => (state.dashboard.trialsLetter ? state.dashboard.trialsLetter : []);
 const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUnderwriting
   ? state.dashboard.resultUnderwriting : {});
+const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
+  ? state.dashboard.resultOperation : {});
 
 const selectors = {
   enableEndShift,
@@ -93,6 +97,7 @@ const selectors = {
   isTasksLimitExceeded,
   searchLoanResult,
   showAssign,
+  showContinueMyReview,
   unassignResult,
   assignResult,
   processId,
@@ -110,6 +115,7 @@ const selectors = {
   getTrialLetter,
   taskStatus,
   resultUnderwriting,
+  resultOperation,
 };
 
 export default selectors;

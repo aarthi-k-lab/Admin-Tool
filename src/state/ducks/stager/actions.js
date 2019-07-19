@@ -1,8 +1,9 @@
 import {
   GET_DASHBOARD_COUNTS_SAGA, GET_DASHBOARD_DATA_SAGA,
-  TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
-  TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOCS_OUT_ACTION, SET_STAGER_VALUE,
-  SET_START_END_DATE, CLEAR_DOCS_OUT_RESPONSE,
+  GET_DOWNLOAD_DATA_SAGA, TABLE_CHECKBOX_SELECT_TRIGGER, TRIGGER_ORDER_SAGA,
+  TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOC_GEN_ACTION, SET_STAGER_VALUE,
+  SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_STAGER_GROUP,
+  GET_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE, CLEAR_STAGER_RESPONSE,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -14,14 +15,20 @@ const triggerDashboardDataFetch = payload => ({
   payload,
 });
 
+const triggerDownloadDataFetch = payload => ({
+  type: GET_DOWNLOAD_DATA_SAGA,
+  payload,
+});
+
 const triggerCheckboxSelect = selectedData => ({
   type: TABLE_CHECKBOX_SELECT_TRIGGER,
   payload: selectedData,
 });
 
-const triggerOrderCallAction = payload => ({
+const triggerOrderCallAction = (payload, endPoint) => ({
   type: TRIGGER_ORDER_SAGA,
   payload,
+  endPoint,
 });
 
 const triggerDispositionOperationCallAction = payload => ({
@@ -29,8 +36,8 @@ const triggerDispositionOperationCallAction = payload => ({
   payload,
 });
 
-const setDocOutAction = action => ({
-  type: SET_DOCS_OUT_ACTION,
+const setDocGenAction = action => ({
+  type: SET_DOC_GEN_ACTION,
   action,
 });
 
@@ -44,18 +51,41 @@ const setStartEndDate = payload => ({
   payload,
 });
 
-const clearDocOutAction = () => ({
-  type: CLEAR_DOCS_OUT_RESPONSE,
+const clearDocGenAction = () => ({
+  type: CLEAR_DOC_GEN_RESPONSE,
+});
+
+const clearStagerResponse = () => ({
+  type: CLEAR_STAGER_RESPONSE,
+});
+
+const clearSearchResponse = () => ({
+  type: CLEAR_SEARCH_RESPONE,
+});
+
+const setStagerGroup = payload => ({
+  type: SET_STAGER_GROUP,
+  payload,
+});
+
+const setStagerLoanNumber = payload => ({
+  type: GET_STAGER_LOAN_NUMBER,
+  payload,
 });
 
 export {
   triggerDashboardCounts,
   triggerDashboardDataFetch,
+  triggerDownloadDataFetch,
   triggerCheckboxSelect,
   triggerOrderCallAction,
   triggerDispositionOperationCallAction,
-  setDocOutAction,
-  clearDocOutAction,
+  setDocGenAction,
+  clearDocGenAction,
   setStagerValue,
   setStartEndDate,
+  setStagerGroup,
+  setStagerLoanNumber,
+  clearSearchResponse,
+  clearStagerResponse,
 };

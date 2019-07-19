@@ -1,24 +1,35 @@
 import {
-  triggerDashboardCounts, triggerDashboardDataFetch,
-  triggerCheckboxSelect, triggerOrderCallAction,
+  triggerDashboardCounts,
+  triggerDashboardDataFetch,
+  triggerCheckboxSelect,
+  triggerOrderCallAction,
   triggerDispositionOperationCallAction,
-  setDocOutAction,
+  triggerDownloadDataFetch,
+  setDocGenAction,
   setStagerValue,
   setStartEndDate,
-  clearDocOutAction,
+  clearDocGenAction,
+  setStagerGroup,
+  setStagerLoanNumber,
+  clearSearchResponse,
+  clearStagerResponse,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
   triggerDashboardCounts(),
 );
 const getDashboardData = dispatch => payload => dispatch(triggerDashboardDataFetch(payload));
+const onDownloadData = dispatch => payload => dispatch(triggerDownloadDataFetch(payload));
 const onCheckBoxClick = dispatch => selectedData => dispatch(
   triggerCheckboxSelect(selectedData),
 );
-const triggerOrderCall = dispatch => payload => dispatch(triggerOrderCallAction(payload));
+
+const triggerOrderCall = dispatch => (payload, endPoint) => dispatch(
+  triggerOrderCallAction(payload, endPoint),
+);
 
 const triggerDispositionOperationCall = dispatch => (payload, action) => {
-  dispatch(setDocOutAction(action));
+  dispatch(setDocGenAction(action));
   dispatch(triggerDispositionOperationCallAction(payload));
 };
 
@@ -26,17 +37,27 @@ const triggerStagerValue = dispatch => payload => dispatch(setStagerValue(payloa
 
 const triggerStartEndDate = dispatch => payload => dispatch(setStartEndDate(payload));
 
-const onClearDocsOutAction = dispatch => () => dispatch(clearDocOutAction());
+const onClearDocGenAction = dispatch => () => dispatch(clearDocGenAction());
+const triggerStagerGroup = dispatch => payload => dispatch(setStagerGroup(payload));
+const triggerStagerSearchLoan = dispatch => payload => dispatch(setStagerLoanNumber(payload));
+const onClearSearchResponse = dispatch => () => dispatch(clearSearchResponse());
+const onClearStagerResponse = dispatch => () => dispatch(clearStagerResponse());
+
 
 const operations = {
   getDashboardCounts,
   getDashboardData,
   onCheckBoxClick,
+  onDownloadData,
   triggerOrderCall,
   triggerDispositionOperationCall,
-  onClearDocsOutAction,
+  onClearDocGenAction,
   triggerStagerValue,
   triggerStartEndDate,
+  triggerStagerGroup,
+  triggerStagerSearchLoan,
+  onClearSearchResponse,
+  onClearStagerResponse,
 };
 
 export default operations;

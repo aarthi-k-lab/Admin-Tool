@@ -138,9 +138,11 @@ class Checklist extends React.PureComponent {
     type,
     taskCode,
     value,
+    source,
+    additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN,
     } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
@@ -279,6 +281,39 @@ class Checklist extends React.PureComponent {
           </Tooltip>
         );
       }
+
+      case DROPDOWN: {
+        // const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleChange(id, taskCode);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          onChange,
+          title,
+          type: DROPDOWN,
+          value: getValue,
+          source,
+          additionalInfo,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
       default:
         return (
           <div>
@@ -306,7 +341,7 @@ class Checklist extends React.PureComponent {
           </div>
         </div>
         <div styleName="clearButton">
-          <Button onClick={() => this.handleOpen()}>
+          <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
             Clear
           </Button>
         </div>

@@ -22,6 +22,8 @@ import {
   SHOW_DELETE_TASK_CONFIRMATION,
   RESET_DELETE_TASK,
   CLEAR_SUBTASK,
+  UPDATE_COMMENTS,
+  FETCH_DROPDOWN_OPTIONS_SAGA,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -37,6 +39,10 @@ const validationDisplayAction = payload => ({
   payload,
 });
 
+const dispositionComments = payload => ({
+  type: UPDATE_COMMENTS,
+  payload,
+});
 const dispositionCommentAction = payload => ({
   type: DISP_COMMENT_SAGA,
   payload,
@@ -150,6 +156,13 @@ const subTaskClearance = (taskId, rootTaskId, taskBluePrintCode) => ({
   },
 });
 
+const getDropDownOptions = (source, additionalInfo) => ({
+  type: FETCH_DROPDOWN_OPTIONS_SAGA,
+  payload: {
+    source,
+    additionalInfo,
+  },
+});
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -174,4 +187,6 @@ export {
   resetDeleteTaskConfirmation,
   subTaskClearance,
   getHistoricalCheckListData,
+  dispositionComments,
+  getDropDownOptions,
 };

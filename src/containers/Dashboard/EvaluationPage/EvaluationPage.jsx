@@ -34,6 +34,7 @@ class EvaluationPage extends React.PureComponent {
       case DashboardModel.BEUW:
         return <TasksAndChecklist />;
       case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
+      case DashboardModel.FEUW:
         return <TasksAndChecklist />;
       case DashboardModel.BEUW_TASKS_AND_CHECKLIST:
         return <TasksAndChecklist />;
@@ -41,6 +42,8 @@ class EvaluationPage extends React.PureComponent {
         return <TasksAndChecklist />;
       case DashboardModel.LOAN_ACTIVITY:
         return <LoanActivity />;
+      case DashboardModel.DOC_GEN:
+        return <TasksAndChecklist />;
       default:
         return <FrontEndDisposition />;
     }

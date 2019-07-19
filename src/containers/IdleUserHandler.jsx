@@ -99,9 +99,11 @@ class IdleUserHandler extends Component {
     );
   }
 }
+
 IdleUserHandler.defaultProps = {
   enableGetNext: false,
 };
+
 IdleUserHandler.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
@@ -109,15 +111,16 @@ IdleUserHandler.propTypes = {
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
 };
+
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
 });
+
 const mapDispatchToProps = dispatch => ({
   onEndShift: dashboardOperations.onEndShift(dispatch),
   onAutoSave: dashboardOperations.onAutoSave(dispatch),
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(IdleUserHandler);
