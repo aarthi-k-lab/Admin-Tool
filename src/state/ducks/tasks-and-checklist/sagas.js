@@ -22,8 +22,6 @@ import {
   STORE_CHECKLIST,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_TASKS,
-  EMPTY_CHECKLIST_COMMENT,
-  // EMPTY_DISPOSITION_COMMENT,
   STORE_OPTIONAL_TASKS,
   STORE_MISC_TASK_COMMENT,
   DISP_COMMENT_SAGA,
@@ -210,10 +208,9 @@ function* getTasks(action) {
     if (disposition) {
       yield put(actions.validationDisplayAction(true));
       yield put(actions.dispositionCommentAction(disposition.dispositionComment));
-    } else {
-      yield put(actions.validationDisplayAction(false));
-      yield put({ type: EMPTY_CHECKLIST_COMMENT });
-    }
+    } else if (!R.isNil(yield select(selectors.getChecklistComment))) {
+      yield put(actions.validationDisplayAction(true));
+    } else yield put(actions.validationDisplayAction(false));
   } catch (e) {
     yield put({
       type: ERROR_LOADING_TASKS,
@@ -462,21 +459,27 @@ function* subTaskClearance(action) {
   }
 }
 
-// const groupToADGroupsMap = {
-//   docgen: [
-//     'cmod-qa-docgen',
-//     'cmod-qa-docgen-mgr',
-//   ],
-// };
+const groupToADGroupsMap = {
+  docgen: [
+    'cmod-qa-docgen',
+    'cmod-qa-docgen-mgr',
+  ],
+};
 
-// TO-DO get groups from mapping
-const getUsersForGroup = () => {
-  // const { group } = additionalInfo;
-  // const adGroups = groupToADGroupsMap[group];
+function* sortUniqueUsers(usersList) {
+  const currentUser = yield select(loginSelectors.getUser);
+  const currentUserMail = R.path(['userDetails', 'email'], currentUser);
+  return R.sortBy(a => a.mail, R.filter(user => user.mail !== currentUserMail, R.uniq(usersList)));
+}
+
+const getUsersForGroup = (additionalInfo) => {
+  const { group } = additionalInfo;
+  const adGroups = groupToADGroupsMap[group];
   const requestData = {
-    url: '/api/auth/ad/groups/cmod-qa-docgen/users',
-    method: Api.callGet,
-    body: {},
+    url: '/api/auth/ad/usersByGroups',
+    method: Api.callPost,
+    body: { groups: adGroups },
+    formatResponse: sortUniqueUsers,
   };
   return requestData;
 };
@@ -490,12 +493,15 @@ function* getdropDownOptions(action) {
   const { source, additionalInfo } = action.payload;
   const dataFetchMethod = sourceToMethodMapping[source];
   const requestData = dataFetchMethod(additionalInfo);
-  const { url, method, body } = requestData;
+  const {
+    url, method, body, formatResponse,
+  } = requestData;
   const options = yield call(method, url, body);
+  const formattedOptions = yield formatResponse(options);
   try {
     yield put({
       type: SAVE_DROPDOWN_OPTIONS,
-      payload: options,
+      payload: formattedOptions,
     });
   } catch (e) {
     yield call(handleSaveChecklistError, e);

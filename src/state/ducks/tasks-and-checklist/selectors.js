@@ -125,6 +125,8 @@ const getAgentName = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'ag
 
 const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
 
+const getChecklistComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment', 'comment']);
+
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
 
 const shouldShowDisposition = (state) => {
@@ -178,6 +180,7 @@ const selectors = {
   getRootTaskId,
   getSelectedChecklistId,
   getTaskTree,
+  getChecklistComment,
   getTaskComment,
   shouldDeleteTask,
   shouldDisableNext,

@@ -81,11 +81,15 @@ class TextFields extends React.Component {
     const properties = getProps(type, this.props);
     return (type === DROPDOWN) ? (
       <TextField
+        styleName="dropDownStyle"
         {...this.props}
-        margin="normal"
+        margin="dense"
         select
         SelectProps={{
           native: true,
+          MenuProps: {
+            styleName: 'dropDownMenuStyle',
+          },
         }}
       >
         { this.getDropDownOptions() }

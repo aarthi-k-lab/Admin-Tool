@@ -446,9 +446,6 @@ function* saveChecklistDisposition(payload) {
       processStatus,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
-    if (R.isNil(saveResponse)) {
-      return false;
-    }
     const { tkamsValidation, skillValidation } = saveResponse;
     yield put({
       type: SET_GET_NEXT_STATUS,
@@ -468,7 +465,7 @@ function* saveChecklistDisposition(payload) {
     let message = 'Validation successful!';
     let type = 'success';
     if (validateAgent) {
-      type = skillValidation.canAssign ? 'success' : 'error';
+      type = skillValidation.hasSkill ? 'success' : 'error';
       ({ message } = skillValidation);
     }
     yield put({

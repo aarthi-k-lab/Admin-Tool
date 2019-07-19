@@ -11,3 +11,13 @@
   .componentMargin.componentMargin div > input {
     padding: 5.5px 5px;
   }
+
+  .dropDownStyle {
+    min-width: 25rem !important;
+    border: 0.13rem solid black !important;
+  }
+
+  .dropDownMenuStyle {
+    min-width: 25rem !important;
+    border: 0.1rem solid black !important;
+  }
