@@ -3,7 +3,6 @@
   background-color: var(--grey-100);
   border-bottom: solid 0.0625rem var(--grey-400);
   box-sizing: border-box;
-  height: 4rem;
 }
 
 .more-icon-button {
@@ -53,6 +52,7 @@
   vertical-align: center;
   flex-direction: column;
   height: 100%;
+  overflow: auto;
 }
 
 .tombstone-table {
