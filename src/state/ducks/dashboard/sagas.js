@@ -426,8 +426,6 @@ function* saveChecklistDisposition(payload) {
   const { appGroupName } = payload;
   if (!payload.isFirstVisit && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
     const groupName = getUserPersona(payload.appGroupName);
     const agentName = yield select(checklistSelectors.getAgentName);
     const wfTaskId = yield select(selectors.taskId);
@@ -440,7 +438,7 @@ function* saveChecklistDisposition(payload) {
       disposition,
       groupName,
       validateAgent,
-      userName: validateAgent ? agentName : userPrincipalName,
+      userName: validateAgent ? agentName : '',
       wfTaskId,
       wfProcessId,
       processStatus,
