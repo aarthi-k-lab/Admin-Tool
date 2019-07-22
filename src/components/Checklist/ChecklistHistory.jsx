@@ -35,15 +35,13 @@ class ChecklistHistory extends React.Component {
     this.state = {
       anchorEl: null,
     };
-    this.handleClose = this.handleClose.bind(this);
-    this.handleChecklistOpen = this.handleChecklistOpen.bind(this);
   }
 
-  handleClose() {
+  handleClose = () => {
     this.setState({ anchorEl: null });
   }
 
-  handleChecklistOpen(event) {
+  handleChecklistOpen = (event) => {
     this.setState({
       anchorEl: event.currentTarget,
     });
