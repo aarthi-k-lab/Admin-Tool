@@ -459,30 +459,25 @@ function* subTaskClearance(action) {
   }
 }
 
-const groupToADGroupsMap = {
-  docgen: [
-    'cmod-qa-docgen',
-    'cmod-qa-docgen-mgr',
-  ],
-};
-
 function* sortUniqueUsers(usersList) {
   const currentUser = yield select(loginSelectors.getUser);
   const currentUserMail = R.path(['userDetails', 'email'], currentUser);
-  return R.sortBy(a => a.mail, R.filter(user => user.mail !== currentUserMail, R.uniq(usersList)));
+  return R.sortBy(a => a.displayName,
+    R.filter(user => user.userPrincipalName !== currentUserMail, R.uniq(usersList)));
 }
 
-const getUsersForGroup = (additionalInfo) => {
+function* getUsersForGroup(additionalInfo) {
   const { group } = additionalInfo;
-  const adGroups = groupToADGroupsMap[group];
+  const response = yield call(Api.callGet, 'api/config');
+  const handoffADGroups = R.pathOr({}, ['handoffADGroups', group], response);
   const requestData = {
     url: '/api/auth/ad/usersByGroups',
     method: Api.callPost,
-    body: { groups: adGroups },
+    body: { groups: handoffADGroups },
     formatResponse: sortUniqueUsers,
   };
   return requestData;
-};
+}
 
 const sourceToMethodMapping = {
   adgroup: getUsersForGroup,
@@ -492,7 +487,7 @@ const sourceToMethodMapping = {
 function* getdropDownOptions(action) {
   const { source, additionalInfo } = action.payload;
   const dataFetchMethod = sourceToMethodMapping[source];
-  const requestData = dataFetchMethod(additionalInfo);
+  const requestData = yield dataFetchMethod(additionalInfo);
   const {
     url, method, body, formatResponse,
   } = requestData;

@@ -90,6 +90,9 @@ function renderErrorNotification(
 const Messages = {
   renderErrorNotification,
   reduceMessageListToMessage,
+  LEVEL_SUCCESS,
+  LEVEL_ERROR,
+  MSG_VALIDATION_SUCCESS,
 };
 
 export default Messages;
