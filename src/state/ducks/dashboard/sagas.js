@@ -68,6 +68,7 @@ import {
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
 } from './types';
+import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
 import {
   getTasks,
@@ -78,6 +79,8 @@ import {
   ERROR_LOADING_CHECKLIST,
   ERROR_LOADING_TASKS,
 } from '../tasks-and-checklist/types';
+
+const { Messages: { LEVEL_ERROR, LEVEL_SUCCESS, VALIDATION_SUCCESS } } = DashboardModel;
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -293,16 +296,16 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const groupName = getUserPersona(R.propOr({}, 'group', payload));
     const evalId = yield select(selectors.evalId);
     const wfTaskId = yield select(selectors.taskId);
-    const userName = yield select(checklistSelectors.getAgentName);
+    const assigneeName = yield select(checklistSelectors.getAgentName);
     const wfProcessId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
-    const validateAgent = !R.isNil(userName) && !R.isEmpty(userName);
+    const validateAgent = !R.isNil(assigneeName) && !R.isEmpty(assigneeName);
     const request = {
       evalId,
       disposition,
       groupName,
       validateAgent,
-      userName,
+      assigneeName,
       wfTaskId,
       wfProcessId,
       processStatus,
@@ -311,25 +314,27 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const { tkamsValidation, skillValidation } = response;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: tkamsValidation.enableGetNext,
+      payload: tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result),
     });
     if (!tkamsValidation.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
-          type: 'error',
+          type: LEVEL_ERROR,
           data: tkamsValidation.discrepancies,
         },
       });
     } else {
-      let message = 'Validation successful!';
+      let message = VALIDATION_SUCCESS;
+      let type = LEVEL_SUCCESS;
       if (validateAgent) {
+        type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;
         ({ message } = skillValidation);
       }
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
-          type: 'success',
+          type,
           msg: message,
         },
       });
@@ -431,6 +436,10 @@ function* saveChecklistDisposition(payload) {
     const wfTaskId = yield select(selectors.taskId);
     const wfProcessId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
+    const loanNumber = yield select(selectors.loanNumber);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const userGroups = R.pathOr([], ['groupList'], user);
     const validateAgent = !R.isNil(agentName) && !R.isEmpty(agentName);
     const disposition = payload.dispositionCode;
     const request = {
@@ -438,32 +447,35 @@ function* saveChecklistDisposition(payload) {
       disposition,
       groupName,
       validateAgent,
-      userName: validateAgent ? agentName : '',
+      userName: userPrincipalName,
+      assigneeName: agentName,
       wfTaskId,
       wfProcessId,
       processStatus,
+      loanNumber,
+      userGroups,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: tkamsValidation.enableGetNext,
+      payload: tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result),
     });
     if (!tkamsValidation.enableGetNext) {
       yield put({ type: HIDE_LOADER });
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
-          type: 'error',
+          type: LEVEL_ERROR,
           data: tkamsValidation.discrepancies,
         },
       });
       return false;
     }
-    let message = 'Validation successful!';
-    let type = 'success';
+    let message = VALIDATION_SUCCESS;
+    let type = LEVEL_SUCCESS;
     if (validateAgent) {
-      type = skillValidation.hasSkill ? 'success' : 'error';
+      type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;
       ({ message } = skillValidation);
     }
     yield put({
@@ -742,7 +754,7 @@ function* loadTrials(payload) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
       payload: {
-        level: 'error',
+        level: LEVEL_ERROR,
         status: message,
       },
     });
@@ -750,7 +762,7 @@ function* loadTrials(payload) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
       payload: {
-        level: 'error',
+        level: LEVEL_ERROR,
         status: 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
         + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
       },
@@ -778,7 +790,7 @@ function* sentToUnderwriting() {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
-              level: 'success',
+              level: LEVEL_SUCCESS,
               status: 'Trail has been Sent to Underwriting',
             },
           });
@@ -786,7 +798,7 @@ function* sentToUnderwriting() {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
-              level: 'error',
+              level: LEVEL_ERROR,
               status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
             },
           });
@@ -797,7 +809,7 @@ function* sentToUnderwriting() {
         yield put({
           type: SET_TASK_UNDERWRITING_RESULT,
           payload: {
-            level: 'error',
+            level: LEVEL_ERROR,
             status: message,
           },
         });
@@ -806,7 +818,7 @@ function* sentToUnderwriting() {
       const message = 'Unable to send back to Underwriting because Trial task is not active.';
       yield put({
         type: SET_TASK_UNDERWRITING_RESULT,
-        payload: { level: 'error', status: message },
+        payload: { level: LEVEL_ERROR, status: message },
       });
     }
     yield put({ type: HIDE_LOADER });
@@ -815,7 +827,7 @@ function* sentToUnderwriting() {
       type: SET_TASK_UNDERWRITING_RESULT,
       payload:
       {
-        level: 'error',
+        level: LEVEL_ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -840,7 +852,7 @@ function* sendToDocGen(payload) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
-            level: 'success',
+            level: LEVEL_SUCCESS,
             status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ' queue for rework'}`,
           },
         });
@@ -848,7 +860,7 @@ function* sendToDocGen(payload) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
-            level: 'error',
+            level: LEVEL_ERROR,
             status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
           },
         });
@@ -858,7 +870,7 @@ function* sendToDocGen(payload) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: 'error',
+          level: LEVEL_ERROR,
           status: message,
         },
       });
@@ -869,7 +881,7 @@ function* sendToDocGen(payload) {
       type: SET_RESULT_OPERATION,
       payload:
       {
-        level: 'error',
+        level: LEVEL_ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });

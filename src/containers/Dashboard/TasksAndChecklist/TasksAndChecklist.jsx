@@ -8,6 +8,7 @@ import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
 import DashboardModel from 'models/Dashboard';
+import * as R from 'ramda';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
@@ -250,7 +251,7 @@ function getUserNotification(message) {
   if (message.type === 'error') {
     return {
       type: 'error',
-      msg: DispositionModel.getErrorMessages(message.data),
+      msg: R.has('data', message) ? DispositionModel.getErrorMessages(message.data) : message.msg,
     };
   }
   return {
