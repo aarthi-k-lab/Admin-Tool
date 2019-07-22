@@ -439,8 +439,15 @@ function* saveChecklistDisposition(payload) {
     const loanNumber = yield select(selectors.loanNumber);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const userGroups = R.pathOr([], ['groupList'], user);
     const validateAgent = !R.isNil(agentName) && !R.isEmpty(agentName);
+    let assigneeUserGroups = '';
+    if (validateAgent) {
+      const assignees = yield select(checklistSelectors.getDropDownOptions);
+      const selectedAssignee = R.head(R.filter(
+        assignee => assignee.userPrincipalName === agentName, assignees,
+      ));
+      assigneeUserGroups = selectedAssignee.appGroups;
+    }
     const disposition = payload.dispositionCode;
     const request = {
       evalId,
@@ -453,7 +460,7 @@ function* saveChecklistDisposition(payload) {
       wfProcessId,
       processStatus,
       loanNumber,
-      userGroups,
+      userGroups: assigneeUserGroups,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
