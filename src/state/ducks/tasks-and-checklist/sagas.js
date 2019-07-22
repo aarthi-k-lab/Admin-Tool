@@ -277,10 +277,11 @@ function* handleGetHistoricalChecklistError(e) {
   yield put({
     type: ERROR_LOADING_HISTORICAL_CHECKLIST,
   });
-  const snackBar = {};
-  snackBar.message = `Get Historical Checklist failed: ${e.message}`;
-  snackBar.type = 'error';
-  snackBar.open = true;
+  const snackBar = {
+    open: true,
+    message: `Get Historical Checklist failed: ${e.message}`,
+    type: 'error',
+  };
   yield put({
     type: SET_SNACK_BAR_VALUES,
     payload: snackBar,

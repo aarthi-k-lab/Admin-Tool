@@ -506,7 +506,7 @@ function* getNext(action) {
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}`);
-      const { taskData: { data: { id: taskId = null } } } = taskDetails;
+      const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {

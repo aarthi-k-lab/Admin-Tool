@@ -223,7 +223,10 @@ LeftTaskPane.propTypes = {
   disableModifyOptionalTasks: PropTypes.bool.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
-  historicalCheckListData: PropTypes.arrayOf(Object).isRequired,
+  historicalCheckListData: PropTypes.arrayOf(PropTypes.shape({
+    taskCheckListDateTime: PropTypes.string.isRequired,
+    taskCheckListTemplateName: PropTypes.string.isRequired,
+  })).isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),

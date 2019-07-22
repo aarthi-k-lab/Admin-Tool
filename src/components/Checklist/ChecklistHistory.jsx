@@ -91,6 +91,7 @@ class ChecklistHistory extends React.Component {
                   }?event=${option.taskCheckListTemplateName}&disposition=${
                     option.dispositionCode
                   }`}
+                  style={{ textDecoration: 'none' }}
                   // eslint-disable-next-line react/jsx-no-target-blank
                   target="_blank"
                 >
@@ -121,7 +122,10 @@ ChecklistHistory.defaultProps = {
 };
 
 ChecklistHistory.propTypes = {
-  checkListData: PropTypes.arrayOf(Object).isRequired,
+  checkListData: PropTypes.arrayOf(PropTypes.shape({
+    taskCheckListDateTime: PropTypes.string.isRequired,
+    taskCheckListTemplateName: PropTypes.string.isRequired,
+  })).isRequired,
   classes: PropTypes.shape.isRequired,
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,
