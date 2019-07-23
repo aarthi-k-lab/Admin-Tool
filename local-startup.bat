@@ -1,3 +1,4 @@
 SET AIRBRAKE_PROJECT_ID=197023
 SET AIRBRAKE_PROJECT_KEY=d6c029a4c7cb7019f0f089bb113fd803
+SET TASKTREE_PDF_URL='http://127.0.0.1:7601/api/download'
 npm start                   

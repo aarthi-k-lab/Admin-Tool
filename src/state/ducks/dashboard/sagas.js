@@ -74,6 +74,7 @@ import {
   getTasks,
   resetChecklistData,
   storeProcessDetails,
+  getHistoricalCheckListData,
 } from '../tasks-and-checklist/actions';
 import {
   ERROR_LOADING_CHECKLIST,
@@ -243,7 +244,7 @@ function* selectEval(searchItem) {
   const name = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.') : null;
   assignedTo = name[0].concat(' ', name[1]);
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
-  && assignedTo === evalDetails.assignee.toLowerCase();
+    && assignedTo === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -522,6 +523,8 @@ function* getNext(action) {
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}`);
+      const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
+      yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
           if (R.keys(allTasksComments[taskComment]).length) {
@@ -771,7 +774,7 @@ function* loadTrials(payload) {
       payload: {
         level: LEVEL_ERROR,
         status: 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
-        + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
+          + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
       },
     });
   }
