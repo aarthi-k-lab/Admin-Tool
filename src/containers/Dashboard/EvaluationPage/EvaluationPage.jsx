@@ -12,6 +12,7 @@ import * as R from 'ramda';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import { selectors } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
@@ -50,12 +51,14 @@ class EvaluationPage extends React.PureComponent {
   }
 
   render() {
-    const { location, group, taskName } = this.props;
+    const {
+      location, group, taskName, checklisttTemplateName,
+    } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     const title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
     return (
       <>
-        <ContentHeader title={title}>
+        <ContentHeader checklistTemplateName={checklisttTemplateName} title={title}>
           <Controls
             showEndShift={isNotLoanActivity(group)}
             showGetNext={isNotLoanActivity(group)}
@@ -74,9 +77,11 @@ class EvaluationPage extends React.PureComponent {
 
 EvaluationPage.defaultProps = {
   group: 'FEUW',
+  checklisttTemplateName: null,
 };
 
 EvaluationPage.propTypes = {
+  checklisttTemplateName: PropTypes.string,
   group: PropTypes.string,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
@@ -95,6 +100,7 @@ EvaluationPage.propTypes = {
 const mapStateToProps = state => ({
   taskName: selectors.processName(state),
   user: loginSelectors.getUser(state),
+  checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
 });
 
 const container = connect(mapStateToProps, null)(EvaluationPage);

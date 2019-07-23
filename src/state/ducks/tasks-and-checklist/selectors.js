@@ -123,6 +123,8 @@ const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 
 
 const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
+const getChecklistTemplate = R.pathOr(null, ['tasksAndChecklist', 'checklist', 'processBlueprintCode']);
+
 const getAgentName = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'agentName']);
 
 const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment']);
@@ -183,6 +185,7 @@ const selectors = {
   getSelectedChecklistId,
   getTaskTree,
   getChecklistComment,
+  getChecklistTemplate,
   getTaskComment,
   shouldDeleteTask,
   shouldDisableNext,
