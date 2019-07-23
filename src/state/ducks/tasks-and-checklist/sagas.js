@@ -28,6 +28,9 @@ import {
   DISP_COMMENT,
   UPDATE_CHECKLIST,
   CLEAR_SUBTASK,
+  HISTORICAL_CHECKLIST_DATA,
+  GET_HISTORICAL_CHECKLIST_DATA,
+  ERROR_LOADING_HISTORICAL_CHECKLIST,
   FETCH_DROPDOWN_OPTIONS_SAGA,
   SAVE_DROPDOWN_OPTIONS,
 } from './types';
@@ -86,7 +89,6 @@ function* getChecklist(action) {
     });
   }
 }
-
 
 function* callAndPut(fn, ...args) {
   return yield put(yield call(fn, ...args));
@@ -271,6 +273,22 @@ function* handleSaveChecklistError(e) {
   });
 }
 
+function* handleGetHistoricalChecklistError(e) {
+  yield put({
+    type: ERROR_LOADING_HISTORICAL_CHECKLIST,
+  });
+  const snackBar = {
+    open: true,
+    message: `Get Historical Checklist failed: ${e.message}`,
+    type: 'error',
+  };
+  yield put({
+    type: SET_SNACK_BAR_VALUES,
+    payload: snackBar,
+  });
+}
+
+
 function isValidTaskPayload(action, taskCodeRef) {
   return !R.isNil(action.payload.taskCode)
     && !R.isEmpty(action.payload.taskCode) && R.equals(action.payload.taskCode, taskCodeRef);
@@ -434,6 +452,19 @@ function* updateChecklist(action) {
   }
 }
 
+function* getHistoricalChecklistData(action) {
+  try {
+    const { taskId } = action.payload;
+    const response = yield call(Api.callGet, `/api/dataservice/getTaskDetailsForTaskIds/${taskId}`);
+    yield put({
+      type: HISTORICAL_CHECKLIST_DATA,
+      payload: response,
+    });
+  } catch (e) {
+    yield call(handleGetHistoricalChecklistError, e);
+  }
+}
+
 function* subTaskClearance(action) {
   try {
     const { id, rootTaskId, taskBlueprintCode } = action.payload;
@@ -511,6 +542,10 @@ function* watchGetChecklist() {
   yield takeEvery(GET_CHECKLIST_SAGA, getChecklist);
 }
 
+function* watchGetHistoricalChecklistData() {
+  yield takeEvery(GET_HISTORICAL_CHECKLIST_DATA, getHistoricalChecklistData);
+}
+
 function* watchGetNextChecklist() {
   yield takeEvery(GET_NEXT_CHECKLIST, getNextChecklist);
 }
@@ -551,6 +586,7 @@ export function* combinedSaga() {
     watchGetTasks(),
     watchDispositionComment(),
     watchUpdateChecklist(),
+    watchGetHistoricalChecklistData(),
     watchSubtaskClearance(),
     watchDropDownOption(),
   ]);

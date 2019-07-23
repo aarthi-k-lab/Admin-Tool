@@ -16,6 +16,7 @@ import {
   resetChecklistData,
 } from '../tasks-and-checklist/actions';
 import { POST_COMMENT_SAGA } from '../comments/types';
+import { GET_HISTORICAL_CHECKLIST_DATA } from '../tasks-and-checklist/types';
 
 const mockComment = {
   MISC_TSK_CHK2: {
@@ -26,6 +27,7 @@ const mockComment = {
     eventName: 'EventName',
     comment: 'test',
     userName: 'Deepan Kumaresan',
+    taskId: '1234',
     createdDate: new Date().toJSON(),
     commentContext: JSON.stringify({
       TASK: 'MISC',
@@ -173,7 +175,16 @@ describe('getnext Success', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
   });
-
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: '1234',
+    };
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
   it('should YIELD PUT ALL Comments', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(all([put({
@@ -196,7 +207,9 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.SAVE_EVALID_LOANNUMBER,
-        payload: { loanNumber: '12345', evalId: '34567', taskId: '1234', piid: '34567' },
+        payload: {
+          loanNumber: '12345', evalId: '34567', taskId: '1234', piid: '34567',
+        },
       }));
   });
   it('getnext worker should trigger fetchtombstone action', () => {
@@ -296,6 +309,16 @@ describe('getnext Failure -  no tasks found', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
   });
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: null,
+    };
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
 
   it('should YIELD PUT ALL Comments', () => {
     expect(saga.next(mockTaskDetails).value)
@@ -394,7 +417,16 @@ describe('getnext Failure -  task fetch failure', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
   });
-
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: null,
+    };
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
   it('should YIELD PUT ALL Comments', () => {
     expect(saga.next(mockTaskDetails).value)
       .toEqual(all([put({

@@ -97,6 +97,8 @@ const getPrevChecklistId = (state) => {
   );
 };
 
+const getHistoricalChecklistData = state => R.pathOr([], ['tasksAndChecklist', 'historicalCheckList'], state);
+
 const getFirstTaskId = (state) => {
   R.pathOr('-', ['tasksAndChecklist', 'checklistNavigation', 'nothing', 'next'], state);
 };
@@ -198,6 +200,7 @@ const selectors = {
   selectedTaskId,
   selectedTaskBlueprintCode,
   showComment,
+  getHistoricalChecklistData,
   getDropDownOptions,
   getAgentName,
 };

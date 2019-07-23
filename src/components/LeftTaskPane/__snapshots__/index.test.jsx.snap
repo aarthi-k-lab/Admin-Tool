@@ -69,7 +69,64 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           </div>
         </div>
       </span>
-      <div />
+      <div
+        className="components-LeftTaskPane-LeftTaskPane__icons"
+      >
+        <div
+          className="components-LeftTaskPane-LeftTaskPane__checklist-history-icon"
+        >
+          <button
+            aria-describedby={null}
+            aria-label="Checklist History"
+            className="MuiButtonBase-root-94 MuiFab-root-84 MuiFab-secondary-87 ChecklistHistory-custom-75"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onContextMenu={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            style={
+              Object {
+                "margin-left": "5rem",
+              }
+            }
+            tabIndex="0"
+            title="Checklist History"
+            type="button"
+          >
+            <span
+              className="MuiFab-label-85"
+            >
+              <svg
+                aria-hidden="true"
+                className="MuiSvgIcon-root-60"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path
+                  d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
+                />
+              </svg>
+            </span>
+            <span
+              className="MuiTouchRipple-root-97"
+            />
+          </button>
+        </div>
+      </div>
       <span
         className="components-LeftTaskPane-LeftTaskPane__collapse-icon-open"
         onClick={[Function]}

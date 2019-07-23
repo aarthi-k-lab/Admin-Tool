@@ -12,6 +12,7 @@ import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
 import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
 import AddTask from '../Tasks/OptionalTask/AddTask';
+import ChecklistHistory from '../Checklist/ChecklistHistory';
 
 const ALL = 'All';
 const PENDING = 'Pending';
@@ -48,12 +49,13 @@ function StatusMenu({ onChange, taskStatus }) {
   );
 }
 
+
 function shouldShowAddTaskButton(optionalTasks) {
   return optionalTasks.length > 0;
 }
 
 StatusMenu.defaultProps = {
-  onChange: () => {},
+  onChange: () => { },
   taskStatus: ALL,
 };
 
@@ -83,6 +85,7 @@ class LeftTaskPane extends React.Component {
     storeTaskFilter(statusMap[selectedStatus]);
   }
 
+
   handleClick() {
     const { isCollapsed } = this.state;
     const { openWidth, closedWidth } = this.props;
@@ -106,6 +109,7 @@ class LeftTaskPane extends React.Component {
       tasks,
       updateChecklist,
       handleShowDeleteTaskConfirmation, shouldDeleteTask,
+      historicalCheckListData,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -128,15 +132,23 @@ class LeftTaskPane extends React.Component {
                     onChange={this.handleStatusChange}
                     taskStatus={tasksStatus}
                   />
-                  { shouldShowAddTaskButton(optionalTasks)
-                    ? (
-                      <AddTask
-                        disabled={disableModifyOptionalTasks}
-                        onClick={() => handleShowOptionalTasks()}
+                  <div styleName="icons">
+                    <div styleName="checklist-history-icon">
+                      <ChecklistHistory
+                        checkListData={historicalCheckListData}
+                        margin={{ 'margin-left': '5rem' }}
                       />
-                    )
-                    : <div />
-                  }
+                    </div>
+                    {shouldShowAddTaskButton(optionalTasks)
+                      ? (
+                        <AddTask
+                          disabled={disableModifyOptionalTasks}
+                          onClick={() => handleShowOptionalTasks()}
+                        />
+                      )
+                      : null
+                    }
+                  </div>
                 </>
               )
               : null
@@ -170,6 +182,7 @@ class LeftTaskPane extends React.Component {
     );
   }
 
+
   render() {
     const { width } = this.state;
     const {
@@ -184,7 +197,7 @@ class LeftTaskPane extends React.Component {
           style={{ width }}
           styleName="taskpane"
         >
-          { showOptionalTasks
+          {showOptionalTasks
             ? (
               <OptionalTaskDetails
                 handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
@@ -195,7 +208,7 @@ class LeftTaskPane extends React.Component {
                 updateChecklist={updateChecklist}
               />
             )
-            : this.renderContent() }
+            : this.renderContent()}
         </div>
       </div>
     );
@@ -210,6 +223,10 @@ LeftTaskPane.propTypes = {
   disableModifyOptionalTasks: PropTypes.bool.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
+  historicalCheckListData: PropTypes.arrayOf(PropTypes.shape({
+    taskCheckListDateTime: PropTypes.string.isRequired,
+    taskCheckListTemplateName: PropTypes.string.isRequired,
+  })).isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
