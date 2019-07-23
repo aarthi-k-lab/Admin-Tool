@@ -10,12 +10,16 @@
   margin-left: 1rem;
 }
 
-.title {
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 1.25rem;
+.title.title {
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+  font-size: 1.25rem !important;
 }
 
 .spacer {
   flex-grow: 1;
+}
+
+.tooltip.tooltip {
+  font-size: 0.8rem;
 }

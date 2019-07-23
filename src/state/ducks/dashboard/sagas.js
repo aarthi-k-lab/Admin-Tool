@@ -80,7 +80,7 @@ import {
   ERROR_LOADING_TASKS,
 } from '../tasks-and-checklist/types';
 
-const { Messages: { LEVEL_ERROR, LEVEL_SUCCESS, VALIDATION_SUCCESS } } = DashboardModel;
+const { Messages: { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS } } = DashboardModel;
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -325,7 +325,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
         },
       });
     } else {
-      let message = VALIDATION_SUCCESS;
+      let message = MSG_VALIDATION_SUCCESS;
       let type = LEVEL_SUCCESS;
       if (validateAgent) {
         type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;
@@ -479,7 +479,7 @@ function* saveChecklistDisposition(payload) {
       });
       return false;
     }
-    let message = VALIDATION_SUCCESS;
+    let message = MSG_VALIDATION_SUCCESS;
     let type = LEVEL_SUCCESS;
     if (validateAgent) {
       type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;

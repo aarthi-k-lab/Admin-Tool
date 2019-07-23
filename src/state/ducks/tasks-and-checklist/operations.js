@@ -65,6 +65,7 @@ const resetDeleteTaskConfirmationValues = dispatch => () => dispatch(resetDelete
 
 const handleSubTaskClearance = dispatch => (taskId, taskBluePrintCode) => {
   dispatch(subTaskClearance(taskId, taskBluePrintCode));
+  dispatch(emptyDispositionComment());
 };
 
 const fetchDropDownOptions = dispatch => (source, additionalInfo) => {
