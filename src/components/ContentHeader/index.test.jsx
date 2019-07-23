@@ -6,6 +6,6 @@ describe('<ContentHeader />', () => {
   test('displays the title', () => {
     const title = 'Fancy title';
     const wrapper = shallow(<ContentHeader title={title} />);
-    expect(wrapper.text().includes(title)).toBeTruthy();
+    expect(wrapper.find('WithStyles(Tooltip)')).toHaveLength(1);
   });
 });
