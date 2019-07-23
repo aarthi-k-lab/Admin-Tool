@@ -12,6 +12,7 @@
   ],
   "plugins": [
     "react-hot-loader/babel",
+    "@babel/plugin-proposal-class-properties",
     [
       "babel-plugin-react-css-modules",
       {
@@ -37,6 +38,7 @@
       ],
       "plugins": [
         "react-hot-loader/babel",
+        "@babel/plugin-proposal-class-properties",
         [
           "babel-plugin-react-css-modules",
           {
