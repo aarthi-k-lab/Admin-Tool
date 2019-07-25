@@ -62,7 +62,7 @@ class TextFields extends React.Component {
 
   componentWillMount() {
     const { source, additionalInfo, fetchDropDownOption } = this.props;
-    if (!R.isEmpty(source)) {
+    if (!R.isNil(source) && !R.isEmpty(source)) {
       fetchDropDownOption(source, additionalInfo);
     }
   }
