@@ -11,6 +11,7 @@ import {
   POWER_BI_CONSTANTS,
   GET_FEATURES_SAGA,
   SET_FEATURES,
+  GET_PDFGENRATOR_URL,
 } from './types';
 
 export const fetchPowerBIConfig = function* fetchPowerBIConfig() {
@@ -32,6 +33,23 @@ export const fetchPowerBIConfig = function* fetchPowerBIConfig() {
   }
 };
 
+function* getPdfGeneratorUrl() {
+  try {
+    const response = yield call(Api.callGet, 'api/config');
+    const pdfUrl = R.pathOr({}, ['pdfGenerator', 'pdfGeneratorUrl'], response);
+    if (pdfUrl != null) {
+      yield put({
+        type: GET_PDFGENRATOR_URL,
+        payload: pdfUrl,
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: GET_PDFGENRATOR_URL,
+      payload: '',
+    });
+  }
+}
 
 function* fetchFeatureConfig() {
   try {
@@ -66,6 +84,12 @@ function* watchGetFeatures() {
   }
 }
 
+function* watchGetPdfGeneratorUrl() {
+  const payload = yield take(GET_PDFGENRATOR_URL);
+  if (payload != null) {
+    yield getPdfGeneratorUrl();
+  }
+}
 export const TestExports = {
   watchFetchPowerBIConfig,
   fetchPowerBIConfig,
@@ -77,5 +101,6 @@ export function* combinedSaga() {
   yield all([
     watchFetchPowerBIConfig(),
     watchGetFeatures(),
+    watchGetPdfGeneratorUrl(),
   ]);
 }

@@ -14,6 +14,7 @@ import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
 import { operations, selectors } from '../../../state/ducks/dashboard';
+import { operations as checkListOperations } from '../../../state/ducks/tasks-and-checklist';
 import './SearchLoan.css';
 
 class SearchLoan extends React.PureComponent {
@@ -91,7 +92,7 @@ class SearchLoan extends React.PureComponent {
 
   handleRowClick(payload) {
     if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
-      const { onSelectEval, onGetGroupName } = this.props;
+      const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
       let group = '';
       switch (payload.taskName) {
         case 'Underwriting':
@@ -117,6 +118,7 @@ class SearchLoan extends React.PureComponent {
       }
       onGetGroupName(group);
       onSelectEval(payload);
+      onGetChecklistHistory(payload.taskId);
       this.setState({ isRedirect: true });
     }
     // Approved for Doc Generation
@@ -310,6 +312,7 @@ SearchLoan.propTypes = {
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
+  onGetChecklistHistory: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
@@ -340,6 +343,7 @@ const mapDispatchToProps = dispatch => ({
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
 
 const SearchLoanContainer = connect(

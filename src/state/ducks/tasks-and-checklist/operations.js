@@ -17,8 +17,12 @@ import {
   emptyDispositionComment,
   dispositionComments,
   getDropDownOptions,
+  getHistoricalCheckListData,
 } from './actions';
 
+const fetchHistoricalChecklistData = dispatch => (taskId) => {
+  dispatch(getHistoricalCheckListData(taskId));
+};
 const fetchNextChecklist = dispatch => () => dispatch(getNextChecklist());
 
 const fetchPrevChecklist = dispatch => () => dispatch(getPrevChecklist());
@@ -89,6 +93,7 @@ const operations = {
   clearDispositionComments,
   changeDispositionComments,
   fetchDropDownOptions,
+  fetchHistoricalChecklistData,
 };
 
 export default operations;

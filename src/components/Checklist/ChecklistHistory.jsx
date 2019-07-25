@@ -6,8 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
-
-const { TASKTREE_PDF_URL } = process.env;
+import * as R from 'ramda';
 
 const styles = theme => ({
   margin: {
@@ -49,7 +48,7 @@ class ChecklistHistory extends React.Component {
 
   render() {
     const { anchorEl } = this.state;
-    const { checkListData: historicalData } = this.props;
+    const { checkListData: historicalData, pdfGeneratorConstant } = this.props;
     const open = Boolean(anchorEl);
     const {
       margin, toolTipPosition, classes,
@@ -80,11 +79,11 @@ class ChecklistHistory extends React.Component {
           }}
         >
           {
-            (historicalData)
+            (!R.isEmpty(historicalData))
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
                 <a
-                  href={`${TASKTREE_PDF_URL}/${
+                  href={`${pdfGeneratorConstant}/api/download/${
                     option.taskCheckListId
                   }?event=${option.taskCheckListTemplateName}&disposition=${
                     option.dispositionCode
@@ -103,7 +102,12 @@ class ChecklistHistory extends React.Component {
                 </a>
               ))
               : <>
+                <MenuItem className="menuItem">
+                  <div>
                 No historical checklists are available
+
+                  </div>
+                </MenuItem>
               </>}
         </Menu>
       </>
@@ -113,7 +117,7 @@ class ChecklistHistory extends React.Component {
 
 ChecklistHistory.defaultProps = {
   margin: {
-    'margin-left': '4rem',
+    'margin-left': '3rem',
   },
   toolTipPosition: 'bottom',
 
@@ -126,8 +130,9 @@ ChecklistHistory.propTypes = {
   })).isRequired,
   classes: PropTypes.shape.isRequired,
   margin: PropTypes.shape({
-    marginLeft: PropTypes.string,
+    marginTop: PropTypes.string,
   }),
+  pdfGeneratorConstant: PropTypes.string.isRequired,
   toolTipPosition: PropTypes.string,
 
 };

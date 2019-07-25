@@ -51,8 +51,6 @@
 }
 
 .icons {
-  width: min-content;
-  height: min-content;
   align-items: center;
   display: flex;
 }
