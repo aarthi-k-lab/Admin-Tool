@@ -169,7 +169,7 @@ const config = merge(
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/dataservice': '/api',
+            '^/api/dataservice': '',
           },
         },
       },

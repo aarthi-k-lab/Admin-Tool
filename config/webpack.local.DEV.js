@@ -152,7 +152,7 @@ const config = merge(
           pathRewrite: {
             '^/api/cmodtrial': '',
           },
-        },   
+        },
         '/api/cmodnetcoretkams': {
           target: 'https://cmodnetcoretkamsdev.int.mrcooper.io',
           secure: false,
@@ -167,6 +167,14 @@ const config = merge(
           changeOrigin: true,
           pathRewrite: {
             '^/api/activateserv': '',
+          },
+        },
+        '/api/dataservice': {
+          target: 'https://cmoddataservdev.int.mrcooper.io',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/dataservice': '',
           },
         },
       },
