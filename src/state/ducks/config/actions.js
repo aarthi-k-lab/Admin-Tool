@@ -2,7 +2,7 @@ import {
   POWER_BI_CONSTANTS_SAGA,
   FETCHCONFIG_SAGA,
   GET_FEATURES_SAGA,
-  GET_PDFGENRATOR_URL,
+  SET_PDFGENRATOR_URL,
 } from './types';
 
 const fetchAppConfig = () => ({
@@ -18,7 +18,7 @@ const getFeaturesTrigger = () => ({
 });
 
 const getPdfGeneratorUrl = () => ({
-  type: GET_PDFGENRATOR_URL,
+  type: SET_PDFGENRATOR_URL,
 });
 
 export {

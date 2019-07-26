@@ -12,6 +12,7 @@ import {
   GET_FEATURES_SAGA,
   SET_FEATURES,
   GET_PDFGENRATOR_URL,
+  SET_PDFGENRATOR_URL,
 } from './types';
 
 export const fetchPowerBIConfig = function* fetchPowerBIConfig() {
@@ -85,7 +86,7 @@ function* watchGetFeatures() {
 }
 
 function* watchGetPdfGeneratorUrl() {
-  const payload = yield take(GET_PDFGENRATOR_URL);
+  const payload = yield take(SET_PDFGENRATOR_URL);
   if (payload != null) {
     yield getPdfGeneratorUrl();
   }
