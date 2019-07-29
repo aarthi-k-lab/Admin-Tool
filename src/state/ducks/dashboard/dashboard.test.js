@@ -856,6 +856,7 @@ describe('assign Loan', () => {
   const mockResponse = {
     cmodProcess: {
       evalId: 3565247,
+      taskId: 74365847,
     },
     status: 'Loan Assignment Successful',
   };
@@ -900,7 +901,16 @@ describe('assign Loan', () => {
     expect(saga.next(18008401081).value)
       .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta', {}));
   });
-
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: 74365847,
+    };
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
   it('should call ASSIGN_LOAN_RESULT', () => {
     expect(saga.next(mockResponse).value)
       .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));

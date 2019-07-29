@@ -666,6 +666,7 @@ function* assignLoan() {
     const loanNumber = yield select(selectors.loanNumber);
     const userGroups = R.pathOr([], ['groupList'], user);
     const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}`, {});
+    yield put(getHistoricalCheckListData(taskId));
     if (response !== null) {
       yield put({
         type: ASSIGN_LOAN_RESULT,
