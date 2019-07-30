@@ -94,7 +94,7 @@ class ChecklistHistory extends React.Component {
                 >
                   <MenuItem className="menuItem">
                     <div>
-                      {option.taskCheckListTemplateName}
+                      {`${option.taskCheckListTemplateName} - ${option.assignedTo.replace('.', ' ').replace('@mrcooper.com', '')}`}
                       <br />
                       <span>{option.taskCheckListDateTime}</span>
                     </div>
