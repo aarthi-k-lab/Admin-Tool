@@ -802,7 +802,7 @@ function* sentToUnderwriting() {
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
               level: LEVEL_SUCCESS,
-              status: 'Trail has been Sent to Underwriting',
+              status: 'Trial has been Sent to Underwriting',
             },
           });
         } else {
