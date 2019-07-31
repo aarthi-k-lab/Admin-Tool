@@ -298,8 +298,8 @@ function getTombstoneItems(loanDetails,
       getForeclosureSalesDate,
       getFLDD,
       getLienPosition,
-      getCFPBExpirationDateForDocGen,
-      getDaysUntilCFPBForDocGen,
+      getCFPBExpirationDate,
+      getDaysUntilCFPB,
     ];
   } else {
     dataGenerator = [
@@ -321,8 +321,8 @@ function getTombstoneItems(loanDetails,
       getNextPaymentDueDateItem,
       getForeclosureSalesDate,
       getFLDD,
-      getCFPBExpirationDate,
-      getDaysUntilCFPB,
+      getCFPBExpirationDateForDocGen,
+      getDaysUntilCFPBForDocGen,
       getBoardingDate,
     ];
   }
