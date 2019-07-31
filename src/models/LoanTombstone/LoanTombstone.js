@@ -158,6 +158,19 @@ function getCFPBExpirationDate(_, evalDetails) {
   return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
 }
 
+function getCFPBExpirationDateForDocGen(_, evalDetails) {
+  const date = moment.tz(evalDetails.lastPaidDate, 'America/Chicago');
+  const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
+  return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
+}
+
+function getDaysUntilCFPBForDocGen(_, evalDetails) {
+  const date = moment.tz(evalDetails.lastPaidDate, 'America/Chicago');
+  const today = moment.tz('America/Chicago');
+  const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
+  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
+}
+
 function getFLDD(loanDetails) {
   const fldd = R.path(['LoanExtension', 'firstLegalDueDate'], loanDetails);
   if (fldd) {
@@ -285,8 +298,8 @@ function getTombstoneItems(loanDetails,
       getForeclosureSalesDate,
       getFLDD,
       getLienPosition,
-      getCFPBExpirationDate,
-      getDaysUntilCFPB,
+      getCFPBExpirationDateForDocGen,
+      getDaysUntilCFPBForDocGen,
     ];
   } else {
     dataGenerator = [
