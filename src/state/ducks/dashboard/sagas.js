@@ -240,9 +240,7 @@ function* selectEval(searchItem) {
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
   evalDetails.isAssigned = false;
-  let assignedTo = [];
-  const name = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.') : null;
-  assignedTo = name[0].concat(' ', name[1]);
+  const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
     && assignedTo === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
