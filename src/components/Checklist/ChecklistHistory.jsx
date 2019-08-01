@@ -5,6 +5,7 @@ import History from '@material-ui/icons/History';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
+import moment from 'moment-timezone';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 
@@ -44,6 +45,11 @@ class ChecklistHistory extends React.Component {
     this.setState({
       anchorEl: event.currentTarget,
     });
+  }
+
+  getCSTDateTime= (taskCheckListDateTime) => {
+    const dateTime = moment.utc(taskCheckListDateTime);
+    return dateTime.tz('America/Chicago').format('YYYY-MM-DD HH:mm:ss');
   }
 
   render() {
@@ -96,7 +102,7 @@ class ChecklistHistory extends React.Component {
                     <div>
                       {`${option.taskCheckListTemplateName} - ${option.assignedTo.replace('.', ' ').replace('@mrcooper.com', '')}`}
                       <br />
-                      <span>{option.taskCheckListDateTime}</span>
+                      <span>{this.getCSTDateTime(option.taskCheckListDateTime)}</span>
                     </div>
                   </MenuItem>
                 </a>
