@@ -104,7 +104,6 @@ DialogCard.propTypes = {
   ...propertyValidation,
   className: PropTypes.string,
   commentsRequired: PropTypes.bool.isRequired,
-  onDialogToggle: PropTypes.func.isRequired,
   shouldShow: PropTypes.bool,
 };
 

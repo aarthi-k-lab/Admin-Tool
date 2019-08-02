@@ -20,52 +20,48 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
         className="components-LeftTaskPane-LeftTaskPane__status-select-field-span"
       >
         <div
-          className="MuiFormControl-root-1 status-select-field"
+          className="MuiFormControl-root MuiTextField-root status-select-field"
         >
           <label
-            className="MuiFormLabel-root-16 MuiFormLabel-filled-20 MuiInputLabel-root-5 MuiInputLabel-formControl-10 MuiInputLabel-animated-13 MuiInputLabel-shrink-12"
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
             data-shrink={true}
             htmlFor="status-selector"
           >
             Status
           </label>
           <div
-            className="MuiInputBase-root-43 MuiInput-root-30 MuiInputBase-formControl-44 MuiInput-formControl-31"
+            className="MuiInputBase-root MuiInput-root MuiInputBase-formControl MuiInput-formControl"
             onClick={[Function]}
           >
             <div
-              className="MuiSelect-root-23"
+              aria-haspopup="true"
+              aria-pressed="false"
+              className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input status-select-field-text MuiInputBase-inputSelect"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              role="button"
+              tabIndex={0}
             >
-              <div
-                aria-haspopup="true"
-                aria-pressed="false"
-                className="MuiSelect-select-24 MuiSelect-selectMenu-27 MuiInputBase-input-53 MuiInput-input-38 status-select-field-text"
-                onBlur={[Function]}
-                onClick={[Function]}
-                onFocus={[Function]}
-                onKeyDown={[Function]}
-                role="button"
-                tabIndex={0}
-              >
-                All
-              </div>
-              <input
-                id="status-selector"
-                type="hidden"
-                value="All"
-              />
-              <svg
-                aria-hidden="true"
-                className="MuiSvgIcon-root-60 MuiSelect-icon-29"
-                focusable="false"
-                role="presentation"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M7 10l5 5 5-5z"
-                />
-              </svg>
+              All
             </div>
+            <input
+              id="status-selector"
+              type="hidden"
+              value="All"
+            />
+            <svg
+              aria-hidden="true"
+              className="MuiSvgIcon-root MuiSelect-icon"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7 10l5 5 5-5z"
+              />
+            </svg>
           </div>
         </div>
       </span>
@@ -78,11 +74,11 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           <button
             aria-describedby={null}
             aria-label="Checklist History"
-            className="MuiButtonBase-root-94 MuiFab-root-84 MuiFab-secondary-87 ChecklistHistory-custom-75"
+            className="MuiButtonBase-root MuiFab-root ChecklistHistory-custom-75 MuiFab-secondary"
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
-            onContextMenu={[Function]}
+            onDragLeave={[Function]}
             onFocus={[Function]}
             onKeyDown={[Function]}
             onKeyUp={[Function]}
@@ -98,31 +94,27 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
                 "margin-left": "3rem",
               }
             }
-            tabIndex="0"
+            tabIndex={0}
             title="Checklist History"
             type="button"
           >
             <span
-              className="MuiFab-label-85"
+              className="MuiFab-label"
             >
               <svg
                 aria-hidden="true"
-                className="MuiSvgIcon-root-60"
+                className="MuiSvgIcon-root"
                 focusable="false"
                 role="presentation"
                 viewBox="0 0 24 24"
               >
-                <path
-                  d="M0 0h24v24H0z"
-                  fill="none"
-                />
                 <path
                   d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
                 />
               </svg>
             </span>
             <span
-              className="MuiTouchRipple-root-97"
+              className="MuiTouchRipple-root"
             />
           </button>
         </div>
@@ -136,17 +128,13 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
       >
         <svg
           aria-hidden="true"
-          className="MuiSvgIcon-root-60"
+          className="MuiSvgIcon-root"
           focusable="false"
           role="presentation"
           viewBox="0 0 24 24"
         >
           <path
             d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
-          />
-          <path
-            d="M0 0h24v24H0z"
-            fill="none"
           />
         </svg>
       </span>

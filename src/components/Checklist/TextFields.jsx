@@ -5,6 +5,7 @@ import { operations, selectors } from 'ducks/tasks-and-checklist';
 import moment from 'moment-timezone';
 import * as R from 'ramda';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import HTMLElements from '../../constants/componentTypes';
 import './TextFields.css';
@@ -107,6 +108,23 @@ class TextFields extends React.Component {
     );
   }
 }
+
+TextFields.defaultProps = {
+  getDropDownOptions: [],
+};
+
+TextFields.propTypes = {
+  additionalInfo: PropTypes.string.isRequired,
+  fetchDropDownOption: PropTypes.string.isRequired,
+  getDropDownOptions: PropTypes.arrayOf(PropTypes.shape({
+    displayName: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    mail: PropTypes.string.isRequired,
+  })),
+  source: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+};
 
 const mapDispatchToProps = dispatch => ({
   fetchDropDownOption: operations.fetchDropDownOptions(dispatch),

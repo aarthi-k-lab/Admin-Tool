@@ -105,7 +105,8 @@ class CustomReactTable extends React.PureComponent {
             >
               <option value="">{}</option>
               {dropDownValues.map(value => <option value={value}>{value}</option>)}
-            </select>);
+            </select>
+          );
           return columnObj;
         }),
         R.without(['', null, 'TKIID']),

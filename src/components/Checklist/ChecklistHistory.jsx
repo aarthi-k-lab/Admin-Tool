@@ -107,14 +107,16 @@ class ChecklistHistory extends React.Component {
                   </MenuItem>
                 </a>
               ))
-              : <>
-                <MenuItem className="menuItem">
-                  <div>
+              : (
+                <>
+                  <MenuItem className="menuItem">
+                    <div>
                 No historical checklists are available
 
-                  </div>
-                </MenuItem>
-              </>}
+                    </div>
+                  </MenuItem>
+                </>
+              )}
         </Menu>
       </>
     );

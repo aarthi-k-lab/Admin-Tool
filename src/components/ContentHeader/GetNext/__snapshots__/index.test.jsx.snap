@@ -2,11 +2,11 @@
 
 exports[`<GetNext /> snapshot test 1`] = `
 <button
-  className="MuiButtonBase-root-27 MuiButton-root-1 MuiButton-contained-12 MuiButton-containedPrimary-13 MuiButton-raised-15 MuiButton-raisedPrimary-16 material-ui-button components-ContentHeader-GetNext-GetNext__get-next"
+  className="MuiButtonBase-root MuiButton-root material-ui-button components-ContentHeader-GetNext-GetNext__get-next MuiButton-contained MuiButton-containedPrimary"
   disabled={false}
   onBlur={[Function]}
   onClick={[Function]}
-  onContextMenu={[Function]}
+  onDragLeave={[Function]}
   onFocus={[Function]}
   onKeyDown={[Function]}
   onKeyUp={[Function]}
@@ -16,16 +16,13 @@ exports[`<GetNext /> snapshot test 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
-  tabIndex="0"
+  tabIndex={0}
   type="button"
 >
   <span
-    className="MuiButton-label-2"
+    className="MuiButton-label"
   >
     Get Next
   </span>
-  <span
-    className="MuiTouchRipple-root-30"
-  />
 </button>
 `;

@@ -108,7 +108,7 @@ class CardCreator extends React.Component {
         disabled
         styleName="CardStyle"
       >
-        <CardActions disableActionSpacing styleName="CardActionsStyle">
+        <CardActions disableSpacing styleName="CardActionsStyle">
           <span styleName="GroupNames">
             {m.name}
           </span>

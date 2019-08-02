@@ -27,8 +27,10 @@ function RadioButtons({
         {
           options.map(({ displayName, value, hint }) => (
             <FormControlLabelWithTooltip
+              key={displayName}
               classes={{
                 label: styles['radio-control-option-label'],
+                root: styles['radio-control'],
               }}
               control={<Radio styleName="radio-control-bubble" />}
               disabled={disabled}

@@ -104,7 +104,8 @@ class Controls extends React.PureComponent {
         controlAction={() => this.validateDisposition()}
         disableValidation={disableValidation}
         label="Validate"
-      />) : null;
+      />
+    ) : null;
     const getNext = showGetNext
       ? (
         <GetNext
@@ -202,6 +203,7 @@ Controls.propTypes = {
   showSendToUnderWritingIcon: PropTypes.bool,
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,

@@ -79,11 +79,11 @@ class OptionalTaskDetails extends React.Component {
     const { tasks, handleShowOptionalTasks } = this.props;
     const { isTaskAdded } = this.state;
     return (
-        <>
-          <header>
-            <h3 styleName="optional-task-heading">ADD NEW TASK</h3>
-          </header>
-          {
+      <>
+        <header>
+          <h3 styleName="optional-task-heading">ADD NEW TASK</h3>
+        </header>
+        {
             tasks.map((task, index) => (
               <Grid
                 key={`Grid${task.name}`}
@@ -116,8 +116,9 @@ class OptionalTaskDetails extends React.Component {
               </Grid>
             ))
           }
-          <Close disabled={false} onClick={() => handleShowOptionalTasks()} />
-        </>);
+        <Close disabled={false} onClick={() => handleShowOptionalTasks()} />
+      </>
+    );
   }
 }
 

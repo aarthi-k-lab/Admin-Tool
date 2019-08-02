@@ -47,7 +47,7 @@ class RadioButtonGroup extends React.PureComponent {
     const { clearSelectedDisposition, items, name } = this.props;
     const selectedDisposition = clearSelectedDisposition ? '' : selected;
     return (
-      <Paper styleName="paper-sheet">
+      <Paper elevation={2} styleName="paper-sheet">
         <RadioGroup
           name={name}
           onChange={this.handleChange}

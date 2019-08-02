@@ -62,8 +62,8 @@ class DispositionComment extends Component {
     const comment = (dispositionComment) ? dispositionComment.comment : null;
 
     return (
-        <>
-          {(!comment && !allTaskScenario && commentsRequired)
+      <>
+        {(!comment && !allTaskScenario && commentsRequired)
             && (
             <p
               id="text-Area"
@@ -72,12 +72,12 @@ class DispositionComment extends Component {
             *Comments Required
             </p>
             )}
-          <div
-            styleName={expanded ? 'expanded-comment-box' : 'comment-box'}
-          >
-            <textarea cols="40" id="textarea" multiline name="textarea" onBlur={this.onCommentBlur} onChange={this.onCommentChange} placeholder="Write Your Comment Here" rows="8" value={comment} />
-          </div>
-          </>
+        <div
+          styleName={expanded ? 'expanded-comment-box' : 'comment-box'}
+        >
+          <textarea cols="40" id="textarea" multiline name="textarea" onBlur={this.onCommentBlur} onChange={this.onCommentChange} placeholder="Write Your Comment Here" rows="8" value={comment} />
+        </div>
+      </>
     );
   }
 
@@ -91,7 +91,8 @@ class DispositionComment extends Component {
           <HelpIcon classes={{ root: styles['info-icon'] }} />
           { content }
         </div>
-      </section>);
+      </section>
+    );
   }
 
   render() {

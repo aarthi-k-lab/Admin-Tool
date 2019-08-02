@@ -43,7 +43,7 @@ class StagerTiles extends React.PureComponent {
                   </div>
                 </Grid>
                 <Grid item styleName="stagerGroupItem">
-                  <Grid container direction="row" spacing={8} styleName="tiles-grid">
+                  <Grid container direction="row" spacing={1} styleName="tiles-grid">
                     {stagerTaskGroupData.data.sort((current, next) => (
                       (current.order > next.order) ? 1 : -1)).map(tileData => (
                         <Grid item styleName="status-tile" xs={6}>

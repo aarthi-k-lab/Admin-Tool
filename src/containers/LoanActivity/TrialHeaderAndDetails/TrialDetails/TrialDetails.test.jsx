@@ -54,7 +54,7 @@ describe('<TrialDetails />', () => {
     const wrapper = shallow(
       <TrialDetails trialsDetail={trialsDetailData} />,
     );
-    expect(wrapper.find('WithStyles(ExpansionPanel)')).toHaveLength(trialsDetailData.length+1);
+    expect(wrapper.find('WithStyles(ForwardRef(ExpansionPanel))')).toHaveLength(trialsDetailData.length+1);
   });
 
   it('shows Disposition widget with no data', () => {
@@ -72,7 +72,7 @@ describe('<TrialDetails />', () => {
       <TrialDetails trialsDetail={trialsDetailData} />,
     );
     expect(wrapper.state().isExpanded).toBe(false);
-    const firstButton = wrapper.find('WithStyles(ExpansionPanel)').at(0);
+    const firstButton = wrapper.find('WithStyles(ForwardRef(ExpansionPanel))').at(0);
     // const aa = wrapper.state().isExpanded;
     firstButton.simulate('change');
     expect(wrapper.state().isExpanded).toBe(true);
@@ -85,7 +85,7 @@ describe('<TrialDetails />', () => {
       <TrialDetails trialsDetail={trialsDetailData} />,
     );
     expect(wrapper.state().isExpanded).toBe(false);
-    const firstButton = wrapper.find('WithStyles(ExpansionPanel)').at(0);
+    const firstButton = wrapper.find('WithStyles(ForwardRef(ExpansionPanel))').at(0);
     firstButton.simulate('change');
     firstButton.simulate('change');
     expect(wrapper.state().isExpanded).toBe(false);

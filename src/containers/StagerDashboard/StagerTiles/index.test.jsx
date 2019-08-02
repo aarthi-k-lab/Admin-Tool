@@ -48,7 +48,7 @@ describe('<StagerTiles />', () => {
       <TestExports.StagerTiles activeTab={tabName} activeTile={tileName} counts={[]} />,
     );
     expect(wrapper.find('Loader')).toHaveLength(1);
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(1);
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(1);
     expect(wrapper.instance().isActiveCard(tileName, tabName)).toBe(true);
     expect(wrapper.instance().isActiveCard('Legal', tabName)).toBe(false);
   });
@@ -56,7 +56,7 @@ describe('<StagerTiles />', () => {
     const wrapper = shallow(
       <TestExports.StagerTiles activeTab={tabName} activeTile={tileName} counts={counts} />,
     );
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(7);
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(7);
     expect(wrapper.find('StagerDocumentStatusCard')).toHaveLength(3);
   });
 });

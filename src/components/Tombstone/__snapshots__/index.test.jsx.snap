@@ -6,15 +6,11 @@ exports[`<TombstoneError /> snapshot test 1`] = `
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-11 MuiSvgIcon-fontSizeLarge-19"
+    className="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
   >
-    <path
-      d="M0 0h24v24H0z"
-      fill="none"
-    />
     <path
       d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
     />
@@ -27,7 +23,7 @@ exports[`<TombstoneLoader /> snapshot test 1`] = `
   className="components-Tombstone-TombstoneLoader__tombstone-loader"
 >
   <div
-    className="MuiCircularProgress-root-1 MuiCircularProgress-colorPrimary-4 MuiCircularProgress-indeterminate-3"
+    className="MuiCircularProgress-root MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate"
     role="progressbar"
     style={
       Object {
@@ -37,11 +33,11 @@ exports[`<TombstoneLoader /> snapshot test 1`] = `
     }
   >
     <svg
-      className="MuiCircularProgress-svg-6"
+      className="MuiCircularProgress-svg"
       viewBox="22 22 44 44"
     >
       <circle
-        className="MuiCircularProgress-circle-7 MuiCircularProgress-circleIndeterminate-9"
+        className="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate"
         cx={44}
         cy={44}
         fill="none"

@@ -58,7 +58,8 @@ class LeftNav extends React.PureComponent {
                 to={link.path}
               >
                 <img alt={link.name} src={link.img} />
-              </Link>) : null
+              </Link>
+            ) : null
         ))
       }
         </nav>
@@ -79,6 +80,7 @@ LeftNav.propTypes = {
   onEndShift: PropTypes.func.isRequired,
   path: PropTypes.string.isRequired,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

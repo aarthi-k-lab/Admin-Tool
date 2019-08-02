@@ -91,9 +91,21 @@ Assign.propTypes = {
     cmodProcess: PropTypes.shape({
       taskStatus: PropTypes.string.isRequired,
     }),
+    status: PropTypes.string,
+    taskData: PropTypes.shape({
+      evalId: PropTypes.string.isRequired,
+      groupName: PropTypes.string.isRequired,
+      loanNumber: PropTypes.string.isRequired,
+      processStatus: PropTypes.string.isRequired,
+      taskCheckListId: PropTypes.string.isRequired,
+      taskCheckListTemplateName: PropTypes.string.isRequired,
+      wfProcessId: PropTypes.string.isRequired,
+      wfTaskId: PropTypes.string.isRequired,
+    }),
   }).isRequired,
   disabled: PropTypes.bool,
   location: PropTypes.shape({
+    pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAssignLoan: PropTypes.func,

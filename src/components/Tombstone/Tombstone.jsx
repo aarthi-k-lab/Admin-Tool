@@ -160,7 +160,8 @@ Tombstone.getItems = function getItems(items) {
     (
       <td style={{ maxWidth: screenWidth / arrayLength }} styleName="itemTd">
         <Item key={title} content={content} title={title} />
-      </td>)
+      </td>
+    )
   ));
 };
 

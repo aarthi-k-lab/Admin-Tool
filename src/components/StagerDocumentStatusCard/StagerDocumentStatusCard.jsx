@@ -14,15 +14,15 @@ const StagerDocumentStatusCard = ({
   const slaToBeBreachedCount = data.aboutToBreach;
   const { slaDays, slaDaysCategory } = data;
   return (
-    <Paper onClick={() => onStatusCardClick(data.displayName, tabName, data.total)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
-      <Grid container direction="column" spacing={4} xs={12}>
+    <Paper elevation={2} onClick={() => onStatusCardClick(data.displayName, tabName, data.total)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
+      <Grid container direction="column" spacing={0} xs={12}>
         <Grid item>
           <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>
             {data.displayName.toUpperCase()}
           </span>
         </Grid>
         <Grid item>
-          <Grid container spacing={4}>
+          <Grid container spacing={0}>
             <Grid alignItems="center" container item xs={4}>
               <span styleName={active ? 'document-type-count-selected' : 'document-type-count'}>
                 {

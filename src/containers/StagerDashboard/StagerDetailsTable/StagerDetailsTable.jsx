@@ -90,8 +90,13 @@ class StagerDetailsTable extends React.PureComponent {
         styleName="center-grid"
       >
         <Grid item xs={8}>
-          {noTableData ? null : (<><ListIcon styleName="no-preview-icon" />
-            <br /></>)}
+          {noTableData ? null : (
+            <>
+              <ListIcon styleName="no-preview-icon" />
+              <br />
+
+            </>
+          )}
           <span styleName="no-preview-message">{noTableData ? 'No Loans Present' : 'No list selected to preview'}</span>
         </Grid>
       </Grid>
@@ -139,7 +144,11 @@ class StagerDetailsTable extends React.PureComponent {
                         </Button>
                         <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, SENT_FOR_REJECT, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
                           {SENT_FOR_REJECT}
-                        </Button> </>) : null
+                        </Button>
+                        {' '}
+
+                      </>
+                    ) : null
                   }
                   {
                     data.isManualOrder && data.stagerTaskType === 'Current Review'

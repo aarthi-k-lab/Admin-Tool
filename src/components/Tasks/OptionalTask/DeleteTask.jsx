@@ -7,10 +7,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
   extendedIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   custom: {
     color: 'black',

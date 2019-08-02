@@ -88,6 +88,7 @@ EvaluationPage.propTypes = {
   }).isRequired,
   taskName: PropTypes.string.isRequired,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,

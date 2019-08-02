@@ -8,9 +8,9 @@ describe('<CustomSnackBar />', () => {
     const wrapper = shallow(
       <TestHooks.CustomSnackbar onClose={close} />,
     );
-    expect(wrapper.find('WithStyles(Snackbar)')).toHaveLength(1);
-    expect(wrapper.find('WithStyles(SnackbarContent)')).toHaveLength(1);
-    wrapper.find('WithStyles(Snackbar)').at(0).simulate('Close');
+    expect(wrapper.find('WithStyles(ForwardRef(Snackbar))')).toHaveLength(1);
+    expect(wrapper.find('WithStyles(ForwardRef(SnackbarContent))')).toHaveLength(1);
+    wrapper.find('WithStyles(ForwardRef(Snackbar))').simulate('Close');
     expect(close.mock.calls).toHaveLength(1);
   });
 });

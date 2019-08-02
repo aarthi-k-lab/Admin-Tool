@@ -50,6 +50,10 @@
   margin: auto;
 }
 
+svg {
+  font-size: 24px !important;
+}
+
 .icons {
   align-items: center;
   display: flex;

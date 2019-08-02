@@ -59,9 +59,15 @@ class EvalTableRow extends React.PureComponent {
 
 EvalTableRow.propTypes = {
   onSelectEval: PropTypes.func.isRequired,
-  row: PropTypes.arrayOf(PropTypes.shape({
-    evalId: PropTypes.string.isRequired,
-  })).isRequired,
+  row: PropTypes.shape({
+    column: PropTypes.shape({
+      Header: PropTypes.string,
+    }),
+    original: PropTypes.shape({
+      evalId: PropTypes.string,
+    }),
+    value: PropTypes.string,
+  }).isRequired,
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,

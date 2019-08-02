@@ -6,15 +6,11 @@ exports[`<AlertBox /> snapshot test for error level 1`] = `
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-1 components-UserNotification-AlertBox-AlertBox__error-icon"
+    className="MuiSvgIcon-root components-UserNotification-AlertBox-AlertBox__error-icon"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
   >
-    <path
-      d="M0 0h24v24H0z"
-      fill="none"
-    />
     <path
       d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
     />
@@ -45,15 +41,11 @@ exports[`<AlertBox /> snapshot test for success level 1`] = `
 >
   <svg
     aria-hidden="true"
-    className="MuiSvgIcon-root-1 components-UserNotification-AlertBox-AlertBox__success-icon"
+    className="MuiSvgIcon-root components-UserNotification-AlertBox-AlertBox__success-icon"
     focusable="false"
     role="presentation"
     viewBox="0 0 24 24"
   >
-    <path
-      d="M0 0h24v24H0z"
-      fill="none"
-    />
     <path
       d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
     />

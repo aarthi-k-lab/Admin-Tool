@@ -321,6 +321,7 @@ SearchLoan.propTypes = {
     valid: PropTypes.bool,
   })).isRequired,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

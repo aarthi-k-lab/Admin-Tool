@@ -70,53 +70,55 @@ class StagerPage extends React.PureComponent {
     const { searchText } = this.state;
     return (
       <>
-        <ContentHeader title={(<>
-          <Grid container direction="row">
-            <Grid item styleName="select-width">
-              <Select
-                onChange={event => this.onStagerChange(event)}
-                value={stager}
-              >
-                <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
-                <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-                <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
-              </Select>
-            </Grid>
-            <Grid item styleName="scroll-area">
-              <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
-                <RefreshIcon />
-              </IconButton>
-            </Grid>
-            <Grid item styleName="scroll-area">
-              <TextField
-                InputProps={{
-                  disableUnderline: true,
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={this.handleSearchLoanClick}>
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                onChange={this.onSearchTextChange}
-                onKeyPress={this.handleSearchLoan}
-                placeholder="Search (Loan No)"
-                styleName="searchStyle"
-                value={searchText}
-                varirant="filled"
-              />
-            </Grid>
-            {getStagerSearchResponse
-              && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
-              ? (
-                <Grid item>
-                  <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+        <ContentHeader title={
+          (
+            <>
+              <Grid container direction="row">
+                <Grid item styleName="select-width">
+                  <Select
+                    onChange={event => this.onStagerChange(event)}
+                    value={stager}
+                  >
+                    <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
+                    <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
+                    <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+                  </Select>
                 </Grid>
-              ) : null
+                <Grid item styleName="scroll-area">
+                  <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
+                    <RefreshIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item styleName="scroll-area">
+                  <TextField
+                    InputProps={{
+                      disableUnderline: true,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={this.handleSearchLoanClick}>
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onChange={this.onSearchTextChange}
+                    onKeyPress={this.handleSearchLoan}
+                    placeholder="Search (Loan No)"
+                    styleName="searchStyle"
+                    value={searchText}
+                    varirant="filled"
+                  />
+                </Grid>
+                {getStagerSearchResponse
+              && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
+                  ? (
+                    <Grid item>
+                      <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+                    </Grid>
+                  ) : null
             }
-          </Grid>
-        </>
+              </Grid>
+            </>
         )}
         >
 

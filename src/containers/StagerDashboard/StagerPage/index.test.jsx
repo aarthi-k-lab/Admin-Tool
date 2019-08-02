@@ -9,7 +9,7 @@ describe('<StagerPage />', () => {
     );
     expect(wrapper.find('ContentHeader')).toHaveLength(1);
     expect(wrapper.find('Connect(Controls)')).toHaveLength(1);
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(3);
     expect(wrapper.find('Connect(StagerDetailsTable)')).toHaveLength(1);
     expect(wrapper.find('StagerTiles')).toHaveLength(1);
   });

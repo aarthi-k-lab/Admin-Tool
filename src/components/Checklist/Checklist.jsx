@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -7,6 +7,7 @@ import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
 import TextFields from './TextFields';
+import BasicDatePicker from './BasicDatePicker';
 import styles from './Checklist.css';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 import HTMLElements from '../../constants/componentTypes';
@@ -70,6 +71,13 @@ class Checklist extends React.PureComponent {
           onChange(id, dirtyValue, taskCode);
         });
       }
+    };
+  }
+
+  handleDateChange(id, taskCode) {
+    const { onChange } = this.props;
+    return (value) => {
+      onChange(id, value, taskCode);
     };
   }
 
@@ -148,13 +156,15 @@ class Checklist extends React.PureComponent {
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode);
         return (
-          <RadioButtons
-            disabled={disabled}
-            onChange={onChange}
-            options={options}
-            selectedValue={value}
-            title={title}
-          />
+          <Fragment key={id}>
+            <RadioButtons
+              disabled={disabled}
+              onChange={onChange}
+              options={options}
+              selectedValue={value}
+              title={title}
+            />
+          </Fragment>
         );
       }
       case MULTILINE_TEXT: {
@@ -220,21 +230,17 @@ class Checklist extends React.PureComponent {
         );
       }
       case DATE: {
-        const refCallback = this.handleBlur(id, taskCode);
-        const onChange = this.handleTextChange(id);
-        const getValue = this.getMultilineTextValue(id, value);
+        const refCallback = this.handleDateChange(id, taskCode);
         const prop = {
           disabled,
-          inputRef: refCallback,
-          onChange,
-          title,
-          type: DATE,
-          value: getValue,
+          format: 'DD/MM/YYYY',
+          label: title,
+          refCallback,
         };
-        const textField = (<TextFields {...prop} />);
+        const datePicker = (<BasicDatePicker {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          return datePicker;
         }
         return (
           <Tooltip
@@ -246,7 +252,7 @@ class Checklist extends React.PureComponent {
             placement="right"
             title={hint}
           >
-            {textField}
+            {datePicker}
           </Tooltip>
         );
       }

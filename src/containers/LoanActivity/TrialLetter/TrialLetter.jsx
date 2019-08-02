@@ -43,26 +43,23 @@ const TrialLetterDetails = props => (
   ))
 );
 
-class TrialLetter extends React.Component {
-  render() {
-    const { trialsLetter } = this.props;
-    const { inProgress } = this.props;
-    if (inProgress) {
-      return (
-        <Loader message="Please Wait" />
-      );
-    }
+
+const TrialLetter = ({ trialsLetter, inProgress }) => {
+  if (inProgress) {
     return (
-      <>
-        <div styleName="title-style">
-          Customer Communication Letter
-        </div>
-        <TrialLetterHeader />
-        <TrialLetterDetails trialsLetter={trialsLetter} />
-      </>
+      <Loader message="Please Wait" />
     );
   }
-}
+  return (
+    <>
+      <div styleName="title-style">
+        Customer Communication Letter
+      </div>
+      <TrialLetterHeader />
+      <TrialLetterDetails trialsLetter={trialsLetter} />
+    </>
+  );
+};
 
 TrialLetter.defaultProps = {
   inProgress: false,

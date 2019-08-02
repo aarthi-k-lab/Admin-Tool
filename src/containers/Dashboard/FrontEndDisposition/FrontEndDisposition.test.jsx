@@ -86,7 +86,6 @@ describe('<FrontEndDisposition />', () => {
     expect(wrapper.find('header')).toHaveLength(1);
     expect(wrapper.find('UserNotification')).toHaveLength(1);
     expect(wrapper.find('RadioButtonGroup')).toHaveLength(1);
-    expect(wrapper.find('WithStyles(Button)')).toHaveLength(1);
   });
   it('shows Disposition widget with Save in progress', () => {
     const { Disposition } = TestHooks;

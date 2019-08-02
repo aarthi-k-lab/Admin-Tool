@@ -22,15 +22,15 @@ describe('<RadioButtonGroup />', () => {
     wrapper = shallow(<RadioButtonGroup items={items} name="radio-button-test" onChange={handleChange} />);
   });
   it('should render the RadioGroup component', () => {
-    expect(wrapper.find('RadioGroup').at(0).props()).toHaveProperty('name', 'radio-button-test');
+    expect(wrapper.find('ForwardRef(RadioGroup)[name="radio-button-test"]')).toHaveLength(1);
   });
 
   it('should render the radio buttons', () => {
-    expect(wrapper.find('RadioGroup').children()).toHaveLength(items.length);
+    expect(wrapper.find('ForwardRef(RadioGroup)').children()).toHaveLength(items.length);
   });
 
   it('should trigger OnChange on click of a radio button', () => {
-    wrapper.find('RadioGroup').simulate('change', { target: { value: 'custom' } });
+    wrapper.find('ForwardRef(RadioGroup)').simulate('change', { target: { value: 'custom' } });
     expect(handleChange.mock.calls.length).toBe(1);
     expect(handleChange.mock.calls[0][0]).toBe('custom');
   });

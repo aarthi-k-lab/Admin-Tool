@@ -4,37 +4,60 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 import styles from './RadioButtonGroup.css';
 
-class FormControlLabelWithTooltip extends FormControlLabel {
-  render() {
-    const { disableTooltip, tooltip } = this.props;
-    if (disableTooltip) {
-      return super.render();
-    }
+const FormControlLabelWithTooltip = ({
+  classes, control, disabled, disableTooltip, label, styleName, tooltip, value,
+}) => {
+  if (disableTooltip) {
     return (
-      <Tooltip
-        classes={{
-          tooltip: styles.tooltip,
-        }}
-        disableFocusListener
-        disableTouchListener
-        placement="right"
-        title={tooltip}
-      >
-        {super.render()}
-      </Tooltip>
+      <FormControlLabel
+        classes={classes}
+        control={control}
+        disabled={disabled}
+        label={label}
+        styleName={styleName}
+        value={value}
+      />
     );
   }
-}
+  return (
+    <Tooltip
+      classes={{
+        tooltip: styles.tooltip,
+      }}
+      disableFocusListener
+      disableTouchListener
+      placement="right"
+      title={tooltip}
+    >
+      <FormControlLabel
+        classes={classes}
+        control={control}
+        disabled={disabled}
+        label={label}
+        styleName={styleName}
+        value={value}
+      />
+    </Tooltip>
+  );
+};
 
 FormControlLabelWithTooltip.defaultProps = {
   classes: {},
+  disabled: false,
   disableTooltip: false,
+  styleName: '',
+  value: '',
 };
 
 FormControlLabelWithTooltip.propTypes = {
   classes: PropTypes.object, // eslint-disable-line
+  control: PropTypes.object.isRequired, // eslint-disable-line
+  disabled: PropTypes.bool,
   disableTooltip: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+  styleName: PropTypes.string,
   tooltip: PropTypes.string.isRequired,
+  value: PropTypes.string,
 };
 
 export default FormControlLabelWithTooltip;

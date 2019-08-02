@@ -240,7 +240,8 @@ class CommentsWidget extends Component {
             </div>
           </div>
         </div>
-      </>);
+      </>
+    );
   }
 
   render() {

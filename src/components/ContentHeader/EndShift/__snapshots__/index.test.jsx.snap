@@ -2,11 +2,11 @@
 
 exports[`<EndShift /> snapshot test 1`] = `
 <button
-  className="MuiButtonBase-root-27 MuiButton-root-1 MuiButton-outlined-9 MuiButton-outlinedPrimary-10 material-ui-button components-ContentHeader-EndShift-EndShift__end-shift"
+  className="MuiButtonBase-root MuiButton-root material-ui-button components-ContentHeader-EndShift-EndShift__end-shift MuiButton-outlined MuiButton-outlinedPrimary"
   disabled={false}
   onBlur={[Function]}
   onClick={[Function]}
-  onContextMenu={[Function]}
+  onDragLeave={[Function]}
   onFocus={[Function]}
   onKeyDown={[Function]}
   onKeyUp={[Function]}
@@ -16,31 +16,24 @@ exports[`<EndShift /> snapshot test 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
-  tabIndex="0"
+  tabIndex={0}
   type="button"
 >
   <span
-    className="MuiButton-label-2"
+    className="MuiButton-label"
   >
     <svg
       aria-hidden="true"
-      className="MuiSvgIcon-root-30"
+      className="MuiSvgIcon-root"
       focusable="false"
       role="presentation"
       viewBox="0 0 24 24"
     >
-      <path
-        d="M0 0h24v24H0z"
-        fill="none"
-      />
       <path
         d="M6 6h12v12H6z"
       />
     </svg>
     End Shift
   </span>
-  <span
-    className="MuiTouchRipple-root-39"
-  />
 </button>
 `;

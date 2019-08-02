@@ -2,24 +2,24 @@
 
 exports[`<Profile /> snapshot test 1`] = `
 <div
-  className="MuiPaper-root-1 MuiPaper-elevation2-5 MuiPaper-rounded-2 components-AppHeader-Profile-Profile__container"
+  className="MuiPaper-root MuiPaper-elevation2 components-AppHeader-Profile-Profile__container MuiPaper-rounded"
   tabIndex={-1}
 >
-  <h2
-    className="MuiTypography-root-28 MuiTypography-title-34"
+  <h6
+    className="MuiTypography-root MuiTypography-h6"
   >
     User Profile
-  </h2>
+  </h6>
   <div
     className="components-AppHeader-Profile-Profile__row"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title"
+      className="MuiTypography-root components-AppHeader-Profile-Profile__field-title MuiTypography-body2"
     >
       Name: 
     </p>
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37"
+      className="MuiTypography-root MuiTypography-body2"
     >
       name
     </p>
@@ -28,12 +28,12 @@ exports[`<Profile /> snapshot test 1`] = `
     className="components-AppHeader-Profile-Profile__row"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title"
+      className="MuiTypography-root components-AppHeader-Profile-Profile__field-title MuiTypography-body2"
     >
       Email: 
     </p>
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37"
+      className="MuiTypography-root MuiTypography-body2"
     >
       email
     </p>
@@ -42,7 +42,7 @@ exports[`<Profile /> snapshot test 1`] = `
     className="components-AppHeader-Profile-Profile__row"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title"
+      className="MuiTypography-root components-AppHeader-Profile-Profile__field-title MuiTypography-body2"
     >
       Groups: 
     </p>
@@ -51,14 +51,14 @@ exports[`<Profile /> snapshot test 1`] = `
     >
       <li>
         <p
-          className="MuiTypography-root-28 MuiTypography-body1-37"
+          className="MuiTypography-root MuiTypography-body2"
         >
           group1
         </p>
       </li>
       <li>
         <p
-          className="MuiTypography-root-28 MuiTypography-body1-37"
+          className="MuiTypography-root MuiTypography-body2"
         >
           group2
         </p>
@@ -69,7 +69,7 @@ exports[`<Profile /> snapshot test 1`] = `
     className="components-AppHeader-Profile-Profile__row"
   >
     <p
-      className="MuiTypography-root-28 MuiTypography-body1-37 components-AppHeader-Profile-Profile__field-title"
+      className="MuiTypography-root components-AppHeader-Profile-Profile__field-title MuiTypography-body2"
     >
       Skills: 
     </p>
@@ -83,7 +83,7 @@ exports[`<Profile /> snapshot test 1`] = `
           className=""
         >
           <p
-            className="MuiTypography-root-28 MuiTypography-body1-37"
+            className="MuiTypography-root MuiTypography-body2"
           >
             FEUW-Skill1 - something
           </p>
@@ -92,7 +92,7 @@ exports[`<Profile /> snapshot test 1`] = `
           className=""
         >
           <p
-            className="MuiTypography-root-28 MuiTypography-body1-37"
+            className="MuiTypography-root MuiTypography-body2"
           >
             FEUW-Skill2 - nothing
           </p>
@@ -101,7 +101,7 @@ exports[`<Profile /> snapshot test 1`] = `
           className=""
         >
           <p
-            className="MuiTypography-root-28 MuiTypography-body1-37"
+            className="MuiTypography-root MuiTypography-body2"
           >
             FEUW-Skill14 - InVESTOR
           </p>
@@ -110,7 +110,7 @@ exports[`<Profile /> snapshot test 1`] = `
           className=""
         >
           <p
-            className="MuiTypography-root-28 MuiTypography-body1-37"
+            className="MuiTypography-root MuiTypography-body2"
           >
             FEUW-Skill19 - MRC Onshore
           </p>

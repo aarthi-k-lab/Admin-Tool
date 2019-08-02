@@ -87,7 +87,8 @@ class LeftParentTasks extends React.Component {
             <TaskStatusIcon styleName="icon-padding" task={task} />
           </span>
         </Grid>
-      </Grid>);
+      </Grid>
+    );
   }
 
   renderTasksChecklist(task, selectedTaskId, onSubTaskClick) {
@@ -125,7 +126,7 @@ class LeftParentTasks extends React.Component {
         </Grid>
         {
           task.subTasks && task.subTasks.length ? (
-            <Grid container direction="column" spacing={6}>
+            <Grid container direction="column" spacing={0}>
               {
                 task.subTasks
                   .filter(({ visibility }) => visibility)

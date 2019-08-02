@@ -16,9 +16,9 @@ describe('<StagerDetailsTable />', () => {
     const wrapper = shallow(
       <TestExports.StagerDetailsTable data={data} onOrderClick={onOrderClick} selectedData={[]} />,
     );
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
-    expect(wrapper.find('WithStyles(Button)')).toHaveLength(2);
-    wrapper.find('WithStyles(Button)').at(0).simulate('Click');
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(3);
+    expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(2);
+    wrapper.find('WithStyles(ForwardRef(Button))').at(0).simulate('Click');
     expect(onOrderClick.mock.calls).toHaveLength(1);
     expect(wrapper.find('CustomReactTable')).toHaveLength(1);
   });
@@ -38,9 +38,9 @@ describe('<StagerDetailsTable />', () => {
         triggerStagerGroup={triggerStagerGroup}
       />,
     );
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(3);
-    expect(wrapper.find('WithStyles(Button)')).toHaveLength(4);
-    wrapper.find('WithStyles(Button)').at(1).simulate('Click');
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(3);
+    expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(4);
+    wrapper.find('WithStyles(ForwardRef(Button))').at(1).simulate('Click');
     expect(triggerDispositionOperationCall.mock.calls).toHaveLength(1);
     expect(wrapper.find('CustomReactTable')).toHaveLength(1);
   });
@@ -50,6 +50,6 @@ describe('<StagerDetailsTable />', () => {
     const wrapper = shallow(
       <TestExports.StagerDetailsTable data={{}} onOrderClick={onOrderClick} selectedData={[]} />,
     );
-    expect(wrapper.find('WithStyles(Grid)')).toHaveLength(2);
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(2);
   });
 });

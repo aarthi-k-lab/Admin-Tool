@@ -233,6 +233,7 @@ ProtectedRoutes.propTypes = {
   }).isRequired,
   setUserSchemaTrigger: PropTypes.func.isRequired,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

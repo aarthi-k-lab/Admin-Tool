@@ -8,7 +8,7 @@ exports[`<Loader /> snapshot test 1`] = `
     className="components-Loader-Loader__message"
   >
     <div
-      className="MuiCircularProgress-root-1 MuiCircularProgress-colorPrimary-4 MuiCircularProgress-indeterminate-3"
+      className="MuiCircularProgress-root MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate"
       role="progressbar"
       style={
         Object {
@@ -18,11 +18,11 @@ exports[`<Loader /> snapshot test 1`] = `
       }
     >
       <svg
-        className="MuiCircularProgress-svg-6"
+        className="MuiCircularProgress-svg"
         viewBox="22 22 44 44"
       >
         <circle
-          className="MuiCircularProgress-circle-7 MuiCircularProgress-circleIndeterminate-9"
+          className="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate"
           cx={44}
           cy={44}
           fill="none"

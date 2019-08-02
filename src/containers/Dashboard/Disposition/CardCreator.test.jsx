@@ -28,7 +28,7 @@ describe('<CardCreator />', () => {
         status={items[0]}
       />,
     );
-    wrapper.find('WithStyles(IconButton)').simulate('click');
-    expect(wrapper.find('RadioGroup').children()).toHaveLength(items[0].activities.length);
+    wrapper.find('WithStyles(ForwardRef(IconButton))').simulate('click');
+    expect(wrapper.find('ForwardRef(RadioGroup)').children()).toHaveLength(items[0].activities.length);
   });
 });
