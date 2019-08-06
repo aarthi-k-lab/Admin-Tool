@@ -79,7 +79,8 @@ class TextFields extends React.Component {
 
   getControl(type) {
     const { DROPDOWN } = HTMLElements;
-    const properties = getProps(type, this.props);
+    const { title, ...other } = this.props;
+    const properties = getProps(type, { ...other });
     return (type === DROPDOWN) ? (
       <TextField
         styleName="dropDownStyle"

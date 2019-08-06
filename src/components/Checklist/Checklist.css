@@ -52,7 +52,7 @@
   width: 100%
 }
 
-.tooltip {
+.tooltip.tooltip {
   font-size: 0.8rem;
 }
 

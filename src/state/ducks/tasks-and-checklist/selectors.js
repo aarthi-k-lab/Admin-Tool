@@ -62,7 +62,7 @@ const getChecklistItems = state => R.compose(
     id: R.prop('_id', checklistItem),
     disabled: !dashboardSelectors.isAssigned(state),
     isVisible: R.propOr(true, 'visibility', checklistItem),
-    options: R.pathOr([], ['taskBlueprint', 'options'], checklistItem),
+    options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
     taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
     type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
