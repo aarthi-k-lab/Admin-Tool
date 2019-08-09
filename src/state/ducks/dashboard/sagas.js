@@ -440,7 +440,9 @@ function* saveChecklistDisposition(payload) {
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const validateAgent = !R.isNil(agentName) && !R.isEmpty(agentName);
     let assigneeUserGroups = '';
+    let managerID = null;
     if (validateAgent) {
+      managerID = userPrincipalName;
       const assignees = yield select(checklistSelectors.getDropDownOptions);
       const selectedAssignee = R.head(R.filter(
         assignee => assignee.userPrincipalName === agentName, assignees,
@@ -459,6 +461,7 @@ function* saveChecklistDisposition(payload) {
       wfProcessId,
       processStatus,
       loanNumber,
+      managerID,
       userGroups: assigneeUserGroups,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
