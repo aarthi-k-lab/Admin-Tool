@@ -47,10 +47,7 @@ class ChecklistHistory extends React.Component {
     });
   }
 
-  getCSTDateTime= (taskCheckListDateTime) => {
-    const dateTime = moment.utc(taskCheckListDateTime);
-    return dateTime.tz('America/Chicago').format('YYYY-MM-DD HH:mm:ss');
-  }
+  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('YYYY-MM-DD HH:mm:ss'))
 
   render() {
     const { anchorEl } = this.state;
@@ -89,11 +86,7 @@ class ChecklistHistory extends React.Component {
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
                 <a
-                  href={`${pdfGeneratorConstant}/api/download/${
-                    option.taskCheckListId
-                  }?event=${option.taskCheckListTemplateName}&disposition=${
-                    option.dispositionCode
-                  }`}
+                  href={`${pdfGeneratorConstant}/api/download/${option.taskCheckListId}?event=${option.taskCheckListTemplateName}&disposition=${option.dispositionCode}&assignedTo=${option.assignedTo}&dispositionDate=${this.getCSTDateTime(option.taskCheckListDateTime)}`}
                   style={{ textDecoration: 'none' }}
                   // eslint-disable-next-line react/jsx-no-target-blank
                   target="_blank"
