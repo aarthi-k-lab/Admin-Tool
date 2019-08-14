@@ -34,8 +34,8 @@ class Controls extends React.PureComponent {
   }
 
   componentDidMount() {
-    hotkeys('v', { keyup: true }, (event, handler) => {
-      if (event.type === 'keydown') {
+    hotkeys('v,e,m,g', (event, handler) => {
+      if (event.type === 'keydown' && R.equals(handler.key, 'g')) {
         this.handleHotKeyPress(event, handler);
       }
     });
@@ -46,14 +46,18 @@ class Controls extends React.PureComponent {
   }
 
   handleHotKeyPress = (handler) => {
-    const { disableValidation } = this.props;
-    switch (handler.key) {
-      case 'v': if (!disableValidation) {
-        this.validateDisposition();
-      } else {
-        console.log(!disableValidation);
-      }; break;
-      default: break;
+    const {
+      disableValidation,
+      enableGetNext,
+      enableValidate,
+      isFirstVisit,
+    } = this.props;
+    console.log(hotkeys.getScope());
+    if (R.equals(handler.key, 'v') && !disableValidation) {
+      this.validateDisposition();
+    } else if (R.equals(handler.key, 'g') && !(!enableGetNext || (!enableValidate && !isFirstVisit))) {
+      console.log('getnext');
+      // this.handlegetNext();
     }
   }
 
