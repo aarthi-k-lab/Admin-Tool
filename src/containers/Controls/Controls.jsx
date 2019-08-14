@@ -17,6 +17,7 @@ import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
+import hotkeys from 'hotkeys-js';
 import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
 
@@ -30,6 +31,30 @@ class Controls extends React.PureComponent {
     this.handleSendToDocGen = this.handleSendToDocGen.bind(this);
     this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
+  }
+
+  componentDidMount() {
+    hotkeys('v', { keyup: true }, (event, handler) => {
+      if (event.type === 'keydown') {
+        this.handleHotKeyPress(event, handler);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    hotkeys.unbind('v');
+  }
+
+  handleHotKeyPress = (handler) => {
+    const { disableValidation } = this.props;
+    switch (handler.key) {
+      case 'v': if (!disableValidation) {
+        this.validateDisposition();
+      } else {
+        console.log(!disableValidation);
+      }; break;
+      default: break;
+    }
   }
 
   handleSentToUnderwriting() {
@@ -73,6 +98,7 @@ class Controls extends React.PureComponent {
     const { groupName } = this.props;
     return R.prop('showAssignUnassign', R.find(R.propEq('group', groupName), DashboardModel.GROUP_INFO));
   }
+
 
   render() {
     const {

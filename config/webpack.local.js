@@ -82,7 +82,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          target: 'https://cmodworkassigndev.int.mrcooper.io',
+          target: 'http://localhost:7800',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
