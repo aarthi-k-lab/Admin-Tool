@@ -34,15 +34,15 @@ class Controls extends React.PureComponent {
   }
 
   componentDidMount() {
-    hotkeys('v,e,m,g', (event, handler) => {
-      if (event.type === 'keydown' && R.equals(handler.key, 'g')) {
+    hotkeys('v,g,m,e', (event, handler) => {
+      if (event.type === 'keydown') {
         this.handleHotKeyPress(event, handler);
       }
     });
   }
 
   componentWillUnmount() {
-    hotkeys.unbind('v');
+    hotkeys.unbind('v,g,m,e');
   }
 
   handleHotKeyPress = (handler) => {
@@ -51,13 +51,14 @@ class Controls extends React.PureComponent {
       enableGetNext,
       enableValidate,
       isFirstVisit,
+      onExpand,
     } = this.props;
-    console.log(hotkeys.getScope());
     if (R.equals(handler.key, 'v') && !disableValidation) {
       this.validateDisposition();
     } else if (R.equals(handler.key, 'g') && !(!enableGetNext || (!enableValidate && !isFirstVisit))) {
-      console.log('getnext');
-      // this.handlegetNext();
+      this.handlegetNext();
+    } else if (R.equals(handler.key, 'm')) {
+      onExpand();
     }
   }
 
