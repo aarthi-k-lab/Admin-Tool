@@ -234,8 +234,9 @@ class Checklist extends React.PureComponent {
         const prop = {
           disabled,
           format: 'DD/MM/YYYY',
-          label: title,
+          title,
           refCallback,
+          value,
         };
         const datePicker = (<BasicDatePicker {...prop} />);
         const hint = R.prop('hint', options);
