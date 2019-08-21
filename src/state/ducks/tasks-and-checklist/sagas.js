@@ -434,9 +434,9 @@ function* updateChecklist(action) {
       yield* updateAndFetchTasks(fieldName, task, requestBody, type);
     } else {
       const rootTaskId = yield select(selectors.getRootTaskId);
-      const { id } = requestBody;
       const clearSubTaskRequestBody = {
-        id,
+        // eslint-disable-next-line no-underscore-dangle
+        id: task.subTasks[0] ? task.subTasks[0]._id : task._id,
         rootTaskId,
         taskBlueprintCode: task.taskBlueprintCode ? task.taskBlueprintCode : task.taskCode,
       };
