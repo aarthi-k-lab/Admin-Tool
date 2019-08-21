@@ -74,7 +74,7 @@ const config = merge(
           },
         },
         '/api/disposition': {
-          target: 'https://cmoddispositionqa.int.mrcooper.io',
+          target: 'https://cmoddispositiondev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

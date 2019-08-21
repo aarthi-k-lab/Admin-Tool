@@ -34,9 +34,9 @@ class Controls extends React.PureComponent {
   }
 
   componentDidMount() {
-    hotkeys('v,g,m,e', (event, handler) => {
+    hotkeys('g,v,m,e', (event, handler) => {
       if (event.type === 'keydown') {
-        this.handleHotKeyPress(event, handler);
+        this.handleHotKeyPress(handler);
       }
     });
   }
@@ -52,13 +52,21 @@ class Controls extends React.PureComponent {
       enableValidate,
       isFirstVisit,
       onExpand,
+      enableEndShift,
+      onEndShift,
     } = this.props;
     if (R.equals(handler.key, 'v') && !disableValidation) {
       this.validateDisposition();
-    } else if (R.equals(handler.key, 'g') && !(!enableGetNext || (!enableValidate && !isFirstVisit))) {
+    } else if (R.equals(handler.key, 'g') && !(!enableGetNext
+   || (!enableValidate && !isFirstVisit))) {
       this.handlegetNext();
-    } else if (R.equals(handler.key, 'm')) {
+    } else if (R.equals(handler.key, 'm') || R.equals(handler.key, 'M')) {
       onExpand();
+    } else if (R.equals(handler.key, 'e') && !(!enableEndShift || !enableValidate)) {
+      const onEndShiftClick = () => onEndShift(
+        EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
+      );
+      onEndShiftClick();
     }
   }
 

@@ -5,5 +5,5 @@ module.exports = (env = defaultEnv) => {
     process.env.NODE_ENV = env.NODE_ENV;
     return require('./webpack.production');
   }
-  return require('./webpack.local.QA');
+  return require('./webpack.local');
 };
