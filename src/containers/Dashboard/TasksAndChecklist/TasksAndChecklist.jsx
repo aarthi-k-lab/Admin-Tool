@@ -17,13 +17,42 @@ import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import CustomSnackBar from 'components/CustomSnackBar';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
+import hotkeys from 'hotkeys-js';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
 import componentTypes from '../../../constants/componentTypes';
 
+const LEFT_KEY = 37;
+const RIGHT_KEY = 39;
 class TasksAndChecklist extends React.PureComponent {
+  componentDidMount() {
+    hotkeys('*', (event) => {
+      if (event.type === 'keydown') {
+        this.handleHotKeyPress();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    hotkeys.unbind('*');
+  }
+
+  handleHotKeyPress = () => {
+    const {
+      disableNext,
+      disablePrev,
+      onNext,
+      onPrev,
+    } = this.props;
+    if (!disableNext && hotkeys.getPressedKeyCodes().includes(RIGHT_KEY)) {
+      onNext();
+    } else if (!disablePrev && hotkeys.getPressedKeyCodes().includes(LEFT_KEY)) {
+      onPrev();
+    }
+  }
+
   handleSubTaskClearance(isConfirmed) {
     if (isConfirmed) {
       const {

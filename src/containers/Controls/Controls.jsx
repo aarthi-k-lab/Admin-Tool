@@ -17,9 +17,14 @@ import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
+import hotkeys from 'hotkeys-js';
 import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
 
+const HOTKEY_V = ['v', 'V'];
+const HOTKEY_M = ['m', 'M'];
+const HOTKEY_E = ['e', 'E'];
+const HOTKEY_G = ['g', 'G'];
 
 class Controls extends React.PureComponent {
   constructor(props) {
@@ -30,6 +35,43 @@ class Controls extends React.PureComponent {
     this.handleSendToDocGen = this.handleSendToDocGen.bind(this);
     this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
+  }
+
+  componentDidMount() {
+    hotkeys('g,v,m,e', (event, handler) => {
+      if (event.type === 'keydown') {
+        this.handleHotKeyPress(handler);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    hotkeys.unbind('v,g,m,e');
+  }
+
+  handleHotKeyPress = (handler) => {
+    const {
+      disableValidation,
+      enableGetNext,
+      enableValidate,
+      isFirstVisit,
+      onExpand,
+      enableEndShift,
+      onEndShift,
+    } = this.props;
+    if (HOTKEY_V.includes(handler.key) && !disableValidation) {
+      this.validateDisposition();
+    } else if (HOTKEY_G.includes(handler.key) && !(!enableGetNext
+   || (!enableValidate && !isFirstVisit))) {
+      this.handlegetNext();
+    } else if (HOTKEY_M.includes(handler.key)) {
+      onExpand();
+    } else if (HOTKEY_E.includes(handler.key) && !(!enableEndShift || !enableValidate)) {
+      const onEndShiftClick = () => onEndShift(
+        EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
+      );
+      onEndShiftClick();
+    }
   }
 
   handleSentToUnderwriting() {
@@ -73,6 +115,7 @@ class Controls extends React.PureComponent {
     const { groupName } = this.props;
     return R.prop('showAssignUnassign', R.find(R.propEq('group', groupName), DashboardModel.GROUP_INFO));
   }
+
 
   render() {
     const {
