@@ -132,7 +132,8 @@ const config = merge(
           },
         },
         '/api/task-engine': {
-          target: 'https://cmodtaskengineqa.int.mrcooper.io',
+          target: 'http://127.0.0.1:7600',
+          // target: 'https://cmodtaskengineqa.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
