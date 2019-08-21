@@ -21,6 +21,10 @@ import hotkeys from 'hotkeys-js';
 import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
 
+const HOTKEY_V = ['v', 'V'];
+const HOTKEY_M = ['m', 'M'];
+const HOTKEY_E = ['e', 'E'];
+const HOTKEY_G = ['g', 'G'];
 
 class Controls extends React.PureComponent {
   constructor(props) {
@@ -55,14 +59,14 @@ class Controls extends React.PureComponent {
       enableEndShift,
       onEndShift,
     } = this.props;
-    if (R.equals(handler.key, 'v') && !disableValidation) {
+    if (HOTKEY_V.includes(handler.key) && !disableValidation) {
       this.validateDisposition();
-    } else if (R.equals(handler.key, 'g') && !(!enableGetNext
+    } else if (HOTKEY_G.includes(handler.key) && !(!enableGetNext
    || (!enableValidate && !isFirstVisit))) {
       this.handlegetNext();
-    } else if (R.equals(handler.key, 'm') || R.equals(handler.key, 'M')) {
+    } else if (HOTKEY_M.includes(handler.key)) {
       onExpand();
-    } else if (R.equals(handler.key, 'e') && !(!enableEndShift || !enableValidate)) {
+    } else if (HOTKEY_E.includes(handler.key) && !(!enableEndShift || !enableValidate)) {
       const onEndShiftClick = () => onEndShift(
         EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
       );
