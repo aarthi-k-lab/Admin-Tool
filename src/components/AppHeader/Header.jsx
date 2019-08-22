@@ -8,13 +8,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
 import EndShift from 'models/EndShift';
+import hotkeys from 'hotkeys-js';
 import Profile from './Profile';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import './Header.css';
 
+const HOTKEY_S = ['s', 'S'];
+
 class Header extends React.Component {
   constructor(props) {
     super(props);
+    this.textInput = React.createRef();
     this.state = {
       showProfileDetails: false,
       refreshHook: true,
@@ -29,11 +33,23 @@ class Header extends React.Component {
     this.handleSearchLoanClick = this.handleSearchLoanClick.bind(this);
   }
 
+  componentDidMount() {
+    hotkeys('s', (event, handler) => {
+      if (event.type === 'keydown') {
+        this.handleHotKeyPress(handler);
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     const { clearSearch } = nextProps;
     if (clearSearch) {
       this.setState({ searchText: '' });
     }
+  }
+
+  componentWillUnmount() {
+    hotkeys.unbind('s');
   }
 
   onSearchTextChange(event) {
@@ -48,6 +64,12 @@ class Header extends React.Component {
   getEnv() {
     const host = window.location.hostname.toUpperCase().split('.')[0].replace('CMOD', '');
     return (host === 'PROD' || host === '') ? '' : ((host === 'LOCALHOST' || host === '127') ? ' - LOCAL' : ` - ${host}`);
+  }
+
+  handleHotKeyPress = (handler) => {
+    if (HOTKEY_S.includes(handler.key)) {
+      this.textInput.current.focus();
+    }
   }
 
   handleSearchLoan(event) {
@@ -132,6 +154,7 @@ class Header extends React.Component {
               </InputAdornment>
             ),
           }}
+          inputRef={this.textInput}
           onChange={this.onSearchTextChange}
           onKeyPress={this.handleSearchLoan}
           placeholder="Search (Loan No)"
