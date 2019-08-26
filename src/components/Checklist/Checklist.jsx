@@ -231,6 +231,7 @@ class Checklist extends React.PureComponent {
       }
       case DATE: {
         const refCallback = this.handleDateChange(id, taskCode);
+        const hint = R.prop('hint', options);
         const prop = {
           disabled,
           format: 'DD/MM/YYYY',
@@ -239,7 +240,6 @@ class Checklist extends React.PureComponent {
           value,
         };
         const datePicker = (<BasicDatePicker {...prop} />);
-        const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return datePicker;
         }
@@ -253,7 +253,7 @@ class Checklist extends React.PureComponent {
             placement="right"
             title={hint}
           >
-            {datePicker}
+            <div>{datePicker}</div>
           </Tooltip>
         );
       }

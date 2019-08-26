@@ -14,16 +14,20 @@ function BasicDatePicker(props) {
 
   return (
     <FormControl component="fieldset">
-      <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
+      <FormLabel component="legend" styleName="text-label">
+        {title}
+      </FormLabel>
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        <DatePicker
-          disabled={disabled}
-          disableFuture
-          format={format}
-          onChange={refCallback}
-          value={selectedDate}
-          views={['year', 'month', 'date']}
-        />
+        <div>
+          <DatePicker
+            disabled={disabled}
+            disableFuture
+            format={format}
+            onChange={refCallback}
+            value={selectedDate}
+            views={['year', 'month', 'date']}
+          />
+        </div>
       </MuiPickersUtilsProvider>
     </FormControl>
   );
