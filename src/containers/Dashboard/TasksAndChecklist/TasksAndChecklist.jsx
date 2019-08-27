@@ -28,7 +28,7 @@ const LEFT_KEY = 37;
 const RIGHT_KEY = 39;
 class TasksAndChecklist extends React.PureComponent {
   componentDidMount() {
-    hotkeys('*', (event) => {
+    hotkeys('right,left', (event) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress();
       }
@@ -36,7 +36,7 @@ class TasksAndChecklist extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    hotkeys.unbind('*');
+    hotkeys.unbind('right,left');
   }
 
   handleHotKeyPress = () => {

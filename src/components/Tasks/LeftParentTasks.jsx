@@ -1,13 +1,17 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
+import hotkeys from 'hotkeys-js';
 import TaskStatusIcon from '../TaskStatusIcon';
 import SubTask from './SubTask/SubTask';
 import DeleteTask from './OptionalTask/DeleteTask';
 import styles from './LeftParentTasks.css';
 
+const SHIFT_DOWN_KEY = [16, 40];
+const SHIFT_UP_KEY = [16, 38];
 class LeftParentTasks extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +26,14 @@ class LeftParentTasks extends React.Component {
     };
   }
 
+  componentDidMount() {
+    hotkeys('*', (event) => {
+      if (event.type === 'keydown') {
+        this.handleHotKeyPress();
+      }
+    });
+  }
+
   componentDidUpdate(prevProps) {
     const { shouldDeleteTask, resetDeleteTaskConfirmation } = this.props;
     const { taskIdx, task } = this.changedTask;
@@ -29,6 +41,33 @@ class LeftParentTasks extends React.Component {
       if (shouldDeleteTask) {
         this.modifyTaskList(taskIdx, task, 'DELETE');
         resetDeleteTaskConfirmation();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    hotkeys.unbind('*');
+  }
+
+  findLastItem= (tasks) => {
+    let lastItem = 0;
+    tasks.forEach((task, index) => {
+      lastItem = task.visibility ? index : lastItem;
+    });
+    return lastItem;
+  }
+
+  handleHotKeyPress = () => {
+    const { tasks, onSubTaskClick, selectedTaskId } = this.props;
+    if (R.equals(hotkeys.getPressedKeyCodes(), SHIFT_DOWN_KEY)) {
+      const subtaskOrder = this.findLastItem(tasks);
+      const lastItem = this.findLastItem(tasks[subtaskOrder].subTasks);
+      if (!R.equals(selectedTaskId, tasks[subtaskOrder].subTasks[lastItem]._id)) {
+        onSubTaskClick(tasks[subtaskOrder].subTasks[lastItem]._id);
+      }
+    } else if (R.equals(hotkeys.getPressedKeyCodes(), SHIFT_UP_KEY)) {
+      if (!R.equals(selectedTaskId, tasks[0].subTasks[0]._id)) {
+        onSubTaskClick(tasks[0].subTasks[0]._id);
       }
     }
   }
@@ -196,5 +235,6 @@ LeftParentTasks.propTypes = {
   tasks: PropTypes.arrayOf(TaskModel).isRequired,
   updateChecklist: PropTypes.func.isRequired,
 };
+
 
 export default LeftParentTasks;
