@@ -501,10 +501,11 @@ function* getUsersForGroup(additionalInfo) {
   const { group } = additionalInfo;
   const response = yield call(Api.callGet, 'api/config');
   const handoffADGroups = R.pathOr({}, ['handoffADGroups', group], response);
+  const appName = R.pathOr({}, ['appName', 'appName'], response);
   const requestData = {
     url: '/api/auth/ad/usersByGroups',
     method: Api.callPost,
-    body: { groups: handoffADGroups },
+    body: { groups: handoffADGroups, appName },
     formatResponse: sortUniqueUsers,
   };
   return requestData;
