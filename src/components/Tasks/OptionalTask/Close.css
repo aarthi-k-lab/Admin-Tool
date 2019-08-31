@@ -1,19 +1,18 @@
 .close-task.close-task {
-    background-color: var(--mr-navy);
-    border-radius: 0;
-    width: 30%;
-    height: 2rem;
-    min-height: 0.25rem;
-    padding: 0px;
-    margin: 0.75rem 0.5rem 0.5rem 7rem;
-    color: white;
-  }
+  background-color: var(--mr-navy);
+  border-radius: 0;
+  width: 30%;
+  height: 2rem;
+  min-height: 0.25rem;
+  padding: 0px; /* stylelint-disable-line length-zero-no-unit */
+  margin: 0.75rem 0.5rem 0.5rem 7rem;
+  color: white;
+}
 
-  .close-task span {
-    justify-content: center;
-  }
-  
-  .close-task.close-task:hover {
-    background-color: var(--mr-navy);
-  }
-  
+.close-task span {
+  justify-content: center;
+}
+
+.close-task.close-task:hover {
+  background-color: var(--mr-navy);
+}

@@ -217,7 +217,6 @@ function* makeOrderBpmCall(payload) {
     snackBarData.type = 'error';
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
-    console.log('Make Order BPM Call error:', e);
   }
 }
 

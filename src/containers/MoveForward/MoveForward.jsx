@@ -59,8 +59,7 @@ class MoveForward extends React.PureComponent {
         )(res);
         this.setState({ tableData });
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         this.setState({ hasError: true, tableData: [] });
       })
       .finally(() => {
