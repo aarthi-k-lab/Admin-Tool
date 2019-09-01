@@ -88,7 +88,7 @@ class Tombstone extends React.Component {
             open={open}
           >
             {menuItem.map(option => (
-              <MenuItem styleName="menuItem">
+              <MenuItem key={option} styleName="menuItem">
                 <div>
                   {option.title}
                   <br />
@@ -107,16 +107,18 @@ class Tombstone extends React.Component {
     return (
       <section id="container" styleName="tombstone">
         <table styleName="tombstone-table" width={tableWidth}>
-          <tr>
-            {Tombstone.getItems(tombStoneArray)}
-            <td>{menuDiv}</td>
-            <td>
-              <div styleName="spacer" />
-              <IconButton onClick={onOpenWindow}>
-                <OpenInNewIcon styleName="icon" />
-              </IconButton>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              {Tombstone.getItems(tombStoneArray)}
+              <td>{menuDiv}</td>
+              <td>
+                <div styleName="spacer" />
+                <IconButton onClick={onOpenWindow}>
+                  <OpenInNewIcon styleName="icon" />
+                </IconButton>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </section>
 
@@ -158,7 +160,7 @@ Tombstone.getItems = function getItems(items) {
   const arrayLength = items.length;
   return items.map(({ content, title }) => (
     (
-      <td style={{ maxWidth: screenWidth / arrayLength }} styleName="itemTd">
+      <td key={title} style={{ maxWidth: screenWidth / arrayLength }} styleName="itemTd">
         <Item key={title} content={content} title={title} />
       </td>
     )

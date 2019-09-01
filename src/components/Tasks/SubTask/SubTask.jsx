@@ -13,7 +13,7 @@ const R = {
 function SubTask({ data, onClick, selected }) {
   const boundClickHandler = () => onClick(data._id); // eslint-disable-line
   return (
-    <Grid container item spacing={12}>
+    <Grid container item spacing={0}>
       <Grid item xs={2} />
       {/* <Grid item xs={2}> */}
       <Grid

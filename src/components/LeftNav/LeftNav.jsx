@@ -53,6 +53,7 @@ class LeftNav extends React.PureComponent {
           shouldShowIcon(link, groupList)
             ? (
               <Link
+                key={link.name}
                 className={this.constructor.getIconStyle(path, link.path)}
                 onClick={() => this.handleLandingpage(link.path)}
                 to={link.path}

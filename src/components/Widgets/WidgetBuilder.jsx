@@ -66,6 +66,7 @@ class WidgetBuilder extends Component {
       && rightAppBar
       && rightAppBar.filter(datas => datas.show).map(data => (
         <WidgetIcon
+          key={data.id}
           data={data}
           onWidgetClick={() => this.changeAppBarState(data.id)}
           rightAppBarOpen={rightAppBarOpen}
