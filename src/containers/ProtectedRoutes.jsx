@@ -213,6 +213,7 @@ const mapDispatchToProps = dispatch => ({
 
 ProtectedRoutes.defaultProps = {
   items: [],
+  loanNumber: '',
 };
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
@@ -223,7 +224,7 @@ ProtectedRoutes.propTypes = {
       title: PropTypes.string.isRequired,
     }),
   ),
-  loanNumber: PropTypes.string.isRequired,
+  loanNumber: PropTypes.string,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,

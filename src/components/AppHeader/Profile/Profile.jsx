@@ -98,13 +98,19 @@ Profile.renderSkills = function renderSkills(skillList) {
   });
 };
 
+Profile.defaultProps = {
+  groups: [],
+  skills: {},
+  userDetails: {},
+};
+
 Profile.propTypes = {
-  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
-  skills: PropTypes.objectOf(PropTypes.array).isRequired,
+  groups: PropTypes.arrayOf(PropTypes.string),
+  skills: PropTypes.objectOf(PropTypes.array),
   userDetails: PropTypes.shape({
     email: PropTypes.string,
     name: PropTypes.string,
-  }).isRequired,
+  }),
 };
 
 export default Profile;

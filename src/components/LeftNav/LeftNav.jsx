@@ -70,11 +70,12 @@ class LeftNav extends React.PureComponent {
 }
 LeftNav.defaultProps = {
   enableGetNext: false,
+  evalId: '',
 };
 
 LeftNav.propTypes = {
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.string.isRequired,
+  evalId: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,

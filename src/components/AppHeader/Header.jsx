@@ -177,7 +177,7 @@ class Header extends React.Component {
 
 Header.defaultProps = {
   enableGetNext: false,
-  evalId: null,
+  evalId: '',
 };
 
 Header.propTypes = {
@@ -193,7 +193,7 @@ Header.propTypes = {
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    skills: PropTypes.objectOf(PropTypes.array).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array),
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,
