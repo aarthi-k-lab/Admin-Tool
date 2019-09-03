@@ -31,7 +31,7 @@ class StagerTiles extends React.PureComponent {
           {!countsData.length ? <Loader /> : null}
           <div>
             {countsData.map(stagerTaskGroupData => (
-              <>
+              <div key={stagerTaskGroupData.displayName}>
                 <Grid item styleName="taskStatusTitle" xs={12}>
                   <div style={{ flexGrow: '0.75' }}>
                     {stagerTaskGroupData.displayName}
@@ -59,7 +59,7 @@ class StagerTiles extends React.PureComponent {
                     ))}
                   </Grid>
                 </Grid>
-              </>
+              </div>
             ))}
           </div>
         </Grid>

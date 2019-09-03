@@ -114,7 +114,7 @@ DocGenGoBack.propTypes = {
   TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

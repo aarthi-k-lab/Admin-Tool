@@ -102,7 +102,7 @@ class OptionalTaskDetails extends React.Component {
                   {
                       isTaskAdded[index] ? this.renderDeleteIcon(index, task)
                         : (
-                          <span styleName="optional-task-details">
+                          <span>
                             <AddTask
                               disabled={false}
                               margin={{ 'margin-left': '3rem' }}

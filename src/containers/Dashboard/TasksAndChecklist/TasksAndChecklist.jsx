@@ -263,7 +263,7 @@ TasksAndChecklist.propTypes = {
   snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   user: PropTypes.shape({
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

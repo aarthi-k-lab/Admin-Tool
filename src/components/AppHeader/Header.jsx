@@ -177,18 +177,23 @@ class Header extends React.Component {
 
 Header.defaultProps = {
   enableGetNext: false,
+  evalId: null,
 };
 
 Header.propTypes = {
   clearSearch: PropTypes.bool.isRequired,
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.string.isRequired,
-  history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  evalId: PropTypes.string,
+  history: PropTypes.shape({
+    length: PropTypes.number.isRequired,
+    location: PropTypes.object.isRequired,
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

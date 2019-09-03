@@ -246,7 +246,7 @@ Disposition.propTypes = {
   TaskId: PropTypes.number.isRequired,
   taskIterationCounter: PropTypes.number.isRequired,
   user: PropTypes.shape({
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,
