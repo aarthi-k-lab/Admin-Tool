@@ -135,24 +135,32 @@ function* watchAutoSave() {
 
 const searchLoan = function* searchLoan(loanNumber) {
   const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
-  try {
-    const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
-    if (response !== null) {
+  const wasSearched = yield select(selectors.wasSearched);
+  const inProgress = yield select(selectors.inProgress);
+
+  if (!wasSearched && !inProgress) {
+    yield put({ type: SHOW_LOADER });
+  }
+  if (!wasSearched) {
+    try {
+      const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
+      if (response !== null) {
+        yield put({
+          type: SEARCH_LOAN_RESULT,
+          payload: response,
+        });
+      } else {
+        yield put({
+          type: SEARCH_LOAN_RESULT,
+          payload: { statusCode: 404 },
+        });
+      }
+    } catch (e) {
       yield put({
         type: SEARCH_LOAN_RESULT,
-        payload: response,
-      });
-    } else {
-      yield put({
-        type: SEARCH_LOAN_RESULT,
-        payload: { statusCode: 404 },
+        payload: { loanNumber: searchLoanNumber, valid: false },
       });
     }
-  } catch (e) {
-    yield put({
-      type: SEARCH_LOAN_RESULT,
-      payload: { loanNumber: searchLoanNumber, valid: false },
-    });
   }
 };
 

@@ -22,6 +22,7 @@ import {
   onSendToDocGenAction,
   cleanResult,
   continueMyReview,
+  setBeginSearchAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -81,6 +82,10 @@ const onSearchLoan = dispatch => (loanNumber) => {
   dispatch(searchLoan(loanNumber));
 };
 
+const setBeginSearch = dispatch => () => {
+  dispatch(setBeginSearchAction());
+};
+
 const onDialogClose = dispatch => () => {
   dispatch(hideAssignUnassign());
 };
@@ -129,6 +134,7 @@ const operations = {
   onSendToDocGen,
   onCleanResult,
   onContinueMyReview,
+  setBeginSearch,
 };
 
 export default operations;
