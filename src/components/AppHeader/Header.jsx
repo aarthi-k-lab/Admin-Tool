@@ -53,7 +53,7 @@ class Header extends React.Component {
   }
 
   onSearchTextChange(event) {
-    const re = /^[0-9\b]+$/;
+    const re = /^[0-9\b\s]+$/;
     if (event.target.value === '' || re.test(event.target.value)) {
       this.setState({ searchText: event.target.value });
     }
@@ -80,9 +80,11 @@ class Header extends React.Component {
 
   handleSearchLoanClick() {
     const { refreshHook, searchText } = this.state;
+    const { setBeginSearch } = this.props;
     if (searchText) {
       this.shouldSearchLoan = true;
       this.setState({ refreshHook: !refreshHook });
+      setBeginSearch();
     }
   }
 
@@ -192,6 +194,7 @@ Header.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
+  setBeginSearch: PropTypes.func.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.array),
     userDetails: PropTypes.shape({
@@ -213,7 +216,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
-
+  setBeginSearch: operations.setBeginSearch(dispatch),
 });
 const HeaderContainer = connect(
   mapStateToProps,

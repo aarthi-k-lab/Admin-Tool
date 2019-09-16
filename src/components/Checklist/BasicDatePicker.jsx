@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import './Checklist.css';
+import * as R from 'ramda';
+import moment from 'moment-timezone';
 
 function BasicDatePicker(props) {
   const {
     disabled, title, format, refCallback, value,
   } = props;
-  const selectedDate = value && new Date(value);
+  const StartDate = R.isNil(value) ? moment().format('MM-DD-YYYY') : moment(value).format('MM-DD-YYYY');
+  const [selectedDate] = useState(StartDate);
+
+  useEffect(() => {
+    if (!value) {
+      refCallback(selectedDate);
+    }
+  }, [selectedDate]);
 
   return (
     <FormControl component="fieldset">

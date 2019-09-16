@@ -308,7 +308,7 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError,
     return 'No tasks assigned.Please contact your manager';
   }
   if (isTasksLimitExceeded) {
-    return 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
+    return 'You have reached the limit of 2 loans assigned for a normal user or 10 for manager at the same time. Please complete your review on one of them and try again.';
   }
   return '';
 }

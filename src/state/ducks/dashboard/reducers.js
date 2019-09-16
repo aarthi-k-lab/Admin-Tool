@@ -36,6 +36,7 @@ import {
   SET_RESULT_OPERATION,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW_RESULT,
+  SET_BEGIN_SEARCH,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -101,6 +102,8 @@ const reducer = (state = { firstVisit: true }, action) => {
         unassignLoanResponse: {},
         clearSearch: true,
         checklistErrorCode: '',
+        inProgress: false,
+        wasSearched: true,
       };
     }
 
@@ -132,6 +135,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         inProgress: true,
         noTasksFound: false,
         checklistErrorCode: '',
+        wasSearched: false,
       };
     }
     case GETNEXT_PROCESSED: {
@@ -144,6 +148,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         inProgress: false,
+      };
+    }
+    case SET_BEGIN_SEARCH: {
+      return {
+        ...state,
+        wasSearched: false,
       };
     }
     case SHOW_SAVING_LOADER: {

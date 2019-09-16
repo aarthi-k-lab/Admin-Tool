@@ -26,6 +26,7 @@ import {
   SET_TASK_SENDTO_DOCGEN,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
+  SET_BEGIN_SEARCH,
 } from './types';
 
 
@@ -121,6 +122,10 @@ const hideAssignUnassign = () => ({
   type: HIDE_ASSIGN_UNASSIGN,
 });
 
+const setBeginSearchAction = () => ({
+  type: SET_BEGIN_SEARCH,
+});
+
 const displayAssign = () => ({
   type: DISPLAY_ASSIGN,
 });
@@ -173,4 +178,5 @@ export {
   onSendToDocGenAction,
   cleanResult,
   continueMyReview,
+  setBeginSearchAction,
 };

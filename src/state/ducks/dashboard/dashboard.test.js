@@ -703,6 +703,21 @@ describe('search Loan Failure - Invalid Loan Number', () => {
 
   const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
 
+  it('should call select wasSearched from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.wasSearched));
+  });
+
+  it('should call select inProgress from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.inProgress));
+  });
+
+  it('should put SHOW_LOADER', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
   it('should call search Api', () => {
     expect(saga.next().value)
       .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
@@ -729,6 +744,9 @@ describe('search Loan Failure - No Eval cases', () => {
   const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
 
   it('should call search Api', () => {
+    saga.next();
+    saga.next();
+    saga.next();
     expect(saga.next().value)
       .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
   });
@@ -763,6 +781,9 @@ describe('search Loan Success', () => {
   const saga = cloneableGenerator(TestExports.searchLoan)(loanNumber);
 
   it('should call search Api', () => {
+    saga.next();
+    saga.next();
+    saga.next();
     expect(saga.next().value)
       .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
   });

@@ -13,7 +13,7 @@ const MSG_CAN_UNASSIGN = 'Please click Unassign to unassign the task from the us
 const MSG_CANNOT_UNASSIGN = 'Please note only Manager can unassign the task.';
 const MSG_SHOULD_ASSIGN = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
 const MSG_DSPN_SUCCESS = 'The task has been dispositioned successfully with disposition';
-const MSG_TASKS_LIMIT_EXCEEDS = 'You have reached the limit of 2 loans assigned at the same time. Please complete your review on one of them and try again.';
+const MSG_TASKS_LIMIT_EXCEEDS = 'You have reached the limit of 2 loans assigned for a normal user or 10 for manager at the same time. Please complete your review on one of them and try again.';
 const MSG_VALIDATION_SUCCESS = 'Validation successful!';
 
 function reduceMessageListToMessage(acc, msg) {

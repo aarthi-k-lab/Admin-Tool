@@ -16,6 +16,8 @@ const clearSearch = state => R.pathOr(false, ['dashboard', 'clearSearch'], state
 
 const inProgress = state => R.pathOr(false, ['dashboard', 'inProgress'], state);
 
+const wasSearched = state => R.pathOr(false, ['dashboard', 'wasSearched'], state);
+
 const saveInProgress = state => R.pathOr(false, ['dashboard', 'saveInProgress'], state);
 
 const evalId = state => R.pathOr(null, ['dashboard', 'evalId'], state);
@@ -116,6 +118,7 @@ const selectors = {
   taskStatus,
   resultUnderwriting,
   resultOperation,
+  wasSearched,
 };
 
 export default selectors;

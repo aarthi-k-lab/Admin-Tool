@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
+import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
@@ -133,11 +134,11 @@ class SearchLoan extends React.PureComponent {
 
   validateLoanNumber() {
     const { searchLoanResult } = this.props;
-    const loanNumber = this.getParamsValue();
+    // const loanNumber = this.getParamsValue();
     return R.isEmpty(searchLoanResult)
       || (searchLoanResult
-        && searchLoanResult.loanNumber
-        && loanNumber !== searchLoanResult.loanNumber.toString());
+        && searchLoanResult.loanNumber);
+    // && loanNumber !== searchLoanResult.loanNumber.toString()
   }
 
   renderSearchResults() {
@@ -165,6 +166,12 @@ class SearchLoan extends React.PureComponent {
         }
         if (assigned) {
           data.push(...assigned);
+        }
+        const { inProgress } = this.props;
+        if (inProgress) {
+          return (
+            <Loader message="Please Wait" />
+          );
         }
         const searchResultCount = data.length;
         return (
@@ -300,12 +307,14 @@ SearchLoan.COLUMN_DATA = [{
 
 SearchLoan.defaultProps = {
   enableGetNext: false,
+  inProgress: false,
 };
 
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
@@ -336,6 +345,7 @@ const mapStateToProps = state => ({
   isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
   user: loginSelectors.getUser(state),
+  inProgress: selectors.inProgress(state),
 });
 
 const mapDispatchToProps = dispatch => ({

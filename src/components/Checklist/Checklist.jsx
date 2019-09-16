@@ -30,6 +30,7 @@ class Checklist extends React.PureComponent {
       dialogContent: '',
       dialogTitle: '',
     };
+    this.lastEditedValue = undefined;
   }
 
   static getDerivedStateFromProps(props) {
@@ -64,11 +65,14 @@ class Checklist extends React.PureComponent {
               : ''
           );
           const dirtyValue = R.isEmpty(value) ? null : value;
-          const multilineTextDirtyValues = R.dissoc(id, oldValues);
-          this.setState({
-            multilineTextDirtyValues,
-          });
-          onChange(id, dirtyValue, taskCode);
+          if (!R.equals(this.lastEditedValue, oldValues[id])) {
+            onChange(id, dirtyValue, taskCode);
+            this.lastEditedValue = oldValues[id];
+            const multilineTextDirtyValues = R.dissoc(id, oldValues);
+            this.setState({
+              multilineTextDirtyValues,
+            });
+          }
         });
       }
     };
