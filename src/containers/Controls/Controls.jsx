@@ -145,6 +145,7 @@ class Controls extends React.PureComponent {
       showValidate,
       isFirstVisit,
       user,
+      enableSendToDocGen,
     } = this.props;
     let assign = null;
     const onEndShiftClick = () => onEndShift(
@@ -171,9 +172,14 @@ class Controls extends React.PureComponent {
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
       ? <SendToUnderwriting onClick={this.handleSentToUnderwriting} /> : null;
     const getSendToDocGenStagerButton = showSendToDocGenStager
-      ? <SendToDocGenStager onClick={this.handleSendToDocGenStager} /> : null;
+      ? (
+        <SendToDocGenStager
+          disabled={!enableSendToDocGen}
+          onClick={this.handleSendToDocGenStager}
+        />
+      ) : null;
     const getSendToDocGenButton = showSendToDocGen
-      ? <SendToDocGen onClick={this.handleSendToDocGen} /> : null;
+      ? <SendToDocGen disabled={!enableSendToDocGen} onClick={this.handleSendToDocGen} /> : null;
     const expand = <Expand onClick={onExpand} />;
     if (
       showAssign != null
@@ -219,6 +225,7 @@ class Controls extends React.PureComponent {
 Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
+  enableSendToDocGen: true,
   enableValidate: false,
   enableAddDocsInReceived: true,
   isFirstVisit: true,
@@ -245,6 +252,7 @@ Controls.propTypes = {
   enableAddDocsInReceived: PropTypes.bool,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
+  enableSendToDocGen: PropTypes.bool,
   enableValidate: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -291,6 +299,7 @@ const mapStateToProps = (state) => {
     enableValidate,
     enableEndShift: selectors.enableEndShift(state),
     enableGetNext: selectors.enableGetNext(state),
+    enableSendToDocGen: selectors.enableSendToDocGen(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),
     showAssign: selectors.showAssign(state),

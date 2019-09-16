@@ -38,6 +38,7 @@ import {
   CONTINUE_MY_REVIEW_RESULT,
   SET_ADD_DOCS_IN_RESULT,
   SET_BEGIN_SEARCH,
+  SET_ENABLE_SEND_BACK_GEN,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -378,9 +379,11 @@ const reducer = (state = { firstVisit: true }, action) => {
 
     case CLEAN_RESULT: {
       const resultOperation = {};
+      const enableSendToDocGen = true;
       return {
         ...state,
         resultOperation,
+        enableSendToDocGen,
         loading: false,
       };
     }
@@ -391,6 +394,14 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         tableData,
         loading: false,
+      };
+    }
+
+    case SET_ENABLE_SEND_BACK_GEN: {
+      const enableSendToDocGen = action.payload;
+      return {
+        ...state,
+        enableSendToDocGen,
       };
     }
 

@@ -67,6 +67,7 @@ import {
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
+  SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
   SET_ADD_DOCS_IN_RESULT,
 } from './types';
@@ -790,6 +791,7 @@ function* loadTrials(payload) {
       },
     });
   }
+  yield put({ type: HIDE_LOADER });
 }
 
 function* sentToUnderwriting() {
@@ -843,7 +845,6 @@ function* sentToUnderwriting() {
         payload: { level: LEVEL_ERROR, status: message },
       });
     }
-    yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
@@ -854,6 +855,7 @@ function* sentToUnderwriting() {
       },
     });
   }
+  yield put({ type: HIDE_LOADER });
 }
 
 function* sendToDocGen(payload) {
@@ -878,6 +880,10 @@ function* sendToDocGen(payload) {
             status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ' queue for rework'}`,
           },
         });
+        yield put({
+          type: SET_ENABLE_SEND_BACK_GEN,
+          payload: false,
+        });
       } else {
         yield put({
           type: SET_RESULT_OPERATION,
@@ -897,7 +903,6 @@ function* sendToDocGen(payload) {
         },
       });
     }
-    yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,
@@ -908,6 +913,7 @@ function* sendToDocGen(payload) {
       },
     });
   }
+  yield put({ type: HIDE_LOADER });
 }
 
 function* AddDocsInReceived(payload) {

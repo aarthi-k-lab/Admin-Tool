@@ -64,6 +64,8 @@ const enableEndShift = state => (
 
 const showAssign = state => R.pathOr(null, ['dashboard', 'showAssign'], state);
 
+const enableSendToDocGen = state => (R.pathOr(true, ['dashboard', 'enableSendToDocGen'], state));
+
 const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
 
 const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
@@ -122,6 +124,7 @@ const selectors = {
   resultOperation,
   tableData,
   wasSearched,
+  enableSendToDocGen,
 };
 
 export default selectors;

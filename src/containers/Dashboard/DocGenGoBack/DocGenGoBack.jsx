@@ -53,7 +53,7 @@ class DocGenGoBack extends React.PureComponent {
 
   render() {
     const { inProgress, user } = this.props;
-    const showButton = user.groupList.includes('docgen-mgr');
+    const showButton = user.groupList.includes('docgen-mgr', 'docgen');
     const title = 'Send Back Doc Gen';
     const { resultOperation } = this.props;
     if (inProgress) {
