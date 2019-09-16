@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
-  SendToDocGen, SendToDocGenStager, ContinueMyReview,
+  SendToDocGen, SendToDocGenStager, ContinueMyReview, AddDocsInReceived,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -35,6 +36,7 @@ class Controls extends React.PureComponent {
     this.handleSendToDocGen = this.handleSendToDocGen.bind(this);
     this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
+    this.handleAddDocsInReceived = this.handleAddDocsInReceived.bind(this);
   }
 
   componentDidMount() {
@@ -84,6 +86,11 @@ class Controls extends React.PureComponent {
     onSendToDocGen(false);
   }
 
+  handleAddDocsInReceived() {
+    const { history } = this.props;
+    history.push('/docs-in-page');
+  }
+
   handleSendToDocGenStager() {
     const { onSendToDocGen } = this.props;
     onSendToDocGen(true);
@@ -120,12 +127,14 @@ class Controls extends React.PureComponent {
   render() {
     const {
       disableValidation,
+      enableAddDocsInReceived,
       enableEndShift,
       enableValidate,
       enableGetNext,
       groupName,
       onEndShift,
       onExpand,
+      showAddDocsInReceived,
       showEndShift,
       showGetNext,
       showSendToUnderWritingIcon,
@@ -183,10 +192,18 @@ class Controls extends React.PureComponent {
     }
     const getContinueMyReviewButton = showContinueMyReview
       ? <ContinueMyReview onClick={this.handleContinueMyReview} /> : null;
+    const getAddDocsInReceived = showAddDocsInReceived
+      ? (
+        <AddDocsInReceived
+          disabled={!enableAddDocsInReceived}
+          onClick={this.handleAddDocsInReceived}
+        />
+      ) : null;
     return (
       <>
         {assign}
         {AppGroupName.hasChecklist(groupName) ? validate : null}
+        {getAddDocsInReceived}
         {endShift}
         {getNext}
         {getSendToUnderWritingButton}
@@ -203,12 +220,14 @@ Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
   enableValidate: false,
+  enableAddDocsInReceived: true,
   isFirstVisit: true,
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
+  showAddDocsInReceived: false,
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
@@ -223,10 +242,12 @@ Controls.defaultProps = {
 Controls.propTypes = {
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
+  enableAddDocsInReceived: PropTypes.bool,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   enableValidate: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
@@ -237,6 +258,7 @@ Controls.propTypes = {
   onGetNext: PropTypes.func,
   onSendToDocGen: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
+  showAddDocsInReceived: PropTypes.bool,
   showAssign: PropTypes.bool,
   showContinueMyReview: PropTypes.bool,
   showEndShift: PropTypes.bool,
@@ -295,5 +317,5 @@ const TestHooks = {
   Controls,
 };
 
-export default ControlsContainer;
+export default withRouter(ControlsContainer);
 export { TestHooks };

@@ -10,6 +10,7 @@ const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
+const DOCS_IN = 'DI';
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
@@ -74,6 +75,13 @@ const GROUP_INFO = [
     task: 'DOC GENERATION',
     taskCode: 'UW',
     path: '/doc-gen',
+    showAssignUnassign: true,
+  },
+  {
+    group: DOCS_IN,
+    task: 'DOCS IN',
+    taskCode: 'DI',
+    path: '/docs-in',
     showAssignUnassign: true,
   },
   {

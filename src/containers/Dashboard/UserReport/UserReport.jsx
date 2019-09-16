@@ -23,7 +23,9 @@ class UserReport extends React.PureComponent {
       '/backend-checklist': 'UNDERWRITNG Agent Dashboard',
       '/doc-processor': 'PROCESSING Agent Dashboard',
       '/doc-gen': 'DOC GENERATION Agent Dashboard',
+      '/docs-in': 'DOCS IN Agent Dashboard',
     };
+    this.showAddDocsIn = false;
     this.accessToken = Auth.getPowerBIAccessToken();
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
@@ -72,6 +74,7 @@ class UserReport extends React.PureComponent {
   renderTitle() {
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
+    this.showAddDocsIn = el.group === 'DI';
     return el.task;
   }
 
@@ -81,6 +84,7 @@ class UserReport extends React.PureComponent {
       <>
         <ContentHeader title={this.renderTitle()}>
           <Controls
+            showAddDocsInReceived={this.showAddDocsIn}
             showGetNext
           />
         </ContentHeader>

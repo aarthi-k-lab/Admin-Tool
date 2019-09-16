@@ -1,0 +1,8 @@
+.add-docs-received.add-docs-received {
+  background-color: var(--light-blue-900);
+  margin-right: 73%;
+}
+
+.add-docs-received.add-docs-received:hover {
+  background-color: var(--blue-900);
+}

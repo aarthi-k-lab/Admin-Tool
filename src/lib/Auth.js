@@ -251,6 +251,7 @@ Auth.failureMessages = {
   AD_TOKEN_GENERATION_FAILED: GENERAL_ERROR_MESSAGE,
   BACKEND_UNDERWRITER_ACCESS_NEEDED: 'BEUW Group Access is needed to view the Backend Underwriter Dashboard.',
   DOC_PROCESSOR_ACCESS_NEEDED: 'PROC Group Access is needed to view the Doc Processor Dashboard.',
+  DOCSIN_ACCESS_NEEDED: 'DOCSIN Group Access is needed to view the Backend Underwriter Dashboard.',
   LOAN_ACTIVITY_ACCESS_NEEDED: 'LA Group Access is needed to view the Loan Activity Dashboard.',
   FRONTEND_UNDERWRITER_ACCESS_NEEDED: 'FEUW Group Access is needed to view the Frontend Underwriter Dashboard.',
   MANAGER_ACCESS_NEEDED: 'Manager Group Access is needed to view the Manager Dashboard.',

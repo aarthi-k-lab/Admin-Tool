@@ -82,6 +82,22 @@ const docGen = {
   groups: ['allaccess', 'docgen', 'docgen-mgr'],
 };
 
+// docsin and docsin-mgr
+const docIns = {
+  path: '/docs-in',
+  name: 'docs-in',
+  img: '/static/img/docs-in.svg',
+  groups: ['allaccess', 'docsin', 'docsin-mgr'],
+};
+
+const docInsPage = {
+  path: '/docs-in-page',
+  name: 'docs-in-page',
+  img: '/static/img/docs-in.svg',
+  groups: ['allaccess', 'docsin', 'docsin-mgr'],
+};
+
+
 const links = [
   managerDashboard,
   docProcessor,
@@ -92,9 +108,11 @@ const links = [
   loanActivity,
   docGenBack,
   docGen,
+  docIns,
+  docInsPage,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back'];
+const noIcons = ['/loan-activity', '/doc-gen-back', '/docs-in-page'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
@@ -159,6 +177,10 @@ function hasDocGenBackAccess(groups) {
   return hasGroup(docGenBack.groups, groups);
 }
 
+function hasDocInsAccess(groups) {
+  return hasGroup(docIns.groups, groups);
+}
+
 module.exports = {
   links,
   hasBackendUnderwriterAccess,
@@ -174,4 +196,5 @@ module.exports = {
   hasChecklistAccess,
   hasDocGenBackAccess,
   hasDocGenAccess,
+  hasDocInsAccess,
 };

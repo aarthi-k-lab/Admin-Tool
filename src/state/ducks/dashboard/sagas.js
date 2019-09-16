@@ -67,6 +67,8 @@ import {
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
+  SET_ADD_DOCS_IN,
+  SET_ADD_DOCS_IN_RESULT,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -908,6 +910,40 @@ function* sendToDocGen(payload) {
   }
 }
 
+function* AddDocsInReceived(payload) {
+  const loanNumbers = payload.payload;
+  console.log(loanNumbers);
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callPost, '/api/release/api/process/docsInMoveLoan', loanNumbers);
+    if (response !== null) {
+      yield put({
+        type: SET_ADD_DOCS_IN_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload:
+        {
+          level: LEVEL_ERROR,
+          status: 'This loan do not exist or currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload:
+      {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
@@ -922,6 +958,10 @@ function* watchSentToUnderwriting() {
 
 function* watchSendToDocGen() {
   yield takeEvery(SET_TASK_SENDTO_DOCGEN, sendToDocGen);
+}
+
+function* watchAddDocsInReceived() {
+  yield takeEvery(SET_ADD_DOCS_IN, AddDocsInReceived);
 }
 
 export const TestExports = {
@@ -952,6 +992,7 @@ export const TestExports = {
   watchLoadTrials,
   watchSendToDocGen,
   watchContinueMyReview,
+  watchAddDocsInReceived,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -970,5 +1011,6 @@ export const combinedSaga = function* combinedSaga() {
     watchSentToUnderwriting(),
     watchSendToDocGen(),
     watchContinueMyReview(),
+    watchAddDocsInReceived(),
   ]);
 };

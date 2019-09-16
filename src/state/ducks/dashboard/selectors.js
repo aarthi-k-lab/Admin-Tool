@@ -44,6 +44,8 @@ const processName = state => R.pathOr(null, ['dashboard', 'processName'], state)
 const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
+const tableData = state => R.pathOr(null, ['dashboard', 'tableData'], state);
+
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
 const enableGetNext = state => (
@@ -118,6 +120,7 @@ const selectors = {
   taskStatus,
   resultUnderwriting,
   resultOperation,
+  tableData,
   wasSearched,
 };
 

@@ -29,6 +29,8 @@ import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
 import IdleUserHandle from './IdleUserHandler';
 import DocGenGoBack from './Dashboard/DocGenGoBack';
+import DocsInMain from './Dashboard/DocsIn/DocsInMain';
+import DocsIn from './Dashboard/DocsIn/DocsIn';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -49,6 +51,8 @@ class ProtectedRoutes extends React.Component {
     this.renderBackendChecklistRoute = this.renderBackendChecklistRoute.bind(this);
     this.renderDocGenBackRoute = this.renderDocGenBackRoute.bind(this);
     this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
+    this.renderDocsInMainRoute = this.renderDocsInMainRoute.bind(this);
+    this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
   }
 
   componentDidMount() {
@@ -164,6 +168,24 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderDocsInMainRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasBackendUnderwriterAccess(groups)
+        ? <DocsInMain group={DashboardModel.DOCS_IN} />
+        : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
+    );
+  }
+
+  renderDocsInPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasBackendUnderwriterAccess(groups)
+        ? <DocsIn group={DashboardModel.DOCS_IN} />
+        : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
     const { expandView, location, user } = this.props;
@@ -190,6 +212,8 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-gen-back" render={this.renderDocGenBackRoute} />
           <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
+          <Route path="/docs-in" render={this.renderDocsInMainRoute} />
+          <Route path="/docs-in-page" render={this.renderDocsInPageRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

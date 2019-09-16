@@ -36,6 +36,7 @@ import {
   SET_RESULT_OPERATION,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW_RESULT,
+  SET_ADD_DOCS_IN_RESULT,
   SET_BEGIN_SEARCH,
 } from './types';
 
@@ -370,6 +371,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         resultOperation,
+        tableData: [],
         loading: false,
       };
     }
@@ -379,6 +381,15 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         resultOperation,
+        loading: false,
+      };
+    }
+
+    case SET_ADD_DOCS_IN_RESULT: {
+      const tableData = action.payload;
+      return {
+        ...state,
+        tableData,
         loading: false,
       };
     }

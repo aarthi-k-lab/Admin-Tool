@@ -22,6 +22,8 @@ import {
   onSendToDocGenAction,
   cleanResult,
   continueMyReview,
+  onLoansSubmitAction,
+  onLoanValidationError,
   setBeginSearchAction,
 } from './actions';
 
@@ -111,6 +113,13 @@ const onContinueMyReview = dispatch => (taskStatus) => {
   dispatch(continueMyReview(taskStatus));
 };
 
+const onLoansSubmit = dispatch => (payload) => {
+  dispatch(onLoansSubmitAction(payload));
+};
+const onFailedLoanValidation = dispatch => (payload) => {
+  dispatch(onLoanValidationError(payload));
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -134,6 +143,8 @@ const operations = {
   onSendToDocGen,
   onCleanResult,
   onContinueMyReview,
+  onLoansSubmit,
+  onFailedLoanValidation,
   setBeginSearch,
 };
 

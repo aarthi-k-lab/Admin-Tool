@@ -26,6 +26,8 @@ import {
   SET_TASK_SENDTO_DOCGEN,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
+  SET_ADD_DOCS_IN,
+  SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
 } from './types';
 
@@ -152,6 +154,15 @@ const continueMyReview = taskStatus => ({
   payload: taskStatus,
 });
 
+const onLoansSubmitAction = payload => ({
+  type: SET_ADD_DOCS_IN,
+  payload,
+});
+const onLoanValidationError = payload => ({
+  type: SET_RESULT_OPERATION,
+  payload,
+});
+
 export {
   autoSave,
   clearDisposition,
@@ -178,5 +189,7 @@ export {
   onSendToDocGenAction,
   cleanResult,
   continueMyReview,
+  onLoansSubmitAction,
+  onLoanValidationError,
   setBeginSearchAction,
 };
