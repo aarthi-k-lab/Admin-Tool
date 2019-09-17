@@ -224,7 +224,6 @@ class ProtectedRoutes extends React.Component {
 
 const mapStateToProps = state => ({
   expandView: dashboardSelectors.expandView(state),
-  features: config.selectors.getFeatures(state),
   user: loginSelectors.getUser(state),
   items: TombstoneSelectors.getTombstoneData(state),
   loanNumber: dashboardSelectors.loanNumber(state),
@@ -238,12 +237,10 @@ const mapDispatchToProps = dispatch => ({
 
 ProtectedRoutes.defaultProps = {
   items: [],
+  loanNumber: '',
 };
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
-  features: PropTypes.shape({
-    taskPane: PropTypes.bool,
-  }).isRequired,
   getFeaturesTrigger: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
@@ -251,7 +248,7 @@ ProtectedRoutes.propTypes = {
       title: PropTypes.string.isRequired,
     }),
   ),
-  loanNumber: PropTypes.string.isRequired,
+  loanNumber: PropTypes.string,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,

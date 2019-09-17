@@ -33,23 +33,23 @@
   justify-content: center;
 }
 
-.subTaskDescription.subTaskDescription{
+.subTaskDescription.subTaskDescription {
   flex-grow: 4;
-  flex-basis: 0; 
-  width: 100px; 
+  flex-basis: 0;
+  width: 100px;
   word-wrap: break-word;
 }
 
-.clearButton.clearButton{
+.clearButton.clearButton {
   flex-grow: 0;
   flex-basis: 0;
-  align-self: flex-end
+  align-self: flex-end;
 }
 
-.subTaskDescParent.subTaskDescParent{
+.subTaskDescParent.subTaskDescParent {
   display: flex;
   flex-direction: row;
-  width: 100%
+  width: 100%;
 }
 
 .tooltip.tooltip {

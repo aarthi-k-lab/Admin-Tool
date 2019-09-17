@@ -39,10 +39,11 @@ class HandleBrowserEvent extends React.PureComponent {
 }
 HandleBrowserEvent.defaultProps = {
   enableGetNext: false,
+  evalId: '',
 };
 HandleBrowserEvent.propTypes = {
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.string.isRequired,
+  evalId: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,

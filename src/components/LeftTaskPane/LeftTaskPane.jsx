@@ -137,7 +137,7 @@ class LeftTaskPane extends React.Component {
                     <div styleName="checklist-history-icon">
                       <ChecklistHistory
                         checkListData={historicalCheckListData}
-                        margin={{ 'margin-left': '3rem' }}
+                        margin={{ marginLeft: '3rem' }}
                         pdfGeneratorConstant={pdfGeneratorConstant}
 
                       />

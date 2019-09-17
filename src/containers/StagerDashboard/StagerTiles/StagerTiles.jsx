@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import './StagerTiles.css';
 import Grid from '@material-ui/core/Grid';
 import StagerDocumentStatusCard from 'components/StagerDocumentStatusCard';
@@ -31,7 +31,7 @@ class StagerTiles extends React.PureComponent {
           {!countsData.length ? <Loader /> : null}
           <div>
             {countsData.map(stagerTaskGroupData => (
-              <>
+              <Fragment key={stagerTaskGroupData.displayName}>
                 <Grid item styleName="taskStatusTitle" xs={12}>
                   <div style={{ flexGrow: '0.75' }}>
                     {stagerTaskGroupData.displayName}
@@ -59,7 +59,7 @@ class StagerTiles extends React.PureComponent {
                     ))}
                   </Grid>
                 </Grid>
-              </>
+              </Fragment>
             ))}
           </div>
         </Grid>

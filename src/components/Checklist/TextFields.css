@@ -1,23 +1,23 @@
 .text-label.text-label {
-    color: #000;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-  
-  .componentMargin.componentMargin {
-    margin-top: 0.5rem;
-  }
-  
-  .componentMargin.componentMargin div > input {
-    padding: 5.5px 5px;
-  }
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
 
-  .dropDownStyle {
-    min-width: 25rem !important;
-    border: 0.13rem solid black !important;
-  }
+.componentMargin.componentMargin {
+  margin-top: 0.5rem;
+}
 
-  .dropDownMenuStyle {
-    min-width: 25rem !important;
-    border: 0.1rem solid black !important;
-  }
+.componentMargin.componentMargin div > input {
+  padding: 5.5px 5px;
+}
+
+.dropDownStyle {
+  min-width: 25rem !important;
+  border: 0.13rem solid black !important;
+}
+
+.dropDownMenuStyle {
+  min-width: 25rem !important;
+  border: 0.1rem solid black !important;
+}

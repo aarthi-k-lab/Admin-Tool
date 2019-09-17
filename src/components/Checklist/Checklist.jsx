@@ -386,13 +386,13 @@ Checklist.propTypes = {
       disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
       isVisible: PropTypes.bool,
-      options: PropTypes.shape({
+      options: PropTypes.arrayOf(PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
-      }),
+      })),
       taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([Object.values(HTMLElements)]).isRequired,
+      type: PropTypes.oneOf(Object.values(HTMLElements)).isRequired,
       value: PropTypes.any,
     }),
   ).isRequired,

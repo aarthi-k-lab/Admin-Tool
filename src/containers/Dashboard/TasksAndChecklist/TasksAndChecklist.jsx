@@ -222,12 +222,12 @@ TasksAndChecklist.propTypes = {
     PropTypes.shape({
       disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
-      options: PropTypes.shape({
+      options: PropTypes.arrayOf(PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
-      }),
+      })),
       title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf([Object.values(componentTypes)]).isRequired,
+      type: PropTypes.oneOf(Object.values(componentTypes)).isRequired,
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
@@ -263,7 +263,7 @@ TasksAndChecklist.propTypes = {
   snackBarData: PropTypes.node.isRequired,
   taskFetchError: PropTypes.bool,
   user: PropTypes.shape({
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

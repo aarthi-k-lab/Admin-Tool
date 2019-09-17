@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ContentHeader from 'components/ContentHeader';
 import FullHeightColumn from 'components/FullHeightColumn';
 import Controls from 'containers/Controls';
-import FrontEndDisposition from 'containers/Dashboard/FrontEndDisposition';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
@@ -32,21 +31,10 @@ class EvaluationPage extends React.PureComponent {
   renderDashboard() {
     const { group } = this.props;
     switch (group) {
-      case DashboardModel.BEUW:
-        return <TasksAndChecklist />;
-      case DashboardModel.FEUW_TASKS_AND_CHECKLIST:
-      case DashboardModel.FEUW:
-        return <TasksAndChecklist />;
-      case DashboardModel.BEUW_TASKS_AND_CHECKLIST:
-        return <TasksAndChecklist />;
-      case DashboardModel.PROC:
-        return <TasksAndChecklist />;
       case DashboardModel.LOAN_ACTIVITY:
         return <LoanActivity />;
-      case DashboardModel.DOC_GEN:
-        return <TasksAndChecklist />;
       default:
-        return <FrontEndDisposition />;
+        return <TasksAndChecklist />;
     }
   }
 
@@ -89,7 +77,7 @@ EvaluationPage.propTypes = {
   taskName: PropTypes.string.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

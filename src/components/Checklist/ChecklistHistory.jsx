@@ -11,10 +11,10 @@ import * as R from 'ramda';
 
 const styles = theme => ({
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
   extendedIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   custom: {
     color: 'black',
@@ -86,12 +86,13 @@ class ChecklistHistory extends React.Component {
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
                 <a
+                  key={option}
                   href={`${pdfGeneratorConstant}/api/download/${option.taskCheckListId}?event=${option.taskCheckListTemplateName}&disposition=${option.dispositionCode}&assignedTo=${option.assignedTo}&dispositionDate=${this.getCSTDateTime(option.taskCheckListDateTime)}`}
                   style={{ textDecoration: 'none', color: 'inherit' }}
                   // eslint-disable-next-line react/jsx-no-target-blank
                   target="_blank"
                 >
-                  <MenuItem className="menuItem">
+                  <MenuItem key={option} className="menuItem">
                     <div>
                       {`${option.taskCheckListTemplateName} - ${option.assignedTo.replace('.', ' ').replace('@mrcooper.com', '')}`}
                       <br />
@@ -121,7 +122,7 @@ ChecklistHistory.defaultProps = {
     'margin-left': '3rem',
   },
   toolTipPosition: 'bottom',
-
+  classes: {},
 };
 
 ChecklistHistory.propTypes = {
@@ -129,7 +130,9 @@ ChecklistHistory.propTypes = {
     taskCheckListDateTime: PropTypes.string.isRequired,
     taskCheckListTemplateName: PropTypes.string.isRequired,
   })).isRequired,
-  classes: PropTypes.shape.isRequired,
+  classes: PropTypes.shape({
+    custom: PropTypes.string,
+  }),
   margin: PropTypes.shape({
     marginTop: PropTypes.string,
   }),

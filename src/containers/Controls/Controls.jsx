@@ -257,9 +257,6 @@ Controls.propTypes = {
   groupName: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }).isRequired,
   onContinueMyReview: PropTypes.func,
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
@@ -277,7 +274,7 @@ Controls.propTypes = {
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
     groupList: PropTypes.array,
-    skills: PropTypes.objectOf(PropTypes.string).isRequired,
+    skills: PropTypes.objectOf(PropTypes.array),
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

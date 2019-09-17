@@ -62,7 +62,6 @@ function* postComment(payload) {
     snackBarData.type = 'error';
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
-    console.log('Save Comment Call error:', e);
   }
 }
 

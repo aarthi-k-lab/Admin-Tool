@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Button } from '@storybook/react/demo';
-import Checklist from '../src/components/Checklist';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from 'lib/Theme';
+import Checklist from '../src/components/Checklist';
 
 storiesOf('Button', module)
   .add('with text', () => (

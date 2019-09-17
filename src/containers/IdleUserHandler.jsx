@@ -102,11 +102,12 @@ class IdleUserHandler extends Component {
 
 IdleUserHandler.defaultProps = {
   enableGetNext: false,
+  evalId: '',
 };
 
 IdleUserHandler.propTypes = {
   enableGetNext: PropTypes.bool,
-  evalId: PropTypes.string.isRequired,
+  evalId: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,

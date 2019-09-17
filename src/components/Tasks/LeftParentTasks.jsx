@@ -171,6 +171,7 @@ class LeftParentTasks extends React.Component {
                   .filter(({ visibility }) => visibility)
                   .map(subTask => (
                     <SubTask
+                      key={subTask._id} // eslint-disable-line
                       data={subTask}
                       onClick={onSubTaskClick}
                       selected={subTask._id === selectedTaskId} // eslint-disable-line
@@ -192,7 +193,7 @@ class LeftParentTasks extends React.Component {
       tasks
         .filter(({ visibility }) => visibility)
         .map(task => (
-          <div styleName="task-group">
+          <div key={task._id} styleName="task-group">
             {
             isCollapsed
               ? this.constructor.renderCollapsedView(task)
@@ -232,7 +233,7 @@ LeftParentTasks.propTypes = {
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string,
   shouldDeleteTask: PropTypes.bool.isRequired,
-  tasks: PropTypes.arrayOf(TaskModel).isRequired,
+  tasks: PropTypes.shape(TaskModel).isRequired,
   updateChecklist: PropTypes.func.isRequired,
 };
 

@@ -47,6 +47,7 @@ FormControlLabelWithTooltip.defaultProps = {
   disableTooltip: false,
   styleName: '',
   value: '',
+  tooltip: '',
 };
 
 FormControlLabelWithTooltip.propTypes = {
@@ -56,7 +57,7 @@ FormControlLabelWithTooltip.propTypes = {
   disableTooltip: PropTypes.bool,
   label: PropTypes.string.isRequired,
   styleName: PropTypes.string,
-  tooltip: PropTypes.string.isRequired,
+  tooltip: PropTypes.string,
   value: PropTypes.string,
 };
 

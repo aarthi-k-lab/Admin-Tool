@@ -187,10 +187,12 @@ StagerPage.propTypes = {
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
-  popupData: PropTypes.shape({
-    hitLoans: PropTypes.array.isRequired,
-    missedLoans: PropTypes.array.isRequired,
-  }),
+  popupData: PropTypes.shape(
+    PropTypes.arrayOf({
+      hitLoans: PropTypes.array.isRequired,
+      missedLoans: PropTypes.array.isRequired,
+    }),
+  ),
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   stager: PropTypes.string.isRequired,

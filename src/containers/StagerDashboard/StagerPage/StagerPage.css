@@ -12,7 +12,6 @@
   padding-left: 2rem;
 }
 
-
 .scroll-area {
   overflow-x: hidden;
   overflow-y: hidden;
@@ -42,7 +41,7 @@
 }
 
 .select-width {
- margin-top: 0.7rem !important;
+  margin-top: 0.7rem !important;
 }
 
 .errormsg {

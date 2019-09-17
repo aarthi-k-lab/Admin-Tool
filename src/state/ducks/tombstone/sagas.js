@@ -32,7 +32,6 @@ function* fetchTombstoneData() {
     const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, groupName);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
-    console.error(e);
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
       const defaultData = [
         LoanTombstone.generateTombstoneItem('Loan #', loanNumber),
