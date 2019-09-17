@@ -36,6 +36,11 @@ class UserReport extends React.PureComponent {
     fetchPowerBIConstants();
   }
 
+  onHandleClick = () => {
+    const { history } = this.props;
+    history.push('/docs-in-page');
+  }
+
   renderReport(powerBIConstants) {
     const { location } = this.props;
     const nameRepo = this.mapRepo[location.pathname];
@@ -71,20 +76,19 @@ class UserReport extends React.PureComponent {
       );
   }
 
-  renderTitle() {
+  render() {
+    const { powerBIConstants } = this.props;
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     this.showAddDocsIn = el.group === 'DI';
-    return el.task;
-  }
-
-  render() {
-    const { powerBIConstants } = this.props;
     return (
       <>
-        <ContentHeader title={this.renderTitle()}>
+        <ContentHeader
+          handleClick={() => this.onHandleClick}
+          showAddButton={this.showAddDocsIn}
+          title={el.task}
+        >
           <Controls
-            showAddDocsInReceived={this.showAddDocsIn}
             showGetNext
           />
         </ContentHeader>
@@ -120,7 +124,7 @@ UserReport.defaultProps = {
 
 UserReport.propTypes = {
   fetchPowerBIConstants: PropTypes.func.isRequired,
-  // groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }),

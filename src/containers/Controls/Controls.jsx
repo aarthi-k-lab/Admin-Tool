@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
-  SendToDocGen, SendToDocGenStager, ContinueMyReview, AddDocsInReceived,
+  SendToDocGen, SendToDocGenStager, ContinueMyReview,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -127,14 +127,12 @@ class Controls extends React.PureComponent {
   render() {
     const {
       disableValidation,
-      enableAddDocsInReceived,
       enableEndShift,
       enableValidate,
       enableGetNext,
       groupName,
       onEndShift,
       onExpand,
-      showAddDocsInReceived,
       showEndShift,
       showGetNext,
       showSendToUnderWritingIcon,
@@ -198,18 +196,10 @@ class Controls extends React.PureComponent {
     }
     const getContinueMyReviewButton = showContinueMyReview
       ? <ContinueMyReview onClick={this.handleContinueMyReview} /> : null;
-    const getAddDocsInReceived = showAddDocsInReceived
-      ? (
-        <AddDocsInReceived
-          disabled={!enableAddDocsInReceived}
-          onClick={this.handleAddDocsInReceived}
-        />
-      ) : null;
     return (
       <>
         {assign}
         {AppGroupName.hasChecklist(groupName) ? validate : null}
-        {getAddDocsInReceived}
         {endShift}
         {getNext}
         {getSendToUnderWritingButton}
@@ -227,14 +217,12 @@ Controls.defaultProps = {
   enableGetNext: false,
   enableSendToDocGen: true,
   enableValidate: false,
-  enableAddDocsInReceived: true,
   isFirstVisit: true,
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
-  showAddDocsInReceived: false,
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
@@ -249,7 +237,6 @@ Controls.defaultProps = {
 Controls.propTypes = {
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
-  enableAddDocsInReceived: PropTypes.bool,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   enableSendToDocGen: PropTypes.bool,
@@ -263,7 +250,6 @@ Controls.propTypes = {
   onGetNext: PropTypes.func,
   onSendToDocGen: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
-  showAddDocsInReceived: PropTypes.bool,
   showAssign: PropTypes.bool,
   showContinueMyReview: PropTypes.bool,
   showEndShift: PropTypes.bool,
