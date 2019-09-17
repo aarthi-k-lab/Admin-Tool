@@ -145,30 +145,28 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getDaysUntilCFPB(_, evalDetails) {
-  const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
+function getExpirationDate(evalDetails, groupName) {
+  switch (groupName) {
+    case DashboardModel.DOC_GEN:
+      return evalDetails.lastPaidDate;
+    case DashboardModel.DOCS_IN:
+      return evalDetails.modDocsReceivedDate;
+    default:
+      return evalDetails.lastDocumentReceivedDate;
+  }
+}
+
+function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName) {
+  const date = moment.tz(getExpirationDate(evalDetails, groupName), 'America/Chicago');
   const today = moment.tz('America/Chicago');
   const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
-function getCFPBExpirationDate(_, evalDetails) {
-  const date = moment.tz(evalDetails.lastDocumentReceivedDate, 'America/Chicago');
+function getCFPBExpirationDate(_, evalDetails, _pdd, _pd, groupName) {
+  const date = moment.tz(getExpirationDate(evalDetails, groupName), 'America/Chicago');
   const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
-}
-
-function getCFPBExpirationDateForDocGen(_, evalDetails) {
-  const date = moment.tz(evalDetails.lastPaidDate, 'America/Chicago');
-  const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
-}
-
-function getDaysUntilCFPBForDocGen(_, evalDetails) {
-  const date = moment.tz(evalDetails.lastPaidDate, 'America/Chicago');
-  const today = moment.tz('America/Chicago');
-  const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
-  return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
 function getFLDD(loanDetails) {
@@ -278,53 +276,57 @@ function getTombstoneItems(loanDetails,
   previousDispositionDetails,
   prioritizationDetails, groupName) {
   let dataGenerator = [];
-  if (!R.equals(groupName, DashboardModel.DOC_GEN)) {
-    dataGenerator = [
-      getLoanItem,
-      getEvalIdItem,
-      getPreviousDisposition,
-      getLatestHandOffDisposition,
-      getInvestorLoanItem,
-      getBorrowerItem,
-      getSsnItem,
-      getSuccessorInInterestStatus,
-      getBrandNameItem,
-      getInvestorItem,
-      getLoanTypeDescription,
-      getUPBItem,
-      getNextPaymentDueDateItem,
-      getWaterfallName,
-      getModificationType,
-      getForeclosureSalesDate,
-      getFLDD,
-      getLienPosition,
-      getCFPBExpirationDate,
-      getDaysUntilCFPB,
-    ];
-  } else {
-    dataGenerator = [
-      getLoanItem,
-      getInvestorLoanItem,
-      getEvalIdItem,
-      getEvalFlag,
-      getLoanTypeDescription,
-      getInvestorItem,
-      getLienPosition,
-      getPreviousDisposition,
-      getLatestHandOffDisposition,
-      getBorrowerItem,
-      getSsnItem,
-      getSuccessorInInterestStatus,
-      getBrandNameItem,
-      getWaterfallName,
-      getModificationType,
-      getNextPaymentDueDateItem,
-      getForeclosureSalesDate,
-      getFLDD,
-      getCFPBExpirationDateForDocGen,
-      getDaysUntilCFPBForDocGen,
-      getBoardingDate,
-    ];
+  switch (groupName) {
+    case DashboardModel.DOC_GEN:
+    case DashboardModel.DOCS_IN:
+      dataGenerator = [
+        getLoanItem,
+        getInvestorLoanItem,
+        getEvalIdItem,
+        getEvalFlag,
+        getLoanTypeDescription,
+        getInvestorItem,
+        getLienPosition,
+        getPreviousDisposition,
+        getLatestHandOffDisposition,
+        getBorrowerItem,
+        getSsnItem,
+        getSuccessorInInterestStatus,
+        getBrandNameItem,
+        getWaterfallName,
+        getModificationType,
+        getNextPaymentDueDateItem,
+        getForeclosureSalesDate,
+        getFLDD,
+        getCFPBExpirationDate,
+        getDaysUntilCFPB,
+        getBoardingDate,
+      ];
+      break;
+    default:
+      dataGenerator = [
+        getLoanItem,
+        getEvalIdItem,
+        getPreviousDisposition,
+        getLatestHandOffDisposition,
+        getInvestorLoanItem,
+        getBorrowerItem,
+        getSsnItem,
+        getSuccessorInInterestStatus,
+        getBrandNameItem,
+        getInvestorItem,
+        getLoanTypeDescription,
+        getUPBItem,
+        getNextPaymentDueDateItem,
+        getWaterfallName,
+        getModificationType,
+        getForeclosureSalesDate,
+        getFLDD,
+        getLienPosition,
+        getCFPBExpirationDate,
+        getDaysUntilCFPB,
+      ];
+      break;
   }
   if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
@@ -332,7 +334,8 @@ function getTombstoneItems(loanDetails,
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
     previousDispositionDetails,
-    prioritizationDetails));
+    prioritizationDetails,
+    groupName));
   return data;
 }
 
