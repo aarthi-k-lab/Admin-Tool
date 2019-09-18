@@ -80,7 +80,7 @@ class UserReport extends React.PureComponent {
     const { powerBIConstants } = this.props;
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
-    this.showAddDocsIn = el.group === 'DI';
+    this.showAddDocsIn = el.group === 'DOCSIN';
     return (
       <>
         <ContentHeader

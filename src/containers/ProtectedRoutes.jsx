@@ -29,7 +29,6 @@ import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
 import IdleUserHandle from './IdleUserHandler';
 import DocGenGoBack from './Dashboard/DocGenGoBack';
-import DocsInMain from './Dashboard/DocsIn/DocsInMain';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
 
 class ProtectedRoutes extends React.Component {
@@ -172,7 +171,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasBackendUnderwriterAccess(groups)
-        ? <DocsInMain group={DashboardModel.DOCS_IN} />
+        ? <Dashboard group={DashboardModel.DOCS_IN} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
   }

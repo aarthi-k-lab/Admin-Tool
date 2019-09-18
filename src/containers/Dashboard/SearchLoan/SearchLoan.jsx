@@ -113,6 +113,10 @@ class SearchLoan extends React.PureComponent {
           group = 'DOCGEN';
           this.redirectPath = '/doc-gen';
           break;
+        case 'Docs In':
+          group = 'DOCSIN';
+          this.redirectPath = '/docs-in';
+          break;
         default:
           this.redirectPath = this.getFrontEndPath();
           group = this.getFrontEndGroup();
@@ -124,7 +128,7 @@ class SearchLoan extends React.PureComponent {
     }
 
     if ((payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation')
-    || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
+      || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
       const { onSelectEval, onGetGroupName } = this.props;
       this.redirectPath = '/doc-gen-back';
       onGetGroupName('DGB');
