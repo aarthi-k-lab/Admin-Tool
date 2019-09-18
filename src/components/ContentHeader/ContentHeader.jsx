@@ -24,7 +24,7 @@ const ContentHeader = ({
       <h3 styleName="title">{title}</h3>
     </Tooltip>
     {showAddButton && (
-      <Fab aria-label="add" color="secondary" onClick={handleClick()} size="small" style={{ marginLeft: '2rem', width: '2.3rem', height: '2rem' }} title="Add Docs Received">
+      <Fab aria-label="add" color="secondary" onClick={handleClick()} size="small" style={{ marginLeft: '1rem', width: '34px', height: '20px' }} title="Add Docs Received">
         <AddIcon />
       </Fab>
     )}

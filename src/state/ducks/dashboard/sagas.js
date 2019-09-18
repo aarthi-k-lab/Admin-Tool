@@ -216,7 +216,7 @@ function* fetchChecklistDetails(checklistId) {
 }
 
 function* shouldRetriveChecklist(searchItem) {
-  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation'];
+  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In'];
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
