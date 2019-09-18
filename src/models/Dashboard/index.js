@@ -68,7 +68,7 @@ const GROUP_INFO = [
     task: 'Approved for Doc Generation',
     taskCode: 'DGB',
     path: '/doc-gen-back',
-    showAssignUnassign: true,
+    showAssignUnassign: false,
   },
   {
     group: DOC_GEN,
