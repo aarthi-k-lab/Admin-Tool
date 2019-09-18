@@ -10,7 +10,7 @@ const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
-const DOCS_IN = 'DI';
+const DOCS_IN = 'DOCSIN';
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
@@ -80,7 +80,7 @@ const GROUP_INFO = [
   {
     group: DOCS_IN,
     task: 'DOCS IN',
-    taskCode: 'DI',
+    taskCode: 'DOCSIN',
     path: '/docs-in',
     showAssignUnassign: true,
   },
@@ -100,6 +100,7 @@ const GROUPS = {
   '/loan-activity': LOAN_ACTIVITY,
   '/doc-processor': PROC,
   '/doc-gen': DOC_GEN,
+  '/docs-in': DOCS_IN,
 };
 
 function getTitle(location) {
@@ -118,6 +119,8 @@ function getTitle(location) {
       return 'Loan Activity';
     case '/doc-gen':
       return 'Doc Gen';
+    case '/docs-in':
+      return 'DocsIn';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -128,6 +131,7 @@ const DashboardModel = {
   BEUW,
   PROC,
   DOC_GEN,
+  DOCS_IN,
   LOAN_ACTIVITY,
   FEUW_TASKS_AND_CHECKLIST,
   BEUW_TASKS_AND_CHECKLIST,
