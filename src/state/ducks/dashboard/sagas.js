@@ -871,8 +871,9 @@ function* sendToDocGen(payload) {
         "eventname": "sendToDocGen${isStager ? 'Stager' : ''}"
       }`);
       const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
-      const currentStatus = responseSend && responseSend.updateInstanceStatusResponse.statusCode;
-      if (currentStatus !== null && currentStatus === '200') {
+      const responseArray = Object.values(responseSend);
+      const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.updateInstanceStatusResponse.statusCode === '200');
+      if (currentStatus !== null && currentStatus.length > 0) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
