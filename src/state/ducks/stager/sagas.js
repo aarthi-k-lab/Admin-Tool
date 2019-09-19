@@ -13,6 +13,11 @@ import {
   selectors as loginSelectors,
 } from 'ducks/login/index';
 import {
+  SHOW_LOADER,
+  SET_RESULT_OPERATION,
+  HIDE_LOADER,
+} from '../dashboard/types';
+import {
   GET_DASHBOARD_COUNTS_SAGA,
   GET_DOWNLOAD_DATA_SAGA,
   SET_STAGER_DATA_COUNTS,
@@ -29,7 +34,8 @@ import {
   SEARCH_STAGER_LOAN_NUMBER,
   GET_STAGER_LOAN_NUMBER,
   SET_STAGER_LOAN_NUMBER,
-
+  TRIGGER_STAGER_TILE_SAGA,
+  SET_STAGER_RESULT,
 } from './types';
 
 import selectors from './selectors';
@@ -37,6 +43,9 @@ import Disposition from '../../../models/Disposition';
 import {
   SET_SNACK_BAR_VALUES_SAGA,
 } from '../notifications/types';
+import DashboardModel from '../../../models/Dashboard';
+
+const { Messages: { LEVEL_ERROR } } = DashboardModel;
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
@@ -251,6 +260,40 @@ function* makeStagerSearchLoanCall(payload) {
   }
 }
 
+function* triggerStagerTile(payload) {
+  const payloadData = {};
+  payloadData.moveLoan = payload.payload;
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callPost, '/api/stager/stager/dashboard/getBulkOrder', payloadData);
+    if (response !== null) {
+      yield put({
+        type: SET_STAGER_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload:
+        {
+          level: LEVEL_ERROR,
+          status: 'This loan do not exist or currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload:
+      {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* makeDispositionOperationCall(payload) {
   try {
     const docGenAction = yield select(selectors.getdocGenAction);
@@ -307,6 +350,10 @@ function* watchStagerSearchLoanCall() {
   yield takeEvery(GET_STAGER_LOAN_NUMBER, makeStagerSearchLoanCall);
 }
 
+function* watchBulkOrderLoanSubmit() {
+  yield takeEvery(TRIGGER_STAGER_TILE_SAGA, triggerStagerTile);
+}
+
 export const TestExports = {
   watchDashboardCountsFetch,
   fetchDashboardCounts,
@@ -317,6 +364,7 @@ export const TestExports = {
   watchOrderCall,
   makeOrderBpmCall,
   onCheckboxSelect,
+  watchBulkOrderLoanSubmit,
 };
 
 export function* combinedSaga() {
@@ -328,5 +376,6 @@ export function* combinedSaga() {
     watchOrderCall(),
     watchDispositionOperationCall(),
     watchStagerSearchLoanCall(),
+    watchBulkOrderLoanSubmit(),
   ]);
 }

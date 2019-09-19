@@ -13,6 +13,7 @@ import {
   setStagerLoanNumber,
   clearSearchResponse,
   clearStagerResponse,
+  onLoansSubmitAction,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
@@ -42,7 +43,9 @@ const triggerStagerGroup = dispatch => payload => dispatch(setStagerGroup(payloa
 const triggerStagerSearchLoan = dispatch => payload => dispatch(setStagerLoanNumber(payload));
 const onClearSearchResponse = dispatch => () => dispatch(clearSearchResponse());
 const onClearStagerResponse = dispatch => () => dispatch(clearStagerResponse());
-
+const onLoansSubmit = dispatch => (payload) => {
+  dispatch(onLoansSubmitAction(payload));
+};
 
 const operations = {
   getDashboardCounts,
@@ -58,6 +61,7 @@ const operations = {
   triggerStagerSearchLoan,
   onClearSearchResponse,
   onClearStagerResponse,
+  onLoansSubmit,
 };
 
 export default operations;

@@ -12,23 +12,34 @@ import { selectors as stagerSelectors, operations as stagerOperations } from 'du
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
+import Button from '@material-ui/core/Button';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
+import BulkOrderPage from '../BulkOrderPage';
 import './StagerPage.css';
 
 const UW_STAGER = 'UNDERWRITER STAGER';
 const DOCGEN_STAGER = 'DOC GEN STAGER';
 const STAGER_ALL = 'ALL';
 
+// const renderBulkOrderPage = () => (
+//   <BulkOrderPage />
+// );
 class StagerPage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       searchText: '',
+      showBulkOrderPage: false,
     };
     this.handleSearchLoanClick = this.handleSearchLoanClick.bind(this);
     this.handleSearchLoan = this.handleSearchLoan.bind(this);
     this.onSearchTextChange = this.onSearchTextChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.onStagerChange = this.onStagerChange.bind(this);
+    this.renderStagerPage = this.renderStagerPage.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderBulkOrderPage = this.renderBulkOrderPage.bind(this);
   }
 
   onStagerChange(event) {
@@ -46,6 +57,11 @@ class StagerPage extends React.PureComponent {
     }
   }
 
+  handleChange() {
+    const { showBulkOrderPage } = this.state;
+    this.setState({ showBulkOrderPage: !showBulkOrderPage });
+  }
+
   handleSearchLoanClick() {
     const { searchText } = this.state;
     const { triggerStagerSearchLoan } = this.props;
@@ -60,7 +76,16 @@ class StagerPage extends React.PureComponent {
     }
   }
 
-  render() {
+  handleClick() {
+    const { showBulkOrderPage } = this.state;
+    this.setState({ showBulkOrderPage: !showBulkOrderPage });
+  }
+
+  renderBulkOrderPage() {
+    return <BulkOrderPage onSelect={this.handleChange} />;
+  }
+
+  renderStagerPage() {
     const {
       activeTab, activeTile,
       counts, loading, onStatusCardClick,
@@ -71,57 +96,67 @@ class StagerPage extends React.PureComponent {
     return (
       <>
         <ContentHeader title={
-          (
-            <>
-              <Grid container direction="row">
-                <Grid item styleName="select-width">
-                  <Select
-                    onChange={event => this.onStagerChange(event)}
-                    value={stager}
-                  >
-                    <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
-                    <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-                    <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
-                  </Select>
-                </Grid>
-                <Grid item styleName="scroll-area">
-                  <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
-                    <RefreshIcon />
-                  </IconButton>
-                </Grid>
-                <Grid item styleName="scroll-area">
-                  <TextField
-                    InputProps={{
-                      disableUnderline: true,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={this.handleSearchLoanClick}>
-                            <SearchIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    onChange={this.onSearchTextChange}
-                    onKeyPress={this.handleSearchLoan}
-                    placeholder="Search (Loan No)"
-                    styleName="searchStyle"
-                    value={searchText}
-                    varirant="filled"
-                  />
-                </Grid>
-                {getStagerSearchResponse
-              && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
-                  ? (
-                    <Grid item>
-                      <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
-                    </Grid>
-                  ) : null
-            }
+        (
+          <>
+            <Grid container direction="row">
+              <Grid item styleName="select-width">
+                <Select
+                  onChange={event => this.onStagerChange(event)}
+                  value={stager}
+                >
+                  <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
+                  <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
+                  <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+                </Select>
               </Grid>
-            </>
+              <Grid item styleName="scroll-area">
+                <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
+                  <RefreshIcon />
+                </IconButton>
+              </Grid>
+              <Grid item styleName="scroll-area">
+                <TextField
+                  InputProps={{
+                    disableUnderline: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={this.handleSearchLoanClick}>
+                          <SearchIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={this.onSearchTextChange}
+                  onKeyPress={this.handleSearchLoan}
+                  placeholder="Search (Loan No)"
+                  styleName="searchStyle"
+                  value={searchText}
+                  varirant="filled"
+                />
+              </Grid>
+              <Grid>
+                <Button
+                  className="material-ui-button"
+                  color="primary"
+                  onClick={() => this.handleClick()}
+                  styleName="order-button"
+                  variant="outlined"
+                >
+            UPLOAD
+                </Button>
+              </Grid>
+              {getStagerSearchResponse
+                && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
+                ? (
+                  <Grid item>
+                    <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+                  </Grid>
+                ) : null
+              }
+            </Grid>
+          </>
         )}
         >
-
           <Controls />
         </ContentHeader>
         <Grid container direction="row">
@@ -147,6 +182,16 @@ class StagerPage extends React.PureComponent {
             />
           </Grid>
         </Grid>
+      </>
+    );
+  }
+
+  render() {
+    const { showBulkOrderPage } = this.state;
+    const pageToDisplay = showBulkOrderPage ? this.renderBulkOrderPage() : this.renderStagerPage();
+    return (
+      <>
+        {pageToDisplay}
       </>
     );
   }
@@ -208,7 +253,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
-
+  getStagerValue: stagerSelectors.getStagerValue(state),
 });
 
 
