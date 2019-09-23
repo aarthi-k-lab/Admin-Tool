@@ -171,6 +171,10 @@ Auth.getPowerBIAccessToken = function getPowerBIAccessToken(successRedirectUrl =
   return false;
 };
 
+Auth.isReportTokenValid = function isReportTokenValid() {
+  return this.fetchCookie(this.POWERBI_TOKEN_COOKIE_NAME)?true:false;
+}
+
 Auth.getUserGroups = async function getGroupsForUser(email) {
   const request = new Request(`/api/auth/ad/app/users/${email}/groups`, {
     method: 'GET',
