@@ -64,6 +64,7 @@ import {
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
   SET_TASK_SENDTO_DOCGEN,
+  SET_TASK_SENDTO_DOCSIN,
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
@@ -917,9 +918,68 @@ function* sendToDocGen(payload) {
   yield put({ type: HIDE_LOADER });
 }
 
+function* sendToDocsIn() {
+  const evalId = yield select(selectors.evalId);
+  const processStatus = yield select(selectors.processStatus);
+  const isModBook = R.equals(processStatus.toLowerCase(), 'suspended');
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocsIn/${isModBook ? 'ModBooking' : 'BuyOutBooking'}?EvalId=${evalId}`);
+    if (response !== null && response === true) {
+      const payload1 = JSON.parse(`{
+        "evalid": "${evalId}",
+        "eventname": "sendToDocsIn"
+      }`);
+      const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
+      const responseArray = Object.values(responseSend);
+      const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.updateInstanceStatusResponse.statusCode === '200');
+      if (currentStatus !== null && currentStatus.length > 0) {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: LEVEL_SUCCESS,
+            status: 'The loan has been successfully sent back to Docs In',
+          },
+        });
+        yield put({
+          type: SET_ENABLE_SEND_BACK_GEN,
+          payload: false,
+        });
+      } else {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: LEVEL_ERROR,
+            status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          },
+        });
+      }
+    } else {
+      const message = `Unable to send back to Docs In. Eval status should be Approved and the most recent Resolution case (within the eval) Status should be ${isModBook ? 'Approved, Sent for Approval, Closed or Booked' : 'Approved or Sent for Approval'}`;
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR,
+          status: message,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload:
+      {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* AddDocsInReceived(payload) {
   const loanNumbers = payload.payload;
-  console.log(loanNumbers);
+  // console.log(loanNumbers);
   try {
     yield put({ type: SHOW_LOADER });
     const response = yield call(Api.callPost, '/api/release/api/process/docsInMoveLoan', loanNumbers);
@@ -967,6 +1027,10 @@ function* watchSendToDocGen() {
   yield takeEvery(SET_TASK_SENDTO_DOCGEN, sendToDocGen);
 }
 
+function* watchSendToDocsIn() {
+  yield takeEvery(SET_TASK_SENDTO_DOCSIN, sendToDocsIn);
+}
+
 function* watchAddDocsInReceived() {
   yield takeEvery(SET_ADD_DOCS_IN, AddDocsInReceived);
 }
@@ -998,6 +1062,7 @@ export const TestExports = {
   watchSentToUnderwriting,
   watchLoadTrials,
   watchSendToDocGen,
+  watchSendToDocsIn,
   watchContinueMyReview,
   watchAddDocsInReceived,
 };
@@ -1017,6 +1082,7 @@ export const combinedSaga = function* combinedSaga() {
     watchLoadTrials(),
     watchSentToUnderwriting(),
     watchSendToDocGen(),
+    watchSendToDocsIn(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
   ]);

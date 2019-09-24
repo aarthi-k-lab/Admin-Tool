@@ -380,10 +380,12 @@ const reducer = (state = { firstVisit: true }, action) => {
     case CLEAN_RESULT: {
       const resultOperation = {};
       const enableSendToDocGen = true;
+      const enableSendToDocsIn = true;
       return {
         ...state,
         resultOperation,
         enableSendToDocGen,
+        enableSendToDocsIn,
         loading: false,
       };
     }

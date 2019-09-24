@@ -10,6 +10,7 @@ const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
+const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
@@ -68,6 +69,13 @@ const GROUP_INFO = [
     task: 'Approved for Doc Generation',
     taskCode: 'DGB',
     path: '/doc-gen-back',
+    showAssignUnassign: false,
+  },
+  {
+    group: DOCS_IN_BACK,
+    task: 'Booking Completed',
+    taskCode: 'DIB',
+    path: '/docs-In-back',
     showAssignUnassign: false,
   },
   {

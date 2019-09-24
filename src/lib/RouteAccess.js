@@ -75,6 +75,13 @@ const docGenBack = {
   groups: ['allaccess', 'docgen', 'docgen-mgr'],
 };
 
+const docsInBack = {
+  path: '/docs-in-back',
+  name: 'docs-in-back',
+  img: '/static/img/doc_gen.svg',
+  groups: ['allaccess', 'docsin', 'docsin-mgr'],
+};
+
 const docGen = {
   path: '/doc-gen',
   name: 'doc-gen',
@@ -107,12 +114,13 @@ const links = [
   moveForward,
   loanActivity,
   docGenBack,
+  docsInBack,
   docGen,
   docIns,
   docInsPage,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back', '/docs-in-page'];
+const noIcons = ['/loan-activity', '/doc-gen-back', '/docs-in-page', '/docs-in-back'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
@@ -177,6 +185,10 @@ function hasDocGenBackAccess(groups) {
   return hasGroup(docGenBack.groups, groups);
 }
 
+function hasDocsInBackAccess(groups) {
+  return hasGroup(docsInBack.groups, groups);
+}
+
 function hasDocInsAccess(groups) {
   return hasGroup(docIns.groups, groups);
 }
@@ -195,6 +207,7 @@ module.exports = {
   shouldShowIcon,
   hasChecklistAccess,
   hasDocGenBackAccess,
+  hasDocsInBackAccess,
   hasDocGenAccess,
   hasDocInsAccess,
 };

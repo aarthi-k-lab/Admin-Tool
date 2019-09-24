@@ -1,0 +1,8 @@
+.send-to-docs-in.send-to-docs-in {
+  background-color: var(--light-blue-900);
+  margin-right: 0.5rem;
+}
+
+.send-to-docs-in.send-to-docs-in:hover {
+  background-color: var(--blue-900);
+}

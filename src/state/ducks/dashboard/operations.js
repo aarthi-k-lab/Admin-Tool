@@ -20,6 +20,7 @@ import {
   loadTrialsAction,
   onSentToUnderwritingAction,
   onSendToDocGenAction,
+  onSendToDocsInAction,
   cleanResult,
   continueMyReview,
   onLoansSubmitAction,
@@ -108,6 +109,8 @@ const onSentToUnderwriting = dispatch => () => {
 
 const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isStager));
 
+const onSendToDocsIn = dispatch => () => dispatch(onSendToDocsInAction());
+
 const onCleanResult = dispatch => () => dispatch(cleanResult());
 const onContinueMyReview = dispatch => (taskStatus) => {
   dispatch(continueMyReview(taskStatus));
@@ -141,6 +144,7 @@ const operations = {
   loadTrials,
   onSentToUnderwriting,
   onSendToDocGen,
+  onSendToDocsIn,
   onCleanResult,
   onContinueMyReview,
   onLoansSubmit,

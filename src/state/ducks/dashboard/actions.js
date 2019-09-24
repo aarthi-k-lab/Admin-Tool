@@ -24,6 +24,7 @@ import {
   LOAD_TRIALS_SAGA,
   SET_TASK_UNDERWRITING,
   SET_TASK_SENDTO_DOCGEN,
+  SET_TASK_SENDTO_DOCSIN,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
   SET_ADD_DOCS_IN,
@@ -146,6 +147,10 @@ const onSendToDocGenAction = isStager => ({
   payload: isStager,
 });
 
+const onSendToDocsInAction = () => ({
+  type: SET_TASK_SENDTO_DOCSIN,
+});
+
 const cleanResult = () => ({
   type: CLEAN_RESULT,
 });
@@ -187,6 +192,7 @@ export {
   loadTrialsAction,
   onSentToUnderwritingAction,
   onSendToDocGenAction,
+  onSendToDocsInAction,
   cleanResult,
   continueMyReview,
   onLoansSubmitAction,

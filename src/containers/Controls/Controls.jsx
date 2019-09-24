@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
-  SendToDocGen, SendToDocGenStager, ContinueMyReview,
+  SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -37,6 +37,7 @@ class Controls extends React.PureComponent {
     this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
     this.handleAddDocsInReceived = this.handleAddDocsInReceived.bind(this);
+    this.handleSendToDocsIn = this.handleSendToDocsIn.bind(this);
   }
 
   componentDidMount() {
@@ -84,6 +85,11 @@ class Controls extends React.PureComponent {
   handleSendToDocGen() {
     const { onSendToDocGen } = this.props;
     onSendToDocGen(false);
+  }
+
+  handleSendToDocsIn() {
+    const { onSendToDocsIn } = this.props;
+    onSendToDocsIn();
   }
 
   handleAddDocsInReceived() {
@@ -138,12 +144,14 @@ class Controls extends React.PureComponent {
       showSendToUnderWritingIcon,
       showSendToDocGenStager,
       showSendToDocGen,
+      showSendToDocsIn,
       showContinueMyReview,
       showAssign,
       showValidate,
       isFirstVisit,
       user,
       enableSendToDocGen,
+      enableSendToDocsIn,
     } = this.props;
     let assign = null;
     const onEndShiftClick = () => onEndShift(
@@ -178,6 +186,8 @@ class Controls extends React.PureComponent {
       ) : null;
     const getSendToDocGenButton = showSendToDocGen
       ? <SendToDocGen disabled={!enableSendToDocGen} onClick={this.handleSendToDocGen} /> : null;
+    const getSendToDocsInButton = showSendToDocsIn
+      ? <SendToDocsIn disabled={!enableSendToDocsIn} onClick={this.handleSendToDocsIn} /> : null;
     const expand = <Expand onClick={onExpand} />;
     if (
       showAssign != null
@@ -205,6 +215,7 @@ class Controls extends React.PureComponent {
         {getSendToUnderWritingButton}
         {getSendToDocGenButton}
         {getSendToDocGenStagerButton}
+        {getSendToDocsInButton}
         {getContinueMyReviewButton}
         {expand}
       </>
@@ -216,6 +227,7 @@ Controls.defaultProps = {
   enableEndShift: false,
   enableGetNext: false,
   enableSendToDocGen: true,
+  enableSendToDocsIn: true,
   enableValidate: false,
   isFirstVisit: true,
   onEndShift: () => { },
@@ -223,10 +235,12 @@ Controls.defaultProps = {
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
+  onSendToDocsIn: () => { },
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
   showSendToDocGen: false,
+  showSendToDocsIn: false,
   showSendToDocGenStager: false,
   onContinueMyReview: () => { },
   showContinueMyReview: null,
@@ -240,6 +254,7 @@ Controls.propTypes = {
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
   enableSendToDocGen: PropTypes.bool,
+  enableSendToDocsIn: PropTypes.bool,
   enableValidate: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -249,6 +264,7 @@ Controls.propTypes = {
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
   onSendToDocGen: PropTypes.func,
+  onSendToDocsIn: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   showAssign: PropTypes.bool,
   showContinueMyReview: PropTypes.bool,
@@ -256,6 +272,7 @@ Controls.propTypes = {
   showGetNext: PropTypes.bool,
   showSendToDocGen: PropTypes.bool,
   showSendToDocGenStager: PropTypes.bool,
+  showSendToDocsIn: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
@@ -283,6 +300,7 @@ const mapStateToProps = (state) => {
     enableEndShift: selectors.enableEndShift(state),
     enableGetNext: selectors.enableGetNext(state),
     enableSendToDocGen: selectors.enableSendToDocGen(state),
+    enableSendToDocsIn: selectors.enableSendToDocsIn(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),
     showAssign: selectors.showAssign(state),
@@ -300,6 +318,7 @@ const mapDispatchToProps = dispatch => ({
   onAssignLoan: operations.onAssignLoan(dispatch),
   onSentToUnderwriting: operations.onSentToUnderwriting(dispatch),
   onSendToDocGen: operations.onSendToDocGen(dispatch),
+  onSendToDocsIn: operations.onSendToDocsIn(dispatch),
   onContinueMyReview: operations.onContinueMyReview(dispatch),
 });
 
