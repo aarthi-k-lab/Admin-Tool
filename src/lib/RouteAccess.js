@@ -79,7 +79,7 @@ const docsInBack = {
   path: '/docs-in-back',
   name: 'docs-in-back',
   img: '/static/img/doc_gen.svg',
-  groups: ['allaccess', 'docsin', 'docsin-mgr'],
+  groups: ['allaccess', 'docsin-mgr'],
 };
 
 const docGen = {

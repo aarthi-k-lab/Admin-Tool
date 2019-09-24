@@ -71,6 +71,7 @@ import {
   SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
   SET_ADD_DOCS_IN_RESULT,
+  SET_ENABLE_SEND_BACK_DOCSIN,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -942,7 +943,7 @@ function* sendToDocsIn() {
           },
         });
         yield put({
-          type: SET_ENABLE_SEND_BACK_GEN,
+          type: SET_ENABLE_SEND_BACK_DOCSIN,
           payload: false,
         });
       } else {

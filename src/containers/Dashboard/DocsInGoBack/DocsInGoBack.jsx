@@ -53,7 +53,7 @@ class DocsInGoBack extends React.PureComponent {
 
   render() {
     const { inProgress, user } = this.props;
-    const showButton = user.groupList.includes('docsin-mgr', 'docsin');
+    const showButton = user.groupList.includes('docsin-mgr');
     const title = 'Send Back Docs In';
     const { resultOperation } = this.props;
     if (inProgress) {

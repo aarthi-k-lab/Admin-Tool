@@ -39,6 +39,7 @@ import {
   SET_ADD_DOCS_IN_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
+  SET_ENABLE_SEND_BACK_DOCSIN,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -404,6 +405,14 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         enableSendToDocGen,
+      };
+    }
+
+    case SET_ENABLE_SEND_BACK_DOCSIN: {
+      const enableSendToDocsIn = action.payload;
+      return {
+        ...state,
+        enableSendToDocsIn,
       };
     }
 
