@@ -54,11 +54,11 @@ class DocsIn extends React.PureComponent {
     // eslint-disable-next-line no-unused-expressions
     tableData && tableData.forEach((item) => {
       if (loanNum !== item.loanNumber) {
-        countLoan += item.statusMessage === 'Successfully' ? 1 : 0;
+        countLoan += item.statusMessage === 'Successful' ? 1 : 0;
         loanNum = item.loanNumber;
       }
     });
-    return `${countLoan} loans have been processed.`;
+    return `${countLoan} loan(s) have been processed.`;
   }
 
   handleBackButton() {
@@ -200,7 +200,7 @@ class DocsIn extends React.PureComponent {
                   getTrProps={(state, rowInfo, column) => {
                     return {
                       /* eslint-disable-next-line */
-                      style: { background: !rowInfo ? '' : (rowInfo.row.status === 'Success' ? '' : '#ffe1e1') },
+                      style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
                     };
                   }}
                   pageSizeOptions={[10, 20, 25, 50, 100]}
