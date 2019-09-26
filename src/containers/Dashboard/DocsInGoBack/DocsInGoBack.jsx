@@ -28,7 +28,7 @@ class DocsInGoBack extends React.PureComponent {
     } = this.props;
     const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
-    const taskName = 'Booking Completed';
+    const taskName = 'Mod Booked';
     if (this.savedComments) {
       const commentsPayload = {
         applicationName: AppName,

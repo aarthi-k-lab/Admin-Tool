@@ -138,7 +138,7 @@ class SearchLoan extends React.PureComponent {
 
     if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
     || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
-    || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Booking Completed')) {
+    || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
       const { onSelectEval, onGetGroupName } = this.props;
       this.redirectPath = '/docs-in-back';
       onGetGroupName('DIB');

@@ -73,7 +73,7 @@ const GROUP_INFO = [
   },
   {
     group: DOCS_IN_BACK,
-    task: 'Booking Completed',
+    task: 'Mod Booked',
     taskCode: 'DIB',
     path: '/docs-In-back',
     showAssignUnassign: false,
