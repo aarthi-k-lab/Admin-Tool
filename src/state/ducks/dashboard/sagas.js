@@ -72,6 +72,7 @@ import {
   SET_ADD_DOCS_IN,
   SET_ADD_DOCS_IN_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
+  SET_ENABLE_SEND_TO_UW,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -820,6 +821,10 @@ function* sentToUnderwriting() {
               status: 'Trial has been Sent to Underwriting',
             },
           });
+          yield put({
+            type: SET_ENABLE_SEND_TO_UW,
+            payload: false,
+          });
         } else {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
@@ -865,12 +870,15 @@ function* sendToDocGen(payload) {
   const evalId = yield select(selectors.evalId);
   const isStager = payload.payload;
   try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
     const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocGen/DocGen${isStager ? 'Stager' : ''}?EvalId=${evalId}`);
     if (response !== null && response === true) {
       const payload1 = JSON.parse(`{
         "evalid": "${evalId}",
-        "eventname": "sendToDocGen${isStager ? 'Stager' : ''}"
+        "eventname": "sendToDocGen${isStager ? 'Stager' : ''}",
+        "userID": "${userPrincipalName}"
       }`);
       const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
       const responseArray = Object.values(responseSend);
@@ -924,12 +932,15 @@ function* sendToDocsIn() {
   const processStatus = yield select(selectors.processStatus);
   const isModBook = R.equals(processStatus.toLowerCase(), 'suspended');
   try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
     const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocsIn/${isModBook ? 'ModBooking' : 'BuyOutBooking'}?EvalId=${evalId}`);
     if (response !== null && response === true) {
       const payload1 = JSON.parse(`{
         "evalid": "${evalId}",
-        "eventname": "sendToDocsIn"
+        "eventname": "sendToDocsIn",
+        "userID": "${userPrincipalName}"
       }`);
       const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
       const responseArray = Object.values(responseSend);
@@ -956,7 +967,7 @@ function* sendToDocsIn() {
         });
       }
     } else {
-      const message = `Unable to send back to Docs In. Eval status should be Approved and the most recent Resolution case (within the eval) Status should be ${isModBook ? 'Approved, Sent for Approval, Closed or Booked' : 'Approved or Sent for Approval'}`;
+      const message = `Unable to send back to Docs In. Eval status should be ${isModBook ? 'Approved or Completed' : 'Approved'} and the most recent Resolution case (within the eval) Status should be ${isModBook ? 'Approved, Sent for Approval, Closed or Booked' : 'Approved or Sent for Approval'}`;
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
@@ -982,8 +993,11 @@ function* AddDocsInReceived(payload) {
   const loanNumbers = payload.payload;
   // console.log(loanNumbers);
   try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
-    const response = yield call(Api.callPost, '/api/release/api/process/docsInMoveLoan', loanNumbers);
+    const response = yield call(Api.callPost,
+      `/api/release/api/process/docsInMoveLoan?user=${userPrincipalName}`, loanNumbers);
     if (response !== null) {
       yield put({
         type: SET_ADD_DOCS_IN_RESULT,
