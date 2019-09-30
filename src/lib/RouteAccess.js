@@ -91,8 +91,8 @@ const docIns = {
 };
 
 const docInsPage = {
-  path: '/docs-in-page',
-  name: 'docs-in-page',
+  path: '/bulkOrder-page',
+  name: 'bulkOrder-page',
   img: '/static/img/docs-in.svg',
   groups: ['allaccess', 'docsin', 'docsin-mgr'],
 };
@@ -112,7 +112,7 @@ const links = [
   docInsPage,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back', '/docs-in-page'];
+const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {

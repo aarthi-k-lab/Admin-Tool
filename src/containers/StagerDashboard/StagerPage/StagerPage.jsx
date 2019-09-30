@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import ContentHeader from 'components/ContentHeader';
 import Grid from '@material-ui/core/Grid';
 import Controls from 'containers/Controls';
@@ -9,18 +10,19 @@ import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import { operations as dashboardOperations } from 'ducks/dashboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
-import BulkOrderPage from '../BulkOrderPage';
 import './StagerPage.css';
 
 const UW_STAGER = 'UNDERWRITER STAGER';
 const DOCGEN_STAGER = 'DOC GEN STAGER';
 const STAGER_ALL = 'ALL';
+const BULKUPLOAD_STAGER = 'BULKUPLOAD_STAGER';
 
 // const renderBulkOrderPage = () => (
 //   <BulkOrderPage />
@@ -39,7 +41,6 @@ class StagerPage extends React.PureComponent {
     this.onStagerChange = this.onStagerChange.bind(this);
     this.renderStagerPage = this.renderStagerPage.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.renderBulkOrderPage = this.renderBulkOrderPage.bind(this);
   }
 
   onStagerChange(event) {
@@ -78,11 +79,10 @@ class StagerPage extends React.PureComponent {
 
   handleClick() {
     const { showBulkOrderPage } = this.state;
+    const { setPageType, history } = this.props;
     this.setState({ showBulkOrderPage: !showBulkOrderPage });
-  }
-
-  renderBulkOrderPage() {
-    return <BulkOrderPage onSelect={this.handleChange} />;
+    history.push('/bulkOrder-page');
+    setPageType(BULKUPLOAD_STAGER);
   }
 
   renderStagerPage() {
@@ -96,66 +96,66 @@ class StagerPage extends React.PureComponent {
     return (
       <>
         <ContentHeader title={
-        (
-          <>
-            <Grid container direction="row">
-              <Grid item styleName="select-width">
-                <Select
-                  onChange={event => this.onStagerChange(event)}
-                  value={stager}
-                >
-                  <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
-                  <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-                  <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
-                </Select>
+          (
+            <>
+              <Grid container direction="row">
+                <Grid item styleName="select-width">
+                  <Select
+                    onChange={event => this.onStagerChange(event)}
+                    value={stager}
+                  >
+                    <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
+                    <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
+                    <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+                  </Select>
+                </Grid>
+                <Grid item styleName="scroll-area">
+                  <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
+                    <RefreshIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item styleName="scroll-area">
+                  <TextField
+                    InputProps={{
+                      disableUnderline: true,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={this.handleSearchLoanClick}>
+                            <SearchIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onChange={this.onSearchTextChange}
+                    onKeyPress={this.handleSearchLoan}
+                    placeholder="Search (Loan No)"
+                    styleName="searchStyle"
+                    value={searchText}
+                    varirant="filled"
+                  />
+                </Grid>
+                <Grid>
+                  <Button
+                    className="material-ui-button"
+                    color="primary"
+                    onClick={() => this.handleClick()}
+                    styleName="order-button"
+                    variant="outlined"
+                  >
+                    UPLOAD
+                  </Button>
+                </Grid>
+                {getStagerSearchResponse
+                  && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
+                  ? (
+                    <Grid item>
+                      <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+                    </Grid>
+                  ) : null
+                }
               </Grid>
-              <Grid item styleName="scroll-area">
-                <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
-                  <RefreshIcon />
-                </IconButton>
-              </Grid>
-              <Grid item styleName="scroll-area">
-                <TextField
-                  InputProps={{
-                    disableUnderline: true,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={this.handleSearchLoanClick}>
-                          <SearchIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={this.onSearchTextChange}
-                  onKeyPress={this.handleSearchLoan}
-                  placeholder="Search (Loan No)"
-                  styleName="searchStyle"
-                  value={searchText}
-                  varirant="filled"
-                />
-              </Grid>
-              <Grid>
-                <Button
-                  className="material-ui-button"
-                  color="primary"
-                  onClick={() => this.handleClick()}
-                  styleName="order-button"
-                  variant="outlined"
-                >
-            UPLOAD
-                </Button>
-              </Grid>
-              {getStagerSearchResponse
-                && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
-                ? (
-                  <Grid item>
-                    <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
-                  </Grid>
-                ) : null
-              }
-            </Grid>
-          </>
-        )}
+            </>
+          )}
         >
           <Controls />
         </ContentHeader>
@@ -187,11 +187,9 @@ class StagerPage extends React.PureComponent {
   }
 
   render() {
-    const { showBulkOrderPage } = this.state;
-    const pageToDisplay = showBulkOrderPage ? this.renderBulkOrderPage() : this.renderStagerPage();
     return (
       <>
-        {pageToDisplay}
+        {this.renderStagerPage()}
       </>
     );
   }
@@ -202,6 +200,9 @@ const TestExports = {
 };
 
 StagerPage.defaultProps = {
+  location: {
+    pathname: '',
+  },
   loading: true,
   popupData: {},
 };
@@ -223,7 +224,11 @@ StagerPage.propTypes = {
     }),
   ).isRequired,
   getStagerSearchResponse: PropTypes.node.isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
@@ -240,6 +245,7 @@ StagerPage.propTypes = {
   ),
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
+  setPageType: PropTypes.func.isRequired,
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
@@ -249,6 +255,7 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   triggerStagerSearchLoan: stagerOperations.triggerStagerSearchLoan(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+  setPageType: dashboardOperations.setPageType(dispatch),
 });
 
 const mapStateToProps = state => ({
@@ -257,5 +264,5 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(StagerPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(StagerPage));
 export { TestExports };

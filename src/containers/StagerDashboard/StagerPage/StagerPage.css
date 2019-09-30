@@ -50,8 +50,6 @@
   color: red !important;
   font-size: 1.2rem !important;
 }
-<<<<<<< Updated upstream
-=======
 
 .order-button.order-button {
   background-color: var(--light-blue-900);
@@ -63,4 +61,3 @@
 .order-button.order-button:hover {
   background-color: var(--blue-900);
 }
->>>>>>> Stashed changes

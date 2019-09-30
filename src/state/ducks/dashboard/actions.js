@@ -29,6 +29,7 @@ import {
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
+  SET_BULK_UPLOAD_PAGE_TYPE,
 } from './types';
 
 
@@ -162,6 +163,10 @@ const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
+const pageType = pageName => ({
+  type: SET_BULK_UPLOAD_PAGE_TYPE,
+  payload: pageName,
+});
 
 export {
   autoSave,
@@ -192,4 +197,5 @@ export {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  pageType,
 };

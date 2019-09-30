@@ -69,7 +69,7 @@ import {
   CONTINUE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
-  SET_ADD_DOCS_IN_RESULT,
+  SET_ADD_BULK_ORDER_RESULT,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -917,14 +917,22 @@ function* sendToDocGen(payload) {
 }
 
 function* AddDocsInReceived(payload) {
-  const loanNumbers = payload.payload;
-  console.log(loanNumbers);
+  const { pageType } = payload.payload;
+  let response;
   try {
     yield put({ type: SHOW_LOADER });
-    const response = yield call(Api.callPost, '/api/release/api/process/docsInMoveLoan', loanNumbers);
+    if (pageType === 'BULKUPLOAD_DOCSIN') {
+      const { loanNumbers } = payload.payload;
+      response = yield call(Api.callPost, '/api/release/api/process/docsInMoveLoan', loanNumbers);
+    } else if (pageType === 'BULKUPLOAD_STAGER') {
+      const payloadData = {
+        moveLoan: payload.payload,
+      };
+      response = yield call(Api.callPost, 'api/stager/dashboard/getBulkOrder', payloadData);
+    }
     if (response !== null) {
       yield put({
-        type: SET_ADD_DOCS_IN_RESULT,
+        type: SET_ADD_BULK_ORDER_RESULT,
         payload: response,
       });
     } else {

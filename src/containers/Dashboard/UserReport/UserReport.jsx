@@ -10,9 +10,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from 'ducks/config';
+import { operations as dashboardOperations } from 'ducks/dashboard';
 import * as R from 'ramda';
 import './UserReport.css';
 
+const BULKUPLOAD_STAGER = 'BULKUPLOAD_DOCSIN';
 class UserReport extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -37,8 +39,9 @@ class UserReport extends React.PureComponent {
   }
 
   onHandleClick = () => {
-    const { history } = this.props;
-    history.push('/docs-in-page');
+    const { history, setPageType } = this.props;
+    history.push('/bulkOrder-page');
+    setPageType(BULKUPLOAD_STAGER);
   }
 
   renderReport(powerBIConstants) {
@@ -106,6 +109,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchPowerBIConstants: operations.fetchPowerBIConstants(dispatch),
+  setPageType: dashboardOperations.setPageType(dispatch),
 });
 
 UserReport.defaultProps = {
@@ -136,6 +140,7 @@ UserReport.propTypes = {
       reportUrl: PropTypes.string.isRequired,
     }),
   ),
+  setPageType: PropTypes.func.isRequired,
 };
 
 const TestHooks = {
