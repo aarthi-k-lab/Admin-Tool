@@ -39,7 +39,7 @@ class DispositionComment extends Component {
       dispositionCommentTrigger,
       onClearUserNotifyMsg,
     } = this.props;
-    if (event.target.value !== '') {
+    if (event.target.value.trim() !== '') {
       dispositionCommentTrigger(event.target.value);
       triggerValidationDisplay(true);
     } else {
