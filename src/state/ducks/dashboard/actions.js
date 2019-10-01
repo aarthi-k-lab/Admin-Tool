@@ -30,6 +30,7 @@ import {
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
+  CLEAR_USER_NOTIF_MSG,
 } from './types';
 
 
@@ -168,6 +169,10 @@ const onLoanValidationError = payload => ({
   payload,
 });
 
+const clearUserNotifyMsg = () => ({
+  type: CLEAR_USER_NOTIF_MSG,
+});
+
 export {
   autoSave,
   clearDisposition,
@@ -198,4 +203,5 @@ export {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  clearUserNotifyMsg,
 };

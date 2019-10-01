@@ -26,6 +26,7 @@ import {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  clearUserNotifyMsg,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -123,6 +124,10 @@ const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
 };
 
+const onClearUserNotifyMsg = dispatch => () => {
+  dispatch(clearUserNotifyMsg());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -150,6 +155,7 @@ const operations = {
   onLoansSubmit,
   onFailedLoanValidation,
   setBeginSearch,
+  onClearUserNotifyMsg,
 };
 
 export default operations;
