@@ -152,6 +152,7 @@ class Controls extends React.PureComponent {
       user,
       enableSendToDocGen,
       enableSendToDocsIn,
+      enableSendToUW,
     } = this.props;
     let assign = null;
     const onEndShiftClick = () => onEndShift(
@@ -176,7 +177,12 @@ class Controls extends React.PureComponent {
       ? <EndShift disabled={!enableEndShift || !enableValidate} onClick={onEndShiftClick} />
       : null;
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
-      ? <SendToUnderwriting onClick={this.handleSentToUnderwriting} /> : null;
+      ? (
+        <SendToUnderwriting
+          disabled={!enableSendToUW}
+          onClick={this.handleSentToUnderwriting}
+        />
+      ) : null;
     const getSendToDocGenStagerButton = showSendToDocGenStager
       ? (
         <SendToDocGenStager
@@ -228,6 +234,7 @@ Controls.defaultProps = {
   enableGetNext: false,
   enableSendToDocGen: true,
   enableSendToDocsIn: true,
+  enableSendToUW: true,
   enableValidate: false,
   isFirstVisit: true,
   onEndShift: () => { },
@@ -255,6 +262,7 @@ Controls.propTypes = {
   enableGetNext: PropTypes.bool,
   enableSendToDocGen: PropTypes.bool,
   enableSendToDocsIn: PropTypes.bool,
+  enableSendToUW: PropTypes.bool,
   enableValidate: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -301,6 +309,7 @@ const mapStateToProps = (state) => {
     enableGetNext: selectors.enableGetNext(state),
     enableSendToDocGen: selectors.enableSendToDocGen(state),
     enableSendToDocsIn: selectors.enableSendToDocsIn(state),
+    enableSendToUW: selectors.enableSendToUW(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),
     showAssign: selectors.showAssign(state),

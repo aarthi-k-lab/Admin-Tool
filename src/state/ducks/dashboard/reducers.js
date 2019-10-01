@@ -41,6 +41,7 @@ import {
   SET_ENABLE_SEND_BACK_GEN,
   SET_ENABLE_SEND_BACK_DOCSIN,
   CLEAR_USER_NOTIF_MSG,
+  SET_ENABLE_SEND_TO_UW,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -333,9 +334,11 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
     case LOAD_TRIALHEADER_RESULT: {
       const trialHeader = action.payload;
+      const enableSendToUW = true;
       return {
         ...state,
         trialHeader,
+        enableSendToUW,
         loading: false,
       };
     }
@@ -420,6 +423,14 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         enableSendToDocsIn,
+      };
+    }
+
+    case SET_ENABLE_SEND_TO_UW: {
+      const enableSendToUW = action.payload;
+      return {
+        ...state,
+        enableSendToUW,
       };
     }
 

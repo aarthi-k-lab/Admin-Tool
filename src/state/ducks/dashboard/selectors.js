@@ -68,6 +68,8 @@ const enableSendToDocGen = state => (R.pathOr(true, ['dashboard', 'enableSendToD
 
 const enableSendToDocsIn = state => (R.pathOr(true, ['dashboard', 'enableSendToDocsIn'], state));
 
+const enableSendToUW = state => (R.pathOr(true, ['dashboard', 'enableSendToUW'], state));
+
 const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
 
 const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
@@ -128,6 +130,7 @@ const selectors = {
   wasSearched,
   enableSendToDocGen,
   enableSendToDocsIn,
+  enableSendToUW,
 };
 
 export default selectors;
