@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as R from 'ramda';
 import styles from './DispositionComment.css';
 import { operations, selectors } from '../../../state/ducks/tasks-and-checklist';
+import { operations as dashBoardoperations } from '../../../state/ducks/dashboard';
 
 class DispositionComment extends Component {
   constructor(props) {
@@ -32,14 +33,20 @@ class DispositionComment extends Component {
   }
 
   onCommentChange(event) {
-    const { triggerValidationDisplay, allTaskScenario, dispositionCommentTrigger } = this.props;
-    if (event.target.value !== '') {
+    const {
+      triggerValidationDisplay,
+      allTaskScenario,
+      dispositionCommentTrigger,
+      onClearUserNotifyMsg,
+    } = this.props;
+    if (event.target.value.trim() !== '') {
       dispositionCommentTrigger(event.target.value);
       triggerValidationDisplay(true);
     } else {
       dispositionCommentTrigger(null);
       if (!allTaskScenario) {
         triggerValidationDisplay(false);
+        onClearUserNotifyMsg();
       }
     }
   }
@@ -113,6 +120,7 @@ const mapDispatchToProps = dispatch => ({
   triggerValidationDisplay: operations.triggerValidationDisplay(dispatch),
   dispositionCommentTrigger: operations.dispositionCommentTrigger(dispatch),
   changeDispositionComments: operations.changeDispositionComments(dispatch),
+  onClearUserNotifyMsg: dashBoardoperations.onClearUserNotifyMsg(dispatch),
 });
 
 const mapStateToProps = state => ({
@@ -138,6 +146,7 @@ DispositionComment.propTypes = {
   expanded: PropTypes.bool,
   header: PropTypes.string,
   message: PropTypes.string.isRequired,
+  onClearUserNotifyMsg: PropTypes.func.isRequired,
   triggerValidationDisplay: PropTypes.func.isRequired,
 };
 

@@ -40,6 +40,7 @@ import {
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
   SET_ENABLE_SEND_BACK_DOCSIN,
+  CLEAR_USER_NOTIF_MSG,
   SET_ENABLE_SEND_TO_UW,
 } from './types';
 
@@ -55,6 +56,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         checklistDiscrepancies: action.payload,
+      };
+    }
+    case CLEAR_USER_NOTIF_MSG: {
+      return {
+        ...state,
+        checklistDiscrepancies: {},
       };
     }
     // case GET_LOAN_ACTIVITY_DETAILS: {
