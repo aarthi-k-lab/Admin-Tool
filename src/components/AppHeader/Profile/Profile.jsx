@@ -189,6 +189,21 @@ class Profile extends React.Component {
     );
   }
 
+  renderGroups = groups => (
+    <div styleName="row">
+      <Typography styleName="field-title" variant="body2">Groups: </Typography>
+      <ol styleName="group-list">
+        {
+          groups.map(
+            group => (
+              <li key={group}>
+                <Typography variant="body2">{group}</Typography>
+              </li>
+            ),
+          )}
+      </ol>
+    </div>
+  );
 
   render() {
     const {
@@ -214,7 +229,7 @@ class Profile extends React.Component {
             </div>
           </div>
         </div>
-        { featureToggle ? this.renderRoleAndGroups(groups) : null}
+        { featureToggle ? this.renderRoleAndGroups(groups) : this.renderGroups(groups)}
         <div styleName="row">
           <Typography styleName="field-title" variant="body2">Name: </Typography>
           <Typography variant="body2">{name}</Typography>
