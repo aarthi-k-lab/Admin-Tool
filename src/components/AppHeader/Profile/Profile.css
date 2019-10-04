@@ -37,3 +37,16 @@
 .separater {
   border-top: 1px solid #000;
 }
+
+.buttons {
+  display: flex;
+  padding-left: 17rem;
+}
+
+.resetButton {
+  padding-left: 1rem;
+}
+
+.radioGroup {
+  display: block !important;
+}

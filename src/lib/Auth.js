@@ -175,8 +175,8 @@ Auth.isReportTokenValid = function isReportTokenValid() {
   return this.fetchCookie(this.POWERBI_TOKEN_COOKIE_NAME);
 };
 
-Auth.getUserGroups = async function getGroupsForUser(email) {
-  const request = new Request(`/api/auth/ad/app/users/${email}/groups`, {
+Auth.getUserGroups = async function getGroupsForUser(email, forceClearCache = false) {
+  const request = new Request(`/api/auth/ad/app/users/${email}/groups?forceClearCache=${forceClearCache}`, {
     method: 'GET',
   });
   try {
@@ -185,11 +185,38 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
       return [];
     }
     if (response.status === 200) {
+      if (forceClearCache) {
+        Redirect.toLogin('/');
+      }
       return await response.json();
     }
     return [];
   } catch (err) {
     return [];
+  }
+};
+
+Auth.updateUserGroups = async function updateUserGroups(email, userGroups) {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  try {
+    const response = await fetch(`/api/auth/ad/app/users/${email}/groups`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userGroups),
+    });
+    if (response.status === 401) {
+      return false;
+    }
+    if (response.status === 200) {
+      Redirect.toLogin('/');
+      return true;
+    }
+    return false;
+  } catch (err) {
+    return false;
   }
 };
 

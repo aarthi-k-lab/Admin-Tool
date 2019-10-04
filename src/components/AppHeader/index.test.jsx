@@ -11,10 +11,13 @@ describe('<Header />', () => {
       name: 'brent',
     },
   };
-
+  const setUserRole = jest.fn();
+  const getFeatures = {
+    userGroupsToggle: true,
+  };
   it('shows Header', () => {
     const wrapper = shallow(
-      <TestExports.Header user={user} />,
+      <TestExports.Header getFeatures={getFeatures} setUserRole={setUserRole} user={user} />,
     );
     expect(wrapper.find('Link')).toHaveLength(1);
     expect(wrapper.find('WithStyles(ForwardRef(IconButton))')).toHaveLength(1);
