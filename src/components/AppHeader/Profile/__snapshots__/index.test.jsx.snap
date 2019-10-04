@@ -77,6 +77,33 @@ exports[`<Profile /> snapshot test 1`] = `
     <p
       className="MuiTypography-root components-AppHeader-Profile-Profile__field-title MuiTypography-body2"
     >
+      Groups: 
+    </p>
+    <ol
+      className="components-AppHeader-Profile-Profile__group-list"
+    >
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          group1
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          group2
+        </p>
+      </li>
+    </ol>
+  </div>
+  <div
+    className="components-AppHeader-Profile-Profile__row"
+  >
+    <p
+      className="MuiTypography-root components-AppHeader-Profile-Profile__field-title MuiTypography-body2"
+    >
       Name: 
     </p>
     <p
