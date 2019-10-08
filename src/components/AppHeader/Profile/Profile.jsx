@@ -17,7 +17,7 @@ import Auth from '../../../lib/Auth';
 
 const BETA = 'BETA';
 const AGENT = 'Agent';
-
+const ALL_ACCESS = 'allaccess';
 class Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -116,6 +116,10 @@ class Profile extends React.Component {
         userGroups.splice(index, 1);
       }
       index = R.findIndex(R.propEq('groupName', `${key.toLowerCase()}${removeGroupsSuffix}`))(userGroups);
+      if (!R.equals(index, -1)) {
+        userGroups.splice(index, 1);
+      }
+      index = R.findIndex(R.propEq('groupName', ALL_ACCESS))(userGroups);
       if (!R.equals(index, -1)) {
         userGroups.splice(index, 1);
       }
