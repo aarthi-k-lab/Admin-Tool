@@ -264,7 +264,6 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
-  // isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
