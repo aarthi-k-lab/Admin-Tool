@@ -202,7 +202,7 @@ class CommentsWidget extends Component {
 
   renderCommentsActivity() {
     const {
-      comments, LoanNumber, EvalId, isAssigned,
+      comments, LoanNumber, EvalId,
     } = this.props;
     const { content } = this.state;
     return (
@@ -229,7 +229,7 @@ class CommentsWidget extends Component {
               <Button
                 color="primary"
                 disabled={content.length === 0
-                  || LoanNumber === null || EvalId === null || !isAssigned}
+                  || LoanNumber === null || EvalId === null}
                 id="post_button"
                 onClick={this.saveComments}
                 styleName="post-button"
@@ -264,7 +264,7 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
-  isAssigned: PropTypes.bool.isRequired,
+  // isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
