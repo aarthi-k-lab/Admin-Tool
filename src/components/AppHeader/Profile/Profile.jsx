@@ -18,6 +18,8 @@ import Auth from '../../../lib/Auth';
 const BETA = 'BETA';
 const AGENT = 'Agent';
 const ALL_ACCESS = 'allaccess';
+const MANAGER = 'Manager';
+
 class Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +30,19 @@ class Profile extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
+    const { userGroups, setRoleCallBack } = props;
+    if (R.isNil(state.role)) {
+      let isAgent = false;
+      userGroupList.forEach((group) => {
+        if (userGroups
+        && !R.equals(group, 'BETA')
+        && !R.equals(R.findIndex(R.propEq('groupName', group.toLowerCase()))(userGroups), -1)) {
+          isAgent = true;
+        }
+      });
+      const role = isAgent ? AGENT : MANAGER;
+      setRoleCallBack(role);
+    }
     if (R.isNil(state.role) || !R.equals(props.userRole, state.role)) {
       let isChecked = [];
       userGroupList.forEach((group) => {
@@ -108,22 +123,25 @@ class Profile extends React.Component {
   handleSetGroups = (email) => {
     const { userGroups } = this.props;
     const { role, isChecked } = this.state;
-    const userRole = R.equals(role, AGENT) ? '' : '-mgr';
-    const removeGroupsSuffix = R.equals(role, AGENT) ? '-mgr' : '';
+    const groups = [];
     R.mapObjIndexed((value, key) => {
-      let index = R.findIndex(R.propEq('groupName', `${key.toLowerCase()}${userRole}`))(userGroups);
-      if (!R.equals(index, -1) && !value) {
-        userGroups.splice(index, 1);
+      if (R.equals(key, BETA) && !value) {
+        groups.push(key.toLowerCase());
       }
-      index = R.findIndex(R.propEq('groupName', `${key.toLowerCase()}${removeGroupsSuffix}`))(userGroups);
-      if (!R.equals(index, -1)) {
-        userGroups.splice(index, 1);
-      }
-      index = R.findIndex(R.propEq('groupName', ALL_ACCESS))(userGroups);
-      if (!R.equals(index, -1)) {
-        userGroups.splice(index, 1);
+      if (!R.equals(key, BETA)) {
+        groups.push(`${key.toLowerCase()}${R.equals(role, AGENT) ? '-mgr' : ''}`);
+        if (!value) {
+          groups.push(`${key.toLowerCase()}${R.equals(role, AGENT) ? '' : '-mgr'}`);
+        }
       }
     }, isChecked);
+    groups.push(ALL_ACCESS);
+    groups.forEach((group) => {
+      const index = R.findIndex(R.propEq('groupName', group))(userGroups);
+      if (!R.equals(index, -1)) {
+        userGroups.splice(index, 1);
+      }
+    });
     Auth.updateUserGroups(email, userGroups);
   }
 
