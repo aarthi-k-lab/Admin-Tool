@@ -229,7 +229,7 @@ class CommentsWidget extends Component {
               <Button
                 color="primary"
                 disabled={content.length === 0
-                  || LoanNumber === null || EvalId === null}
+                  || R.isNil(LoanNumber) || R.isNil(EvalId)}
                 id="post_button"
                 onClick={this.saveComments}
                 styleName="post-button"
