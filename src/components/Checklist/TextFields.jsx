@@ -71,7 +71,7 @@ class TextFields extends React.Component {
   getDropDownOptions() {
     const { getDropDownOptions } = this.props;
     return (getDropDownOptions ? getDropDownOptions.map(option => (
-      <option key={option.id} disabled={!(R.pathOr(true, 'isEnabled', option))} value={option.userPrincipalName}>
+      <option key={option.id} disabled={!(R.propOr(true, 'isEnabled', option))} value={option.userPrincipalName}>
         {option.displayName}
       </option>
     )) : null);
