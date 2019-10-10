@@ -63,7 +63,7 @@ class ProtectedRoutes extends React.Component {
         this.auth = auth;
         if (auth.sessionValid) {
           this.setState({ loading: false });
-          if (auth.groups && auth.groups.length > 0) {
+          if (auth.groups) {
             const redirectPath = Auth.getGroupHomePage(auth.groups);
             this.shouldRedirect = location.pathname === '/' && redirectPath !== location.pathname;
             this.setState({
