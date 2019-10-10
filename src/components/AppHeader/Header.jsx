@@ -16,7 +16,6 @@ import { selectors as configSelectors } from '../../state/ducks/config';
 import './Header.css';
 
 const HOTKEY_S = ['s', 'S'];
-
 class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -36,8 +35,6 @@ class Header extends React.Component {
   }
 
   componentDidMount() {
-    const { setUserRole } = this.props;
-    setUserRole('Agent');
     hotkeys('s', (event, handler) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress(handler);
