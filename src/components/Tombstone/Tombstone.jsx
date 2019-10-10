@@ -88,7 +88,7 @@ class Tombstone extends React.Component {
             open={open}
           >
             {menuItem.map(option => (
-              <MenuItem key={option} styleName="menuItem">
+              <MenuItem key={option.title} styleName="menuItem">
                 <div>
                   {option.title}
                   <br />
@@ -147,7 +147,7 @@ Tombstone.defaultProps = {
 Tombstone.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      content: PropTypes.string.isRequired,
+      content: PropTypes.any.isRequired,
       title: PropTypes.string.isRequired,
     }).isRequired,
   ),

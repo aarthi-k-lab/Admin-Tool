@@ -17,7 +17,7 @@ describe('<Header />', () => {
   };
   it('shows Header', () => {
     const wrapper = shallow(
-      <TestExports.Header getFeatures={getFeatures} setUserRole={setUserRole} user={user} />,
+      <TestExports.Header features={getFeatures} setUserRole={setUserRole} user={user} />,
     );
     expect(wrapper.find('Link')).toHaveLength(1);
     expect(wrapper.find('WithStyles(ForwardRef(IconButton))')).toHaveLength(1);

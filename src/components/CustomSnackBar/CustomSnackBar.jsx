@@ -44,10 +44,11 @@ CustomSnackbar.defaultProps = {
   open: false,
   timeout: 4000,
   type: 'message',
+  message: '',
 };
 
 CustomSnackbar.propTypes = {
-  message: PropTypes.string.isRequired,
+  message: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
   timeout: PropTypes.number,

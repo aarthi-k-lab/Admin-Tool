@@ -46,7 +46,7 @@ class StagerTiles extends React.PureComponent {
                   <Grid container direction="row" spacing={1} styleName="tiles-grid">
                     {stagerTaskGroupData.data.sort((current, next) => (
                       (current.order > next.order) ? 1 : -1)).map(tileData => (
-                        <Grid item styleName="status-tile" xs={6}>
+                        <Grid key={tileData.displayName} item styleName="status-tile" xs={6}>
                           <StagerDocumentStatusCard
                             active={this.isActiveCard(
                               tileData.displayName, stagerTaskGroupData.displayName,

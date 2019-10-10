@@ -258,7 +258,7 @@ ProtectedRoutes.propTypes = {
   getFeaturesTrigger: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      content: PropTypes.string.isRequired,
+      content: PropTypes.any.isRequired,
       title: PropTypes.string.isRequired,
     }),
   ),

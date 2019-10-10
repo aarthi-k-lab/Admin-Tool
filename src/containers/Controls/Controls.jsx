@@ -253,6 +253,7 @@ Controls.defaultProps = {
   showContinueMyReview: null,
   showAssign: null,
   showValidate: false,
+  groupName: null,
 };
 
 Controls.propTypes = {
@@ -264,8 +265,8 @@ Controls.propTypes = {
   enableSendToDocsIn: PropTypes.bool,
   enableSendToUW: PropTypes.bool,
   enableValidate: PropTypes.bool,
-  groupName: PropTypes.string.isRequired,
-  history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  groupName: PropTypes.string,
+  history: PropTypes.shape(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
   onContinueMyReview: PropTypes.func,
   onEndShift: PropTypes.func,

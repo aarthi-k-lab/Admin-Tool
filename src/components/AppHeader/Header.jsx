@@ -115,7 +115,7 @@ class Header extends React.Component {
 
   renderProfileDetails(user) {
     const { showProfileDetails } = this.state;
-    const { getUserRole, setUserRole, getFeatures } = this.props;
+    const { getUserRole, setUserRole, features } = this.props;
     return (
       <Modal
         onClose={this.handleProfileClose}
@@ -123,7 +123,7 @@ class Header extends React.Component {
         styleName="modal"
       >
         <Profile
-          featureToggle={getFeatures.userGroupsToggle}
+          featureToggle={features.userGroupsToggle}
           groups={user && user.groupList}
           setRoleCallBack={setUserRole}
           skills={user && user.skills}
@@ -192,7 +192,9 @@ Header.propTypes = {
   clearSearch: PropTypes.bool.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
-  getFeatures: PropTypes.func.isRequired,
+  features: PropTypes.shape({
+    userGroupsToggle: PropTypes.bool,
+  }).isRequired,
   getUserRole: PropTypes.string.isRequired,
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
@@ -221,7 +223,7 @@ const mapStateToProps = state => ({
   clearSearch: selectors.clearSearch(state),
   isAssigned: selectors.isAssigned(state),
   getUserRole: loginSelectors.getUserRole(state),
-  getFeatures: configSelectors.getFeatures(state),
+  features: configSelectors.getFeatures(state),
 });
 
 const mapDispatchToProps = dispatch => ({
