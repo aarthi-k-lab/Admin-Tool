@@ -378,6 +378,7 @@ class Checklist extends React.PureComponent {
 
 Checklist.defaultProps = {
   className: '',
+  children: null,
 };
 
 Checklist.propTypes = {
@@ -396,7 +397,7 @@ Checklist.propTypes = {
       value: PropTypes.any,
     }),
   ).isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   className: PropTypes.string,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,

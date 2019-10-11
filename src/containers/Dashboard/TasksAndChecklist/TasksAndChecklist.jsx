@@ -214,6 +214,8 @@ TasksAndChecklist.defaultProps = {
   isDialogOpen: false,
   dialogTitle: '',
   getDialogContent: '',
+  snackBarData: null,
+  showAssign: false,
 };
 
 TasksAndChecklist.propTypes = {
@@ -248,19 +250,22 @@ TasksAndChecklist.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   isDialogOpen: PropTypes.bool,
   isTasksLimitExceeded: PropTypes.bool,
-  message: PropTypes.string,
+  message: PropTypes.shape({
+    msg: PropTypes.string,
+    type: PropTypes.string,
+  }),
   noTasksFound: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
-  rootTaskId: PropTypes.func.isRequired,
+  rootTaskId: PropTypes.string.isRequired,
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
-  showAssign: PropTypes.bool.isRequired,
+  showAssign: PropTypes.bool,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
-  snackBarData: PropTypes.node.isRequired,
+  snackBarData: PropTypes.node,
   taskFetchError: PropTypes.bool,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.array).isRequired,

@@ -80,14 +80,14 @@ TaskPane.propTypes = {
   })).isRequired,
   isAssigned: PropTypes.bool.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
-  optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
+  optionalTasks: PropTypes.arrayOf(PropTypes.shape(OptionalTaskModel)),
   pdfGeneratorConstant: PropTypes.string.isRequired,
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
   shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
-  tasks: PropTypes.arrayOf(TaskModel),
+  tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)),
   updateChecklist: PropTypes.func.isRequired,
 };
 

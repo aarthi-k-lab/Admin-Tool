@@ -291,7 +291,9 @@ Profile.propTypes = {
     email: PropTypes.string,
     name: PropTypes.string,
   }),
-  userGroups: PropTypes.shape(PropTypes.array),
+  userGroups: PropTypes.arrayOf(PropTypes.shape({
+    groupName: PropTypes.string,
+  })),
 };
 
 

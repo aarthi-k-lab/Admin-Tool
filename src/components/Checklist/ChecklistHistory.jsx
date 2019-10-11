@@ -86,7 +86,7 @@ class ChecklistHistory extends React.Component {
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
                 <a
-                  key={option}
+                  key={option.taskCheckListId}
                   href={`${pdfGeneratorConstant}/api/download/${option.taskCheckListId}?event=${option.taskCheckListTemplateName}&disposition=${option.dispositionCode}&assignedTo=${option.assignedTo}&dispositionDate=${this.getCSTDateTime(option.taskCheckListDateTime)}`}
                   style={{ textDecoration: 'none', color: 'inherit' }}
                   // eslint-disable-next-line react/jsx-no-target-blank

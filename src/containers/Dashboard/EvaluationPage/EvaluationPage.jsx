@@ -66,6 +66,7 @@ class EvaluationPage extends React.PureComponent {
 EvaluationPage.defaultProps = {
   group: 'FEUW',
   checklisttTemplateName: null,
+  taskName: '',
 };
 
 EvaluationPage.propTypes = {
@@ -74,7 +75,7 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  taskName: PropTypes.string.isRequired,
+  taskName: PropTypes.string,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array).isRequired,
