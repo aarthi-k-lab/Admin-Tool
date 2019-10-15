@@ -3,8 +3,7 @@ import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
 import {
   BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER, DOC_PROCESSOR,
-  FRONTEND_UNDERWRITER_BETA,
-  LOAN_ACTIVITY,
+  DOCS_IN,
   DOC_GEN,
 } from './Groups';
 import Redirect from './Redirect';
@@ -297,10 +296,6 @@ Auth.homePage = [
     path: '/reports',
   },
   {
-    groupName: FRONTEND_UNDERWRITER_BETA,
-    path: '/frontend-checklist',
-  },
-  {
     groupName: FRONTEND_UNDERWRITER,
     path: '/frontend-checklist',
   },
@@ -313,12 +308,12 @@ Auth.homePage = [
     path: '/doc-processor',
   },
   {
-    groupName: LOAN_ACTIVITY,
-    path: '/loan-activity',
-  },
-  {
     groupName: DOC_GEN,
     path: '/doc-gen',
+  },
+  {
+    groupName: DOCS_IN,
+    path: '/docs-in',
   },
 ];
 
