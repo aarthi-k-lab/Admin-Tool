@@ -165,8 +165,8 @@ class SearchLoan extends React.PureComponent {
     return !R.isEmpty(getRejectResponse) ? (
       <div styleName="notificationMsg">
         <UserNotification
-          level="error"
-          message={getRejectResponse}
+          level={getRejectResponse.level}
+          message={getRejectResponse.message}
           type="alert-box"
         />
       </div>
@@ -247,13 +247,6 @@ class SearchLoan extends React.PureComponent {
     return (
       <>
         <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
-        {/* <div styleName="notificationMsg">
-          <UserNotification
-            level="error"
-            message="test"
-            type="alert-box"
-          />
-        </div> */}
         {this.renderRejectResults()}
         {this.renderSearchResults()}
       </>

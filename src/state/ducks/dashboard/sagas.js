@@ -177,18 +177,33 @@ function* onSelectReject(payload) {
     evalId, userID, eventName, loanNumber,
   } = payload.payload;
   const response = yield call(Api.callPost, `/api/workassign/unreject?evalId=${evalId}&userID=${userID}&eventName=${eventName}`, {});
+  let rejectResponse = {};
   if (response === null) {
-    const responseFailed = {
+    rejectResponse = {
       message: 'Service Down. Please try again...',
+      level: 'error',
     };
     yield put({
       type: SELECT_REJECT,
-      payload: responseFailed.message,
+      payload: rejectResponse,
     });
-  } else {
+  } else if (response.message === 'Unreject successful') {
+    rejectResponse = {
+      message: response.message,
+      level: 'success',
+    };
     yield put({
       type: SELECT_REJECT,
-      payload: response.message,
+      payload: rejectResponse,
+    });
+  } else {
+    rejectResponse = {
+      message: response.message,
+      level: 'error',
+    };
+    yield put({
+      type: SELECT_REJECT,
+      payload: rejectResponse,
     });
   }
   yield call(searchLoan, loanNumber);
