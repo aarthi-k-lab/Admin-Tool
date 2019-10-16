@@ -240,16 +240,19 @@ class Profile extends React.Component {
       <Paper elevation={2} styleName="container" tabIndex={-1}>
         <div styleName="row">
           <Typography variant="h6">User Profile</Typography>
-          <div styleName="buttons" variant="body2">
-            <Button onClick={() => this.handleSetGroups(email)} variant="contained">
-            Apply
-            </Button>
-            <div styleName="resetButton">
-              <Button onClick={() => this.handleResetGroups(email)} variant="contained">
-            Reset
-              </Button>
-            </div>
-          </div>
+          { featureToggle
+            ? (
+              <div styleName="buttons" variant="body2">
+                <Button onClick={() => this.handleSetGroups(email)} variant="contained">
+                   Apply
+                </Button>
+                <div styleName="resetButton">
+                  <Button onClick={() => this.handleResetGroups(email)} variant="contained">
+                     Reset
+                  </Button>
+                </div>
+              </div>
+            ) : null }
         </div>
         { featureToggle ? this.renderRoleAndGroups(groups) : this.renderGroups(groups)}
         <div styleName="row">
