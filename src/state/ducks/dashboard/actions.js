@@ -32,6 +32,7 @@ import {
   SET_BEGIN_SEARCH,
   CLEAR_USER_NOTIF_MSG,
   SELECT_REJECT_SAGA,
+  CLEAR_SELECT_REJECT,
 } from './types';
 
 
@@ -178,6 +179,10 @@ const selectReject = payload => ({
   type: SELECT_REJECT_SAGA,
   payload,
 });
+
+const clearSelectReject = () => ({
+  type: CLEAR_SELECT_REJECT,
+});
 export {
   autoSave,
   clearDisposition,
@@ -210,4 +215,5 @@ export {
   setBeginSearchAction,
   clearUserNotifyMsg,
   selectReject,
+  clearSelectReject,
 };

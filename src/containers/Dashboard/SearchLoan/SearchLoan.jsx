@@ -93,59 +93,61 @@ class SearchLoan extends React.PureComponent {
     onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
-  handleRowClick(payload) {
-    if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
-      const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
-      let group = '';
-      switch (payload.taskName) {
-        case 'Underwriting':
-          group = 'BEUW';
-          this.redirectPath = this.getBackendEndPath();
-          break;
-        case 'Processing':
-          group = 'PROC';
-          this.redirectPath = '/doc-processor';
-          break;
-        case 'Trial Modification':
-        case 'Forbearance':
-          group = 'LA';
-          this.redirectPath = this.getLoanActivityPath();
-          break;
-        case 'Document Generation':
-          group = 'DOCGEN';
-          this.redirectPath = '/doc-gen';
-          break;
-        case 'Docs In':
-          group = 'DOCSIN';
-          this.redirectPath = '/docs-in';
-          break;
-        default:
-          this.redirectPath = this.getFrontEndPath();
-          group = this.getFrontEndGroup();
+  handleRowClick(payload, rowInfo) {
+    if (rowInfo.Header !== 'Reject') {
+      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
+        const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
+        let group = '';
+        switch (payload.taskName) {
+          case 'Underwriting':
+            group = 'BEUW';
+            this.redirectPath = this.getBackendEndPath();
+            break;
+          case 'Processing':
+            group = 'PROC';
+            this.redirectPath = '/doc-processor';
+            break;
+          case 'Trial Modification':
+          case 'Forbearance':
+            group = 'LA';
+            this.redirectPath = this.getLoanActivityPath();
+            break;
+          case 'Document Generation':
+            group = 'DOCGEN';
+            this.redirectPath = '/doc-gen';
+            break;
+          case 'Docs In':
+            group = 'DOCSIN';
+            this.redirectPath = '/docs-in';
+            break;
+          default:
+            this.redirectPath = this.getFrontEndPath();
+            group = this.getFrontEndGroup();
+        }
+        onGetGroupName(group);
+        onSelectEval(payload);
+        onGetChecklistHistory(payload.taskId);
+        this.setState({ isRedirect: true });
       }
-      onGetGroupName(group);
-      onSelectEval(payload);
-      onGetChecklistHistory(payload.taskId);
-      this.setState({ isRedirect: true });
-    }
 
-    if ((payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation')
-      || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
-      const { onSelectEval, onGetGroupName } = this.props;
-      this.redirectPath = '/doc-gen-back';
-      onGetGroupName('DGB');
-      onSelectEval(payload);
-      this.setState({ isRedirect: true });
-    }
+      if ((payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation')
+        || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
+        const { onSelectEval, onGetGroupName } = this.props;
+        this.redirectPath = '/doc-gen-back';
+        onGetGroupName('DGB');
+        onSelectEval(payload);
+        this.setState({ isRedirect: true });
+      }
 
-    if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
-      || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
-      || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
-      const { onSelectEval, onGetGroupName } = this.props;
-      this.redirectPath = '/docs-in-back';
-      onGetGroupName('DIB');
-      onSelectEval(payload);
-      this.setState({ isRedirect: true });
+      if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
+        || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
+        || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
+        const { onSelectEval, onGetGroupName } = this.props;
+        this.redirectPath = '/docs-in-back';
+        onGetGroupName('DIB');
+        onSelectEval(payload);
+        this.setState({ isRedirect: true });
+      }
     }
   }
 
@@ -164,7 +166,7 @@ class SearchLoan extends React.PureComponent {
       <div styleName="notificationMsg">
         <UserNotification
           level="error"
-          message="test"
+          message={getRejectResponse}
           type="alert-box"
         />
       </div>
@@ -218,15 +220,15 @@ class SearchLoan extends React.PureComponent {
                 columns={SearchLoan.COLUMN_DATA}
                 data={data}
                 getPaginationProps={() => ({ style: { height: '30px' } })}
+                getTdProps={(state, rowInfo, column) => ({
+                  onClick: () => {
+                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                    this.handleRowClick(payload, column);
+                  },
+                })}
                 getTheadThProps={() => ({
                   style: {
                     'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
-                  },
-                })}
-                getTrProps={(state, rowInfo) => ({
-                  onClick: () => {
-                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
-                    this.handleRowClick(payload);
                   },
                 })}
                 minRows={20}

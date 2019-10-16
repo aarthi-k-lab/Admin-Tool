@@ -28,6 +28,7 @@ import {
   setBeginSearchAction,
   clearUserNotifyMsg,
   selectReject,
+  clearSelectReject,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -133,6 +134,10 @@ const onSelectReject = dispatch => (payload) => {
   dispatch(selectReject(payload));
 };
 
+const onClearSelectReject = dispatch => () => {
+  dispatch(clearSelectReject());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -162,6 +167,7 @@ const operations = {
   setBeginSearch,
   onClearUserNotifyMsg,
   onSelectReject,
+  onClearSelectReject,
 };
 
 export default operations;

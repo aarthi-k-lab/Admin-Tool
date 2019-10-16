@@ -172,6 +172,28 @@ const searchLoan = function* searchLoan(loanNumber) {
   }
 };
 
+function* onSelectReject(payload) {
+  const {
+    evalId, userID, eventName, loanNumber,
+  } = payload.payload;
+  const response = yield call(Api.callPost, `/api/workassign/unreject?evalId=${evalId}&userID=${userID}&eventName=${eventName}`, {});
+  if (response === null) {
+    const responseFailed = {
+      message: 'Failed...!',
+    };
+    yield put({
+      type: SELECT_REJECT,
+      payload: responseFailed.message,
+    });
+  } else if (response.message === 'Unreject successful') {
+    yield put({
+      type: SELECT_REJECT,
+      payload: response.message,
+    });
+  }
+  yield call(searchLoan, loanNumber);
+}
+
 function* watchSearchLoan() {
   yield takeEvery(SEARCH_LOAN_TRIGGER, searchLoan);
 }
@@ -991,22 +1013,6 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
-function* onSelectReject(payload) {
-  const { evalId, userID, eventName } = payload.payload;
-  const response = yield call(Api.callPost, `/api/workassign/unreject?evalId=${evalId}&userID=${userID}&eventName=${eventName}`, {});
-  if (response === null) {
-    response.message = 'Failed...!';
-    yield put({
-      type: SELECT_REJECT,
-      payload: response.message,
-    });
-  } else if (response.message === 'Unreject successful') {
-    yield put({
-      type: SELECT_REJECT,
-      payload: response.message,
-    });
-  }
-}
 
 function* AddDocsInReceived(payload) {
   const loanNumbers = payload.payload;

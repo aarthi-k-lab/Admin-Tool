@@ -10,7 +10,6 @@ import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
 class EvalTableRow extends React.PureComponent {
-
   handleLinkClick = (value) => {
     const {
       row, searchLoanResult, onSelectReject, user,
@@ -27,6 +26,7 @@ class EvalTableRow extends React.PureComponent {
         evalId,
         userID,
         eventName: 'unreject',
+        loanNumber,
       };
       onSelectReject(rejectPayload);
     }

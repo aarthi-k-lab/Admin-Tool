@@ -81,10 +81,11 @@ class Header extends React.Component {
 
   handleSearchLoanClick() {
     const { refreshHook, searchText } = this.state;
-    const { setBeginSearch } = this.props;
+    const { setBeginSearch, onClearSelectReject } = this.props;
     if (searchText) {
       this.shouldSearchLoan = true;
       this.setState({ refreshHook: !refreshHook });
+      onClearSelectReject();
       setBeginSearch();
     }
   }
@@ -203,6 +204,7 @@ Header.propTypes = {
   }).isRequired,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
+  onClearSelectReject: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   setBeginSearch: PropTypes.func.isRequired,
   setUserRole: PropTypes.func.isRequired,
@@ -230,6 +232,7 @@ const mapDispatchToProps = dispatch => ({
   setUserRole: loginOperations.setUserRole(dispatch),
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
+  onClearSelectReject: operations.onClearSelectReject(dispatch),
   setBeginSearch: operations.setBeginSearch(dispatch),
 });
 const HeaderContainer = connect(
