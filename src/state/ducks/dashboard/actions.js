@@ -31,6 +31,7 @@ import {
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
   CLEAR_USER_NOTIF_MSG,
+  SELECT_REJECT_SAGA,
 } from './types';
 
 
@@ -173,6 +174,10 @@ const clearUserNotifyMsg = () => ({
   type: CLEAR_USER_NOTIF_MSG,
 });
 
+const selectReject = payload => ({
+  type: SELECT_REJECT_SAGA,
+  payload,
+});
 export {
   autoSave,
   clearDisposition,
@@ -204,4 +209,5 @@ export {
   onLoanValidationError,
   setBeginSearchAction,
   clearUserNotifyMsg,
+  selectReject,
 };

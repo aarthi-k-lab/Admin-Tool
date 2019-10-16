@@ -73,6 +73,8 @@ import {
   SET_ADD_DOCS_IN_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
   SET_ENABLE_SEND_TO_UW,
+  SELECT_REJECT_SAGA,
+  SELECT_REJECT,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -989,6 +991,23 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
+function* onSelectReject(payload) {
+  const { evalId, userID, eventName } = payload.payload;
+  const response = yield call(Api.callPost, `/api/workassign/unreject?evalId=${evalId}&userID=${userID}&eventName=${eventName}`, {});
+  if (response === null) {
+    response.message = 'Failed...!';
+    yield put({
+      type: SELECT_REJECT,
+      payload: response.message,
+    });
+  } else if (response.message === 'Unreject successful') {
+    yield put({
+      type: SELECT_REJECT,
+      payload: response.message,
+    });
+  }
+}
+
 function* AddDocsInReceived(payload) {
   const loanNumbers = payload.payload;
   // console.log(loanNumbers);
@@ -1025,7 +1044,6 @@ function* AddDocsInReceived(payload) {
   }
   yield put({ type: HIDE_LOADER });
 }
-
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
@@ -1050,6 +1068,9 @@ function* watchAddDocsInReceived() {
   yield takeEvery(SET_ADD_DOCS_IN, AddDocsInReceived);
 }
 
+function* watchOnSelectReject() {
+  yield takeEvery(SELECT_REJECT_SAGA, onSelectReject);
+}
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -1080,6 +1101,7 @@ export const TestExports = {
   watchSendToDocsIn,
   watchContinueMyReview,
   watchAddDocsInReceived,
+  watchOnSelectReject,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -1100,5 +1122,6 @@ export const combinedSaga = function* combinedSaga() {
     watchSendToDocsIn(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
+    watchOnSelectReject(),
   ]);
 };

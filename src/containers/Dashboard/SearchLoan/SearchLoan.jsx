@@ -8,6 +8,7 @@ import { Link, Redirect, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
+import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
@@ -27,6 +28,7 @@ class SearchLoan extends React.PureComponent {
     this.redirectPath = '';
     this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
+    this.renderRejectResults = this.renderRejectResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
@@ -137,8 +139,8 @@ class SearchLoan extends React.PureComponent {
     }
 
     if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
-    || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
-    || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
+      || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
+      || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
       const { onSelectEval, onGetGroupName } = this.props;
       this.redirectPath = '/docs-in-back';
       onGetGroupName('DIB');
@@ -154,6 +156,19 @@ class SearchLoan extends React.PureComponent {
       || (searchLoanResult
         && searchLoanResult.loanNumber);
     // && loanNumber !== searchLoanResult.loanNumber.toString()
+  }
+
+  renderRejectResults() {
+    const { getRejectResponse } = this.props;
+    return !R.isEmpty(getRejectResponse) ? (
+      <div styleName="notificationMsg">
+        <UserNotification
+          level="error"
+          message="test"
+          type="alert-box"
+        />
+      </div>
+    ) : null;
   }
 
   renderSearchResults() {
@@ -230,93 +245,108 @@ class SearchLoan extends React.PureComponent {
     return (
       <>
         <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
+        {/* <div styleName="notificationMsg">
+          <UserNotification
+            level="error"
+            message="test"
+            type="alert-box"
+          />
+        </div> */}
+        {this.renderRejectResults()}
         {this.renderSearchResults()}
       </>
     );
   }
 }
 
-SearchLoan.COLUMN_DATA = [{
-  Header: 'EVAL ID',
-  accessor: 'evalId',
-  maxWidth: 65,
-  minWidth: 65,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'PROCESS ID',
-  accessor: 'piid',
-  maxWidth: 70,
-  minWidth: 70,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'STATUS',
-  accessor: 'pstatus',
-  maxWidth: 70,
-  minWidth: 70,
-  Cell: row => <EvalTableRow row={row} />,
+SearchLoan.COLUMN_DATA = [
+  {
+    Header: 'Reject',
+    accessor: 'reject',
+    maxWidth: 65,
+    minWidth: 65,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'EVAL ID',
+    accessor: 'evalId',
+    maxWidth: 65,
+    minWidth: 65,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'PROCESS ID',
+    accessor: 'piid',
+    maxWidth: 70,
+    minWidth: 70,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'STATUS',
+    accessor: 'pstatus',
+    maxWidth: 70,
+    minWidth: 70,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'PROCESS STATUS REASON',
-  accessor: 'pstatusReason',
-  maxWidth: 150,
-  minWidth: 150,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'PROCESS STATUS REASON',
+    accessor: 'pstatusReason',
+    maxWidth: 150,
+    minWidth: 150,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'STATUS DATE',
-  accessor: 'pstatusDate',
-  maxWidth: 110,
-  minWidth: 110,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'STATUS DATE',
+    accessor: 'pstatusDate',
+    maxWidth: 110,
+    minWidth: 110,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'MILESTONE',
-  accessor: 'milestone',
-  maxWidth: 150,
-  minWidth: 150,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'MILESTONE',
+    accessor: 'milestone',
+    maxWidth: 150,
+    minWidth: 150,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK NAME',
-  accessor: 'taskName',
-  maxWidth: 150,
-  minWidth: 150,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK NAME',
+    accessor: 'taskName',
+    maxWidth: 150,
+    minWidth: 150,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK STATUS',
-  accessor: 'tstatus',
-  maxWidth: 90,
-  minWidth: 90,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK STATUS',
+    accessor: 'tstatus',
+    maxWidth: 90,
+    minWidth: 90,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK STATUS REASON',
-  accessor: 'statusReason',
-  maxWidth: 130,
-  minWidth: 130,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK STATUS REASON',
+    accessor: 'statusReason',
+    maxWidth: 130,
+    minWidth: 130,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK STATUS DATE',
-  accessor: 'tstatusDate',
-  maxWidth: 110,
-  minWidth: 110,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK STATUS DATE',
+    accessor: 'tstatusDate',
+    maxWidth: 110,
+    minWidth: 110,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'ASSIGNED DATE',
-  accessor: 'assignedDate',
-  maxWidth: 110,
-  minWidth: 110,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'ASSIGNED TO',
-  accessor: 'assignee',
-  maxWidth: 200,
-  minWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-},
+  }, {
+    Header: 'ASSIGNED DATE',
+    accessor: 'assignedDate',
+    maxWidth: 110,
+    minWidth: 110,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'ASSIGNED TO',
+    accessor: 'assignee',
+    maxWidth: 200,
+    minWidth: 200,
+    Cell: row => <EvalTableRow row={row} />,
+  },
 ];
 
 
@@ -328,6 +358,9 @@ SearchLoan.defaultProps = {
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  getRejectResponse: PropTypes.arrayOf(PropTypes.shape({
+    message: PropTypes.string.isRequired,
+  })).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
@@ -359,6 +392,7 @@ const mapStateToProps = state => ({
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
+  getRejectResponse: selectors.getRejectResponse(state),
   user: loginSelectors.getUser(state),
   inProgress: selectors.inProgress(state),
 });

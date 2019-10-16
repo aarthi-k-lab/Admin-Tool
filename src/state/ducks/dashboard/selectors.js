@@ -76,6 +76,9 @@ const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
 
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
 
+const getRejectResponse = state => R.pathOr({}, ['dashboard', 'rejectResponse'], state);
+
+
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
 
@@ -131,6 +134,7 @@ const selectors = {
   enableSendToDocGen,
   enableSendToDocsIn,
   enableSendToUW,
+  getRejectResponse,
 };
 
 export default selectors;

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Replay from '@material-ui/icons/Replay';
 import { selectors as loginSelectors } from 'ducks/login';
 import RouteAccess from 'lib/RouteAccess';
 import './EvalTableCell.css';
@@ -28,22 +29,46 @@ class EvalTableCell extends React.PureComponent {
   }
 
   render() {
-    const actions = 'Loan Activity';
     const { value, styleProps } = this.props;
+    let renderCellValue = '';
+    switch (value) {
+      case 'Loan Activity':
+        renderCellValue = (
+          <Link
+            onClick={this.handleLinkClick}
+            styleName="loanActivityLink"
+            to={this.route()}
+          >
+            {value}
+          </Link>
+        );
+        break;
+      case 'Reject':
+        renderCellValue = (
+          <Replay
+            color={styleProps}
+            onClick={this.handleLinkClick}
+          >
+            {value}
+          </Replay>
+        );
+        break;
+      // case 'hideReject':
+      //   renderCellValue = (
+      //     <Replay color="disabled" />
+      //   );
+      //   break;
+      default:
+        renderCellValue = (
+          <span styleName={styleProps}>
+            {value}
+          </span>
+        );
+    }
     return (
-      value !== actions ? (
-        <span styleName={styleProps}>
-          {value}
-        </span>
-      ) : (
-        <Link
-          onClick={this.handleLinkClick}
-          styleName="loanActivityLink"
-          to={this.route()}
-        >
-          {value}
-        </Link>
-      )
+      <div>
+        {renderCellValue}
+      </div>
     );
   }
 }
