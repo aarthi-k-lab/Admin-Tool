@@ -179,13 +179,13 @@ function* onSelectReject(payload) {
   const response = yield call(Api.callPost, `/api/workassign/unreject?evalId=${evalId}&userID=${userID}&eventName=${eventName}`, {});
   if (response === null) {
     const responseFailed = {
-      message: 'Failed...!',
+      message: 'Service Down. Please try again...',
     };
     yield put({
       type: SELECT_REJECT,
       payload: responseFailed.message,
     });
-  } else if (response.message === 'Unreject successful') {
+  } else {
     yield put({
       type: SELECT_REJECT,
       payload: response.message,
