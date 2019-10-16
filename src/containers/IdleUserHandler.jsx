@@ -57,7 +57,7 @@ class IdleUserHandler extends Component {
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
-      onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+      setTimeout(() => onEndShift(EndShift.CLEAR_DASHBOARD_DATA), 100);
     }
   }
 
