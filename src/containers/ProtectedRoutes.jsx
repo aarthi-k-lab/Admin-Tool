@@ -143,7 +143,7 @@ class ProtectedRoutes extends React.Component {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
     let renderComponent = null;
-    if (RouteAccess.hasDocGenBackAccess(groups)) {
+    if (RouteAccess.hasDocsInBackAccess(groups)) {
       renderComponent = (items.length > 0 || loanNumber) ? <DocsInGoBack /> : <Redirect to="/" />;
     } else {
       renderComponent = <Redirect to="/unauthorized?error=DOCS_IN_ACCESS_NEEDED" />;
