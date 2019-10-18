@@ -184,7 +184,7 @@ class ProtectedRoutes extends React.Component {
   renderDocsInMainRoute() {
     const groups = this.getGroups();
     return (
-      RouteAccess.hasBackendUnderwriterAccess(groups)
+      RouteAccess.hasDocInsAccess(groups)
         ? <Dashboard group={DashboardModel.DOCS_IN} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
@@ -193,7 +193,7 @@ class ProtectedRoutes extends React.Component {
   renderDocsInPageRoute() {
     const groups = this.getGroups();
     return (
-      RouteAccess.hasBackendUnderwriterAccess(groups)
+      RouteAccess.hasDocsInBackAccess(groups)
         ? <DocsIn group={DashboardModel.DOCS_IN} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );

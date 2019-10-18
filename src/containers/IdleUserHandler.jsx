@@ -13,6 +13,7 @@ import EndShift from 'models/EndShift';
 import {
   operations as dashboardOperations, selectors,
 } from 'ducks/dashboard';
+import ReactAudioPlayer from 'react-audio-player';
 
 class IdleUserHandler extends Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class IdleUserHandler extends Component {
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
-      onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+      setTimeout(() => onEndShift(EndShift.CLEAR_DASHBOARD_DATA), 100);
     }
   }
 
@@ -73,6 +74,12 @@ class IdleUserHandler extends Component {
           onActive={this.onActive}
           onIdle={this.onIdle}
           timeout={7200000}
+        />
+        <ReactAudioPlayer
+          autoPlay
+          control={false}
+          loop
+          src="static/audio/10-seconds-of-silence.mp3"
         />
         <Dialog
           aria-describedby="alert-dialog-description"
