@@ -29,7 +29,7 @@ class EvalTableRow extends React.PureComponent {
     if (value === 'Loan Activity') {
       const { onSelectEval } = this.props;
       onSelectEval(payLoad);
-    } else if ((payLoad.statusReason !== 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.statusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended')) {
+    } else if ((payLoad.statusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.statusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended')) {
       const { evalId } = payLoad;
       const userID = R.path(['userDetails', 'email'], user);
       const rejectPayload = {
