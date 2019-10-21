@@ -53,7 +53,7 @@ class EvalTableCell extends React.PureComponent {
             title="UnReject"
           >
             <IconButton onClick={this.handleLinkClick} styleName="reject-icon">
-              <img alt="UnReject" src="/static/img/undo.png" />
+              <img alt="UnReject" src="/static/img/Revoke.svg" />
             </IconButton>
           </Tooltip>
         );

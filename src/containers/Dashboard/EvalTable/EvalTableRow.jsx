@@ -11,12 +11,24 @@ import { operations, selectors } from '../../../state/ducks/dashboard';
 
 const showReject = (row) => {
   let showreject = '';
-  if ((row.original.statusReason !== 'Rejection Pending' && row.original.pstatus === '  ') || (row.original.statusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) {
+  if ((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) {
     showreject = 'true';
   } else {
     showreject = 'false';
   }
   return showreject;
+};
+
+const getEventName = (pstatusReason, pstatus, taskName) => {
+  let eventName = '';
+  if (pstatusReason === 'Rejection Pending' && pstatus === 'Active') { eventName = 'unreject'; } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'FrontEnd Review' || taskName === 'Processing')) {
+    eventName = 'referral';
+  } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Document Generation')) {
+    eventName = 'sendToDocGenStager';
+  } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Docs In')) {
+    eventName = 'sendToDocsIn';
+  }
+  return eventName;
 };
 
 class EvalTableRow extends React.PureComponent {
@@ -29,13 +41,13 @@ class EvalTableRow extends React.PureComponent {
     if (value === 'Loan Activity') {
       const { onSelectEval } = this.props;
       onSelectEval(payLoad);
-    } else if ((payLoad.statusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.statusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended')) {
+    } else if ((payLoad.pstatusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended')) {
       const { evalId } = payLoad;
       const userID = R.path(['userDetails', 'email'], user);
       const rejectPayload = {
         evalId,
         userID,
-        eventName: 'unreject',
+        eventName: getEventName(payLoad.pstatusReason, payLoad.pstatus, payLoad.taskName),
         loanNumber,
       };
       onSelectReject(rejectPayload);
