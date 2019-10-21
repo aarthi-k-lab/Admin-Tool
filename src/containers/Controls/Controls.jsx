@@ -94,7 +94,7 @@ class Controls extends React.PureComponent {
 
   handleAddDocsInReceived() {
     const { history } = this.props;
-    history.push('/docs-in-page');
+    history.push('/bulkOrder-page');
   }
 
   handleSendToDocGenStager() {

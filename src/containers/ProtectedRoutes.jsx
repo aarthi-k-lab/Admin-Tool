@@ -227,7 +227,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
-          <Route path="/docs-in-page" render={this.renderDocsInPageRoute} />
+          <Route path="/bulkOrder-page" render={this.renderDocsInPageRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

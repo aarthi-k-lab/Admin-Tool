@@ -26,6 +26,7 @@ import {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  pageType,
   clearUserNotifyMsg,
 } from './actions';
 
@@ -124,6 +125,12 @@ const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
 };
 
+const setPageType = dispatch => (payload) => {
+  dispatch(pageType(payload));
+};
+const onLoansSubmitStager = dispatch => (payload) => {
+  dispatch(onLoansSubmitAction(payload));
+};
 const onClearUserNotifyMsg = dispatch => () => {
   dispatch(clearUserNotifyMsg());
 };
@@ -155,6 +162,8 @@ const operations = {
   onLoansSubmit,
   onFailedLoanValidation,
   setBeginSearch,
+  setPageType,
+  onLoansSubmitStager,
   onClearUserNotifyMsg,
 };
 

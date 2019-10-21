@@ -36,9 +36,10 @@ import {
   SET_RESULT_OPERATION,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW_RESULT,
-  SET_ADD_DOCS_IN_RESULT,
+  SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
+  SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
   CLEAR_USER_NOTIF_MSG,
   SET_ENABLE_SEND_TO_UW,
@@ -401,7 +402,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       };
     }
 
-    case SET_ADD_DOCS_IN_RESULT: {
+    case SET_ADD_BULK_ORDER_RESULT: {
       const tableData = action.payload;
       return {
         ...state,
@@ -415,6 +416,14 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         enableSendToDocGen,
+      };
+    }
+
+    case SET_BULK_UPLOAD_PAGE_TYPE: {
+      const pageType = action.payload;
+      return {
+        ...state,
+        pageType,
       };
     }
 
