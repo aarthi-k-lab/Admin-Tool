@@ -256,7 +256,7 @@ class SearchLoan extends React.PureComponent {
 
 SearchLoan.COLUMN_DATA = [
   {
-    Header: 'Reject',
+    Header: 'REJECT',
     accessor: 'reject',
     maxWidth: 65,
     minWidth: 65,

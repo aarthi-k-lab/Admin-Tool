@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Replay from '@material-ui/icons/Replay';
+// import Replay from '@material-ui/icons/Replay';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 import { selectors as loginSelectors } from 'ducks/login';
 import RouteAccess from 'lib/RouteAccess';
 import './EvalTableCell.css';
+// import styles from './EvalTableCell.css';
 
 class EvalTableCell extends React.PureComponent {
   constructor(props) {
@@ -45,19 +48,16 @@ class EvalTableCell extends React.PureComponent {
         break;
       case 'Reject':
         renderCellValue = (
-          <Replay
-            color={styleProps}
-            onClick={this.handleLinkClick}
+          <Tooltip
+            styleName="tooltip"
+            title="UnReject"
           >
-            {value}
-          </Replay>
+            <IconButton onClick={this.handleLinkClick} styleName="reject-icon">
+              <img alt="UnReject" src="/static/img/undo.png" />
+            </IconButton>
+          </Tooltip>
         );
         break;
-      // case 'hideReject':
-      //   renderCellValue = (
-      //     <Replay color="disabled" />
-      //   );
-      //   break;
       default:
         renderCellValue = (
           <span styleName={styleProps}>
