@@ -64,12 +64,15 @@ import {
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
   SET_TASK_SENDTO_DOCGEN,
+  SET_TASK_SENDTO_DOCSIN,
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
+  SET_ENABLE_SEND_BACK_DOCSIN,
+  SET_ENABLE_SEND_TO_UW,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -818,6 +821,10 @@ function* sentToUnderwriting() {
               status: 'Trial has been Sent to Underwriting',
             },
           });
+          yield put({
+            type: SET_ENABLE_SEND_TO_UW,
+            payload: false,
+          });
         } else {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
@@ -863,16 +870,20 @@ function* sendToDocGen(payload) {
   const evalId = yield select(selectors.evalId);
   const isStager = payload.payload;
   try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
     const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocGen/DocGen${isStager ? 'Stager' : ''}?EvalId=${evalId}`);
     if (response !== null && response === true) {
       const payload1 = JSON.parse(`{
         "evalid": "${evalId}",
-        "eventname": "sendToDocGen${isStager ? 'Stager' : ''}"
+        "eventname": "sendToDocGen${isStager ? 'Stager' : ''}",
+        "userID": "${userPrincipalName}"
       }`);
       const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
-      const currentStatus = responseSend && responseSend.updateInstanceStatusResponse.statusCode;
-      if (currentStatus !== null && currentStatus === '200') {
+      const responseArray = Object.values(responseSend);
+      const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.updateInstanceStatusResponse.statusCode === '200');
+      if (currentStatus !== null && currentStatus.length > 0) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
@@ -916,14 +927,78 @@ function* sendToDocGen(payload) {
   yield put({ type: HIDE_LOADER });
 }
 
+function* sendToDocsIn() {
+  const evalId = yield select(selectors.evalId);
+  const processStatus = yield select(selectors.processStatus);
+  const isModBook = R.equals(processStatus.toLowerCase(), 'suspended');
+  try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocsIn/${isModBook ? 'ModBooking' : 'BuyOutBooking'}?EvalId=${evalId}`);
+    if (response !== null && response === true) {
+      const payload1 = JSON.parse(`{
+        "evalid": "${evalId}",
+        "eventname": "sendToDocsIn",
+        "userID": "${userPrincipalName}"
+      }`);
+      const responseSend = yield call(Api.callPost, '/api/release/api/process/activate2', payload1);
+      const responseArray = Object.values(responseSend);
+      const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.updateInstanceStatusResponse.statusCode === '200');
+      if (currentStatus !== null && currentStatus.length > 0) {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: LEVEL_SUCCESS,
+            status: 'The loan has been successfully sent back to Docs In',
+          },
+        });
+        yield put({
+          type: SET_ENABLE_SEND_BACK_DOCSIN,
+          payload: false,
+        });
+      } else {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: LEVEL_ERROR,
+            status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          },
+        });
+      }
+    } else {
+      const message = `Unable to send back to Docs In. Eval status should be ${isModBook ? 'Approved or Completed' : 'Approved'} and the most recent Resolution case (within the eval) Status should be ${isModBook ? 'Approved, Sent for Approval, Closed or Booked' : 'Approved or Sent for Approval'}`;
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR,
+          status: message,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload:
+      {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* AddDocsInReceived(payload) {
   const { pageType } = payload.payload;
   let response;
   try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
     if (pageType === 'BULKUPLOAD_DOCSIN') {
       const { loanNumbers } = payload.payload;
-      response = yield call(Api.callPost, '/api/release/api/process/docsInMoveLoan', loanNumbers);
+      response = yield call(Api.callPost, `/api/release/api/process/docsInMoveLoan?user=${userPrincipalName}`, loanNumbers);
     } else if (pageType === 'BULKUPLOAD_STAGER') {
       const payloadData = {
         moveLoan: payload.payload,
@@ -974,6 +1049,10 @@ function* watchSendToDocGen() {
   yield takeEvery(SET_TASK_SENDTO_DOCGEN, sendToDocGen);
 }
 
+function* watchSendToDocsIn() {
+  yield takeEvery(SET_TASK_SENDTO_DOCSIN, sendToDocsIn);
+}
+
 function* watchAddDocsInReceived() {
   yield takeEvery(SET_ADD_DOCS_IN, AddDocsInReceived);
 }
@@ -1005,6 +1084,7 @@ export const TestExports = {
   watchSentToUnderwriting,
   watchLoadTrials,
   watchSendToDocGen,
+  watchSendToDocsIn,
   watchContinueMyReview,
   watchAddDocsInReceived,
 };
@@ -1024,6 +1104,7 @@ export const combinedSaga = function* combinedSaga() {
     watchLoadTrials(),
     watchSentToUnderwriting(),
     watchSendToDocGen(),
+    watchSendToDocsIn(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
   ]);

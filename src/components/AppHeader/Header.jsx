@@ -11,10 +11,11 @@ import EndShift from 'models/EndShift';
 import hotkeys from 'hotkeys-js';
 import Profile from './Profile';
 import { operations, selectors } from '../../state/ducks/dashboard';
+import { operations as loginOperations, selectors as loginSelectors } from '../../state/ducks/login';
+import { selectors as configSelectors } from '../../state/ducks/config';
 import './Header.css';
 
 const HOTKEY_S = ['s', 'S'];
-
 class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -114,6 +115,7 @@ class Header extends React.Component {
 
   renderProfileDetails(user) {
     const { showProfileDetails } = this.state;
+    const { getUserRole, setUserRole, features } = this.props;
     return (
       <Modal
         onClose={this.handleProfileClose}
@@ -121,9 +123,13 @@ class Header extends React.Component {
         styleName="modal"
       >
         <Profile
+          featureToggle={features.userGroupsToggle}
           groups={user && user.groupList}
+          setRoleCallBack={setUserRole}
           skills={user && user.skills}
           userDetails={user && user.userDetails}
+          userGroups={user.userGroups}
+          userRole={getUserRole}
         />
       </Modal>
     );
@@ -186,6 +192,10 @@ Header.propTypes = {
   clearSearch: PropTypes.bool.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
+  features: PropTypes.shape({
+    userGroupsToggle: PropTypes.bool,
+  }).isRequired,
+  getUserRole: PropTypes.string.isRequired,
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
@@ -195,6 +205,7 @@ Header.propTypes = {
   onAutoSave: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   setBeginSearch: PropTypes.func.isRequired,
+  setUserRole: PropTypes.func.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.objectOf(PropTypes.array),
     userDetails: PropTypes.shape({
@@ -211,9 +222,12 @@ const mapStateToProps = state => ({
   evalId: selectors.evalId(state),
   clearSearch: selectors.clearSearch(state),
   isAssigned: selectors.isAssigned(state),
+  getUserRole: loginSelectors.getUserRole(state),
+  features: configSelectors.getFeatures(state),
 });
 
 const mapDispatchToProps = dispatch => ({
+  setUserRole: loginOperations.setUserRole(dispatch),
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   setBeginSearch: operations.setBeginSearch(dispatch),

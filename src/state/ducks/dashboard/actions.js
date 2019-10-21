@@ -24,12 +24,14 @@ import {
   LOAD_TRIALS_SAGA,
   SET_TASK_UNDERWRITING,
   SET_TASK_SENDTO_DOCGEN,
+  SET_TASK_SENDTO_DOCSIN,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
   SET_BULK_UPLOAD_PAGE_TYPE,
+  CLEAR_USER_NOTIF_MSG,
 } from './types';
 
 
@@ -147,6 +149,10 @@ const onSendToDocGenAction = isStager => ({
   payload: isStager,
 });
 
+const onSendToDocsInAction = () => ({
+  type: SET_TASK_SENDTO_DOCSIN,
+});
+
 const cleanResult = () => ({
   type: CLEAN_RESULT,
 });
@@ -166,6 +172,10 @@ const onLoanValidationError = payload => ({
 const pageType = pageName => ({
   type: SET_BULK_UPLOAD_PAGE_TYPE,
   payload: pageName,
+});
+
+const clearUserNotifyMsg = () => ({
+  type: CLEAR_USER_NOTIF_MSG,
 });
 
 export {
@@ -192,10 +202,12 @@ export {
   loadTrialsAction,
   onSentToUnderwritingAction,
   onSendToDocGenAction,
+  onSendToDocsInAction,
   cleanResult,
   continueMyReview,
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
   pageType,
+  clearUserNotifyMsg,
 };

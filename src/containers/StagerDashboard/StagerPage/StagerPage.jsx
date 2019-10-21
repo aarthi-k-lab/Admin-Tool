@@ -205,10 +205,11 @@ StagerPage.defaultProps = {
   },
   loading: true,
   popupData: {},
+  activeTab: '',
 };
 
 StagerPage.propTypes = {
-  activeTab: PropTypes.string.isRequired,
+  activeTab: PropTypes.string,
   activeTile: PropTypes.string.isRequired,
   counts: PropTypes.arrayOf(
     PropTypes.shape({

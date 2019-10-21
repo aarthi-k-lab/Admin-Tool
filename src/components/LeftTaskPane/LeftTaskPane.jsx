@@ -232,14 +232,14 @@ LeftTaskPane.propTypes = {
   })).isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
-  optionalTasks: PropTypes.arrayOf(OptionalTaskModel),
+  optionalTasks: PropTypes.arrayOf(PropTypes.shape(OptionalTaskModel)),
   pdfGeneratorConstant: PropTypes.string.isRequired,
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string,
   shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
-  tasks: PropTypes.arrayOf(TaskModel).isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)).isRequired,
   updateChecklist: PropTypes.func.isRequired,
 };
 

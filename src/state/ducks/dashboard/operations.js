@@ -20,12 +20,14 @@ import {
   loadTrialsAction,
   onSentToUnderwritingAction,
   onSendToDocGenAction,
+  onSendToDocsInAction,
   cleanResult,
   continueMyReview,
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
   pageType,
+  clearUserNotifyMsg,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -109,6 +111,8 @@ const onSentToUnderwriting = dispatch => () => {
 
 const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isStager));
 
+const onSendToDocsIn = dispatch => () => dispatch(onSendToDocsInAction());
+
 const onCleanResult = dispatch => () => dispatch(cleanResult());
 const onContinueMyReview = dispatch => (taskStatus) => {
   dispatch(continueMyReview(taskStatus));
@@ -126,6 +130,9 @@ const setPageType = dispatch => (payload) => {
 };
 const onLoansSubmitStager = dispatch => (payload) => {
   dispatch(onLoansSubmitAction(payload));
+};
+const onClearUserNotifyMsg = dispatch => () => {
+  dispatch(clearUserNotifyMsg());
 };
 
 const operations = {
@@ -149,6 +156,7 @@ const operations = {
   loadTrials,
   onSentToUnderwriting,
   onSendToDocGen,
+  onSendToDocsIn,
   onCleanResult,
   onContinueMyReview,
   onLoansSubmit,
@@ -156,6 +164,7 @@ const operations = {
   setBeginSearch,
   setPageType,
   onLoansSubmitStager,
+  onClearUserNotifyMsg,
 };
 
 export default operations;

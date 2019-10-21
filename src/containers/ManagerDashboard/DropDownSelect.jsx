@@ -27,7 +27,7 @@ class DropDownSelect extends Component {
           value={selectedValue}
         >
           {getDashboardItemsReports.map(items => (
-            <MenuItem value={items.reportName}>{items.reportName}</MenuItem>
+            <MenuItem key={items} value={items.reportName}>{items.reportName}</MenuItem>
           ))}
         </Select>
       </FormControl>

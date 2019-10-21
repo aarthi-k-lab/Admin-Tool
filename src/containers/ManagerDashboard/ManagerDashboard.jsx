@@ -23,7 +23,7 @@ class ManagerDashboard extends Component {
     this.state = {
       selectedDashboard: 'Manager Dashboard',
     };
-    this.accessToken = Auth.getPowerBIAccessToken();
+    this.accessToken = Auth.getPowerBIAccessToken(window.location.pathname);
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
     this.handleChange = this.handleChange.bind(this);

@@ -233,7 +233,7 @@ LeftParentTasks.propTypes = {
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string,
   shouldDeleteTask: PropTypes.bool.isRequired,
-  tasks: PropTypes.shape(TaskModel).isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)).isRequired,
   updateChecklist: PropTypes.func.isRequired,
 };
 

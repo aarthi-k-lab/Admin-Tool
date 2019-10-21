@@ -29,6 +29,7 @@ import StagerDashboard from './StagerDashboard';
 import MoveForward from './MoveForward';
 import IdleUserHandle from './IdleUserHandler';
 import DocGenGoBack from './Dashboard/DocGenGoBack';
+import DocsInGoBack from './Dashboard/DocsInGoBack';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
 
 class ProtectedRoutes extends React.Component {
@@ -49,6 +50,7 @@ class ProtectedRoutes extends React.Component {
     this.renderLoanActivity = this.renderLoanActivity.bind(this);
     this.renderBackendChecklistRoute = this.renderBackendChecklistRoute.bind(this);
     this.renderDocGenBackRoute = this.renderDocGenBackRoute.bind(this);
+    this.renderDocsInBackRoute = this.renderDocsInBackRoute.bind(this);
     this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
     this.renderDocsInMainRoute = this.renderDocsInMainRoute.bind(this);
     this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
@@ -61,7 +63,7 @@ class ProtectedRoutes extends React.Component {
         this.auth = auth;
         if (auth.sessionValid) {
           this.setState({ loading: false });
-          if (auth.groups && auth.groups.length > 0) {
+          if (auth.groups) {
             const redirectPath = Auth.getGroupHomePage(auth.groups);
             this.shouldRedirect = location.pathname === '/' && redirectPath !== location.pathname;
             this.setState({
@@ -137,6 +139,18 @@ class ProtectedRoutes extends React.Component {
     return renderComponent;
   }
 
+  renderDocsInBackRoute() {
+    const { items, loanNumber } = this.props;
+    const groups = this.getGroups();
+    let renderComponent = null;
+    if (RouteAccess.hasDocsInBackAccess(groups)) {
+      renderComponent = (items.length > 0 || loanNumber) ? <DocsInGoBack /> : <Redirect to="/" />;
+    } else {
+      renderComponent = <Redirect to="/unauthorized?error=DOCS_IN_ACCESS_NEEDED" />;
+    }
+    return renderComponent;
+  }
+
   renderDocGenChecklistRoute() {
     const groups = this.getGroups();
     return (
@@ -170,7 +184,7 @@ class ProtectedRoutes extends React.Component {
   renderDocsInMainRoute() {
     const groups = this.getGroups();
     return (
-      RouteAccess.hasBackendUnderwriterAccess(groups)
+      RouteAccess.hasDocInsAccess(groups)
         ? <Dashboard group={DashboardModel.DOCS_IN} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
@@ -179,7 +193,7 @@ class ProtectedRoutes extends React.Component {
   renderDocsInPageRoute() {
     const groups = this.getGroups();
     return (
-      RouteAccess.hasBackendUnderwriterAccess(groups)
+      RouteAccess.hasDocInsAccess(groups)
         ? <DocsIn group={DashboardModel.DOCS_IN} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
@@ -209,6 +223,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/backend-checklist" render={this.renderBackendChecklistRoute} />
           <Route exact path="/loan-activity" render={this.renderLoanActivity} />
           <Route path="/doc-gen-back" render={this.renderDocGenBackRoute} />
+          <Route path="/docs-in-back" render={this.renderDocsInBackRoute} />
           <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
@@ -243,7 +258,7 @@ ProtectedRoutes.propTypes = {
   getFeaturesTrigger: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      content: PropTypes.string.isRequired,
+      content: PropTypes.any.isRequired,
       title: PropTypes.string.isRequired,
     }),
   ),

@@ -3,8 +3,7 @@ import UniversalCookie from 'universal-cookie';
 import * as R from 'ramda';
 import {
   BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER, DOC_PROCESSOR,
-  FRONTEND_UNDERWRITER_BETA,
-  LOAN_ACTIVITY,
+  DOCS_IN,
   DOC_GEN,
 } from './Groups';
 import Redirect from './Redirect';
@@ -171,8 +170,12 @@ Auth.getPowerBIAccessToken = function getPowerBIAccessToken(successRedirectUrl =
   return false;
 };
 
-Auth.getUserGroups = async function getGroupsForUser(email) {
-  const request = new Request(`/api/auth/ad/app/users/${email}/groups`, {
+Auth.isReportTokenValid = function isReportTokenValid() {
+  return this.fetchCookie(this.POWERBI_TOKEN_COOKIE_NAME);
+};
+
+Auth.getUserGroups = async function getGroupsForUser(email, forceClearCache = false) {
+  const request = new Request(`/api/auth/ad/app/users/${email}/groups?forceClearCache=${forceClearCache}`, {
     method: 'GET',
   });
   try {
@@ -181,11 +184,38 @@ Auth.getUserGroups = async function getGroupsForUser(email) {
       return [];
     }
     if (response.status === 200) {
+      if (forceClearCache) {
+        Redirect.toLogin('/');
+      }
       return await response.json();
     }
     return [];
   } catch (err) {
     return [];
+  }
+};
+
+Auth.updateUserGroups = async function updateUserGroups(email, userGroups) {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  try {
+    const response = await fetch(`/api/auth/ad/app/users/${email}/groups`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userGroups),
+    });
+    if (response.status === 401) {
+      return false;
+    }
+    if (response.status === 200) {
+      Redirect.toLogin('/');
+      return true;
+    }
+    return false;
+  } catch (err) {
+    return false;
   }
 };
 
@@ -266,10 +296,6 @@ Auth.homePage = [
     path: '/reports',
   },
   {
-    groupName: FRONTEND_UNDERWRITER_BETA,
-    path: '/frontend-checklist',
-  },
-  {
     groupName: FRONTEND_UNDERWRITER,
     path: '/frontend-checklist',
   },
@@ -282,12 +308,12 @@ Auth.homePage = [
     path: '/doc-processor',
   },
   {
-    groupName: LOAN_ACTIVITY,
-    path: '/loan-activity',
-  },
-  {
     groupName: DOC_GEN,
     path: '/doc-gen',
+  },
+  {
+    groupName: DOCS_IN,
+    path: '/docs-in',
   },
 ];
 

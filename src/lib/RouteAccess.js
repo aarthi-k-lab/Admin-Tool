@@ -4,7 +4,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr'],
 };
 
 const stager = {
@@ -46,7 +46,7 @@ const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
   img: '/static/img/frontend.svg',
-  groups: ['allaccess', 'feuw-beta', 'beta', 'feuw', 'feuw-mgr'],
+  groups: ['allaccess', 'feuw-beta', 'feuw', 'feuw-mgr'],
 };
 
 const beuwTasksAndChecklist = {
@@ -73,6 +73,13 @@ const docGenBack = {
   name: 'doc-gen-back',
   img: '/static/img/doc_gen.svg',
   groups: ['allaccess', 'docgen', 'docgen-mgr'],
+};
+
+const docsInBack = {
+  path: '/docs-in-back',
+  name: 'docs-in-back',
+  img: '/static/img/doc_gen.svg',
+  groups: ['allaccess', 'docsin-mgr'],
 };
 
 const docGen = {
@@ -107,12 +114,13 @@ const links = [
   moveForward,
   loanActivity,
   docGenBack,
+  docsInBack,
   docGen,
   docIns,
   docInsPage,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page'];
+const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
@@ -177,6 +185,10 @@ function hasDocGenBackAccess(groups) {
   return hasGroup(docGenBack.groups, groups);
 }
 
+function hasDocsInBackAccess(groups) {
+  return hasGroup(docsInBack.groups, groups);
+}
+
 function hasDocInsAccess(groups) {
   return hasGroup(docIns.groups, groups);
 }
@@ -195,6 +207,7 @@ module.exports = {
   shouldShowIcon,
   hasChecklistAccess,
   hasDocGenBackAccess,
+  hasDocsInBackAccess,
   hasDocGenAccess,
   hasDocInsAccess,
 };

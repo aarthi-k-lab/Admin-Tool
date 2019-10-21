@@ -18,7 +18,12 @@ class TombstoneWrapper extends React.PureComponent {
 }
 
 TombstoneWrapper.propTypes = {
-  data: PropTypes.bool.isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.any.isRequired,
+      title: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   error: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
 };

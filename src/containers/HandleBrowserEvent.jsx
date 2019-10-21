@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as R from 'ramda';
 import EndShift from 'models/EndShift';
 import { operations, selectors } from '../state/ducks/dashboard';
+import Auth from '../lib/Auth';
 
 
 class HandleBrowserEvent extends React.PureComponent {
@@ -24,9 +25,11 @@ class HandleBrowserEvent extends React.PureComponent {
     const {
       onAutoSave, onEndShift, enableGetNext, evalId, isAssigned,
     } = this.props;
-    event.preventDefault();
-    // eslint-disable-next-line no-param-reassign
-    event.returnValue = '';
+    if (Auth.isReportTokenValid()) {
+      event.preventDefault();
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
+    }
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }

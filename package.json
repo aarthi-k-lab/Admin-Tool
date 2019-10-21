@@ -34,6 +34,7 @@
     "ramda": "^0.25.0",
     "react": "^16.8.5",
     "react-advanced-datetimerange-picker": "^0.1.12",
+    "react-audio-player": "^0.11.1",
     "react-csv": "^1.1.1",
     "react-dom": "^16.8.5",
     "react-hot-loader": "^4.12.6",

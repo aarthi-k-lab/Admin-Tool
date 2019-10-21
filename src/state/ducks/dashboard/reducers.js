@@ -40,6 +40,9 @@ import {
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
   SET_BULK_UPLOAD_PAGE_TYPE,
+  SET_ENABLE_SEND_BACK_DOCSIN,
+  CLEAR_USER_NOTIF_MSG,
+  SET_ENABLE_SEND_TO_UW,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -54,6 +57,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         checklistDiscrepancies: action.payload,
+      };
+    }
+    case CLEAR_USER_NOTIF_MSG: {
+      return {
+        ...state,
+        checklistDiscrepancies: {},
       };
     }
     // case GET_LOAN_ACTIVITY_DETAILS: {
@@ -326,9 +335,11 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
     case LOAD_TRIALHEADER_RESULT: {
       const trialHeader = action.payload;
+      const enableSendToUW = true;
       return {
         ...state,
         trialHeader,
+        enableSendToUW,
         loading: false,
       };
     }
@@ -381,10 +392,12 @@ const reducer = (state = { firstVisit: true }, action) => {
     case CLEAN_RESULT: {
       const resultOperation = {};
       const enableSendToDocGen = true;
+      const enableSendToDocsIn = true;
       return {
         ...state,
         resultOperation,
         enableSendToDocGen,
+        enableSendToDocsIn,
         loading: false,
       };
     }
@@ -411,6 +424,22 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         pageType,
+      };
+    }
+
+    case SET_ENABLE_SEND_BACK_DOCSIN: {
+      const enableSendToDocsIn = action.payload;
+      return {
+        ...state,
+        enableSendToDocsIn,
+      };
+    }
+
+    case SET_ENABLE_SEND_TO_UW: {
+      const enableSendToUW = action.payload;
+      return {
+        ...state,
+        enableSendToUW,
       };
     }
 

@@ -1,29 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import './SendToUnderwriting.css';
+import './SendToDocsIn.css';
 
-const SendToUnderwriting = ({ disabled, onClick }) => (
+const SendToDocsIn = ({ disabled, onClick }) => (
   <Button
     className="material-ui-button"
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="send-to-underwriting"
+    styleName="send-to-docs-in"
     variant="contained"
   >
-    Send To Underwriting
+    Send To Docs In
   </Button>
 );
 
-SendToUnderwriting.defaultProps = {
-  onClick: () => {},
+SendToDocsIn.defaultProps = {
   disabled: false,
+  onClick: () => {},
 };
 
-SendToUnderwriting.propTypes = {
+SendToDocsIn.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export default SendToUnderwriting;
+export default SendToDocsIn;
