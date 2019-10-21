@@ -9,6 +9,16 @@ import EvalTableCell from './EvalTableCell';
 import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
+const showReject = (row) => {
+  let showreject = '';
+  if ((row.original.statusReason !== 'Rejection Pending' && row.original.pstatus === '  ') || (row.original.statusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) {
+    showreject = 'true';
+  } else {
+    showreject = 'false';
+  }
+  return showreject;
+};
+
 class EvalTableRow extends React.PureComponent {
   handleLinkClick = (value) => {
     const {
@@ -33,15 +43,6 @@ class EvalTableRow extends React.PureComponent {
   }
 
   render() {
-    const getRejectStyles = (row) => {
-      let rejectCheck = '';
-      if ((row.original.statusReason !== 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.statusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) {
-        rejectCheck = 'primary';
-      } else {
-        rejectCheck = 'disabled';
-      }
-      return rejectCheck;
-    };
     const getStyles = (row) => {
       let styles = '';
       if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
@@ -54,6 +55,7 @@ class EvalTableRow extends React.PureComponent {
       return styles;
     };
     const { row } = this.props;
+    const displayReject = showReject(row);
     let cellData = null;
     switch (row.column.Header) {
       case 'ASSIGNED TO':
@@ -68,13 +70,17 @@ class EvalTableRow extends React.PureComponent {
           />
         );
         break;
-      case 'Reject':
+      case 'REJECT':
         cellData = (
-          <EvalTableCell
-            click={() => this.handleLinkClick('Reject')}
-            styleProps={getRejectStyles(row)}
-            value="Reject"
-          />
+          displayReject
+            ? (
+              <EvalTableCell
+                click={() => this.handleLinkClick('Reject')}
+                styleProps={getStyles(row)}
+                value="Reject"
+              />
+            )
+            : <EvalTableCell styleProps={getStyles(row)} value={row.value} />
         );
         break;
       default:
