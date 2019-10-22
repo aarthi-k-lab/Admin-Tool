@@ -1,22 +1,57 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login';
 import EvalTableCell from './EvalTableCell';
 import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
-class EvalTableRow extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.handleLinkClick = this.handleLinkClick.bind(this);
+const showReject = (row) => {
+  let showreject = '';
+  if ((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) {
+    showreject = 'true';
+  } else {
+    showreject = 'false';
   }
+  return showreject;
+};
 
-  handleLinkClick() {
-    const { row, searchLoanResult } = this.props;
+const getEventName = (pstatusReason, pstatus, taskName) => {
+  let eventName = '';
+  if (pstatusReason === 'Rejection Pending' && pstatus === 'Active') { eventName = 'unreject'; } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'FrontEnd Review' || taskName === 'Processing')) {
+    eventName = 'referral';
+  } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Document Generation')) {
+    eventName = 'sendToDocGenStager';
+  } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Docs In')) {
+    eventName = 'sendToDocsIn';
+  }
+  return eventName;
+};
+
+class EvalTableRow extends React.PureComponent {
+  handleLinkClick = (value) => {
+    const {
+      row, searchLoanResult, onSelectReject, user,
+    } = this.props;
     const { loanNumber } = searchLoanResult;
     const payLoad = { loanNumber, ...row.original };
-    const { onSelectEval } = this.props;
-    onSelectEval(payLoad);
+    if (value === 'Loan Activity') {
+      const { onSelectEval } = this.props;
+      onSelectEval(payLoad);
+    } else if ((payLoad.pstatusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended')) {
+      const { evalId } = payLoad;
+      const userID = R.path(['userDetails', 'email'], user);
+      const rejectPayload = {
+        evalId,
+        userID,
+        eventName: getEventName(payLoad.pstatusReason, payLoad.pstatus, payLoad.taskName),
+        loanNumber,
+      };
+      onSelectReject(rejectPayload);
+    }
   }
 
   render() {
@@ -32,6 +67,7 @@ class EvalTableRow extends React.PureComponent {
       return styles;
     };
     const { row } = this.props;
+    const displayReject = showReject(row);
     let cellData = null;
     switch (row.column.Header) {
       case 'ASSIGNED TO':
@@ -40,10 +76,23 @@ class EvalTableRow extends React.PureComponent {
       case 'ACTIONS':
         cellData = (
           <EvalTableCell
-            click={this.handleLinkClick}
+            click={() => this.handleLinkClick('Loan Activity')}
             styleProps={getStyles(row)}
             value="Loan Activity"
           />
+        );
+        break;
+      case 'REJECT':
+        cellData = (
+          displayReject
+            ? (
+              <EvalTableCell
+                click={() => this.handleLinkClick('Reject')}
+                styleProps={getStyles(row)}
+                value="Reject"
+              />
+            )
+            : <EvalTableCell styleProps={getStyles(row)} value={row.value} />
         );
         break;
       default:
@@ -59,6 +108,7 @@ class EvalTableRow extends React.PureComponent {
 
 EvalTableRow.propTypes = {
   onSelectEval: PropTypes.func.isRequired,
+  onSelectReject: PropTypes.func.isRequired,
   row: PropTypes.shape({
     column: PropTypes.shape({
       Header: PropTypes.string,
@@ -72,13 +122,24 @@ EvalTableRow.propTypes = {
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
   })).isRequired,
+  user: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 const mapDispatchToProps = dispatch => ({
   onSelectEval: operations.onSelectEval(dispatch),
+  onSelectReject: operations.onSelectReject(dispatch),
 });
 
 const mapStateToProps = state => ({
   searchLoanResult: selectors.searchLoanResult(state),
+  user: loginSelectors.getUser(state),
+
 });
 
 const EvalTableRowContainer = connect(

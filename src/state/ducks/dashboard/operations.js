@@ -28,6 +28,8 @@ import {
   setBeginSearchAction,
   pageType,
   clearUserNotifyMsg,
+  selectReject,
+  clearSelectReject,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -135,6 +137,14 @@ const onClearUserNotifyMsg = dispatch => () => {
   dispatch(clearUserNotifyMsg());
 };
 
+const onSelectReject = dispatch => (payload) => {
+  dispatch(selectReject(payload));
+};
+
+const onClearSelectReject = dispatch => () => {
+  dispatch(clearSelectReject());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -165,6 +175,8 @@ const operations = {
   setPageType,
   onLoansSubmitStager,
   onClearUserNotifyMsg,
+  onSelectReject,
+  onClearSelectReject,
 };
 
 export default operations;

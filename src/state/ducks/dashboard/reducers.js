@@ -42,7 +42,8 @@ import {
   SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
   CLEAR_USER_NOTIF_MSG,
-  SET_ENABLE_SEND_TO_UW,
+  SET_ENABLE_SEND_TO_UW, SELECT_REJECT,
+  CLEAR_SELECT_REJECT,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -63,6 +64,19 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         checklistDiscrepancies: {},
+      };
+    }
+    case SELECT_REJECT: {
+      return {
+        ...state,
+        rejectResponse: action.payload,
+        wasSearched: false,
+      };
+    }
+    case CLEAR_SELECT_REJECT: {
+      return {
+        ...state,
+        rejectResponse: null,
       };
     }
     // case GET_LOAN_ACTIVITY_DETAILS: {

@@ -2,9 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 import { selectors as loginSelectors } from 'ducks/login';
 import RouteAccess from 'lib/RouteAccess';
 import './EvalTableCell.css';
+// import styles from './EvalTableCell.css';
 
 class EvalTableCell extends React.PureComponent {
   constructor(props) {
@@ -28,22 +31,43 @@ class EvalTableCell extends React.PureComponent {
   }
 
   render() {
-    const actions = 'Loan Activity';
     const { value, styleProps } = this.props;
+    let renderCellValue = '';
+    switch (value) {
+      case 'Loan Activity':
+        renderCellValue = (
+          <Link
+            onClick={this.handleLinkClick}
+            styleName="loanActivityLink"
+            to={this.route()}
+          >
+            {value}
+          </Link>
+        );
+        break;
+      case 'Reject':
+        renderCellValue = (
+          <Tooltip
+            styleName="tooltip"
+            title="UnReject"
+          >
+            <IconButton onClick={this.handleLinkClick} styleName="reject-icon">
+              <img alt="UnReject" src="/static/img/Revoke.svg" />
+            </IconButton>
+          </Tooltip>
+        );
+        break;
+      default:
+        renderCellValue = (
+          <span styleName={styleProps}>
+            {value}
+          </span>
+        );
+    }
     return (
-      value !== actions ? (
-        <span styleName={styleProps}>
-          {value}
-        </span>
-      ) : (
-        <Link
-          onClick={this.handleLinkClick}
-          styleName="loanActivityLink"
-          to={this.route()}
-        >
-          {value}
-        </Link>
-      )
+      <div>
+        {renderCellValue}
+      </div>
     );
   }
 }
