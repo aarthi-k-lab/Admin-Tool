@@ -204,7 +204,14 @@ class CustomReactTable extends React.PureComponent {
   handleRowClick(rowInfo) {
     const { onSearchLoan } = this.props;
     const { original } = rowInfo;
-    onSearchLoan(original.loanNumber);
+    console.log('test->>', original);
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
+    this.setState({ isRedirect: !groupcheck });
+    if (!groupcheck) {
+      onSearchLoan('601567480');
+    }
   }
 
   loadSearchLoan() {
@@ -222,7 +229,7 @@ class CustomReactTable extends React.PureComponent {
       if (assigned) {
         data.push(...assigned);
       }
-      const payload = { loanNumber, ...data };
+      const payload = { loanNumber, ...data[0] };
       const { isRedirect } = this.state;
       let group = '';
       switch (payload.taskName) {
@@ -261,35 +268,33 @@ class CustomReactTable extends React.PureComponent {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, searchLoanResult } = this.props;
     const tableData = data.tableData.map((datas) => {
       const current = { ...datas };
       // mock data
-      current.assignedTo = 'Unassigned';
-      current.assignedDate = '10/08/2019 01:54:46';
+      current.assignedTo = 'Rajinikanth Shanmugam2';
+      current.assignedDate = '10/22/2019 05:05:49';
       current.assignee = 'Rajinikanth Shanmugam2';
-      current.evalId = '2012381';
-      current.milestone = 'Document Received';
-      current.piid = '673699';
+      current.evalId = '2012117';
+      current.milestone = 'Underwriting Review';
+      current.piid = '668213';
       current.pstatus = 'Active';
       current.pstatusDate = '09/23/2019 14:55:11';
-      current.pstatusReason = 'Approved';
+      current.pstatusReason = 'New';
       current.statusReason = 'Unassign By System';
-      current.taskCheckListId = '5d9c32b6703ca52252953aff';
-      current.taskCheckListTemplateName = 'DOCSINv1.8';
-      current.taskId = '5325404';
-      current.taskName = 'Docs In';
+      current.taskCheckListId = '5daed9e53cb84d93da46222d';
+      current.taskCheckListTemplateName = 'BEUWGENDISPv1.6';
+      current.taskId = '5275327';
+      current.taskName = 'Underwriting';
       current.tstatus = 'Active';
-      current.tstatusDate = '10/07/2019 12:23:46';
-      current.loanNumber = '596567736';
+      current.tstatusDate = '10/17/2019 22:50:15';
+      current.loanNumber = '601567480';
       return current;
     });
-    const { user } = this.props;
-    const groups = user && user.groupList;
-    const groupcheck = groups.includes('stager', 'stager-mgr');
-    this.loadSearchLoan();
-    this.setState({ isRedirect: !groupcheck });
     const datae = { ...data };
+    if (!R.isEmpty(searchLoanResult)) {
+      this.loadSearchLoan();
+    }
     datae.tableData = tableData;
     const returnVal = data ? (
       <div styleName="stager-table-container">

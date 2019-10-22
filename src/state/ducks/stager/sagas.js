@@ -38,16 +38,18 @@ import {
   SET_SNACK_BAR_VALUES_SAGA,
 } from '../notifications/types';
 
-function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm, userGroups) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
   const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
   const fromDate = new Date(fromDateMoment).toISOString();
   const toDate = new Date(toDateMoment).toISOString();
+  const isPostModCheck = userGroups.includes('postmodstager', 'postmodstager-mgr');
   const dateValue = {
     fromDate,
     toDate,
     stagerType,
     searchTerm,
+    isPostModCheck,
   };
   return dateValue;
 }
@@ -56,7 +58,9 @@ function* fetchDashboardCounts() {
   try {
     const stagerType = yield select(selectors.getStagerValue);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    const user = yield select(loginSelectors.getUser);
+    const userGroups = R.path(['groupList'], user);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, userGroups);
     const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
     if (response != null) {
       yield put({
@@ -84,10 +88,12 @@ function* fetchDashboardData(data) {
         loading: true,
       },
     });
+    const user = yield select(loginSelectors.getUser);
+    const userGroups = R.path(['groupList'], user);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
     const dateValue = buildDateObj(
       stagerType, stagerStartEndDate,
-      searchTerm,
+      searchTerm, userGroups,
     );
     const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', dateValue);
     yield put({
@@ -122,7 +128,9 @@ function* fetchDownloadData(callBack) {
     const stagerType = yield select(selectors.getStagerValue);
     const searchTerm = yield select(selectors.getActiveSearchTerm);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
+    const user = yield select(loginSelectors.getUser);
+    const userGroups = R.path(['groupList'], user);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm, userGroups);
     const response = yield call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', dateValue);
     if (response != null) {
       yield put({
@@ -232,7 +240,9 @@ function* makeStagerSearchLoanCall(payload) {
     const searchLoanNumber = payload.payload;
     const stagerType = yield select(selectors.getStagerValue);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    const user = yield select(loginSelectors.getUser);
+    const userGroups = R.path(['groupList'], user);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, userGroups);
     dateValue.loanNumber = searchLoanNumber;
     const response = yield call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', dateValue);
     yield put({
