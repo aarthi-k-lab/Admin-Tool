@@ -164,7 +164,6 @@ class DocsIn extends React.PureComponent {
         userID: user.userDetails.email,
         pageType: bulkOrderPageType,
       };
-      console.log('history', history);
       onLoansSubmit(payload);
     } else {
       const payload = {
@@ -179,7 +178,7 @@ class DocsIn extends React.PureComponent {
     const { value, selectedState } = this.state;
     return (
       <>
-        <div styleName="drop-down-select">
+        <Grid item styleName="drop-down-select" xs={1}>
           <Select
             // native
             onChange={event => this.onValueChange(event)}
@@ -188,8 +187,8 @@ class DocsIn extends React.PureComponent {
             <MenuItem value="Value">VALUE</MenuItem>
             <MenuItem value="TaxTranscript">TAX TRANSCRIPT</MenuItem>
           </Select>
-        </div>
-        <Grid item styleName="drop-down">
+        </Grid>
+        <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
           <Select
             // native
             onChange={this.handleChangeInState}
@@ -207,7 +206,13 @@ class DocsIn extends React.PureComponent {
   renderDownloadButton() {
     const { tableData } = this.props;
     return (
-      <Grid item style={{ textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem' }} xs={4}>
+      <Grid
+        item
+        style={{
+          textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '16rem',
+        }}
+        xs={4}
+      >
         {(tableData && tableData.length > 0) && (
           <Button color="primary" onClick={() => this.onDownloadCSV()} variant="contained">
             <DownloadIcon styleName="download-icon" />
