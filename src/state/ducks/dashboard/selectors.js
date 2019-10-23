@@ -76,6 +76,9 @@ const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
 
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
 
+const getRejectResponse = state => R.pathOr({}, ['dashboard', 'rejectResponse'], state);
+
+
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
 
@@ -88,6 +91,8 @@ const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUn
   ? state.dashboard.resultUnderwriting : {});
 const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
   ? state.dashboard.resultOperation : {});
+const bulkOrderPageType = state => R.pathOr({}, ['dashboard', 'pageType'], state);
+
 
 const selectors = {
   enableEndShift,
@@ -129,8 +134,10 @@ const selectors = {
   tableData,
   wasSearched,
   enableSendToDocGen,
+  bulkOrderPageType,
   enableSendToDocsIn,
   enableSendToUW,
+  getRejectResponse,
 };
 
 export default selectors;

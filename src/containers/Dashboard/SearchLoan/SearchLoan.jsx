@@ -8,6 +8,7 @@ import { Link, Redirect, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
+import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
@@ -27,6 +28,7 @@ class SearchLoan extends React.PureComponent {
     this.redirectPath = '';
     this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
+    this.renderRejectResults = this.renderRejectResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.getParamsValue = this.getParamsValue.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
@@ -91,59 +93,61 @@ class SearchLoan extends React.PureComponent {
     onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
-  handleRowClick(payload) {
-    if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
-      const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
-      let group = '';
-      switch (payload.taskName) {
-        case 'Underwriting':
-          group = 'BEUW';
-          this.redirectPath = this.getBackendEndPath();
-          break;
-        case 'Processing':
-          group = 'PROC';
-          this.redirectPath = '/doc-processor';
-          break;
-        case 'Trial Modification':
-        case 'Forbearance':
-          group = 'LA';
-          this.redirectPath = this.getLoanActivityPath();
-          break;
-        case 'Document Generation':
-          group = 'DOCGEN';
-          this.redirectPath = '/doc-gen';
-          break;
-        case 'Docs In':
-          group = 'DOCSIN';
-          this.redirectPath = '/docs-in';
-          break;
-        default:
-          this.redirectPath = this.getFrontEndPath();
-          group = this.getFrontEndGroup();
+  handleRowClick(payload, rowInfo) {
+    if (rowInfo.Header !== 'REJECT') {
+      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
+        const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
+        let group = '';
+        switch (payload.taskName) {
+          case 'Underwriting':
+            group = 'BEUW';
+            this.redirectPath = this.getBackendEndPath();
+            break;
+          case 'Processing':
+            group = 'PROC';
+            this.redirectPath = '/doc-processor';
+            break;
+          case 'Trial Modification':
+          case 'Forbearance':
+            group = 'LA';
+            this.redirectPath = this.getLoanActivityPath();
+            break;
+          case 'Document Generation':
+            group = 'DOCGEN';
+            this.redirectPath = '/doc-gen';
+            break;
+          case 'Docs In':
+            group = 'DOCSIN';
+            this.redirectPath = '/docs-in';
+            break;
+          default:
+            this.redirectPath = this.getFrontEndPath();
+            group = this.getFrontEndGroup();
+        }
+        onGetGroupName(group);
+        onSelectEval(payload);
+        onGetChecklistHistory(payload.taskId);
+        this.setState({ isRedirect: true });
       }
-      onGetGroupName(group);
-      onSelectEval(payload);
-      onGetChecklistHistory(payload.taskId);
-      this.setState({ isRedirect: true });
-    }
 
-    if ((payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation')
-      || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
-      const { onSelectEval, onGetGroupName } = this.props;
-      this.redirectPath = '/doc-gen-back';
-      onGetGroupName('DGB');
-      onSelectEval(payload);
-      this.setState({ isRedirect: true });
-    }
+      if ((payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation')
+        || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
+        const { onSelectEval, onGetGroupName } = this.props;
+        this.redirectPath = '/doc-gen-back';
+        onGetGroupName('DGB');
+        onSelectEval(payload);
+        this.setState({ isRedirect: true });
+      }
 
-    if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
-    || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
-    || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
-      const { onSelectEval, onGetGroupName } = this.props;
-      this.redirectPath = '/docs-in-back';
-      onGetGroupName('DIB');
-      onSelectEval(payload);
-      this.setState({ isRedirect: true });
+      if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
+        || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
+        || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
+        const { onSelectEval, onGetGroupName } = this.props;
+        this.redirectPath = '/docs-in-back';
+        onGetGroupName('DIB');
+        onSelectEval(payload);
+        this.setState({ isRedirect: true });
+      }
     }
   }
 
@@ -154,6 +158,19 @@ class SearchLoan extends React.PureComponent {
       || (searchLoanResult
         && searchLoanResult.loanNumber);
     // && loanNumber !== searchLoanResult.loanNumber.toString()
+  }
+
+  renderRejectResults() {
+    const { getRejectResponse } = this.props;
+    return !R.isEmpty(getRejectResponse) ? (
+      <div styleName="notificationMsg">
+        <UserNotification
+          level={getRejectResponse.level}
+          message={getRejectResponse.message}
+          type="alert-box"
+        />
+      </div>
+    ) : null;
   }
 
   renderSearchResults() {
@@ -203,15 +220,15 @@ class SearchLoan extends React.PureComponent {
                 columns={SearchLoan.COLUMN_DATA}
                 data={data}
                 getPaginationProps={() => ({ style: { height: '30px' } })}
+                getTdProps={(state, rowInfo, column) => ({
+                  onClick: () => {
+                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                    this.handleRowClick(payload, column);
+                  },
+                })}
                 getTheadThProps={() => ({
                   style: {
                     'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
-                  },
-                })}
-                getTrProps={(state, rowInfo) => ({
-                  onClick: () => {
-                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
-                    this.handleRowClick(payload);
                   },
                 })}
                 minRows={20}
@@ -230,93 +247,101 @@ class SearchLoan extends React.PureComponent {
     return (
       <>
         <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
+        {this.renderRejectResults()}
         {this.renderSearchResults()}
       </>
     );
   }
 }
 
-SearchLoan.COLUMN_DATA = [{
-  Header: 'EVAL ID',
-  accessor: 'evalId',
-  maxWidth: 65,
-  minWidth: 65,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'PROCESS ID',
-  accessor: 'piid',
-  maxWidth: 70,
-  minWidth: 70,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'STATUS',
-  accessor: 'pstatus',
-  maxWidth: 70,
-  minWidth: 70,
-  Cell: row => <EvalTableRow row={row} />,
+SearchLoan.COLUMN_DATA = [
+  {
+    Header: 'REJECT',
+    accessor: 'reject',
+    maxWidth: 65,
+    minWidth: 65,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'EVAL ID',
+    accessor: 'evalId',
+    maxWidth: 65,
+    minWidth: 65,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'PROCESS ID',
+    accessor: 'piid',
+    maxWidth: 70,
+    minWidth: 70,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'STATUS',
+    accessor: 'pstatus',
+    maxWidth: 70,
+    minWidth: 70,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'PROCESS STATUS REASON',
-  accessor: 'pstatusReason',
-  maxWidth: 150,
-  minWidth: 150,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'PROCESS STATUS REASON',
+    accessor: 'pstatusReason',
+    maxWidth: 150,
+    minWidth: 150,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'STATUS DATE',
-  accessor: 'pstatusDate',
-  maxWidth: 110,
-  minWidth: 110,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'STATUS DATE',
+    accessor: 'pstatusDate',
+    maxWidth: 110,
+    minWidth: 110,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'MILESTONE',
-  accessor: 'milestone',
-  maxWidth: 150,
-  minWidth: 150,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'MILESTONE',
+    accessor: 'milestone',
+    maxWidth: 150,
+    minWidth: 150,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK NAME',
-  accessor: 'taskName',
-  maxWidth: 150,
-  minWidth: 150,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK NAME',
+    accessor: 'taskName',
+    maxWidth: 150,
+    minWidth: 150,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK STATUS',
-  accessor: 'tstatus',
-  maxWidth: 90,
-  minWidth: 90,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK STATUS',
+    accessor: 'tstatus',
+    maxWidth: 90,
+    minWidth: 90,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK STATUS REASON',
-  accessor: 'statusReason',
-  maxWidth: 130,
-  minWidth: 130,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK STATUS REASON',
+    accessor: 'statusReason',
+    maxWidth: 130,
+    minWidth: 130,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'TASK STATUS DATE',
-  accessor: 'tstatusDate',
-  maxWidth: 110,
-  minWidth: 110,
-  Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'TASK STATUS DATE',
+    accessor: 'tstatusDate',
+    maxWidth: 110,
+    minWidth: 110,
+    Cell: row => <EvalTableRow row={row} />,
 
-}, {
-  Header: 'ASSIGNED DATE',
-  accessor: 'assignedDate',
-  maxWidth: 110,
-  minWidth: 110,
-  Cell: row => <EvalTableRow row={row} />,
-}, {
-  Header: 'ASSIGNED TO',
-  accessor: 'assignee',
-  maxWidth: 200,
-  minWidth: 200,
-  Cell: row => <EvalTableRow row={row} />,
-},
+  }, {
+    Header: 'ASSIGNED DATE',
+    accessor: 'assignedDate',
+    maxWidth: 110,
+    minWidth: 110,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'ASSIGNED TO',
+    accessor: 'assignee',
+    maxWidth: 200,
+    minWidth: 200,
+    Cell: row => <EvalTableRow row={row} />,
+  },
 ];
 
 
@@ -328,6 +353,9 @@ SearchLoan.defaultProps = {
 SearchLoan.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
+  getRejectResponse: PropTypes.arrayOf(PropTypes.shape({
+    message: PropTypes.string.isRequired,
+  })).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
@@ -359,6 +387,7 @@ const mapStateToProps = state => ({
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
   searchLoanResult: selectors.searchLoanResult(state),
+  getRejectResponse: selectors.getRejectResponse(state),
   user: loginSelectors.getUser(state),
   inProgress: selectors.inProgress(state),
 });

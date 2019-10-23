@@ -29,7 +29,6 @@ import {
   SEARCH_STAGER_LOAN_NUMBER,
   GET_STAGER_LOAN_NUMBER,
   SET_STAGER_LOAN_NUMBER,
-
 } from './types';
 
 import selectors from './selectors';
@@ -37,6 +36,7 @@ import Disposition from '../../../models/Disposition';
 import {
   SET_SNACK_BAR_VALUES_SAGA,
 } from '../notifications/types';
+
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);

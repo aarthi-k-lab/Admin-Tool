@@ -20,3 +20,13 @@
   color: blue;
   text-decoration: none;
 }
+
+.reject-icon.reject-icon {
+  height: 1rem; 
+  width: 3.5rem;
+  padding: 0px 0px 0px 0px;
+}
+
+.tooltip.tooltip {
+  font-size: 0.8rem;
+}
