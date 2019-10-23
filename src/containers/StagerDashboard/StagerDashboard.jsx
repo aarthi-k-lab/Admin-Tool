@@ -16,9 +16,13 @@ import StagerPage from './StagerPage';
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
+    const stager = groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
     this.state = {
       activeSearchTerm: '',
-      stager: 'STAGER_ALL',
+      stager,
     };
   }
 
@@ -277,6 +281,7 @@ StagerDashboard.propTypes = {
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,

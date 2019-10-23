@@ -9,6 +9,16 @@ import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+import { operations as dashboardOperations } from 'ducks/dashboard';
+=======
+import {
+  selectors as loginSelectors,
+} from 'ducks/login';
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
@@ -19,6 +29,14 @@ import './StagerPage.css';
 const UW_STAGER = 'UNDERWRITER STAGER';
 const DOCGEN_STAGER = 'DOC GEN STAGER';
 const STAGER_ALL = 'ALL';
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+const BULKUPLOAD_STAGER = 'BULKUPLOAD_STAGER';
+=======
+const POSTMOD_STAGER_ALL = 'POSTMOD_STAGER_ALL';
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 class StagerPage extends React.PureComponent {
   constructor(props) {
@@ -67,6 +85,9 @@ class StagerPage extends React.PureComponent {
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
       refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
     const { searchText } = this.state;
     return (
       <>
@@ -79,9 +100,18 @@ class StagerPage extends React.PureComponent {
                     onChange={event => this.onStagerChange(event)}
                     value={stager}
                   >
-                    <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
-                    <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-                    <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+                    {
+                      !groupcheck ? (
+                        <MenuItem value="POSTMOD_STAGER_ALL">{POSTMOD_STAGER_ALL}</MenuItem>
+                      ) : (
+                        <>
+                          <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
+                          <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
+                          <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
+                        </>
+                      )
+                    }
+
                   </Select>
                 </Grid>
                 <Grid item styleName="scroll-area">
@@ -199,6 +229,15 @@ StagerPage.propTypes = {
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    groupList: PropTypes.array,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -209,7 +248,17 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
+<<<<<<< Updated upstream
 
+=======
+<<<<<<< Updated upstream
+  getStagerValue: stagerSelectors.getStagerValue(state),
+=======
+  user: loginSelectors.getUser(state),
+
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 });
 
 
