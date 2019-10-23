@@ -118,7 +118,6 @@ class DocsIn extends React.PureComponent {
     const { history, bulkOrderPageType } = this.props;
     if (isPageTypeDocsIn(bulkOrderPageType)) history.push('/docs-in');
     else history.push('/stager');
-    // this.showBulkOrderPage();
   }
 
   handleChange(event) {
@@ -153,7 +152,7 @@ class DocsIn extends React.PureComponent {
   handleloansSubmitStager() {
     const { loansNumber, value, selectedState } = this.state;
     const {
-      onLoansSubmit, user, onFailedLoanValidation, bulkOrderPageType, history,
+      onLoansSubmit, user, onFailedLoanValidation, bulkOrderPageType,
     } = this.props;
     if (validateLoanFormat(loansNumber)) {
       const loanNumbersList = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
