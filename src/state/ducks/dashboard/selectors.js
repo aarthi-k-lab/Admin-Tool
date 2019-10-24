@@ -91,6 +91,8 @@ const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUn
   ? state.dashboard.resultUnderwriting : {});
 const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
   ? state.dashboard.resultOperation : {});
+const bulkOrderPageType = state => R.pathOr({}, ['dashboard', 'pageType'], state);
+
 
 const selectors = {
   enableEndShift,
@@ -132,6 +134,7 @@ const selectors = {
   tableData,
   wasSearched,
   enableSendToDocGen,
+  bulkOrderPageType,
   enableSendToDocsIn,
   enableSendToUW,
   getRejectResponse,

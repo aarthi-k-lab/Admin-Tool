@@ -30,6 +30,7 @@ import {
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
+  SET_BULK_UPLOAD_PAGE_TYPE,
   CLEAR_USER_NOTIF_MSG,
   SELECT_REJECT_SAGA,
   CLEAR_SELECT_REJECT,
@@ -170,6 +171,10 @@ const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
+const pageType = pageName => ({
+  type: SET_BULK_UPLOAD_PAGE_TYPE,
+  payload: pageName,
+});
 
 const clearUserNotifyMsg = () => ({
   type: CLEAR_USER_NOTIF_MSG,
@@ -213,6 +218,7 @@ export {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  pageType,
   clearUserNotifyMsg,
   selectReject,
   clearSelectReject,

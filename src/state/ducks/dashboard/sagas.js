@@ -70,7 +70,7 @@ import {
   CONTINUE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
-  SET_ADD_DOCS_IN_RESULT,
+  SET_ADD_BULK_ORDER_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
   SET_ENABLE_SEND_TO_UW,
   SELECT_REJECT_SAGA,
@@ -1030,17 +1030,24 @@ function* sendToDocsIn() {
 
 
 function* AddDocsInReceived(payload) {
-  const loanNumbers = payload.payload;
-  // console.log(loanNumbers);
+  const { pageType } = payload.payload;
+  let response;
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
-    const response = yield call(Api.callPost,
-      `/api/release/api/process/docsInMoveLoan?user=${userPrincipalName}`, loanNumbers);
+    if (pageType === 'BULKUPLOAD_DOCSIN') {
+      const { loanNumbers } = payload.payload;
+      response = yield call(Api.callPost, `/api/release/api/process/docsInMoveLoan?user=${userPrincipalName}`, loanNumbers);
+    } else if (pageType === 'BULKUPLOAD_STAGER') {
+      const payloadData = {
+        moveLoan: payload.payload,
+      };
+      response = yield call(Api.callPost, 'api/stager/dashboard/getBulkOrder', payloadData);
+    }
     if (response !== null) {
       yield put({
-        type: SET_ADD_DOCS_IN_RESULT,
+        type: SET_ADD_BULK_ORDER_RESULT,
         payload: response,
       });
     } else {

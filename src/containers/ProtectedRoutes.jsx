@@ -143,7 +143,7 @@ class ProtectedRoutes extends React.Component {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
     let renderComponent = null;
-    if (RouteAccess.hasDocGenBackAccess(groups)) {
+    if (RouteAccess.hasDocsInBackAccess(groups)) {
       renderComponent = (items.length > 0 || loanNumber) ? <DocsInGoBack /> : <Redirect to="/" />;
     } else {
       renderComponent = <Redirect to="/unauthorized?error=DOCS_IN_ACCESS_NEEDED" />;
@@ -193,7 +193,7 @@ class ProtectedRoutes extends React.Component {
   renderDocsInPageRoute() {
     const groups = this.getGroups();
     return (
-      RouteAccess.hasDocsInBackAccess(groups)
+      RouteAccess.hasDocInsAccess(groups)
         ? <DocsIn group={DashboardModel.DOCS_IN} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
@@ -227,7 +227,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
-          <Route path="/docs-in-page" render={this.renderDocsInPageRoute} />
+          <Route path="/bulkOrder-page" render={this.renderDocsInPageRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

@@ -29,7 +29,6 @@ import {
   SEARCH_STAGER_LOAN_NUMBER,
   GET_STAGER_LOAN_NUMBER,
   SET_STAGER_LOAN_NUMBER,
-
 } from './types';
 
 import selectors from './selectors';

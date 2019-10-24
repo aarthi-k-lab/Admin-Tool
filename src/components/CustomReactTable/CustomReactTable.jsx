@@ -235,27 +235,27 @@ class CustomReactTable extends React.PureComponent {
       switch (payload.taskName) {
         case 'Underwriting':
           group = 'BEUW';
-          this.redirectPath = this.getBackendEndPath();
+          this.redirectPath = '/bulkOrder-page';
           break;
         case 'Processing':
           group = 'PROC';
-          this.redirectPath = '/doc-processor';
+          this.redirectPath = '/bulkOrder-page';
           break;
         case 'Trial Modification':
         case 'Forbearance':
           group = 'LA';
-          this.redirectPath = this.getLoanActivityPath();
+          this.redirectPath = '/bulkOrder-page';
           break;
         case 'Document Generation':
           group = 'DOCGEN';
-          this.redirectPath = '/doc-gen';
+          this.redirectPath = '/bulkOrder-page';
           break;
         case 'Docs In':
           group = 'DOCSIN';
-          this.redirectPath = '/docs-in';
+          this.redirectPath = '/bulkOrder-page';
           break;
         default:
-          this.redirectPath = this.getFrontEndPath();
+          this.redirectPath = '/bulkOrder-page';
           group = this.getFrontEndGroup();
       }
       if (isRedirect) {
