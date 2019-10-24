@@ -47,6 +47,67 @@ const getTaxTranscriptStates = () => {
   return states;
 };
 
+const getPostModStagerTaskNames = () => {
+  const states = [{
+    displayName: 'FNMAQC',
+    value: 'FNMA QC',
+  }, {
+    displayName: 'COUNTERSIGN',
+    value: 'Countersign',
+  }, {
+    displayName: 'SEND MOD AGREEMENT',
+    value: 'Send Mod Agreement',
+  }, {
+    displayName: 'RECORDATION',
+    value: 'Recordation',
+  }, {
+    displayName: 'INVESTOR SETTLEMENT',
+    value: 'Investor Settlement',
+  }, {
+    displayName: 'INCENTIVE',
+    value: 'Incentive',
+  }];
+  return states;
+};
+
+const getPostModStagerValues = (taskName) => {
+  let value = [];
+  switch (taskName) {
+    case 'FNMA QC':
+    case 'Countersign':
+    case 'Incentive':
+      value = [{
+        displayName: 'COMPLETE',
+        value: 'Complete',
+      }];
+      break;
+    case 'Send Mod Agreement':
+    case 'Recordation':
+    case 'Investor Settlement':
+      value = [{
+        displayName: 'COMPLETE',
+        value: 'Complete',
+      }, {
+        displayName: 'ORDER',
+        value: 'Order',
+      }];
+      break;
+    default: return null;
+  }
+  return value;
+};
+
+const getStagerTaskName = () => {
+  const states = [{
+    displayName: 'VALUE',
+    value: 'Value',
+  }, {
+    displayName: 'TAX TRANSCRIPT',
+    value: 'TaxTranscript',
+  }];
+  return states;
+};
+
 const isPageTypeDocsIn = (pageType) => {
   if (pageType === 'BULKUPLOAD_DOCSIN') return true;
   return false;
@@ -61,8 +122,8 @@ class DocsIn extends React.PureComponent {
       loansNumber: '',
       // loanNumbersCount: 0,
       isDisabled: 'disabled',
-      value: 'Value',
-      selectedState: 'Ordered',
+      value: '',
+      selectedState: '',
     };
     this.handleBackButton = this.handleBackButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -78,6 +139,21 @@ class DocsIn extends React.PureComponent {
     this.getMessage = this.getMessage.bind(this);
     this.showBulkOrderPage = this.showBulkOrderPage.bind(this);
   }
+
+  componentDidMount() {
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
+    if (!groupcheck) {
+      this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
+    } else {
+      this.setState({
+        value: 'Value',
+        selectedState: 'Ordered',
+      });
+    }
+  }
+
 
   onDownloadCSV() {
     this.csvLink.link.click();
@@ -98,11 +174,11 @@ class DocsIn extends React.PureComponent {
     // eslint-disable-next-line no-unused-expressions
     tableData && tableData.forEach((item) => {
       if (loanNum !== item.loanNumber) {
-        countLoan += item.statusMessage === 'Successful' ? 1 : 0;
+        countLoan += item.statusMessage === 'Successfully' ? 1 : 0;
         loanNum = item.loanNumber;
       }
     });
-    return `${countLoan} loan(s) have been processed.`;
+    return `${countLoan} loans have been processed.`;
   }
 
   showBulkOrderPage() {
@@ -173,7 +249,7 @@ class DocsIn extends React.PureComponent {
     }
   }
 
-  renderDropDown(LoanStates) {
+  renderDropDown(taskName, LoanStates) {
     const { value, selectedState } = this.state;
     return (
       <>
@@ -183,8 +259,9 @@ class DocsIn extends React.PureComponent {
             onChange={event => this.onValueChange(event)}
             value={value}
           >
-            <MenuItem value="Value">VALUE</MenuItem>
-            <MenuItem value="TaxTranscript">TAX TRANSCRIPT</MenuItem>
+            {taskName.map(item => (
+              <MenuItem value={item.value}>{item.displayName}</MenuItem>
+            ))}
           </Select>
         </Grid>
         <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
@@ -323,10 +400,20 @@ class DocsIn extends React.PureComponent {
 
   render() {
     const { value } = this.state;
-    const { inProgress } = this.props;
+    const { inProgress, user } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
-    const LoanStates = value === 'Value' ? getValueStates() : getTaxTranscriptStates();
+    let taskName = [];
+    let LoanStates = [];
+    const groups = user && user.groupList;
+    const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
+    if (value && !groupcheck) {
+      taskName = getPostModStagerTaskNames();
+      LoanStates = getPostModStagerValues(value);
+    } else {
+      taskName = getStagerTaskName();
+      LoanStates = value === 'Value' ? getValueStates() : getTaxTranscriptStates();
+    }
     const renderBackButtonPage = isPageTypeDocsIn(bulkOrderPageType) ? '/docs-in' : '/stager';
     if (inProgress) {
       return (
@@ -345,7 +432,7 @@ class DocsIn extends React.PureComponent {
               </div>
             </Grid>
             {!isPageTypeDocsIn(bulkOrderPageType)
-              ? this.renderDropDown(LoanStates)
+              ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
             <Grid item xs={6}>
               <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
@@ -412,9 +499,13 @@ DocsIn.propTypes = {
     }),
   ),
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
     }),
+    userGroups: PropTypes.array,
   }).isRequired,
 };
 
