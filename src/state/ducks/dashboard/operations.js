@@ -26,7 +26,10 @@ import {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  pageType,
   clearUserNotifyMsg,
+  selectReject,
+  clearSelectReject,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -124,8 +127,22 @@ const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
 };
 
+const setPageType = dispatch => (payload) => {
+  dispatch(pageType(payload));
+};
+const onLoansSubmitStager = dispatch => (payload) => {
+  dispatch(onLoansSubmitAction(payload));
+};
 const onClearUserNotifyMsg = dispatch => () => {
   dispatch(clearUserNotifyMsg());
+};
+
+const onSelectReject = dispatch => (payload) => {
+  dispatch(selectReject(payload));
+};
+
+const onClearSelectReject = dispatch => () => {
+  dispatch(clearSelectReject());
 };
 
 const operations = {
@@ -155,7 +172,11 @@ const operations = {
   onLoansSubmit,
   onFailedLoanValidation,
   setBeginSearch,
+  setPageType,
+  onLoansSubmitStager,
   onClearUserNotifyMsg,
+  onSelectReject,
+  onClearSelectReject,
 };
 
 export default operations;

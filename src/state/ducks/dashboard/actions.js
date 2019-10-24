@@ -30,7 +30,10 @@ import {
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
+  SET_BULK_UPLOAD_PAGE_TYPE,
   CLEAR_USER_NOTIF_MSG,
+  SELECT_REJECT_SAGA,
+  CLEAR_SELECT_REJECT,
 } from './types';
 
 
@@ -168,11 +171,23 @@ const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
+const pageType = pageName => ({
+  type: SET_BULK_UPLOAD_PAGE_TYPE,
+  payload: pageName,
+});
 
 const clearUserNotifyMsg = () => ({
   type: CLEAR_USER_NOTIF_MSG,
 });
 
+const selectReject = payload => ({
+  type: SELECT_REJECT_SAGA,
+  payload,
+});
+
+const clearSelectReject = () => ({
+  type: CLEAR_SELECT_REJECT,
+});
 export {
   autoSave,
   clearDisposition,
@@ -203,5 +218,8 @@ export {
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
+  pageType,
   clearUserNotifyMsg,
+  selectReject,
+  clearSelectReject,
 };

@@ -13,63 +13,6 @@ exports[`<Profile /> snapshot test 1`] = `
     >
       User Profile
     </h6>
-    <div
-      className="components-AppHeader-Profile-Profile__buttons"
-      variant="body2"
-    >
-      <button
-        className="MuiButtonBase-root MuiButton-root MuiButton-contained"
-        disabled={false}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onDragLeave={[Function]}
-        onFocus={[Function]}
-        onKeyDown={[Function]}
-        onKeyUp={[Function]}
-        onMouseDown={[Function]}
-        onMouseLeave={[Function]}
-        onMouseUp={[Function]}
-        onTouchEnd={[Function]}
-        onTouchMove={[Function]}
-        onTouchStart={[Function]}
-        tabIndex={0}
-        type="button"
-      >
-        <span
-          className="MuiButton-label"
-        >
-          Apply
-        </span>
-      </button>
-      <div
-        className="components-AppHeader-Profile-Profile__resetButton"
-      >
-        <button
-          className="MuiButtonBase-root MuiButton-root MuiButton-contained"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={0}
-          type="button"
-        >
-          <span
-            className="MuiButton-label"
-          >
-            Reset
-          </span>
-        </button>
-      </div>
-    </div>
   </div>
   <div
     className="components-AppHeader-Profile-Profile__row"

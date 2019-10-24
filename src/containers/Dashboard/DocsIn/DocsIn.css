@@ -3,7 +3,7 @@
   background-color: var(--grey-200);
   flex-direction: column;
   justify-content: center;
-}
+} 
 
 .landing-page span {
   color: var(--grey-500);
@@ -22,15 +22,14 @@
   border-radius: 0;
 }
 
-.docsin-main {
+.main {
   margin: 20px;
 }
 
 .interactive-button {
   position: relative;
   text-align: center;
-  margin-bottom: 0.5rem;
-  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 .loader {
@@ -50,21 +49,21 @@
   padding: 1rem 2rem;
 }
 
-.docsin-table-container {
+.table-container {
   display: flex;
   flex-grow: 1;
   max-width: 100%;
 }
 
-.docsin-height-limiter {
+.height-limiter {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
   width: 0;
 }
 
-.docsin-message {
-  align-self: center;
+.message {
+  align-self: right;
 }
 
 .loan-numbers {
@@ -72,7 +71,7 @@
   padding-left: 0.7rem;
 }
 
-.docsin-table {
+.table {
   flex-basis: 100%;
   height: 0;
   text-align: left !important;
@@ -132,3 +131,12 @@
   align-self: stretch;
   height: 93%;
 }
+
+.drop-down {
+  margin: 0rem 0rem 0rem 1rem;
+}
+
+.drop-down-select {
+  margin-right: 2rem;
+}
+

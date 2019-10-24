@@ -11,8 +11,10 @@ import './Assign.css';
 class Assign extends React.Component {
   constructor(props) {
     super(props);
+    const { disabled } = this.props;
     this.state = {
       isOpen: true,
+      buttonDisabled: disabled,
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -23,6 +25,7 @@ class Assign extends React.Component {
   }
 
   handleClick() {
+    this.setState({ buttonDisabled: true });
     const { onAssignLoan, location, onGetGroupName } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     onGetGroupName(el.group);
@@ -38,8 +41,8 @@ class Assign extends React.Component {
   }
 
   render() {
-    const { disabled, assignResult } = this.props;
-    const { isOpen } = this.state;
+    const { assignResult } = this.props;
+    const { isOpen, buttonDisabled } = this.state;
     let RenderContent = null;
     let renderComponent = null;
     if (assignResult && assignResult.status) {
@@ -57,7 +60,7 @@ class Assign extends React.Component {
         <Button
           className="material-ui-button"
           color="primary"
-          disabled={disabled}
+          disabled={buttonDisabled}
           onClick={this.handleClick}
           styleName="end-shift"
           variant="outlined"

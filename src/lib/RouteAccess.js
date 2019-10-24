@@ -4,7 +4,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr'],
 };
 
 const stager = {
@@ -46,7 +46,7 @@ const feuwTasksAndChecklist = {
   path: '/frontend-checklist',
   name: 'frontend-checklist',
   img: '/static/img/frontend.svg',
-  groups: ['allaccess', 'feuw-beta', 'beta', 'feuw', 'feuw-mgr'],
+  groups: ['allaccess', 'feuw-beta', 'feuw', 'feuw-mgr'],
 };
 
 const beuwTasksAndChecklist = {
@@ -98,8 +98,8 @@ const docIns = {
 };
 
 const docInsPage = {
-  path: '/docs-in-page',
-  name: 'docs-in-page',
+  path: '/bulkOrder-page',
+  name: 'bulkOrder-page',
   img: '/static/img/docs-in.svg',
   groups: ['allaccess', 'docsin', 'docsin-mgr'],
 };
@@ -120,7 +120,7 @@ const links = [
   docInsPage,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back', '/docs-in-page', '/docs-in-back'];
+const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
