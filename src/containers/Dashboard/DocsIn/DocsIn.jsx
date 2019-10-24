@@ -398,6 +398,7 @@ class DocsIn extends React.PureComponent {
     );
   }
 
+
   render() {
     const { value } = this.state;
     const { inProgress, user } = this.props;
