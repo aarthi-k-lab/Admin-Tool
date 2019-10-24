@@ -65,7 +65,7 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr'],
 };
 
 const docGenBack = {
@@ -181,13 +181,13 @@ function hasMoveForwardAccess(groups) {
   return hasGroup(moveForward.groups, groups);
 }
 
-function hasDocGenBackAccess(groups) {
-  return hasGroup(docGenBack.groups, groups);
-}
+// function hasDocGenBackAccess(groups) {
+//   return hasGroup(docGenBack.groups, groups);
+// }
 
-function hasDocsInBackAccess(groups) {
-  return hasGroup(docsInBack.groups, groups);
-}
+// function hasDocsInBackAccess(groups) {
+//   return hasGroup(docsInBack.groups, groups);
+// }
 
 function hasDocInsAccess(groups) {
   return hasGroup(docIns.groups, groups);
@@ -206,8 +206,8 @@ module.exports = {
   hasLoanActivityAccess,
   shouldShowIcon,
   hasChecklistAccess,
-  hasDocGenBackAccess,
-  hasDocsInBackAccess,
+  // hasDocGenBackAccess,
+  // hasDocsInBackAccess,
   hasDocGenAccess,
   hasDocInsAccess,
 };
