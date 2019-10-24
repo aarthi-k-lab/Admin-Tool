@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
 import {
   selectors as loginSelectors,
@@ -9,12 +10,13 @@ import EvalTableCell from './EvalTableCell';
 import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
-const showReject = (row) => {
+
+const showReject = (row, groupList) => {
   let showreject = '';
-  if ((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) {
-    showreject = 'true';
+  if (((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) && RouteAccess.hasManagerDashboardAccess(groupList)) {
+    showreject = true;
   } else {
-    showreject = 'false';
+    showreject = false;
   }
   return showreject;
 };
@@ -32,7 +34,7 @@ const getEventName = (pstatusReason, pstatus, taskName) => {
 };
 
 class EvalTableRow extends React.PureComponent {
-  handleLinkClick = (value) => {
+  handleLinkClick = (value, groupList) => {
     const {
       row, searchLoanResult, onSelectReject, user,
     } = this.props;
@@ -41,7 +43,7 @@ class EvalTableRow extends React.PureComponent {
     if (value === 'Loan Activity') {
       const { onSelectEval } = this.props;
       onSelectEval(payLoad);
-    } else if ((payLoad.pstatusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended')) {
+    } else if (RouteAccess.hasManagerDashboardAccess(groupList) && ((payLoad.pstatusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended'))) {
       const { evalId } = payLoad;
       const userID = R.path(['userDetails', 'email'], user);
       const rejectPayload = {
@@ -66,8 +68,8 @@ class EvalTableRow extends React.PureComponent {
       }
       return styles;
     };
-    const { row } = this.props;
-    const displayReject = showReject(row);
+    const { row, user } = this.props;
+    const displayReject = showReject(row, user.groupList);
     let cellData = null;
     switch (row.column.Header) {
       case 'ASSIGNED TO':
@@ -87,7 +89,7 @@ class EvalTableRow extends React.PureComponent {
           displayReject
             ? (
               <EvalTableCell
-                click={() => this.handleLinkClick('Reject')}
+                click={() => this.handleLinkClick('Reject', user.groupList)}
                 styleProps={getStyles(row)}
                 value="Reject"
               />
@@ -123,6 +125,7 @@ EvalTableRow.propTypes = {
     valid: PropTypes.bool,
   })).isRequired,
   user: PropTypes.shape({
+    groupList: PropTypes.array,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,
