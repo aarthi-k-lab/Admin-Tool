@@ -131,7 +131,7 @@ class ProtectedRoutes extends React.Component {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
     let renderComponent = null;
-    if (RouteAccess.hasDocGenBackAccess(groups)) {
+    if (groups.length > 0) {
       renderComponent = (items.length > 0 || loanNumber) ? <DocGenGoBack /> : <Redirect to="/" />;
     } else {
       renderComponent = <Redirect to="/unauthorized?error=DOC_GEN_ACCESS_NEEDED" />;
@@ -143,7 +143,7 @@ class ProtectedRoutes extends React.Component {
     const { items, loanNumber } = this.props;
     const groups = this.getGroups();
     let renderComponent = null;
-    if (RouteAccess.hasDocsInBackAccess(groups)) {
+    if (groups.length > 0) {
       renderComponent = (items.length > 0 || loanNumber) ? <DocsInGoBack /> : <Redirect to="/" />;
     } else {
       renderComponent = <Redirect to="/unauthorized?error=DOCS_IN_ACCESS_NEEDED" />;
