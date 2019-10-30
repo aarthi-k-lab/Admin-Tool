@@ -75,6 +75,8 @@ import {
   SET_ENABLE_SEND_TO_UW,
   SELECT_REJECT_SAGA,
   SELECT_REJECT,
+  SEARCH_LOAN_WITH_TASK_SAGA,
+  SEARCH_LOAN_WITH_TASK,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -207,6 +209,37 @@ function* onSelectReject(payload) {
     });
   }
   yield call(searchLoan, loanNumber);
+}
+
+function* onSearchWithTask(payload) {
+  const searchLoanWithTask = payload.taskId;
+  const wasSearched = yield select(selectors.wasSearched);
+  const inProgress = yield select(selectors.inProgress);
+
+  if (!wasSearched && !inProgress) {
+    yield put({ type: SHOW_LOADER });
+  }
+  if (!wasSearched) {
+    try {
+      const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanWithTask}`, {});
+      if (response !== null) {
+        yield put({
+          type: SEARCH_LOAN_WITH_TASK,
+          payload: response,
+        });
+      } else {
+        yield put({
+          type: SEARCH_LOAN_WITH_TASK,
+          payload: { statusCode: 404 },
+        });
+      }
+    } catch (e) {
+      yield put({
+        type: SEARCH_LOAN_WITH_TASK,
+        payload: { loanNumber: searchLoanWithTask, valid: false },
+      });
+    }
+  }
 }
 
 function* watchSearchLoan() {
@@ -1099,6 +1132,10 @@ function* watchAddDocsInReceived() {
 function* watchOnSelectReject() {
   yield takeEvery(SELECT_REJECT_SAGA, onSelectReject);
 }
+
+function* watchOnSearchWithTask() {
+  yield takeEvery(SEARCH_LOAN_WITH_TASK_SAGA, onSearchWithTask);
+}
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -1130,6 +1167,7 @@ export const TestExports = {
   watchContinueMyReview,
   watchAddDocsInReceived,
   watchOnSelectReject,
+  watchOnSearchWithTask,
 };
 
 export const combinedSaga = function* combinedSaga() {

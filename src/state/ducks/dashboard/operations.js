@@ -30,6 +30,7 @@ import {
   clearUserNotifyMsg,
   selectReject,
   clearSelectReject,
+  onSearchLoanWithTaskAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -145,6 +146,10 @@ const onClearSelectReject = dispatch => () => {
   dispatch(clearSelectReject());
 };
 
+const onSearchLoanWithTask = dispatch => (payload) => {
+  dispatch(onSearchLoanWithTaskAction(payload));
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -177,6 +182,7 @@ const operations = {
   onClearUserNotifyMsg,
   onSelectReject,
   onClearSelectReject,
+  onSearchLoanWithTask,
 };
 
 export default operations;
