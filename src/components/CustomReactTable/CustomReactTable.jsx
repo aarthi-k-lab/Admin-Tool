@@ -207,10 +207,16 @@ class CustomReactTable extends React.PureComponent {
     console.log('test->>', original);
     const { user } = this.props;
     const groups = user && user.groupList;
-    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
-    this.setState({ isRedirect: !groupcheck });
-    if (!groupcheck) {
-      onSearchLoan('601567480');
+    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
+    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
+    if (isAllStagerGroup) {
+      this.setState({ isRedirect: isAllStagerGroup });
+      onSearchLoan('53538406');
+    } else {
+      this.setState({ isRedirect: isPostModStagerGroup });
+    }
+    if (isAllStagerGroup || isPostModStagerGroup) {
+      onSearchLoan('53538406');
     }
   }
 
@@ -229,7 +235,7 @@ class CustomReactTable extends React.PureComponent {
       if (assigned) {
         data.push(...assigned);
       }
-      const payload = { loanNumber, ...data[0] };
+      const payload = { loanNumber, ...data[0], isSearch: true };
       const { isRedirect } = this.state;
       let group = '';
       switch (payload.taskName) {
@@ -273,22 +279,6 @@ class CustomReactTable extends React.PureComponent {
       const current = { ...datas };
       // mock data
       current.assignedTo = 'Rajinikanth Shanmugam2';
-      current.assignedDate = '10/22/2019 05:05:49';
-      current.assignee = 'Rajinikanth Shanmugam2';
-      current.evalId = '2012117';
-      current.milestone = 'Underwriting Review';
-      current.piid = '668213';
-      current.pstatus = 'Active';
-      current.pstatusDate = '09/23/2019 14:55:11';
-      current.pstatusReason = 'New';
-      current.statusReason = 'Unassign By System';
-      current.taskCheckListId = '5daed9e53cb84d93da46222d';
-      current.taskCheckListTemplateName = 'BEUWGENDISPv1.6';
-      current.taskId = '5275327';
-      current.taskName = 'Underwriting';
-      current.tstatus = 'Active';
-      current.tstatusDate = '10/17/2019 22:50:15';
-      current.loanNumber = '601567480';
       return current;
     });
     const datae = { ...data };

@@ -22,15 +22,25 @@ import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
 
-const UW_STAGER = 'UNDERWRITER STAGER';
-const DOCGEN_STAGER = 'DOC GEN STAGER';
-const STAGER_ALL = 'ALL';
 const BULKUPLOAD_STAGER = 'BULKUPLOAD_STAGER';
-const POSTMOD_STAGER_ALL = 'POSTMOD_STAGER_ALL';
-
-// const renderBulkOrderPage = () => (
-//   <BulkOrderPage />
-// );
+const getStagertypeValues = [
+  {
+    name: 'UW_STAGER',
+    value: 'UNDERWRITER STAGER',
+  }, {
+    name: 'DOCGEN_STAGER',
+    value: 'DOC GEN STAGER',
+  }, {
+    name: 'STAGER_ALL',
+    value: 'ALL',
+  },
+];
+const getPostModStagertypeValues = [
+  {
+    name: 'POSTMOD_STAGER_ALL',
+    value: 'POSTMOD STAGER ALL',
+  },
+];
 class StagerPage extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -45,6 +55,7 @@ class StagerPage extends React.PureComponent {
     this.onStagerChange = this.onStagerChange.bind(this);
     this.renderStagerPage = this.renderStagerPage.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.renderstagerSelect = this.renderstagerSelect.bind(this);
   }
 
   onStagerChange(event) {
@@ -89,6 +100,26 @@ class StagerPage extends React.PureComponent {
     setPageType(BULKUPLOAD_STAGER);
   }
 
+  renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager) {
+    let allStagerGroups = [];
+    if (isAllStagerGroup) {
+      allStagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
+    } else {
+      allStagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
+    }
+    return (
+      <Select
+        onChange={event => this.onStagerChange(event)}
+        value={stager}
+      >
+        {
+          allStagerGroups.map(datas => <MenuItem value={datas.name}>{datas.value}</MenuItem>)
+
+        }
+      </Select>
+    );
+  }
+
   renderStagerPage() {
     const {
       activeTab, activeTile,
@@ -98,7 +129,8 @@ class StagerPage extends React.PureComponent {
     } = this.props;
     const { user } = this.props;
     const groups = user && user.groupList;
-    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
+    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
+    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
     const { searchText } = this.state;
     return (
       <>
@@ -107,23 +139,9 @@ class StagerPage extends React.PureComponent {
             <>
               <Grid container direction="row">
                 <Grid item styleName="select-width">
-                  <Select
-                    onChange={event => this.onStagerChange(event)}
-                    value={stager}
-                  >
-                    {
-                      !groupcheck ? (
-                        <MenuItem value="POSTMOD_STAGER_ALL">{POSTMOD_STAGER_ALL}</MenuItem>
-                      ) : (
-                        <>
-                          <MenuItem value="STAGER_ALL">{STAGER_ALL}</MenuItem>
-                          <MenuItem value="UW_STAGER">{UW_STAGER}</MenuItem>
-                          <MenuItem value="DOCGEN_STAGER">{DOCGEN_STAGER}</MenuItem>
-                        </>
-                      )
-                    }
-
-                  </Select>
+                  {
+                    this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
+                  }
                 </Grid>
                 <Grid item styleName="scroll-area">
                   <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
