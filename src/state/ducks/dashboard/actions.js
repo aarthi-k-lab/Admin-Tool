@@ -190,7 +190,7 @@ const clearSelectReject = () => ({
   type: CLEAR_SELECT_REJECT,
 });
 
-const onSearchLoanWithTaskAction = () => ({
+const onSearchLoanWithTaskAction = payload => ({
   type: SEARCH_LOAN_WITH_TASK_SAGA,
   payload,
 });

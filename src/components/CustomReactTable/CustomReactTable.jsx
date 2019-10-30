@@ -126,24 +126,11 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
-    const hiddenColumns = [
-      'assignedDate',
-      'assignee',
-      'evalId',
-      'milestone',
-      'piid',
-      'pstatus',
-      'pstatusDate',
-      'pstatusReason',
-      'statusReason',
-      'taskCheckListId',
-      'taskCheckListTemplateName',
-      'taskId',
-      'taskName',
-      'tstatus',
-      'tstatusDate',
-      'loanNumber',
-    ];
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const hiddenColumns = ['assignedTo'];
+    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
+    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
     const columnData = [];
     const columnObject = {};
     let columns = [];
@@ -159,7 +146,8 @@ class CustomReactTable extends React.PureComponent {
           const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
-          columnObj.show = !hiddenColumns.includes(columnName);
+          columnObj.show = !((isPostModStagerGroup || isAllStagerGroup)
+          && hiddenColumns.includes(columnName));
           columnObj.Cell = row => this.constructor.getCellContent(row);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
@@ -202,23 +190,23 @@ class CustomReactTable extends React.PureComponent {
   }
 
   handleRowClick(rowInfo) {
-    const { onSearchLoan } = this.props;
+    const { onSearchLoanWithTask } = this.props;
     const { original } = rowInfo;
-    console.log('test->>', original);
     const { user } = this.props;
     const groups = user && user.groupList;
     const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
     const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
     if (isAllStagerGroup) {
       this.setState({ isRedirect: isAllStagerGroup });
-      onSearchLoan('53538406');
+      onSearchLoanWithTask({ loanNumber: original.loanNumber, taskID: original.tkiid });
     } else {
       this.setState({ isRedirect: isPostModStagerGroup });
     }
     if (isAllStagerGroup || isPostModStagerGroup) {
-      onSearchLoan('53538406');
+      onSearchLoanWithTask({ loanNumber: original.loanNumber, taskID: original.tkiid });
     }
   }
+  // 53538406
 
   loadSearchLoan() {
     const {
@@ -275,17 +263,9 @@ class CustomReactTable extends React.PureComponent {
 
   render() {
     const { data, searchLoanResult } = this.props;
-    const tableData = data.tableData.map((datas) => {
-      const current = { ...datas };
-      // mock data
-      current.assignedTo = 'Rajinikanth Shanmugam2';
-      return current;
-    });
-    const datae = { ...data };
     if (!R.isEmpty(searchLoanResult)) {
       this.loadSearchLoan();
     }
-    datae.tableData = tableData;
     const returnVal = data ? (
       <div styleName="stager-table-container">
         <div styleName="stager-table-height-limiter">
@@ -295,8 +275,8 @@ class CustomReactTable extends React.PureComponent {
             }}
             className="-highlight"
             columns={this.getColumnData(data.stagerTaskType,
-              data.stagerTaskStatus, data.isManualOrder, datae.tableData)}
-            data={datae.tableData}
+              data.stagerTaskStatus, data.isManualOrder, data.tableData)}
+            data={data.tableData}
             defaultPageSize={100}
             defaultSorted={data.defaultSorted ? [
               {
@@ -333,7 +313,7 @@ CustomReactTable.defaultProps = {
 const mapDispatchToProps = dispatch => ({
   onSelectEval: operations.onSelectEval(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
-  onSearchLoan: operations.onSearchLoan(dispatch),
+  onSearchLoanWithTask: operations.onSearchLoanWithTask(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
 
@@ -353,7 +333,7 @@ CustomReactTable.propTypes = {
   onCheckBoxClick: PropTypes.func.isRequired,
   onGetChecklistHistory: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
-  onSearchLoan: PropTypes.func.isRequired,
+  onSearchLoanWithTask: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({

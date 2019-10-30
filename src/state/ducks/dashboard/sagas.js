@@ -212,7 +212,7 @@ function* onSelectReject(payload) {
 }
 
 function* onSearchWithTask(payload) {
-  const searchLoanWithTask = payload.taskId;
+  const { taskID, loanNumber } = payload;
   const wasSearched = yield select(selectors.wasSearched);
   const inProgress = yield select(selectors.inProgress);
 
@@ -221,7 +221,7 @@ function* onSearchWithTask(payload) {
   }
   if (!wasSearched) {
     try {
-      const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanWithTask}`, {});
+      const response = yield call(Api.callGet, `/api/search-svc/search/task/${loanNumber}/${taskID}`, {});
       if (response !== null) {
         yield put({
           type: SEARCH_LOAN_WITH_TASK,
@@ -236,7 +236,7 @@ function* onSearchWithTask(payload) {
     } catch (e) {
       yield put({
         type: SEARCH_LOAN_WITH_TASK,
-        payload: { loanNumber: searchLoanWithTask, valid: false },
+        payload: { loanNumber: taskID, valid: false },
       });
     }
   }
