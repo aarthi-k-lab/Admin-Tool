@@ -140,7 +140,7 @@ class StagerPage extends React.PureComponent {
               <Grid container direction="row">
                 <Grid item styleName="select-width">
                   {
-                    this.renderstagerSelect(isAllStagerGroup, !isPostModStagerGroup, stager)
+                    this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
                   }
                 </Grid>
                 <Grid item styleName="scroll-area">

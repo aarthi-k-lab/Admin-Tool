@@ -10,6 +10,7 @@ import { withRouter } from 'react-router-dom';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
+import { selectors as stagerSelectors } from 'ducks/stager';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
 import './CustomReactTable.css';
@@ -126,11 +127,6 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
-    const { user } = this.props;
-    const groups = user && user.groupList;
-    const hiddenColumns = ['assignedTo'];
-    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
-    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
     const columnData = [];
     const columnObject = {};
     let columns = [];
@@ -146,8 +142,8 @@ class CustomReactTable extends React.PureComponent {
           const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
-          columnObj.show = !((isPostModStagerGroup || isAllStagerGroup)
-          && hiddenColumns.includes(columnName));
+          columnObj.show = this.showColumns(columnName);
+          // !(columnName === 'Assigned To' && getStagerValue === 'POSTMOD_STAGER_ALL');
           columnObj.Cell = row => this.constructor.getCellContent(row);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
@@ -187,6 +183,11 @@ class CustomReactTable extends React.PureComponent {
       }
     }
     return {};
+  }
+
+  showColumns(columnName) {
+    const { getStagerValue } = this.props;
+    return columnName === 'Assigned To' ? (getStagerValue === 'POSTMOD_STAGER_ALL') : true;
   }
 
   handleRowClick(rowInfo) {
@@ -320,11 +321,13 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   searchLoanResult: selectors.searchLoanResult(state),
+  getStagerValue: stagerSelectors.getStagerValue(state),
 });
 
 CustomReactTable.propTypes = {
   data: PropTypes.node,
   // history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getStagerValue: PropTypes.string.isRequired,
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,

@@ -19,7 +19,7 @@ class StagerDashboard extends React.Component {
     const { user } = this.props;
     const groups = user && user.groupList;
     const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
-    const stager = !groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
+    const stager = groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
     this.state = {
       activeSearchTerm: '',
       stager,
