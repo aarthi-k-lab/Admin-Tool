@@ -30,6 +30,8 @@ const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'
 
 const searchLoanResult = state => R.pathOr({}, ['dashboard', 'getSearchLoanResponse'], state);
 
+const searchLoanTaskResponse = state => R.pathOr({}, ['dashboard', 'searchLoanTaskResponse'], state);
+
 const unassignResult = state => R.pathOr({}, ['dashboard', 'unassignLoanResponse'], state);
 
 const assignResult = state => R.pathOr({}, ['dashboard', 'assignLoanResponse'], state);
@@ -138,6 +140,7 @@ const selectors = {
   enableSendToDocsIn,
   enableSendToUW,
   getRejectResponse,
+  searchLoanTaskResponse,
 };
 
 export default selectors;

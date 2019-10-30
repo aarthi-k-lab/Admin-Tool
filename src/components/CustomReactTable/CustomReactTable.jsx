@@ -211,12 +211,12 @@ class CustomReactTable extends React.PureComponent {
 
   loadSearchLoan() {
     const {
-      onSelectEval, onGetGroupName, onGetChecklistHistory, history, searchLoanResult,
+      onSelectEval, onGetGroupName, onGetChecklistHistory, history, searchLoanTaskResponse,
     } = this.props;
-    if (searchLoanResult) {
+    if (searchLoanTaskResponse) {
       const {
         loanNumber, unAssigned, assigned,
-      } = searchLoanResult;
+      } = searchLoanTaskResponse;
       const data = [];
       if (unAssigned) {
         data.push(...unAssigned);
@@ -224,7 +224,7 @@ class CustomReactTable extends React.PureComponent {
       if (assigned) {
         data.push(...assigned);
       }
-      const payload = { loanNumber, ...data[0], isSearch: true };
+      const payload = { loanNumber, ...data, isSearch: true };
       const { isRedirect } = this.state;
       let group = '';
       switch (payload.taskName) {
@@ -263,8 +263,8 @@ class CustomReactTable extends React.PureComponent {
   }
 
   render() {
-    const { data, searchLoanResult } = this.props;
-    if (!R.isEmpty(searchLoanResult)) {
+    const { data, searchLoanTaskResponse } = this.props;
+    if (!R.isEmpty(searchLoanTaskResponse)) {
       this.loadSearchLoan();
     }
     const returnVal = data ? (
@@ -320,7 +320,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
-  searchLoanResult: selectors.searchLoanResult(state),
+  searchLoanTaskResponse: selectors.searchLoanTaskResponse(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
 });
 
@@ -339,7 +339,7 @@ CustomReactTable.propTypes = {
   onSearchLoanWithTask: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
-  searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
+  searchLoanTaskResponse: PropTypes.arrayOf(PropTypes.shape({
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
   })).isRequired,

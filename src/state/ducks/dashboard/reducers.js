@@ -97,7 +97,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case SEARCH_LOAN_WITH_TASK: {
       return {
         ...state,
-        searchTaskId: action.payload,
+        searchLoanTaskResponse: action.payload,
       };
     }
     case CLEAR_FIRST_VISIT: {
