@@ -199,12 +199,12 @@ class CustomReactTable extends React.PureComponent {
     const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
     if (isAllStagerGroup) {
       this.setState({ isRedirect: isAllStagerGroup });
-      onSearchLoanWithTask({ loanNumber: original.loanNumber, taskID: original.tkiid });
+      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
     } else {
       this.setState({ isRedirect: isPostModStagerGroup });
     }
     if (isAllStagerGroup || isPostModStagerGroup) {
-      onSearchLoanWithTask({ loanNumber: original.loanNumber, taskID: original.tkiid });
+      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
     }
   }
   // 53538406

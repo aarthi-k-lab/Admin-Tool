@@ -212,7 +212,7 @@ function* onSelectReject(payload) {
 }
 
 function* onSearchWithTask(payload) {
-  const { taskID, loanNumber } = payload;
+  const { taskID, loanNumber } = payload.payload;
   const wasSearched = yield select(selectors.wasSearched);
   const inProgress = yield select(selectors.inProgress);
 
@@ -1189,5 +1189,6 @@ export const combinedSaga = function* combinedSaga() {
     watchContinueMyReview(),
     watchAddDocsInReceived(),
     watchOnSelectReject(),
+    watchOnSearchWithTask(),
   ]);
 };
