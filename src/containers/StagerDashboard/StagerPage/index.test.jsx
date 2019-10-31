@@ -2,10 +2,12 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './StagerPage';
 
+const groups = ['post-mod-stager', 'post-mod-stager-mgr', 'stager-mgr', 'stager'];
+
 describe('<StagerPage />', () => {
   it('shows StagerPage', () => {
     const wrapper = shallow(
-      <TestExports.StagerPage />,
+      <TestExports.StagerPage groups={groups} />,
     );
     expect(wrapper.find('ContentHeader')).toHaveLength(1);
     expect(wrapper.find('withRouter(Connect(Controls))')).toHaveLength(1);

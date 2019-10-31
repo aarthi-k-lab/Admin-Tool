@@ -16,8 +16,7 @@ import StagerPage from './StagerPage';
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
-    const { user } = this.props;
-    const groups = user && user.groupList;
+    const { groups } = this.props;
     const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
     const stager = groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
     this.state = {
@@ -197,6 +196,7 @@ class StagerDashboard extends React.Component {
           activeTab={activeTab}
           activeTile={activeTile}
           counts={counts}
+          groups={groups}
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
           onOrderClick={(data, searchTerm) => this.onOrderClick(data, searchTerm)}
@@ -281,7 +281,6 @@ StagerDashboard.propTypes = {
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,

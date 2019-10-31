@@ -11,9 +11,6 @@ import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import { operations as dashboardOperations } from 'ducks/dashboard';
-import {
-  selectors as loginSelectors,
-} from 'ducks/login';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
@@ -127,8 +124,7 @@ class StagerPage extends React.PureComponent {
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
       refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
-    const { user } = this.props;
-    const groups = user && user.groupList;
+    const { groups } = this.props;
     const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
     const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
     const { searchText } = this.state;
@@ -259,6 +255,7 @@ StagerPage.propTypes = {
     }),
   ).isRequired,
   getStagerSearchResponse: PropTypes.node.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   loading: PropTypes.bool,
   location: PropTypes.shape({
@@ -284,15 +281,6 @@ StagerPage.propTypes = {
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    groupList: PropTypes.array,
-    userDetails: PropTypes.shape({
-      email: PropTypes.string,
-      jobTitle: PropTypes.string,
-      name: PropTypes.string,
-    }),
-    userGroups: PropTypes.array,
-  }).isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -305,7 +293,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
-  user: loginSelectors.getUser(state),
 });
 
 

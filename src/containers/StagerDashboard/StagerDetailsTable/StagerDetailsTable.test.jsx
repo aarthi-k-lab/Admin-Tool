@@ -20,7 +20,7 @@ describe('<StagerDetailsTable />', () => {
     expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(2);
     wrapper.find('WithStyles(ForwardRef(Button))').at(0).simulate('Click');
     expect(onOrderClick.mock.calls).toHaveLength(1);
-    expect(wrapper.find('CustomReactTable')).toHaveLength(1);
+    expect(wrapper.find('CustomReactTable')).toHaveLength(0);
   });
 
   it('shows StagerDetailsTable - Tasktype - Current Review', () => {
@@ -42,7 +42,7 @@ describe('<StagerDetailsTable />', () => {
     expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(4);
     wrapper.find('WithStyles(ForwardRef(Button))').at(1).simulate('Click');
     expect(triggerDispositionOperationCall.mock.calls).toHaveLength(1);
-    expect(wrapper.find('CustomReactTable')).toHaveLength(1);
+    expect(wrapper.find('CustomReactTable')).toHaveLength(0);
   });
 
   it('shows Unselected Message', () => {
