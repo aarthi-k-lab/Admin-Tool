@@ -141,8 +141,7 @@ class DocsIn extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { user } = this.props;
-    const groups = user && user.groupList;
+    const { groups } = this.props;
     const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
     if (!groupcheck) {
       this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
@@ -401,12 +400,11 @@ class DocsIn extends React.PureComponent {
 
   render() {
     const { value } = this.state;
-    const { inProgress, user } = this.props;
+    const { inProgress, groups } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const groups = user && user.groupList;
     const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
     if (value && !groupcheck) {
       taskName = getPostModStagerTaskNames();
@@ -482,6 +480,7 @@ DocsIn.defaultProps = {
 
 DocsIn.propTypes = {
   bulkOrderPageType: PropTypes.string.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   onFailedLoanValidation: PropTypes.func,
