@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import * as R from 'ramda';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import { operations as dashboardOperations } from 'ducks/dashboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -35,7 +36,7 @@ const getStagertypeValues = [
 const getPostModStagertypeValues = [
   {
     name: 'POSTMOD_STAGER_ALL',
-    value: 'POSTMOD STAGER ALL',
+    value: 'POSTMOD STAGER',
   },
 ];
 class StagerPage extends React.PureComponent {
@@ -97,9 +98,9 @@ class StagerPage extends React.PureComponent {
     setPageType(BULKUPLOAD_STAGER);
   }
 
-  renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager) {
+  renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager) {
     let allStagerGroups = [];
-    if (isAllStagerGroup) {
+    if (isStagerGroup && isPostModStagerGroup) {
       allStagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
     } else {
       allStagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
@@ -125,8 +126,10 @@ class StagerPage extends React.PureComponent {
       refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
     const { groups } = this.props;
-    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
-    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
+    const stagerGroups = ['stager-mgr', 'stager'];
+    const postModGroups = ['postmodstager', 'postmodstager-mgr'];
+    const isStagerGroup = R.any(group => R.contains(group, stagerGroups), groups);
+    const isPostModStagerGroup = R.any(group => R.contains(group, postModGroups), groups);
     const { searchText } = this.state;
     return (
       <>
@@ -136,7 +139,7 @@ class StagerPage extends React.PureComponent {
               <Grid container direction="row">
                 <Grid item styleName="select-width">
                   {
-                    this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
+                    this.renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager)
                   }
                 </Grid>
                 <Grid item styleName="scroll-area">
