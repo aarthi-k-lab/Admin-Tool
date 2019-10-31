@@ -9,6 +9,7 @@ import ContentHeader from 'components/ContentHeader';
 import Controls from 'containers/Controls';
 import Loader from 'components/Loader/Loader';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Link, withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
@@ -27,6 +28,7 @@ const validateLoanFormat = (loansNumber) => {
   }
   return isValid;
 };
+const stagerGroups = ['postmodstager', 'postmodstager-mgr'];
 
 const getValueStates = () => {
   const states = [{
@@ -142,8 +144,8 @@ class DocsIn extends React.PureComponent {
 
   componentDidMount() {
     const { groups } = this.props;
-    const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
-    if (!groupcheck) {
+    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
+    if (groupcheck) {
       this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
     } else {
       this.setState({
@@ -385,7 +387,7 @@ class DocsIn extends React.PureComponent {
               getTrProps={(state, rowInfo, column) => {
                 return {
                   /* eslint-disable-next-line */
-                  style: { background: !rowInfo ? '' : (rowInfo.row.status === 'Success' ? '' : '#ffe1e1') },
+                  style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
                 };
               }}
               pageSizeOptions={[10, 20, 25, 50, 100]}
@@ -405,8 +407,8 @@ class DocsIn extends React.PureComponent {
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
-    if (value && !groupcheck) {
+    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
+    if (value && groupcheck) {
       taskName = getPostModStagerTaskNames();
       LoanStates = getPostModStagerValues(value);
     } else {

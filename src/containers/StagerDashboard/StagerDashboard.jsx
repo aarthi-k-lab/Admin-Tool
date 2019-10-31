@@ -17,7 +17,8 @@ class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
     const { groups } = this.props;
-    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
+    const stagerGroups = ['postmodstager', 'postmodstager-mgr'];
+    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
     const stager = groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
     this.state = {
       activeSearchTerm: '',

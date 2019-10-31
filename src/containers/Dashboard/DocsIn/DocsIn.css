@@ -138,5 +138,6 @@
 
 .drop-down-select {
   margin-right: 2rem;
+  max-width: 13rem !important;
 }
 
