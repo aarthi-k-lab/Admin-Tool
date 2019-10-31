@@ -11,15 +11,7 @@ import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
 
-const showReject = (row, groupList) => {
-  let showreject = '';
-  if (((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) && RouteAccess.hasManagerDashboardAccess(groupList)) {
-    showreject = true;
-  } else {
-    showreject = false;
-  }
-  return showreject;
-};
+const showReject = (row, groupList) => ((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended')) && RouteAccess.hasManagerDashboardAccess(groupList);
 
 const getEventName = (pstatusReason, pstatus, taskName) => {
   let eventName = '';
