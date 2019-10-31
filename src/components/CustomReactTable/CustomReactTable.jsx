@@ -29,21 +29,23 @@ class CustomReactTable extends React.PureComponent {
     onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
   }
 
-  static getRowStyleName(value) {
+  static getRowStyleName(value, getStagerValue) {
+    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
     if (value < 0) {
-      return 'days-until-sla-red';
+      return `${pointerStyle} days-until-sla-red`;
     }
     if (value === 0) {
-      return 'days-until-sla-gray';
+      return `${pointerStyle}days-until-sla-gray`;
     }
     return 'tableRow';
   }
 
-  static getCellContent(row) {
+  static getCellContent(row, getStagerValue) {
+    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
-          <div styleName={this.getRowStyleName(row.value)}>
+          <div styleName={this.getRowStyleName(row.value, getStagerValue)}>
             {`${row.value} ${Math.abs(row.value) > 1 ? 'DAYS' : 'DAY'}`}
           </div>
         );
@@ -61,19 +63,19 @@ class CustomReactTable extends React.PureComponent {
         );
       case 'assignedTo':
         return (
-          <div>
+          <div styleName={pointerStyle}>
             {`  ${row.value}`}
           </div>
         );
       case 'taskCheckListTemplateName':
         return (
-          <div style={{ display: 'none' }}>
+          <div style={{ display: 'none' }} styleName={pointerStyle}>
             {`  ${row.value}`}
           </div>
         );
       default:
         return (
-          <div styleName="tableRow">
+          <div styleName={`${pointerStyle} tableRow`}>
             {row.value}
           </div>
         );
@@ -127,6 +129,7 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
+    const { getStagerValue } = this.props;
     const columnData = [];
     const columnObject = {};
     let columns = [];
@@ -143,8 +146,7 @@ class CustomReactTable extends React.PureComponent {
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
           columnObj.show = this.showColumns(columnName);
-          // !(columnName === 'Assigned To' && getStagerValue === 'POSTMOD_STAGER_ALL');
-          columnObj.Cell = row => this.constructor.getCellContent(row);
+          columnObj.Cell = row => this.constructor.getCellContent(row, getStagerValue);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
           columnObj.Filter = ({ filter, onChange }) => (
