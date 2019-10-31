@@ -44,6 +44,7 @@ import {
   CLEAR_USER_NOTIF_MSG,
   SET_ENABLE_SEND_TO_UW, SELECT_REJECT,
   CLEAR_SELECT_REJECT,
+  SEARCH_LOAN_WITH_TASK,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -92,6 +93,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       };
       delete newState.getNextResponse;
       return newState;
+    }
+    case SEARCH_LOAN_WITH_TASK: {
+      return {
+        ...state,
+        searchLoanTaskResponse: action.payload,
+      };
     }
     case CLEAR_FIRST_VISIT: {
       const newState = {

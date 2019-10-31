@@ -34,6 +34,7 @@ import {
   CLEAR_USER_NOTIF_MSG,
   SELECT_REJECT_SAGA,
   CLEAR_SELECT_REJECT,
+  SEARCH_LOAN_WITH_TASK_SAGA,
 } from './types';
 
 
@@ -188,6 +189,11 @@ const selectReject = payload => ({
 const clearSelectReject = () => ({
   type: CLEAR_SELECT_REJECT,
 });
+
+const onSearchLoanWithTaskAction = payload => ({
+  type: SEARCH_LOAN_WITH_TASK_SAGA,
+  payload,
+});
 export {
   autoSave,
   clearDisposition,
@@ -222,4 +228,5 @@ export {
   clearUserNotifyMsg,
   selectReject,
   clearSelectReject,
+  onSearchLoanWithTaskAction,
 };

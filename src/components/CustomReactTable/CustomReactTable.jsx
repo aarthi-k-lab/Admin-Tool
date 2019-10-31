@@ -1,13 +1,26 @@
+/* eslint-disable no-restricted-syntax */
 import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
+import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
+import RouteAccess from 'lib/RouteAccess';
+import { withRouter } from 'react-router-dom';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login';
+import { selectors as stagerSelectors } from 'ducks/stager';
+import { operations, selectors } from '../../state/ducks/dashboard';
+import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
 import './CustomReactTable.css';
 
 class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      isRedirect: false,
+    };
     this.getCheckBox = this.getCheckBox.bind(this);
   }
 
@@ -16,21 +29,23 @@ class CustomReactTable extends React.PureComponent {
     onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
   }
 
-  static getRowStyleName(value) {
+  static getRowStyleName(value, getStagerValue) {
+    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
     if (value < 0) {
-      return 'days-until-sla-red';
+      return `${pointerStyle} days-until-sla-red`;
     }
     if (value === 0) {
-      return 'days-until-sla-gray';
+      return `${pointerStyle}days-until-sla-gray`;
     }
     return 'tableRow';
   }
 
-  static getCellContent(row) {
+  static getCellContent(row, getStagerValue) {
+    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
-          <div styleName={this.getRowStyleName(row.value)}>
+          <div styleName={this.getRowStyleName(row.value, getStagerValue)}>
             {`${row.value} ${Math.abs(row.value) > 1 ? 'DAYS' : 'DAY'}`}
           </div>
         );
@@ -46,13 +61,48 @@ class CustomReactTable extends React.PureComponent {
             {`  ${row.value}`}
           </div>
         );
+      case 'assignedTo':
+        return (
+          <div styleName={pointerStyle}>
+            {`  ${row.value}`}
+          </div>
+        );
+      case 'taskCheckListTemplateName':
+        return (
+          <div style={{ display: 'none' }} styleName={pointerStyle}>
+            {`  ${row.value}`}
+          </div>
+        );
       default:
         return (
-          <div styleName="tableRow">
+          <div styleName={`${pointerStyle} tableRow`}>
             {row.value}
           </div>
         );
     }
+  }
+
+  getFrontEndPath() {
+    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
+  }
+
+  getBackendEndPath() {
+    return RouteAccess.hasBackendChecklistAccess(this.getGroups()) ? '/backend-checklist' : '/backend-evaluation';
+  }
+
+  getFrontEndGroup() {
+    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
+  }
+
+  getGroups() {
+    const { user } = this.props;
+    return user && user.groupList;
+  }
+
+  getLoanActivityPath() {
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    return RouteAccess.hasLoanActivityAccess(groups) ? '/loan-activity' : '/';
   }
 
   getCheckBox() {
@@ -79,6 +129,7 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
+    const { getStagerValue } = this.props;
     const columnData = [];
     const columnObject = {};
     let columns = [];
@@ -94,7 +145,8 @@ class CustomReactTable extends React.PureComponent {
           const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
-          columnObj.Cell = row => this.constructor.getCellContent(row);
+          columnObj.show = this.showColumns(columnName);
+          columnObj.Cell = row => this.constructor.getCellContent(row, getStagerValue);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
           columnObj.Filter = ({ filter, onChange }) => (
@@ -135,8 +187,71 @@ class CustomReactTable extends React.PureComponent {
     return {};
   }
 
+  showColumns(columnName) {
+    const { getStagerValue } = this.props;
+    return columnName === 'Assigned To' ? (getStagerValue === 'POSTMOD_STAGER_ALL') : true;
+  }
+
+  handleRowClick(rowInfo) {
+    const { onSearchLoanWithTask } = this.props;
+    const { original } = rowInfo;
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
+    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
+    if (isAllStagerGroup) {
+      this.setState({ isRedirect: isAllStagerGroup });
+      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
+    } else {
+      this.setState({ isRedirect: isPostModStagerGroup });
+    }
+    if (isAllStagerGroup || isPostModStagerGroup) {
+      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
+    }
+  }
+  // 53538406
+
+  loadSearchLoan() {
+    const {
+      onSelectEval, onGetGroupName, onGetChecklistHistory, history, searchLoanTaskResponse,
+    } = this.props;
+    if (searchLoanTaskResponse) {
+      const {
+        loanNumber, unAssigned, assigned,
+      } = searchLoanTaskResponse;
+      const data = [];
+      if (unAssigned) {
+        data.push(...unAssigned);
+      }
+      if (assigned) {
+        data.push(...assigned);
+      }
+      const payload = { loanNumber, ...data, isSearch: true };
+      const { isRedirect } = this.state;
+      let group = '';
+      switch (payload.taskName) {
+        case 'Docs In':
+          group = 'DOCSIN';
+          this.redirectPath = '/docs-in';
+          break;
+        default:
+          group = 'BEUW';
+          this.redirectPath = this.getBackendEndPath();
+      }
+      if (isRedirect) {
+        onGetGroupName(group);
+        onSelectEval(payload);
+        onGetChecklistHistory(payload.taskId);
+        history.push(this.redirectPath);
+      }
+    }
+  }
+
   render() {
-    const { data } = this.props;
+    const { data, searchLoanTaskResponse } = this.props;
+    if (!R.isEmpty(searchLoanTaskResponse)) {
+      this.loadSearchLoan();
+    }
     const returnVal = data ? (
       <div styleName="stager-table-container">
         <div styleName="stager-table-height-limiter">
@@ -156,7 +271,15 @@ class CustomReactTable extends React.PureComponent {
               },
             ] : []}
             filterable
-            getTrProps={(state, rowInfo, column) => this.getTrPropsType(state, rowInfo, column)}
+            // getTrProps={(state, rowInfo, column) => this.getTrPropsType(state, rowInfo, column)}
+            getTrProps={(state, rowInfo, column) => ({
+              onLoad: () => {
+                this.getTrPropsType(state, rowInfo, column);
+              },
+              onClick: () => {
+                this.handleRowClick(rowInfo);
+              },
+            })}
             styleName="stagerTable"
           />
         </div>
@@ -172,14 +295,56 @@ const TestExports = {
 CustomReactTable.defaultProps = {
   data: [],
 };
+
+const mapDispatchToProps = dispatch => ({
+  onSelectEval: operations.onSelectEval(dispatch),
+  onGetGroupName: operations.onGetGroupName(dispatch),
+  onSearchLoanWithTask: operations.onSearchLoanWithTask(dispatch),
+  onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
+});
+
+const mapStateToProps = state => ({
+  user: loginSelectors.getUser(state),
+  searchLoanTaskResponse: selectors.searchLoanTaskResponse(state),
+  getStagerValue: stagerSelectors.getStagerValue(state),
+});
+
 CustomReactTable.propTypes = {
   data: PropTypes.node,
+  // history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getStagerValue: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    length: PropTypes.number.isRequired,
+    location: PropTypes.object.isRequired,
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
+  onGetChecklistHistory: PropTypes.func.isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
+  onSearchLoanWithTask: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
+  onSelectEval: PropTypes.func.isRequired,
+  searchLoanTaskResponse: PropTypes.arrayOf(PropTypes.shape({
+    loanNumber: PropTypes.string.isRequired,
+    valid: PropTypes.bool,
+  })).isRequired,
   searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
-
+  user: PropTypes.shape({
+    groupList: PropTypes.array,
+    userDetails: PropTypes.shape({
+      email: PropTypes.string,
+      jobTitle: PropTypes.string,
+      name: PropTypes.string,
+    }),
+    userGroups: PropTypes.array,
+  }).isRequired,
 };
 
-export default CustomReactTable;
+const CustomReactTableContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CustomReactTable);
+
+export default withRouter(CustomReactTableContainer);
 export { TestExports };
