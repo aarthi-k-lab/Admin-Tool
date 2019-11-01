@@ -164,8 +164,8 @@ class DocsIn extends React.PureComponent {
     let LoanStates = [];
     const { user } = this.props;
     const groups = user && user.groupList;
-    const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
-    if (event.target.value && !groupcheck) {
+    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
+    if (groupcheck) {
       LoanStates = getPostModStagerValues(event.target.value);
     } else {
       LoanStates = event.target.value === 'Value' ? getValueStates() : getTaxTranscriptStates();
