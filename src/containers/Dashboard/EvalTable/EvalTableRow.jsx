@@ -67,7 +67,7 @@ class EvalTableRow extends React.PureComponent {
       case 'ASSIGNED TO':
         cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
         break;
-      case 'ACTIONS':
+      case 'HISTORY':
         cellData = (
           <EvalTableCell
             click={() => this.handleLinkClick('Loan Activity')}
@@ -76,7 +76,7 @@ class EvalTableRow extends React.PureComponent {
           />
         );
         break;
-      case 'REJECT':
+      case 'ACTIONS':
         cellData = (
           displayReject
             ? (
