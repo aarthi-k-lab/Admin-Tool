@@ -28,27 +28,31 @@ const validateLoanFormat = (loansNumber) => {
   }
   return isValid;
 };
-const stagerGroups = ['postmodstager', 'postmodstager-mgr'];
+const postModStagerGroups = ['postmodstager', 'postmodstager-mgr'];
+const StagerGroups = ['stager', 'stager-mgr'];
 
-const getValueStates = () => {
-  const states = [{
-    displayName: 'ORDER',
-    value: 'Ordered',
-  }];
-  return states;
+const getStagerValues = (taskName) => {
+  let value = [];
+  switch (taskName) {
+    case 'Value':
+      value = [{
+        displayName: 'ORDER',
+        value: 'ORDERED',
+      }];
+      break;
+    case 'TaxTranscript':
+      value = [{
+        displayName: 'ORDER',
+        value: 'ORDERED',
+      }, {
+        displayName: 'COMPLETE',
+        value: 'COMPLETED',
+      }];
+      break;
+    default: return null;
+  }
+  return value;
 };
-
-const getTaxTranscriptStates = () => {
-  const states = [{
-    displayName: 'ORDER',
-    value: 'Ordered',
-  }, {
-    displayName: 'COMPLETE',
-    value: 'Completed',
-  }];
-  return states;
-};
-
 const getPostModStagerTaskNames = () => {
   const states = [{
     displayName: 'FNMAQC',
@@ -144,7 +148,7 @@ class DocsIn extends React.PureComponent {
 
   componentDidMount() {
     const { groups } = this.props;
-    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
+    const groupcheck = R.any(group => R.contains(group, postModStagerGroups), groups);
     if (groupcheck) {
       this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
     } else {
@@ -161,7 +165,21 @@ class DocsIn extends React.PureComponent {
   }
 
   onValueChange(event) {
-    this.setState({ value: event.target.value });
+    let LoanStates = [];
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const groupcheck = R.any(group => R.contains(group, postModStagerGroups), groups);
+    const stagergroupCheck = R.any(group => R.contains(group, StagerGroups), groups);
+    const dualGroupCheck = groupcheck && stagergroupCheck;
+    if (dualGroupCheck) {
+      LoanStates = getStagerValues(event.target.value)
+      || getPostModStagerValues(event.target.value);
+    } else if (groupcheck) {
+      LoanStates = getPostModStagerValues(event.target.value);
+    } else {
+      LoanStates = getStagerValues(event.target.value);
+    }
+    this.setState({ value: event.target.value, selectedState: LoanStates[0].value });
   }
 
   getMessage() {
@@ -407,13 +425,18 @@ class DocsIn extends React.PureComponent {
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
-    if (value && groupcheck) {
+    const groupcheck = R.any(group => R.contains(group, postModStagerGroups), groups);
+    const stagergroupCheck = R.any(group => R.contains(group, StagerGroups), groups);
+    const dualGroupCheck = groupcheck && stagergroupCheck;
+    if (value && dualGroupCheck) {
+      taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
+      LoanStates = getStagerValues(value) || getPostModStagerValues(value);
+    } else if (value && groupcheck) {
       taskName = getPostModStagerTaskNames();
       LoanStates = getPostModStagerValues(value);
-    } else {
+    } else if (value) {
       taskName = getStagerTaskName();
-      LoanStates = value === 'Value' ? getValueStates() : getTaxTranscriptStates();
+      LoanStates = getStagerValues(value);
     }
     const renderBackButtonPage = isPageTypeDocsIn(bulkOrderPageType) ? '/docs-in' : '/stager';
     if (inProgress) {
