@@ -33,7 +33,7 @@ const stagerGroups = ['postmodstager', 'postmodstager-mgr'];
 const getValueStates = () => {
   const states = [{
     displayName: 'ORDER',
-    value: 'Ordered',
+    value: 'ORDERED',
   }];
   return states;
 };
@@ -41,10 +41,10 @@ const getValueStates = () => {
 const getTaxTranscriptStates = () => {
   const states = [{
     displayName: 'ORDER',
-    value: 'Ordered',
+    value: 'ORDERED',
   }, {
     displayName: 'COMPLETE',
-    value: 'Completed',
+    value: 'COMPLETED',
   }];
   return states;
 };
@@ -150,7 +150,7 @@ class DocsIn extends React.PureComponent {
     } else {
       this.setState({
         value: 'Value',
-        selectedState: 'Ordered',
+        selectedState: 'ORDERED',
       });
     }
   }
@@ -161,7 +161,16 @@ class DocsIn extends React.PureComponent {
   }
 
   onValueChange(event) {
-    this.setState({ value: event.target.value });
+    let LoanStates = [];
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    const groupcheck = groups.includes('post-mod-stager', 'post-mod-stager-mgr');
+    if (event.target.value && !groupcheck) {
+      LoanStates = getPostModStagerValues(event.target.value);
+    } else {
+      LoanStates = event.target.value === 'Value' ? getValueStates() : getTaxTranscriptStates();
+    }
+    this.setState({ value: event.target.value, selectedState: LoanStates[0].value });
   }
 
   getMessage() {
@@ -387,7 +396,7 @@ class DocsIn extends React.PureComponent {
               getTrProps={(state, rowInfo, column) => {
                 return {
                   /* eslint-disable-next-line */
-                  style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
+                        style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
                 };
               }}
               pageSizeOptions={[10, 20, 25, 50, 100]}
