@@ -11,7 +11,7 @@ const BETA = 'BETA';
 const STAGER = 'STAGER';
 const TRIAL = 'TRIAL';
 const UTIL = 'UTIL';
-const POST_MOD_STAGER = 'postmod-stager';
+const POST_MOD_STAGER = 'postmodstager';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
