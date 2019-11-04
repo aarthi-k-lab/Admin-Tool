@@ -15,7 +15,9 @@ import { operations as dashboardOperations } from 'ducks/dashboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
@@ -168,15 +170,9 @@ class StagerPage extends React.PureComponent {
                   />
                 </Grid>
                 <Grid>
-                  <Button
-                    className="material-ui-button"
-                    color="primary"
-                    onClick={() => this.handleClick()}
-                    styleName="order-button"
-                    variant="outlined"
-                  >
-                    UPLOAD
-                  </Button>
+                  <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
+                    <AddIcon />
+                  </Fab>
                 </Grid>
                 {getStagerSearchResponse
                   && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
