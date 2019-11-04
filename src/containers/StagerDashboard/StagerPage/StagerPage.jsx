@@ -15,7 +15,6 @@ import { operations as dashboardOperations } from 'ducks/dashboard';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-// import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import StagerTiles from '../StagerTiles';
