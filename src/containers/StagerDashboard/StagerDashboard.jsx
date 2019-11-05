@@ -114,7 +114,7 @@ class StagerDashboard extends React.Component {
     this.setState({
       activeSearchTerm: '',
       stager: stagerValue[stager],
-      activeTile: '',
+      activeTile: null,
       activeTab: '',
     });
     const datePayload = this.getDatePayload();
