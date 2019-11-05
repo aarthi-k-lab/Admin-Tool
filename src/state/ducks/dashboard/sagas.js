@@ -644,11 +644,11 @@ function* getNext(action) {
       yield put(resetChecklistData());
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
-      const stagerTaskName = yield select(selectors.stagerTaskName);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       let taskName = '';
       if (appGroupName === DashboardModel.POSTMODSTAGER) {
+        const stagerTaskName = yield select(selectors.stagerTaskName);
         taskName = action.payload.activeTile || stagerTaskName;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
