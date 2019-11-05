@@ -300,10 +300,11 @@ Controls.propTypes = {
 const mapStateToProps = (state) => {
   const showDisposition = checklistSelectors.shouldShowDisposition(state);
   const isNotAssigned = !selectors.isAssigned(state);
+  const group = selectors.groupName(state);
   const enableValidate = !checklistSelectors.showComment(state)
     ? true : checklistSelectors.enableValidate(state);
   const shouldSkipValidation = checklistSelectors.enableValidate(state)
-  && selectors.groupName(state) === DashboardModel.POSTMODSTAGER;
+  && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER);
   const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
   return {
     disableValidation,

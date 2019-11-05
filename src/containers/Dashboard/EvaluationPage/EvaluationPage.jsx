@@ -20,7 +20,8 @@ function isNotLoanActivity(group) {
 }
 
 function canShowValidate(group) {
-  return group !== DashboardModel.LOAN_ACTIVITY && group !== DashboardModel.POSTMODSTAGER;
+  return group !== DashboardModel.LOAN_ACTIVITY
+   && group !== DashboardModel.POSTMODSTAGER && group !== DashboardModel.ALLSTAGER;
 }
 
 function isTrialOrForbearance(taskName) {
