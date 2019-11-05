@@ -201,7 +201,7 @@ class CustomReactTable extends React.PureComponent {
   handleRowClick(rowInfo) {
     const { onSearchLoanWithTask, groupName } = this.props;
     const { original } = rowInfo;
-    if (groupName === DashboardModel.ALLSTAGER || groupName === DashboardModel.POSTMODSTAGER) {
+    if (groupName === DashboardModel.ALL_STAGER || groupName === DashboardModel.POSTMODSTAGER) {
       this.setState({ isRedirect: true });
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
     } else {
