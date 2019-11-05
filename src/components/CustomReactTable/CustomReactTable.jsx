@@ -172,8 +172,7 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  getTrPropsType(state, rowInfo, column) {
+  getTrPropsType = (state, rowInfo, column, instance) => {
     const { searchResponse } = this.props;
     if (rowInfo) {
       const { original } = rowInfo;
@@ -182,11 +181,16 @@ class CustomReactTable extends React.PureComponent {
           style: {
             background: '#e67300',
           },
+          onClick: () => {
+            this.handleRowClick(rowInfo);
+            instance.forceUpdate();
+          },
         };
       }
     }
     return {};
   }
+
 
   showColumns(columnName) {
     const { getStagerValue } = this.props;
@@ -203,7 +207,6 @@ class CustomReactTable extends React.PureComponent {
       this.setState({ isRedirect: false });
     }
   }
-  // 53538406
 
   loadSearchLoan() {
     const {
@@ -225,12 +228,12 @@ class CustomReactTable extends React.PureComponent {
       let group = '';
       switch (payload.taskName) {
         case 'Docs In':
-          group = 'DOCSIN';
-          this.redirectPath = '/docs-in';
+          group = 'POSTMOD';
+          this.redirectPath = '/postmodstager';
           break;
         default:
-          group = 'BEUW';
-          this.redirectPath = this.getBackendEndPath();
+          this.redirectPath = this.getFrontEndPath();
+          group = this.getFrontEndGroup();
       }
       if (isRedirect) {
         onGetGroupName(group);
@@ -265,15 +268,10 @@ class CustomReactTable extends React.PureComponent {
               },
             ] : []}
             filterable
-            // getTrProps={(state, rowInfo, column) => this.getTrPropsType(state, rowInfo, column)}
-            getTrProps={(state, rowInfo, column) => ({
-              onLoad: () => {
-                this.getTrPropsType(state, rowInfo, column);
-              },
-              onClick: () => {
-                this.handleRowClick(rowInfo);
-              },
-            })}
+            getTrProps={(
+              state, rowInfo, column, instance,
+            ) => this.getTrPropsType(state, rowInfo, column, instance)
+            }
             styleName="stagerTable"
           />
         </div>
