@@ -12,6 +12,9 @@ const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
 const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
+const STAGER = 'STAGER';
+const POSTMODSTAGER = 'POSTMOD';
+const ALL_STAGER = 'ALLSTAGER';
 
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
@@ -93,6 +96,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: POSTMODSTAGER,
+    task: 'POST MOD STAGER',
+    taskCode: 'POST MOD STAGER',
+    path: '/postmodstager',
+    showAssignUnassign: true,
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -150,6 +160,9 @@ const DashboardModel = {
   ALLOW_IN_QUEUE,
   STAGER_VALUE,
   STAGER_TABLE_PAGE_COUNT,
+  POSTMODSTAGER,
+  STAGER,
+  ALL_STAGER,
 };
 
 export default DashboardModel;

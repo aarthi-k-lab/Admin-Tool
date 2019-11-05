@@ -31,6 +31,7 @@ import {
   selectReject,
   clearSelectReject,
   onSearchLoanWithTaskAction,
+  saveStagerTaskName,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -55,6 +56,7 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
+  dispatch(saveStagerTaskName(null));
 };
 
 const onGetNext = dispatch => (payload) => {
@@ -62,6 +64,10 @@ const onGetNext = dispatch => (payload) => {
   dispatch(clearBEDisposition());
   dispatch(clearDisposition());
   dispatch(getNext(payload));
+};
+
+const setStagerTaskName = dispatch => (payload) => {
+  dispatch(saveStagerTaskName(payload));
 };
 
 const onClearBEDisposition = dispatch => () => {
@@ -183,6 +189,7 @@ const operations = {
   onSelectReject,
   onClearSelectReject,
   onSearchLoanWithTask,
+  setStagerTaskName,
 };
 
 export default operations;

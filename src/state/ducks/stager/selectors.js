@@ -3,6 +3,7 @@ const getLoaderInfo = state => state.stager.loading;
 const getdocGenResponse = state => (state.stager.docGenResponse
   ? state.stager.docGenResponse : []);
 const getTableData = state => (state.stager.data ? state.stager.data : []);
+const getTaskName = state => (state.stager.data ? state.stager.data.stagerTaskType : '');
 const getSelectedData = state => (state.stager.selectedData ? state.stager.selectedData : []);
 const getActiveSearchTerm = state => (state.stager && state.stager.activeSearchTerm);
 const getdocGenAction = state => (state.stager && state.stager.docGenAction);
@@ -27,6 +28,7 @@ const selectors = {
   getStagerGroup,
   getStagerSearchResponse,
   getSearchStagerLoanNumber,
+  getTaskName,
 };
 
 export default selectors;

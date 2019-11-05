@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import RouteAccess from 'lib/RouteAccess';
 import { withRouter } from 'react-router-dom';
+import DashboardModel from 'models/Dashboard';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
@@ -193,20 +194,13 @@ class CustomReactTable extends React.PureComponent {
   }
 
   handleRowClick(rowInfo) {
-    const { onSearchLoanWithTask } = this.props;
+    const { onSearchLoanWithTask, groupName } = this.props;
     const { original } = rowInfo;
-    const { user } = this.props;
-    const groups = user && user.groupList;
-    const isAllStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager');
-    const isPostModStagerGroup = groups.includes('postmodstager', 'postmodstager-mgr');
-    if (isAllStagerGroup) {
-      this.setState({ isRedirect: isAllStagerGroup });
+    if (groupName === DashboardModel.ALLSTAGER || groupName === DashboardModel.POSTMODSTAGER) {
+      this.setState({ isRedirect: true });
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
     } else {
-      this.setState({ isRedirect: isPostModStagerGroup });
-    }
-    if (isAllStagerGroup || isPostModStagerGroup) {
-      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
+      this.setState({ isRedirect: false });
     }
   }
   // 53538406
@@ -305,6 +299,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
+  groupName: selectors.groupName(state),
   searchLoanTaskResponse: selectors.searchLoanTaskResponse(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
 });
@@ -313,6 +308,7 @@ CustomReactTable.propTypes = {
   data: PropTypes.node,
   // history: PropTypes.arrayOf(PropTypes.string).isRequired,
   getStagerValue: PropTypes.string.isRequired,
+  groupName: PropTypes.string.isRequired,
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
