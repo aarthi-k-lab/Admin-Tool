@@ -302,12 +302,15 @@ const mapStateToProps = (state) => {
   const isNotAssigned = !selectors.isAssigned(state);
   const enableValidate = !checklistSelectors.showComment(state)
     ? true : checklistSelectors.enableValidate(state);
+  const shouldSkipValidation = checklistSelectors.enableValidate(state)
+  && selectors.groupName(state) === DashboardModel.POSTMODSTAGER;
   const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
   return {
     disableValidation,
     enableValidate,
-    enableEndShift: selectors.enableEndShift(state),
-    enableGetNext: selectors.enableGetNext(state),
+    enableEndShift: selectors.enableEndShift(state) || shouldSkipValidation,
+    enableGetNext: selectors.enableGetNext(state)
+      || shouldSkipValidation,
     enableSendToDocGen: selectors.enableSendToDocGen(state),
     enableSendToDocsIn: selectors.enableSendToDocsIn(state),
     enableSendToUW: selectors.enableSendToUW(state),

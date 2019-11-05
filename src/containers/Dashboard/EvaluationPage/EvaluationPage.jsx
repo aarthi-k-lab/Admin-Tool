@@ -18,6 +18,11 @@ import './EvaluationPage.css';
 function isNotLoanActivity(group) {
   return group !== DashboardModel.LOAN_ACTIVITY;
 }
+
+function canShowValidate(group) {
+  return group !== DashboardModel.LOAN_ACTIVITY && group !== DashboardModel.POSTMODSTAGER;
+}
+
 function isTrialOrForbearance(taskName) {
   return taskName && taskName.includes('Trial') ? 'Trial ' : 'Forbearance ';
 }
@@ -51,7 +56,7 @@ class EvaluationPage extends React.PureComponent {
             showEndShift={isNotLoanActivity(group)}
             showGetNext={isNotLoanActivity(group)}
             showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
-            showValidate={isNotLoanActivity(group)}
+            showValidate={canShowValidate(group)}
           />
         </ContentHeader>
         <Tombstone />

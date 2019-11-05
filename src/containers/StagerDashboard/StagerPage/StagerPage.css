@@ -61,3 +61,14 @@
 .order-button.order-button:hover {
   background-color: var(--blue-900);
 }
+
+.getNext-button.getNext-button {
+  background-color: var(--light-blue-900);
+  margin: 0.5rem 0rem 0rem 17rem;
+  height: 3rem;    
+  color: aliceblue;
+}
+
+.getNext-button.getNext-button:hover {
+  background-color: var(--blue-900);
+}

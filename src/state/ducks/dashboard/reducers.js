@@ -45,6 +45,7 @@ import {
   SET_ENABLE_SEND_TO_UW, SELECT_REJECT,
   CLEAR_SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK,
+  SET_STAGER_TASK_NAME,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -98,6 +99,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         searchLoanTaskResponse: action.payload,
+      };
+    }
+    case SET_STAGER_TASK_NAME: {
+      return {
+        ...state,
+        stagerTaskName: action.payload,
       };
     }
     case CLEAR_FIRST_VISIT: {

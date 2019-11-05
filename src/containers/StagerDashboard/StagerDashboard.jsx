@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import CustomSnackBar from 'components/CustomSnackBar';
 import * as R from 'ramda';
-import RouteAccess from 'lib/RouteAccess';
 import DashboardModel from 'models/Dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
@@ -16,9 +14,8 @@ import StagerPage from './StagerPage';
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
-    const { user } = this.props;
-    const groups = user && user.groupList;
-    const groupcheck = groups.includes('postmodstager', 'postmodstager-mgr');
+    const { group } = this.props;
+    const groupcheck = group === DashboardModel.POSTMODSTAGER;
     const stager = groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
     this.state = {
       activeSearchTerm: '',
@@ -27,11 +24,14 @@ class StagerDashboard extends React.Component {
   }
 
   componentDidMount() {
-    const { getDashboardCounts, triggerStagerValue, triggerStartEndDate } = this.props;
+    const {
+      getDashboardCounts, triggerStagerValue, triggerStartEndDate, group, onGetGroupName,
+    } = this.props;
     const { stager } = this.state;
     const datePayload = this.getDatePayload();
     triggerStartEndDate(datePayload);
     triggerStagerValue(stager);
+    onGetGroupName(group);
     getDashboardCounts();
   }
 
@@ -178,10 +178,6 @@ class StagerDashboard extends React.Component {
   }
 
   render() {
-    const { groups } = this.props;
-    if (!RouteAccess.hasStagerDashboardAccess(groups)) {
-      return <Redirect to="/unauthorized?error=STAGER_DASHBOARD_ACCESS_NEEDED" />;
-    }
     const {
       counts, tableData,
       loading, selectedData, docGenResponse,
@@ -237,6 +233,7 @@ const mapDispatchToProps = dispatch => ({
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
+  onGetGroupName: dashboardOperations.onGetGroupName(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
@@ -268,12 +265,13 @@ StagerDashboard.propTypes = {
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
   getStagerSearchResponse: PropTypes.node.isRequired,
-  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  group: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
   onClearSearchResponse: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   snackBarData: PropTypes.node,
   tableData: PropTypes.node,

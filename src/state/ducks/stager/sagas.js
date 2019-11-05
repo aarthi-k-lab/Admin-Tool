@@ -12,6 +12,7 @@ import * as R from 'ramda';
 import {
   selectors as loginSelectors,
 } from 'ducks/login/index';
+import DashboardModel from '../../../models/Dashboard';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
   GET_DOWNLOAD_DATA_SAGA,
@@ -32,17 +33,18 @@ import {
 } from './types';
 
 import selectors from './selectors';
+import { selectors as dashboardSelectors } from '../dashboard';
 import Disposition from '../../../models/Disposition';
 import {
   SET_SNACK_BAR_VALUES_SAGA,
 } from '../notifications/types';
 
-function buildDateObj(stagerType, stagerStartEndDate, searchTerm, userGroups) {
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm, group) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
   const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
   const fromDate = new Date(fromDateMoment).toISOString();
   const toDate = new Date(toDateMoment).toISOString();
-  const isPostModCheck = userGroups.includes('postmodstager', 'postmodstager-mgr');
+  const isPostModCheck = group === DashboardModel.POSTMODSTAGER;
   const dateValue = {
     fromDate,
     toDate,
@@ -57,9 +59,8 @@ function* fetchDashboardCounts() {
   try {
     const stagerType = yield select(selectors.getStagerValue);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const user = yield select(loginSelectors.getUser);
-    const userGroups = R.path(['groupList'], user);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, userGroups);
+    const group = yield select(dashboardSelectors.groupName);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, group);
     const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
     if (response != null) {
       yield put({

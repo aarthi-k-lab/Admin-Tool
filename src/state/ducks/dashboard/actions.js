@@ -35,6 +35,7 @@ import {
   SELECT_REJECT_SAGA,
   CLEAR_SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK_SAGA,
+  SET_STAGER_TASK_NAME,
 } from './types';
 
 
@@ -147,6 +148,11 @@ const onSentToUnderwritingAction = () => ({
   type: SET_TASK_UNDERWRITING,
 });
 
+const saveStagerTaskName = stagerTaskName => ({
+  type: SET_STAGER_TASK_NAME,
+  payload: stagerTaskName,
+});
+
 const onSendToDocGenAction = isStager => ({
   type: SET_TASK_SENDTO_DOCGEN,
   payload: isStager,
@@ -229,4 +235,5 @@ export {
   selectReject,
   clearSelectReject,
   onSearchLoanWithTaskAction,
+  saveStagerTaskName,
 };

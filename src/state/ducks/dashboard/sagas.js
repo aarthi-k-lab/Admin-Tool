@@ -512,9 +512,43 @@ function getCommentPayload(taskDetails) {
   };
 }
 
-function* saveChecklistDisposition(payload) {
+function* savePostModChklistDisposition(payload) {
+  const user = yield select(loginSelectors.getUser);
+  const userPrincipalName = R.path(['userDetails', 'email'], user);
+  const taskId = yield select(selectors.taskId);
+  const disposition = payload.dispositionCode;
+  try {
+    if (!payload.isFirstVisit) {
+      const saveResponse = yield call(Api.callGet, `/api/workassign/disposition?userId=${userPrincipalName}&taskId=${taskId}&disposition=${disposition}`);
+      yield put({
+        type: SET_GET_NEXT_STATUS,
+        payload: R.isEmpty(saveResponse.message),
+      });
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {
+          type: LEVEL_SUCCESS,
+          msg: 'Dispositioned Successfully',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+        type: LEVEL_ERROR,
+        data: 'Error in disposition',
+      },
+    });
+    return false;
+  }
+  return true;
+}
+
+function* saveGeneralChecklistDisposition(payload) {
   const { appGroupName } = payload;
-  if (!payload.isFirstVisit && AppGroupName.hasChecklist(appGroupName)) {
+  if (!payload.isFirstVisit
+    && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
     const groupName = getUserPersona(payload.appGroupName);
     const agentName = yield select(checklistSelectors.getAgentName);
@@ -598,6 +632,9 @@ function* getNext(action) {
   try {
     yield put({ type: SHOW_LOADER });
     yield put({ type: GETNEXT_PROCESSED, payload: false });
+    const groupName = yield select(selectors.groupName);
+    const saveChecklistDisposition = groupName === DashboardModel.POSTMODSTAGER
+      ? savePostModChklistDisposition : saveGeneralChecklistDisposition;
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
@@ -607,9 +644,14 @@ function* getNext(action) {
       yield put(resetChecklistData());
       const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
+      const stagerTaskName = yield select(selectors.stagerTaskName);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}`);
+      let taskName = '';
+      if (appGroupName === DashboardModel.POSTMODSTAGER) {
+        taskName = action.payload.activeTile || stagerTaskName;
+      }
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
@@ -680,6 +722,8 @@ function* endShift(action) {
     payload.appGroupName = groupName;
     payload.isFirstVisit = yield select(selectors.isFirstVisit);
     payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
+    const saveChecklistDisposition = groupName === DashboardModel.POSTMODSTAGER
+      ? savePostModChklistDisposition : saveGeneralChecklistDisposition;
     if (yield call(saveChecklistDisposition, payload)) {
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
       if (dispositionComment) {
@@ -1144,7 +1188,7 @@ export const TestExports = {
   fetchChecklistDetails: fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
-  saveChecklistDisposition,
+  saveGeneralChecklistDisposition,
   searchLoan,
   selectEval,
   unassignLoan,
