@@ -85,7 +85,7 @@ class StagerPage extends React.PureComponent {
     onGetNext({
       appGroupName: group, isFirstVisit, dispositionCode, activeTile,
     });
-    if (group === DashboardModel.POSTMODSTAGER) {
+    if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER) {
       setStagerTaskName(activeTile);
     }
     history.push('/postmodstager');
