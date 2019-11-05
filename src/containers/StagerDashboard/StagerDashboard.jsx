@@ -180,7 +180,7 @@ class StagerDashboard extends React.Component {
   render() {
     const {
       counts, tableData,
-      loading, selectedData, docGenResponse,
+      loading, selectedData, docGenResponse, group,
     } = this.props;
     const {
       activeTab, activeTile, stager,
@@ -193,6 +193,7 @@ class StagerDashboard extends React.Component {
           activeTab={activeTab}
           activeTile={activeTile}
           counts={counts}
+          group={group}
           loading={loading}
           onCheckBoxClick={(isChecked, data) => this.onCheckBoxClick(isChecked, data)}
           onOrderClick={(data, searchTerm) => this.onOrderClick(data, searchTerm)}

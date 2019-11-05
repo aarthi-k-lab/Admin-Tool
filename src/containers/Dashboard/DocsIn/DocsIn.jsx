@@ -9,11 +9,11 @@ import ContentHeader from 'components/ContentHeader';
 import Controls from 'containers/Controls';
 import Loader from 'components/Loader/Loader';
 import { connect } from 'react-redux';
-import * as R from 'ramda';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Link, withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
 import { selectors as LoginSelectors } from 'ducks/login';
+import { selectors as stagerSelectors } from 'ducks/stager';
 import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
@@ -28,8 +28,6 @@ const validateLoanFormat = (loansNumber) => {
   }
   return isValid;
 };
-const stagerGroups = ['postmodstager', 'postmodstager-mgr'];
-
 const getValueStates = () => {
   const states = [{
     displayName: 'ORDER',
@@ -143,9 +141,8 @@ class DocsIn extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { groups } = this.props;
-    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
-    if (groupcheck) {
+    const { getStagerValue } = this.props;
+    if (getStagerValue === 'POSTMOD_STAGER_ALL') {
       this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
     } else {
       this.setState({
@@ -162,10 +159,8 @@ class DocsIn extends React.PureComponent {
 
   onValueChange(event) {
     let LoanStates = [];
-    const { user } = this.props;
-    const groups = user && user.groupList;
-    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
-    if (groupcheck) {
+    const { getStagerValue } = this.props;
+    if (getStagerValue === 'POSTMOD_STAGER_ALL') {
       LoanStates = getPostModStagerValues(event.target.value);
     } else {
       LoanStates = event.target.value === 'Value' ? getValueStates() : getTaxTranscriptStates();
@@ -411,13 +406,12 @@ class DocsIn extends React.PureComponent {
 
   render() {
     const { value } = this.state;
-    const { inProgress, groups } = this.props;
+    const { inProgress, getStagerValue } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const groupcheck = R.any(group => R.contains(group, stagerGroups), groups);
-    if (value && groupcheck) {
+    if (value && getStagerValue === 'POSTMOD_STAGER_ALL') {
       taskName = getPostModStagerTaskNames();
       LoanStates = getPostModStagerValues(value);
     } else {
@@ -491,7 +485,7 @@ DocsIn.defaultProps = {
 
 DocsIn.propTypes = {
   bulkOrderPageType: PropTypes.string.isRequired,
-  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getStagerValue: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   onFailedLoanValidation: PropTypes.func,
@@ -526,6 +520,8 @@ const mapStateToProps = state => ({
   tableData: selectors.tableData(state),
   user: LoginSelectors.getUser(state),
   bulkOrderPageType: selectors.bulkOrderPageType(state),
+  getStagerValue: stagerSelectors.getStagerValue(state),
+
 });
 
 const mapDispatchToProps = dispatch => ({
