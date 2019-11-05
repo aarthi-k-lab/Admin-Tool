@@ -138,9 +138,14 @@ describe('getnext Success', () => {
       .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
   });
 
-  it('should call save disposition generator', () => {
+  it('should get user group name', () => {
     expect(saga.next().value)
-      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call save disposition generator', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
   it('should get checklist comment', () => {
@@ -173,7 +178,7 @@ describe('getnext Success', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
   });
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
@@ -273,9 +278,14 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
   });
 
-  it('should call save disposition generator', () => {
+  it('should get user group name', () => {
     expect(saga.next().value)
-      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call save disposition generator', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
   it('should get checklist comment', () => {
@@ -307,7 +317,7 @@ describe('getnext Failure -  no tasks found', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
   });
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
@@ -381,9 +391,14 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(put({ type: actionTypes.GETNEXT_PROCESSED, payload: false }));
   });
 
-  it('should call save disposition generator', () => {
+  it('should get user group name', () => {
     expect(saga.next().value)
-      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call save disposition generator', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
   it('should get checklist comment', () => {
@@ -415,7 +430,7 @@ describe('getnext Failure -  task fetch failure', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta'));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
   });
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
@@ -520,7 +535,7 @@ describe('endShift worker', () => {
 
   it('should make checklistDisposition call', () => {
     expect(saga.next('missingDocs').value)
-      .toEqual(call(TestExports.saveChecklistDisposition, action.payload));
+      .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
   it('should get checklist disposition comment', () => {
