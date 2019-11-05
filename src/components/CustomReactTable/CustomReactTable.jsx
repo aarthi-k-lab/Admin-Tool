@@ -30,15 +30,14 @@ class CustomReactTable extends React.PureComponent {
     onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
   }
 
-  static getRowStyleName(value, getStagerValue) {
-    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
+  static getRowStyleName(value, pointerStyle) {
     if (value < 0) {
       return `${pointerStyle} days-until-sla-red`;
     }
     if (value === 0) {
       return `${pointerStyle}days-until-sla-gray`;
     }
-    return 'tableRow';
+    return `${pointerStyle} tableRow`;
   }
 
   static getCellContent(row, getStagerValue) {
@@ -46,13 +45,13 @@ class CustomReactTable extends React.PureComponent {
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
-          <div styleName={this.getRowStyleName(row.value, getStagerValue)}>
+          <div styleName={this.getRowStyleName(row.value, pointerStyle)}>
             {`${row.value} ${Math.abs(row.value) > 1 ? 'DAYS' : 'DAY'}`}
           </div>
         );
       case 'Loan Number':
         return (
-          <div styleName={this.getRowStyleName(row.original['Days Until SLA'])}>
+          <div styleName={this.getRowStyleName(row.original['Days Until SLA'], pointerStyle)}>
             {this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-red'
               ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
             }
@@ -181,12 +180,14 @@ class CustomReactTable extends React.PureComponent {
           style: {
             background: '#e67300',
           },
-          onClick: () => {
-            this.handleRowClick(rowInfo);
-            instance.forceUpdate();
-          },
         };
       }
+      return {
+        onClick: () => {
+          this.handleRowClick(rowInfo);
+          instance.forceUpdate();
+        },
+      };
     }
     return {};
   }
@@ -200,7 +201,7 @@ class CustomReactTable extends React.PureComponent {
   handleRowClick(rowInfo) {
     const { onSearchLoanWithTask, groupName } = this.props;
     const { original } = rowInfo;
-    if (groupName === DashboardModel.ALLSTAGER || groupName === DashboardModel.POSTMODSTAGER) {
+    if (groupName === DashboardModel.ALLSTAGER || groupName !== DashboardModel.POSTMODSTAGER) {
       this.setState({ isRedirect: true });
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
     } else {
@@ -223,11 +224,17 @@ class CustomReactTable extends React.PureComponent {
       if (assigned) {
         data.push(...assigned);
       }
-      const payload = { loanNumber, ...data, isSearch: true };
+      const payload = { loanNumber, ...data[0], isSearch: true };
       const { isRedirect } = this.state;
       let group = '';
       switch (payload.taskName) {
-        case 'Docs In':
+        case 'Countersign':
+        case 'FNMA QC':
+        case 'Incentive':
+        case 'Investor Settlement':
+        case 'Recordation - Ordered':
+        case 'Recordation - ToOrder':
+        case 'Send Mod Agreement':
           group = 'POSTMOD';
           this.redirectPath = '/postmodstager';
           break;

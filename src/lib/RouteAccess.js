@@ -11,7 +11,7 @@ const stager = {
   path: '/stager',
   name: 'stager',
   img: '/static/img/stager.svg',
-  groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr'],
 };
 
 const moveForward = {
