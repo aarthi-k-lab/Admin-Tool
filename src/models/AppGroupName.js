@@ -11,7 +11,8 @@ const BETA = 'BETA';
 const STAGER = 'STAGER';
 const TRIAL = 'TRIAL';
 const UTIL = 'UTIL';
-const POSTMODSTAGER = 'POSTMOD';
+const POSTMODSTAGER = 'POSTMODSTAGER';
+const POSTMOD = 'POSTMOD';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -21,7 +22,7 @@ const checklistGroupNames = [
   BEUW,
   DOC_GEN,
   DOCS_IN,
-  POSTMODSTAGER,
+  POSTMOD,
 ];
 
 const userGroupList = [
