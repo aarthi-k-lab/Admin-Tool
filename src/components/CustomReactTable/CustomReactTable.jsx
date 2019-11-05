@@ -194,10 +194,6 @@ class CustomReactTable extends React.PureComponent {
     return {};
   }
 
-  // handleRowValue(value) {
-  //   console.log(this.state);
-  //   return value.startsWith('cmod') ? 'Unassign' : value;
-  // }
 
   showColumns(columnName) {
     const { getStagerValue } = this.props;

@@ -198,7 +198,7 @@ class StagerPage extends React.PureComponent {
                     </Grid>
                   ) : null
                 }
-                { ((isAllStagerGroup || isPostModStagerGroup) && !R.isNil(activeTile))
+                {(stager.includes(DashboardModel.POSTMODSTAGER) && !R.isNil(activeTile))
                   ? (
                     <Grid style={{ 'margin-left': '69rem' }}>
                       <Button
@@ -208,11 +208,11 @@ class StagerPage extends React.PureComponent {
                         styleName="getNext-button"
                         variant="outlined"
                       >
-                     GET NEXT
+                        GET NEXT
                       </Button>
                     </Grid>
                   ) : null
-          }
+                }
               </Grid>
             </>
           )}
