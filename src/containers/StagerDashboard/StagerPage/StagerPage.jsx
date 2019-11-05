@@ -198,7 +198,7 @@ class StagerPage extends React.PureComponent {
                     </Grid>
                   ) : null
                 }
-                { isPostModStagerGroup && !R.isNil(activeTile)
+                { (isAllStagerGroup || isPostModStagerGroup) && !R.isNil(activeTile)
                   ? (
                     <Grid style={{ 'margin-left': '69rem' }}>
                       <Button
