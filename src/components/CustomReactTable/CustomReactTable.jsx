@@ -16,6 +16,8 @@ import { operations, selectors } from '../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
 import './CustomReactTable.css';
 
+const handleRowValue = value => (value.startsWith('cmod') ? 'Unassign' : value);
+
 class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -61,10 +63,10 @@ class CustomReactTable extends React.PureComponent {
             {`  ${row.value}`}
           </div>
         );
-      case 'assignedTo':
+      case 'Assigned To':
         return (
-          <div styleName={pointerStyle}>
-            {`  ${row.value}`}
+          <div styleName={`${pointerStyle} tableRow`}>
+            {handleRowValue(row.value)}
           </div>
         );
       case 'taskCheckListTemplateName':
@@ -192,6 +194,10 @@ class CustomReactTable extends React.PureComponent {
     return {};
   }
 
+  // handleRowValue(value) {
+  //   console.log(this.state);
+  //   return value.startsWith('cmod') ? 'Unassign' : value;
+  // }
 
   showColumns(columnName) {
     const { getStagerValue } = this.props;
