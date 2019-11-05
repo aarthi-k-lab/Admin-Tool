@@ -30,15 +30,14 @@ class CustomReactTable extends React.PureComponent {
     onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
   }
 
-  static getRowStyleName(value, getStagerValue) {
-    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
+  static getRowStyleName(value, pointerStyle) {
     if (value < 0) {
       return `${pointerStyle} days-until-sla-red`;
     }
     if (value === 0) {
       return `${pointerStyle}days-until-sla-gray`;
     }
-    return 'tableRow';
+    return `${pointerStyle} tableRow`;
   }
 
   static getCellContent(row, getStagerValue) {
@@ -46,13 +45,13 @@ class CustomReactTable extends React.PureComponent {
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
-          <div styleName={this.getRowStyleName(row.value, getStagerValue)}>
+          <div styleName={this.getRowStyleName(row.value, pointerStyle)}>
             {`${row.value} ${Math.abs(row.value) > 1 ? 'DAYS' : 'DAY'}`}
           </div>
         );
       case 'Loan Number':
         return (
-          <div styleName={this.getRowStyleName(row.original['Days Until SLA'])}>
+          <div styleName={this.getRowStyleName(row.original['Days Until SLA'], pointerStyle)}>
             {this.getRowStyleName(row.original['Days Until SLA']) === 'days-until-sla-red'
               ? <img alt="alert-icon" src="/static/img/esclamation.svg" /> : null
             }
@@ -172,8 +171,7 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  getTrPropsType(state, rowInfo, column) {
+  getTrPropsType = (state, rowInfo, column, instance) => {
     const { searchResponse } = this.props;
     if (rowInfo) {
       const { original } = rowInfo;
@@ -184,9 +182,16 @@ class CustomReactTable extends React.PureComponent {
           },
         };
       }
+      return {
+        onClick: () => {
+          this.handleRowClick(rowInfo);
+          instance.forceUpdate();
+        },
+      };
     }
     return {};
   }
+
 
   showColumns(columnName) {
     const { getStagerValue } = this.props;
@@ -203,7 +208,6 @@ class CustomReactTable extends React.PureComponent {
       this.setState({ isRedirect: false });
     }
   }
-  // 53538406
 
   loadSearchLoan() {
     const {
@@ -220,17 +224,23 @@ class CustomReactTable extends React.PureComponent {
       if (assigned) {
         data.push(...assigned);
       }
-      const payload = { loanNumber, ...data, isSearch: true };
+      const payload = { loanNumber, ...data[0], isSearch: true };
       const { isRedirect } = this.state;
       let group = '';
       switch (payload.taskName) {
-        case 'Docs In':
-          group = 'DOCSIN';
-          this.redirectPath = '/docs-in';
+        case 'Countersign':
+        case 'FNMA QC':
+        case 'Incentive':
+        case 'Investor Settlement':
+        case 'Recordation - Ordered':
+        case 'Recordation - ToOrder':
+        case 'Send Mod Agreement':
+          group = 'POSTMOD';
+          this.redirectPath = '/postmodstager';
           break;
         default:
-          group = 'BEUW';
-          this.redirectPath = this.getBackendEndPath();
+          this.redirectPath = this.getFrontEndPath();
+          group = this.getFrontEndGroup();
       }
       if (isRedirect) {
         onGetGroupName(group);
@@ -265,15 +275,10 @@ class CustomReactTable extends React.PureComponent {
               },
             ] : []}
             filterable
-            // getTrProps={(state, rowInfo, column) => this.getTrPropsType(state, rowInfo, column)}
-            getTrProps={(state, rowInfo, column) => ({
-              onLoad: () => {
-                this.getTrPropsType(state, rowInfo, column);
-              },
-              onClick: () => {
-                this.handleRowClick(rowInfo);
-              },
-            })}
+            getTrProps={(
+              state, rowInfo, column, instance,
+            ) => this.getTrPropsType(state, rowInfo, column, instance)
+            }
             styleName="stagerTable"
           />
         </div>
