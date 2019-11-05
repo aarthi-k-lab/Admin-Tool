@@ -79,13 +79,13 @@ class StagerPage extends React.PureComponent {
 
   handleGetNextClick = () => {
     const {
-      history, onGetNext, groupName,
+      history, onGetNext, group,
       isFirstVisit, dispositionCode, activeTile, setStagerTaskName,
     } = this.props;
     onGetNext({
-      appGroupName: groupName, isFirstVisit, dispositionCode, activeTile,
+      appGroupName: group, isFirstVisit, dispositionCode, activeTile,
     });
-    if (groupName === DashboardModel.POSTMODSTAGER) {
+    if (group === DashboardModel.POSTMODSTAGER) {
       setStagerTaskName(activeTile);
     }
     history.push('/postmodstager');
@@ -120,7 +120,7 @@ class StagerPage extends React.PureComponent {
 
   renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager) {
     let allStagerGroups = [];
-    if (isStagerGroup && isPostModStagerGroup) {
+    if (isStagerGroup) {
       allStagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
     } else {
       allStagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
@@ -145,9 +145,9 @@ class StagerPage extends React.PureComponent {
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
       refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
-    const { groupName } = this.props;
-    const isAllStagerGroup = groupName === DashboardModel.ALL_STAGER;
-    const isPostModStagerGroup = groupName === DashboardModel.POSTMODSTAGER;
+    const { group } = this.props;
+    const isAllStagerGroup = group === DashboardModel.ALL_STAGER;
+    const isPostModStagerGroup = group === DashboardModel.POSTMODSTAGER;
     const { searchText } = this.state;
     return (
       <>
@@ -284,7 +284,7 @@ StagerPage.propTypes = {
   ).isRequired,
   dispositionCode: PropTypes.string.isRequired,
   getStagerSearchResponse: PropTypes.node.isRequired,
-  groupName: PropTypes.string.isRequired,
+  group: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
@@ -327,7 +327,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
-  groupName: dashboardSelectors.groupName(state),
   user: loginSelectors.getUser(state),
   isFirstVisit: dashboardSelectors.isFirstVisit(state),
   dispositionCode: checklistSelectors.getDispositionCode(state),
