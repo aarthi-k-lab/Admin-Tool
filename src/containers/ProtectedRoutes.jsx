@@ -41,6 +41,7 @@ class ProtectedRoutes extends React.Component {
     };
     this.shouldRedirect = false;
     this.auth = null;
+    this.setUserProfile();
     this.getGroups = this.getGroups.bind(this);
     this.renderBackendRoute = this.renderBackendRoute.bind(this);
     this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
@@ -56,7 +57,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
   }
 
-  componentDidMount() {
+  setUserProfile() {
     const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
@@ -194,7 +195,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasDocInsAccess(groups)
-        ? <DocsIn group={DashboardModel.DOCS_IN} />
+        ? <DocsIn group={DashboardModel.DOCS_IN} groups={groups} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
   }

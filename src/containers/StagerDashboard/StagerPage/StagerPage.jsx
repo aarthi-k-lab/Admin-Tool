@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
@@ -18,7 +19,8 @@ import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
@@ -40,7 +42,7 @@ const getStagertypeValues = [
 const getPostModStagertypeValues = [
   {
     name: 'POSTMOD_STAGER_ALL',
-    value: 'POSTMOD STAGER ALL',
+    value: 'POSTMOD STAGER',
   },
 ];
 class StagerPage extends React.PureComponent {
@@ -116,9 +118,9 @@ class StagerPage extends React.PureComponent {
     setPageType(BULKUPLOAD_STAGER);
   }
 
-  renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager) {
+  renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager) {
     let allStagerGroups = [];
-    if (isAllStagerGroup) {
+    if (isStagerGroup && isPostModStagerGroup) {
       allStagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
     } else {
       allStagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
@@ -184,15 +186,9 @@ class StagerPage extends React.PureComponent {
                   />
                 </Grid>
                 <Grid>
-                  <Button
-                    className="material-ui-button"
-                    color="primary"
-                    onClick={() => this.handleClick()}
-                    styleName="order-button"
-                    variant="outlined"
-                  >
-                    UPLOAD
-                  </Button>
+                  <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
+                    <AddIcon />
+                  </Fab>
                 </Grid>
                 {getStagerSearchResponse
                   && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
@@ -317,15 +313,6 @@ StagerPage.propTypes = {
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    groupList: PropTypes.array,
-    userDetails: PropTypes.shape({
-      email: PropTypes.string,
-      jobTitle: PropTypes.string,
-      name: PropTypes.string,
-    }),
-    userGroups: PropTypes.array,
-  }).isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
