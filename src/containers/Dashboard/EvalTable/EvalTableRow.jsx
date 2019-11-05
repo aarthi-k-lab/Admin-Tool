@@ -81,9 +81,9 @@ class EvalTableRow extends React.PureComponent {
           displayReject
             ? (
               <EvalTableCell
-                click={() => this.handleLinkClick('Reject', user.groupList)}
+                click={() => this.handleLinkClick('Un-reject', user.groupList)}
                 styleProps={getStyles(row)}
-                value="Reject"
+                value="Un-reject"
               />
             )
             : <EvalTableCell styleProps={getStyles(row)} value={row.value} />
