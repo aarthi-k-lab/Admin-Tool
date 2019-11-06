@@ -41,6 +41,7 @@ class ProtectedRoutes extends React.Component {
     };
     this.shouldRedirect = false;
     this.auth = null;
+    this.setUserProfile();
     this.getGroups = this.getGroups.bind(this);
     this.renderBackendRoute = this.renderBackendRoute.bind(this);
     this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
@@ -56,7 +57,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
   }
 
-  componentDidMount() {
+  setUserProfile() {
     const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
@@ -199,6 +200,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderStagerRoute = () => {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasStagerDashboardAccess(groups)
+        ? <StagerDashboard group={RouteAccess.getStagerGroup(groups)} />
+        : <Redirect to="/unauthorized?error=STAGER_DASHBOARD_ACCESS_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
     const { expandView, location, user } = this.props;
@@ -215,7 +225,7 @@ class ProtectedRoutes extends React.Component {
         <IdleUserHandle />
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
-          <Route exact path="/stager" render={() => <StagerDashboard groups={groups} />} />
+          <Route exact path="/stager" render={this.renderStagerRoute} />
           <Route path="/backend-evaluation" render={this.renderBackendRoute} />
           <Route path="/doc-processor" render={this.renderDocProcessorRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
@@ -228,6 +238,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
           <Route path="/bulkOrder-page" render={this.renderDocsInPageRoute} />
+          <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

@@ -11,6 +11,8 @@ const BETA = 'BETA';
 const STAGER = 'STAGER';
 const TRIAL = 'TRIAL';
 const UTIL = 'UTIL';
+const POSTMODSTAGER = 'POSTMODSTAGER';
+const POSTMOD = 'POSTMOD';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -20,6 +22,7 @@ const checklistGroupNames = [
   BEUW,
   DOC_GEN,
   DOCS_IN,
+  POSTMOD,
 ];
 
 const userGroupList = [
@@ -32,6 +35,7 @@ const userGroupList = [
   STAGER,
   TRIAL,
   UTIL,
+  POSTMODSTAGER,
 ];
 
 const appGroupNameToUserPersonaMap = {

@@ -11,7 +11,7 @@ const stager = {
   path: '/stager',
   name: 'stager',
   img: '/static/img/stager.svg',
-  groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr'],
 };
 
 const moveForward = {
@@ -193,6 +193,21 @@ function hasDocInsAccess(groups) {
   return hasGroup(docIns.groups, groups);
 }
 
+function getStagerGroup(groups) {
+  let groupName = '';
+  const stagerGroups = ['stager-mgr', 'stager'];
+  const postModGroups = ['postmodstager', 'postmodstager-mgr'];
+  const isStagerGroup = R.any(group => R.contains(group, stagerGroups), groups);
+  const isPostModStagerGroup = R.any(group => R.contains(group, postModGroups), groups);
+  if (isStagerGroup && isPostModStagerGroup) {
+    groupName = 'ALLSTAGER';
+  } else {
+    groupName = isStagerGroup ? 'STAGER' : 'POSTMOD';
+  }
+
+  return groupName;
+}
+
 module.exports = {
   links,
   hasBackendUnderwriterAccess,
@@ -210,4 +225,5 @@ module.exports = {
   // hasDocsInBackAccess,
   hasDocGenAccess,
   hasDocInsAccess,
+  getStagerGroup,
 };

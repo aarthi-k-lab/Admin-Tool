@@ -1,24 +1,30 @@
 import React from 'react';
+import * as R from 'ramda';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import ContentHeader from 'components/ContentHeader';
 import Grid from '@material-ui/core/Grid';
-import Controls from 'containers/Controls';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import * as R from 'ramda';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
-import { operations as dashboardOperations } from 'ducks/dashboard';
+import { operations as dashboardOperations, selectors as dashboardSelectors } from 'ducks/dashboard';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
 import StagerTiles from '../StagerTiles';
 import StagerDetailsTable from '../StagerDetailsTable';
 import './StagerPage.css';
+import DashboardModel from '../../../models/Dashboard';
 
 const BULKUPLOAD_STAGER = 'BULKUPLOAD_STAGER';
 const getStagertypeValues = [
@@ -71,6 +77,20 @@ class StagerPage extends React.PureComponent {
     }
   }
 
+  handleGetNextClick = () => {
+    const {
+      history, onGetNext, group,
+      isFirstVisit, dispositionCode, activeTile, setStagerTaskName,
+    } = this.props;
+    onGetNext({
+      appGroupName: group, isFirstVisit, dispositionCode, activeTile,
+    });
+    if (group === DashboardModel.POSTMODSTAGER) {
+      setStagerTaskName(activeTile);
+    }
+    history.push('/postmodstager');
+  }
+
   handleChange() {
     const { showBulkOrderPage } = this.state;
     this.setState({ showBulkOrderPage: !showBulkOrderPage });
@@ -100,7 +120,7 @@ class StagerPage extends React.PureComponent {
 
   renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager) {
     let allStagerGroups = [];
-    if (isStagerGroup && isPostModStagerGroup) {
+    if (isStagerGroup) {
       allStagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
     } else {
       allStagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
@@ -125,11 +145,9 @@ class StagerPage extends React.PureComponent {
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
       refreshDashboard, stager, popupData, getStagerSearchResponse,
     } = this.props;
-    const { groups } = this.props;
-    const stagerGroups = ['stager-mgr', 'stager'];
-    const postModGroups = ['postmodstager', 'postmodstager-mgr'];
-    const isStagerGroup = R.any(group => R.contains(group, stagerGroups), groups);
-    const isPostModStagerGroup = R.any(group => R.contains(group, postModGroups), groups);
+    const { group } = this.props;
+    const isAllStagerGroup = group === DashboardModel.ALL_STAGER;
+    const isPostModStagerGroup = group === DashboardModel.POSTMODSTAGER;
     const { searchText } = this.state;
     return (
       <>
@@ -139,7 +157,7 @@ class StagerPage extends React.PureComponent {
               <Grid container direction="row">
                 <Grid item styleName="select-width">
                   {
-                    this.renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager)
+                    this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
                   }
                 </Grid>
                 <Grid item styleName="scroll-area">
@@ -168,15 +186,9 @@ class StagerPage extends React.PureComponent {
                   />
                 </Grid>
                 <Grid>
-                  <Button
-                    className="material-ui-button"
-                    color="primary"
-                    onClick={() => this.handleClick()}
-                    styleName="order-button"
-                    variant="outlined"
-                  >
-                    UPLOAD
-                  </Button>
+                  <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
+                    <AddIcon />
+                  </Fab>
                 </Grid>
                 {getStagerSearchResponse
                   && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
@@ -186,12 +198,25 @@ class StagerPage extends React.PureComponent {
                     </Grid>
                   ) : null
                 }
+                {(stager.includes(DashboardModel.POSTMODSTAGER) && !R.isNil(activeTile))
+                  ? (
+                    <Grid style={{ 'margin-left': '69rem' }}>
+                      <Button
+                        className="material-ui-button"
+                        color="primary"
+                        onClick={() => this.handleGetNextClick()}
+                        styleName="getNext-button"
+                        variant="outlined"
+                      >
+                        GET NEXT
+                      </Button>
+                    </Grid>
+                  ) : null
+                }
               </Grid>
             </>
           )}
-        >
-          <Controls />
-        </ContentHeader>
+        />
         <Grid container direction="row">
           <Grid container item styleName="scroll-area" xs={3}>
             <StagerTiles
@@ -257,9 +282,11 @@ StagerPage.propTypes = {
       displayName: PropTypes.string,
     }),
   ).isRequired,
+  dispositionCode: PropTypes.string.isRequired,
   getStagerSearchResponse: PropTypes.node.isRequired,
-  groups: PropTypes.arrayOf(PropTypes.string).isRequired,
+  group: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isFirstVisit: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string,
@@ -268,6 +295,7 @@ StagerPage.propTypes = {
   onClearDocGenAction: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
   onDocGenClick: PropTypes.func.isRequired,
+  onGetNext: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,
@@ -281,6 +309,7 @@ StagerPage.propTypes = {
   refreshDashboard: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   setPageType: PropTypes.func.isRequired,
+  setStagerTaskName: PropTypes.func.isRequired,
   stager: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
@@ -290,12 +319,17 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   triggerStagerSearchLoan: stagerOperations.triggerStagerSearchLoan(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+  onGetNext: dashboardOperations.onGetNext(dispatch),
   setPageType: dashboardOperations.setPageType(dispatch),
+  setStagerTaskName: dashboardOperations.setStagerTaskName(dispatch),
 });
 
 const mapStateToProps = state => ({
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
+  user: loginSelectors.getUser(state),
+  isFirstVisit: dashboardSelectors.isFirstVisit(state),
+  dispositionCode: checklistSelectors.getDispositionCode(state),
 });
 
 

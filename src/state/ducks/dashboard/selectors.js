@@ -47,6 +47,7 @@ const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const tableData = state => R.pathOr(null, ['dashboard', 'tableData'], state);
+const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
 
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
@@ -141,6 +142,7 @@ const selectors = {
   enableSendToUW,
   getRejectResponse,
   searchLoanTaskResponse,
+  stagerTaskName,
 };
 
 export default selectors;

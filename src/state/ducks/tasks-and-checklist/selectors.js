@@ -121,7 +121,7 @@ const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'show
 
 const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
 
-const getDispositionCode = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
+const getDispositionCode = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
 const getChecklistTemplate = R.pathOr(null, ['tasksAndChecklist', 'checklist', 'processBlueprintCode']);
 

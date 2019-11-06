@@ -45,7 +45,7 @@ class EvalTableCell extends React.PureComponent {
           </Link>
         );
         break;
-      case 'Reject':
+      case 'Un-reject':
         renderCellValue = (
           <Tooltip
             styleName="tooltip"
