@@ -95,6 +95,7 @@ const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUn
 const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
   ? state.dashboard.resultOperation : {});
 const bulkOrderPageType = state => R.pathOr({}, ['dashboard', 'pageType'], state);
+const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
 
 
 const selectors = {
@@ -143,6 +144,7 @@ const selectors = {
   getRejectResponse,
   searchLoanTaskResponse,
   stagerTaskName,
+  getModReversalReasons,
 };
 
 export default selectors;
