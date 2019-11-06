@@ -77,6 +77,8 @@ import {
   SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK_SAGA,
   SEARCH_LOAN_WITH_TASK,
+  MOD_REVERSAL_REASONS,
+  MOD_REVERSAL_DROPDOWN_VALUES,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1149,6 +1151,24 @@ function* AddDocsInReceived(payload) {
   }
   yield put({ type: HIDE_LOADER });
 }
+
+function* onSelectModReversal() {
+  try {
+    const response = yield call(Api.callGet, '/api/dataservice/api/modreversal/reasons');
+    if (response !== null) {
+      yield put({
+        type: MOD_REVERSAL_DROPDOWN_VALUES,
+        payload: response,
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: MOD_REVERSAL_DROPDOWN_VALUES,
+      payload: [],
+    });
+  }
+}
+
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
@@ -1179,6 +1199,10 @@ function* watchOnSelectReject() {
 
 function* watchOnSearchWithTask() {
   yield takeEvery(SEARCH_LOAN_WITH_TASK_SAGA, onSearchWithTask);
+}
+
+function* watchOnSelectModReversal() {
+  yield takeEvery(MOD_REVERSAL_REASONS, onSelectModReversal);
 }
 export const TestExports = {
   autoSaveOnClose,
@@ -1234,5 +1258,6 @@ export const combinedSaga = function* combinedSaga() {
     watchAddDocsInReceived(),
     watchOnSelectReject(),
     watchOnSearchWithTask(),
+    watchOnSelectModReversal(),
   ]);
 };

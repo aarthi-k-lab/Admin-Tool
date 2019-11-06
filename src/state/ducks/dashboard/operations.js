@@ -32,6 +32,7 @@ import {
   clearSelectReject,
   onSearchLoanWithTaskAction,
   saveStagerTaskName,
+  onSelectModReversal,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -156,6 +157,10 @@ const onSearchLoanWithTask = dispatch => (payload) => {
   dispatch(onSearchLoanWithTaskAction(payload));
 };
 
+const selectModReversal = dispatch => () => {
+  dispatch(onSelectModReversal());
+};
+
 const operations = {
   onAutoSave,
   onClearDisposition,
@@ -190,6 +195,7 @@ const operations = {
   onClearSelectReject,
   onSearchLoanWithTask,
   setStagerTaskName,
+  selectModReversal,
 };
 
 export default operations;

@@ -46,6 +46,7 @@ import {
   CLEAR_SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK,
   SET_STAGER_TASK_NAME,
+  MOD_REVERSAL_DROPDOWN_VALUES,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -468,6 +469,14 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         enableSendToUW,
+      };
+    }
+
+    case MOD_REVERSAL_DROPDOWN_VALUES: {
+      const modReversalReasons = action.payload;
+      return {
+        ...state,
+        modReversalReasons,
       };
     }
 

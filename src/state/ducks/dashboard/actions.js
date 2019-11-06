@@ -36,6 +36,7 @@ import {
   CLEAR_SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK_SAGA,
   SET_STAGER_TASK_NAME,
+  MOD_REVERSAL_REASONS,
 } from './types';
 
 
@@ -200,6 +201,11 @@ const onSearchLoanWithTaskAction = payload => ({
   type: SEARCH_LOAN_WITH_TASK_SAGA,
   payload,
 });
+
+const onSelectModReversal = () => ({
+  type: MOD_REVERSAL_REASONS,
+});
+
 export {
   autoSave,
   clearDisposition,
@@ -236,4 +242,5 @@ export {
   clearSelectReject,
   onSearchLoanWithTaskAction,
   saveStagerTaskName,
+  onSelectModReversal,
 };

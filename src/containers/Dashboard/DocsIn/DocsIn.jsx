@@ -66,6 +66,9 @@ const getPostModStagerTaskNames = () => {
   }, {
     displayName: 'INCENTIVE',
     value: 'Incentive',
+  }, {
+    displayName: 'MOD REVERSAL',
+    value: 'modReversal',
   }];
   return states;
 };
@@ -90,6 +93,12 @@ const getPostModStagerValues = (taskName) => {
       }, {
         displayName: 'ORDER',
         value: 'Order',
+      }];
+      break;
+    case 'modReversal':
+      value = [{
+        displayName: 'CLOSE ALL TASKS',
+        value: 'Close All Tasks',
       }];
       break;
     default: return null;
@@ -124,6 +133,7 @@ class DocsIn extends React.PureComponent {
       isDisabled: 'disabled',
       value: '',
       selectedState: '',
+      modReversalReason: '',
     };
     this.handleBackButton = this.handleBackButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -138,11 +148,12 @@ class DocsIn extends React.PureComponent {
     this.onDownloadCSV = this.onDownloadCSV.bind(this);
     this.getMessage = this.getMessage.bind(this);
     this.showBulkOrderPage = this.showBulkOrderPage.bind(this);
+    this.handleChangeModReversalReasons = this.handleChangeModReversalReasons.bind(this);
   }
 
   componentDidMount() {
     const { getStagerValue } = this.props;
-    if (getStagerValue === 'POSTMOD_STAGER_ALL') {
+    if (getStagerValue !== 'POSTMOD_STAGER_ALL') {
       this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
     } else {
       this.setState({
@@ -160,11 +171,14 @@ class DocsIn extends React.PureComponent {
   onValueChange(event) {
     let LoanStates = [];
     const { getStagerValue } = this.props;
-    if (getStagerValue === 'POSTMOD_STAGER_ALL') {
+    if (getStagerValue !== 'POSTMOD_STAGER_ALL') {
       LoanStates = getPostModStagerValues(event.target.value);
     } else {
       LoanStates = event.target.value === 'Value' ? getValueStates() : getTaxTranscriptStates();
     }
+    const { onSelectModReversal } = this.props;
+    if (event.target.value === 'modReversal') onSelectModReversal();
+    // this.setState({ value: event.target.value });
     this.setState({ value: event.target.value, selectedState: LoanStates[0].value });
   }
 
@@ -193,6 +207,10 @@ class DocsIn extends React.PureComponent {
 
   handleChangeInState(event) {
     this.setState({ selectedState: event.target.value });
+  }
+
+  handleChangeModReversalReasons(event) {
+    this.setState({ modReversalReason: event.target.value });
   }
 
   handleBackButton() {
@@ -231,7 +249,9 @@ class DocsIn extends React.PureComponent {
   }
 
   handleloansSubmitStager() {
-    const { loansNumber, value, selectedState } = this.state;
+    const {
+      loansNumber, value, selectedState, modReversalReason,
+    } = this.state;
     const {
       onLoansSubmit, user, onFailedLoanValidation, bulkOrderPageType,
     } = this.props;
@@ -240,7 +260,7 @@ class DocsIn extends React.PureComponent {
       const payload = {
         loanNumber: loanNumbersList,
         eventName: value,
-        status: selectedState,
+        status: value === 'modReversal' ? modReversalReason : selectedState,
         userID: user.userDetails.email,
         pageType: bulkOrderPageType,
       };
@@ -255,7 +275,8 @@ class DocsIn extends React.PureComponent {
   }
 
   renderDropDown(taskName, LoanStates) {
-    const { value, selectedState } = this.state;
+    const { value, selectedState, modReversalReason } = this.state;
+    const { modReversalReasons } = this.props;
     return (
       <>
         <Grid item styleName="drop-down-select" xs={1}>
@@ -280,6 +301,23 @@ class DocsIn extends React.PureComponent {
             ))}
           </Select>
         </Grid>
+        {value === 'modReversal' ? (
+          <div>
+            <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
+              <Select
+                // native
+                onChange={this.handleChangeModReversalReasons}
+                value={modReversalReason}
+              >
+                {Array.isArray(modReversalReasons) && modReversalReasons.map(item => (
+                  <MenuItem value={item}>{item}</MenuItem>
+                ))}
+              </Select>
+            </Grid>
+
+          </div>
+        ) : null
+        }
       </>
     );
   }
@@ -391,7 +429,7 @@ class DocsIn extends React.PureComponent {
               getTrProps={(state, rowInfo, column) => {
                 return {
                   /* eslint-disable-next-line */
-                        style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
+                  style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
                 };
               }}
               pageSizeOptions={[10, 20, 25, 50, 100]}
@@ -411,7 +449,7 @@ class DocsIn extends React.PureComponent {
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    if (value && getStagerValue === 'POSTMOD_STAGER_ALL') {
+    if (value && getStagerValue !== 'POSTMOD_STAGER_ALL') {
       taskName = getPostModStagerTaskNames();
       LoanStates = getPostModStagerValues(value);
     } else {
@@ -481,6 +519,8 @@ DocsIn.defaultProps = {
       loanNumber: '', pid: 0, evalId: 0, statusMessage: '',
     },
   ],
+  onSelectModReversal: () => { },
+  modReversalReasons: [],
 };
 
 DocsIn.propTypes = {
@@ -488,9 +528,11 @@ DocsIn.propTypes = {
   getStagerValue: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
+  modReversalReasons: PropTypes.arrayOf(PropTypes.string),
   onFailedLoanValidation: PropTypes.func,
   onLoansSubmit: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
+  onSelectModReversal: PropTypes.func,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
@@ -521,12 +563,13 @@ const mapStateToProps = state => ({
   user: LoginSelectors.getUser(state),
   bulkOrderPageType: selectors.bulkOrderPageType(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
-
+  modReversalReasons: selectors.getModReversalReasons(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onLoansSubmit: operations.onLoansSubmit(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
+  onSelectModReversal: operations.selectModReversal(dispatch),
 });
 
 
