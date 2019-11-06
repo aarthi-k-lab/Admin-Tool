@@ -92,6 +92,7 @@ import {
 } from '../tasks-and-checklist/types';
 
 const { Messages: { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS } } = DashboardModel;
+const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In', 'Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement'];
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -291,7 +292,6 @@ function* fetchChecklistDetails(checklistId) {
 }
 
 function* shouldRetriveChecklist(searchItem) {
-  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In'];
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
@@ -325,6 +325,7 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
+  evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
