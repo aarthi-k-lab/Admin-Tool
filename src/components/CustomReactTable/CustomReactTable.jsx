@@ -11,7 +11,6 @@ import DashboardModel from 'models/Dashboard';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
-import { selectors as stagerSelectors } from 'ducks/stager';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
 import './CustomReactTable.css';
@@ -42,8 +41,8 @@ class CustomReactTable extends React.PureComponent {
     return `${pointerStyle} tableRow`;
   }
 
-  static getCellContent(row, getStagerValue) {
-    const pointerStyle = getStagerValue === 'POSTMOD_STAGER_ALL' ? 'pointer' : '';
+  static getCellContent(row, stagerTaskType) {
+    const pointerStyle = DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
@@ -131,7 +130,6 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
-    const { getStagerValue } = this.props;
     const columnData = [];
     const columnObject = {};
     let columns = [];
@@ -148,7 +146,7 @@ class CustomReactTable extends React.PureComponent {
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
           columnObj.show = this.showColumns(columnName);
-          columnObj.Cell = row => this.constructor.getCellContent(row, getStagerValue);
+          columnObj.Cell = row => this.constructor.getCellContent(row, stagerTaskType);
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
           columnObj.Filter = ({ filter, onChange }) => (
@@ -196,16 +194,16 @@ class CustomReactTable extends React.PureComponent {
 
 
   showColumns(columnName) {
-    const { getStagerValue } = this.props;
-    return columnName === 'Assigned To' ? (getStagerValue === 'POSTMOD_STAGER_ALL') : true;
+    const { data: { stagerTaskType } } = this.props;
+    return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
   }
 
   handleRowClick(rowInfo) {
-    const { onSearchLoanWithTask, groupName } = this.props;
+    const { onSearchLoanWithTask, data } = this.props;
     const { original } = rowInfo;
-    if (groupName === DashboardModel.ALL_STAGER || groupName === DashboardModel.POSTMODSTAGER) {
+    if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)) {
       this.setState({ isRedirect: true });
-      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
+      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'] === 'cmod-postmodstager' ? 'In Queue' : original['Assigned To'] });
     } else {
       this.setState({ isRedirect: false });
     }
@@ -217,13 +215,14 @@ class CustomReactTable extends React.PureComponent {
     } = this.props;
     if (searchLoanTaskResponse) {
       const {
-        loanNumber, unAssigned, assigned,
+        loanNumber, unAssigned, assigned, assignee,
       } = searchLoanTaskResponse;
       const data = [];
       if (unAssigned) {
         data.push(...unAssigned);
       }
       if (assigned) {
+        assigned[0].assignee = assignee;
         data.push(...assigned);
       }
       const payload = { loanNumber, ...data[0], isSearch: true };
@@ -277,7 +276,7 @@ class CustomReactTable extends React.PureComponent {
               },
             ] : []}
             filterable
-            getTrProps={(
+            getTdProps={(
               state, rowInfo, column, instance,
             ) => this.getTrPropsType(state, rowInfo, column, instance)
             }
@@ -306,16 +305,12 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
-  groupName: selectors.groupName(state),
   searchLoanTaskResponse: selectors.searchLoanTaskResponse(state),
-  getStagerValue: stagerSelectors.getStagerValue(state),
 });
 
 CustomReactTable.propTypes = {
   data: PropTypes.node,
   // history: PropTypes.arrayOf(PropTypes.string).isRequired,
-  getStagerValue: PropTypes.string.isRequired,
-  groupName: PropTypes.string.isRequired,
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
@@ -327,10 +322,15 @@ CustomReactTable.propTypes = {
   onSearchLoanWithTask: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
-  searchLoanTaskResponse: PropTypes.arrayOf(PropTypes.shape({
+  searchLoanTaskResponse: PropTypes.shape({
+    assigned: PropTypes.shape({
+      assignee: PropTypes.string,
+    }),
+    assignee: PropTypes.string.isRequired,
     loanNumber: PropTypes.string.isRequired,
+    unAssigned: PropTypes.shape.isRequired,
     valid: PropTypes.bool,
-  })).isRequired,
+  }).isRequired,
   searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
   user: PropTypes.shape({

@@ -55,6 +55,9 @@
   background-color: var(--light-blue-900);
   margin: 0.2rem 0px 0px 3rem;  
   color: aliceblue;
+  height: 3rem;
+  width: 3rem;
+  min-height: 2.5rem;
 }
 
 .order-button.order-button:hover {

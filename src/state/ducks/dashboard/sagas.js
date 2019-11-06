@@ -91,8 +91,12 @@ import {
   ERROR_LOADING_TASKS,
 } from '../tasks-and-checklist/types';
 
-const { Messages: { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS } } = DashboardModel;
-const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In', 'Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement'];
+const {
+  Messages:
+  { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS },
+  CHECKLIST_TASKNAMES,
+} = DashboardModel;
+
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -213,7 +217,7 @@ function* onSelectReject(payload) {
 }
 
 function* onSearchWithTask(payload) {
-  const { taskID, loanNumber } = payload.payload;
+  const { taskID, loanNumber, assignee } = payload.payload;
   const wasSearched = yield select(selectors.wasSearched);
   const inProgress = yield select(selectors.inProgress);
 
@@ -224,6 +228,7 @@ function* onSearchWithTask(payload) {
     try {
       const response = yield call(Api.callGet, `/api/search-svc/search/task/${loanNumber}/${taskID}`, {});
       if (response !== null) {
+        response.assignee = assignee;
         yield put({
           type: SEARCH_LOAN_WITH_TASK,
           payload: response,
@@ -295,7 +300,7 @@ function* shouldRetriveChecklist(searchItem) {
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
-  const isChecklistTask = checklistTaskNames.includes(taskName);
+  const isChecklistTask = CHECKLIST_TASKNAMES.includes(taskName);
   const retriveChecklist = hasChecklistAccess && isChecklistTask;
   return retriveChecklist;
 }
