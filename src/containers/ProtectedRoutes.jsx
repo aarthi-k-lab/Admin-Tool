@@ -41,7 +41,7 @@ class ProtectedRoutes extends React.Component {
     };
     this.shouldRedirect = false;
     this.auth = null;
-    this.setUserProfile();
+    // this.setUserProfile();
     this.getGroups = this.getGroups.bind(this);
     this.renderBackendRoute = this.renderBackendRoute.bind(this);
     this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
@@ -57,7 +57,8 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
   }
 
-  setUserProfile() {
+  // eslint-disable-next-line react/sort-comp
+  componentWillMount() {
     const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
