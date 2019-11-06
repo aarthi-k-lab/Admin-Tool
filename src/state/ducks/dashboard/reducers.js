@@ -100,6 +100,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         searchLoanTaskResponse: action.payload,
+        inProgress: false,
       };
     }
     case SET_STAGER_TASK_NAME: {

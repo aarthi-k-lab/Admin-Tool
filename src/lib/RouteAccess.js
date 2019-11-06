@@ -197,12 +197,12 @@ function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager'];
   const postModGroups = ['postmodstager', 'postmodstager-mgr'];
-  const isStagerGroup = R.any(group => R.contains(group, stagerGroups), groups);
-  const isPostModStagerGroup = R.any(group => R.contains(group, postModGroups), groups);
+  const isStagerGroup = groups && R.any(group => R.contains(group, stagerGroups), groups);
+  const isPostModStagerGroup = groups && R.any(group => R.contains(group, postModGroups), groups);
   if (isStagerGroup && isPostModStagerGroup) {
     groupName = 'ALLSTAGER';
   } else {
-    groupName = isStagerGroup ? 'STAGER' : 'POSTMOD';
+    groupName = isPostModStagerGroup ? 'POSTMOD' : 'STAGER';
   }
 
   return groupName;

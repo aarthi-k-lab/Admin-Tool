@@ -16,6 +16,8 @@ import { operations, selectors } from '../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
 import './CustomReactTable.css';
 
+const handleRowValue = value => (value.startsWith('cmod') ? 'Unassign' : value);
+
 class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -61,10 +63,10 @@ class CustomReactTable extends React.PureComponent {
             {`  ${row.value}`}
           </div>
         );
-      case 'assignedTo':
+      case 'Assigned To':
         return (
-          <div styleName={pointerStyle}>
-            {`  ${row.value}`}
+          <div styleName={`${pointerStyle} tableRow`}>
+            {handleRowValue(row.value)}
           </div>
         );
       case 'taskCheckListTemplateName':
@@ -201,7 +203,7 @@ class CustomReactTable extends React.PureComponent {
   handleRowClick(rowInfo) {
     const { onSearchLoanWithTask, groupName } = this.props;
     const { original } = rowInfo;
-    if (groupName === DashboardModel.ALLSTAGER || groupName === DashboardModel.POSTMODSTAGER) {
+    if (groupName === DashboardModel.ALL_STAGER || groupName === DashboardModel.POSTMODSTAGER) {
       this.setState({ isRedirect: true });
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID });
     } else {

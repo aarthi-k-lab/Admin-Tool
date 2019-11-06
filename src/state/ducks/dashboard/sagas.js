@@ -94,6 +94,7 @@ import {
 } from '../tasks-and-checklist/types';
 
 const { Messages: { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS } } = DashboardModel;
+const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In', 'Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement'];
 
 const appGroupNameToUserPersonaMap = {
   'feuw-task-checklist': 'FEUW',
@@ -293,7 +294,6 @@ function* fetchChecklistDetails(checklistId) {
 }
 
 function* shouldRetriveChecklist(searchItem) {
-  const checklistTaskNames = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In'];
   const groupList = yield select(loginSelectors.getGroupList);
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
@@ -327,6 +327,7 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
+  evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
@@ -620,9 +621,14 @@ function* saveGeneralChecklistDisposition(payload) {
   return true;
 }
 
+function getGroup(group) {
+  return group === DashboardModel.ALL_STAGER ? DashboardModel.POSTMODSTAGER : group;
+}
+
 function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
   const { appGroupName } = payload;
-  if (!AppGroupName.hasChecklist(appGroupName)) {
+  const group = getGroup(appGroupName);
+  if (!AppGroupName.hasChecklist(group)) {
     return;
   }
   const checklistId = getChecklistId(taskDetails);
@@ -635,7 +641,8 @@ function* getNext(action) {
     yield put({ type: SHOW_LOADER });
     yield put({ type: GETNEXT_PROCESSED, payload: false });
     const groupName = yield select(selectors.groupName);
-    const saveChecklistDisposition = groupName === DashboardModel.POSTMODSTAGER
+    const group = getGroup(groupName);
+    const saveChecklistDisposition = group === DashboardModel.POSTMODSTAGER
       ? savePostModChklistDisposition : saveGeneralChecklistDisposition;
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
@@ -644,16 +651,15 @@ function* getNext(action) {
         yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
       }
       yield put(resetChecklistData());
-      const { appGroupName } = action.payload;
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       let taskName = '';
-      if (appGroupName === DashboardModel.POSTMODSTAGER) {
+      if (group === DashboardModel.POSTMODSTAGER) {
         const stagerTaskName = yield select(selectors.stagerTaskName);
         taskName = action.payload.activeTile || stagerTaskName;
       }
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${appGroupName}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
@@ -718,13 +724,14 @@ function* endShift(action) {
     return;
   }
   const groupName = yield select(selectors.groupName);
-  if (AppGroupName.hasChecklist(groupName)) {
+  const group = getGroup(groupName);
+  if (AppGroupName.hasChecklist(group)) {
     yield put({ type: SHOW_LOADER });
     const payload = {};
-    payload.appGroupName = groupName;
+    payload.appGroupName = group;
     payload.isFirstVisit = yield select(selectors.isFirstVisit);
     payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
-    const saveChecklistDisposition = groupName === DashboardModel.POSTMODSTAGER
+    const saveChecklistDisposition = group === DashboardModel.POSTMODSTAGER
       ? savePostModChklistDisposition : saveGeneralChecklistDisposition;
     if (yield call(saveChecklistDisposition, payload)) {
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
