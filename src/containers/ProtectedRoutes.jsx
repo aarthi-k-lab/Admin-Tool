@@ -57,8 +57,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
   }
 
-  // eslint-disable-next-line react/sort-comp
-  componentWillMount() {
+  componentDidMount() {
     const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
