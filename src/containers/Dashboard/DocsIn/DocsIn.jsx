@@ -17,6 +17,7 @@ import { selectors as stagerSelectors } from 'ducks/stager';
 import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
+import DashboardModel from '../../../models/Dashboard';
 import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
@@ -28,25 +29,29 @@ const validateLoanFormat = (loansNumber) => {
   }
   return isValid;
 };
-const getValueStates = () => {
-  const states = [{
-    displayName: 'ORDER',
-    value: 'ORDERED',
-  }];
-  return states;
-};
 
-const getTaxTranscriptStates = () => {
-  const states = [{
-    displayName: 'ORDER',
-    value: 'ORDERED',
-  }, {
-    displayName: 'COMPLETE',
-    value: 'COMPLETED',
-  }];
-  return states;
+const getStagerValues = (taskName) => {
+  let value = [];
+  switch (taskName) {
+    case 'Value':
+      value = [{
+        displayName: 'ORDER',
+        value: 'ORDERED',
+      }];
+      break;
+    case 'TaxTranscript':
+      value = [{
+        displayName: 'ORDER',
+        value: 'ORDERED',
+      }, {
+        displayName: 'COMPLETE',
+        value: 'COMPLETED',
+      }];
+      break;
+    default: return null;
+  }
+  return value;
 };
-
 const getPostModStagerTaskNames = () => {
   const states = [{
     displayName: 'FNMAQC',
@@ -141,8 +146,9 @@ class DocsIn extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getStagerValue } = this.props;
-    if (getStagerValue === 'POSTMOD_STAGER_ALL') {
+    const { groupName } = this.props;
+    const isPostModGroup = groupName === DashboardModel.POSTMODSTAGER;
+    if (isPostModGroup) {
       this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
     } else {
       this.setState({
@@ -159,11 +165,16 @@ class DocsIn extends React.PureComponent {
 
   onValueChange(event) {
     let LoanStates = [];
-    const { getStagerValue } = this.props;
-    if (getStagerValue === 'POSTMOD_STAGER_ALL') {
+    const { groupName } = this.props;
+    const dualGroup = groupName === DashboardModel.ALL_STAGER;
+    const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
+    if (dualGroup) {
+      LoanStates = getStagerValues(event.target.value)
+      || getPostModStagerValues(event.target.value);
+    } else if (postModGroupCheck) {
       LoanStates = getPostModStagerValues(event.target.value);
     } else {
-      LoanStates = event.target.value === 'Value' ? getValueStates() : getTaxTranscriptStates();
+      LoanStates = getStagerValues(event.target.value);
     }
     this.setState({ value: event.target.value, selectedState: LoanStates[0].value });
   }
@@ -406,17 +417,23 @@ class DocsIn extends React.PureComponent {
 
   render() {
     const { value } = this.state;
-    const { inProgress, getStagerValue } = this.props;
+    const { inProgress } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    if (value && getStagerValue === 'POSTMOD_STAGER_ALL') {
+    const { groupName } = this.props;
+    const dualGroup = groupName === DashboardModel.ALL_STAGER;
+    const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
+    if (value && dualGroup) {
+      taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
+      LoanStates = getStagerValues(value) || getPostModStagerValues(value);
+    } else if (value && postModGroupCheck) {
       taskName = getPostModStagerTaskNames();
       LoanStates = getPostModStagerValues(value);
-    } else {
+    } else if (value) {
       taskName = getStagerTaskName();
-      LoanStates = value === 'Value' ? getValueStates() : getTaxTranscriptStates();
+      LoanStates = getStagerValues(value);
     }
     const renderBackButtonPage = isPageTypeDocsIn(bulkOrderPageType) ? '/docs-in' : '/stager';
     if (inProgress) {
@@ -485,7 +502,7 @@ DocsIn.defaultProps = {
 
 DocsIn.propTypes = {
   bulkOrderPageType: PropTypes.string.isRequired,
-  getStagerValue: PropTypes.string.isRequired,
+  groupName: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   onFailedLoanValidation: PropTypes.func,
