@@ -41,7 +41,6 @@ class ProtectedRoutes extends React.Component {
     };
     this.shouldRedirect = false;
     this.auth = null;
-    // this.setUserProfile();
     this.getGroups = this.getGroups.bind(this);
     this.renderBackendRoute = this.renderBackendRoute.bind(this);
     this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
