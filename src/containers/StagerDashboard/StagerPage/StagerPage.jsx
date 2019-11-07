@@ -29,20 +29,17 @@ import DashboardModel from '../../../models/Dashboard';
 const BULKUPLOAD_STAGER = 'BULKUPLOAD_STAGER';
 const getStagertypeValues = [
   {
-    name: 'UW_STAGER',
-    value: 'UNDERWRITER STAGER',
+    value: 'UW_STAGER',
+    name: 'UNDERWRITER STAGER',
   }, {
-    name: 'DOCGEN_STAGER',
-    value: 'DOC GEN STAGER',
-  }, {
-    name: 'STAGER_ALL',
-    value: 'ALL',
+    value: 'DOCGEN_STAGER',
+    name: 'DOC GEN STAGER',
   },
 ];
 const getPostModStagertypeValues = [
   {
-    name: 'POSTMOD_STAGER_ALL',
-    value: 'POSTMOD STAGER',
+    value: 'POSTMOD_STAGER_ALL',
+    name: 'POSTMOD STAGER',
   },
 ];
 class StagerPage extends React.PureComponent {
@@ -118,12 +115,15 @@ class StagerPage extends React.PureComponent {
     setPageType(BULKUPLOAD_STAGER);
   }
 
-  renderstagerSelect(isStagerGroup, isPostModStagerGroup, stager) {
-    let allStagerGroups = [];
-    if (isStagerGroup) {
-      allStagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
+  renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager) {
+    let stagerGroups = [];
+    if (isAllStagerGroup) {
+      stagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
     } else {
-      allStagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
+      stagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
+    }
+    if (!isPostModStagerGroup) {
+      stagerGroups.push({ name: 'ALL', value: isAllStagerGroup ? 'ALL' : 'STAGER_ALL' });
     }
     return (
       <Select
@@ -131,7 +131,7 @@ class StagerPage extends React.PureComponent {
         value={stager}
       >
         {
-          allStagerGroups.map(datas => <MenuItem value={datas.name}>{datas.value}</MenuItem>)
+          stagerGroups.map(datas => <MenuItem value={datas.value}>{datas.name}</MenuItem>)
 
         }
       </Select>
@@ -151,71 +151,72 @@ class StagerPage extends React.PureComponent {
     const { searchText } = this.state;
     return (
       <>
-        <ContentHeader title={
-          (
-            <>
-              <Grid container direction="row">
-                <Grid item styleName="select-width">
-                  {
-                    this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
+        <ContentHeader
+          title={
+            (
+              <>
+                <Grid container direction="row" styleName="ContentHeader">
+                  <Grid item styleName="select-width">
+                    {
+                      this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
+                    }
+                  </Grid>
+                  <Grid item styleName="scroll-area">
+                    <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </Grid>
+                  <Grid item styleName="scroll-area">
+                    <TextField
+                      InputProps={{
+                        disableUnderline: true,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={this.handleSearchLoanClick}>
+                              <SearchIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      onChange={this.onSearchTextChange}
+                      onKeyPress={this.handleSearchLoan}
+                      placeholder="Search (Loan No)"
+                      styleName="searchStyle"
+                      value={searchText}
+                      varirant="filled"
+                    />
+                  </Grid>
+                  <Grid>
+                    <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
+                      <AddIcon />
+                    </Fab>
+                  </Grid>
+                  {getStagerSearchResponse
+                    && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
+                    ? (
+                      <Grid item>
+                        <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
+                      </Grid>
+                    ) : null
+                  }
+                  {!R.isNil(activeTile) && DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
+                    ? (
+                      <Grid style={{ 'margin-left': '69rem' }}>
+                        <Button
+                          className="material-ui-button"
+                          color="primary"
+                          onClick={() => this.handleGetNextClick()}
+                          styleName="getNext-button"
+                          variant="outlined"
+                        >
+                          GET NEXT
+                        </Button>
+                      </Grid>
+                    ) : null
                   }
                 </Grid>
-                <Grid item styleName="scroll-area">
-                  <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
-                    <RefreshIcon />
-                  </IconButton>
-                </Grid>
-                <Grid item styleName="scroll-area">
-                  <TextField
-                    InputProps={{
-                      disableUnderline: true,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={this.handleSearchLoanClick}>
-                            <SearchIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    onChange={this.onSearchTextChange}
-                    onKeyPress={this.handleSearchLoan}
-                    placeholder="Search (Loan No)"
-                    styleName="searchStyle"
-                    value={searchText}
-                    varirant="filled"
-                  />
-                </Grid>
-                <Grid>
-                  <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
-                    <AddIcon />
-                  </Fab>
-                </Grid>
-                {getStagerSearchResponse
-                  && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
-                  ? (
-                    <Grid item>
-                      <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
-                    </Grid>
-                  ) : null
-                }
-                {(stager.includes(DashboardModel.POSTMODSTAGER) && !R.isNil(activeTile))
-                  ? (
-                    <Grid style={{ 'margin-left': '69rem' }}>
-                      <Button
-                        className="material-ui-button"
-                        color="primary"
-                        onClick={() => this.handleGetNextClick()}
-                        styleName="getNext-button"
-                        variant="outlined"
-                      >
-                        GET NEXT
-                      </Button>
-                    </Grid>
-                  ) : null
-                }
-              </Grid>
-            </>
-          )}
+              </>
+            )}
         />
         <Grid container direction="row">
           <Grid container item styleName="scroll-area" xs={3}>
