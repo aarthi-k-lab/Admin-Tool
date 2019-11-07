@@ -15,13 +15,15 @@ const DOCS_IN = 'DOCSIN';
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
 const ALL_STAGER = 'ALLSTAGER';
-
+const POSTMOD_TASKNAMES = ['Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement'];
+const CHECKLIST_TASKNAMES = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In', ...POSTMOD_TASKNAMES];
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
   STAGER_ALL: 'STAGER_ALL',
   POSTMOD_STAGER_ALL: 'POSTMOD_STAGER_ALL',
+  ALL: 'ALL',
 };
 const GROUP_INFO = [
   {
@@ -164,6 +166,8 @@ const DashboardModel = {
   POSTMODSTAGER,
   STAGER,
   ALL_STAGER,
+  CHECKLIST_TASKNAMES,
+  POSTMOD_TASKNAMES,
 };
 
 export default DashboardModel;

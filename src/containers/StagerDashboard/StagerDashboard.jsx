@@ -15,8 +15,19 @@ class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
     const { group } = this.props;
-    const groupcheck = group === DashboardModel.POSTMODSTAGER;
-    const stager = groupcheck ? 'POSTMOD_STAGER_ALL' : 'STAGER_ALL';
+    const { STAGER_VALUE: { ALL, STAGER_ALL, POSTMOD_STAGER_ALL } } = DashboardModel;
+    let stager = '';
+    switch (group) {
+      case DashboardModel.POSTMODSTAGER:
+        stager = POSTMOD_STAGER_ALL;
+        break;
+      case DashboardModel.STAGER:
+        stager = STAGER_ALL;
+        break;
+      default:
+        stager = ALL;
+        break;
+    }
     this.state = {
       activeSearchTerm: '',
       stager,
