@@ -183,8 +183,8 @@ class CustomReactTable extends React.PureComponent {
         };
       }
       return {
-        onClick: () => {
-          this.handleRowClick(rowInfo);
+        onClick: (event) => {
+          this.handleRowClick(rowInfo, event);
           instance.forceUpdate();
         },
       };
@@ -198,7 +198,11 @@ class CustomReactTable extends React.PureComponent {
     return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
   }
 
-  handleRowClick(rowInfo) {
+  handleRowClick(rowInfo, event) {
+    if (event.target.type === 'checkbox') {
+      this.setState({ isRedirect: false });
+      return;
+    }
     const { onSearchLoanWithTask, data } = this.props;
     const { original } = rowInfo;
     if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)) {
