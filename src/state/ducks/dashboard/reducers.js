@@ -47,6 +47,7 @@ import {
   SEARCH_LOAN_WITH_TASK,
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_DROPDOWN_VALUES,
+  POSTMOD_END_SHIFT,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -137,6 +138,14 @@ const reducer = (state = { firstVisit: true }, action) => {
         getNextResponse,
       };
     }
+
+    case POSTMOD_END_SHIFT: {
+      return {
+        ...state,
+        postModEndShift: true,
+      };
+    }
+
     case SEARCH_LOAN_RESULT: {
       let getSearchLoanResponse = {};
       if (action.payload) {

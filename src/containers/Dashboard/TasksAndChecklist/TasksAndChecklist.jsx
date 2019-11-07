@@ -8,6 +8,7 @@ import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
 import DashboardModel from 'models/Dashboard';
+import { withRouter } from 'react-router-dom';
 import * as R from 'ramda';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
@@ -164,7 +165,12 @@ class TasksAndChecklist extends React.PureComponent {
       showInstructionsDialog,
       taskFetchError,
       isTasksLimitExceeded,
+      isRedirect,
+      history,
     } = this.props;
+    if (isRedirect) {
+      history.push('/stager');
+    }
     if (inProgress) {
       return (
         <Loader message="Please Wait" />
@@ -216,6 +222,7 @@ TasksAndChecklist.defaultProps = {
   getDialogContent: '',
   snackBarData: null,
   showAssign: false,
+  isRedirect: false,
 };
 
 TasksAndChecklist.propTypes = {
@@ -245,10 +252,12 @@ TasksAndChecklist.propTypes = {
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
   isDialogOpen: PropTypes.bool,
+  isRedirect: PropTypes.bool,
   isTasksLimitExceeded: PropTypes.bool,
   message: PropTypes.shape({
     msg: PropTypes.string,
@@ -343,6 +352,7 @@ function mapStateToProps(state) {
     isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
+    isRedirect: dashboardSelectors.isPostModEndShift(state),
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
@@ -373,4 +383,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksAndChecklist);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TasksAndChecklist));

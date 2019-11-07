@@ -79,6 +79,7 @@ import {
   SEARCH_LOAN_WITH_TASK,
   MOD_REVERSAL_REASONS,
   MOD_REVERSAL_DROPDOWN_VALUES,
+  POSTMOD_END_SHIFT,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -744,6 +745,9 @@ function* endShift(action) {
         yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
       }
       yield put(resetChecklistData());
+      if (group === DashboardModel.POSTMODSTAGER) {
+        yield put({ type: POSTMOD_END_SHIFT });
+      }
       yield put({ type: HIDE_LOADER });
       yield put({ type: SUCCESS_END_SHIFT });
     }
