@@ -94,7 +94,7 @@ class SearchLoan extends React.PureComponent {
   }
 
   handleRowClick(payload, rowInfo) {
-    if (rowInfo.Header !== 'REJECT') {
+    if (rowInfo.Header !== 'ACTIONS') {
       if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
         const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
         let group = '';
