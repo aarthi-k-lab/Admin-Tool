@@ -1,3 +1,7 @@
+.ContentHeader{
+  margin-top: 0.9rem !important;
+}
+
 .columns-container {
   align-items: flex-start;
   background-color: var(--grey-200);
@@ -53,11 +57,11 @@
 
 .order-button.order-button {
   background-color: var(--light-blue-900);
-  margin: 0.2rem 0px 0px 3rem;  
+  margin: 0.5rem 0rem 0rem 2rem;
   color: aliceblue;
-  height: 3rem;
-  width: 3rem;
-  min-height: 2.5rem;
+  height: 2.5rem;
+  width: 2.5rem;
+  min-height: 2rem;
 }
 
 .order-button.order-button:hover {
