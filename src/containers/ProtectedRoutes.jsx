@@ -194,7 +194,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       (RouteAccess.hasDocInsAccess(groups) || RouteAccess.hasStagerDashboardAccess(groups))
-        ? <DocsIn group={DashboardModel.DOCS_IN} groups={groups} />
+        ? <DocsIn group={DashboardModel.DOCS_IN} groupName={RouteAccess.getStagerGroup(groups)} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
   }
