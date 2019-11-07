@@ -53,7 +53,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInBackRoute = this.renderDocsInBackRoute.bind(this);
     this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
     this.renderDocsInMainRoute = this.renderDocsInMainRoute.bind(this);
-    this.renderDocsInPageRoute = this.renderDocsInPageRoute.bind(this);
+    this.renderBulkOrderPageRoute = this.renderBulkOrderPageRoute.bind(this);
   }
 
   componentDidMount() {
@@ -190,10 +190,10 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
-  renderDocsInPageRoute() {
+  renderBulkOrderPageRoute() {
     const groups = this.getGroups();
     return (
-      RouteAccess.hasDocInsAccess(groups)
+      (RouteAccess.hasDocInsAccess(groups) || RouteAccess.hasStagerDashboardAccess(groups))
         ? <DocsIn group={DashboardModel.DOCS_IN} groups={groups} />
         : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
     );
@@ -236,7 +236,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
-          <Route path="/bulkOrder-page" render={this.renderDocsInPageRoute} />
+          <Route path="/bulkOrder-page" render={this.renderBulkOrderPageRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
