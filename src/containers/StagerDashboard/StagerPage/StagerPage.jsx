@@ -120,7 +120,9 @@ class StagerPage extends React.PureComponent {
     if (isAllStagerGroup) {
       stagerGroups = [...getStagertypeValues, ...getPostModStagertypeValues];
     } else {
-      stagerGroups = isPostModStagerGroup ? getPostModStagertypeValues : getStagertypeValues;
+      const stagerDropdownValue = isPostModStagerGroup
+        ? getPostModStagertypeValues : getStagertypeValues;
+      stagerGroups = R.concat(stagerDropdownValue, stagerGroups);
     }
     if (!isPostModStagerGroup) {
       stagerGroups.push({ name: 'ALL', value: isAllStagerGroup ? 'ALL' : 'STAGER_ALL' });
@@ -143,7 +145,7 @@ class StagerPage extends React.PureComponent {
       activeTab, activeTile,
       counts, loading, onStatusCardClick,
       tableData, onCheckBoxClick, onOrderClick, onDocGenClick, onSelectAll, selectedData,
-      refreshDashboard, stager, popupData, getStagerSearchResponse,
+      refreshDashboard, stager, popupData, getStagerSearchResponse, stagerTaskName,
     } = this.props;
     const { group } = this.props;
     const isAllStagerGroup = group === DashboardModel.ALL_STAGER;
@@ -199,7 +201,7 @@ class StagerPage extends React.PureComponent {
                       </Grid>
                     ) : null
                   }
-                  {!R.isNil(activeTile) && DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
+                  {!R.isNil(activeTile) && activeTab !== 'Completed' && DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
                     ? (
                       <Grid style={{ 'margin-left': '69rem' }}>
                         <Button
@@ -226,6 +228,7 @@ class StagerPage extends React.PureComponent {
               counts={counts}
               onStatusCardClick={onStatusCardClick}
               searchResponse={getStagerSearchResponse}
+              stagerTaskName={stagerTaskName}
             />
           </Grid>
           <Grid container direction="column" item xs={9}>
@@ -312,6 +315,7 @@ StagerPage.propTypes = {
   setPageType: PropTypes.func.isRequired,
   setStagerTaskName: PropTypes.func.isRequired,
   stager: PropTypes.string.isRequired,
+  stagerTaskName: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
 };
@@ -330,6 +334,7 @@ const mapStateToProps = state => ({
   getStagerValue: stagerSelectors.getStagerValue(state),
   user: loginSelectors.getUser(state),
   isFirstVisit: dashboardSelectors.isFirstVisit(state),
+  stagerTaskName: dashboardSelectors.stagerTaskName(state),
   dispositionCode: checklistSelectors.getDispositionCode(state),
 });
 

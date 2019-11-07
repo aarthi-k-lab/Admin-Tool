@@ -48,6 +48,8 @@ const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const tableData = state => R.pathOr(null, ['dashboard', 'tableData'], state);
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
+const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
+
 
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
@@ -145,6 +147,7 @@ const selectors = {
   searchLoanTaskResponse,
   stagerTaskName,
   getModReversalReasons,
+  isPostModEndShift,
 };
 
 export default selectors;

@@ -10,13 +10,18 @@ import DatePicker from '../DatePicker';
 
 class StagerTiles extends React.PureComponent {
   isActiveCard(tileName, tabName) {
-    const { activeTab, activeTile, searchResponse } = this.props;
+    const {
+      activeTab, activeTile, searchResponse, stagerTaskName,
+    } = this.props;
     let searchTileName = null;
     if (searchResponse && searchResponse[tabName]) {
       searchTileName = searchResponse[tabName].split(',');
       return R.contains(tileName, searchTileName);
     }
     if (R.isEmpty(searchResponse) && tileName === activeTile && tabName === activeTab) {
+      return true;
+    }
+    if (stagerTaskName && tileName === stagerTaskName) {
       return true;
     }
     return false;
@@ -72,6 +77,7 @@ const TestExports = {
 };
 StagerTiles.defaultProps = {
   searchResponse: {},
+  stagerTaskName: null,
 };
 StagerTiles.propTypes = {
   activeTab: PropTypes.string.isRequired,
@@ -97,6 +103,7 @@ StagerTiles.propTypes = {
     titleValue: PropTypes.array.isRequired,
 
   }),
+  stagerTaskName: PropTypes.string,
 };
 export default StagerTiles;
 export { TestExports };
