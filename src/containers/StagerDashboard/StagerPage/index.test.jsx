@@ -6,8 +6,9 @@ const groups = ['post-mod-stager', 'post-mod-stager-mgr', 'stager-mgr', 'stager'
 
 describe('<StagerPage />', () => {
   it('shows StagerPage', () => {
+    const triggerStagerValue = jest.fn();
     const wrapper = shallow(
-      <TestExports.StagerPage groups={groups} stager="ALL_STAGER" />,
+      <TestExports.StagerPage groups={groups} stager="ALL_STAGER" triggerStagerValue={triggerStagerValue} />,
     );
     expect(wrapper.find('ContentHeader')).toHaveLength(1);
     expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(3);
