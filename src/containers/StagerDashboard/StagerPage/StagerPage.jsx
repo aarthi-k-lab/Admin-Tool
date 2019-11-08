@@ -59,6 +59,11 @@ class StagerPage extends React.PureComponent {
     this.renderstagerSelect = this.renderstagerSelect.bind(this);
   }
 
+  componentDidMount() {
+    const { triggerStagerValue, stager } = this.props;
+    triggerStagerValue(stager);
+  }
+
   onStagerChange(event) {
     const { onStagerChange, onClearDocGenAction, onClearStagerResponse } = this.props;
     this.setState({ searchText: '' });
@@ -318,6 +323,7 @@ StagerPage.propTypes = {
   stagerTaskName: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
+  triggerStagerValue: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -327,6 +333,7 @@ const mapDispatchToProps = dispatch => ({
   onGetNext: dashboardOperations.onGetNext(dispatch),
   setPageType: dashboardOperations.setPageType(dispatch),
   setStagerTaskName: dashboardOperations.setStagerTaskName(dispatch),
+  triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
 });
 
 const mapStateToProps = state => ({

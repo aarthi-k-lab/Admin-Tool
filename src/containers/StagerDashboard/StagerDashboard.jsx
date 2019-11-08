@@ -11,26 +11,29 @@ import { selectors as notificationSelectors, operations as notificationOperation
 import moment from 'moment';
 import StagerPage from './StagerPage';
 
+const getStagerValue = (group) => {
+  const { STAGER_VALUE: { ALL, STAGER_ALL, POSTMOD_STAGER_ALL } } = DashboardModel;
+  let stager = '';
+  switch (group) {
+    case DashboardModel.POSTMODSTAGER:
+      stager = POSTMOD_STAGER_ALL;
+      break;
+    case DashboardModel.STAGER:
+      stager = STAGER_ALL;
+      break;
+    default:
+      stager = ALL;
+      break;
+  }
+  return stager;
+};
+
 class StagerDashboard extends React.Component {
   constructor(props) {
     super(props);
-    const { group } = this.props;
-    const { STAGER_VALUE: { ALL, STAGER_ALL, POSTMOD_STAGER_ALL } } = DashboardModel;
-    let stager = '';
-    switch (group) {
-      case DashboardModel.POSTMODSTAGER:
-        stager = POSTMOD_STAGER_ALL;
-        break;
-      case DashboardModel.STAGER:
-        stager = STAGER_ALL;
-        break;
-      default:
-        stager = ALL;
-        break;
-    }
     this.state = {
       activeSearchTerm: '',
-      stager,
+      stager: null,
     };
   }
 
@@ -41,9 +44,21 @@ class StagerDashboard extends React.Component {
     const { stager } = this.state;
     const datePayload = this.getDatePayload();
     triggerStartEndDate(datePayload);
-    triggerStagerValue(stager);
+    triggerStagerValue(stager || getStagerValue(group));
     onGetGroupName(group);
     getDashboardCounts();
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      triggerStagerValue, group, onGetGroupName, getDashboardCounts,
+    } = this.props;
+    const { group: prevGroup } = prevProps;
+    if (prevGroup !== group) {
+      onGetGroupName(group);
+      triggerStagerValue(getStagerValue(group));
+      getDashboardCounts();
+    }
   }
 
   onOrderClick(data, searchTerm) {
@@ -71,6 +86,7 @@ class StagerDashboard extends React.Component {
       onClearDocGenAction,
       onClearSearchResponse,
       getStagerSearchResponse,
+      group,
     } = this.props;
     onClearDocGenAction();
     if (getStagerSearchResponse && !R.isEmpty(getStagerSearchResponse)
@@ -84,7 +100,7 @@ class StagerDashboard extends React.Component {
     const { stager } = this.state;
     const payload = {
       activeSearchTerm: searchTerm,
-      stager,
+      stager: stager || getStagerValue(group),
     };
     getDashboardData(payload);
     getDashboardCounts();
@@ -156,11 +172,11 @@ class StagerDashboard extends React.Component {
       getDashboardData, getDashboardCounts,
       onCheckBoxClick, onClearDocGenAction,
       onClearStagerResponse, onClearSearchResponse,
-      triggerStartEndDate, triggerStagerValue,
+      triggerStartEndDate, triggerStagerValue, group,
     } = this.props;
     const payload = {
       activeSearchTerm,
-      stager,
+      stager: stager || getStagerValue(group),
     };
     if (activeSearchTerm) {
       getDashboardData(payload);
@@ -217,7 +233,7 @@ class StagerDashboard extends React.Component {
           popupData={docGenResponse}
           refreshDashboard={() => this.refreshDashboard()}
           selectedData={selectedData}
-          stager={stager}
+          stager={stager || getStagerValue(group)}
           tableData={tableData}
         />
       </>
