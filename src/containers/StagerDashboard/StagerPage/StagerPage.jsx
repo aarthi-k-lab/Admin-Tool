@@ -188,7 +188,7 @@ class StagerPage extends React.PureComponent {
                       varirant="filled"
                     />
                   </Grid>
-                  <Grid>
+                  <Grid item>
                     <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
                       <AddIcon />
                     </Fab>
@@ -203,7 +203,7 @@ class StagerPage extends React.PureComponent {
                   }
                   {!R.isNil(activeTile) && activeTab !== 'Completed' && DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
                     ? (
-                      <Grid style={{ 'margin-left': '69rem' }}>
+                      <Grid item styleName="getNextStyle">
                         <Button
                           className="material-ui-button"
                           color="primary"
