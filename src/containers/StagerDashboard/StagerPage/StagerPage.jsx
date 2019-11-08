@@ -158,17 +158,17 @@ class StagerPage extends React.PureComponent {
             (
               <>
                 <Grid container direction="row" styleName="ContentHeader">
-                  <Grid item styleName="select-width">
+                  <Grid item styleName="select-width maxWidth" xs={1}>
                     {
                       this.renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager)
                     }
                   </Grid>
-                  <Grid item styleName="scroll-area">
+                  <Grid item styleName="scroll-area maxWidth" xs={1}>
                     <IconButton aria-label="Refresh Dashboard" onClick={refreshDashboard}>
                       <RefreshIcon />
                     </IconButton>
                   </Grid>
-                  <Grid item styleName="scroll-area">
+                  <Grid item styleName="scroll-area searchMaxWidth" xs={3}>
                     <TextField
                       InputProps={{
                         disableUnderline: true,
@@ -188,22 +188,22 @@ class StagerPage extends React.PureComponent {
                       varirant="filled"
                     />
                   </Grid>
-                  <Grid>
+                  <Grid xs={1}>
                     <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
                       <AddIcon />
                     </Fab>
                   </Grid>
-                  {getStagerSearchResponse
+                  <Grid item xs={3}>
+                    {getStagerSearchResponse
                     && (getStagerSearchResponse.error || getStagerSearchResponse.noContents)
-                    ? (
-                      <Grid item>
+                      ? (
                         <div styleName="errormsg">{getStagerSearchResponse.error || getStagerSearchResponse.noContents}</div>
-                      </Grid>
-                    ) : null
+                      ) : null
                   }
+                  </Grid>
                   {!R.isNil(activeTile) && activeTab !== 'Completed' && DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
                     ? (
-                      <Grid style={{ 'margin-left': '69rem' }}>
+                      <Grid xs={5}>
                         <Button
                           className="material-ui-button"
                           color="primary"
