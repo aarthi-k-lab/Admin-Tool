@@ -171,7 +171,7 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
-  getTrPropsType = (state, rowInfo, column, instance) => {
+  getTrPropsType = (state, rowInfo, column, instance, stagerTaskType) => {
     const { searchResponse } = this.props;
     if (rowInfo) {
       const { original } = rowInfo;
@@ -184,7 +184,7 @@ class CustomReactTable extends React.PureComponent {
       }
       return {
         onClick: (event) => {
-          this.handleRowClick(rowInfo, event);
+          this.handleRowClick(rowInfo, event, stagerTaskType);
           instance.forceUpdate();
         },
       };
@@ -198,16 +198,17 @@ class CustomReactTable extends React.PureComponent {
     return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
   }
 
-  handleRowClick(rowInfo, event) {
+  handleRowClick(rowInfo, event, stagerTaskType) {
     if (event.target.type === 'checkbox') {
       this.setState({ isRedirect: false });
       return;
     }
-    const { onSearchLoanWithTask, data } = this.props;
+    const { onSearchLoanWithTask, data, setStagerTaskName } = this.props;
     const { original } = rowInfo;
     if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)) {
       this.setState({ isRedirect: true });
-      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'] === 'cmod-postmodstager' ? 'In Queue' : original['Assigned To'] });
+      setStagerTaskName(stagerTaskType);
+      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'] });
     } else {
       this.setState({ isRedirect: false });
     }
@@ -222,10 +223,11 @@ class CustomReactTable extends React.PureComponent {
         loanNumber, unAssigned, assigned, assignee,
       } = searchLoanTaskResponse;
       const data = [];
-      if (unAssigned) {
+      if (!R.isEmpty(unAssigned)) {
+        unAssigned[0].assignee = assignee;
         data.push(...unAssigned);
       }
-      if (assigned) {
+      if (!R.isEmpty(assigned)) {
         assigned[0].assignee = assignee;
         data.push(...assigned);
       }
@@ -239,6 +241,7 @@ class CustomReactTable extends React.PureComponent {
         case 'Investor Settlement':
         case 'Recordation - Ordered':
         case 'Recordation - ToOrder':
+        case 'Recordation':
         case 'Send Mod Agreement':
           group = 'POSTMOD';
           this.redirectPath = '/postmodstager';
@@ -282,7 +285,7 @@ class CustomReactTable extends React.PureComponent {
             filterable
             getTdProps={(
               state, rowInfo, column, instance,
-            ) => this.getTrPropsType(state, rowInfo, column, instance)
+            ) => this.getTrPropsType(state, rowInfo, column, instance, data.stagerTaskType)
             }
             styleName="stagerTable"
           />
@@ -303,6 +306,7 @@ CustomReactTable.defaultProps = {
 const mapDispatchToProps = dispatch => ({
   onSelectEval: operations.onSelectEval(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  setStagerTaskName: operations.setStagerTaskName(dispatch),
   onSearchLoanWithTask: operations.onSearchLoanWithTask(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
@@ -337,6 +341,7 @@ CustomReactTable.propTypes = {
   }).isRequired,
   searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
+  setStagerTaskName: PropTypes.func.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     userDetails: PropTypes.shape({
