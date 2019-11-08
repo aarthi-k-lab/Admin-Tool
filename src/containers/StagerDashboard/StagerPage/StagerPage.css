@@ -2,6 +2,12 @@
   margin-top: 0.9rem !important;
 }
 
+.getNextStyle{
+  position: absolute;
+  right:0;
+  padding-right: 4.5rem;
+}
+
 .columns-container {
   align-items: flex-start;
   background-color: var(--grey-200);
