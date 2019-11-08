@@ -59,10 +59,26 @@ class StagerPage extends React.PureComponent {
     this.renderstagerSelect = this.renderstagerSelect.bind(this);
   }
 
+  componentDidMount() {
+    const { triggerStagerValue, stager } = this.props;
+    triggerStagerValue(stager);
+  }
+
   onStagerChange(event) {
-    const { onStagerChange, onClearDocGenAction, onClearStagerResponse } = this.props;
+    const {
+      onStagerChange, onClearDocGenAction, onClearStagerResponse, onGetGroupName,
+    } = this.props;
     this.setState({ searchText: '' });
     onStagerChange(event.target.value);
+    let groupName = '';
+    if (event.target.value === DashboardModel.STAGER_VALUE.ALL) {
+      groupName = DashboardModel.ALL_STAGER;
+    } else if (event.target.value === DashboardModel.STAGER_VALUE.POSTMOD_STAGER_ALL) {
+      groupName = DashboardModel.POSTMODSTAGER;
+    } else {
+      groupName = DashboardModel.STAGER;
+    }
+    onGetGroupName(groupName);
     onClearDocGenAction();
     onClearStagerResponse();
   }
@@ -299,6 +315,7 @@ StagerPage.propTypes = {
   onClearDocGenAction: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
   onDocGenClick: PropTypes.func.isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
   onGetNext: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
@@ -318,6 +335,7 @@ StagerPage.propTypes = {
   stagerTaskName: PropTypes.string.isRequired,
   tableData: PropTypes.node.isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
+  triggerStagerValue: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -326,7 +344,9 @@ const mapDispatchToProps = dispatch => ({
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
   onGetNext: dashboardOperations.onGetNext(dispatch),
   setPageType: dashboardOperations.setPageType(dispatch),
+  onGetGroupName: dashboardOperations.onGetGroupName(dispatch),
   setStagerTaskName: dashboardOperations.setStagerTaskName(dispatch),
+  triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
 });
 
 const mapStateToProps = state => ({

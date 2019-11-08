@@ -167,7 +167,9 @@ class TasksAndChecklist extends React.PureComponent {
       isTasksLimitExceeded,
       isRedirect,
       history,
+      isAssigned,
     } = this.props;
+    const showDialogBox = (isAssigned && showDisposition);
     if (isRedirect) {
       history.push('/stager');
     }
@@ -191,7 +193,7 @@ class TasksAndChecklist extends React.PureComponent {
             dialogHeader="Steps to Resolve"
             message={disposition}
             onDialogToggle={onInstuctionDialogToggle}
-            shouldShow={showDisposition}
+            shouldShow={showDialogBox}
             showDialog={showInstructionsDialog}
             styleName="instructions"
             title="Disposition"

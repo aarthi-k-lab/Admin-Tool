@@ -46,10 +46,11 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const {
-      location, group, taskName, checklisttTemplateName,
+      location, group, taskName, checklisttTemplateName, stagerTaskName,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
-    const title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
+    let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
+    title = stagerTaskName || title;
     return (
       <>
         <ContentHeader checklistTemplateName={checklisttTemplateName} title={title}>
@@ -73,6 +74,7 @@ EvaluationPage.defaultProps = {
   group: 'FEUW',
   checklisttTemplateName: null,
   taskName: '',
+  stagerTaskName: '',
 };
 
 EvaluationPage.propTypes = {
@@ -81,6 +83,7 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  stagerTaskName: PropTypes.string,
   taskName: PropTypes.string,
   user: PropTypes.shape({
     groupList: PropTypes.array,
@@ -95,6 +98,7 @@ EvaluationPage.propTypes = {
 };
 const mapStateToProps = state => ({
   taskName: selectors.processName(state),
+  stagerTaskName: selectors.stagerTaskName(state),
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
 });

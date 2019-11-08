@@ -580,6 +580,7 @@ const mapStateToProps = state => ({
   bulkOrderPageType: selectors.bulkOrderPageType(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
   modReversalReasons: selectors.getModReversalReasons(state),
+  groupName: selectors.groupName(state),
 });
 
 const mapDispatchToProps = dispatch => ({
