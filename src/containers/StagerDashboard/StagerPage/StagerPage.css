@@ -48,13 +48,6 @@
   margin-top: 0.7rem !important;
 }
 
-.searchMaxWidth{
-  max-width: 18rem !important;
-
-}
-.maxWidth{
-  max-width: 4.5rem !important;
-}
 .errormsg {
   margin-top: 1.5rem !important;
   margin-left: 0.7rem !important;
@@ -80,7 +73,6 @@
   margin: 0.5rem 0rem 0rem 17rem;
   height: 3rem;    
   color: aliceblue;
-  float: right;
 }
 
 .getNext-button.getNext-button:hover {
