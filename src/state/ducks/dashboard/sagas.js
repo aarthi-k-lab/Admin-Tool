@@ -300,7 +300,8 @@ function* fetchChecklistDetails(checklistId) {
 
 function* shouldRetriveChecklist(searchItem) {
   const groupList = yield select(loginSelectors.getGroupList);
-  const hasChecklistAccess = groupList.includes(R.path(['payload', 'group'], searchItem).toLowerCase());
+  const appGroupName = getUserPersona(R.path(['payload', 'group'], searchItem).toLowerCase());
+  const hasChecklistAccess = groupList.includes(appGroupName.toLowerCase());
   const taskName = R.path(['payload', 'taskName'], searchItem);
   const isChecklistTask = CHECKLIST_TASKNAMES.includes(taskName);
   const retriveChecklist = hasChecklistAccess && isChecklistTask;
