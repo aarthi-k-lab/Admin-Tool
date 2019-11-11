@@ -22,6 +22,10 @@ function getPreviousDispositionUrl() {
   return '/api/bpm-audit/audit/disposition/_evalNumbers';
 }
 
+function additionalLoanInfoUrl(evalId) {
+  return `/api/bpm-audit/audit/process/eval/${evalId}`;
+}
+
 function getPrioritizationUrl() {
   return '/api/bpm-audit/audit/prioritization/_evalNumbers';
 }
@@ -145,12 +149,14 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getExpirationDate(evalDetails, groupName) {
+function getExpirationDate(evalDetails, groupName, additionalLoanInfo) {
   switch (groupName) {
     case DashboardModel.DOC_GEN:
       return evalDetails.lastPaidDate;
     case DashboardModel.DOCS_IN:
       return evalDetails.modDocsReceivedDate;
+    case (R.includes(groupName, DashboardModel.POSTMOD_TASKNAMES)):
+      return additionalLoanInfo[0].dueDate;
     default:
       return evalDetails.lastDocumentReceivedDate;
   }
@@ -274,7 +280,7 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails, groupName) {
+  prioritizationDetails, groupName, additionalLoanInfo) {
   let dataGenerator = [];
   switch (groupName) {
     case DashboardModel.DOC_GEN:
@@ -335,9 +341,11 @@ function getTombstoneItems(loanDetails,
     evalDetails,
     previousDispositionDetails,
     prioritizationDetails,
-    groupName));
+    groupName,
+    additionalLoanInfo));
   return data;
 }
+
 
 async function fetchData(loanNumber, evalId, groupName) {
   const loanInfoUrl = getUrl(loanNumber);
@@ -354,6 +362,12 @@ async function fetchData(loanNumber, evalId, groupName) {
     },
   );
 
+  const fetchAdditionalLoanInfo = fetch(additionalLoanInfoUrl(evalId), {
+    method: 'GET',
+    headers: { 'content-type': 'application/json' },
+  });
+
+
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
     body: JSON.stringify({ evalIds: [evalId], groupName }),
@@ -367,12 +381,16 @@ async function fetchData(loanNumber, evalId, groupName) {
   });
 
   const evaluationInfoResponseP = fetch(evaluationInfoUrl);
+  const additionalLoanInfoP = R.includes(groupName, DashboardModel.POSTMOD_TASKNAMES)
+    ? fetchAdditionalLoanInfo(evalId) : null;
 
   const [loanInfoResponse,
     evaluationInfoResponse,
     previousDispositionResponse,
-    prioritizationResponse] = await Promise.all(
-    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP, prioritizationP],
+    prioritizationResponse,
+    additionalLoanInfoResponse] = await Promise.all(
+    [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
+      prioritizationP, additionalLoanInfoP],
   );
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
@@ -381,39 +399,48 @@ async function fetchData(loanNumber, evalId, groupName) {
   let [loanDetails,
     evalDetails,
     previousDispositionDetails,
-    prioritizationDetails] = [];
+    prioritizationDetails,
+    additionalLoanInfo] = [];
 
   if (previousDispositionResponse.status === 200 && prioritizationResponse.status === 200) {
     [loanDetails,
       evalDetails,
       previousDispositionDetails,
-      prioritizationDetails] = await Promise.all([
+      prioritizationDetails,
+      additionalLoanInfo] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       prioritizationResponse.json(),
+      additionalLoanInfoResponse.json(),
     ]);
   } else if (previousDispositionResponse.status === 200) {
     [loanDetails,
       evalDetails,
-      previousDispositionDetails] = await Promise.all([
+      previousDispositionDetails,
+      additionalLoanInfo] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
+      additionalLoanInfoResponse.json(),
     ]);
   } else if (prioritizationResponse.status === 200) {
     [loanDetails,
       evalDetails,
-      prioritizationDetails] = await Promise.all([
+      prioritizationDetails,
+      additionalLoanInfo] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       prioritizationResponse.json(),
+      additionalLoanInfoResponse.json(),
     ]);
   } else {
     [loanDetails,
-      evalDetails] = await Promise.all([
+      evalDetails,
+      additionalLoanInfo] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
+      additionalLoanInfoResponse.json(),
     ]);
   }
 
@@ -423,6 +450,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     previousDispositionDetails,
     prioritizationDetails,
     groupName,
+    additionalLoanInfo,
   )];
 }
 
