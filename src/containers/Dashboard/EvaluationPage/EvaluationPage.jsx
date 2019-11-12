@@ -50,7 +50,7 @@ class EvaluationPage extends React.PureComponent {
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
-    title = stagerTaskName || title;
+    title = (stagerTaskName && stagerTaskName.activeTile) || title;
     return (
       <>
         <ContentHeader checklistTemplateName={checklisttTemplateName} title={title}>

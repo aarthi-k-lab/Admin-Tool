@@ -747,6 +747,7 @@ function* endShift(action) {
       yield put(resetChecklistData());
       if (group === DashboardModel.POSTMODSTAGER) {
         yield put({ type: POSTMOD_END_SHIFT });
+        return;
       }
       yield put({ type: HIDE_LOADER });
       yield put({ type: SUCCESS_END_SHIFT });

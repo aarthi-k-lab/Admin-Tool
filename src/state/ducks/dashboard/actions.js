@@ -37,6 +37,7 @@ import {
   SEARCH_LOAN_WITH_TASK_SAGA,
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
+  CLEAR_POSTMOD_END_SHIFT,
 } from './types';
 
 
@@ -206,6 +207,11 @@ const onSelectModReversal = () => ({
   type: MOD_REVERSAL_REASONS,
 });
 
+const clearPostModEndShitf = () => ({
+  type: CLEAR_POSTMOD_END_SHIFT,
+});
+
+
 export {
   autoSave,
   clearDisposition,
@@ -243,4 +249,5 @@ export {
   onSearchLoanWithTaskAction,
   saveStagerTaskName,
   onSelectModReversal,
+  clearPostModEndShitf,
 };
