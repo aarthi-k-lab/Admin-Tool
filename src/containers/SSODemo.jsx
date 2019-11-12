@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import { FRONTEND_UNDERWRITER, ADMIN, BACKEND_UNDERWRITER } from 'lib/Groups';
 import PropTypes from 'prop-types';
+import { FRONTEND_UNDERWRITER, ADMIN, BACKEND_UNDERWRITER } from '../constants/Groups';
 
 function renderAdminButton(groups) {
   if (groups && groups.includes(ADMIN)) {

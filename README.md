@@ -68,4 +68,21 @@ $ echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
 
 4) Use `npm start` to start the dev server
 
-5) Start the debugger in VS Code, add breakpoints and debug straight from the editor 
+5) Start the debugger in VS Code, add breakpoints and debug straight from the editor
+
+6) Constants to be added when creating a new persona :
+    1.constants/groups.js
+    2.constants/appGroupName.js
+        i. `userGroupList` for usergroup toggle
+        ii. `checklistGroupNames` for checklist
+    3.lib/Auth.js (To add a new route)
+        i. `homePage`
+        ii. `failureMessages`
+    4.lib/RouteAccess.js
+        i. For checklist based ad group `checkListGroups`
+        ii. For manager dashboard `managerDashboard`
+    5. models/Dashboard/index
+        i. GROUPS
+        ii. Title
+        iii. GROUP_INFO
+    6. SearchLoan.jsx - for loan search

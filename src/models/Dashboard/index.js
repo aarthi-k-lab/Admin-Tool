@@ -5,8 +5,6 @@ const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const PROC = 'PROC';
 const LOAN_ACTIVITY = 'LA';
-const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
-const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
@@ -16,7 +14,6 @@ const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
 const ALL_STAGER = 'ALLSTAGER';
 const POSTMOD_TASKNAMES = ['Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement'];
-const CHECKLIST_TASKNAMES = ['FrontEnd Review', 'Processing', 'Underwriting', 'Document Generation', 'Docs In', ...POSTMOD_TASKNAMES];
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
@@ -26,20 +23,6 @@ const STAGER_VALUE = {
   ALL: 'ALL',
 };
 const GROUP_INFO = [
-  {
-    group: FEUW,
-    task: 'Income Calculation',
-    taskCode: 'UW',
-    path: '/frontend-evaluation',
-    showAssignUnassign: true,
-  },
-  {
-    group: BEUW,
-    task: 'Underwriting',
-    taskCode: 'UW',
-    path: '/backend-evaluation',
-    showAssignUnassign: true,
-  },
   {
     group: FEUW,
     task: 'Income Calculation',
@@ -114,10 +97,8 @@ const GROUP_INFO = [
   },
 ];
 const GROUPS = {
-  '/frontend-evaluation': FEUW,
-  '/backend-evaluation': BEUW,
+  '/frontend-checklist': FEUW,
   '/backend-checklist': BEUW,
-  // TO-DO'S
   '/loan-activity': LOAN_ACTIVITY,
   '/doc-processor': PROC,
   '/doc-gen': DOC_GEN,
@@ -126,14 +107,10 @@ const GROUPS = {
 
 function getTitle(location) {
   switch (location) {
-    case '/backend-evaluation':
-      return 'Underwriting';
-    case '/frontend-evaluation':
-      return 'Income Calculation';
     case '/frontend-checklist':
-      return 'Income Calculation (beta)';
+      return 'Income Calculation';
     case '/backend-checklist':
-      return 'Underwriting (beta)';
+      return 'Underwriting';
     case '/doc-processor':
       return 'Processing';
     case '/loan-activity':
@@ -154,8 +131,6 @@ const DashboardModel = {
   DOC_GEN,
   DOCS_IN,
   LOAN_ACTIVITY,
-  FEUW_TASKS_AND_CHECKLIST,
-  BEUW_TASKS_AND_CHECKLIST,
   GROUPS,
   GROUP_INFO,
   getTitle,
@@ -166,7 +141,6 @@ const DashboardModel = {
   POSTMODSTAGER,
   STAGER,
   ALL_STAGER,
-  CHECKLIST_TASKNAMES,
   POSTMOD_TASKNAMES,
 };
 

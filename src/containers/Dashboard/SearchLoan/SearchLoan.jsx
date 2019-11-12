@@ -58,18 +58,6 @@ class SearchLoan extends React.PureComponent {
     this.canRedirect = true;
   }
 
-  getFrontEndPath() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
-  }
-
-  getBackendEndPath() {
-    return RouteAccess.hasBackendChecklistAccess(this.getGroups()) ? '/backend-checklist' : '/backend-evaluation';
-  }
-
-  getFrontEndGroup() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
-  }
-
   getLoanActivityPath() {
     const { user } = this.props;
     const groups = user && user.groupList;
@@ -101,7 +89,7 @@ class SearchLoan extends React.PureComponent {
         switch (payload.taskName) {
           case 'Underwriting':
             group = 'BEUW';
-            this.redirectPath = this.getBackendEndPath();
+            this.redirectPath = '/backend-checklist';
             break;
           case 'Processing':
             group = 'PROC';
@@ -121,15 +109,11 @@ class SearchLoan extends React.PureComponent {
             this.redirectPath = '/docs-in';
             break;
           default:
-            this.redirectPath = this.getFrontEndPath();
-            group = this.getFrontEndGroup();
+            this.redirectPath = '/frontend-checklist';
+            group = 'FEUW';
         }
-        const evalPayload = {
-          group,
-          ...payload,
-        };
         onGetGroupName(group);
-        onSelectEval(evalPayload);
+        onSelectEval(payload);
         onGetChecklistHistory(payload.taskId);
         this.setState({ isRedirect: true });
       }
@@ -244,13 +228,13 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return (this.canRedirect) ? <Redirect to={this.getFrontEndPath()} /> : null;
+    return (this.canRedirect) ? <Redirect to="/frontend-checklist" /> : null;
   }
 
   render() {
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to={this.getFrontEndPath()}>&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/frontend-checklist">&lt; BACK</Link></span>
         {this.renderRejectResults()}
         {this.renderSearchResults()}
       </>

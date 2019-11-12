@@ -42,8 +42,6 @@ class ProtectedRoutes extends React.Component {
     this.shouldRedirect = false;
     this.auth = null;
     this.getGroups = this.getGroups.bind(this);
-    this.renderBackendRoute = this.renderBackendRoute.bind(this);
-    this.renderFrontendRoute = this.renderFrontendRoute.bind(this);
     this.renderMoveForwardRoute = this.renderMoveForwardRoute.bind(this);
     this.renderFrontendChecklistRoute = this.renderFrontendChecklistRoute.bind(this);
     this.renderDocProcessorRoute = this.renderDocProcessorRoute.bind(this);
@@ -82,30 +80,12 @@ class ProtectedRoutes extends React.Component {
     return user && user.groupList;
   }
 
-  renderFrontendRoute() {
-    const groups = this.getGroups();
-    return (
-      RouteAccess.hasFrontendUnderwriterAccess(groups)
-        ? <Dashboard />
-        : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
-    );
-  }
-
   renderFrontendChecklistRoute() {
     const groups = this.getGroups();
     return (
       RouteAccess.hasFrontendChecklistAccess(groups)
         ? <Dashboard group={DashboardModel.FEUW} />
         : <Redirect to="/unauthorized?error=FRONTEND_UNDERWRITER_ACCESS_NEEDED" />
-    );
-  }
-
-  renderBackendRoute() {
-    const groups = this.getGroups();
-    return (
-      RouteAccess.hasBackendUnderwriterAccess(groups)
-        ? <Dashboard group="BEUW" />
-        : <Redirect to="/unauthorized?error=BACKEND_UNDERWRITER_ACCESS_NEEDED" />
     );
   }
 
@@ -225,10 +205,8 @@ class ProtectedRoutes extends React.Component {
         <Switch>
           <Route exact path="/reports" render={() => <ManagerDashboard groups={groups} />} />
           <Route exact path="/stager" render={this.renderStagerRoute} />
-          <Route path="/backend-evaluation" render={this.renderBackendRoute} />
           <Route path="/doc-processor" render={this.renderDocProcessorRoute} />
           <Route path="/frontend-checklist" render={this.renderFrontendChecklistRoute} />
-          <Route path="/frontend-evaluation" render={this.renderFrontendRoute} />
           <Route path="/backend-checklist" render={this.renderBackendChecklistRoute} />
           <Route exact path="/loan-activity" render={this.renderLoanActivity} />
           <Route path="/doc-gen-back" render={this.renderDocGenBackRoute} />

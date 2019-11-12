@@ -4,7 +4,7 @@ import { TestHooks } from './LandingPage';
 
 describe('<LandingPage />', () => {
   const location = {
-    pathname: '/backend-evaluation',
+    pathname: '/backend-checklist',
   };
   const wrapper = shallow(<TestHooks.LandingPage location={location} />);
 

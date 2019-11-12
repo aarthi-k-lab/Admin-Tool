@@ -83,18 +83,6 @@ class CustomReactTable extends React.PureComponent {
     }
   }
 
-  getFrontEndPath() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
-  }
-
-  getBackendEndPath() {
-    return RouteAccess.hasBackendChecklistAccess(this.getGroups()) ? '/backend-checklist' : '/backend-evaluation';
-  }
-
-  getFrontEndGroup() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
-  }
-
   getGroups() {
     const { user } = this.props;
     return user && user.groupList;
@@ -247,8 +235,8 @@ class CustomReactTable extends React.PureComponent {
           this.redirectPath = '/postmodstager';
           break;
         default:
-          this.redirectPath = this.getFrontEndPath();
-          group = this.getFrontEndGroup();
+          this.redirectPath = '/frontend-checklist';
+          group = 'FEUW';
       }
       if (isRedirect) {
         onGetGroupName(group);
