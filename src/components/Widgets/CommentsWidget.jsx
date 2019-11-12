@@ -202,7 +202,7 @@ class CommentsWidget extends Component {
 
   renderCommentsActivity() {
     const {
-      comments, LoanNumber, EvalId,
+      comments, LoanNumber, EvalId, isAssigned,
     } = this.props;
     const { content } = this.state;
     return (
@@ -215,6 +215,7 @@ class CommentsWidget extends Component {
           <div id="send_area" styleName="send-area">
             <div id="send_text_area" styleName="send-text-area">
               <TextField
+                disabled={!isAssigned}
                 InputProps={{ style: { fontSize: '1.1rem' } }}
                 multiline
                 onChange={event => this.onCommentChange(event)}
@@ -264,6 +265,7 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
+  isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
