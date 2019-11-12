@@ -124,8 +124,12 @@ class SearchLoan extends React.PureComponent {
             this.redirectPath = this.getFrontEndPath();
             group = this.getFrontEndGroup();
         }
+        const evalPayload = {
+          group,
+          ...payload,
+        };
         onGetGroupName(group);
-        onSelectEval(payload);
+        onSelectEval(evalPayload);
         onGetChecklistHistory(payload.taskId);
         this.setState({ isRedirect: true });
       }
