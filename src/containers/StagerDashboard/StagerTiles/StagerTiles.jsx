@@ -21,7 +21,9 @@ class StagerTiles extends React.PureComponent {
     if (R.isEmpty(searchResponse) && tileName === activeTile && tabName === activeTab) {
       return true;
     }
-    if (stagerTaskName && tileName === stagerTaskName) {
+    if (stagerTaskName
+      && tileName === stagerTaskName.activeTile
+      && tabName === stagerTaskName.activeTab) {
       return true;
     }
     return false;
