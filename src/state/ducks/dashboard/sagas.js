@@ -10,6 +10,7 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
@@ -300,8 +301,9 @@ function* fetchChecklistDetails(checklistId) {
 
 function* shouldRetriveChecklist(searchItem) {
   const groupList = yield select(loginSelectors.getGroupList);
-  const appGroupName = getUserPersona(R.path(['payload', 'group'], searchItem).toLowerCase());
-  const hasChecklistAccess = groupList.includes(appGroupName.toLowerCase());
+  // const appGroupName = getUserPersona(R.path(['payload', 'group'], searchItem).toLowerCase());
+  // const hasChecklistAccess = groupList.includes(appGroupName.toLowerCase());
+  const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
   const taskName = R.path(['payload', 'taskName'], searchItem);
   const isChecklistTask = CHECKLIST_TASKNAMES.includes(taskName);
   const retriveChecklist = hasChecklistAccess && isChecklistTask;
