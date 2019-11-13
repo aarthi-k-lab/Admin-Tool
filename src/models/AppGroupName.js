@@ -1,47 +1,16 @@
 const R = require('ramda');
 
-const BEUW_TASKS_AND_CHECKLIST = 'beuw-task-checklist';
-const FEUW_TASKS_AND_CHECKLIST = 'feuw-task-checklist';
-const FEUW = 'FEUW';
-const BEUW = 'BEUW';
-const DOC_PROCESSOR = 'PROC';
-const DOC_GEN = 'DOCGEN';
-const DOCS_IN = 'DOCSIN';
-const BETA = 'BETA';
-const STAGER = 'STAGER';
-const TRIAL = 'TRIAL';
-const UTIL = 'UTIL';
-const POSTMODSTAGER = 'POSTMODSTAGER';
-const POSTMOD = 'POSTMOD';
-
-const checklistGroupNames = [
-  DOC_PROCESSOR,
-  FEUW,
-  FEUW_TASKS_AND_CHECKLIST,
+const {
   BEUW_TASKS_AND_CHECKLIST,
-  BEUW,
-  DOC_GEN,
-  DOCS_IN,
-  POSTMOD,
-];
-
-const userGroupList = [
-  DOC_PROCESSOR,
-  FEUW,
+  FEUW_TASKS_AND_CHECKLIST,
   BEUW,
   DOC_GEN,
   DOCS_IN,
   BETA,
-  STAGER,
-  TRIAL,
-  UTIL,
-  POSTMODSTAGER,
-];
+  userGroupList,
+  checklistGroupNames,
+} = require('../constants/appGroupName');
 
-const appGroupNameToUserPersonaMap = {
-  [FEUW_TASKS_AND_CHECKLIST]: 'FEUW',
-  [BEUW_TASKS_AND_CHECKLIST]: 'BEUW',
-};
 
 function disableGroups(role, groups, group) {
   if (R.equals(group, BETA) && !R.equals(groups.indexOf(group.toLowerCase()), -1)) {
@@ -50,15 +19,6 @@ function disableGroups(role, groups, group) {
   return !(R.equals(role, 'Manager') ? !R.equals(groups.indexOf(`${group.toLowerCase()}-mgr`), -1) : !R.equals(groups.indexOf(`${group.toLowerCase()}`), -1));
 }
 
-function getUserPersona(appGroupName) {
-  const persona = appGroupNameToUserPersonaMap[appGroupName];
-  if (persona === undefined) {
-    return appGroupName;
-  }
-  return persona;
-}
-
-
 function hasChecklist(appGroupName) {
   return checklistGroupNames.includes(appGroupName);
 }
@@ -66,7 +26,6 @@ function hasChecklist(appGroupName) {
 module.exports = {
   BEUW_TASKS_AND_CHECKLIST,
   FEUW_TASKS_AND_CHECKLIST,
-  getUserPersona,
   disableGroups,
   hasChecklist,
   BEUW,
