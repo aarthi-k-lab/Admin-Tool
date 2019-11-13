@@ -21,7 +21,7 @@ function isNotLoanActivity(group) {
 
 function canShowValidate(group) {
   return group !== DashboardModel.LOAN_ACTIVITY
-   && group !== DashboardModel.POSTMODSTAGER && group !== DashboardModel.ALLSTAGER;
+    && group !== DashboardModel.POSTMODSTAGER && group !== DashboardModel.ALLSTAGER;
 }
 
 function isTrialOrForbearance(taskName) {
@@ -53,7 +53,7 @@ class EvaluationPage extends React.PureComponent {
     title = (stagerTaskName && stagerTaskName.activeTile) || title;
     return (
       <>
-        <ContentHeader checklistTemplateName={checklisttTemplateName} title={title}>
+        <ContentHeader checklistTemplateName={checklisttTemplateName} group={group} title={title}>
           <Controls
             showEndShift={isNotLoanActivity(group)}
             showGetNext={isNotLoanActivity(group)}
