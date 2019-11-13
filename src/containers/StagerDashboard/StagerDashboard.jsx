@@ -39,7 +39,12 @@ class StagerDashboard extends React.Component {
 
   componentDidMount() {
     const {
-      getDashboardCounts, triggerStagerValue, triggerStartEndDate, group, onGetGroupName,
+      getDashboardCounts,
+      triggerStagerValue,
+      triggerStartEndDate,
+      group, onGetGroupName,
+      stagerTaskName,
+      onClearPostModEndShitf,
     } = this.props;
     const { stager } = this.state;
     const datePayload = this.getDatePayload();
@@ -47,6 +52,10 @@ class StagerDashboard extends React.Component {
     triggerStagerValue(stager || getStagerValue(group));
     onGetGroupName(group);
     getDashboardCounts();
+    if (stagerTaskName) {
+      onClearPostModEndShitf();
+      this.onStatusCardClick(stagerTaskName.activeTile, stagerTaskName.activeTab);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -246,6 +255,7 @@ const mapStateToProps = state => ({
   counts: stagerSelectors.getCounts(state),
   loading: stagerSelectors.getLoaderInfo(state),
   tableData: stagerSelectors.getTableData(state),
+  stagerTaskName: dashboardSelectors.stagerTaskName(state),
   selectedData: stagerSelectors.getSelectedData(state),
   docGenResponse: stagerSelectors.getdocGenResponse(state),
   snackBarData: notificationSelectors.getSnackBarState(state),
@@ -262,6 +272,7 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
   onGetGroupName: dashboardOperations.onGetGroupName(dispatch),
+  onClearPostModEndShitf: dashboardOperations.onClearPostModEndShitf(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
@@ -297,11 +308,13 @@ StagerDashboard.propTypes = {
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
+  onClearPostModEndShitf: PropTypes.func.isRequired,
   onClearSearchResponse: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   snackBarData: PropTypes.node,
+  stagerTaskName: PropTypes.string,
   tableData: PropTypes.node,
   triggerOrderCall: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
@@ -320,6 +333,7 @@ StagerDashboard.defaultProps = {
   counts: [],
   tableData: [],
   snackBarData: null,
+  stagerTaskName: '',
   loading: false,
   closeSnackBar: () => { },
   docGenResponse: {},

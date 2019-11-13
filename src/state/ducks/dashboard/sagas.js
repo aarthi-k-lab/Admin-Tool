@@ -10,6 +10,7 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import RouteAccess from 'lib/RouteAccess';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
@@ -719,6 +720,7 @@ function* endShift(action) {
       yield put(resetChecklistData());
       if (group === DashboardModel.POSTMODSTAGER) {
         yield put({ type: POSTMOD_END_SHIFT });
+        return;
       }
       yield put({ type: HIDE_LOADER });
       yield put({ type: SUCCESS_END_SHIFT });
