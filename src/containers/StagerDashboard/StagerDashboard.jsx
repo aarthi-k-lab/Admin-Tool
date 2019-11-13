@@ -96,8 +96,10 @@ class StagerDashboard extends React.Component {
       onClearSearchResponse,
       getStagerSearchResponse,
       group,
+      onClearStagerTaskName,
     } = this.props;
     onClearDocGenAction();
+    onClearStagerTaskName();
     if (getStagerSearchResponse && !R.isEmpty(getStagerSearchResponse)
       && !getStagerSearchResponse.error && !getStagerSearchResponse.noContents) {
       const stagerValues = getStagerSearchResponse[activeTab] ? getStagerSearchResponse[activeTab].split(',') : [];
@@ -272,6 +274,7 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   onClearSearchResponse: stagerOperations.onClearSearchResponse(dispatch),
   onGetGroupName: dashboardOperations.onGetGroupName(dispatch),
+  onClearStagerTaskName: dashboardOperations.onClearStagerTaskName(dispatch),
   onClearPostModEndShitf: dashboardOperations.onClearPostModEndShitf(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
@@ -311,6 +314,7 @@ StagerDashboard.propTypes = {
   onClearPostModEndShitf: PropTypes.func.isRequired,
   onClearSearchResponse: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   selectedData: PropTypes.node.isRequired,
   snackBarData: PropTypes.node,

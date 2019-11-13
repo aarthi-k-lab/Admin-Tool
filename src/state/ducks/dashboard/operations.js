@@ -75,6 +75,10 @@ const setStagerTaskName = dispatch => (payload) => {
   dispatch(saveStagerTaskName(payload));
 };
 
+const onClearStagerTaskName = dispatch => () => {
+  dispatch(saveStagerTaskName({}));
+};
+
 const onClearBEDisposition = dispatch => () => {
   dispatch(clearBEDisposition());
 };
@@ -201,6 +205,7 @@ const operations = {
   setStagerTaskName,
   selectModReversal,
   onClearPostModEndShitf,
+  onClearStagerTaskName,
 };
 
 export default operations;
