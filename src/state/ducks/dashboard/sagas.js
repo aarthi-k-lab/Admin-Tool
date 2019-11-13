@@ -301,6 +301,7 @@ function* fetchChecklistDetails(checklistId) {
 
 function* shouldRetriveChecklist(searchItem) {
   const groupList = yield select(loginSelectors.getGroupList);
+  // code revert for checklist Bug Fix
   // const appGroupName = getUserPersona(R.path(['payload', 'group'], searchItem).toLowerCase());
   // const hasChecklistAccess = groupList.includes(appGroupName.toLowerCase());
   const hasChecklistAccess = RouteAccess.hasChecklistAccess(groupList);
