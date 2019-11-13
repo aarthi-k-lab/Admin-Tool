@@ -507,7 +507,7 @@ describe('watch endShift ', () => {
 describe('endShift worker', () => {
   const action = {
     payload: {
-      appGroupName: 'feuw-task-checklist',
+      appGroupName: 'FEUW',
       isFirstVisit: true,
       dispositionCode: 'missingDocs',
     },
@@ -519,7 +519,7 @@ describe('endShift worker', () => {
   });
 
   it('should dispatch app/dasboard/SHOW_LOADER', () => {
-    expect(saga.next('feuw-task-checklist').value)
+    expect(saga.next('FEUW').value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 

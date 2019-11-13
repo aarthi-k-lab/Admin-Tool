@@ -83,18 +83,6 @@ class CustomReactTable extends React.PureComponent {
     }
   }
 
-  getFrontEndPath() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
-  }
-
-  getBackendEndPath() {
-    return RouteAccess.hasBackendChecklistAccess(this.getGroups()) ? '/backend-checklist' : '/backend-evaluation';
-  }
-
-  getFrontEndGroup() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
-  }
-
   getGroups() {
     const { user } = this.props;
     return user && user.groupList;
@@ -171,7 +159,7 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
-  getTrPropsType = (state, rowInfo, column, instance, stagerTaskType) => {
+  getTrPropsType = (state, rowInfo, column, instance, stagerTaskType, stagerTaskStatus) => {
     const { searchResponse } = this.props;
     if (rowInfo) {
       const { original } = rowInfo;
@@ -184,7 +172,7 @@ class CustomReactTable extends React.PureComponent {
       }
       return {
         onClick: (event) => {
-          this.handleRowClick(rowInfo, event, stagerTaskType);
+          this.handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus);
           instance.forceUpdate();
         },
       };
@@ -198,7 +186,7 @@ class CustomReactTable extends React.PureComponent {
     return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
   }
 
-  handleRowClick(rowInfo, event, stagerTaskType) {
+  handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus) {
     if (event.target.type === 'checkbox') {
       this.setState({ isRedirect: false });
       return;
@@ -207,7 +195,8 @@ class CustomReactTable extends React.PureComponent {
     const { original } = rowInfo;
     if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)) {
       this.setState({ isRedirect: true });
-      setStagerTaskName(stagerTaskType);
+      const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
+      setStagerTaskName(payload);
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'] });
     } else {
       this.setState({ isRedirect: false });
@@ -247,8 +236,8 @@ class CustomReactTable extends React.PureComponent {
           this.redirectPath = '/postmodstager';
           break;
         default:
-          this.redirectPath = this.getFrontEndPath();
-          group = this.getFrontEndGroup();
+          this.redirectPath = '/frontend-checklist';
+          group = 'FEUW';
       }
       if (isRedirect) {
         onGetGroupName(group);
@@ -285,8 +274,9 @@ class CustomReactTable extends React.PureComponent {
             filterable
             getTdProps={(
               state, rowInfo, column, instance,
-            ) => this.getTrPropsType(state, rowInfo, column, instance, data.stagerTaskType)
-            }
+            ) => this.getTrPropsType(
+              state, rowInfo, column, instance, data.stagerTaskType, data.stagerTaskStatus,
+            )}
             styleName="stagerTable"
           />
         </div>

@@ -5,7 +5,7 @@ import {
   BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER, DOC_PROCESSOR,
   DOCS_IN,
   DOC_GEN,
-} from './Groups';
+} from '../constants/Groups';
 import Redirect from './Redirect';
 
 function Auth(sessionValid, jwtPayload, groups) {
@@ -301,7 +301,7 @@ Auth.homePage = [
   },
   {
     groupName: BACKEND_UNDERWRITER,
-    path: '/backend-evaluation',
+    path: '/backend-checklist',
   },
   {
     groupName: DOC_PROCESSOR,

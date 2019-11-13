@@ -1,5 +1,9 @@
 const R = require('ramda');
 
+const checkListGroups = {
+  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager'],
+};
+
 const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
@@ -19,20 +23,6 @@ const moveForward = {
   name: 'move-forward',
   img: '/static/img/move_forward.svg',
   groups: ['util-mgr', 'allaccess'],
-};
-
-const frontendUnderwriter = {
-  path: '/frontend-evaluation',
-  name: 'frontend-evaluation',
-  img: '/static/img/frontend.svg',
-  groups: ['feuw', 'feuw-mgr', 'feuw-beta'],
-};
-
-const backendUnderwriter = {
-  path: '/backend-evaluation',
-  name: 'backend-evaluation',
-  img: '/static/img/backend.svg',
-  groups: ['beuw', 'beuw-mgr', 'beuw-beta'],
 };
 
 const docProcessor = {
@@ -56,9 +46,6 @@ const beuwTasksAndChecklist = {
   groups: ['allaccess', 'beuw-beta', 'beuw', 'beuw-mgr'],
 };
 
-const checkListGroups = {
-  groups: ['allaccess', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw'],
-};
 
 // TO DO
 const loanActivity = {
@@ -137,10 +124,6 @@ function shouldShowIcon(link, userGroups) {
   return !noIcons.includes(link.path) && hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
-function hasFrontendUnderwriterAccess(groups) {
-  return hasGroup(frontendUnderwriter.groups, groups, frontendUnderwriter.notInGroup);
-}
-
 function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
 }
@@ -155,10 +138,6 @@ function hasChecklistAccess(groups) {
 
 function hasLoanActivityAccess(groups) {
   return hasGroup(loanActivity.groups, groups);
-}
-
-function hasBackendUnderwriterAccess(groups) {
-  return hasGroup(backendUnderwriter.groups, groups);
 }
 
 function hasDocProcessorAccess(groups) {
@@ -210,9 +189,7 @@ function getStagerGroup(groups) {
 
 module.exports = {
   links,
-  hasBackendUnderwriterAccess,
   hasDocProcessorAccess,
-  hasFrontendUnderwriterAccess,
   hasBackendChecklistAccess,
   hasFrontendChecklistAccess,
   hasManagerDashboardAccess,
