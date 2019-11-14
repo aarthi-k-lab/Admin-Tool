@@ -635,7 +635,7 @@ function* getNext(action) {
       let taskName = '';
       if (group === DashboardModel.POSTMODSTAGER) {
         const stagerTaskName = yield select(selectors.stagerTaskName);
-        taskName = action.payload.activeTile || stagerTaskName;
+        taskName = action.payload.activeTile || stagerTaskName.activeTile;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
