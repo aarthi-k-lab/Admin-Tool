@@ -78,6 +78,9 @@ ContentHeader.defaultProps = {
   showAddButton: false,
   enableGetNext: false,
   evalId: '',
+  isAssigned: false,
+  onAutoSave: () => { },
+  onEndShift: () => { },
 };
 
 ContentHeader.propTypes = {
@@ -87,9 +90,9 @@ ContentHeader.propTypes = {
   evalId: PropTypes.string,
   group: PropTypes.string,
   handleClick: PropTypes.func,
-  isAssigned: PropTypes.bool.isRequired,
-  onAutoSave: PropTypes.func.isRequired,
-  onEndShift: PropTypes.func.isRequired,
+  isAssigned: PropTypes.bool,
+  onAutoSave: PropTypes.func,
+  onEndShift: PropTypes.func,
   showAddButton: PropTypes.bool,
   title: PropTypes.node,
 };
@@ -103,12 +106,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
-
 });
-const ContentHeaderContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ContentHeader);
-
-
-export default ContentHeaderContainer;
+const TestExports = {
+  ContentHeader,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ContentHeader);
+export { TestExports };
