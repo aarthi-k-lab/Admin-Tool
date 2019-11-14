@@ -41,8 +41,8 @@ class CustomReactTable extends React.PureComponent {
     return `${pointerStyle} tableRow`;
   }
 
-  static getCellContent(row, stagerTaskType) {
-    const pointerStyle = DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) ? 'pointer' : '';
+  static getCellContent(row, stagerTaskType, stagerTaskStatus) {
+    const pointerStyle = DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) && stagerTaskStatus !== 'Completed' ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
@@ -134,7 +134,9 @@ class CustomReactTable extends React.PureComponent {
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
           columnObj.show = this.showColumns(columnName);
-          columnObj.Cell = row => this.constructor.getCellContent(row, stagerTaskType);
+          columnObj.Cell = row => this.constructor.getCellContent(
+            row, stagerTaskType, stagerTaskStatus,
+          );
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
           columnObj.Filter = ({ filter, onChange }) => (
@@ -193,7 +195,7 @@ class CustomReactTable extends React.PureComponent {
     }
     const { onSearchLoanWithTask, data, setStagerTaskName } = this.props;
     const { original } = rowInfo;
-    if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)) {
+    if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType) && stagerTaskStatus !== 'Completed') {
       this.setState({ isRedirect: true });
       const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
       setStagerTaskName(payload);

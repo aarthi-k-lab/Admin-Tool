@@ -164,7 +164,7 @@ class TasksAndChecklist extends React.PureComponent {
       showDisposition,
       showInstructionsDialog,
       taskFetchError,
-      isTasksLimitExceeded,
+      isGetNextError,
       isRedirect,
       history,
       isAssigned,
@@ -178,7 +178,7 @@ class TasksAndChecklist extends React.PureComponent {
         <Loader message="Please Wait" />
       );
     }
-    if (noTasksFound || taskFetchError || isTasksLimitExceeded) {
+    if (noTasksFound || taskFetchError || isGetNextError) {
       return this.renderTaskErrorMessage();
     }
     return (
@@ -217,7 +217,7 @@ TasksAndChecklist.defaultProps = {
   inProgress: false,
   message: null,
   noTasksFound: false,
-  isTasksLimitExceeded: false,
+  isGetNextError: false,
   taskFetchError: false,
   isDialogOpen: false,
   dialogTitle: '',
@@ -259,8 +259,8 @@ TasksAndChecklist.propTypes = {
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
   isDialogOpen: PropTypes.bool,
+  isGetNextError: PropTypes.bool,
   isRedirect: PropTypes.bool,
-  isTasksLimitExceeded: PropTypes.bool,
   message: PropTypes.shape({
     msg: PropTypes.string,
     type: PropTypes.string,
@@ -305,8 +305,8 @@ function getUserNotification(message) {
 }
 
 function getChecklistErrorMessage(checklistErrorCode, taskFetchError,
-  noTasksFound, isTasksLimitExceeded) {
-  if ((!(taskFetchError || noTasksFound)) && !isTasksLimitExceeded) {
+  noTasksFound, isGetNextError, getNextError) {
+  if ((!(taskFetchError || noTasksFound)) && !isGetNextError) {
     return '';
   }
   switch (checklistErrorCode) {
@@ -323,8 +323,8 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError,
   if (noTasksFound) {
     return 'No tasks assigned.Please contact your manager';
   }
-  if (isTasksLimitExceeded) {
-    return 'You have reached the limit of 2 loans assigned for a normal user or 10 for manager at the same time. Please complete your review on one of them and try again.';
+  if (isGetNextError) {
+    return getNextError;
   }
   return '';
 }
@@ -333,7 +333,9 @@ function mapStateToProps(state) {
   const noTasksFound = dashboardSelectors.noTasksFound(state);
   const taskFetchError = dashboardSelectors.taskFetchError(state);
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
-  const isTasksLimitExceeded = dashboardSelectors.isTasksLimitExceeded(state);
+  const isGetNextError = dashboardSelectors.isGetNextError(state);
+  const getNextError = dashboardSelectors.getNextError(state);
+
   return {
     disposition: selectors.getDisposition(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
@@ -341,7 +343,8 @@ function mapStateToProps(state) {
       checklistErrorCode,
       taskFetchError,
       noTasksFound,
-      isTasksLimitExceeded,
+      isGetNextError,
+      getNextError,
     ),
     rootTaskId: selectors.getRootTaskId(state),
     commentsRequired: selectors.showComment(state),
@@ -358,8 +361,9 @@ function mapStateToProps(state) {
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
-    isTasksLimitExceeded,
+    isGetNextError,
     showAssign: dashboardSelectors.showAssign(state),
+    getNextError,
     showDisposition: selectors.shouldShowDisposition(state),
     showInstructionsDialog: selectors.shouldShowInstructionsDialog(state),
     taskFetchError,

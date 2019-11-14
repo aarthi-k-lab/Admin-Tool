@@ -39,7 +39,7 @@ import {
   HIDE_SAVING_LOADER,
   CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
-  TASKS_LIMIT_EXCEEDED,
+  GET_NEXT_ERROR,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
@@ -661,8 +661,11 @@ function* getNext(action) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
-      } else if (!R.isNil(R.path(['limitExceeded'], taskDetails))) {
-        yield put({ type: TASKS_LIMIT_EXCEEDED, payload: { isTasksLimitExceeded: true } });
+      } else if (!R.isNil(R.path(['getNextError'], taskDetails))) {
+        yield put({
+          type: GET_NEXT_ERROR,
+          payload: { isGetNextError: true, getNextError: taskDetails.getNextError },
+        });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else {
@@ -787,7 +790,13 @@ function* assignLoan() {
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
     const userGroups = R.pathOr([], ['groupList'], user);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}`, {});
+    const group = getGroup(groupName);
+    let taskName = '';
+    if (group === DashboardModel.POSTMODSTAGER) {
+      const stagerTaskName = yield select(selectors.stagerTaskName);
+      taskName = stagerTaskName.activeTile;
+    }
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null) {
       yield put({
