@@ -185,9 +185,10 @@ class StagerDashboard extends React.Component {
       onClearStagerResponse, onClearSearchResponse,
       triggerStartEndDate, triggerStagerValue, group,
     } = this.props;
+    const stagervalue = stager || getStagerValue(group);
     const payload = {
       activeSearchTerm,
-      stager: stager || getStagerValue(group),
+      stager: stagervalue,
     };
     if (activeSearchTerm) {
       getDashboardData(payload);
@@ -197,7 +198,7 @@ class StagerDashboard extends React.Component {
     onClearStagerResponse();
     onClearSearchResponse();
     triggerStartEndDate(datePayload);
-    triggerStagerValue(stagerValue[stager]);
+    triggerStagerValue(stagerValue[stagervalue]);
     getDashboardCounts();
     onCheckBoxClick([]);
     onClearDocGenAction();
