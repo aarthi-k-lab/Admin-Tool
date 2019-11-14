@@ -790,7 +790,13 @@ function* assignLoan() {
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
     const userGroups = R.pathOr([], ['groupList'], user);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}`, {});
+    const group = getGroup(groupName);
+    let taskName = '';
+    if (group === DashboardModel.POSTMODSTAGER) {
+      const stagerTaskName = yield select(selectors.stagerTaskName);
+      taskName = stagerTaskName.activeTile;
+    }
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null) {
       yield put({
