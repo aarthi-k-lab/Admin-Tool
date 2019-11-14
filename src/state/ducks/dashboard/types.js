@@ -5,7 +5,7 @@ const CLEAR_FIRST_VISIT = 'app/dashboard/CLEAR_FIRST_VISIT';
 const END_SHIFT = 'app/dashboard/END_SHIFT';
 const CHECKLIST_NOT_FOUND = 'app/dashboard/CHECKLIST_NOT_FOUND';
 const TASKS_NOT_FOUND = 'app/dashboard/TASKS_NOT_FOUND';
-const TASKS_LIMIT_EXCEEDED = 'app/dashboard/TASKS_LIMIT_EXCEEDED';
+const GET_NEXT_ERROR = 'app/dashboard/GET_NEXT_ERROR';
 const TASKS_FETCH_ERROR = 'app/dashboard/TASKS_FETCH_ERROR';
 const GET_NEXT = 'app/dashboard/GET_NEXT';
 // const GET_LOAN_ACTIVITY_DETAILS = 'app/dashboard/GET_LOAN_ACTIVITY_DETAILS';
@@ -81,7 +81,7 @@ export {
   END_SHIFT,
   CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
-  TASKS_LIMIT_EXCEEDED,
+  GET_NEXT_ERROR,
   GET_NEXT,
   SET_EXPAND_VIEW,
   SET_EXPAND_VIEW_SAGA,
