@@ -6,7 +6,10 @@ const isFirstVisit = state => R.pathOr(false, ['dashboard', 'firstVisit'], state
 
 const noTasksFound = state => R.pathOr(false, ['dashboard', 'noTasksFound'], state);
 
-const isTasksLimitExceeded = state => R.pathOr(false, ['dashboard', 'isTasksLimitExceeded'], state);
+const isGetNextError = state => R.pathOr(false, ['dashboard', 'isGetNextError'], state);
+
+const getNextError = state => R.pathOr(null, ['dashboard', 'getNextError'], state);
+
 
 const taskFetchError = state => R.pathOr(false, ['dashboard', 'taskFetchError'], state);
 
@@ -115,7 +118,8 @@ const selectors = {
   loanNumber,
   saveInProgress,
   taskFetchError,
-  isTasksLimitExceeded,
+  isGetNextError,
+  getNextError,
   searchLoanResult,
   showAssign,
   showContinueMyReview,
