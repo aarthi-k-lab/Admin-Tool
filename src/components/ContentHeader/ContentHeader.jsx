@@ -1,13 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import styles from './ContentHeader.css';
+import EndShift from '../../models/EndShift';
+import { operations, selectors } from '../../state/ducks/dashboard';
 import DashboardModel from '../../models/Dashboard';
 
 const renderBackButtonPage = '/stager';
+const handleBackButton = (onAutoSave,
+  onEndShift,
+  enableGetNext,
+  evalId,
+  isAssigned) => {
+  if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
+    onAutoSave('Paused');
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+  }
+};
 const ContentHeader = ({
   title,
   children,
@@ -15,11 +29,23 @@ const ContentHeader = ({
   handleClick,
   showAddButton,
   group,
+  onAutoSave,
+  onEndShift,
+  enableGetNext,
+  evalId,
+  isAssigned,
 }) => (
   <header styleName="content-header">
     {group === DashboardModel.POSTMODSTAGER ? (
-      <Link to={renderBackButtonPage}>
-        &lt; BACK
+      <Link
+        onClick={() => handleBackButton(onAutoSave,
+          onEndShift,
+          enableGetNext,
+          evalId,
+          isAssigned)}
+        to={renderBackButtonPage}
+      >
+          &lt; BACK
       </Link>
     ) : null}
 
@@ -50,15 +76,39 @@ ContentHeader.defaultProps = {
   checklistTemplateName: '',
   handleClick: () => { },
   showAddButton: false,
+  enableGetNext: false,
+  evalId: '',
 };
 
 ContentHeader.propTypes = {
   checklistTemplateName: PropTypes.string,
   children: PropTypes.node,
+  enableGetNext: PropTypes.bool,
+  evalId: PropTypes.string,
   group: PropTypes.string,
   handleClick: PropTypes.func,
+  isAssigned: PropTypes.bool.isRequired,
+  onAutoSave: PropTypes.func.isRequired,
+  onEndShift: PropTypes.func.isRequired,
   showAddButton: PropTypes.bool,
   title: PropTypes.node,
 };
 
-export default ContentHeader;
+const mapStateToProps = state => ({
+  enableGetNext: selectors.enableGetNext(state),
+  evalId: selectors.evalId(state),
+  isAssigned: selectors.isAssigned(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onAutoSave: operations.onAutoSave(dispatch),
+  onEndShift: operations.onEndShift(dispatch),
+
+});
+const ContentHeaderContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ContentHeader);
+
+
+export default ContentHeaderContainer;
