@@ -193,13 +193,16 @@ class CustomReactTable extends React.PureComponent {
       this.setState({ isRedirect: false });
       return;
     }
-    const { onSearchLoanWithTask, data, setStagerTaskName } = this.props;
+    const {
+      onSearchLoanWithTask, data, setStagerTaskName, setBeginSearch,
+    } = this.props;
     const { original } = rowInfo;
     if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType) && stagerTaskStatus !== 'Completed') {
       this.setState({ isRedirect: true });
       const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
       setStagerTaskName(payload);
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'] });
+      setBeginSearch();
     } else {
       this.setState({ isRedirect: false });
     }
@@ -300,6 +303,7 @@ const mapDispatchToProps = dispatch => ({
   onGetGroupName: operations.onGetGroupName(dispatch),
   setStagerTaskName: operations.setStagerTaskName(dispatch),
   onSearchLoanWithTask: operations.onSearchLoanWithTask(dispatch),
+  setBeginSearch: operations.setBeginSearch(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
 
@@ -333,6 +337,7 @@ CustomReactTable.propTypes = {
   }).isRequired,
   searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
+  setBeginSearch: PropTypes.func.isRequired,
   setStagerTaskName: PropTypes.func.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
