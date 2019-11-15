@@ -195,6 +195,7 @@ class Disposition extends Component {
       user,
       showAssign,
       isGetNextError,
+      getNextError,
       beDispositionErrorMessages: errorMessages,
     } = this.props;
     const { activityName } = selectedDisposition;
@@ -287,6 +288,7 @@ Disposition.defaultProps = {
       isExpanded: false,
     },
   },
+  getNextError: '',
   saveInProgress: false,
   beDispositionErrorMessages: [],
   noTasksFound: false,
@@ -301,6 +303,7 @@ Disposition.propTypes = {
   beDispositionErrorMessages: PropTypes.arrayOf(PropTypes.string),
   enableGetNext: PropTypes.bool,
   EvalId: PropTypes.number.isRequired,
+  getNextError: PropTypes.string,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
