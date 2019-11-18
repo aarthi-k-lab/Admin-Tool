@@ -21,7 +21,7 @@ function getPreviousDispositionUrl() {
   return '/api/bpm-audit/audit/disposition/_evalNumbers';
 }
 
-function additionalLoanInfoUrl(evalId) {
+function getAdditionalLoanInfoUrl(evalId) {
   return `/api/bpm-audit/audit/process/eval/${evalId}`;
 }
 
@@ -149,27 +149,29 @@ function getModificationType(_, evalDetails) {
 }
 
 function getExpirationDate(evalDetails, groupName, additionalLoanInfo) {
-  switch (groupName) {
+  const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
+    ? DashboardModel.POSTMODSTAGER : groupName;
+  switch (group) {
     case DashboardModel.DOC_GEN:
       return evalDetails.lastPaidDate;
     case DashboardModel.DOCS_IN:
       return evalDetails.modDocsReceivedDate;
-    case (R.includes(groupName, DashboardModel.POSTMOD_TASKNAMES)):
-      return additionalLoanInfo[0].dueDate;
+    case DashboardModel.POSTMODSTAGER:
+      return !R.isEmpty(additionalLoanInfo) ? additionalLoanInfo[0].dueDate : null;
     default:
       return evalDetails.lastDocumentReceivedDate;
   }
 }
 
-function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName) {
-  const date = moment.tz(getExpirationDate(evalDetails, groupName), 'America/Chicago');
+function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo) {
+  const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo), 'America/Chicago');
   const today = moment.tz('America/Chicago');
   const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
   return generateTombstoneItem('Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
-function getCFPBExpirationDate(_, evalDetails, _pdd, _pd, groupName) {
-  const date = moment.tz(getExpirationDate(evalDetails, groupName), 'America/Chicago');
+function getCFPBExpirationDate(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo) {
+  const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo), 'America/Chicago');
   const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
   return generateTombstoneItem('CFPB Timeline Expiration Date', dateString);
 }
@@ -281,9 +283,12 @@ function getTombstoneItems(loanDetails,
   previousDispositionDetails,
   prioritizationDetails, groupName, additionalLoanInfo) {
   let dataGenerator = [];
-  switch (groupName) {
+  const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
+    ? DashboardModel.POSTMODSTAGER : groupName;
+  switch (group) {
     case DashboardModel.DOC_GEN:
     case DashboardModel.DOCS_IN:
+    case DashboardModel.POSTMODSTAGER:
       dataGenerator = [
         getLoanItem,
         getInvestorLoanItem,
@@ -351,6 +356,7 @@ async function fetchData(loanNumber, evalId, groupName) {
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
   const prioritizationUrl = getPrioritizationUrl();
+  const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -361,7 +367,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     },
   );
 
-  const fetchAdditionalLoanInfo = fetch(additionalLoanInfoUrl(evalId), {
+  const fetchAdditionalLoanInfo = fetch(additionalLoanInfoUrl, {
     method: 'GET',
     headers: { 'content-type': 'application/json' },
   });
@@ -369,19 +375,18 @@ async function fetchData(loanNumber, evalId, groupName) {
 
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
-    body: JSON.stringify({ evalIds: [evalId], groupName }),
+    body: JSON.stringify({ evalIds: [evalId], groupName: groupName.replace(' ', '_') }),
     headers: { 'content-type': 'application/json' },
   });
   const appGroupName = groupName;
-  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${appGroupName}`, {
+  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${appGroupName.replace(' ', '_')}`, {
     method: 'POST',
     body: JSON.stringify([evalId]),
     headers: { 'content-type': 'application/json' },
   });
 
   const evaluationInfoResponseP = fetch(evaluationInfoUrl);
-  const additionalLoanInfoP = R.includes(groupName, DashboardModel.POSTMOD_TASKNAMES)
-    ? fetchAdditionalLoanInfo(evalId) : null;
+  const additionalLoanInfoP = fetchAdditionalLoanInfo;
 
   const [loanInfoResponse,
     evaluationInfoResponse,
