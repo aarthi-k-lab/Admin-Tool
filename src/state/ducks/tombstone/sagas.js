@@ -24,12 +24,14 @@ function* fetchTombstoneData() {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const evalId = yield select(dashboardSelectors.evalId);
   const groupName = yield select(dashboardSelectors.groupName);
+  const postModTaskName = yield select(dashboardSelectors.stagerTaskName);
 
   // const evalId = '1928799';
   // const loanNumber = '596815091';
 
   try {
-    const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, groupName);
+    const group = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
+    const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, group);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
