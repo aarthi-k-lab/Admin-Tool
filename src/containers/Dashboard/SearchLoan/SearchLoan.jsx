@@ -39,12 +39,13 @@ class SearchLoan extends React.PureComponent {
 
   componentDidMount() {
     const {
-      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned,
+      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned, onClearStagerTaskName,
     } = this.props;
     const loanNumber = this.getParamsValue();
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
+    onClearStagerTaskName();
     onSearchLoan(loanNumber);
   }
 
@@ -351,6 +352,7 @@ SearchLoan.propTypes = {
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   onGetChecklistHistory: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
@@ -386,6 +388,7 @@ const mapDispatchToProps = dispatch => ({
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
 

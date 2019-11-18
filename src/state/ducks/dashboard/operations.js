@@ -61,7 +61,6 @@ const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf()
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
-  dispatch(saveStagerTaskName(null));
 };
 
 const onGetNext = dispatch => (payload) => {
