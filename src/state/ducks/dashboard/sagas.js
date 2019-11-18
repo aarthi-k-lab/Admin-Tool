@@ -39,7 +39,7 @@ import {
   HIDE_SAVING_LOADER,
   CHECKLIST_NOT_FOUND,
   TASKS_NOT_FOUND,
-  TASKS_LIMIT_EXCEEDED,
+  GET_NEXT_ERROR,
   TASKS_FETCH_ERROR,
   AUTO_SAVE_OPERATIONS,
   AUTO_SAVE_TRIGGER,
@@ -96,22 +96,7 @@ import {
 const {
   Messages:
   { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS },
-  CHECKLIST_TASKNAMES,
 } = DashboardModel;
-
-
-const appGroupNameToUserPersonaMap = {
-  'feuw-task-checklist': 'FEUW',
-  'beuw-task-checklist': 'BEUW',
-};
-
-function getUserPersona(appGroupName) {
-  const persona = appGroupNameToUserPersonaMap[appGroupName];
-  if (persona === undefined) {
-    return appGroupName;
-  }
-  return persona;
-}
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -298,22 +283,9 @@ function* fetchChecklistDetails(checklistId) {
   }
 }
 
-function* shouldRetriveChecklist(searchItem) {
-  const groupList = yield select(loginSelectors.getGroupList);
-  const appGroupName = getUserPersona(R.path(['payload', 'group'], searchItem).toLowerCase());
-  const hasChecklistAccess = groupList.includes(appGroupName.toLowerCase());
-  const taskName = R.path(['payload', 'taskName'], searchItem);
-  const isChecklistTask = CHECKLIST_TASKNAMES.includes(taskName);
-  const retriveChecklist = hasChecklistAccess && isChecklistTask;
-  return retriveChecklist;
-}
-
 function* fetchChecklistDetailsForSearchResult(searchItem) {
-  const retriveChecklist = yield call(shouldRetriveChecklist, searchItem);
-  if (retriveChecklist) {
-    const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
-    yield call(fetchChecklistDetails, checklistId);
-  }
+  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+  yield call(fetchChecklistDetails, checklistId);
 }
 
 // function* fetchLoanActivityDetails(evalDetails) {
@@ -387,7 +359,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     yield put({ type: SHOW_SAVING_LOADER });
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
-    const groupName = getUserPersona(R.propOr({}, 'group', payload));
+    const groupName = R.propOr({}, 'group', payload);
     const evalId = yield select(selectors.evalId);
     const wfTaskId = yield select(selectors.taskId);
     const assigneeName = yield select(checklistSelectors.getAgentName);
@@ -443,7 +415,7 @@ const saveDisposition = function* setDiposition(dispositionPayload) {
     yield put({ type: SHOW_SAVING_LOADER });
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
-    const group = getUserPersona(R.propOr({}, 'group', payload));
+    const group = R.propOr({}, 'group', payload);
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
@@ -559,7 +531,7 @@ function* saveGeneralChecklistDisposition(payload) {
   if (!payload.isFirstVisit
     && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
-    const groupName = getUserPersona(payload.appGroupName);
+    const groupName = payload.appGroupName;
     const agentName = yield select(checklistSelectors.getAgentName);
     const wfTaskId = yield select(selectors.taskId);
     const wfProcessId = yield select(selectors.processId);
@@ -663,7 +635,7 @@ function* getNext(action) {
       let taskName = '';
       if (group === DashboardModel.POSTMODSTAGER) {
         const stagerTaskName = yield select(selectors.stagerTaskName);
-        taskName = action.payload.activeTile || stagerTaskName;
+        taskName = action.payload.activeTile || stagerTaskName.activeTile;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
@@ -689,8 +661,11 @@ function* getNext(action) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
-      } else if (!R.isNil(R.path(['limitExceeded'], taskDetails))) {
-        yield put({ type: TASKS_LIMIT_EXCEEDED, payload: { isTasksLimitExceeded: true } });
+      } else if (!R.isNil(R.path(['getNextError'], taskDetails))) {
+        yield put({
+          type: GET_NEXT_ERROR,
+          payload: { isGetNextError: true, getNextError: taskDetails.getNextError },
+        });
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else {
@@ -747,6 +722,7 @@ function* endShift(action) {
       yield put(resetChecklistData());
       if (group === DashboardModel.POSTMODSTAGER) {
         yield put({ type: POSTMOD_END_SHIFT });
+        return;
       }
       yield put({ type: HIDE_LOADER });
       yield put({ type: SUCCESS_END_SHIFT });
@@ -814,7 +790,13 @@ function* assignLoan() {
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
     const userGroups = R.pathOr([], ['groupList'], user);
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}`, {});
+    const group = getGroup(groupName);
+    let taskName = '';
+    if (group === DashboardModel.POSTMODSTAGER) {
+      const stagerTaskName = yield select(selectors.stagerTaskName);
+      taskName = stagerTaskName.activeTile;
+    }
+    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null) {
       yield put({

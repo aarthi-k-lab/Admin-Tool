@@ -30,7 +30,7 @@ import {
   LOAD_TRIALSDETAIL_RESULT,
   LOAD_TRIALLETTER_RESULT,
   SET_TASK_UNDERWRITING_RESULT,
-  TASKS_LIMIT_EXCEEDED,
+  GET_NEXT_ERROR,
   GETNEXT_PROCESSED,
   PUT_PROCESS_NAME,
   SET_RESULT_OPERATION,
@@ -48,6 +48,7 @@ import {
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
+  CLEAR_POSTMOD_END_SHIFT,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -145,7 +146,12 @@ const reducer = (state = { firstVisit: true }, action) => {
         postModEndShift: true,
       };
     }
-
+    case CLEAR_POSTMOD_END_SHIFT: {
+      return {
+        ...state,
+        postModEndShift: false,
+      };
+    }
     case SEARCH_LOAN_RESULT: {
       let getSearchLoanResponse = {};
       if (action.payload) {
@@ -253,14 +259,16 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskId: null,
       };
     }
-    case TASKS_LIMIT_EXCEEDED: {
-      let isTasksLimitExceeded;
+    case GET_NEXT_ERROR: {
+      let isGetNextError;
+      let getNextError;
       if (action.payload) {
-        ({ isTasksLimitExceeded } = action.payload);
+        ({ isGetNextError, getNextError } = action.payload);
       }
       return {
         ...state,
-        isTasksLimitExceeded,
+        isGetNextError,
+        getNextError,
         evalId: null,
         loanNumber: null,
         taskId: null,

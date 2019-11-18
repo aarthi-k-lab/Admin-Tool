@@ -93,13 +93,14 @@ class StagerPage extends React.PureComponent {
   handleGetNextClick = () => {
     const {
       history, onGetNext, group,
-      isFirstVisit, dispositionCode, activeTile, setStagerTaskName,
+      isFirstVisit, dispositionCode, activeTile, setStagerTaskName, activeTab,
     } = this.props;
     onGetNext({
       appGroupName: group, isFirstVisit, dispositionCode, activeTile,
     });
     if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER) {
-      setStagerTaskName(activeTile);
+      const payload = { activeTab, activeTile };
+      setStagerTaskName(payload);
     }
     history.push('/postmodstager');
   }

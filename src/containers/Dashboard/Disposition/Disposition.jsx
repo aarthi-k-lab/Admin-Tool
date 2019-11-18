@@ -194,7 +194,8 @@ class Disposition extends Component {
       enableGetNext, isAssigned, noTasksFound, taskFetchError,
       user,
       showAssign,
-      isTasksLimitExceeded,
+      isGetNextError,
+      getNextError,
       beDispositionErrorMessages: errorMessages,
     } = this.props;
     const { activityName } = selectedDisposition;
@@ -223,14 +224,15 @@ class Disposition extends Component {
         <div styleName="scrollable-block">
           <section styleName="disposition-section">
             {
-              (noTasksFound || taskFetchError || isTasksLimitExceeded)
+              (noTasksFound || taskFetchError || isGetNextError)
                 ? DashboardModel.Messages.renderErrorNotification(
                   activityName,
                   enableGetNext, isAssigned, noTasksFound, taskFetchError,
                   errorMessages,
                   user,
                   showAssign,
-                  isTasksLimitExceeded,
+                  isGetNextError,
+                  getNextError,
                 ) : (
                   <>
                     <header styleName="para-title">
@@ -242,7 +244,8 @@ class Disposition extends Component {
                       errorMessages,
                       user,
                       showAssign,
-                      isTasksLimitExceeded,
+                      isGetNextError,
+                      getNextError,
                     )}
                     <button
                       disabled={enableGetNext || !isAssigned}
@@ -285,10 +288,11 @@ Disposition.defaultProps = {
       isExpanded: false,
     },
   },
+  getNextError: '',
   saveInProgress: false,
   beDispositionErrorMessages: [],
   noTasksFound: false,
-  isTasksLimitExceeded: false,
+  isGetNextError: false,
   taskFetchError: false,
   AppName: 'CMOD',
   ProcIdType: 'WF_PRCS_ID',
@@ -299,10 +303,11 @@ Disposition.propTypes = {
   beDispositionErrorMessages: PropTypes.arrayOf(PropTypes.string),
   enableGetNext: PropTypes.bool,
   EvalId: PropTypes.number.isRequired,
+  getNextError: PropTypes.string,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
-  isTasksLimitExceeded: PropTypes.bool,
+  isGetNextError: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
   noTasksFound: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
@@ -356,7 +361,8 @@ const mapStateToProps = state => ({
   saveInProgress: selectors.saveInProgress(state),
   showAssign: selectors.showAssign(state),
   noTasksFound: selectors.noTasksFound(state),
-  isTasksLimitExceeded: selectors.isTasksLimitExceeded(state),
+  isGetNextError: selectors.isGetNextError(state),
+  getNextError: selectors.getNextError(state),
   taskFetchError: selectors.taskFetchError(state),
   user: loginSelectors.getUser(state),
 });

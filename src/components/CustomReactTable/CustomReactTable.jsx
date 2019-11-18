@@ -41,8 +41,8 @@ class CustomReactTable extends React.PureComponent {
     return `${pointerStyle} tableRow`;
   }
 
-  static getCellContent(row, stagerTaskType) {
-    const pointerStyle = DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) ? 'pointer' : '';
+  static getCellContent(row, stagerTaskType, stagerTaskStatus) {
+    const pointerStyle = DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) && stagerTaskStatus !== 'Completed' ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
@@ -81,18 +81,6 @@ class CustomReactTable extends React.PureComponent {
           </div>
         );
     }
-  }
-
-  getFrontEndPath() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? '/frontend-checklist' : '/frontend-evaluation';
-  }
-
-  getBackendEndPath() {
-    return RouteAccess.hasBackendChecklistAccess(this.getGroups()) ? '/backend-checklist' : '/backend-evaluation';
-  }
-
-  getFrontEndGroup() {
-    return RouteAccess.hasFrontendChecklistAccess(this.getGroups()) ? 'feuw-task-checklist' : 'FEUW';
   }
 
   getGroups() {
@@ -146,7 +134,9 @@ class CustomReactTable extends React.PureComponent {
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
           columnObj.show = this.showColumns(columnName);
-          columnObj.Cell = row => this.constructor.getCellContent(row, stagerTaskType);
+          columnObj.Cell = row => this.constructor.getCellContent(
+            row, stagerTaskType, stagerTaskStatus,
+          );
           columnObj.filterMethod = (filter, row) => row[filter.id].toString() === filter.value;
           const dropDownValues = R.without(['', null], R.uniq(data.map(dataUnit => dataUnit[columnName])));
           columnObj.Filter = ({ filter, onChange }) => (
@@ -171,7 +161,7 @@ class CustomReactTable extends React.PureComponent {
     return columnData;
   }
 
-  getTrPropsType = (state, rowInfo, column, instance, stagerTaskType) => {
+  getTrPropsType = (state, rowInfo, column, instance, stagerTaskType, stagerTaskStatus) => {
     const { searchResponse } = this.props;
     if (rowInfo) {
       const { original } = rowInfo;
@@ -184,7 +174,7 @@ class CustomReactTable extends React.PureComponent {
       }
       return {
         onClick: (event) => {
-          this.handleRowClick(rowInfo, event, stagerTaskType);
+          this.handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus);
           instance.forceUpdate();
         },
       };
@@ -198,17 +188,21 @@ class CustomReactTable extends React.PureComponent {
     return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
   }
 
-  handleRowClick(rowInfo, event, stagerTaskType) {
+  handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus) {
     if (event.target.type === 'checkbox') {
       this.setState({ isRedirect: false });
       return;
     }
-    const { onSearchLoanWithTask, data, setStagerTaskName } = this.props;
+    const {
+      onSearchLoanWithTask, data, setStagerTaskName, setBeginSearch,
+    } = this.props;
     const { original } = rowInfo;
-    if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)) {
+    if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType) && stagerTaskStatus !== 'Completed') {
       this.setState({ isRedirect: true });
-      setStagerTaskName(stagerTaskType);
+      const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
+      setStagerTaskName(payload);
       onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'] });
+      setBeginSearch();
     } else {
       this.setState({ isRedirect: false });
     }
@@ -247,8 +241,8 @@ class CustomReactTable extends React.PureComponent {
           this.redirectPath = '/postmodstager';
           break;
         default:
-          this.redirectPath = this.getFrontEndPath();
-          group = this.getFrontEndGroup();
+          this.redirectPath = '/frontend-checklist';
+          group = 'FEUW';
       }
       if (isRedirect) {
         onGetGroupName(group);
@@ -285,8 +279,9 @@ class CustomReactTable extends React.PureComponent {
             filterable
             getTdProps={(
               state, rowInfo, column, instance,
-            ) => this.getTrPropsType(state, rowInfo, column, instance, data.stagerTaskType)
-            }
+            ) => this.getTrPropsType(
+              state, rowInfo, column, instance, data.stagerTaskType, data.stagerTaskStatus,
+            )}
             styleName="stagerTable"
           />
         </div>
@@ -308,6 +303,7 @@ const mapDispatchToProps = dispatch => ({
   onGetGroupName: operations.onGetGroupName(dispatch),
   setStagerTaskName: operations.setStagerTaskName(dispatch),
   onSearchLoanWithTask: operations.onSearchLoanWithTask(dispatch),
+  setBeginSearch: operations.setBeginSearch(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
 
@@ -341,6 +337,7 @@ CustomReactTable.propTypes = {
   }).isRequired,
   searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
+  setBeginSearch: PropTypes.func.isRequired,
   setStagerTaskName: PropTypes.func.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,

@@ -33,6 +33,7 @@ import {
   onSearchLoanWithTaskAction,
   saveStagerTaskName,
   onSelectModReversal,
+  clearPostModEndShitf,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -55,6 +56,9 @@ const onDispositionSelect = dispatch => (dispositionPayload) => {
 
 const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
+const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf());
+
+
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
   dispatch(saveStagerTaskName(null));
@@ -69,6 +73,10 @@ const onGetNext = dispatch => (payload) => {
 
 const setStagerTaskName = dispatch => (payload) => {
   dispatch(saveStagerTaskName(payload));
+};
+
+const onClearStagerTaskName = dispatch => () => {
+  dispatch(saveStagerTaskName({}));
 };
 
 const onClearBEDisposition = dispatch => () => {
@@ -196,6 +204,8 @@ const operations = {
   onSearchLoanWithTask,
   setStagerTaskName,
   selectModReversal,
+  onClearPostModEndShitf,
+  onClearStagerTaskName,
 };
 
 export default operations;

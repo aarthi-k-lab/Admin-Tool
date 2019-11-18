@@ -20,8 +20,6 @@ class UserReport extends React.PureComponent {
     super(props);
     this.mapRepo = {
       '/frontend-checklist': 'INCOME CALCULATION Agent Dashboard',
-      '/frontend-evaluation': 'INCOME CALCULATION Agent Dashboard',
-      '/backend-evaluation': 'UNDERWRITNG Agent Dashboard',
       '/backend-checklist': 'UNDERWRITNG Agent Dashboard',
       '/doc-processor': 'PROCESSING Agent Dashboard',
       '/doc-gen': 'DOC GENERATION Agent Dashboard',

@@ -507,7 +507,7 @@ describe('watch endShift ', () => {
 describe('endShift worker', () => {
   const action = {
     payload: {
-      appGroupName: 'feuw-task-checklist',
+      appGroupName: 'FEUW',
       isFirstVisit: true,
       dispositionCode: 'missingDocs',
     },
@@ -519,7 +519,7 @@ describe('endShift worker', () => {
   });
 
   it('should dispatch app/dasboard/SHOW_LOADER', () => {
-    expect(saga.next('feuw-task-checklist').value)
+    expect(saga.next('FEUW').value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
@@ -935,7 +935,7 @@ describe('assign Loan', () => {
   });
   it('should call assign Api', () => {
     expect(saga.next(18008401081).value)
-      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta', {}));
+      .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta&taskName=', {}));
   });
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {

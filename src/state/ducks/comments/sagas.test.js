@@ -1,9 +1,10 @@
 import {
-  takeEvery, call, put,
+  takeEvery, call, put, select,
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import { TestExports } from './sagas';
+import selectors from '../dashboard/selectors';
 
 
 import {
@@ -96,8 +97,13 @@ describe('post Comment', () => {
       .toEqual(call(Api.callPost, '/api/utility/comment', payload.payload));
   });
 
-  it('should call firesnackbar ', () => {
+  it('should get user group name', () => {
     expect(saga.next(response).value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call firesnackbar ', () => {
+    expect(saga.next('FEUW').value)
       .toEqual(call(TestExports.fireSnackBar, snackBarData));
   });
 
