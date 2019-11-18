@@ -4,6 +4,7 @@ const MULTILINE_TEXT = 'multiline-text';
 const NUMBER = 'number';
 const DATE = 'date';
 const DROPDOWN = 'dropdown';
+const CHECKBOX = 'checkbox';
 
 const componentTypes = {
   RADIO_BUTTONS,
@@ -12,6 +13,7 @@ const componentTypes = {
   NUMBER,
   DROPDOWN,
   DATE,
+  CHECKBOX,
 };
 
 export default componentTypes;
