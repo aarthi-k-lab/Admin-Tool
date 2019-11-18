@@ -6,6 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import RadioButtons from './RadioButtons';
+import CheckBox from './Checkbox';
 import TextFields from './TextFields';
 import BasicDatePicker from './BasicDatePicker';
 import styles from './Checklist.css';
@@ -24,6 +25,8 @@ class Checklist extends React.PureComponent {
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
     this.state = {
       multilineTextDirtyValues: {},
       isDialogOpen: false,
@@ -92,6 +95,31 @@ class Checklist extends React.PureComponent {
     };
   }
 
+  handleCheckbox(id, taskCode, multilineTextDirtyValues) {
+    const { onChange } = this.props;
+    onChange(id, multilineTextDirtyValues[id], taskCode);
+  }
+
+  handleCheckboxChange(id, taskCode, oldValues) {
+    return (event) => {
+      let multilineTextDirtyValues = {};
+      if (R.isEmpty(oldValues) || R.isNil(oldValues)) {
+        multilineTextDirtyValues = R.assoc(id, [event.target.value], oldValues);
+      } else if (R.contains(event.target.value, oldValues)) {
+        const checkboxItems = R.without([event.target.value],
+          oldValues);
+        const value = R.isEmpty(checkboxItems) ? null : checkboxItems;
+        multilineTextDirtyValues = R.assoc(id, value, oldValues);
+      } else {
+        multilineTextDirtyValues = R.assoc(id, [...oldValues, event.target.value], oldValues);
+      }
+      this.setState({
+        multilineTextDirtyValues,
+      });
+      this.handleCheckbox(id, taskCode, multilineTextDirtyValues);
+    };
+  }
+
   handleTextChange(id) {
     return (event) => {
       const { multilineTextDirtyValues: oldValues } = this.state;
@@ -154,7 +182,7 @@ class Checklist extends React.PureComponent {
     additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, CHECKBOX,
     } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
@@ -166,6 +194,20 @@ class Checklist extends React.PureComponent {
               onChange={onChange}
               options={options}
               selectedValue={value}
+              title={title}
+            />
+          </Fragment>
+        );
+      }
+      case CHECKBOX: {
+        const onChange = this.handleCheckboxChange(id, taskCode, value);
+        return (
+          <Fragment key={id}>
+            <CheckBox
+              disabled={disabled}
+              onChange={onChange}
+              options={options}
+              selectedValue={value || []}
               title={title}
             />
           </Fragment>
