@@ -32,10 +32,12 @@ class LeftNav extends React.PureComponent {
       evalId,
       isAssigned,
       onClearStagerResponse,
+      onClearStagerTaskName,
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
+    onClearStagerTaskName();
     onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
     if (path === '/stager') {
       onClearStagerResponse();
@@ -79,6 +81,7 @@ LeftNav.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   path: PropTypes.string.isRequired,
   user: PropTypes.shape({
@@ -101,6 +104,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
+  onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
 
 });

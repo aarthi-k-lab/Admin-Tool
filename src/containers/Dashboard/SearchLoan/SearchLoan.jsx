@@ -39,12 +39,13 @@ class SearchLoan extends React.PureComponent {
 
   componentDidMount() {
     const {
-      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned,
+      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned, onClearStagerTaskName,
     } = this.props;
     const loanNumber = this.getParamsValue();
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
+    onClearStagerTaskName();
     onSearchLoan(loanNumber);
   }
 
@@ -228,13 +229,13 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return (this.canRedirect) ? <Redirect to="/frontend-checklist" /> : null;
+    return (this.canRedirect) ? <Redirect to="/" /> : null;
   }
 
   render() {
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/frontend-checklist">&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/">&lt; BACK</Link></span>
         {this.renderRejectResults()}
         {this.renderSearchResults()}
       </>
@@ -351,6 +352,7 @@ SearchLoan.propTypes = {
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAutoSave: PropTypes.func.isRequired,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   onGetChecklistHistory: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
@@ -386,6 +388,7 @@ const mapDispatchToProps = dispatch => ({
   onSearchLoan: operations.onSearchLoan(dispatch),
   onSelectEval: operations.onSelectEval(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
 });
 
