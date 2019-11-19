@@ -229,13 +229,13 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return (this.canRedirect) ? <Redirect to="/frontend-checklist" /> : null;
+    return (this.canRedirect) ? <Redirect to="/" /> : null;
   }
 
   render() {
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/frontend-checklist">&lt; BACK</Link></span>
+        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/">&lt; BACK</Link></span>
         {this.renderRejectResults()}
         {this.renderSearchResults()}
       </>
