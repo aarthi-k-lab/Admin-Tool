@@ -133,7 +133,8 @@ class CustomReactTable extends React.PureComponent {
           const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
-          columnObj.show = this.showColumns(columnName);
+          // as of now it is not needed
+          // columnObj.show = this.showColumns(columnName);
           columnObj.Cell = row => this.constructor.getCellContent(
             row, stagerTaskType, stagerTaskStatus,
           );
@@ -183,9 +184,10 @@ class CustomReactTable extends React.PureComponent {
   }
 
 
+  // as of now it is not needed
   showColumns(columnName) {
     const { data: { stagerTaskType } } = this.props;
-    return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
+    return columnName === 'TKIID' ? !DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) : true;
   }
 
   handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus) {
