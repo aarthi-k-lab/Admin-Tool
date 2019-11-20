@@ -75,6 +75,11 @@ describe('fetchTombstoneData', () => {
       .toEqual(select(dashboardSelectors.groupName));
   });
 
+  it('should select groupName from store', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(select(dashboardSelectors.stagerTaskName));
+  });
+
   it('should call sods api to fetch loan details', () => {
     expect(saga.next('FEUW').value)
       .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FEUW'));
@@ -105,9 +110,15 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
       .toEqual(select(dashboardSelectors.evalId));
   });
 
+
   it('should select groupName from store', () => {
     expect(saga.next(1161415).value)
       .toEqual(select(dashboardSelectors.groupName));
+  });
+
+  it('should select Stager Task from store', () => {
+    expect(saga.next('FEUW').value)
+      .toEqual(select(dashboardSelectors.stagerTaskName));
   });
 
   it('should call sods api to fetch loan details', () => {

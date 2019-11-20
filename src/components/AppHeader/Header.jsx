@@ -100,11 +100,12 @@ class Header extends React.Component {
 
   handleLandingpage() {
     const {
-      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned,
+      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned, onClearStagerTaskName,
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
+    onClearStagerTaskName();
     onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
 
@@ -205,6 +206,7 @@ Header.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearSelectReject: PropTypes.func.isRequired,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   setBeginSearch: PropTypes.func.isRequired,
   setUserRole: PropTypes.func.isRequired,
@@ -233,6 +235,7 @@ const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   onClearSelectReject: operations.onClearSelectReject(dispatch),
+  onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   setBeginSearch: operations.setBeginSearch(dispatch),
 });
 const HeaderContainer = connect(

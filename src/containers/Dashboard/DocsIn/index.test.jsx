@@ -10,7 +10,7 @@ describe('DocsIn ', () => {
     // console.log(wrapper.debug());
     const grid = wrapper.find('ContentHeader');
 
-    expect(grid).toHaveLength(1);
+    expect(grid).toHaveLength(0);
   });
 
   it('shows DocsIn widget without in progress ', () => {
