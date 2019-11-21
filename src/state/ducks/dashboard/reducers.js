@@ -236,6 +236,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         isAssigned: true,
         clearSearch: true,
         groupName: state.groupName,
+        stagerTaskName: state.stagerTaskName,
         getSearchLoanResponse: {},
       };
     }
