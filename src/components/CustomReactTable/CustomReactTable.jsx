@@ -133,7 +133,7 @@ class CustomReactTable extends React.PureComponent {
           const columnWidth = columnName === 'Trial Paid Dates' ? 450 : 160;
           columnObj.minWidth = columnWidth;
           columnObj.accessor = columnName;
-          columnObj.show = this.showColumns(columnName);
+          // columnObj.show = this.showColumns(columnName);
           columnObj.Cell = row => this.constructor.getCellContent(
             row, stagerTaskType, stagerTaskStatus,
           );
