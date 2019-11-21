@@ -96,7 +96,7 @@ class StagerPage extends React.PureComponent {
       isFirstVisit, dispositionCode, activeTile, setStagerTaskName, activeTab,
     } = this.props;
     onGetNext({
-      appGroupName: group, isFirstVisit, dispositionCode, activeTile,
+      appGroupName: group, isFirstVisit, dispositionCode, activeTile, activeTab,
     });
     if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER) {
       const payload = { activeTab, activeTile };
