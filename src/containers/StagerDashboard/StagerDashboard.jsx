@@ -52,7 +52,7 @@ class StagerDashboard extends React.Component {
     triggerStagerValue(stager || getStagerValue(group));
     onGetGroupName(group);
     getDashboardCounts();
-    if (stagerTaskName) {
+    if (!R.isEmpty(stagerTaskName)) {
       onClearPostModEndShitf();
       this.onStatusCardClick(stagerTaskName.activeTile, stagerTaskName.activeTab);
     }
