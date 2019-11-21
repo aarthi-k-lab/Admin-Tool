@@ -66,7 +66,7 @@ const config = merge(
           },
         },
         '/api/stager': {
-          target: 'https://cmodstagerqa.int.mrcooper.io',
+          target: 'https://cmodstagerdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -74,7 +74,7 @@ const config = merge(
           },
         },
         '/api/disposition': {
-          target: 'https://cmoddispositionqa.int.mrcooper.io',
+          target: 'https://cmoddispositiondev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -82,7 +82,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          target: 'https://cmodworkassignqa.int.mrcooper.io',
+          target: 'https://cmodworkassigndev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -90,7 +90,7 @@ const config = merge(
           },
         },
         '/api/search-svc': {
-          target: 'https://cmodsearchengineqa.int.mrcooper.io',
+          target: 'https://cmodsearchenginedev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -98,7 +98,7 @@ const config = merge(
           },
         },
         '/api/userskills': {
-          target: 'https://cmoduserskillqa.int.mrcooper.io',
+          target: 'https://cmoduserskilldev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -106,7 +106,7 @@ const config = merge(
           },
         },
         '/api/release': {
-          target: 'https://cmodactivateservqa.int.mrcooper.io',
+          target: 'https://cmodactivateservdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -114,7 +114,7 @@ const config = merge(
           },
         },
         '/api/tkams': {
-          target: 'https://cmodtkamsqa.int.mrcooper.io',
+          target: 'https://cmodtkamsdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -122,7 +122,7 @@ const config = merge(
           },
         },
         '/api/bpm-audit': {
-          target: 'https://cmodauditbpmeventsqa.int.mrcooper.io',
+          target: 'https://cmodauditbpmeventsdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -130,7 +130,7 @@ const config = merge(
           },
         },
         '/api/task-engine': {
-          target: 'http://localhost:7600',
+          target: 'https://cmodtaskenginedev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -138,7 +138,7 @@ const config = merge(
           },
         },
         '/api/utility': {
-          target: 'https://cmodutilityqa.int.mrcooper.io',
+          target: 'https://cmodutilitydev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -162,7 +162,7 @@ const config = merge(
           },
         },
         '/api/dataservice': {
-          target: 'https://cmoddataservqa.int.mrcooper.io',
+          target: 'https://cmoddataservdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
