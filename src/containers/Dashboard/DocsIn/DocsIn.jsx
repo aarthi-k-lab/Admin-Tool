@@ -343,7 +343,6 @@ class DocsIn extends React.PureComponent {
     const { tableData } = this.props;
     return (
       <Grid
-        item
         style={{
           textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '16rem',
         }}
@@ -499,7 +498,7 @@ class DocsIn extends React.PureComponent {
             {!isPageTypeDocsIn(bulkOrderPageType)
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
