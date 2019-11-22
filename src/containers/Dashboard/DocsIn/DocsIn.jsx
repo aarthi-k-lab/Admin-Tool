@@ -176,20 +176,27 @@ class DocsIn extends React.PureComponent {
 
   onValueChange(event) {
     let LoanStates = [];
+    let disableSubmit = '';
     const { groupName } = this.props;
+    const { modReversalReason, loansNumber } = this.state;
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
     if (dualGroup) {
       LoanStates = getStagerValues(event.target.value)
-      || getPostModStagerValues(event.target.value);
+        || getPostModStagerValues(event.target.value);
     } else if (postModGroupCheck) {
       LoanStates = getPostModStagerValues(event.target.value);
     } else {
       LoanStates = getStagerValues(event.target.value);
     }
     const { onSelectModReversal } = this.props;
-    if (event.target.value === 'modReversal') onSelectModReversal();
-    this.setState({ value: event.target.value, selectedState: LoanStates[0].value });
+    if (event.target.value === 'modReversal') {
+      onSelectModReversal();
+      disableSubmit = modReversalReason && loansNumber ? '' : 'disabled';
+    } else disableSubmit = loansNumber ? '' : 'disabled';
+    this.setState({
+      value: event.target.value, selectedState: LoanStates[0].value, isDisabled: disableSubmit,
+    });
   }
 
   getMessage() {
@@ -210,17 +217,10 @@ class DocsIn extends React.PureComponent {
     return `${countLoan} loans have been processed.`;
   }
 
-  showBulkOrderPage() {
-    const { onSelect } = this.props;
-    onSelect();
-  }
-
-  handleChangeInState(event) {
-    this.setState({ selectedState: event.target.value });
-  }
-
-  handleChangeModReversalReasons(event) {
-    this.setState({ modReversalReason: event.target.value });
+  getSubmitState(value) {
+    const { modReversalReason, value: stateValue } = this.state;
+    if (stateValue === 'modReversal') return ((value.trim() && modReversalReason !== '') ? '' : 'disabled');
+    return (value.trim() ? '' : 'disabled');
   }
 
   handleBackButton() {
@@ -229,11 +229,25 @@ class DocsIn extends React.PureComponent {
     else history.push('/stager');
   }
 
+  handleChangeInState(event) {
+    this.setState({ selectedState: event.target.value });
+  }
+
+  handleChangeModReversalReasons(event) {
+    const { loansNumber } = this.state;
+    this.setState({ modReversalReason: event.target.value, isDisabled: loansNumber !== '' ? '' : 'disabled' });
+  }
+
+  showBulkOrderPage() {
+    const { onSelect } = this.props;
+    onSelect();
+  }
+
   handleChange(event) {
     const { onFailedLoanValidation } = this.props;
     this.setState({
       loansNumber: event.target.value,
-      isDisabled: (event.target.value.trim() ? '' : 'disabled'),
+      isDisabled: this.getSubmitState(event.target.value),
     });
     const payload = {};
     onFailedLoanValidation(payload);
@@ -336,7 +350,6 @@ class DocsIn extends React.PureComponent {
     const { tableData } = this.props;
     return (
       <Grid
-        item
         style={{
           textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '16rem',
         }}
@@ -492,7 +505,7 @@ class DocsIn extends React.PureComponent {
             {!isPageTypeDocsIn(bulkOrderPageType)
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />

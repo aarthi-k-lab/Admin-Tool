@@ -38,6 +38,7 @@ import {
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
+  CLEAR_BULKUPLOAD_TABLEDATA,
 } from './types';
 
 
@@ -150,6 +151,10 @@ const onSentToUnderwritingAction = () => ({
   type: SET_TASK_UNDERWRITING,
 });
 
+const clearBulkUploadDataAction = () => ({
+  type: CLEAR_BULKUPLOAD_TABLEDATA,
+});
+
 const saveStagerTaskName = stagerTaskName => ({
   type: SET_STAGER_TASK_NAME,
   payload: stagerTaskName,
@@ -250,4 +255,5 @@ export {
   saveStagerTaskName,
   onSelectModReversal,
   clearPostModEndShitf,
+  clearBulkUploadDataAction,
 };

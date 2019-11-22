@@ -632,12 +632,13 @@ function* getNext(action) {
       const user = yield select(loginSelectors.getUser);
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
-      let taskName = '';
+      let postmodtaskName = '';
       if (group === DashboardModel.POSTMODSTAGER) {
         const stagerTaskName = yield select(selectors.stagerTaskName);
-        taskName = action.payload.activeTile || stagerTaskName.activeTile;
+        const taskName = action.payload.activeTile || stagerTaskName.activeTile;
+        postmodtaskName = taskName === 'Recordation' ? `${taskName}-${action.payload.activeTab.replace(/ /g, '') || stagerTaskName.activeTab.replace(/ /g, '')}` : taskName;
       }
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${taskName}`);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
