@@ -49,6 +49,7 @@ import {
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
+  CLEAR_BULKUPLOAD_TABLEDATA,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -439,6 +440,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         resultOperation,
         tableData: [],
         loading: false,
+      };
+    }
+
+    case CLEAR_BULKUPLOAD_TABLEDATA: {
+      return {
+        ...state,
+        tableData: [],
       };
     }
 
