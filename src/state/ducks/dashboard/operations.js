@@ -34,6 +34,7 @@ import {
   saveStagerTaskName,
   onSelectModReversal,
   clearPostModEndShitf,
+  clearBulkUploadDataAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -72,6 +73,10 @@ const onGetNext = dispatch => (payload) => {
 
 const setStagerTaskName = dispatch => (payload) => {
   dispatch(saveStagerTaskName(payload));
+};
+
+const onClearBulkUploadDataAction = dispatch => (payload) => {
+  dispatch(clearBulkUploadDataAction(payload));
 };
 
 const onClearStagerTaskName = dispatch => () => {
@@ -205,6 +210,7 @@ const operations = {
   selectModReversal,
   onClearPostModEndShitf,
   onClearStagerTaskName,
+  onClearBulkUploadDataAction,
 };
 
 export default operations;
