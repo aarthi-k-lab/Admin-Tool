@@ -176,7 +176,9 @@ class DocsIn extends React.PureComponent {
 
   onValueChange(event) {
     let LoanStates = [];
+    let disableSubmit = '';
     const { groupName } = this.props;
+    const { modReversalReason, loansNumber } = this.state;
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
     if (dualGroup) {
@@ -188,8 +190,13 @@ class DocsIn extends React.PureComponent {
       LoanStates = getStagerValues(event.target.value);
     }
     const { onSelectModReversal } = this.props;
-    if (event.target.value === 'modReversal') onSelectModReversal();
-    this.setState({ value: event.target.value, selectedState: LoanStates[0].value });
+    if (event.target.value === 'modReversal') {
+      onSelectModReversal();
+      disableSubmit = modReversalReason && loansNumber ? '' : 'disabled';
+    } else disableSubmit = loansNumber ? '' : 'disabled';
+    this.setState({
+      value: event.target.value, selectedState: LoanStates[0].value, isDisabled: disableSubmit,
+    });
   }
 
   getMessage() {
