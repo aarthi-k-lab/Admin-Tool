@@ -35,6 +35,7 @@ import {
   SELECT_REJECT_SAGA,
   CLEAR_SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK_SAGA,
+  SET_STAGER_VALUE_STATE,
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
@@ -160,6 +161,11 @@ const saveStagerTaskName = stagerTaskName => ({
   payload: stagerTaskName,
 });
 
+const saveStagerValueAndState = payload => ({
+  type: SET_STAGER_VALUE_STATE,
+  payload,
+});
+
 const onSendToDocGenAction = isStager => ({
   type: SET_TASK_SENDTO_DOCGEN,
   payload: isStager,
@@ -253,6 +259,7 @@ export {
   clearSelectReject,
   onSearchLoanWithTaskAction,
   saveStagerTaskName,
+  saveStagerValueAndState,
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,

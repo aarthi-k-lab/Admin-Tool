@@ -46,6 +46,7 @@ import {
   CLEAR_SELECT_REJECT,
   SEARCH_LOAN_WITH_TASK,
   SET_STAGER_TASK_NAME,
+  SET_STAGER_VALUE_STATE,
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
@@ -115,6 +116,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         stagerTaskName: action.payload,
+      };
+    }
+    case SET_STAGER_VALUE_STATE: {
+      return {
+        ...state,
+        stagerValueAndState: action.payload,
       };
     }
     case CLEAR_FIRST_VISIT: {

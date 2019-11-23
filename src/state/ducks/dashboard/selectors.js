@@ -51,6 +51,7 @@ const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const tableData = state => R.pathOr(null, ['dashboard', 'tableData'], state);
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
+const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
 
 
@@ -150,6 +151,7 @@ const selectors = {
   getRejectResponse,
   searchLoanTaskResponse,
   stagerTaskName,
+  stagerValueState,
   getModReversalReasons,
   isPostModEndShift,
 };

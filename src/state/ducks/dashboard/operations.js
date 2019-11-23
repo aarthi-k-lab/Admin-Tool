@@ -31,6 +31,7 @@ import {
   selectReject,
   clearSelectReject,
   onSearchLoanWithTaskAction,
+  saveStagerValueAndState,
   saveStagerTaskName,
   onSelectModReversal,
   clearPostModEndShitf,
@@ -73,6 +74,10 @@ const onGetNext = dispatch => (payload) => {
 
 const setStagerTaskName = dispatch => (payload) => {
   dispatch(saveStagerTaskName(payload));
+};
+
+const setStagerValueAndState = dispatch => (payload) => {
+  dispatch(saveStagerValueAndState(payload));
 };
 
 const onClearBulkUploadDataAction = dispatch => (payload) => {
@@ -207,6 +212,7 @@ const operations = {
   onClearSelectReject,
   onSearchLoanWithTask,
   setStagerTaskName,
+  setStagerValueAndState,
   selectModReversal,
   onClearPostModEndShitf,
   onClearStagerTaskName,
