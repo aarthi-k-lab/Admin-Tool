@@ -552,7 +552,7 @@ DocsIn.defaultProps = {
   ],
   onSelectModReversal: () => { },
   modReversalReasons: [],
-  setStagerValueAndState: {},
+  setStagerValueAndState: () => {},
 };
 
 DocsIn.propTypes = {
@@ -569,10 +569,7 @@ DocsIn.propTypes = {
     level: PropTypes.string,
     status: PropTypes.string,
   }),
-  setStagerValueAndState: PropTypes.shape({
-    selectedState: PropTypes.string,
-    value: PropTypes.string,
-  }),
+  setStagerValueAndState: PropTypes.func,
   tableData: PropTypes.arrayOf(
     PropTypes.shape({
       evalId: PropTypes.string,
