@@ -498,10 +498,11 @@ function* savePostModChklistDisposition(payload) {
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
   const taskId = yield select(selectors.taskId);
+  const evalId = yield select(selectors.evalId);
   const disposition = payload.dispositionCode;
   try {
     if (!payload.isFirstVisit) {
-      const saveResponse = yield call(Api.callGet, `/api/workassign/disposition?userId=${userPrincipalName}&taskId=${taskId}&disposition=${disposition}`);
+      const saveResponse = yield call(Api.callPost, `/api/disposition/stager?evalId=${evalId}&userId=${userPrincipalName}&taskId=${taskId}&disposition=${disposition}`);
       yield put({
         type: SET_GET_NEXT_STATUS,
         payload: R.isEmpty(saveResponse.message),
