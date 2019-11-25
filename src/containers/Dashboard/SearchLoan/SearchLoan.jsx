@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
-import { Link, Redirect, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
@@ -26,7 +26,6 @@ class SearchLoan extends React.PureComponent {
       isRedirect: false,
     };
     this.redirectPath = '';
-    this.canRedirect = false;
     this.renderSearchResults = this.renderSearchResults.bind(this);
     this.renderRejectResults = this.renderRejectResults.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
@@ -47,16 +46,6 @@ class SearchLoan extends React.PureComponent {
     }
     onClearStagerTaskName();
     onSearchLoan(loanNumber);
-  }
-
-  componentDidUpdate() {
-    const { onSearchLoan } = this.props;
-    const loanNumber = this.getParamsValue();
-    const validLoanNumber = this.validateLoanNumber();
-    if (validLoanNumber) {
-      onSearchLoan(loanNumber);
-    }
-    this.canRedirect = true;
   }
 
   getLoanActivityPath() {
@@ -229,7 +218,7 @@ class SearchLoan extends React.PureComponent {
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
-    return (this.canRedirect) ? <Redirect to="/" /> : null;
+    return null;
   }
 
   render() {
