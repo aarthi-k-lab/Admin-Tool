@@ -200,7 +200,8 @@ function* onSelectReject(payload) {
       payload: rejectResponse,
     });
   }
-  yield call(searchLoan, loanNumber);
+  const searchPayload = { payload: loanNumber };
+  yield call(searchLoan, searchPayload);
 }
 
 function* onSearchWithTask(payload) {
