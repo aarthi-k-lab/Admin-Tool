@@ -157,16 +157,16 @@ class DocsIn extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { groupName } = this.props;
+    const { groupName, setStagerValueAndState } = this.props;
     const isPostModGroup = groupName === DashboardModel.POSTMODSTAGER;
+    let valueState = {};
     if (isPostModGroup) {
-      this.setState({ value: 'FNMA QC', selectedState: 'Complete' });
+      valueState = { value: 'FNMA QC', selectedState: 'Complete' };
     } else {
-      this.setState({
-        value: 'Value',
-        selectedState: 'ORDERED',
-      });
+      valueState = { value: 'Value', selectedState: 'ORDERED' };
     }
+    setStagerValueAndState(valueState);
+    this.setState(valueState);
   }
 
 
@@ -177,7 +177,7 @@ class DocsIn extends React.PureComponent {
   onValueChange(event) {
     let LoanStates = [];
     let disableSubmit = '';
-    const { groupName } = this.props;
+    const { groupName, setStagerValueAndState } = this.props;
     const { modReversalReason, loansNumber } = this.state;
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
@@ -194,9 +194,11 @@ class DocsIn extends React.PureComponent {
       onSelectModReversal();
       disableSubmit = modReversalReason && loansNumber ? '' : 'disabled';
     } else disableSubmit = loansNumber ? '' : 'disabled';
-    this.setState({
+    const valueState = {
       value: event.target.value, selectedState: LoanStates[0].value, isDisabled: disableSubmit,
-    });
+    };
+    setStagerValueAndState(valueState);
+    this.setState(valueState);
   }
 
   getMessage() {
@@ -550,6 +552,7 @@ DocsIn.defaultProps = {
   ],
   onSelectModReversal: () => { },
   modReversalReasons: [],
+  setStagerValueAndState: () => {},
 };
 
 DocsIn.propTypes = {
@@ -566,6 +569,7 @@ DocsIn.propTypes = {
     level: PropTypes.string,
     status: PropTypes.string,
   }),
+  setStagerValueAndState: PropTypes.func,
   tableData: PropTypes.arrayOf(
     PropTypes.shape({
       evalId: PropTypes.string,
@@ -600,6 +604,7 @@ const mapDispatchToProps = dispatch => ({
   onLoansSubmit: operations.onLoansSubmit(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
   onSelectModReversal: operations.selectModReversal(dispatch),
+  setStagerValueAndState: operations.setStagerValueAndState(dispatch),
 });
 
 

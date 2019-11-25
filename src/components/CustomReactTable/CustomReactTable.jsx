@@ -183,6 +183,7 @@ class CustomReactTable extends React.PureComponent {
   }
 
 
+  // as of now it is not needed
   showColumns(columnName) {
     const { data: { stagerTaskType } } = this.props;
     return columnName === 'Assigned To' ? (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)) : true;
