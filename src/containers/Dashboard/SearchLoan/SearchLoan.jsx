@@ -48,6 +48,16 @@ class SearchLoan extends React.PureComponent {
     onSearchLoan(loanNumber);
   }
 
+  componentDidUpdate() {
+    const { onSearchLoan } = this.props;
+    const loanNumber = this.getParamsValue();
+    const validLoanNumber = this.validateLoanNumber();
+    if (validLoanNumber) {
+      onSearchLoan(loanNumber);
+    }
+    this.canRedirect = true;
+  }
+
   getLoanActivityPath() {
     const { user } = this.props;
     const groups = user && user.groupList;
