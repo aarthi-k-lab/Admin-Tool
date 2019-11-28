@@ -238,6 +238,7 @@ class CustomReactTable extends React.PureComponent {
         case 'Recordation - ToOrder':
         case 'Recordation':
         case 'Send Mod Agreement':
+        case 'Pending Buyout - Countersign':
           group = 'POSTMOD';
           this.redirectPath = '/postmodstager';
           break;
