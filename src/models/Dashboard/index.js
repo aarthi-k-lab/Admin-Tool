@@ -13,7 +13,7 @@ const DOCS_IN = 'DOCSIN';
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
 const ALL_STAGER = 'ALLSTAGER';
-const POSTMOD_TASKNAMES = ['Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement'];
+const POSTMOD_TASKNAMES = ['Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement', 'Pending Buyout - Countersign'];
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
