@@ -369,7 +369,7 @@ class DocsIn extends React.PureComponent {
 
   handleloansSubmitStager() {
     const {
-      loansNumber, value, selectedState, modReversalReason, selectedStagerTaskOptions
+      loansNumber, value, selectedState, modReversalReason, selectedStagerTaskOptions,
     } = this.state;
     const {
       onLoansSubmit, user, onFailedLoanValidation, bulkOrderPageType,
@@ -377,10 +377,10 @@ class DocsIn extends React.PureComponent {
     let statusName = '';
     if (validateLoanFormat(loansNumber)) {
       const loanNumbersList = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-      if(selectedStagerTaskOptions) {
+      if (selectedStagerTaskOptions) {
         statusName = selectedStagerTaskOptions;
-      }else {
-        statusName = value === 'modReversal' ? modReversalReason : selectedState
+      } else {
+        statusName = value === 'modReversal' ? modReversalReason : selectedState;
       }
       const payload = {
         loanNumber: loanNumbersList,
@@ -629,7 +629,7 @@ class DocsIn extends React.PureComponent {
             {!isPageTypeDocsIn(bulkOrderPageType)
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
-            <Grid item xs={5}>
+            <Grid item xs={4}>
               <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
