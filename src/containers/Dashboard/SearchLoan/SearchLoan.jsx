@@ -38,21 +38,22 @@ class SearchLoan extends React.PureComponent {
 
   componentDidMount() {
     const {
-      onSearchLoan, evalId, enableGetNext, onAutoSave, isAssigned, onClearStagerTaskName,
+      evalId, enableGetNext, onAutoSave, isAssigned, onClearStagerTaskName,
     } = this.props;
-    const loanNumber = this.getParamsValue();
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
     onClearStagerTaskName();
-    onSearchLoan(loanNumber);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { onSearchLoan } = this.props;
+    const { searchLoanResult } = prevProps;
     const loanNumber = this.getParamsValue();
     const validLoanNumber = this.validateLoanNumber();
-    if (validLoanNumber) {
+    const exisitngSearch = searchLoanResult.loanNumber
+      ? loanNumber !== searchLoanResult.loanNumber.toString() : true;
+    if (validLoanNumber && exisitngSearch) {
       onSearchLoan(loanNumber);
     }
     this.canRedirect = true;
