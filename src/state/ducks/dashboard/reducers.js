@@ -108,8 +108,6 @@ const reducer = (state = { firstVisit: true }, action) => {
         unassignLoanResponse: {},
         clearSearch: true,
         checklistErrorCode: '',
-        inProgress: false,
-        wasSearched: true,
       };
     }
     case SET_STAGER_TASK_NAME: {

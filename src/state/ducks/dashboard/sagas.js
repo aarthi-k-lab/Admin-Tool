@@ -205,35 +205,33 @@ function* onSelectReject(payload) {
 }
 
 function* onSearchWithTask(payload) {
-  const { taskID, loanNumber, assignee } = payload.payload;
-  const wasSearched = yield select(selectors.wasSearched);
-  const inProgress = yield select(selectors.inProgress);
-
-  if (!wasSearched && !inProgress) {
-    yield put({ type: SHOW_LOADER });
-  }
-  if (!wasSearched) {
-    try {
-      const response = yield call(Api.callGet, `/api/search-svc/search/task/${loanNumber}/${taskID}`, {});
-      if (response !== null) {
-        response.assignee = assignee;
-        yield put({
-          type: SEARCH_LOAN_WITH_TASK,
-          payload: response,
-        });
-      } else {
-        yield put({
-          type: SEARCH_LOAN_WITH_TASK,
-          payload: { statusCode: 404 },
-        });
-      }
-    } catch (e) {
+  const {
+    taskID, loanNumber, assignee,
+    loadSearchedLoan,
+  } = payload.payload;
+  yield put({ type: SHOW_LOADER });
+  try {
+    const response = yield call(Api.callGet, `/api/search-svc/search/task/${loanNumber}/${taskID}`, {});
+    if (response !== null) {
+      response.assignee = assignee;
       yield put({
         type: SEARCH_LOAN_WITH_TASK,
-        payload: { loanNumber: taskID, valid: false },
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SEARCH_LOAN_WITH_TASK,
+        payload: { statusCode: 404 },
       });
     }
+  } catch (e) {
+    yield put({
+      type: SEARCH_LOAN_WITH_TASK,
+      payload: { loanNumber: taskID, valid: false },
+    });
   }
+  yield call(loadSearchedLoan);
+  yield put({ type: HIDE_LOADER });
 }
 
 function* watchSearchLoan() {
