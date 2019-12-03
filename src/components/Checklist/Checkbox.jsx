@@ -8,11 +8,23 @@ import { FormControlLabelWithTooltip } from 'components/RadioButtonGroup';
 import styles from './RadioButtons.css';
 
 function CheckBox({
+  disabled,
   onChange,
   options,
   title,
   selectedValue,
 }) {
+  const isOptionDisabled = (isEnabled) => {
+    if (disabled !== true && isEnabled === false) {
+      return true;
+    }
+    return disabled;
+  };
+  const getStyleClass = (textColor) => {
+    const b1 = { label: styles[`radio-control-option-${textColor}`], root: styles['radio-control'] };
+    const b2 = { label: styles['radio-control-option-label'], root: styles['radio-control'] };
+    return (textColor) ? b1 : b2;
+  };
   return (
     <FormControl component="fieldset">
       <FormLabel component="legend" styleName="radio-control-label">{title}</FormLabel>
@@ -24,16 +36,14 @@ function CheckBox({
       >
         {
           options.map(({
-            displayName, hint, value,
+            displayName, hint, value, textColor, isEnabled,
           }) => (
             <div>
               <FormControlLabelWithTooltip
                 key={displayName}
-                classes={{
-                  label: styles['radio-control-option-label'],
-                  root: styles['radio-control'],
-                }}
+                classes={getStyleClass(textColor)}
                 control={<Checkbox checked={R.contains(value, selectedValue)} styleName="radio-control-bubble" />}
+                disabled={isOptionDisabled(isEnabled)}
                 disableTooltip={R.isNil(hint) || R.isEmpty(hint)}
                 label={displayName}
                 styleName="radio-control"
@@ -53,7 +63,7 @@ CheckBox.defaultProps = {
 };
 
 CheckBox.propTypes = {
-  //   disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string.isRequired,
