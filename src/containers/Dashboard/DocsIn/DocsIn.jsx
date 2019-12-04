@@ -21,6 +21,7 @@ import DashboardModel from '../../../models/Dashboard';
 import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
+const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -66,6 +67,12 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
+    displayName: 'RECORDATION TO ORDER',
+    value: 'Recordation To Order',
+  }, {
+    displayName: 'RECORDATION ORDERED',
+    value: 'Recordation Ordered',
+  }, {
     displayName: 'INVESTOR SETTLEMENT',
     value: 'Investor Settlement',
   }, {
@@ -91,6 +98,8 @@ const getPostModStagerValues = (taskName) => {
       break;
     case 'Send Mod Agreement':
     case 'Recordation':
+    case 'Recordation To Order':
+    case 'Recordation Ordered':
     case 'Investor Settlement':
       value = [{
         displayName: 'COMPLETE',
@@ -122,6 +131,74 @@ const getStagerTaskName = () => {
   return states;
 };
 
+const getOptionBasedStagerValues = (taskName) => {
+  let value = [];
+  switch (taskName) {
+    case 'FNMA QC':
+      value = [
+        {
+          displayName: 'FNMA QC PASS',
+          value: 'FNMA QC PASS',
+        },
+        {
+          displayName: 'SUBMITTED IR SHAREPOINT TICKET',
+          value: 'Submitted IR SharePoint Ticket',
+        }];
+      break;
+    case 'Countersign':
+      value = [
+        {
+          displayName: 'COUNTERSIGNED COMPLETED',
+          value: 'Countersigned Completed',
+        }];
+      break;
+    case 'Send Mod Agreement':
+      value = [
+        {
+          displayName: 'COMPLETED',
+          value: 'Completed',
+        }];
+      break;
+    case 'Recordation':
+      value = [
+        {
+          displayName: 'RE-ORDER',
+          value: 'Re-Order',
+        }];
+      break;
+    case 'Recordation To Order':
+      value = [
+        {
+          displayName: 'SENT FOR E-RECORDING',
+          value: 'Sent for E-Recording',
+        },
+        {
+          displayName: 'SENT TO VENDOR FOR RECORDING',
+          value: 'Sent to Vendor for Recording',
+        }];
+      break;
+    case 'Recordation Ordered':
+      value = [
+        {
+          displayName: 'RECORDED',
+          value: 'Recorded',
+        },
+        {
+          displayName: 'REJECTED BY COUNTY - MODIFICATION EXCEPTION',
+          value: 'Rejected by County - Modification Exception',
+        }];
+      break;
+    case 'Investor Settlement':
+      value = [{
+        displayName: 'SUBMITTED FOR SETTLEMENT',
+        value: 'Submitted for Settlement',
+      }];
+      break;
+    default: return null;
+  }
+  return value;
+};
+
 const isPageTypeDocsIn = (pageType) => {
   if (pageType === 'BULKUPLOAD_DOCSIN') return true;
   return false;
@@ -139,6 +216,8 @@ class DocsIn extends React.PureComponent {
       value: '',
       selectedState: '',
       modReversalReason: '',
+      stagerTaskOptions: [],
+      selectedStagerTaskOptions: '',
     };
     this.handleBackButton = this.handleBackButton.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -154,6 +233,8 @@ class DocsIn extends React.PureComponent {
     this.getMessage = this.getMessage.bind(this);
     this.showBulkOrderPage = this.showBulkOrderPage.bind(this);
     this.handleChangeModReversalReasons = this.handleChangeModReversalReasons.bind(this);
+    this.handleOptionStagerTask = this.handleOptionStagerTask.bind(this);
+    this.renderOptionDropdown = this.renderOptionDropdown.bind(this);
   }
 
   componentDidMount() {
@@ -161,7 +242,7 @@ class DocsIn extends React.PureComponent {
     const isPostModGroup = groupName === DashboardModel.POSTMODSTAGER;
     let valueState = {};
     if (isPostModGroup) {
-      valueState = { value: 'FNMA QC', selectedState: 'Complete' };
+      valueState = { value: 'FNMA QC', selectedState: 'Complete', selectedStagerTaskOptions: 'FNMA QC PASS' };
     } else {
       valueState = { value: 'Value', selectedState: 'ORDERED' };
     }
@@ -176,7 +257,9 @@ class DocsIn extends React.PureComponent {
 
   onValueChange(event) {
     let LoanStates = [];
+    let optionStagerValues = [];
     let disableSubmit = '';
+    let selectedOptionValue = '';
     const { groupName, setStagerValueAndState } = this.props;
     const { modReversalReason, loansNumber } = this.state;
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
@@ -193,9 +276,19 @@ class DocsIn extends React.PureComponent {
     if (event.target.value === 'modReversal') {
       onSelectModReversal();
       disableSubmit = modReversalReason && loansNumber ? '' : 'disabled';
-    } else disableSubmit = loansNumber ? '' : 'disabled';
+    } else if (nonDispositionList.indexOf(event.target.value) === -1) {
+      optionStagerValues = getOptionBasedStagerValues(event.target.value);
+      disableSubmit = loansNumber ? '' : 'disabled';
+      selectedOptionValue = optionStagerValues[0].value;
+    } else {
+      disableSubmit = loansNumber ? '' : 'disabled';
+    }
     const valueState = {
-      value: event.target.value, selectedState: LoanStates[0].value, isDisabled: disableSubmit,
+      value: event.target.value,
+      selectedState: LoanStates[0].value,
+      stagerTaskOptions: optionStagerValues,
+      isDisabled: disableSubmit,
+      selectedStagerTaskOptions: selectedOptionValue,
     };
     setStagerValueAndState(valueState);
     this.setState(valueState);
@@ -240,6 +333,11 @@ class DocsIn extends React.PureComponent {
     this.setState({ modReversalReason: event.target.value, isDisabled: loansNumber !== '' ? '' : 'disabled' });
   }
 
+  handleOptionStagerTask(event) {
+    const { loansNumber } = this.state;
+    this.setState({ selectedStagerTaskOptions: event.target.value, isDisabled: loansNumber !== '' ? '' : 'disabled' });
+  }
+
   showBulkOrderPage() {
     const { onSelect } = this.props;
     onSelect();
@@ -276,17 +374,23 @@ class DocsIn extends React.PureComponent {
 
   handleloansSubmitStager() {
     const {
-      loansNumber, value, selectedState, modReversalReason,
+      loansNumber, value, selectedState, modReversalReason, selectedStagerTaskOptions,
     } = this.state;
     const {
       onLoansSubmit, user, onFailedLoanValidation, bulkOrderPageType,
     } = this.props;
+    let statusName = '';
     if (validateLoanFormat(loansNumber)) {
       const loanNumbersList = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      if (selectedStagerTaskOptions) {
+        statusName = selectedStagerTaskOptions;
+      } else {
+        statusName = value === 'modReversal' ? modReversalReason : selectedState;
+      }
       const payload = {
         loanNumber: loanNumbersList,
         eventName: value,
-        status: value === 'modReversal' ? modReversalReason : selectedState,
+        status: statusName,
         userID: user.userDetails.email,
         pageType: bulkOrderPageType,
       };
@@ -300,8 +404,31 @@ class DocsIn extends React.PureComponent {
     }
   }
 
+  renderOptionDropdown(value, selectedStagerTaskOptions, stagerTaskOptions) {
+    if (value !== 'Value' && value !== 'TaxTranscript' && value !== 'Incentive') {
+      return (
+        <div>
+          <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
+            <Select
+              // native
+              onChange={this.handleOptionStagerTask}
+              value={selectedStagerTaskOptions}
+            >
+              {stagerTaskOptions.map(item => (
+                <MenuItem value={item.value}>{item.displayName}</MenuItem>
+              ))}
+            </Select>
+          </Grid>
+        </div>
+      );
+    }
+    return null;
+  }
+
   renderDropDown(taskName, LoanStates) {
-    const { value, selectedState, modReversalReason } = this.state;
+    const {
+      value, selectedState, modReversalReason, stagerTaskOptions, selectedStagerTaskOptions,
+    } = this.state;
     const { modReversalReasons } = this.props;
     return (
       <>
@@ -342,7 +469,7 @@ class DocsIn extends React.PureComponent {
             </Grid>
 
           </div>
-        ) : null
+        ) : this.renderOptionDropdown(value, selectedStagerTaskOptions, stagerTaskOptions)
         }
       </>
     );
@@ -353,7 +480,7 @@ class DocsIn extends React.PureComponent {
     return (
       <Grid
         style={{
-          textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '16rem',
+          textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '10rem',
         }}
         xs={4}
       >
@@ -507,7 +634,7 @@ class DocsIn extends React.PureComponent {
             {!isPageTypeDocsIn(bulkOrderPageType)
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
-            <Grid item xs={5}>
+            <Grid item xs={4}>
               <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
@@ -552,7 +679,7 @@ DocsIn.defaultProps = {
   ],
   onSelectModReversal: () => { },
   modReversalReasons: [],
-  setStagerValueAndState: () => {},
+  setStagerValueAndState: () => { },
 };
 
 DocsIn.propTypes = {
