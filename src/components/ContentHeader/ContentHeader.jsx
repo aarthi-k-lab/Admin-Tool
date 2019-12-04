@@ -19,8 +19,8 @@ const handleBackButton = (onAutoSave,
   isAssigned) => {
   if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
     onAutoSave('Paused');
-    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
   }
+  onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
 };
 const ContentHeader = ({
   title,
