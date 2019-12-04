@@ -181,7 +181,7 @@ function* onSelectReject(payload) {
       type: SELECT_REJECT,
       payload: rejectResponse,
     });
-  } else if (response.message === 'Unreject successful') {
+  } else if (response.isActionSuccess) {
     rejectResponse = {
       message: response.message,
       level: 'success',
@@ -200,8 +200,10 @@ function* onSelectReject(payload) {
       payload: rejectResponse,
     });
   }
-  const searchPayload = { payload: loanNumber };
-  yield call(searchLoan, searchPayload);
+  if (response.isActionSuccess) {
+    const searchPayload = { payload: loanNumber };
+    yield call(searchLoan, searchPayload);
+  }
 }
 
 function* onSearchWithTask(payload) {
