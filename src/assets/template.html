@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/normalize.css" />
-    <link rel="stylesheet" href="/static/css/colors.css" />
-    <link rel="stylesheet" href="/static/css/DateTimeRange.css" />
-    <link rel="stylesheet" href="https://unpkg.com/react-table@latest/react-table.css" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
-</html>
+      <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+      <link rel="shortcut icon" href="/favicon.ico" />
+      <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+      <link rel="stylesheet" href="/static/css/normalize.css" />
+      <link rel="stylesheet" href="/static/css/colors.css" />
+      <link rel="stylesheet" href="/static/css/DateTimeRange.css" />
+      <title><%= htmlWebpackPlugin.options.title %></title>
+      <script>
+        function resourceExists(url){
+            const http = new XMLHttpRequest();
+            http.open('HEAD', "https://unpkg.com/react-table@latest/react-table.css", false);
+            http.send();
+            const link = document.createElement('link');
+            link.setAttribute('rel', 'stylesheet');
+              link.setAttribute('type', 'text/css');
+            if( http.status === 200){
+              link.setAttribute('href', 'https://unpkg.com/react-table@latest/react-table.css');
+            }
+            else{
+              link.setAttribute('href', 'https://unpkg.com/react-table@6.10.3/react-table.css');
+            }
+          document.getElementsByTagName('head')[0].appendChild(link);
+        }
+        resourceExists();
+    </script>
+    </head>
+    <body>
+      
+      <div id="app"></div>
+    </body>
+  </html>
+  

@@ -20,9 +20,6 @@ const handleRowValue = value => (value.startsWith('cmod') ? 'Unassign' : value);
 class CustomReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      isRedirect: false,
-    };
     this.getCheckBox = this.getCheckBox.bind(this);
   }
 
@@ -191,7 +188,6 @@ class CustomReactTable extends React.PureComponent {
 
   handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus) {
     if (event.target.type === 'checkbox') {
-      this.setState({ isRedirect: false });
       return;
     }
     const {
@@ -199,13 +195,16 @@ class CustomReactTable extends React.PureComponent {
     } = this.props;
     const { original } = rowInfo;
     if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType) && stagerTaskStatus !== 'Completed') {
-      this.setState({ isRedirect: true });
       const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
       setStagerTaskName(payload);
-      onSearchLoanWithTask({ loanNumber: original['Loan Number'], taskID: original.TKIID, assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'] });
+      const searchPayload = {
+        loanNumber: original['Loan Number'],
+        taskID: original.TKIID,
+        assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'],
+        loadSearchedLoan: () => this.loadSearchLoan(),
+      };
+      onSearchLoanWithTask(searchPayload);
       setBeginSearch();
-    } else {
-      this.setState({ isRedirect: false });
     }
   }
 
@@ -227,7 +226,6 @@ class CustomReactTable extends React.PureComponent {
         data.push(...assigned);
       }
       const payload = { loanNumber, ...data[0], isSearch: true };
-      const { isRedirect } = this.state;
       let group = '';
       switch (payload.taskName) {
         case 'Countersign':
@@ -238,6 +236,7 @@ class CustomReactTable extends React.PureComponent {
         case 'Recordation - ToOrder':
         case 'Recordation':
         case 'Send Mod Agreement':
+        case 'Pending Buyout - Countersign':
           group = 'POSTMOD';
           this.redirectPath = '/postmodstager';
           break;
@@ -245,20 +244,15 @@ class CustomReactTable extends React.PureComponent {
           this.redirectPath = '/frontend-checklist';
           group = 'FEUW';
       }
-      if (isRedirect) {
-        onGetGroupName(group);
-        onSelectEval(payload);
-        onGetChecklistHistory(payload.taskId);
-        history.push(this.redirectPath);
-      }
+      onGetGroupName(group);
+      onSelectEval(payload);
+      onGetChecklistHistory(payload.taskId);
+      history.push(this.redirectPath);
     }
   }
 
   render() {
-    const { data, searchLoanTaskResponse } = this.props;
-    if (!R.isEmpty(searchLoanTaskResponse)) {
-      this.loadSearchLoan();
-    }
+    const { data } = this.props;
     const returnVal = data ? (
       <div styleName="stager-table-container">
         <div styleName="stager-table-height-limiter">

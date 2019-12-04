@@ -181,6 +181,7 @@ class TasksAndChecklist extends React.PureComponent {
     if (noTasksFound || taskFetchError || isGetNextError) {
       return this.renderTaskErrorMessage();
     }
+    const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
     return (
       <div styleName="scroll-wrapper">
         <section styleName="tasks-and-checklist">
@@ -191,7 +192,7 @@ class TasksAndChecklist extends React.PureComponent {
             commentsRequired={commentsRequired}
             dialogContent={instructions}
             dialogHeader="Steps to Resolve"
-            message={disposition}
+            message={dispositionMessage}
             onDialogToggle={onInstuctionDialogToggle}
             shouldShow={showDialogBox}
             showDialog={showInstructionsDialog}
