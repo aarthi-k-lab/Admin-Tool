@@ -21,6 +21,7 @@ import DashboardModel from '../../../models/Dashboard';
 import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
+const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -66,6 +67,12 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
+    displayName: 'RECORDATION TO ORDER',
+    value: 'Recordation To Order',
+  }, {
+    displayName: 'RECORDATION ORDERED',
+    value: 'Recordation Ordered',
+  }, {
     displayName: 'INVESTOR SETTLEMENT',
     value: 'Investor Settlement',
   }, {
@@ -91,6 +98,8 @@ const getPostModStagerValues = (taskName) => {
       break;
     case 'Send Mod Agreement':
     case 'Recordation':
+    case 'Recordation To Order':
+    case 'Recordation Ordered':
     case 'Investor Settlement':
       value = [{
         displayName: 'COMPLETE',
@@ -153,34 +162,30 @@ const getOptionBasedStagerValues = (taskName) => {
     case 'Recordation':
       value = [
         {
-          displayName: 'RECORDED',
-          value: 'Recorded',
-        },
-        {
-          displayName: 'REJECTED BY COUNTY - MODIFICATION EXCEPTION',
-          value: 'Rejected by County - Modification Exception',
+          displayName: 'RE-ORDER',
+          value: 'Re-Order',
         }];
       break;
-    case 'Recordationcomplete': // Recordationtoordered
-      value = [
-        {
-          displayName: 'RECORDED',
-          value: 'Recorded',
-        },
-        {
-          displayName: 'REJECTED BY COUNTY - MODIFICATION EXCEPTION',
-          value: 'Rejected by County - Modification Exception',
-        }];
-      break;
-    case 'Recordationordered':
+    case 'Recordation To Order':
       value = [
         {
           displayName: 'SENT FOR E-RECORDING',
           value: 'Sent for E-Recording',
         },
         {
-          displayName: 'SENT FOR VENDOR FOR RECORDING',
+          displayName: 'SENT TO VENDOR FOR RECORDING',
           value: 'Sent to Vendor for Recording',
+        }];
+      break;
+    case 'Recordation Ordered':
+      value = [
+        {
+          displayName: 'RECORDED',
+          value: 'Recorded',
+        },
+        {
+          displayName: 'REJECTED BY COUNTY - MODIFICATION EXCEPTION',
+          value: 'Rejected by County - Modification Exception',
         }];
       break;
     case 'Investor Settlement':
@@ -193,6 +198,7 @@ const getOptionBasedStagerValues = (taskName) => {
   }
   return value;
 };
+
 const isPageTypeDocsIn = (pageType) => {
   if (pageType === 'BULKUPLOAD_DOCSIN') return true;
   return false;
@@ -255,7 +261,7 @@ class DocsIn extends React.PureComponent {
     let disableSubmit = '';
     let selectedOptionValue = '';
     const { groupName, setStagerValueAndState } = this.props;
-    const { modReversalReason, loansNumber, selectedState } = this.state;
+    const { modReversalReason, loansNumber } = this.state;
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
     if (dualGroup) {
@@ -270,9 +276,8 @@ class DocsIn extends React.PureComponent {
     if (event.target.value === 'modReversal') {
       onSelectModReversal();
       disableSubmit = modReversalReason && loansNumber ? '' : 'disabled';
-    } else if (event.target.value !== 'Value' && event.target.value !== 'TaxTranscript' && event.target.value !== 'Incentive') {
-      const taskValue = event.target.value === 'Recordation' ? `${event.target.value}${selectedState.toLowerCase()}` : event.target.value;
-      optionStagerValues = getOptionBasedStagerValues(taskValue);
+    } else if (nonDispositionList.indexOf(event.target.value) === -1) {
+      optionStagerValues = getOptionBasedStagerValues(event.target.value);
       disableSubmit = loansNumber ? '' : 'disabled';
       selectedOptionValue = optionStagerValues[0].value;
     } else {
