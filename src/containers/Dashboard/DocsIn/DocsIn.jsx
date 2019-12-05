@@ -92,6 +92,7 @@ const getPostModStagerValues = (taskName) => {
     case 'Countersign':
     case 'Incentive':
     case 'Send Mod Agreement':
+    case 'Investor Settlement':
       value = [{
         displayName: 'COMPLETE',
         value: 'Complete',
@@ -100,7 +101,6 @@ const getPostModStagerValues = (taskName) => {
     case 'Recordation':
     case 'Recordation To Order':
     case 'Recordation Ordered':
-    case 'Investor Settlement':
       value = [{
         displayName: 'COMPLETE',
         value: 'Complete',
