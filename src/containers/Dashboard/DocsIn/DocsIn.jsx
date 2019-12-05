@@ -91,12 +91,12 @@ const getPostModStagerValues = (taskName) => {
     case 'FNMA QC':
     case 'Countersign':
     case 'Incentive':
+    case 'Send Mod Agreement':
       value = [{
         displayName: 'COMPLETE',
         value: 'Complete',
       }];
       break;
-    case 'Send Mod Agreement':
     case 'Recordation':
     case 'Recordation To Order':
     case 'Recordation Ordered':
