@@ -162,14 +162,14 @@ class CustomReactTable extends React.PureComponent {
     const { searchResponse } = this.props;
     if (rowInfo) {
       const { original } = rowInfo;
+      let style = {};
       if (original['Loan Number'] === searchResponse) {
-        return {
-          style: {
-            background: '#e67300',
-          },
+        style = {
+          background: '#e67300',
         };
       }
       return {
+        style,
         onClick: (event) => {
           this.handleRowClick(rowInfo, event, stagerTaskType, stagerTaskStatus);
           instance.forceUpdate();
