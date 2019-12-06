@@ -241,8 +241,15 @@ class DocsIn extends React.PureComponent {
     const { groupName, setStagerValueAndState } = this.props;
     const isPostModGroup = groupName === DashboardModel.POSTMODSTAGER;
     let valueState = {};
+    let optionStagerValues = [];
     if (isPostModGroup) {
-      valueState = { value: 'FNMA QC', selectedState: 'Complete', selectedStagerTaskOptions: 'FNMA QC PASS' };
+      optionStagerValues = getOptionBasedStagerValues('FNMA QC');
+      valueState = {
+        value: 'FNMA QC',
+        selectedState: 'Complete',
+        selectedStagerTaskOptions: 'FNMA QC PASS',
+        stagerTaskOptions: optionStagerValues,
+      };
     } else {
       valueState = { value: 'Value', selectedState: 'ORDERED' };
     }
