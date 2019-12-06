@@ -76,9 +76,6 @@ const getPostModStagerTaskNames = () => {
     displayName: 'INVESTOR SETTLEMENT',
     value: 'Investor Settlement',
   }, {
-    displayName: 'INCENTIVE',
-    value: 'Incentive',
-  }, {
     displayName: 'MOD REVERSAL',
     value: 'modReversal',
   }];
@@ -90,7 +87,6 @@ const getPostModStagerValues = (taskName) => {
   switch (taskName) {
     case 'FNMA QC':
     case 'Countersign':
-    case 'Incentive':
     case 'Send Mod Agreement':
     case 'Investor Settlement':
       value = [{
@@ -412,7 +408,7 @@ class DocsIn extends React.PureComponent {
   }
 
   renderOptionDropdown(value, selectedStagerTaskOptions, stagerTaskOptions) {
-    if (value !== 'Value' && value !== 'TaxTranscript' && value !== 'Incentive') {
+    if (nonDispositionList.indexOf(value) === -1) {
       return (
         <div>
           <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
