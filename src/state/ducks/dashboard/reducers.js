@@ -330,6 +330,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         isAssigned: action.payload.isSearch ? action.payload.isAssigned : true,
         taskIterationCounter: action.payload.taskIterationCounter,
         showContinueMyReview: action.payload.isSearch ? action.payload.showContinueMyReview : false,
+        getSearchLoanResponse: {},
       };
       return newState;
     }
