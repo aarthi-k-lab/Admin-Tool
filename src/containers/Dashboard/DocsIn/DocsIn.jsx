@@ -360,9 +360,10 @@ class DocsIn extends React.PureComponent {
     const { loansNumber } = this.state;
     const { onLoansSubmit, onFailedLoanValidation, bulkOrderPageType } = this.props;
     if (validateLoanFormat(loansNumber)) {
-      const loanNumbersList = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      const loanNumbersList = new Set(loanNumbers);
       const payload = {
-        loanNumbers: loanNumbersList,
+        loanNumbers: [...loanNumbersList],
         pageType: bulkOrderPageType,
       };
       onLoansSubmit(payload);
@@ -384,14 +385,15 @@ class DocsIn extends React.PureComponent {
     } = this.props;
     let statusName = '';
     if (validateLoanFormat(loansNumber)) {
-      const loanNumbersList = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      const loanNumbersList = new Set(loanNumbers);
       if (selectedStagerTaskOptions) {
         statusName = selectedStagerTaskOptions;
       } else {
         statusName = value === 'modReversal' ? modReversalReason : selectedState;
       }
       const payload = {
-        loanNumber: loanNumbersList,
+        loanNumber: [...loanNumbersList],
         eventName: value,
         status: statusName,
         userID: user.userDetails.email,
