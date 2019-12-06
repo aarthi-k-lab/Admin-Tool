@@ -5,6 +5,7 @@ const NUMBER = 'number';
 const DATE = 'date';
 const DROPDOWN = 'dropdown';
 const CHECKBOX = 'checkbox';
+const READ_ONLY_TEXT = 'read-only-text';
 
 const componentTypes = {
   RADIO_BUTTONS,
@@ -14,6 +15,7 @@ const componentTypes = {
   DROPDOWN,
   DATE,
   CHECKBOX,
+  READ_ONLY_TEXT,
 };
 
 export default componentTypes;

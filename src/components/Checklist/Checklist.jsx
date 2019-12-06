@@ -182,7 +182,7 @@ class Checklist extends React.PureComponent {
     additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, CHECKBOX,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, CHECKBOX, READ_ONLY_TEXT,
     } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
@@ -334,7 +334,37 @@ class Checklist extends React.PureComponent {
           </Tooltip>
         );
       }
-
+      case READ_ONLY_TEXT: {
+        const { amount } = this.props;
+        const refCallback = this.handleBlur(id, taskCode);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          defaultValue: amount,
+          disabled: true,
+          inputRef: refCallback,
+          title,
+          type: READ_ONLY_TEXT,
+          value: getValue,
+        };
+        const textField = (<TextFields {...prop} />);
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
+        );
+      }
       case DROPDOWN: {
         // const refCallback = this.handleBlur(id, taskCode);
         const onChange = this.handleChange(id, taskCode);
@@ -424,6 +454,7 @@ Checklist.defaultProps = {
 };
 
 Checklist.propTypes = {
+  amount: PropTypes.string.isRequired,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
       disabled: PropTypes.bool.isRequired,
