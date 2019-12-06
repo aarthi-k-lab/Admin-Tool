@@ -132,6 +132,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       showAssign: null,
       isAssigned: true,
       showContinueMyReview: false,
+      getSearchLoanResponse: {}
     };
     expect(reducer(state, saveEvalIdLoanNumberAction)).toEqual(expectedState);
   });
