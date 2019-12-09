@@ -9,6 +9,7 @@ import ContentHeader from 'components/ContentHeader';
 import Controls from 'containers/Controls';
 import Loader from 'components/Loader/Loader';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Link, withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
@@ -580,7 +581,7 @@ class DocsIn extends React.PureComponent {
                   Header: 'STATUS', accessor: 'statusMessage', minWidth: 700, maxWidth: 1000, style: { width: '54%' }, headerStyle: { textAlign: 'left' },
                 },
               ]}
-              data={tableData || []}
+              data={R.flatten(tableData) || []}
               defaultPageSize={100}
               /* eslint-disable-next-line */
               getTrProps={(state, rowInfo, column) => {
