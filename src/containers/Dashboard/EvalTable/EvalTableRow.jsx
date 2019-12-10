@@ -14,9 +14,10 @@ const showReject = row => ((row.original.pstatusReason === 'Rejection Pending' &
 
 const getEventName = (pstatusReason, pstatus, taskName) => {
   let eventName = '';
-  if (pstatusReason === 'Rejection Pending' && pstatus === 'Active') { eventName = 'unreject'; } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'FrontEnd Review' || taskName === 'Processing')) {
-    eventName = 'referral';
-  } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Document Generation')) {
+  if ((pstatus === 'Active' && (pstatusReason === 'Rejection Pending' || pstatusReason === 'Trial Rejected')) || (pstatusReason === 'Reject Suspend State'
+    && pstatus === 'Suspended' && (taskName === 'FrontEnd Review' || taskName === 'Processing'))) {
+    eventName = 'unreject';
+  } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Document Generation' || taskName.startsWith('DocGenStager'))) {
     eventName = 'sendToDocGenStager';
   } else if (pstatusReason === 'Reject Suspend State' && pstatus === 'Suspended' && (taskName === 'Docs In')) {
     eventName = 'sendToDocsIn';
