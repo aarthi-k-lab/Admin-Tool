@@ -208,17 +208,27 @@ function* onSelectReject(payload) {
 
 function* onSearchWithTask(payload) {
   const {
-    taskID, loanNumber, assignee,
+    rowData,
     loadSearchedLoan,
   } = payload.payload;
   yield put({ type: SHOW_LOADER });
   try {
-    const response = yield call(Api.callGet, `/api/search-svc/search/task/${loanNumber}/${taskID}`, {});
-    if (response !== null) {
-      response.assignee = assignee;
+    const checklistResponse = yield call(Api.callPost, '/api/dataservice/api/tasks/checklistDetails', [rowData.TKIID]);
+    const bpmTaskDetail = yield call(Api.callGet, `/api/bpm-audit/audit/task/${rowData.TKIID}`, {});
+    let checklistDetail = R.head(checklistResponse);
+    checklistDetail = checklistDetail || {};
+    if (bpmTaskDetail) {
+      rowData.taskCheckListId = checklistDetail.taskCheckListId;
+      rowData.taskCheckListTemplateName = checklistDetail.taskCheckListTemplateName;
+      rowData.taskIterationCounter = bpmTaskDetail.currentTaskIterationCounter;
+      rowData.taskName = bpmTaskDetail.taskName;
+      rowData.taskStatus = bpmTaskDetail.currentStatus;
+      if (rowData['Assigned To']) {
+        rowData['Assigned To'] = rowData['Assigned To'].startsWith('cmod-') ? 'In Queue' : rowData['Assigned To'];
+      }
       yield put({
         type: SEARCH_LOAN_WITH_TASK,
-        payload: response,
+        payload: rowData,
       });
     } else {
       yield put({
@@ -229,7 +239,7 @@ function* onSearchWithTask(payload) {
   } catch (e) {
     yield put({
       type: SEARCH_LOAN_WITH_TASK,
-      payload: { loanNumber: taskID, valid: false },
+      payload: { loanNumber: rowData['Loan Number'], valid: false },
     });
   }
   yield call(loadSearchedLoan);

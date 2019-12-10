@@ -198,9 +198,7 @@ class CustomReactTable extends React.PureComponent {
       const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
       setStagerTaskName(payload);
       const searchPayload = {
-        loanNumber: original['Loan Number'],
-        taskID: original.TKIID,
-        assignee: original['Assigned To'].startsWith('cmod-') ? 'In Queue' : original['Assigned To'],
+        rowData: original,
         loadSearchedLoan: () => this.loadSearchLoan(),
       };
       onSearchLoanWithTask(searchPayload);
@@ -213,21 +211,8 @@ class CustomReactTable extends React.PureComponent {
       onSelectEval, onGetGroupName, onGetChecklistHistory, history, searchLoanTaskResponse,
     } = this.props;
     if (searchLoanTaskResponse) {
-      const {
-        loanNumber, unAssigned, assigned, assignee,
-      } = searchLoanTaskResponse;
-      const data = [];
-      if (!R.isEmpty(unAssigned)) {
-        unAssigned[0].assignee = assignee;
-        data.push(...unAssigned);
-      }
-      if (!R.isEmpty(assigned)) {
-        assigned[0].assignee = assignee;
-        data.push(...assigned);
-      }
-      const payload = { loanNumber, ...data[0], isSearch: true };
       let group = '';
-      switch (payload.taskName) {
+      switch (searchLoanTaskResponse.taskName) {
         case 'Countersign':
         case 'FNMA QC':
         case 'Incentive':
@@ -245,8 +230,21 @@ class CustomReactTable extends React.PureComponent {
           group = 'FEUW';
       }
       onGetGroupName(group);
+      const payload = {
+        ...searchLoanTaskResponse,
+        isSearch: true,
+        evalId: searchLoanTaskResponse['Eval ID'],
+        loanNumber: searchLoanTaskResponse['Loan Number'],
+        taskId: searchLoanTaskResponse.TKIID,
+        processId: searchLoanTaskResponse.PID,
+        processStatus: 'Active',
+        taskStatus: searchLoanTaskResponse.taskStatus,
+        processName: searchLoanTaskResponse.taskName,
+        taskIterationCounter: searchLoanTaskResponse.taskIterationCounter,
+        assignee: searchLoanTaskResponse['Assigned To'],
+      };
       onSelectEval(payload);
-      onGetChecklistHistory(payload.taskId);
+      onGetChecklistHistory(searchLoanTaskResponse.TKIID);
       history.push(this.redirectPath);
     }
   }
@@ -321,15 +319,7 @@ CustomReactTable.propTypes = {
   onSearchLoanWithTask: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
-  searchLoanTaskResponse: PropTypes.shape({
-    assigned: PropTypes.shape({
-      assignee: PropTypes.string,
-    }),
-    assignee: PropTypes.string.isRequired,
-    loanNumber: PropTypes.string.isRequired,
-    unAssigned: PropTypes.shape.isRequired,
-    valid: PropTypes.bool,
-  }).isRequired,
+  searchLoanTaskResponse: PropTypes.node.isRequired,
   searchResponse: PropTypes.node.isRequired,
   selectedData: PropTypes.node.isRequired,
   setBeginSearch: PropTypes.func.isRequired,
