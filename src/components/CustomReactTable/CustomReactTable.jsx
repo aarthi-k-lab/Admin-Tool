@@ -212,22 +212,12 @@ class CustomReactTable extends React.PureComponent {
     } = this.props;
     if (searchLoanTaskResponse) {
       let group = '';
-      switch (searchLoanTaskResponse.taskName) {
-        case 'Countersign':
-        case 'FNMA QC':
-        case 'Incentive':
-        case 'Investor Settlement':
-        case 'Recordation-Ordered':
-        case 'Recordation-ToOrder':
-        case 'Recordation':
-        case 'Send Mod Agreement':
-        case 'Pending Buyout - Countersign':
-          group = 'POSTMOD';
-          this.redirectPath = '/postmodstager';
-          break;
-        default:
-          this.redirectPath = '/frontend-checklist';
-          group = 'FEUW';
+      if (DashboardModel.POSTMOD_TASKNAMES.includes(payload.taskName)) {
+        group = 'POSTMOD';
+        this.redirectPath = '/postmodstager';
+      } else {
+        this.redirectPath = '/frontend-checklist';
+        group = 'FEUW';
       }
       onGetGroupName(group);
       const payload = {
