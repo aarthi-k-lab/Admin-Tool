@@ -232,8 +232,8 @@ class CustomReactTable extends React.PureComponent {
         case 'FNMA QC':
         case 'Incentive':
         case 'Investor Settlement':
-        case 'Recordation - Ordered':
-        case 'Recordation - ToOrder':
+        case 'Recordation-Ordered':
+        case 'Recordation-ToOrder':
         case 'Recordation':
         case 'Send Mod Agreement':
         case 'Pending Buyout - Countersign':
