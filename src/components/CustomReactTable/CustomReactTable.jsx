@@ -212,7 +212,7 @@ class CustomReactTable extends React.PureComponent {
     } = this.props;
     if (searchLoanTaskResponse) {
       let group = '';
-      if (DashboardModel.POSTMOD_TASKNAMES.includes(payload.taskName)) {
+      if (DashboardModel.POSTMOD_TASKNAMES.includes(searchLoanTaskResponse.taskName)) {
         group = 'POSTMOD';
         this.redirectPath = '/postmodstager';
       } else {
