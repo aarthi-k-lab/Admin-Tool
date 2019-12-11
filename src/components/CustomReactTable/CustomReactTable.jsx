@@ -226,7 +226,7 @@ class CustomReactTable extends React.PureComponent {
         evalId: searchLoanTaskResponse['Eval ID'],
         loanNumber: searchLoanTaskResponse['Loan Number'],
         taskId: searchLoanTaskResponse.TKIID,
-        processId: searchLoanTaskResponse.PID,
+        piid: searchLoanTaskResponse.PID,
         processStatus: 'Active',
         taskStatus: searchLoanTaskResponse.taskStatus,
         processName: searchLoanTaskResponse.taskName,
