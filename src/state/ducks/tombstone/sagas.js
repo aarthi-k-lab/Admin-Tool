@@ -18,7 +18,8 @@ import {
 } from './types';
 import { selectors as dashboardSelectors } from '../dashboard';
 
-function* fetchTombstoneData() {
+function* fetchTombstoneData(payload) {
+  const { taskName } = payload.payload;
   yield put({ type: LOADING_TOMBSTONE_DATA });
 
   const loanNumber = yield select(dashboardSelectors.loanNumber);
@@ -31,7 +32,7 @@ function* fetchTombstoneData() {
 
   try {
     const group = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
-    const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, group);
+    const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, group, taskName);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
