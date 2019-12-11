@@ -375,11 +375,11 @@ async function fetchData(loanNumber, evalId, groupName) {
 
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
-    body: JSON.stringify({ evalIds: [evalId], groupName: groupName.replace(' ', '_') }),
+    body: JSON.stringify({ evalIds: [evalId], groupName: groupName.split(' ').join('_') }),
     headers: { 'content-type': 'application/json' },
   });
-  const appGroupName = groupName;
-  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${appGroupName.replace(' ', '_')}`, {
+
+  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${groupName.split(' ').join('_')}`, {
     method: 'POST',
     body: JSON.stringify([evalId]),
     headers: { 'content-type': 'application/json' },
