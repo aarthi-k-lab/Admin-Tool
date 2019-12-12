@@ -95,7 +95,7 @@ const getPostModStagerTaskNames = () => {
 };
 
 const getPostModStagerValues = (dropDownValue) => {
-  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'recordationToOrder' : dropDownValue;
+  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -107,7 +107,7 @@ const getPostModStagerValues = (dropDownValue) => {
         value: 'Complete',
       }];
       break;
-    case 'recordationToOrder':
+    case 'Recordation To Order':
       value = [{
         displayName: 'COMPLETE',
         value: 'Complete',
@@ -139,7 +139,7 @@ const getStagerTaskName = () => {
 };
 
 const getOptionBasedStagerValues = (dropDownValue) => {
-  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'recordationToOrder' : dropDownValue;
+  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -174,7 +174,7 @@ const getOptionBasedStagerValues = (dropDownValue) => {
           value: 'Re-Order',
         }];
       break;
-    case 'recordationToOrder':
+    case 'Recordation To Order':
       value = [
         {
           displayName: 'SENT FOR E-RECORDING',
