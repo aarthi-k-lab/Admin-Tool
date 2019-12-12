@@ -207,10 +207,14 @@ function getLoanTypeDescription(loanDetails) {
   return generateTombstoneItem('Loan Type Description', loantypeDescription);
 }
 
-function getPreviousDisposition(_, evalDetails, previousDispositionDetails) {
-  const previousDisposition = previousDispositionDetails
-    ? getOr('stsChangedCode', previousDispositionDetails[0], NA) : NA;
-  return generateTombstoneItem('Previous Disposition', previousDisposition);
+function getPreviousDisposition(_, evalDetails, previousDispositionDetails, a, b, c, taskName) {
+  if (previousDispositionDetails) {
+    const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
+    const previousDisposition = taskObj
+      ? getOr('stsChangedCode', taskObj, NA) : NA;
+    return generateTombstoneItem('Previous Disposition', previousDisposition);
+  }
+  return generateTombstoneItem('Previous Disposition', NA);
 }
 
 function getEvalType(_, evalDetails) {
@@ -281,7 +285,7 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails, groupName, additionalLoanInfo) {
+  prioritizationDetails, groupName, additionalLoanInfo, taskName) {
   let dataGenerator = [];
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
     ? DashboardModel.POSTMODSTAGER : groupName;
@@ -346,12 +350,13 @@ function getTombstoneItems(loanDetails,
     previousDispositionDetails,
     prioritizationDetails,
     groupName,
-    additionalLoanInfo));
+    additionalLoanInfo,
+    taskName));
   return data;
 }
 
 
-async function fetchData(loanNumber, evalId, groupName) {
+async function fetchData(loanNumber, evalId, groupName, taskName) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
@@ -455,6 +460,7 @@ async function fetchData(loanNumber, evalId, groupName) {
     prioritizationDetails,
     groupName,
     additionalLoanInfo,
+    taskName,
   )];
 }
 

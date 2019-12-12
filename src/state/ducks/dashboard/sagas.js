@@ -329,7 +329,7 @@ function* selectEval(searchItem) {
   //   yield call(fetchLoanActivityDetails, searchItem);
   // }
   try {
-    yield put(tombstoneActions.fetchTombstoneData());
+    yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber, evalDetails.taskName));
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
@@ -665,9 +665,10 @@ function* getNext(action) {
         const loanNumber = getLoanNumber(taskDetails);
         const evalPayload = getEvalPayload(taskDetails);
         const commentsPayLoad = getCommentPayload(taskDetails);
+        const { taskName } = taskDetails.taskData.data;
         yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-        yield put(tombstoneActions.fetchTombstoneData(loanNumber));
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {

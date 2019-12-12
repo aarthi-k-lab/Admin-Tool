@@ -1,9 +1,10 @@
 import { FETCH_TOMBSTONE_DATA } from './types';
 
-const fetchTombstoneData = loanNumber => ({
+const fetchTombstoneData = (loanNumber, taskName) => ({
   type: FETCH_TOMBSTONE_DATA,
   payload: {
     loanNumber,
+    taskName,
   },
 });
 
