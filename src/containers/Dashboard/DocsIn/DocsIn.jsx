@@ -98,24 +98,6 @@ const getPostModStagerValues = (dropDownValue) => {
   const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
   let value = [];
   switch (taskName) {
-    case 'FNMA QC':
-    case 'Countersign':
-    case 'Send Mod Agreement':
-    case 'Investor Settlement':
-      value = [{
-        displayName: 'COMPLETE',
-        value: 'Complete',
-      }];
-      break;
-    case 'Recordation To Order':
-      value = [{
-        displayName: 'COMPLETE',
-        value: 'Complete',
-      }, {
-        displayName: 'ORDER',
-        value: 'Order',
-      }];
-      break;
     case 'modReversal':
       value = [{
         displayName: 'CLOSE ALL TASKS',
@@ -300,7 +282,7 @@ class DocsIn extends React.PureComponent {
     }
     const valueState = {
       value: event.target.value,
-      selectedState: LoanStates[0].value,
+      selectedState: !R.isEmpty(LoanStates) ? LoanStates[0].value : null,
       stagerTaskOptions: optionStagerValues,
       isDisabled: disableSubmit,
       selectedStagerTaskOptions: selectedOptionValue,
@@ -460,17 +442,20 @@ class DocsIn extends React.PureComponent {
             ))}
           </Select>
         </Grid>
-        <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
-          <Select
-            // native
-            onChange={this.handleChangeInState}
-            value={selectedState}
-          >
-            {LoanStates.map(item => (
-              <MenuItem value={item.value}>{item.displayName}</MenuItem>
-            ))}
-          </Select>
-        </Grid>
+        {selectedState ? (
+          <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
+            <Select
+              // native
+              onChange={this.handleChangeInState}
+              value={selectedState}
+            >
+              {LoanStates.map(item => (
+                <MenuItem value={item.value}>{item.displayName}</MenuItem>
+              ))}
+            </Select>
+          </Grid>
+        ) : null}
+
         {value === 'modReversal' ? (
           <div>
             <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
@@ -497,7 +482,7 @@ class DocsIn extends React.PureComponent {
     return (
       <Grid
         style={{
-          textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '10rem',
+          right: '0', position: 'absolute', paddingRight: '64px', paddingTop: '4px',
         }}
         xs={4}
       >
