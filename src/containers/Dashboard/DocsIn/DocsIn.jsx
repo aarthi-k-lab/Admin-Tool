@@ -23,6 +23,8 @@ import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
 const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
+const recordationToOrderTasks = ['Modification Agreement Recordation', 'Assumption Agreement Recordation',
+  'Partial Claim Recordation', '258A Recordation'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -68,8 +70,17 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
-    displayName: 'RECORDATION TO ORDER',
-    value: 'Recordation To Order',
+    displayName: 'MODIFICATION AGREEMENT RECORDATION',
+    value: 'Modification Agreement Recordation',
+  }, {
+    displayName: 'ASSUMPTION AGREEMENT RECORDATION',
+    value: 'Assumption Agreement Recordation',
+  }, {
+    displayName: 'PARTIAL CLAIM RECORDATION',
+    value: 'Partial Claim Recordation',
+  }, {
+    displayName: '258A RECORDATION',
+    value: '258A Recordation',
   }, {
     displayName: 'RECORDATION ORDERED',
     value: 'Recordation Ordered',
@@ -83,7 +94,8 @@ const getPostModStagerTaskNames = () => {
   return states;
 };
 
-const getPostModStagerValues = (taskName) => {
+const getPostModStagerValues = (dropDownValue) => {
+  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'recordationToOrder' : dropDownValue;
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -95,9 +107,7 @@ const getPostModStagerValues = (taskName) => {
         value: 'Complete',
       }];
       break;
-    case 'Recordation':
-    case 'Recordation To Order':
-    case 'Recordation Ordered':
+    case 'recordationToOrder':
       value = [{
         displayName: 'COMPLETE',
         value: 'Complete',
@@ -112,7 +122,7 @@ const getPostModStagerValues = (taskName) => {
         value: 'Close All Tasks',
       }];
       break;
-    default: return null;
+    default: return [];
   }
   return value;
 };
@@ -128,7 +138,8 @@ const getStagerTaskName = () => {
   return states;
 };
 
-const getOptionBasedStagerValues = (taskName) => {
+const getOptionBasedStagerValues = (dropDownValue) => {
+  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'recordationToOrder' : dropDownValue;
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -163,7 +174,7 @@ const getOptionBasedStagerValues = (taskName) => {
           value: 'Re-Order',
         }];
       break;
-    case 'Recordation To Order':
+    case 'recordationToOrder':
       value = [
         {
           displayName: 'SENT FOR E-RECORDING',
