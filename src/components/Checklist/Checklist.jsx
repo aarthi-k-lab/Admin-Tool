@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
+import NumberFormat from 'react-number-format';
 import RadioButtons from './RadioButtons';
 import CheckBox from './Checkbox';
 import TextFields from './TextFields';
@@ -16,6 +17,19 @@ import HTMLElements from '../../constants/componentTypes';
 const DIALOG_TITLE = 'Do you want to clear current checklist?';
 const DELETE_TASK = 'DELETE TASK';
 const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
+
+const NumberFormatCustom = (props) => {
+  const { inputRef, ...other } = props;
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      isNumericString
+      prefix="$"
+      thousandSeparator
+    />
+  );
+};
 
 class Checklist extends React.PureComponent {
   constructor(props) {
@@ -182,7 +196,8 @@ class Checklist extends React.PureComponent {
     additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, CHECKBOX, READ_ONLY_TEXT,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER,
+      DATE, DROPDOWN, CHECKBOX, READ_ONLY_TEXT, CURRENCY,
     } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
@@ -197,6 +212,43 @@ class Checklist extends React.PureComponent {
               title={title}
             />
           </Fragment>
+        );
+      }
+      case CURRENCY: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          title,
+          value: getValue,
+        };
+        const textField = (
+          <TextFields
+            {...prop}
+            InputProps={{
+              inputComponent: NumberFormatCustom,
+            }}
+          />
+        );
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
         );
       }
       case CHECKBOX: {
@@ -451,6 +503,10 @@ class Checklist extends React.PureComponent {
 Checklist.defaultProps = {
   className: '',
   children: null,
+};
+
+NumberFormatCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
 };
 
 Checklist.propTypes = {
