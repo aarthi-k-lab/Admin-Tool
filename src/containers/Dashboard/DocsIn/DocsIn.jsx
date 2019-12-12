@@ -23,6 +23,8 @@ import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
 const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
+const recordationToOrderTasks = ['Modification Agreement Recordation', 'Assumption Agreement Recordation',
+  'Partial Claim Recordation', '258A Recordation'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -68,8 +70,17 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
-    displayName: 'RECORDATION TO ORDER',
-    value: 'Recordation To Order',
+    displayName: 'MODIFICATION AGREEMENT RECORDATION',
+    value: 'Modification Agreement Recordation',
+  }, {
+    displayName: 'ASSUMPTION AGREEMENT RECORDATION',
+    value: 'Assumption Agreement Recordation',
+  }, {
+    displayName: 'PARTIAL CLAIM RECORDATION',
+    value: 'Partial Claim Recordation',
+  }, {
+    displayName: '258A RECORDATION',
+    value: '258A Recordation',
   }, {
     displayName: 'RECORDATION ORDERED',
     value: 'Recordation Ordered',
@@ -83,36 +94,17 @@ const getPostModStagerTaskNames = () => {
   return states;
 };
 
-const getPostModStagerValues = (taskName) => {
+const getPostModStagerValues = (dropDownValue) => {
+  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
   let value = [];
   switch (taskName) {
-    case 'FNMA QC':
-    case 'Countersign':
-    case 'Send Mod Agreement':
-    case 'Investor Settlement':
-      value = [{
-        displayName: 'COMPLETE',
-        value: 'Complete',
-      }];
-      break;
-    case 'Recordation':
-    case 'Recordation To Order':
-    case 'Recordation Ordered':
-      value = [{
-        displayName: 'COMPLETE',
-        value: 'Complete',
-      }, {
-        displayName: 'ORDER',
-        value: 'Order',
-      }];
-      break;
     case 'modReversal':
       value = [{
         displayName: 'CLOSE ALL TASKS',
         value: 'Close All Tasks',
       }];
       break;
-    default: return null;
+    default: return [];
   }
   return value;
 };
@@ -128,7 +120,8 @@ const getStagerTaskName = () => {
   return states;
 };
 
-const getOptionBasedStagerValues = (taskName) => {
+const getOptionBasedStagerValues = (dropDownValue) => {
+  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -289,7 +282,7 @@ class DocsIn extends React.PureComponent {
     }
     const valueState = {
       value: event.target.value,
-      selectedState: LoanStates[0].value,
+      selectedState: !R.isEmpty(LoanStates) ? LoanStates[0].value : null,
       stagerTaskOptions: optionStagerValues,
       isDisabled: disableSubmit,
       selectedStagerTaskOptions: selectedOptionValue,
@@ -449,17 +442,20 @@ class DocsIn extends React.PureComponent {
             ))}
           </Select>
         </Grid>
-        <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
-          <Select
-            // native
-            onChange={this.handleChangeInState}
-            value={selectedState}
-          >
-            {LoanStates.map(item => (
-              <MenuItem value={item.value}>{item.displayName}</MenuItem>
-            ))}
-          </Select>
-        </Grid>
+        {selectedState ? (
+          <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
+            <Select
+              // native
+              onChange={this.handleChangeInState}
+              value={selectedState}
+            >
+              {LoanStates.map(item => (
+                <MenuItem value={item.value}>{item.displayName}</MenuItem>
+              ))}
+            </Select>
+          </Grid>
+        ) : null}
+
         {value === 'modReversal' ? (
           <div>
             <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
@@ -486,7 +482,7 @@ class DocsIn extends React.PureComponent {
     return (
       <Grid
         style={{
-          textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '10rem',
+          right: '0', position: 'absolute', paddingRight: '64px', paddingTop: '4px',
         }}
         xs={4}
       >
