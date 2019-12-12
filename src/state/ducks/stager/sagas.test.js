@@ -19,6 +19,9 @@ import {
   SET_STAGER_ACTIVE_SEARCH_TERM,
 } from './types';
 import { SET_SNACK_BAR_VALUES_SAGA } from '../notifications/types';
+import {
+  selectors as loginSelectors,
+} from 'ducks/login/index';
 
 describe('stager watcher ', () => {
   it('watchDashboardCountsFetch should be triggered', () => {
@@ -90,10 +93,20 @@ const dateUTCValue = {
   toDate: '2019-01-05',
   searchTerm: null,
 };
+const mockUser = {
+  userDetails: {
+    email: 'bren@mrcooper.com',
+  },
+}
 describe('fetchDashboardCounts ', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
-  it('should select Stager type ', () => {
+  it('should Check user ', () => {
     expect(saga.next().value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should select Stager type ', () => {
+    expect(saga.next(mockUser).value)
       .toEqual(select(selectors.getStagerValue));
   });
   it('should select Stager date ', () => {

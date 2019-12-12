@@ -73,7 +73,7 @@ class IdleUserHandler extends Component {
           onAction={this.onAction}
           onActive={this.onActive}
           onIdle={this.onIdle}
-          timeout={7200000}
+          timeout={5400000}
         />
         <ReactAudioPlayer
           autoPlay
