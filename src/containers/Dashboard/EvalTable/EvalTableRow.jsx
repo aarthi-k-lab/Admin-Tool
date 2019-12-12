@@ -10,7 +10,7 @@ import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
 
-const showReject = row => ((row.original.pstatusReason === 'Rejection Pending' && row.original.pstatus === 'Active') || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended'));
+const showReject = row => ((row.original.pstatus === 'Active' && (row.original.pstatusReason === 'Rejection Pending' || row.original.pstatusReason === 'Trial Rejected')) || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended'));
 
 const getEventName = (pstatusReason, pstatus, taskName) => {
   let eventName = '';
@@ -35,7 +35,7 @@ class EvalTableRow extends React.PureComponent {
     if (value === 'Loan Activity') {
       const { onSelectEval } = this.props;
       onSelectEval(payLoad);
-    } else if (((payLoad.pstatusReason === 'Rejection Pending' && payLoad.pstatus === 'Active') || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended'))) {
+    } else if (((payLoad.pstatus === 'Active' && (payLoad.pstatusReason === 'Rejection Pending' || payLoad.pstatusReason === 'Trial Rejected')) || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended'))) {
       const { evalId } = payLoad;
       const userID = R.path(['userDetails', 'email'], user);
       const rejectPayload = {
