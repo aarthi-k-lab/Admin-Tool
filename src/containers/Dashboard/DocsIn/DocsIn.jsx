@@ -297,9 +297,16 @@ class DocsIn extends React.PureComponent {
     if (hasError) {
       return 'We are experiencing some issues. Please try after some time.';
     }
-    const count = R.filter(o => !R.isEmpty(o.loanNumber), tableData);
-    const title = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Evals' : 'loans';
-    return `${count.length} ${title} have been processed.`;
+    let count = 0;
+    const isRecordationReorder = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order');
+    if (tableData) {
+      const data = Object.assign({}, R.flatten(tableData));
+      const successRecords = R.filter(obj => obj.statusMessage === 'Successful', data);
+      count = isRecordationReorder ? R.uniq(successRecords.map(o => o.evalId)).length
+        : R.uniq(successRecords.map(o => o.loanNumber)).length;
+    }
+    const title = isRecordationReorder ? 'Evals' : 'loans';
+    return `${count} ${title} have been processed.`;
   }
 
   getSubmitState(value) {
@@ -598,7 +605,7 @@ class DocsIn extends React.PureComponent {
     let taskName = [];
     let LoanStates = [];
     const { groupName } = this.props;
-    const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter EvalIds' : 'Enter Loan Numbers';
+    const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter Eval Ids' : 'Enter Loan Numbers';
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
     if (value && dualGroup) {
