@@ -23,8 +23,10 @@ import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
 const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
-const recordationToOrderTasks = ['Modification Agreement Recordation', 'Assumption Agreement Recordation',
-  'Partial Claim Recordation', '258A Recordation'];
+const recordationToOrderTasks = ['Modification Agreement ToOrder', 'Assumption Agreement ToOrder',
+  'Partial Claim ToOrder', '258A ToOrder'];
+const recordationOrderedTasks = ['Modification Agreement Ordered', 'Assumption Agreement Ordered',
+  'Partial Claim Ordered', '258A Ordered'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -70,20 +72,29 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
-    displayName: 'MODIFICATION AGREEMENT RECORDATION',
-    value: 'Modification Agreement Recordation',
+    displayName: 'MODIFICATION AGREEMENT TOORDER',
+    value: 'Modification Agreement ToOrder',
   }, {
-    displayName: 'ASSUMPTION AGREEMENT RECORDATION',
-    value: 'Assumption Agreement Recordation',
+    displayName: 'ASSUMPTION AGREEMENT TOORDER',
+    value: 'Assumption Agreement ToOrder',
   }, {
-    displayName: 'PARTIAL CLAIM RECORDATION',
-    value: 'Partial Claim Recordation',
+    displayName: 'PARTIAL CLAIM TOORDER',
+    value: 'Partial Claim ToOrder',
   }, {
-    displayName: '258A RECORDATION',
-    value: '258A Recordation',
+    displayName: '258A TOORDER',
+    value: '258A ToOrder',
   }, {
-    displayName: 'RECORDATION ORDERED',
-    value: 'Recordation Ordered',
+    displayName: 'MODIFICATION AGREEMENT ORDERED',
+    value: 'Modification Agreement Ordered',
+  }, {
+    displayName: 'ASSUMPTION AGREEMENT ORDERED',
+    value: 'Assumption Agreement Ordered',
+  }, {
+    displayName: 'PARTIAL CLAIM ORDERED',
+    value: 'Partial Claim Ordered',
+  }, {
+    displayName: '258A ORDERED',
+    value: '258A Ordered',
   }, {
     displayName: 'INVESTOR SETTLEMENT',
     value: 'Investor Settlement',
@@ -95,7 +106,12 @@ const getPostModStagerTaskNames = () => {
 };
 
 const getPostModStagerValues = (dropDownValue) => {
-  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  let taskName = '';
+  if (dropDownValue.includes('ToOrder')) {
+    taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  } else {
+    taskName = recordationOrderedTasks.indexOf(dropDownValue) !== -1 ? 'Recordation Ordered' : dropDownValue;
+  }
   let value = [];
   switch (taskName) {
     case 'modReversal':
@@ -121,7 +137,12 @@ const getStagerTaskName = () => {
 };
 
 const getOptionBasedStagerValues = (dropDownValue) => {
-  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  let taskName = '';
+  if (dropDownValue.includes('ToOrder')) {
+    taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  } else {
+    taskName = recordationOrderedTasks.indexOf(dropDownValue) !== -1 ? 'Recordation Ordered' : dropDownValue;
+  }
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -292,21 +313,21 @@ class DocsIn extends React.PureComponent {
   }
 
   getMessage() {
-    const { hasError } = this.state;
+    const { hasError, value, selectedStagerTaskOptions } = this.state;
     const { tableData } = this.props;
     if (hasError) {
       return 'We are experiencing some issues. Please try after some time.';
     }
-    let countLoan = 0;
-    let loanNum = 0;
-    // eslint-disable-next-line no-unused-expressions
-    tableData && tableData.forEach((item) => {
-      if (loanNum !== item.loanNumber) {
-        countLoan += item.statusMessage === 'Successful' ? 1 : 0;
-        loanNum = item.loanNumber;
-      }
-    });
-    return `${countLoan} loans have been processed.`;
+    let count = 0;
+    const isRecordationReorder = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order');
+    if (tableData) {
+      const data = Object.assign([], R.flatten(tableData));
+      const successRecords = R.filter(obj => obj.statusMessage === 'Successful', data);
+      count = isRecordationReorder ? R.uniq(successRecords.map(o => o.evalId)).length
+        : R.uniq(successRecords.map(o => o.loanNumber)).length;
+    }
+    const title = isRecordationReorder ? 'Evals' : 'loans';
+    return `${count} ${title} have been processed.`;
   }
 
   getSubmitState(value) {
@@ -380,15 +401,16 @@ class DocsIn extends React.PureComponent {
     let statusName = '';
     if (validateLoanFormat(loansNumber)) {
       const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-      const loanNumbersList = new Set(loanNumbers);
+      const inputValueList = new Set(loanNumbers);
       if (selectedStagerTaskOptions) {
         statusName = selectedStagerTaskOptions;
       } else {
         statusName = value === 'modReversal' ? modReversalReason : selectedState;
       }
+      const inputKey = (value === 'Recordation' && statusName === 'Re-Order') ? 'evalId' : 'loanNumber';
       const payload = {
-        loanNumber: [...loanNumbersList],
-        eventName: value,
+        [inputKey]: [...inputValueList],
+        eventName: (value === 'Recordation' && statusName === 'Re-Order') ? 'recordationReorder' : value,
         status: statusName,
         userID: user.userDetails.email,
         pageType: bulkOrderPageType,
@@ -597,13 +619,14 @@ class DocsIn extends React.PureComponent {
 
 
   render() {
-    const { value } = this.state;
+    const { value, selectedStagerTaskOptions } = this.state;
     const { inProgress } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
     const { groupName } = this.props;
+    const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter Eval Ids' : 'Enter Loan Numbers';
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
     if (value && dualGroup) {
@@ -637,7 +660,7 @@ class DocsIn extends React.PureComponent {
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
             <Grid item xs={4}>
-              <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
+              <div styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                   : ''
@@ -652,7 +675,9 @@ class DocsIn extends React.PureComponent {
         </ContentHeader>
         <Grid container>
           <Grid item xs={6}>
-            <span styleName="loan-numbers">Enter Loan Numbers</span>
+            <span styleName="loan-numbers">
+              {inputTitle}
+            </span>
           </Grid>
           <Grid item xs={5}>
             <span styleName="message">
