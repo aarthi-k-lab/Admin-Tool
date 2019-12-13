@@ -292,21 +292,14 @@ class DocsIn extends React.PureComponent {
   }
 
   getMessage() {
-    const { hasError } = this.state;
+    const { hasError, value, selectedStagerTaskOptions } = this.state;
     const { tableData } = this.props;
     if (hasError) {
       return 'We are experiencing some issues. Please try after some time.';
     }
-    let countLoan = 0;
-    let loanNum = 0;
-    // eslint-disable-next-line no-unused-expressions
-    tableData && tableData.forEach((item) => {
-      if (loanNum !== item.loanNumber) {
-        countLoan += item.statusMessage === 'Successful' ? 1 : 0;
-        loanNum = item.loanNumber;
-      }
-    });
-    return `${countLoan} loans have been processed.`;
+    const count = R.filter(o => !R.isEmpty(o.loanNumber), tableData);
+    const title = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Evals' : 'loans';
+    return `${count.length} ${title} have been processed.`;
   }
 
   getSubmitState(value) {
@@ -380,15 +373,16 @@ class DocsIn extends React.PureComponent {
     let statusName = '';
     if (validateLoanFormat(loansNumber)) {
       const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-      const loanNumbersList = new Set(loanNumbers);
+      const inputValueList = new Set(loanNumbers);
       if (selectedStagerTaskOptions) {
         statusName = selectedStagerTaskOptions;
       } else {
         statusName = value === 'modReversal' ? modReversalReason : selectedState;
       }
+      const inputKey = (value === 'Recordation' && statusName === 'Re-Order') ? 'evalId' : 'loanNumber';
       const payload = {
-        loanNumber: [...loanNumbersList],
-        eventName: value,
+        [inputKey]: [...inputValueList],
+        eventName: (value === 'Recordation' && statusName === 'Re-Order') ? 'recordationReorder' : value,
         status: statusName,
         userID: user.userDetails.email,
         pageType: bulkOrderPageType,
@@ -597,13 +591,14 @@ class DocsIn extends React.PureComponent {
 
 
   render() {
-    const { value } = this.state;
+    const { value, selectedStagerTaskOptions } = this.state;
     const { inProgress } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
     const { groupName } = this.props;
+    const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter EvalIds' : 'Enter Loan Numbers';
     const dualGroup = groupName === DashboardModel.ALL_STAGER;
     const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
     if (value && dualGroup) {
@@ -652,7 +647,9 @@ class DocsIn extends React.PureComponent {
         </ContentHeader>
         <Grid container>
           <Grid item xs={6}>
-            <span styleName="loan-numbers">Enter Loan Numbers</span>
+            <span styleName="loan-numbers">
+              {inputTitle}
+            </span>
           </Grid>
           <Grid item xs={5}>
             <span styleName="message">
