@@ -23,8 +23,10 @@ import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
 const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
-const recordationToOrderTasks = ['Modification Agreement Recordation', 'Assumption Agreement Recordation',
-  'Partial Claim Recordation', '258A Recordation'];
+const recordationToOrderTasks = ['Modification Agreement ToOrder', 'Assumption Agreement ToOrder',
+  'Partial Claim ToOrder', '258A ToOrder'];
+const recordationOrderedTasks = ['Modification Agreement Ordered', 'Assumption Agreement Ordered',
+  'Partial Claim Ordered', '258A Ordered'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -70,20 +72,29 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
-    displayName: 'MODIFICATION AGREEMENT RECORDATION',
-    value: 'Modification Agreement Recordation',
+    displayName: 'MODIFICATION AGREEMENT TOORDER',
+    value: 'Modification Agreement ToOrder',
   }, {
-    displayName: 'ASSUMPTION AGREEMENT RECORDATION',
-    value: 'Assumption Agreement Recordation',
+    displayName: 'ASSUMPTION AGREEMENT TOORDER',
+    value: 'Assumption Agreement ToOrder',
   }, {
-    displayName: 'PARTIAL CLAIM RECORDATION',
-    value: 'Partial Claim Recordation',
+    displayName: 'PARTIAL CLAIM TOORDER',
+    value: 'Partial Claim ToOrder',
   }, {
-    displayName: '258A RECORDATION',
-    value: '258A Recordation',
+    displayName: '258A TOORDER',
+    value: '258A ToOrder',
   }, {
-    displayName: 'RECORDATION ORDERED',
-    value: 'Recordation Ordered',
+    displayName: 'MODIFICATION AGREEMENT ORDERED',
+    value: 'Modification Agreement Ordered',
+  }, {
+    displayName: 'ASSUMPTION AGREEMENT ORDERED',
+    value: 'Assumption Agreement Ordered',
+  }, {
+    displayName: 'PARTIAL CLAIM ORDERED',
+    value: 'Partial Claim Ordered',
+  }, {
+    displayName: '258A ORDERED',
+    value: '258A Ordered',
   }, {
     displayName: 'INVESTOR SETTLEMENT',
     value: 'Investor Settlement',
@@ -95,7 +106,12 @@ const getPostModStagerTaskNames = () => {
 };
 
 const getPostModStagerValues = (dropDownValue) => {
-  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  let taskName = '';
+  if (dropDownValue.includes('ToOrder')) {
+    taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  } else {
+    taskName = recordationOrderedTasks.indexOf(dropDownValue) !== -1 ? 'Recordation Ordered' : dropDownValue;
+  }
   let value = [];
   switch (taskName) {
     case 'modReversal':
@@ -121,7 +137,12 @@ const getStagerTaskName = () => {
 };
 
 const getOptionBasedStagerValues = (dropDownValue) => {
-  const taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  let taskName = '';
+  if (dropDownValue.includes('ToOrder')) {
+    taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  } else {
+    taskName = recordationOrderedTasks.indexOf(dropDownValue) !== -1 ? 'Recordation Ordered' : dropDownValue;
+  }
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -632,7 +653,7 @@ class DocsIn extends React.PureComponent {
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
             <Grid item xs={4}>
-              <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
+              <div styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                   : ''
