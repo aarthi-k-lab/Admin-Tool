@@ -321,7 +321,7 @@ class DocsIn extends React.PureComponent {
     let count = 0;
     const isRecordationReorder = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order');
     if (tableData) {
-      const data = Object.assign({}, R.flatten(tableData));
+      const data = Object.assign([], R.flatten(tableData));
       const successRecords = R.filter(obj => obj.statusMessage === 'Successful', data);
       count = isRecordationReorder ? R.uniq(successRecords.map(o => o.evalId)).length
         : R.uniq(successRecords.map(o => o.loanNumber)).length;
