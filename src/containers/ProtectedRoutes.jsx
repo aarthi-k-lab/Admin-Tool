@@ -60,6 +60,7 @@ class ProtectedRoutes extends React.Component {
       .then((auth) => {
         this.auth = auth;
         if (auth.sessionValid) {
+          setUserSchemaTrigger(auth.user);
           this.setState({ loading: false });
           if (auth.groups) {
             const redirectPath = Auth.getGroupHomePage(auth.groups);
@@ -68,7 +69,6 @@ class ProtectedRoutes extends React.Component {
               loading: false,
               redirectPath,
             });
-            setUserSchemaTrigger(auth.user);
           }
         }
       });

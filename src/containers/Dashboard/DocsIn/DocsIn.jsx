@@ -215,6 +215,10 @@ const isPageTypeDocsIn = (pageType) => {
   return false;
 };
 
+const postModGroups = ['postmodstager', 'postmodstager-mgr'];
+const stagerGroups = ['stager', 'stager-mgr'];
+const allAccessGroups = [...postModGroups, ...stagerGroups];
+
 class DocsIn extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -225,7 +229,7 @@ class DocsIn extends React.PureComponent {
       // loanNumbersCount: 0,
       isDisabled: 'disabled',
       value: '',
-      selectedState: '',
+      selectedState: undefined,
       modReversalReason: '',
       stagerTaskOptions: [],
       selectedStagerTaskOptions: '',
@@ -249,20 +253,26 @@ class DocsIn extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { groupName, setStagerValueAndState } = this.props;
-    const isPostModGroup = groupName === DashboardModel.POSTMODSTAGER;
+    const {
+      setStagerValueAndState, groupName, user, setPageType,
+    } = this.props;
+    const isPostMod = groupName === DashboardModel.POSTMODSTAGER
+      || (user ? this.isPostModGroup(user.userGroups.map(o => o.groupName)) : false);
+    const isStager = user ? this.isStagerGroup(user.userGroups.map(o => o.groupName)) : false;
     let valueState = {};
     let optionStagerValues = [];
-    if (isPostModGroup) {
+    if (isPostMod) {
       optionStagerValues = getOptionBasedStagerValues('FNMA QC');
       valueState = {
         value: 'FNMA QC',
-        selectedState: 'Complete',
         selectedStagerTaskOptions: 'FNMA QC PASS',
         stagerTaskOptions: optionStagerValues,
       };
     } else {
       valueState = { value: 'Value', selectedState: 'ORDERED' };
+    }
+    if (!groupName) {
+      setPageType(isPostMod || isStager ? 'BULKUPLOAD_STAGER' : 'BULKUPLOAD_DOCSIN');
     }
     setStagerValueAndState(valueState);
     this.setState(valueState);
@@ -278,10 +288,12 @@ class DocsIn extends React.PureComponent {
     let optionStagerValues = [];
     let disableSubmit = '';
     let selectedOptionValue = '';
-    const { groupName, setStagerValueAndState } = this.props;
+    const { setStagerValueAndState, user } = this.props;
     const { modReversalReason, loansNumber } = this.state;
-    const dualGroup = groupName === DashboardModel.ALL_STAGER;
-    const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
+    const dualGroup = user ? this.isDualGroup(user.userGroups.map(o => o.groupName))
+      : false;
+    const postModGroupCheck = user ? this.isPostModGroup(user.userGroups.map(o => o.groupName))
+      : false;
     if (dualGroup) {
       LoanStates = getStagerValues(event.target.value)
         || getPostModStagerValues(event.target.value);
@@ -335,6 +347,22 @@ class DocsIn extends React.PureComponent {
     if (stateValue === 'modReversal') return ((value.trim() && modReversalReason !== '') ? '' : 'disabled');
     return (value.trim() ? '' : 'disabled');
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  isPostModGroup(userGroups) {
+    return postModGroups.every(i => userGroups.includes(i));
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  isDualGroup(userGroups) {
+    return allAccessGroups.every(i => userGroups.includes(i));
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  isStagerGroup(userGroups) {
+    return stagerGroups.every(i => userGroups.includes(i));
+  }
+
 
   handleBackButton() {
     const { history, bulkOrderPageType } = this.props;
@@ -514,7 +542,7 @@ class DocsIn extends React.PureComponent {
             <CSVLink
               // eslint-disable-next-line no-return-assign
               ref={event => this.csvLink = event}
-              data={tableData}
+              data={R.flatten(tableData)}
               filename="bulk-order.csv"
               onClick={event => event.stopPropagation()}
               style={{ color: 'white' }}
@@ -625,10 +653,12 @@ class DocsIn extends React.PureComponent {
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const { groupName } = this.props;
+    const { user } = this.props;
     const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter Eval Ids' : 'Enter Loan Numbers';
-    const dualGroup = groupName === DashboardModel.ALL_STAGER;
-    const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
+    const dualGroup = user ? this.isDualGroup(user.userGroups.map(o => o.groupName)) : false;
+    const postModGroupCheck = user ? (dualGroup
+      || this.isPostModGroup(user.userGroups.map(o => o.groupName))) : false;
+    // eslint-disable-next-line no-unused-vars
     if (value && dualGroup) {
       taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
       LoanStates = getStagerValues(value) || getPostModStagerValues(value);
@@ -723,6 +753,7 @@ DocsIn.propTypes = {
     level: PropTypes.string,
     status: PropTypes.string,
   }),
+  setPageType: PropTypes.func.isRequired,
   setStagerValueAndState: PropTypes.func,
   tableData: PropTypes.arrayOf(
     PropTypes.shape({
@@ -759,6 +790,7 @@ const mapDispatchToProps = dispatch => ({
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
   onSelectModReversal: operations.selectModReversal(dispatch),
   setStagerValueAndState: operations.setStagerValueAndState(dispatch),
+  setPageType: operations.setPageType(dispatch),
 });
 
 
