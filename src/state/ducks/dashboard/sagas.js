@@ -1140,10 +1140,17 @@ function* AddDocsInReceived(payload) {
       response = yield call(Api.callPost, 'api/stager/dashboard/getBulkOrder', payloadData);
     }
     if (response !== null) {
-      yield put({
-        type: SET_ADD_BULK_ORDER_RESULT,
-        payload: response,
-      });
+      if (pageType === 'BULKUPLOAD_STAGER') {
+        yield put({
+          type: SET_ADD_BULK_ORDER_RESULT,
+          payload: response[0],
+        });
+      } else {
+        yield put({
+          type: SET_ADD_BULK_ORDER_RESULT,
+          payload: response,
+        });
+      }
     } else {
       yield put({
         type: SET_RESULT_OPERATION,
