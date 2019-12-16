@@ -31,6 +31,8 @@ const NumberFormatCustom = (props) => {
   );
 };
 
+const removeCharaters = value => value.replace(/[^0-9.]/g, '');
+
 class Checklist extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -81,7 +83,7 @@ class Checklist extends React.PureComponent {
               ? R.trim(event.target.value)
               : ''
           );
-          value = type === 'currency' ? value.replace(/[^0-9.]/g, '') : value;
+          value = type === 'currency' ? removeCharaters(value) : value;
           const dirtyValue = R.isEmpty(value) ? null : value;
           if (!R.equals(this.lastEditedValue, oldValues[id])) {
             onChange(id, dirtyValue, taskCode);
@@ -138,7 +140,7 @@ class Checklist extends React.PureComponent {
   handleTextChange(id, type) {
     return (event) => {
       const { multilineTextDirtyValues: oldValues } = this.state;
-      const multilineTextDirtyValues = R.assoc(id, type === 'currency' ? event.target.value.replace(/[^0-9.]/g, '') : event.target.value, oldValues);
+      const multilineTextDirtyValues = R.assoc(id, type === 'currency' ? removeCharaters(event.target.value) : event.target.value, oldValues);
       this.setState({
         multilineTextDirtyValues,
       });
@@ -218,7 +220,8 @@ class Checklist extends React.PureComponent {
       case CURRENCY: {
         const refCallback = this.handleBlur(id, taskCode, type);
         const onChange = this.handleTextChange(id, type);
-        const getValue = this.getMultilineTextValue(id, R.isNil(value) ? value : value.replace(/[^0-9.]/g, ''));
+        const getValue = this.getMultilineTextValue(id, R.isNil(value)
+          ? value : removeCharaters(value));
         const prop = {
           disabled,
           inputRef: refCallback,

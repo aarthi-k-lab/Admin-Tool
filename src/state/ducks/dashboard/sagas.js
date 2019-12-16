@@ -513,7 +513,7 @@ function* saveIncentiveAmount(taskObject, taskId, processId, taskCodeValues) {
         dataPointUOM: 'Dollar',
         dataPointValue: taskObject.value,
         valueEnteredByUser: 'CMOD',
-        valueEnteredDateTime: '2019-12-13T06:24:40.503Z',
+        valueEnteredDateTime: new Date().toISOString(),
         wfProcessId: processId,
         wfTaskId: taskId,
       };
