@@ -1188,7 +1188,7 @@ function* AddDocsInReceived(payload) {
     if (pageType === 'BULKUPLOAD_DOCSIN') {
       const { loanNumbers } = payload.payload;
       response = yield call(Api.callPost, `/api/release/api/process/docsInMoveLoan?user=${userPrincipalName}`, loanNumbers);
-    } else if (pageType === 'BULKUPLOAD_STAGER') {
+    } else {
       const payloadData = {
         moveLoan: payload.payload,
         userId: userPrincipalName,

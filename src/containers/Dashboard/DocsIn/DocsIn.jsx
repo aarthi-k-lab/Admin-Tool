@@ -315,7 +315,7 @@ class DocsIn extends React.PureComponent {
     let selectedOptionValue = '';
     const { setStagerValueAndState, user } = this.props;
     const { modReversalReason, loansNumber } = this.state;
-    const dualGroup = user ? this.isDualGroup() : false;
+    const dualGroup = user ? this.isDualGroup(user.userGroups.map(o => o.groupName)) : false;
     const postModGroupCheck = user ? this.isPostModGroup(user.userGroups.map(o => o.groupName))
       : false;
     if (dualGroup) {
@@ -378,8 +378,8 @@ class DocsIn extends React.PureComponent {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  isDualGroup() {
-    return this.isPostModGroup() && this.isStagerGroup();
+  isDualGroup(userGroups) {
+    return this.isPostModGroup(userGroups) && this.isStagerGroup(userGroups);
   }
 
   // eslint-disable-next-line class-methods-use-this
