@@ -126,9 +126,12 @@ class StagerPage extends React.PureComponent {
 
   handleClick() {
     const { showBulkOrderPage } = this.state;
-    const { setPageType, history, onClearBulkUploadDataAction } = this.props;
+    const {
+      setPageType, history, onClearBulkUploadDataAction, onCleanResult,
+    } = this.props;
     this.setState({ showBulkOrderPage: !showBulkOrderPage });
     onClearBulkUploadDataAction();
+    onCleanResult();
     history.push('/bulkOrder-page');
     setPageType(BULKUPLOAD_STAGER);
   }
@@ -284,6 +287,7 @@ StagerPage.defaultProps = {
     pathname: '',
   },
   loading: true,
+  onCleanResult: () => {},
   popupData: {},
   activeTab: '',
 };
@@ -314,6 +318,7 @@ StagerPage.propTypes = {
     pathname: PropTypes.string,
   }),
   onCheckBoxClick: PropTypes.func.isRequired,
+  onCleanResult: PropTypes.func,
   onClearBulkUploadDataAction: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
@@ -346,6 +351,7 @@ const mapDispatchToProps = dispatch => ({
   triggerStagerSearchLoan: stagerOperations.triggerStagerSearchLoan(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
   onClearBulkUploadDataAction: dashboardOperations.onClearBulkUploadDataAction(dispatch),
+  onCleanResult: dashboardOperations.onCleanResult(dispatch),
   onGetNext: dashboardOperations.onGetNext(dispatch),
   setPageType: dashboardOperations.setPageType(dispatch),
   onGetGroupName: dashboardOperations.onGetGroupName(dispatch),

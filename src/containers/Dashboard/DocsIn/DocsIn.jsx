@@ -254,7 +254,7 @@ class DocsIn extends React.PureComponent {
 
   componentDidMount() {
     const {
-      setStagerValueAndState, groupName, user, setPageType,
+      setStagerValueAndState, groupName, user, setPageType, onCleanResult,
     } = this.props;
     const isPostMod = groupName === DashboardModel.POSTMODSTAGER
       || (user ? this.isPostModGroup(user.userGroups.map(o => o.groupName)) : false);
@@ -274,6 +274,7 @@ class DocsIn extends React.PureComponent {
     if (!groupName) {
       setPageType(isPostMod || isStager ? 'BULKUPLOAD_STAGER' : 'BULKUPLOAD_DOCSIN');
     }
+    onCleanResult();
     setStagerValueAndState(valueState);
     this.setState(valueState);
   }
@@ -727,6 +728,7 @@ class DocsIn extends React.PureComponent {
 DocsIn.defaultProps = {
   inProgress: false,
   resultOperation: { level: '', status: '' },
+  onCleanResult: () => { },
   onLoansSubmit: () => { },
   onFailedLoanValidation: () => { },
   tableData: [
@@ -745,6 +747,7 @@ DocsIn.propTypes = {
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   modReversalReasons: PropTypes.arrayOf(PropTypes.string),
+  onCleanResult: PropTypes.func,
   onFailedLoanValidation: PropTypes.func,
   onLoansSubmit: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
@@ -786,6 +789,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onCleanResult: operations.onCleanResult(dispatch),
   onLoansSubmit: operations.onLoansSubmit(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
   onSelectModReversal: operations.selectModReversal(dispatch),
