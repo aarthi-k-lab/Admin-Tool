@@ -79,8 +79,6 @@ const getSelectedChecklistId = state => R.pathOr('', ['tasksAndChecklist', 'sele
 
 const getTaskLoadStatus = state => R.path(['tasksAndChecklist', 'taskLoadingStatus'], state);
 
-const getExpectedAmount = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'textValue']);
-
 const getNextChecklistId = (state) => {
   const selectedChecklistId = getSelectedChecklistId(state);
   return R.pathOr(
@@ -134,6 +132,8 @@ const getDispositionComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionC
 const getChecklistComment = R.pathOr(null, ['tasksAndChecklist', 'dispositionComment', 'comment']);
 
 const getInstructions = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'instructions']);
+
+const getProcessId = R.pathOr(null, ['tasksAndChecklist', 'processId']);
 
 const shouldShowDisposition = (state) => {
   const hasDisposition = !R.isNil(
@@ -208,7 +208,7 @@ const selectors = {
   getHistoricalChecklistData,
   getDropDownOptions,
   getAgentName,
-  getExpectedAmount,
+  getProcessId,
 };
 
 export default selectors;

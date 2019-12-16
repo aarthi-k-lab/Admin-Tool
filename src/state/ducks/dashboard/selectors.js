@@ -87,6 +87,7 @@ const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 
 
 const getRejectResponse = state => R.pathOr({}, ['dashboard', 'rejectResponse'], state);
 
+const incentiveTaskCodes = state => R.pathOr({}, ['dashboard', 'incentiveTaskCodes'], state);
 
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
@@ -154,6 +155,7 @@ const selectors = {
   stagerValueState,
   getModReversalReasons,
   isPostModEndShift,
+  incentiveTaskCodes,
 };
 
 export default selectors;

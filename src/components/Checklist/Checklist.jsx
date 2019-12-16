@@ -70,17 +70,18 @@ class Checklist extends React.PureComponent {
     return dirtyValue;
   }
 
-  handleBlur(id, taskCode) {
+  handleBlur(id, taskCode, type) {
     return (element) => {
       const { onChange } = this.props;
       if (element) {
         element.addEventListener('blur', (event) => {
           const { multilineTextDirtyValues: oldValues } = this.state;
-          const value = (
+          let value = (
             R.is(String, event.target.value)
               ? R.trim(event.target.value)
               : ''
           );
+          value = type === 'currency' ? value.replace(/[^0-9.]/g, '') : value;
           const dirtyValue = R.isEmpty(value) ? null : value;
           if (!R.equals(this.lastEditedValue, oldValues[id])) {
             onChange(id, dirtyValue, taskCode);
@@ -134,10 +135,10 @@ class Checklist extends React.PureComponent {
     };
   }
 
-  handleTextChange(id) {
+  handleTextChange(id, type) {
     return (event) => {
       const { multilineTextDirtyValues: oldValues } = this.state;
-      const multilineTextDirtyValues = R.assoc(id, event.target.value, oldValues);
+      const multilineTextDirtyValues = R.assoc(id, type === 'currency' ? event.target.value.replace(/[^0-9.]/g, '') : event.target.value, oldValues);
       this.setState({
         multilineTextDirtyValues,
       });
@@ -215,9 +216,9 @@ class Checklist extends React.PureComponent {
         );
       }
       case CURRENCY: {
-        const refCallback = this.handleBlur(id, taskCode);
-        const onChange = this.handleTextChange(id);
-        const getValue = this.getMultilineTextValue(id, value);
+        const refCallback = this.handleBlur(id, taskCode, type);
+        const onChange = this.handleTextChange(id, type);
+        const getValue = this.getMultilineTextValue(id, R.isNil(value) ? value : value.replace(/[^0-9.]/g, ''));
         const prop = {
           disabled,
           inputRef: refCallback,
@@ -387,18 +388,22 @@ class Checklist extends React.PureComponent {
         );
       }
       case READ_ONLY_TEXT: {
-        const { amount } = this.props;
         const refCallback = this.handleBlur(id, taskCode);
         const getValue = this.getMultilineTextValue(id, value);
         const prop = {
-          defaultValue: amount,
-          disabled: true,
           inputRef: refCallback,
           title,
           type: READ_ONLY_TEXT,
           value: getValue,
         };
-        const textField = (<TextFields {...prop} />);
+        const textField = (
+          <TextFields
+            {...prop}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        );
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -510,7 +515,6 @@ NumberFormatCustom.propTypes = {
 };
 
 Checklist.propTypes = {
-  amount: PropTypes.string.isRequired,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
       disabled: PropTypes.bool.isRequired,

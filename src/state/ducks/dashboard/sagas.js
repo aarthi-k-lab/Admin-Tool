@@ -25,6 +25,7 @@ import selectors from './selectors';
 // import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
   END_SHIFT,
+  SET_INCENTIVE_TASKCODES,
   GET_NEXT,
   SET_EXPAND_VIEW,
   SET_EXPAND_VIEW_SAGA,
@@ -504,14 +505,70 @@ function getCommentPayload(taskDetails) {
   };
 }
 
+function* saveIncentiveAmount(taskObject, taskId, processId, taskCodeValues) {
+  try {
+    if (!R.isNil(taskObject.value)) {
+      const payload = {
+        dataPointName: R.contains(taskObject.taskBlueprintCode, taskCodeValues.incentiveRequiredTaskCodes) ? 'Incentive Required' : 'Incentive Received',
+        dataPointUOM: 'Dollar',
+        dataPointValue: taskObject.value,
+        valueEnteredByUser: 'CMOD',
+        valueEnteredDateTime: '2019-12-13T06:24:40.503Z',
+        wfProcessId: processId,
+        wfTaskId: taskId,
+      };
+      const incentiveSaveResponse = yield call(Api.callPost, '/api/dataservice/api/taskmiscdata', payload);
+      if (!R.isNil(incentiveSaveResponse)) {
+        yield put({
+          type: USER_NOTIF_MSG,
+          payload: {
+            type: LEVEL_SUCCESS,
+            msg: 'Saved Data Successfully',
+          },
+        });
+      }
+    }
+  } catch (e) {
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {
+        type: LEVEL_ERROR,
+        data: 'Error in Saving data',
+      },
+    });
+  }
+}
+
 function* savePostModChklistDisposition(payload) {
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
   const taskId = yield select(selectors.taskId);
   const evalId = yield select(selectors.evalId);
+  const processId = yield select(selectors.processId);
   const disposition = payload.dispositionCode;
   try {
     if (!payload.isFirstVisit) {
+      const checklistId = yield select(checklistSelectors.getProcessId);
+      const configResponse = yield call(Api.callGet, '/api/config');
+      const { incentive } = configResponse;
+      yield put({
+        type: SET_INCENTIVE_TASKCODES,
+        payload: incentive,
+      });
+      const taskCodeValues = yield select(selectors.incentiveTaskCodes);
+      const taskPayload = {
+        taskCodes: taskCodeValues.incentiveRequiredTaskCodes
+          .concat(taskCodeValues.incentiveReceivedTaskCodes),
+      };
+      const response = yield call(Api.callPost, `/api/task-engine/task/getTaskCodeValues/${checklistId}`, taskPayload);
+      const activeIncentiveTask = [];
+      response.forEach((object) => {
+        if (!R.isNil(object.value)) {
+          activeIncentiveTask.push(object);
+        }
+      });
+      yield all(activeIncentiveTask.map((taskObject => call(saveIncentiveAmount, taskObject,
+        taskId, processId, taskCodeValues))));
       const saveResponse = yield call(Api.callPost, `/api/disposition/stager?evalId=${evalId}&userId=${userPrincipalName}&taskId=${taskId}&disposition=${disposition}`);
       yield put({
         type: SET_GET_NEXT_STATUS,
@@ -1219,6 +1276,7 @@ function* watchOnSearchWithTask() {
 function* watchOnSelectModReversal() {
   yield takeEvery(MOD_REVERSAL_REASONS, onSelectModReversal);
 }
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,

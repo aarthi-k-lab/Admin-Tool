@@ -51,10 +51,17 @@ import {
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  SET_INCENTIVE_TASKCODES,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
+    case SET_INCENTIVE_TASKCODES: {
+      return {
+        ...state,
+        incentiveTaskCodes: action.payload,
+      };
+    }
     case SET_GET_NEXT_STATUS: {
       return {
         ...state,
