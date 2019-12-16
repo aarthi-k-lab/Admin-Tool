@@ -226,7 +226,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           value: getValue,
         };
         const textField = (
@@ -277,7 +277,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           type: MULTILINE_TEXT,
           value: getValue,
         };
@@ -308,7 +308,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           type: NUMBER,
           value: getValue,
         };
@@ -367,7 +367,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           type: TEXT,
           value: getValue,
         };
@@ -395,7 +395,7 @@ class Checklist extends React.PureComponent {
         const getValue = this.getMultilineTextValue(id, value);
         const prop = {
           inputRef: refCallback,
-          title,
+          componentTitle: title,
           type: READ_ONLY_TEXT,
           value: getValue,
         };
@@ -432,7 +432,7 @@ class Checklist extends React.PureComponent {
         const prop = {
           disabled,
           onChange,
-          title,
+          componentTitle: title,
           type: DROPDOWN,
           value: getValue,
           source,

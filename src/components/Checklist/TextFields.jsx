@@ -80,7 +80,7 @@ class TextFields extends React.Component {
 
   getControl(type) {
     const { DROPDOWN } = HTMLElements;
-    const { title, ...other } = this.props;
+    const { componentTitle, ...other } = this.props;
     const properties = getProps(type, { ...other });
     return (type === DROPDOWN) ? (
       <TextField
@@ -101,10 +101,10 @@ class TextFields extends React.Component {
   }
 
   render() {
-    const { type, title } = this.props;
+    const { type, componentTitle } = this.props;
     return (
       <FormControl component="fieldset">
-        <FormLabel component="legend" styleName="text-label">{title}</FormLabel>
+        <FormLabel component="legend" styleName="text-label">{componentTitle}</FormLabel>
         {this.getControl(type)}
       </FormControl>
     );
@@ -117,6 +117,7 @@ TextFields.defaultProps = {
 
 TextFields.propTypes = {
   additionalInfo: PropTypes.string.isRequired,
+  componentTitle: PropTypes.string.isRequired,
   fetchDropDownOption: PropTypes.string.isRequired,
   getDropDownOptions: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string.isRequired,
@@ -124,7 +125,6 @@ TextFields.propTypes = {
     mail: PropTypes.string.isRequired,
   })),
   source: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
 };
 
