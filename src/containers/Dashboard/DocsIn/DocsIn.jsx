@@ -14,7 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Link, withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
 import { selectors as LoginSelectors } from 'ducks/login';
-import { selectors as stagerSelectors } from 'ducks/stager';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
@@ -389,8 +389,11 @@ class DocsIn extends React.PureComponent {
 
 
   handleBackButton() {
-    const { history, bulkOrderPageType, onClearStagerTaskName } = this.props;
+    const {
+      history, bulkOrderPageType, onClearStagerTaskName, onClearStagerResponse,
+    } = this.props;
     onClearStagerTaskName();
+    onClearStagerResponse();
     if (isPageTypeDocsIn(bulkOrderPageType)) history.push('/docs-in');
     else history.push('/stager');
   }
@@ -771,6 +774,7 @@ DocsIn.propTypes = {
   inProgress: PropTypes.bool,
   modReversalReasons: PropTypes.arrayOf(PropTypes.string),
   onCleanResult: PropTypes.func,
+  onClearStagerResponse: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
   onFailedLoanValidation: PropTypes.func,
   onLoansSubmit: PropTypes.func,
@@ -815,6 +819,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
   onLoansSubmit: operations.onLoansSubmit(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
   onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
   onSelectModReversal: operations.selectModReversal(dispatch),
