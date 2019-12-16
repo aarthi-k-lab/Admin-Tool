@@ -27,6 +27,8 @@ import './StagerPage.css';
 import DashboardModel from '../../../models/Dashboard';
 
 const BULKUPLOAD_STAGER = 'BULKUPLOAD_STAGER';
+const BULKUPLOAD_POSTMOD_STAGER = 'BULKUPLOAD_POSTMOD_STAGER';
+const BULKUPLOAD_ALL_STAGER = 'BULKUPLOAD_ALL_STAGER';
 const getStagertypeValues = [
   {
     value: 'UW_STAGER',
@@ -66,17 +68,20 @@ class StagerPage extends React.PureComponent {
 
   onStagerChange(event) {
     const {
-      onStagerChange, onClearDocGenAction, onClearStagerResponse, onGetGroupName,
+      onStagerChange, onClearDocGenAction, onClearStagerResponse, onGetGroupName, setPageType,
     } = this.props;
     this.setState({ searchText: '' });
     onStagerChange(event.target.value);
     let groupName = '';
     if (event.target.value === DashboardModel.STAGER_VALUE.ALL) {
       groupName = DashboardModel.ALL_STAGER;
+      setPageType(BULKUPLOAD_ALL_STAGER);
     } else if (event.target.value === DashboardModel.STAGER_VALUE.POSTMOD_STAGER_ALL) {
       groupName = DashboardModel.POSTMODSTAGER;
+      setPageType(BULKUPLOAD_POSTMOD_STAGER);
     } else {
       groupName = DashboardModel.STAGER;
+      setPageType(BULKUPLOAD_STAGER);
     }
     onGetGroupName(groupName);
     onClearDocGenAction();
@@ -124,16 +129,25 @@ class StagerPage extends React.PureComponent {
     }
   }
 
-  handleClick() {
+  handleClick(isAllStagerGroup, isPostModStagerGroup) {
     const { showBulkOrderPage } = this.state;
     const {
-      setPageType, history, onClearBulkUploadDataAction, onCleanResult,
+      bulkOrderPageType, setPageType, history, onClearBulkUploadDataAction,
+      onCleanResult,
     } = this.props;
     this.setState({ showBulkOrderPage: !showBulkOrderPage });
     onClearBulkUploadDataAction();
     onCleanResult();
     history.push('/bulkOrder-page');
-    setPageType(BULKUPLOAD_STAGER);
+    if (!bulkOrderPageType) {
+      if (isAllStagerGroup) {
+        setPageType(BULKUPLOAD_ALL_STAGER);
+      } else if (isPostModStagerGroup) {
+        setPageType(BULKUPLOAD_POSTMOD_STAGER);
+      } else {
+        setPageType(BULKUPLOAD_STAGER);
+      }
+    }
   }
 
   renderstagerSelect(isAllStagerGroup, isPostModStagerGroup, stager) {
@@ -150,7 +164,8 @@ class StagerPage extends React.PureComponent {
     }
     return (
       <Select
-        onChange={event => this.onStagerChange(event)}
+        // eslint-disable-next-line max-len
+        onChange={event => this.onStagerChange(event, isAllStagerGroup, isPostModStagerGroup, stager)}
         value={stager}
       >
         {
@@ -210,7 +225,7 @@ class StagerPage extends React.PureComponent {
                     />
                   </Grid>
                   <Grid item>
-                    <Fab aria-label="add" color="secondary" onClick={() => this.handleClick()} size="small" styleName="order-button" title="UPLOAD">
+                    <Fab aria-label="add" color="secondary" onClick={() => this.handleClick(isAllStagerGroup, isPostModStagerGroup)} size="small" styleName="order-button" title="UPLOAD">
                       <AddIcon />
                     </Fab>
                   </Grid>
@@ -287,7 +302,7 @@ StagerPage.defaultProps = {
     pathname: '',
   },
   loading: true,
-  onCleanResult: () => {},
+  onCleanResult: () => { },
   popupData: {},
   activeTab: '',
 };
@@ -295,6 +310,7 @@ StagerPage.defaultProps = {
 StagerPage.propTypes = {
   activeTab: PropTypes.string,
   activeTile: PropTypes.string.isRequired,
+  bulkOrderPageType: PropTypes.string.isRequired,
   counts: PropTypes.arrayOf(
     PropTypes.shape({
       data: PropTypes.arrayOf(
@@ -360,6 +376,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
+  bulkOrderPageType: dashboardSelectors.bulkOrderPageType(state),
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
   user: loginSelectors.getUser(state),

@@ -18,7 +18,6 @@ import { selectors as stagerSelectors } from 'ducks/stager';
 import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
-import DashboardModel from '../../../models/Dashboard';
 import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
@@ -254,25 +253,49 @@ class DocsIn extends React.PureComponent {
 
   componentDidMount() {
     const {
-      setStagerValueAndState, groupName, user, setPageType, onCleanResult,
+      groupName, user, setPageType, setStagerValueAndState, bulkOrderPageType,
+      onCleanResult,
     } = this.props;
-    const isPostMod = groupName === DashboardModel.POSTMODSTAGER
-      || (user ? this.isPostModGroup(user.userGroups.map(o => o.groupName)) : false);
-    const isStager = user ? this.isStagerGroup(user.userGroups.map(o => o.groupName)) : false;
     let valueState = {};
     let optionStagerValues = [];
-    if (isPostMod) {
-      optionStagerValues = getOptionBasedStagerValues('FNMA QC');
-      valueState = {
-        value: 'FNMA QC',
-        selectedStagerTaskOptions: 'FNMA QC PASS',
-        stagerTaskOptions: optionStagerValues,
-      };
-    } else {
-      valueState = { value: 'Value', selectedState: 'ORDERED' };
-    }
     if (!groupName) {
-      setPageType(isPostMod || isStager ? 'BULKUPLOAD_STAGER' : 'BULKUPLOAD_DOCSIN');
+      const isPostMod = user ? this.isPostModGroup(user.userGroups.map(o => o.groupName)) : false;
+      const isStager = user ? this.isStagerGroup(user.userGroups.map(o => o.groupName)) : false;
+      if (isStager && isPostMod) {
+        setPageType('BULKUPLOAD_ALL_STAGER');
+        valueState = { value: 'Value', selectedState: 'ORDERED' };
+      } else if (isStager) {
+        setPageType('BULKUPLOAD_STAGER');
+        valueState = { value: 'Value', selectedState: 'ORDERED' };
+      } else if (isPostMod) {
+        setPageType('BULKUPLOAD_POSTMOD_STAGER');
+        optionStagerValues = getOptionBasedStagerValues('FNMA QC');
+        valueState = {
+          value: 'FNMA QC',
+          selectedStagerTaskOptions: 'FNMA QC PASS',
+          stagerTaskOptions: optionStagerValues,
+        };
+      } else {
+        setPageType('BULKUPLOAD_DOCSIN');
+      }
+    } else {
+      switch (bulkOrderPageType) {
+        case 'BULKUPLOAD_STAGER':
+          valueState = { value: 'Value', selectedState: 'ORDERED' };
+          break;
+        case 'BULKUPLOAD_POSTMOD_STAGER':
+          optionStagerValues = getOptionBasedStagerValues('FNMA QC');
+          valueState = {
+            value: 'FNMA QC',
+            selectedStagerTaskOptions: 'FNMA QC PASS',
+            stagerTaskOptions: optionStagerValues,
+          };
+          break;
+        case 'BULKUPLOAD_ALL_STAGER':
+          valueState = { value: 'Value', selectedState: 'ORDERED' };
+          break;
+        default:
+      }
     }
     onCleanResult();
     setStagerValueAndState(valueState);
@@ -654,21 +677,20 @@ class DocsIn extends React.PureComponent {
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const { user } = this.props;
     const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter Eval Ids' : 'Enter Loan Numbers';
-    const dualGroup = user ? this.isDualGroup(user.userGroups.map(o => o.groupName)) : false;
-    const postModGroupCheck = user ? (dualGroup
-      || this.isPostModGroup(user.userGroups.map(o => o.groupName))) : false;
-    // eslint-disable-next-line no-unused-vars
-    if (value && dualGroup) {
-      taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
-      LoanStates = getStagerValues(value) || getPostModStagerValues(value);
-    } else if (value && postModGroupCheck) {
-      taskName = getPostModStagerTaskNames();
-      LoanStates = getPostModStagerValues(value);
-    } else if (value) {
-      taskName = getStagerTaskName();
-      LoanStates = getStagerValues(value);
+    switch (bulkOrderPageType) {
+      case 'BULKUPLOAD_ALL_STAGER':
+        taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
+        LoanStates = getStagerValues(value) || getPostModStagerValues(value);
+        break;
+      case 'BULKUPLOAD_POSTMOD_STAGER':
+        taskName = getPostModStagerTaskNames();
+        LoanStates = getPostModStagerValues(value);
+        break;
+      default:
+        taskName = getStagerTaskName();
+        LoanStates = getStagerValues(value);
+        break;
     }
     const renderBackButtonPage = isPageTypeDocsIn(bulkOrderPageType) ? '/docs-in' : '/stager';
     if (inProgress) {
