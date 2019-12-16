@@ -202,6 +202,11 @@ function getLienPosition(loanDetails) {
   return generateTombstoneItem('Lien Position', lienPosition);
 }
 
+function getTaskName(_, evalDetails, previousDispositionDetails, a, b, c, taskName) {
+  // const taskNm = getOr('lienPosition', loanDetails, NA);
+  return generateTombstoneItem('Task Name', taskName);
+}
+
 function getLoanTypeDescription(loanDetails) {
   const loantypeDescription = getOr('loanTypeDescription', loanDetails, NA);
   return generateTombstoneItem('Loan Type Description', loantypeDescription);
@@ -292,6 +297,30 @@ function getTombstoneItems(loanDetails,
   switch (group) {
     case DashboardModel.DOC_GEN:
     case DashboardModel.DOCS_IN:
+      dataGenerator = [
+        getLoanItem,
+        getInvestorLoanItem,
+        getEvalIdItem,
+        getEvalFlag,
+        getLoanTypeDescription,
+        getInvestorItem,
+        getLienPosition,
+        getPreviousDisposition,
+        getLatestHandOffDisposition,
+        getBorrowerItem,
+        getSsnItem,
+        getSuccessorInInterestStatus,
+        getBrandNameItem,
+        getWaterfallName,
+        getModificationType,
+        getNextPaymentDueDateItem,
+        getForeclosureSalesDate,
+        getFLDD,
+        getCFPBExpirationDate,
+        getDaysUntilCFPB,
+        getBoardingDate,
+      ];
+      break;
     case DashboardModel.POSTMODSTAGER:
       dataGenerator = [
         getLoanItem,
@@ -301,6 +330,7 @@ function getTombstoneItems(loanDetails,
         getLoanTypeDescription,
         getInvestorItem,
         getLienPosition,
+        getTaskName,
         getPreviousDisposition,
         getLatestHandOffDisposition,
         getBorrowerItem,
