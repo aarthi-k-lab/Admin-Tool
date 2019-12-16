@@ -389,7 +389,8 @@ class DocsIn extends React.PureComponent {
 
 
   handleBackButton() {
-    const { history, bulkOrderPageType } = this.props;
+    const { history, bulkOrderPageType, onClearStagerTaskName } = this.props;
+    onClearStagerTaskName();
     if (isPageTypeDocsIn(bulkOrderPageType)) history.push('/docs-in');
     else history.push('/stager');
   }
@@ -770,6 +771,7 @@ DocsIn.propTypes = {
   inProgress: PropTypes.bool,
   modReversalReasons: PropTypes.arrayOf(PropTypes.string),
   onCleanResult: PropTypes.func,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onFailedLoanValidation: PropTypes.func,
   onLoansSubmit: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
@@ -813,6 +815,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
   onLoansSubmit: operations.onLoansSubmit(dispatch),
+  onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
   onSelectModReversal: operations.selectModReversal(dispatch),
   setStagerValueAndState: operations.setStagerValueAndState(dispatch),
