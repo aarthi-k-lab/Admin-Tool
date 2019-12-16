@@ -214,9 +214,10 @@ const isPageTypeDocsIn = (pageType) => {
   return false;
 };
 
-const postModGroups = ['postmodstager', 'postmodstager-mgr'];
-const stagerGroups = ['stager', 'stager-mgr'];
-const allAccessGroups = [...postModGroups, ...stagerGroups];
+const POSTMOD = 'postmodstager';
+const POSTMOD_MGR = 'postmodstager-mgr';
+const STAGER = 'stager';
+const STAGER_MGR = 'stager-mgr';
 
 class DocsIn extends React.PureComponent {
   constructor(props) {
@@ -314,8 +315,7 @@ class DocsIn extends React.PureComponent {
     let selectedOptionValue = '';
     const { setStagerValueAndState, user } = this.props;
     const { modReversalReason, loansNumber } = this.state;
-    const dualGroup = user ? this.isDualGroup(user.userGroups.map(o => o.groupName))
-      : false;
+    const dualGroup = user ? this.isDualGroup() : false;
     const postModGroupCheck = user ? this.isPostModGroup(user.userGroups.map(o => o.groupName))
       : false;
     if (dualGroup) {
@@ -374,17 +374,17 @@ class DocsIn extends React.PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   isPostModGroup(userGroups) {
-    return postModGroups.every(i => userGroups.includes(i));
+    return userGroups.includes(POSTMOD) || userGroups.includes(POSTMOD_MGR);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  isDualGroup(userGroups) {
-    return allAccessGroups.every(i => userGroups.includes(i));
+  isDualGroup() {
+    return this.isPostModGroup() && this.isStagerGroup();
   }
 
   // eslint-disable-next-line class-methods-use-this
   isStagerGroup(userGroups) {
-    return stagerGroups.every(i => userGroups.includes(i));
+    return userGroups.includes(STAGER) || userGroups.includes(STAGER_MGR);
   }
 
 
