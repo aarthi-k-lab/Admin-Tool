@@ -705,7 +705,7 @@ function* getNext(action) {
       if (group === DashboardModel.POSTMODSTAGER) {
         const stagerTaskName = yield select(selectors.stagerTaskName);
         const taskName = action.payload.activeTile || stagerTaskName.activeTile;
-        postmodtaskName = taskName === 'Recordation' ? `${taskName}-${action.payload.activeTab.replace(/ /g, '') || stagerTaskName.activeTab.replace(/ /g, '')}` : taskName;
+        postmodtaskName = taskName === 'Recordation' ? `${taskName}-${(action.payload.activeTab || stagerTaskName.activeTab).replace(/ /g, '')}` : taskName;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
