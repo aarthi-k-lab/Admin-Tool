@@ -211,7 +211,8 @@ function* getTasks(action) {
       yield put(actions.validationDisplayAction(true));
       yield put(actions.dispositionCommentAction(disposition.dispositionComment));
     } else if (!R.isNil(yield select(selectors.getChecklistComment))) {
-      yield put(actions.validationDisplayAction(true));
+      const showDisposition = yield select(selectors.shouldShowDisposition);
+      yield put(actions.validationDisplayAction(showDisposition));
     } else yield put(actions.validationDisplayAction(false));
   } catch (e) {
     yield put({
