@@ -1182,7 +1182,6 @@ function* AddDocsInReceived(payload) {
   let response;
   try {
     const user = yield select(loginSelectors.getUser);
-    const selectedStagerValueState = yield select(selectors.stagerValueState);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
     if (pageType === 'BULKUPLOAD_DOCSIN') {
@@ -1192,7 +1191,7 @@ function* AddDocsInReceived(payload) {
       const payloadData = {
         moveLoan: payload.payload,
         userId: userPrincipalName,
-        selectedStatus: selectedStagerValueState.selectedState,
+        selectedStatus: payload.payload.status,
       };
       response = yield call(Api.callPost, 'api/stager/dashboard/getBulkOrder', payloadData);
     }
