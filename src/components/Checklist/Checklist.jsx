@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
+import NumberFormat from 'react-number-format';
 import RadioButtons from './RadioButtons';
 import CheckBox from './Checkbox';
 import TextFields from './TextFields';
@@ -16,6 +17,21 @@ import HTMLElements from '../../constants/componentTypes';
 const DIALOG_TITLE = 'Do you want to clear current checklist?';
 const DELETE_TASK = 'DELETE TASK';
 const CLEAR_CHECKLIST = 'CLEAR CHECKLIST';
+
+const NumberFormatCustom = (props) => {
+  const { inputRef, ...other } = props;
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      isNumericString
+      prefix="$"
+      thousandSeparator
+    />
+  );
+};
+
+const removeCharaters = value => value.replace(/[^0-9.]/g, '');
 
 class Checklist extends React.PureComponent {
   constructor(props) {
@@ -56,17 +72,18 @@ class Checklist extends React.PureComponent {
     return dirtyValue;
   }
 
-  handleBlur(id, taskCode) {
+  handleBlur(id, taskCode, type) {
     return (element) => {
       const { onChange } = this.props;
       if (element) {
         element.addEventListener('blur', (event) => {
           const { multilineTextDirtyValues: oldValues } = this.state;
-          const value = (
+          let value = (
             R.is(String, event.target.value)
               ? R.trim(event.target.value)
               : ''
           );
+          value = type === 'currency' ? removeCharaters(value) : value;
           const dirtyValue = R.isEmpty(value) ? null : value;
           if (!R.equals(this.lastEditedValue, oldValues[id])) {
             onChange(id, dirtyValue, taskCode);
@@ -120,10 +137,10 @@ class Checklist extends React.PureComponent {
     };
   }
 
-  handleTextChange(id) {
+  handleTextChange(id, type) {
     return (event) => {
       const { multilineTextDirtyValues: oldValues } = this.state;
-      const multilineTextDirtyValues = R.assoc(id, event.target.value, oldValues);
+      const multilineTextDirtyValues = R.assoc(id, type === 'currency' ? removeCharaters(event.target.value) : event.target.value, oldValues);
       this.setState({
         multilineTextDirtyValues,
       });
@@ -182,7 +199,8 @@ class Checklist extends React.PureComponent {
     additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, CHECKBOX, READ_ONLY_TEXT,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER,
+      DATE, DROPDOWN, CHECKBOX, READ_ONLY_TEXT, CURRENCY,
     } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
@@ -197,6 +215,44 @@ class Checklist extends React.PureComponent {
               title={title}
             />
           </Fragment>
+        );
+      }
+      case CURRENCY: {
+        const refCallback = this.handleBlur(id, taskCode, type);
+        const onChange = this.handleTextChange(id, type);
+        const getValue = this.getMultilineTextValue(id, R.isNil(value)
+          ? value : removeCharaters(value));
+        const prop = {
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          componentTitle: title,
+          value: getValue,
+        };
+        const textField = (
+          <TextFields
+            {...prop}
+            InputProps={{
+              inputComponent: NumberFormatCustom,
+            }}
+          />
+        );
+        const hint = R.prop('hint', options);
+        if (R.isNil(hint) || R.isEmpty(hint)) {
+          return textField;
+        }
+        return (
+          <Tooltip
+            classes={{
+              tooltip: styles.tooltip,
+            }}
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={hint}
+          >
+            {textField}
+          </Tooltip>
         );
       }
       case CHECKBOX: {
@@ -221,7 +277,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           type: MULTILINE_TEXT,
           value: getValue,
         };
@@ -252,7 +308,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           type: NUMBER,
           value: getValue,
         };
@@ -311,7 +367,7 @@ class Checklist extends React.PureComponent {
           disabled,
           inputRef: refCallback,
           onChange,
-          title,
+          componentTitle: title,
           type: TEXT,
           value: getValue,
         };
@@ -335,18 +391,22 @@ class Checklist extends React.PureComponent {
         );
       }
       case READ_ONLY_TEXT: {
-        const { amount } = this.props;
         const refCallback = this.handleBlur(id, taskCode);
         const getValue = this.getMultilineTextValue(id, value);
         const prop = {
-          defaultValue: amount,
-          disabled: true,
           inputRef: refCallback,
-          title,
+          componentTitle: title,
           type: READ_ONLY_TEXT,
           value: getValue,
         };
-        const textField = (<TextFields {...prop} />);
+        const textField = (
+          <TextFields
+            {...prop}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        );
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           return textField;
@@ -372,7 +432,7 @@ class Checklist extends React.PureComponent {
         const prop = {
           disabled,
           onChange,
-          title,
+          componentTitle: title,
           type: DROPDOWN,
           value: getValue,
           source,
@@ -453,8 +513,11 @@ Checklist.defaultProps = {
   children: null,
 };
 
+NumberFormatCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+};
+
 Checklist.propTypes = {
-  amount: PropTypes.string.isRequired,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
       disabled: PropTypes.bool.isRequired,

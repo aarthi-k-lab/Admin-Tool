@@ -53,15 +53,18 @@ function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
 
 function* fetchDashboardCounts() {
   try {
-    const stagerType = yield select(selectors.getStagerValue);
-    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
-    const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
-    if (response != null) {
-      yield put({
-        type: SET_STAGER_DATA_COUNTS,
-        payload: response,
-      });
+    const user = yield select(loginSelectors.getUser);
+    if (!R.isEmpty(user)) {
+      const stagerType = yield select(selectors.getStagerValue);
+      const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+      const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+      const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
+      if (response != null) {
+        yield put({
+          type: SET_STAGER_DATA_COUNTS,
+          payload: response,
+        });
+      }
     }
   } catch (e) {
     yield put({

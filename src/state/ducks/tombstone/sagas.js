@@ -31,7 +31,8 @@ function* fetchTombstoneData(payload) {
   // const loanNumber = '596815091';
 
   try {
-    const group = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
+    const userGroup = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
+    const group = userGroup === 'Recordation' || 'Countersign' ? taskName : userGroup;
     const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, group, taskName);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {

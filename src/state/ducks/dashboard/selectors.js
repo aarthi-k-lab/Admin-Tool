@@ -87,6 +87,7 @@ const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 
 
 const getRejectResponse = state => R.pathOr({}, ['dashboard', 'rejectResponse'], state);
 
+const incentiveTaskCodes = state => R.pathOr({}, ['dashboard', 'incentiveTaskCodes'], state);
 
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
@@ -100,7 +101,7 @@ const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUn
   ? state.dashboard.resultUnderwriting : {});
 const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
   ? state.dashboard.resultOperation : {});
-const bulkOrderPageType = state => R.pathOr({}, ['dashboard', 'pageType'], state);
+const bulkOrderPageType = state => R.pathOr('', ['dashboard', 'pageType'], state);
 const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
 
 
@@ -154,6 +155,7 @@ const selectors = {
   stagerValueState,
   getModReversalReasons,
   isPostModEndShift,
+  incentiveTaskCodes,
 };
 
 export default selectors;

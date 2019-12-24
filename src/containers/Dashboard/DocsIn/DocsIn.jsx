@@ -14,15 +14,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Link, withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
 import { selectors as LoginSelectors } from 'ducks/login';
-import { selectors as stagerSelectors } from 'ducks/stager';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
-import DashboardModel from '../../../models/Dashboard';
 import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
 const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive'];
+const recordationToOrderTasks = ['Modification Agreement ToOrder', 'Assumption Agreement ToOrder',
+  'Partial Claim ToOrder', '258A ToOrder'];
+const recordationOrderedTasks = ['Modification Agreement Ordered', 'Assumption Agreement Ordered',
+  'Partial Claim Ordered', '258A Ordered'];
 const validateLoanFormat = (loansNumber) => {
   let isValid = true;
   // eslint-disable-next-line
@@ -68,11 +71,29 @@ const getPostModStagerTaskNames = () => {
     displayName: 'RECORDATION',
     value: 'Recordation',
   }, {
-    displayName: 'RECORDATION TO ORDER',
-    value: 'Recordation To Order',
+    displayName: 'MODIFICATION AGREEMENT TOORDER',
+    value: 'Modification Agreement ToOrder',
   }, {
-    displayName: 'RECORDATION ORDERED',
-    value: 'Recordation Ordered',
+    displayName: 'ASSUMPTION AGREEMENT TOORDER',
+    value: 'Assumption Agreement ToOrder',
+  }, {
+    displayName: 'PARTIAL CLAIM TOORDER',
+    value: 'Partial Claim ToOrder',
+  }, {
+    displayName: '258A TOORDER',
+    value: '258A ToOrder',
+  }, {
+    displayName: 'MODIFICATION AGREEMENT ORDERED',
+    value: 'Modification Agreement Ordered',
+  }, {
+    displayName: 'ASSUMPTION AGREEMENT ORDERED',
+    value: 'Assumption Agreement Ordered',
+  }, {
+    displayName: 'PARTIAL CLAIM ORDERED',
+    value: 'Partial Claim Ordered',
+  }, {
+    displayName: '258A ORDERED',
+    value: '258A Ordered',
   }, {
     displayName: 'INVESTOR SETTLEMENT',
     value: 'Investor Settlement',
@@ -83,36 +104,22 @@ const getPostModStagerTaskNames = () => {
   return states;
 };
 
-const getPostModStagerValues = (taskName) => {
+const getPostModStagerValues = (dropDownValue) => {
+  let taskName = '';
+  if (dropDownValue.includes('ToOrder')) {
+    taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  } else {
+    taskName = recordationOrderedTasks.indexOf(dropDownValue) !== -1 ? 'Recordation Ordered' : dropDownValue;
+  }
   let value = [];
   switch (taskName) {
-    case 'FNMA QC':
-    case 'Countersign':
-    case 'Send Mod Agreement':
-    case 'Investor Settlement':
-      value = [{
-        displayName: 'COMPLETE',
-        value: 'Complete',
-      }];
-      break;
-    case 'Recordation':
-    case 'Recordation To Order':
-    case 'Recordation Ordered':
-      value = [{
-        displayName: 'COMPLETE',
-        value: 'Complete',
-      }, {
-        displayName: 'ORDER',
-        value: 'Order',
-      }];
-      break;
     case 'modReversal':
       value = [{
         displayName: 'CLOSE ALL TASKS',
         value: 'Close All Tasks',
       }];
       break;
-    default: return null;
+    default: return [];
   }
   return value;
 };
@@ -128,7 +135,13 @@ const getStagerTaskName = () => {
   return states;
 };
 
-const getOptionBasedStagerValues = (taskName) => {
+const getOptionBasedStagerValues = (dropDownValue) => {
+  let taskName = '';
+  if (dropDownValue.includes('ToOrder')) {
+    taskName = recordationToOrderTasks.indexOf(dropDownValue) !== -1 ? 'Recordation To Order' : dropDownValue;
+  } else {
+    taskName = recordationOrderedTasks.indexOf(dropDownValue) !== -1 ? 'Recordation Ordered' : dropDownValue;
+  }
   let value = [];
   switch (taskName) {
     case 'FNMA QC':
@@ -201,6 +214,11 @@ const isPageTypeDocsIn = (pageType) => {
   return false;
 };
 
+const POSTMOD = 'postmodstager';
+const POSTMOD_MGR = 'postmodstager-mgr';
+const STAGER = 'stager';
+const STAGER_MGR = 'stager-mgr';
+
 class DocsIn extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -211,7 +229,7 @@ class DocsIn extends React.PureComponent {
       // loanNumbersCount: 0,
       isDisabled: 'disabled',
       value: '',
-      selectedState: '',
+      selectedState: undefined,
       modReversalReason: '',
       stagerTaskOptions: [],
       selectedStagerTaskOptions: '',
@@ -235,21 +253,52 @@ class DocsIn extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { groupName, setStagerValueAndState } = this.props;
-    const isPostModGroup = groupName === DashboardModel.POSTMODSTAGER;
+    const {
+      groupName, user, setPageType, setStagerValueAndState, bulkOrderPageType,
+      onCleanResult,
+    } = this.props;
     let valueState = {};
     let optionStagerValues = [];
-    if (isPostModGroup) {
-      optionStagerValues = getOptionBasedStagerValues('FNMA QC');
-      valueState = {
-        value: 'FNMA QC',
-        selectedState: 'Complete',
-        selectedStagerTaskOptions: 'FNMA QC PASS',
-        stagerTaskOptions: optionStagerValues,
-      };
+    if (!groupName) {
+      const isPostMod = user ? this.isPostModGroup(user.userGroups.map(o => o.groupName)) : false;
+      const isStager = user ? this.isStagerGroup(user.userGroups.map(o => o.groupName)) : false;
+      if (isStager && isPostMod) {
+        setPageType('BULKUPLOAD_ALL_STAGER');
+        valueState = { value: 'Value', selectedState: 'ORDERED' };
+      } else if (isStager) {
+        setPageType('BULKUPLOAD_STAGER');
+        valueState = { value: 'Value', selectedState: 'ORDERED' };
+      } else if (isPostMod) {
+        setPageType('BULKUPLOAD_POSTMOD_STAGER');
+        optionStagerValues = getOptionBasedStagerValues('FNMA QC');
+        valueState = {
+          value: 'FNMA QC',
+          selectedStagerTaskOptions: 'FNMA QC PASS',
+          stagerTaskOptions: optionStagerValues,
+        };
+      } else {
+        setPageType('BULKUPLOAD_DOCSIN');
+      }
     } else {
-      valueState = { value: 'Value', selectedState: 'ORDERED' };
+      switch (bulkOrderPageType) {
+        case 'BULKUPLOAD_STAGER':
+          valueState = { value: 'Value', selectedState: 'ORDERED' };
+          break;
+        case 'BULKUPLOAD_POSTMOD_STAGER':
+          optionStagerValues = getOptionBasedStagerValues('FNMA QC');
+          valueState = {
+            value: 'FNMA QC',
+            selectedStagerTaskOptions: 'FNMA QC PASS',
+            stagerTaskOptions: optionStagerValues,
+          };
+          break;
+        case 'BULKUPLOAD_ALL_STAGER':
+          valueState = { value: 'Value', selectedState: 'ORDERED' };
+          break;
+        default:
+      }
     }
+    onCleanResult();
     setStagerValueAndState(valueState);
     this.setState(valueState);
   }
@@ -264,10 +313,11 @@ class DocsIn extends React.PureComponent {
     let optionStagerValues = [];
     let disableSubmit = '';
     let selectedOptionValue = '';
-    const { groupName, setStagerValueAndState } = this.props;
+    const { setStagerValueAndState, user } = this.props;
     const { modReversalReason, loansNumber } = this.state;
-    const dualGroup = groupName === DashboardModel.ALL_STAGER;
-    const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
+    const dualGroup = user ? this.isDualGroup(user.userGroups.map(o => o.groupName)) : false;
+    const postModGroupCheck = user ? this.isPostModGroup(user.userGroups.map(o => o.groupName))
+      : false;
     if (dualGroup) {
       LoanStates = getStagerValues(event.target.value)
         || getPostModStagerValues(event.target.value);
@@ -289,7 +339,7 @@ class DocsIn extends React.PureComponent {
     }
     const valueState = {
       value: event.target.value,
-      selectedState: LoanStates[0].value,
+      selectedState: !R.isEmpty(LoanStates) ? LoanStates[0].value : null,
       stagerTaskOptions: optionStagerValues,
       isDisabled: disableSubmit,
       selectedStagerTaskOptions: selectedOptionValue,
@@ -299,21 +349,21 @@ class DocsIn extends React.PureComponent {
   }
 
   getMessage() {
-    const { hasError } = this.state;
+    const { hasError, value, selectedStagerTaskOptions } = this.state;
     const { tableData } = this.props;
     if (hasError) {
       return 'We are experiencing some issues. Please try after some time.';
     }
-    let countLoan = 0;
-    let loanNum = 0;
-    // eslint-disable-next-line no-unused-expressions
-    tableData && tableData.forEach((item) => {
-      if (loanNum !== item.loanNumber) {
-        countLoan += item.statusMessage === 'Successful' ? 1 : 0;
-        loanNum = item.loanNumber;
-      }
-    });
-    return `${countLoan} loans have been processed.`;
+    let count = 0;
+    const isRecordationReorder = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order');
+    if (tableData) {
+      const data = Object.assign([], R.flatten(tableData));
+      const successRecords = R.filter(obj => obj.statusMessage === 'Successful', data);
+      count = isRecordationReorder ? R.uniq(successRecords.map(o => o.evalId)).length
+        : R.uniq(successRecords.map(o => o.loanNumber)).length;
+    }
+    const title = isRecordationReorder ? 'Evals' : 'loans';
+    return `${count} ${title} have been processed.`;
   }
 
   getSubmitState(value) {
@@ -322,8 +372,28 @@ class DocsIn extends React.PureComponent {
     return (value.trim() ? '' : 'disabled');
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  isPostModGroup(userGroups) {
+    return userGroups.includes(POSTMOD) || userGroups.includes(POSTMOD_MGR);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  isDualGroup(userGroups) {
+    return this.isPostModGroup(userGroups) && this.isStagerGroup(userGroups);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  isStagerGroup(userGroups) {
+    return userGroups.includes(STAGER) || userGroups.includes(STAGER_MGR);
+  }
+
+
   handleBackButton() {
-    const { history, bulkOrderPageType } = this.props;
+    const {
+      history, bulkOrderPageType, onClearStagerTaskName, onClearStagerResponse,
+    } = this.props;
+    onClearStagerTaskName();
+    onClearStagerResponse();
     if (isPageTypeDocsIn(bulkOrderPageType)) history.push('/docs-in');
     else history.push('/stager');
   }
@@ -387,15 +457,16 @@ class DocsIn extends React.PureComponent {
     let statusName = '';
     if (validateLoanFormat(loansNumber)) {
       const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-      const loanNumbersList = new Set(loanNumbers);
+      const inputValueList = new Set(loanNumbers);
       if (selectedStagerTaskOptions) {
         statusName = selectedStagerTaskOptions;
       } else {
         statusName = value === 'modReversal' ? modReversalReason : selectedState;
       }
+      const inputKey = (value === 'Recordation' && statusName === 'Re-Order') ? 'evalId' : 'loanNumber';
       const payload = {
-        loanNumber: [...loanNumbersList],
-        eventName: value,
+        [inputKey]: [...inputValueList],
+        eventName: (value === 'Recordation' && statusName === 'Re-Order') ? 'recordationReorder' : value,
         status: statusName,
         userID: user.userDetails.email,
         pageType: bulkOrderPageType,
@@ -449,17 +520,20 @@ class DocsIn extends React.PureComponent {
             ))}
           </Select>
         </Grid>
-        <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
-          <Select
-            // native
-            onChange={this.handleChangeInState}
-            value={selectedState}
-          >
-            {LoanStates.map(item => (
-              <MenuItem value={item.value}>{item.displayName}</MenuItem>
-            ))}
-          </Select>
-        </Grid>
+        {selectedState ? (
+          <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
+            <Select
+              // native
+              onChange={this.handleChangeInState}
+              value={selectedState}
+            >
+              {LoanStates.map(item => (
+                <MenuItem value={item.value}>{item.displayName}</MenuItem>
+              ))}
+            </Select>
+          </Grid>
+        ) : null}
+
         {value === 'modReversal' ? (
           <div>
             <Grid item style={{ marginLeft: '2rem' }} styleName="drop-down" xs={1}>
@@ -486,7 +560,7 @@ class DocsIn extends React.PureComponent {
     return (
       <Grid
         style={{
-          textAlign: 'right', paddingRight: '2rem', paddingTop: '0.3rem', marginLeft: '10rem',
+          right: '0', position: 'absolute', paddingRight: '64px', paddingTop: '4px',
         }}
         xs={4}
       >
@@ -496,7 +570,7 @@ class DocsIn extends React.PureComponent {
             <CSVLink
               // eslint-disable-next-line no-return-assign
               ref={event => this.csvLink = event}
-              data={tableData}
+              data={R.flatten(tableData)}
               filename="bulk-order.csv"
               onClick={event => event.stopPropagation()}
               style={{ color: 'white' }}
@@ -601,24 +675,26 @@ class DocsIn extends React.PureComponent {
 
 
   render() {
-    const { value } = this.state;
+    const { value, selectedStagerTaskOptions } = this.state;
     const { inProgress } = this.props;
     const title = '';
     const { resultOperation, bulkOrderPageType } = this.props;
     let taskName = [];
     let LoanStates = [];
-    const { groupName } = this.props;
-    const dualGroup = groupName === DashboardModel.ALL_STAGER;
-    const postModGroupCheck = groupName === DashboardModel.POSTMODSTAGER;
-    if (value && dualGroup) {
-      taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
-      LoanStates = getStagerValues(value) || getPostModStagerValues(value);
-    } else if (value && postModGroupCheck) {
-      taskName = getPostModStagerTaskNames();
-      LoanStates = getPostModStagerValues(value);
-    } else if (value) {
-      taskName = getStagerTaskName();
-      LoanStates = getStagerValues(value);
+    const inputTitle = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order') ? 'Enter Eval Ids' : 'Enter Loan Numbers';
+    switch (bulkOrderPageType) {
+      case 'BULKUPLOAD_ALL_STAGER':
+        taskName = [...getStagerTaskName(), ...getPostModStagerTaskNames()];
+        LoanStates = getStagerValues(value) || getPostModStagerValues(value);
+        break;
+      case 'BULKUPLOAD_POSTMOD_STAGER':
+        taskName = getPostModStagerTaskNames();
+        LoanStates = getPostModStagerValues(value);
+        break;
+      default:
+        taskName = getStagerTaskName();
+        LoanStates = getStagerValues(value);
+        break;
     }
     const renderBackButtonPage = isPageTypeDocsIn(bulkOrderPageType) ? '/docs-in' : '/stager';
     if (inProgress) {
@@ -641,7 +717,7 @@ class DocsIn extends React.PureComponent {
               ? this.renderDropDown(taskName, LoanStates)
               : <Grid item xs={3} />}
             <Grid item xs={4}>
-              <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
+              <div styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                   : ''
@@ -656,7 +732,9 @@ class DocsIn extends React.PureComponent {
         </ContentHeader>
         <Grid container>
           <Grid item xs={6}>
-            <span styleName="loan-numbers">Enter Loan Numbers</span>
+            <span styleName="loan-numbers">
+              {inputTitle}
+            </span>
           </Grid>
           <Grid item xs={5}>
             <span styleName="message">
@@ -676,6 +754,7 @@ class DocsIn extends React.PureComponent {
 DocsIn.defaultProps = {
   inProgress: false,
   resultOperation: { level: '', status: '' },
+  onCleanResult: () => { },
   onLoansSubmit: () => { },
   onFailedLoanValidation: () => { },
   tableData: [
@@ -694,6 +773,9 @@ DocsIn.propTypes = {
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   modReversalReasons: PropTypes.arrayOf(PropTypes.string),
+  onCleanResult: PropTypes.func,
+  onClearStagerResponse: PropTypes.func.isRequired,
+  onClearStagerTaskName: PropTypes.func.isRequired,
   onFailedLoanValidation: PropTypes.func,
   onLoansSubmit: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
@@ -702,6 +784,7 @@ DocsIn.propTypes = {
     level: PropTypes.string,
     status: PropTypes.string,
   }),
+  setPageType: PropTypes.func.isRequired,
   setStagerValueAndState: PropTypes.func,
   tableData: PropTypes.arrayOf(
     PropTypes.shape({
@@ -734,10 +817,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onCleanResult: operations.onCleanResult(dispatch),
   onLoansSubmit: operations.onLoansSubmit(dispatch),
+  onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
+  onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
   onSelectModReversal: operations.selectModReversal(dispatch),
   setStagerValueAndState: operations.setStagerValueAndState(dispatch),
+  setPageType: operations.setPageType(dispatch),
 });
 
 

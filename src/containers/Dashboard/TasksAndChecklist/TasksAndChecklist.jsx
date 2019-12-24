@@ -97,7 +97,6 @@ class TasksAndChecklist extends React.PureComponent {
       dialogTitle,
       handleDeleteTask,
       handleShowDeleteTaskConfirmation,
-      incentiveAmount,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -122,7 +121,6 @@ class TasksAndChecklist extends React.PureComponent {
     }
     return (
       <Checklist
-        amount={incentiveAmount}
         checklistItems={checklistItems}
         dialogContent={getDialogContent}
         dialogTitle={dialogTitle}
@@ -258,7 +256,6 @@ TasksAndChecklist.propTypes = {
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
-  incentiveAmount: PropTypes.string.isRequired,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
@@ -350,7 +347,6 @@ function mapStateToProps(state) {
       isGetNextError,
       getNextError,
     ),
-    incentiveAmount: selectors.getExpectedAmount(state),
     rootTaskId: selectors.getRootTaskId(state),
     commentsRequired: selectors.showComment(state),
     snackBarData: notificationSelectors.getSnackBarState(state),

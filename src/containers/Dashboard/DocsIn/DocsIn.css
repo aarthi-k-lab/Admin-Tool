@@ -15,7 +15,7 @@
   /* width: 50rem; */
 
   /* float: left; */
-  padding: 0 30% 0 20%;
+  padding: 0 0% 0 6%;
 }
 
 .title-row > :last-child {
@@ -137,7 +137,7 @@
 }
 
 .drop-down-select {
-  margin-right: 2rem;
-  max-width: 13rem !important;
+  margin-right: 4rem;
+  max-width: 27rem !important;
 }
 
