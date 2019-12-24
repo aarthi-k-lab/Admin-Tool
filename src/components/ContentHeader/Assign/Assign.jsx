@@ -50,7 +50,7 @@ class Assign extends React.Component {
       RenderContent = assignResult.status;
       if (assignResult.statusCode === 'Success') {
         imageUrl = '/static/img/success.gif';
-      } else if (assignResult.statusCode === 'Fail') {
+      } else if (assignResult.statusCode === 'Failed') {
         imageUrl = '/static/img/failed.gif';
       } else {
         imageUrl = '/static/img/warning.gif';
