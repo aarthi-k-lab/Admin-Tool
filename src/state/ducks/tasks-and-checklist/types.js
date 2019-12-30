@@ -36,6 +36,12 @@ const UPDATE_COMMENTS = 'app/tasks-and-checklist/UPDATE_COMMENTS';
 const EMPTY_CHECKLIST_COMMENT = 'app/tasks-and-checklist/EMPTY_CHECKLIST_COMMENT';
 const FETCH_DROPDOWN_OPTIONS_SAGA = 'app/tasks-and-checklist/FETCH_DROPDOWN_OPTIONS_SAGA';
 const SAVE_DROPDOWN_OPTIONS = 'app/tasks-and-checklist/SAVE_DROPDOWN_OPTIONS';
+const GET_RESOLUTION_ID_STATS = 'app/tasks-and-checklist/GET_RESOLUTION_ID_STATS';
+const FILTER_RULES = 'app/tasks-and-checklist/FILTER_RULES';
+const SLA_RULES_PROCESSED = 'app/tasks-and-checklist/SLA_RULES_PROCESSED';
+const SAVE_RULE_RESPONSE = 'app/tasks-and-checklist/SAVE_RULE_RESPONSE';
+const CLEAR_RULE_RESPONSE = 'app/tasks-and-checklist/CLEAR_RULE_RESPONSE';
+
 
 export {
   GET_NEXT_CHECKLIST,
@@ -76,4 +82,10 @@ export {
   EMPTY_CHECKLIST_COMMENT,
   FETCH_DROPDOWN_OPTIONS_SAGA,
   SAVE_DROPDOWN_OPTIONS,
+  GET_RESOLUTION_ID_STATS,
+  FILTER_RULES,
+  SLA_RULES_PROCESSED,
+  SAVE_RULE_RESPONSE,
+  CLEAR_RULE_RESPONSE,
+
 };

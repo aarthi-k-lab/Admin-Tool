@@ -321,7 +321,7 @@ function* selectEval(searchItem) {
   evalDetails.isAssigned = false;
   const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
-    && assignedTo === evalDetails.assignee.toLowerCase();
+        && assignedTo === evalDetails.assignee.toLowerCase();
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -491,7 +491,11 @@ function getEvalPayload(taskDetails) {
   const taskIterationCounter = R.path(['taskData', 'data', 'taskIterationCounter'], taskDetails);
   const piid = getProcessId(taskDetails);
   return {
-    loanNumber, evalId, taskId, taskIterationCounter, piid,
+    loanNumber,
+    evalId,
+    taskId,
+    taskIterationCounter,
+    piid,
   };
 }
 
@@ -501,7 +505,12 @@ function getCommentPayload(taskDetails) {
   const evalId = getEvalId(taskDetails);
   const taskId = R.path(['taskData', 'data', 'id'], taskDetails);
   return {
-    applicationName: 'CMOD', processIdType: 'WF_PRCS_ID', loanNumber, processId, evalId, taskId,
+    applicationName: 'CMOD',
+    processIdType: 'WF_PRCS_ID',
+    loanNumber,
+    processId,
+    evalId,
+    taskId,
   };
 }
 
@@ -962,7 +971,7 @@ function* loadTrials(payload) {
     let message = '';
     if (evalStatus !== 'Approved' || trialHeader.resolutionStatus !== 'Closed') {
       message = 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
-        + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
+                + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
     }
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
@@ -977,7 +986,7 @@ function* loadTrials(payload) {
       payload: {
         level: LEVEL_ERROR,
         status: 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
-          + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
+                    + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
       },
     });
   }
@@ -1023,7 +1032,7 @@ function* sentToUnderwriting() {
         }
       } else {
         const message = 'Unable to send back to Underwriting because either eval is not '
-          + 'in Active status or Resolution is not in Open status.';
+                    + 'in Active status or Resolution is not in Open status.';
         yield put({
           type: SET_TASK_UNDERWRITING_RESULT,
           payload: {
@@ -1042,8 +1051,7 @@ function* sentToUnderwriting() {
   } catch (e) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
-      payload:
-      {
+      payload: {
         level: LEVEL_ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
@@ -1104,8 +1112,7 @@ function* sendToDocGen(payload) {
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,
-      payload:
-      {
+      payload: {
         level: LEVEL_ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
@@ -1166,8 +1173,7 @@ function* sendToDocsIn() {
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,
-      payload:
-      {
+      payload: {
         level: LEVEL_ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
@@ -1203,8 +1209,7 @@ function* AddDocsInReceived(payload) {
     } else {
       yield put({
         type: SET_RESULT_OPERATION,
-        payload:
-        {
+        payload: {
           level: LEVEL_ERROR,
           status: 'This loan do not exist or currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
@@ -1213,8 +1218,7 @@ function* AddDocsInReceived(payload) {
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,
-      payload:
-      {
+      payload: {
         level: LEVEL_ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },

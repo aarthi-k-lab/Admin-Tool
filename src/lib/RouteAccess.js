@@ -91,6 +91,14 @@ const docInsPage = {
   groups: ['allaccess', 'docsin', 'docsin-mgr'],
 };
 
+// Special Loan Automation
+const BOOK = {
+  path: '/special-loan',
+  name: 'book',
+  img: '/static/img/sla.svg',
+  groups: ['allaccess', 'booking', 'booking-mgr'],
+};
+
 
 const links = [
   managerDashboard,
@@ -105,6 +113,7 @@ const links = [
   docGen,
   docIns,
   docInsPage,
+  BOOK,
 ];
 
 const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back'];
@@ -172,6 +181,9 @@ function hasDocInsAccess(groups) {
   return hasGroup(docIns.groups, groups);
 }
 
+function hasSlaAccess(groups) {
+  return hasGroup(BOOK.groups, groups);
+}
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager'];
@@ -202,5 +214,6 @@ module.exports = {
   // hasDocsInBackAccess,
   hasDocGenAccess,
   hasDocInsAccess,
+  hasSlaAccess,
   getStagerGroup,
 };

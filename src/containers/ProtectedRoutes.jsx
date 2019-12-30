@@ -51,6 +51,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInBackRoute = this.renderDocsInBackRoute.bind(this);
     this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
     this.renderDocsInMainRoute = this.renderDocsInMainRoute.bind(this);
+    this.renderSlaPageRoute = this.renderSlaPageRoute.bind(this);
     this.renderBulkOrderPageRoute = this.renderBulkOrderPageRoute.bind(this);
   }
 
@@ -179,6 +180,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderSlaPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasSlaAccess(groups)
+        ? <Dashboard group={DashboardModel.BOOK} />
+        : <Redirect to="/unauthorized?error=SLA_ACCESS_NEEDED" />
+    );
+  }
+
   renderStagerRoute = () => {
     const groups = this.getGroups();
     return (
@@ -215,6 +225,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
           <Route path="/bulkOrder-page" render={this.renderBulkOrderPageRoute} />
+          <Route path="/special-loan" render={this.renderSlaPageRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

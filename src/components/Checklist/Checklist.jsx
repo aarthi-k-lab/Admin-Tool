@@ -7,10 +7,12 @@ import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
 import RadioButtons from './RadioButtons';
+import SlaRules from '../SlaRules';
 import CheckBox from './Checkbox';
 import TextFields from './TextFields';
 import BasicDatePicker from './BasicDatePicker';
 import styles from './Checklist.css';
+import SlaHeader from '../SlaHeader';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 import HTMLElements from '../../constants/componentTypes';
 
@@ -199,8 +201,8 @@ class Checklist extends React.PureComponent {
     additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER,
-      DATE, DROPDOWN, CHECKBOX, READ_ONLY_TEXT, CURRENCY,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, LABEL_WITH_ICON, SLA_RULES,
+      CHECKBOX, READ_ONLY_TEXT, CURRENCY,
     } = HTMLElements;
     switch (type) {
       case RADIO_BUTTONS: {
@@ -457,6 +459,25 @@ class Checklist extends React.PureComponent {
           </Tooltip>
         );
       }
+      case LABEL_WITH_ICON: {
+        return null;
+      }
+      case SLA_RULES: {
+        const refCallback = this.handleBlur(id, taskCode);
+        const onChange = this.handleTextChange(id);
+        const getValue = this.getMultilineTextValue(id, value);
+        const props = {
+          title,
+          options,
+          additionalInfo,
+          disabled,
+          inputRef: refCallback,
+          onChange,
+          type: TEXT,
+          value: getValue,
+        };
+        return <SlaRules {...props} />;
+      }
       default:
         return (
           <div>
@@ -470,7 +491,7 @@ class Checklist extends React.PureComponent {
   render() {
     const {
       checklistItems, children, title,
-      className,
+      className, location, resolutionId,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
@@ -478,16 +499,29 @@ class Checklist extends React.PureComponent {
     return (
       <section className={className}>
         {children}
-        <div styleName="subTaskDescParent">
-          <div styleName="subTaskDescription">
-            <Typography styleName="checklist-title">{title}</Typography>
-          </div>
-        </div>
-        <div styleName="clearButton">
-          <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
+        { location.pathname === '/special-loan'
+          ? (
+            <SlaHeader
+              disabled={checklistItems[0].disabled}
+              text={`RESOLUTION ID ${resolutionId}`}
+              title={title}
+            />
+          )
+          : (
+            <>
+              <div styleName="subTaskDescParent">
+                <div styleName="subTaskDescription">
+                  <Typography styleName="checklist-title">{title}</Typography>
+                </div>
+              </div>
+              <div styleName="clearButton">
+                <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
             Clear
-          </Button>
-        </div>
+                </Button>
+              </div>
+            </>
+          )
+    }
         <div styleName="scrollable-checklist">
           <Paper elevation={1} styleName="checklist-form-controls">
             {
@@ -538,8 +572,12 @@ Checklist.propTypes = {
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string.isRequired,
+  }).isRequired,
   onChange: PropTypes.func.isRequired,
-
+  resolutionId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
 };
 

@@ -18,6 +18,9 @@ import {
   dispositionComments,
   getDropDownOptions,
   getHistoricalCheckListData,
+  setResolutionIdStats,
+  setFilterRules,
+  discardRuleResponse,
 } from './actions';
 
 const fetchHistoricalChecklistData = dispatch => (taskId) => {
@@ -75,6 +78,20 @@ const handleSubTaskClearance = dispatch => (taskId, taskBluePrintCode) => {
 const fetchDropDownOptions = dispatch => (source, additionalInfo) => {
   dispatch(getDropDownOptions(source, additionalInfo));
 };
+
+
+const triggerResolutionIdStats = dispatch => (resolutionId, auditRuleType) => {
+  dispatch(setResolutionIdStats(resolutionId, auditRuleType));
+};
+
+const triggerFilterRules = dispatch => (payload) => {
+  dispatch(setFilterRules(payload));
+};
+
+
+const clearRuleResponse = dispatch => () => dispatch(discardRuleResponse());
+
+
 const operations = {
   fetchChecklist,
   fetchNextChecklist,
@@ -94,6 +111,9 @@ const operations = {
   changeDispositionComments,
   fetchDropDownOptions,
   fetchHistoricalChecklistData,
+  triggerResolutionIdStats,
+  triggerFilterRules,
+  clearRuleResponse,
 };
 
 export default operations;

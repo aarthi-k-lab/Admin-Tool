@@ -33,6 +33,9 @@ import {
   ERROR_LOADING_HISTORICAL_CHECKLIST,
   FETCH_DROPDOWN_OPTIONS_SAGA,
   SAVE_DROPDOWN_OPTIONS,
+  GET_RESOLUTION_ID_STATS,
+  SLA_RULES_PROCESSED,
+  SAVE_RULE_RESPONSE,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -46,6 +49,7 @@ import selectors from './selectors';
 import { selectors as dashboardSelectors } from '../dashboard';
 import { selectors as loginSelectors } from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
+import { SOMETHING_WENT_WRONG } from '../../../models/Alert';
 // import DropDownSelect from 'containers';
 
 const ADD = 'ADD';
@@ -57,8 +61,8 @@ const autoDispositions = [{
 }, {
   dispositionCode: 'approval',
   dispositionComment: 'approval',
-},
-];
+}];
+
 function* getChecklist(action) {
   try {
     const { payload: { taskId } } = action;
@@ -377,8 +381,7 @@ function* handleChecklistItemChange(action) {
     });
     yield put({
       type: USER_NOTIF_MSG,
-      payload: {
-      },
+      payload: {},
     });
     yield put({
       type: SET_GET_NEXT_STATUS,
@@ -470,7 +473,9 @@ function* subTaskClearance(action) {
   try {
     const { id, rootTaskId, taskBlueprintCode } = action.payload;
     const requestBody = {
-      id, rootTaskId, taskBlueprintCode,
+      id,
+      rootTaskId,
+      taskBlueprintCode,
     };
     const response = yield call(Api.put, '/api/task-engine/task/clearSubTask', requestBody);
     const didErrorOccur = response === null;
@@ -522,7 +527,10 @@ function* getdropDownOptions(action) {
   const dataFetchMethod = sourceToMethodMapping[source];
   const requestData = yield dataFetchMethod(additionalInfo);
   const {
-    url, method, body, formatResponse,
+    url,
+    method,
+    body,
+    formatResponse,
   } = requestData;
   const options = yield call(method, url, body);
   const formattedOptions = yield formatResponse(options);
@@ -533,6 +541,49 @@ function* getdropDownOptions(action) {
     });
   } catch (e) {
     yield call(handleSaveChecklistError, e);
+  }
+}
+
+function* makeResolutionIdStatCall(action) {
+  try {
+    const { resolutionId, auditRuleType } = action.payload;
+    yield put({ type: SLA_RULES_PROCESSED, payload: false });
+    const response = yield call(Api.callPost, `/api/booking/api/bookingAutomation/runAuditRules?resolutionId=${resolutionId}&auditRuleType=${auditRuleType}`);
+    if (!R.isNil(response) && !R.isEmpty(response) && !response.message) {
+      try {
+        const rootTaskId = yield select(selectors.getRootTaskId);
+        const request = R.compose(
+          R.map(R.prop('data')),
+          R.path(['modBookingResponse', 'checklist']),
+        )(response);
+        const requestBody = {
+          value: {
+            [auditRuleType]: {
+              ruleResult: request,
+              resolutionId,
+            },
+          },
+        };
+        yield call(Api.put, `/api/task-engine/task/${rootTaskId}`, requestBody);
+        const selectedChecklistId = yield select(selectors.getSelectedChecklistId);
+        yield all([
+          callAndPut(actions.setSelectedChecklist, selectedChecklistId),
+          callAndPut(actions.getChecklist, selectedChecklistId),
+        ]);
+        yield put(yield call(actions.getTasks));
+      } catch (err) {
+        yield call(handleSaveChecklistError, err);
+      }
+    }
+    yield put({
+      type: SAVE_RULE_RESPONSE,
+      payload: R.isNil(response) || R.isEmpty(response)
+        ? { error: SOMETHING_WENT_WRONG } : response,
+    });
+  } catch (err) {
+    yield put({ type: SAVE_RULE_RESPONSE, payload: { error: SOMETHING_WENT_WRONG } });
+  } finally {
+    yield put({ type: SLA_RULES_PROCESSED, payload: true });
   }
 }
 
@@ -579,6 +630,10 @@ export const TestExports = {
   watchGetTasks,
 };
 
+function* watchResolutionIdStatCall() {
+  yield takeEvery(GET_RESOLUTION_ID_STATS, makeResolutionIdStatCall);
+}
+
 export function* combinedSaga() {
   yield all([
     watchChecklistItemChange(),
@@ -591,5 +646,7 @@ export function* combinedSaga() {
     watchGetHistoricalChecklistData(),
     watchSubtaskClearance(),
     watchDropDownOption(),
+    watchResolutionIdStatCall(),
   ]);
+  // eslint-disable-next-line eol-last
 }

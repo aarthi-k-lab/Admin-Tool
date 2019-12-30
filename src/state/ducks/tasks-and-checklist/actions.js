@@ -24,6 +24,9 @@ import {
   CLEAR_SUBTASK,
   UPDATE_COMMENTS,
   FETCH_DROPDOWN_OPTIONS_SAGA,
+  GET_RESOLUTION_ID_STATS,
+  FILTER_RULES,
+  CLEAR_RULE_RESPONSE,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -163,6 +166,23 @@ const getDropDownOptions = (source, additionalInfo) => ({
     additionalInfo,
   },
 });
+
+const setResolutionIdStats = (resolutionId, auditRuleType) => ({
+  type: GET_RESOLUTION_ID_STATS,
+  payload: {
+    resolutionId, auditRuleType,
+  },
+});
+
+const setFilterRules = payload => ({
+  type: FILTER_RULES,
+  payload,
+});
+
+const discardRuleResponse = () => ({
+  type: CLEAR_RULE_RESPONSE,
+});
+
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -189,4 +209,7 @@ export {
   getHistoricalCheckListData,
   dispositionComments,
   getDropDownOptions,
+  setResolutionIdStats,
+  setFilterRules,
+  discardRuleResponse,
 };

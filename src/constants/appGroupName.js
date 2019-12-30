@@ -9,6 +9,7 @@ const TRIAL = 'TRIAL';
 const UTIL = 'UTIL';
 const POSTMODSTAGER = 'POSTMODSTAGER';
 const POSTMOD = 'POSTMOD';
+const BOOK = 'BOOK';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -17,6 +18,7 @@ const checklistGroupNames = [
   DOC_GEN,
   DOCS_IN,
   POSTMOD,
+  BOOK,
 ];
 
 const userGroupList = [
@@ -30,6 +32,7 @@ const userGroupList = [
   TRIAL,
   UTIL,
   POSTMODSTAGER,
+  BOOK,
 ];
 
 

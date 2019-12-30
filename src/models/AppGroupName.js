@@ -11,6 +11,7 @@ const {
   checklistGroupNames,
 } = require('../constants/appGroupName');
 
+const slaGroups = ['booking', 'booking-mgr'];
 
 function disableGroups(role, groups, group) {
   if (R.equals(group, BETA) && !R.equals(groups.indexOf(group.toLowerCase()), -1)) {
@@ -23,6 +24,10 @@ function hasChecklist(appGroupName) {
   return checklistGroupNames.includes(appGroupName);
 }
 
+function isSLAGroup(groups) {
+  R.any(group => R.contains(group, slaGroups), groups);
+}
+
 module.exports = {
   BEUW_TASKS_AND_CHECKLIST,
   FEUW_TASKS_AND_CHECKLIST,
@@ -32,4 +37,5 @@ module.exports = {
   DOC_GEN,
   DOCS_IN,
   userGroupList,
+  isSLAGroup,
 };

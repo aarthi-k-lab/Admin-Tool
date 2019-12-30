@@ -10,6 +10,8 @@ const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
 const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
+const BOOK = 'BOOK';
+
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
 const ALL_STAGER = 'ALLSTAGER';
@@ -82,6 +84,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: BOOK,
+    task: 'Special Loan Automation',
+    taskCode: 'BOOK',
+    path: '/special-loan',
+    showAssignUnassign: true,
+  },
+  {
     group: POSTMODSTAGER,
     task: 'POST MOD STAGER',
     taskCode: 'POST MOD STAGER',
@@ -103,6 +112,7 @@ const GROUPS = {
   '/doc-processor': PROC,
   '/doc-gen': DOC_GEN,
   '/docs-in': DOCS_IN,
+  '/special-loan': BOOK,
 };
 
 function getTitle(location) {
@@ -119,6 +129,8 @@ function getTitle(location) {
       return 'Doc Gen';
     case '/docs-in':
       return 'DocsIn';
+    case '/special-loan':
+      return 'Special Loan Automation';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -130,6 +142,7 @@ const DashboardModel = {
   PROC,
   DOC_GEN,
   DOCS_IN,
+  BOOK,
   LOAN_ACTIVITY,
   GROUPS,
   GROUP_INFO,

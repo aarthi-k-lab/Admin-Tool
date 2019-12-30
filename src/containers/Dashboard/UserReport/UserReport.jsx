@@ -24,6 +24,7 @@ class UserReport extends React.PureComponent {
       '/doc-processor': 'PROCESSING Agent Dashboard',
       '/doc-gen': 'DOC GENERATION Agent Dashboard',
       '/docs-in': 'DOCS IN Agent Dashboard',
+      '/special-loan': 'SPECIAL LOANS Agent Dashboard',
     };
     this.showAddDocsIn = false;
     this.accessToken = Auth.getPowerBIAccessToken(window.location.pathname);

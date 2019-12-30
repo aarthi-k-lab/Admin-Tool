@@ -40,6 +40,16 @@ class TasksAndChecklist extends React.PureComponent {
     hotkeys.unbind('right,left');
   }
 
+  getChecklistItems() {
+    const {
+      filter, checklistItems, passedRules, failedRules,
+    } = this.props;
+    if (R.isNil(filter)) {
+      return checklistItems;
+    }
+    return filter ? passedRules : failedRules;
+  }
+
   handleHotKeyPress = () => {
     const {
       disableNext,
@@ -97,6 +107,10 @@ class TasksAndChecklist extends React.PureComponent {
       dialogTitle,
       handleDeleteTask,
       handleShowDeleteTaskConfirmation,
+      failedRules,
+      passedRules,
+      location,
+      resolutionId,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -121,16 +135,21 @@ class TasksAndChecklist extends React.PureComponent {
     }
     return (
       <Checklist
-        checklistItems={checklistItems}
+        checklistItems={this.getChecklistItems()}
         dialogContent={getDialogContent}
         dialogTitle={dialogTitle}
+        failedRules={failedRules}
         handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
         handleDeleteTask={handleDeleteTask}
         handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
         isDialogOpen={isDialogOpen}
+        location={location}
         onChange={onChecklistChange}
+        passedRules={passedRules}
+        resolutionId={resolutionId}
         styleName="checklist"
         title={checklistTitle}
+
       >
         {notification}
       </Checklist>
@@ -251,6 +270,8 @@ TasksAndChecklist.propTypes = {
   disablePrev: PropTypes.bool.isRequired,
   disposition: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
+  failedRules: PropTypes.shape.isRequired,
+  filter: PropTypes.bool.isRequired,
   getDialogContent: PropTypes.string,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
@@ -262,6 +283,10 @@ TasksAndChecklist.propTypes = {
   isDialogOpen: PropTypes.bool,
   isGetNextError: PropTypes.bool,
   isRedirect: PropTypes.bool,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string.isRequired,
+  }).isRequired,
   message: PropTypes.shape({
     msg: PropTypes.string,
     type: PropTypes.string,
@@ -271,6 +296,8 @@ TasksAndChecklist.propTypes = {
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  passedRules: PropTypes.shape.isRequired,
+  resolutionId: PropTypes.string.isRequired,
   rootTaskId: PropTypes.string.isRequired,
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
@@ -374,6 +401,10 @@ function mapStateToProps(state) {
     dialogTitle: selectors.getDialogTitle(state),
     selectedTaskId: selectors.selectedTaskId(state),
     selectedTaskBlueprintCode: selectors.selectedTaskBlueprintCode(state),
+    passedRules: selectors.getPassedRules(state),
+    failedRules: selectors.getFailedRules(state),
+    filter: selectors.getFilter(state),
+    resolutionId: selectors.getResolutionId(state),
   };
 }
 

@@ -17,8 +17,7 @@ const getTaskTree = (state) => {
 };
 
 const getChecklistTitle = state => R.pathOr(
-  '',
-  ['checklist', 'taskBlueprint', 'description'],
+  '', ['checklist', 'taskBlueprint', 'description'],
   state.tasksAndChecklist,
 );
 
@@ -69,6 +68,7 @@ const getChecklistItems = state => R.compose(
     value: getCurrentChecklistValue(checklistItem, state),
     source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
     additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
+    state: R.pathOr({}, ['state'], checklistItem),
   })),
   R.pathOr([], ['tasksAndChecklist', 'checklist', 'subTasks']),
 )(state);
@@ -82,8 +82,7 @@ const getTaskLoadStatus = state => R.path(['tasksAndChecklist', 'taskLoadingStat
 const getNextChecklistId = (state) => {
   const selectedChecklistId = getSelectedChecklistId(state);
   return R.pathOr(
-    null,
-    ['tasksAndChecklist', 'checklistNavigation', selectedChecklistId, 'next'],
+    null, ['tasksAndChecklist', 'checklistNavigation', selectedChecklistId, 'next'],
     state,
   );
 };
@@ -91,8 +90,7 @@ const getNextChecklistId = (state) => {
 const getPrevChecklistId = (state) => {
   const selectedChecklistId = getSelectedChecklistId(state);
   return R.pathOr(
-    null,
-    ['tasksAndChecklist', 'checklistNavigation', selectedChecklistId, 'prev'],
+    null, ['tasksAndChecklist', 'checklistNavigation', selectedChecklistId, 'prev'],
     state,
   );
 };
@@ -122,6 +120,8 @@ const shouldShowInstructionsDialog = R.pathOr(false, ['tasksAndChecklist', 'show
 const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 'disposition']);
 
 const getDispositionCode = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
+
+const getResolutionId = R.pathOr('', ['tasksAndChecklist', 'checklist', 'value']);
 
 const getChecklistTemplate = R.pathOr(null, ['tasksAndChecklist', 'checklist', 'processBlueprintCode']);
 
@@ -172,6 +172,63 @@ const selectedTaskBlueprintCode = state => R.pathOr('', ['tasksAndChecklist', 'c
 
 const getDropDownOptions = state => R.pathOr([], ['tasksAndChecklist', 'dropDownOptions'], state);
 
+const getPath = (obj, field, match) => {
+  const subPath = R.compose(
+    R.head,
+    R.filter(item => item.includes(match)),
+    R.keys,
+    R.prop(field),
+  )(obj);
+  return [field, subPath];
+};
+
+const getPassedRules = (state) => {
+  const passed = R.compose(
+    R.filter(item => R.path(getPath(item, 'options', 'Check'), item) === 'true'),
+    R.map(checklistItem => ({
+      id: R.prop('_id', checklistItem),
+      disabled: !dashboardSelectors.isAssigned(state) || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem)),
+      isVisible: R.propOr(true, 'visibility', checklistItem),
+      options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
+      taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
+      title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
+      type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
+      value: getCurrentChecklistValue(checklistItem, state),
+      source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
+      additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
+      state: R.pathOr({}, ['state'], checklistItem),
+    })),
+    R.pathOr({}, ['tasksAndChecklist', 'checklist', 'subTasks']),
+  )(state);
+  return passed;
+};
+
+const getFailedRules = (state) => {
+  const failed = R.compose(
+    R.filter(item => R.path(getPath(item, 'options', 'Check'), item) === 'false'),
+    R.map(checklistItem => ({
+      id: R.prop('_id', checklistItem),
+      disabled: !dashboardSelectors.isAssigned(state) || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem)),
+      isVisible: R.propOr(true, 'visibility', checklistItem),
+      options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
+      taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
+      title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
+      type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
+      value: getCurrentChecklistValue(checklistItem, state),
+      source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
+      additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
+      state: R.pathOr({}, ['state'], checklistItem),
+    })),
+    R.pathOr({}, ['tasksAndChecklist', 'checklist', 'subTasks']),
+  )(state);
+  return failed;
+};
+
+const getFilter = state => R.pathOr(null, ['tasksAndChecklist', 'filter'], state);
+const getSlaRulesProcessed = state => R.pathOr(true, ['tasksAndChecklist', 'slaRulesprocessed'], state);
+const getRuleResponse = state => R.pathOr('', ['tasksAndChecklist', 'ruleResponse'], state);
+
+
 const selectors = {
   getChecklistItems,
   getChecklistLoadStatus,
@@ -208,6 +265,12 @@ const selectors = {
   getHistoricalChecklistData,
   getDropDownOptions,
   getAgentName,
+  getPassedRules,
+  getFailedRules,
+  getFilter,
+  getResolutionId,
+  getSlaRulesProcessed,
+  getRuleResponse,
   getProcessId,
 };
 

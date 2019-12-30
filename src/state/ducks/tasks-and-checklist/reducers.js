@@ -28,6 +28,10 @@ import {
   UPDATE_COMMENTS,
   EMPTY_CHECKLIST_COMMENT,
   SAVE_DROPDOWN_OPTIONS,
+  FILTER_RULES,
+  SLA_RULES_PROCESSED,
+  SAVE_RULE_RESPONSE,
+  CLEAR_RULE_RESPONSE,
 } from './types';
 
 const FAILED = 'failed';
@@ -263,6 +267,33 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         dropDownOptions: options,
+      };
+    }
+
+    case FILTER_RULES: {
+      return {
+        ...state,
+        filter: action.payload,
+      };
+    }
+    case SLA_RULES_PROCESSED: {
+      return {
+        ...state,
+        slaRulesprocessed: action.payload,
+      };
+    }
+    case SAVE_RULE_RESPONSE: {
+      return {
+        ...state,
+        ruleResponse: action.payload,
+      };
+    }
+
+    case CLEAR_RULE_RESPONSE:
+    {
+      return {
+        ...state,
+        ruleResponse: null,
       };
     }
     default:

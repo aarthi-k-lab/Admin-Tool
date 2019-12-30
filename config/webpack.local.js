@@ -169,6 +169,14 @@ const config = merge(
             '^/api/dataservice': '',
           },
         },
+        '/api/booking': {
+          target: 'https://api.dev.int.mrcooper.io/cmod/booking',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/booking': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

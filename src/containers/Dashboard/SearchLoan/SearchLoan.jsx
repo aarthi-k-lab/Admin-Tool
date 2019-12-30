@@ -8,6 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
+import { isSLAGroup } from 'models/AppGroupName';
 import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
@@ -83,9 +84,14 @@ class SearchLoan extends React.PureComponent {
   }
 
   handleRowClick(payload, rowInfo) {
+    const { user } = this.props;
+    const adGroups = user && user.groupList;
+    const isSlaGroup = isSLAGroup(adGroups);
     if (rowInfo.Header !== 'ACTIONS') {
       if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
-        const { onSelectEval, onGetGroupName, onGetChecklistHistory } = this.props;
+        const {
+          onSelectEval, onGetGroupName, onGetChecklistHistory,
+        } = this.props;
         let group = '';
         switch (payload.taskName) {
           case 'Underwriting':
@@ -108,6 +114,10 @@ class SearchLoan extends React.PureComponent {
           case 'Docs In':
             group = 'DOCSIN';
             this.redirectPath = '/docs-in';
+            break;
+          case 'Pending Booking':
+            group = 'BOOK';
+            this.redirectPath = '/special-loan';
             break;
           default:
             this.redirectPath = '/frontend-checklist';
@@ -134,6 +144,14 @@ class SearchLoan extends React.PureComponent {
         const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/docs-in-back';
         onGetGroupName('DIB');
+        onSelectEval(payload);
+        this.setState({ isRedirect: true });
+      }
+
+      if (payload.taskName === 'Pending Booking' && isSlaGroup) {
+        const { onSelectEval, onGetGroupName } = this.props;
+        this.redirectPath = '/special-loan';
+        onGetGroupName('BOOK');
         onSelectEval(payload);
         this.setState({ isRedirect: true });
       }
