@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
 import DashboardModel from 'models/Dashboard';
-import DialogBox from '../../DialogBox';
 import './Assign.css';
+import SweetAlertBox from '../../SweetAlertBox';
 
 class Assign extends React.Component {
   constructor(props) {
@@ -44,14 +44,22 @@ class Assign extends React.Component {
     const { assignResult } = this.props;
     const { isOpen, buttonDisabled } = this.state;
     let RenderContent = null;
+    let imageUrl = '';
     let renderComponent = null;
     if (assignResult && assignResult.status) {
       RenderContent = assignResult.status;
+      if (assignResult.statusCode === 'Success') {
+        imageUrl = '/static/img/success.gif';
+      } else if (assignResult.statusCode === 'Failed') {
+        imageUrl = '/static/img/failed.gif';
+      } else {
+        imageUrl = '/static/img/warning.gif';
+      }
       renderComponent = (
-        <DialogBox
-          isOpen={isOpen}
+        <SweetAlertBox
+          imageUrl={imageUrl}
           message={RenderContent}
-          onClose={this.handleClose}
+          show={isOpen}
         />
       );
     }
@@ -65,9 +73,9 @@ class Assign extends React.Component {
           styleName="end-shift"
           variant="outlined"
         >
-    ASSIGN TO ME
+          ASSIGN TO ME
         </Button>
-        { renderComponent }
+        {renderComponent}
       </>
     );
   }
@@ -75,8 +83,8 @@ class Assign extends React.Component {
 
 Assign.defaultProps = {
   disabled: false,
-  onAssignLoan: () => {},
-  onDialogClose: () => {},
+  onAssignLoan: () => { },
+  onDialogClose: () => { },
 };
 
 const mapStateToProps = state => ({
@@ -95,6 +103,7 @@ Assign.propTypes = {
       taskStatus: PropTypes.string.isRequired,
     }),
     status: PropTypes.string,
+    statusCode: PropTypes.string,
     taskData: PropTypes.shape({
       evalId: PropTypes.string.isRequired,
       groupName: PropTypes.string.isRequired,
