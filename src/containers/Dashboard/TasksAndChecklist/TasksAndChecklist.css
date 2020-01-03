@@ -1,5 +1,15 @@
 .checklist {
   align-self: stretch;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+  margin: 0 auto;
+}
+
+.sla-rules {
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   grid-column: 1 / 3;
