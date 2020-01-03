@@ -111,6 +111,7 @@ class TasksAndChecklist extends React.PureComponent {
       passedRules,
       location,
       resolutionId,
+      groupName,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -147,7 +148,7 @@ class TasksAndChecklist extends React.PureComponent {
         onChange={onChecklistChange}
         passedRules={passedRules}
         resolutionId={resolutionId}
-        styleName="checklist"
+        styleName={groupName === DashboardModel.BOOK ? 'sla-rules' : 'checklist'}
         title={checklistTitle}
 
       >
@@ -273,6 +274,7 @@ TasksAndChecklist.propTypes = {
   failedRules: PropTypes.shape.isRequired,
   filter: PropTypes.bool.isRequired,
   getDialogContent: PropTypes.string,
+  groupName: PropTypes.string.isRequired,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,

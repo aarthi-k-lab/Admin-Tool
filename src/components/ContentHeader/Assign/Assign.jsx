@@ -59,6 +59,7 @@ class Assign extends React.Component {
         <SweetAlertBox
           imageUrl={imageUrl}
           message={RenderContent}
+          onConfirm={this.handleClose}
           show={isOpen}
         />
       );

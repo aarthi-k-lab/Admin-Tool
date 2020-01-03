@@ -25,7 +25,7 @@ function hasChecklist(appGroupName) {
 }
 
 function isSLAGroup(groups) {
-  R.any(group => R.contains(group, slaGroups), groups);
+  return R.any(group => R.contains(group, slaGroups), groups);
 }
 
 module.exports = {
