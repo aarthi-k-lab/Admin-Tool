@@ -8,6 +8,7 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
+import parse from 'html-react-parser';
 import './SlaRules.css';
 
 function getIcon(result) {
@@ -51,11 +52,11 @@ class SlaRules extends React.Component {
               <span>
                 {result === 'false' ? (
                   <>
-                    <FormLabel component="legend" styleName="margin">{text}</FormLabel>
+                    <FormLabel component="legend" styleName="margin">{displayName}</FormLabel>
                     <div styleName="notificationMsg">
                       <UserNotification
                         level="error"
-                        message={text}
+                        message={parse(text)}
                         type="alert-box"
                       />
                     </div>
