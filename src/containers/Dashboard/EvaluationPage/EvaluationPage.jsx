@@ -34,6 +34,12 @@ class EvaluationPage extends React.PureComponent {
     return R.indexOf('trial', groups) !== -1 || R.indexOf('trial-mgr', groups) !== -1;
   }
 
+  canShowSendToDocsIn() {
+    const { group, user, isAssigned } = this.props;
+    const groups = user && user.groupList;
+    return group === DashboardModel.BOOK && groups.includes('docsin-mgr') && !isAssigned;
+  }
+
   renderDashboard() {
     const { group } = this.props;
     switch (group) {
@@ -57,6 +63,7 @@ class EvaluationPage extends React.PureComponent {
           <Controls
             showEndShift={isNotLoanActivity(group)}
             showGetNext={isNotLoanActivity(group)}
+            showSendToDocsIn={this.canShowSendToDocsIn()}
             showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
             showValidate={canShowValidate(group)}
           />
@@ -80,6 +87,7 @@ EvaluationPage.defaultProps = {
 EvaluationPage.propTypes = {
   checklisttTemplateName: PropTypes.string,
   group: PropTypes.string,
+  isAssigned: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -98,6 +106,7 @@ EvaluationPage.propTypes = {
 };
 const mapStateToProps = state => ({
   taskName: selectors.processName(state),
+  isAssigned: selectors.isAssigned(state),
   stagerTaskName: selectors.stagerTaskName(state),
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
