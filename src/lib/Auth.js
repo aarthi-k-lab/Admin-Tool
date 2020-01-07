@@ -5,7 +5,7 @@ import {
   BACKEND_UNDERWRITER, FRONTEND_UNDERWRITER, FRONTEND_MANAGER, DOC_PROCESSOR,
   DOCS_IN,
   DOC_GEN,
-  BOOK,
+  BOOKING,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -317,7 +317,7 @@ Auth.homePage = [
     path: '/docs-in',
   },
   {
-    groupName: BOOK,
+    groupName: BOOKING,
     path: '/special-loan',
   },
 ];

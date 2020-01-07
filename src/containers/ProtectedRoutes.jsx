@@ -184,7 +184,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasSlaAccess(groups)
-        ? <Dashboard group={DashboardModel.BOOK} />
+        ? <Dashboard group={DashboardModel.BOOKING} />
         : <Redirect to="/unauthorized?error=SLA_ACCESS_NEEDED" />
     );
   }

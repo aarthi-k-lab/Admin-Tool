@@ -8,4 +8,4 @@ export const STAGER_MANAGER = 'stager-mgr';
 export const DOC_PROCESSOR = 'proc';
 export const DOC_GEN = 'docgen';
 export const DOCS_IN = 'docsin';
-export const BOOK = 'book';
+export const BOOKING = 'booking';

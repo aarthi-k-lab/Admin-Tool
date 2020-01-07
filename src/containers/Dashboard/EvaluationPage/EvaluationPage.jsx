@@ -37,7 +37,7 @@ class EvaluationPage extends React.PureComponent {
   canShowSendToDocsIn() {
     const { group, user, isAssigned } = this.props;
     const groups = user && user.groupList;
-    return group === DashboardModel.BOOK && groups.includes('docsin-mgr') && !isAssigned;
+    return group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !isAssigned;
   }
 
   renderDashboard() {
