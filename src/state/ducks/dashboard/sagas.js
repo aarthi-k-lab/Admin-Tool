@@ -581,7 +581,7 @@ function* savePostModChklistDisposition(payload) {
       const saveResponse = yield call(Api.callPost, `/api/disposition/stager?evalId=${evalId}&userId=${userPrincipalName}&taskId=${taskId}&disposition=${disposition}`);
       yield put({
         type: SET_GET_NEXT_STATUS,
-        payload: R.isEmpty(saveResponse.message),
+        payload: R.isEmpty(saveResponse.getNextTaskResponse.userMessage),
       });
       yield put({
         type: USER_NOTIF_MSG,
