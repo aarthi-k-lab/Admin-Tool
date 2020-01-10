@@ -5,6 +5,7 @@
   justify-content: space-between;
   padding: 1rem;
   height: 90%;
+  overflow: scroll;
 }
 
 .container.container > * {
@@ -32,7 +33,7 @@
 
 .skills {
   height: 15rem;
-  overflow: auto;
+  overflow: none;
 }
 
 .separater {
