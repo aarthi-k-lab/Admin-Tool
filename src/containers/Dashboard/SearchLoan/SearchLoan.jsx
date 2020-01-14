@@ -116,7 +116,7 @@ class SearchLoan extends React.PureComponent {
             this.redirectPath = '/docs-in';
             break;
           case 'Pending Booking':
-            group = 'BOOK';
+            group = 'BOOKING';
             this.redirectPath = '/special-loan';
             break;
           default:
@@ -151,7 +151,7 @@ class SearchLoan extends React.PureComponent {
       if (payload.taskName === 'Pending Booking' && isSlaGroup) {
         const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/special-loan';
-        onGetGroupName('BOOK');
+        onGetGroupName('BOOKING');
         onSelectEval(payload);
         this.setState({ isRedirect: true });
       }

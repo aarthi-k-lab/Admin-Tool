@@ -92,9 +92,9 @@ const docInsPage = {
 };
 
 // Special Loan Automation
-const BOOK = {
+const BOOKING = {
   path: '/special-loan',
-  name: 'book',
+  name: 'booking',
   img: '/static/img/sla.svg',
   groups: ['allaccess', 'booking', 'booking-mgr'],
 };
@@ -113,7 +113,7 @@ const links = [
   docGen,
   docIns,
   docInsPage,
-  BOOK,
+  BOOKING,
 ];
 
 const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back'];
@@ -182,7 +182,7 @@ function hasDocInsAccess(groups) {
 }
 
 function hasSlaAccess(groups) {
-  return hasGroup(BOOK.groups, groups);
+  return hasGroup(BOOKING.groups, groups);
 }
 function getStagerGroup(groups) {
   let groupName = '';

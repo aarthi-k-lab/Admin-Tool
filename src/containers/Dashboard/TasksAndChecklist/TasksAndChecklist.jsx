@@ -148,7 +148,7 @@ class TasksAndChecklist extends React.PureComponent {
         onChange={onChecklistChange}
         passedRules={passedRules}
         resolutionId={resolutionId}
-        styleName={groupName === DashboardModel.BOOK ? 'sla-rules' : 'checklist'}
+        styleName={groupName === DashboardModel.BOOKING ? 'sla-rules' : 'checklist'}
         title={checklistTitle}
 
       >

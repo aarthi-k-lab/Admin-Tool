@@ -10,7 +10,7 @@ const STAGER_TABLE_PAGE_COUNT = 100;
 const DOC_GEN_BACK = 'DGB';
 const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
-const BOOK = 'BOOK';
+const BOOKING = 'BOOKING';
 
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
@@ -84,9 +84,9 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
-    group: BOOK,
+    group: BOOKING,
     task: 'Special Loan Automation',
-    taskCode: 'BOOK',
+    taskCode: 'BOOKING',
     path: '/special-loan',
     showAssignUnassign: true,
   },
@@ -112,7 +112,7 @@ const GROUPS = {
   '/doc-processor': PROC,
   '/doc-gen': DOC_GEN,
   '/docs-in': DOCS_IN,
-  '/special-loan': BOOK,
+  '/special-loan': BOOKING,
 };
 
 function getTitle(location) {
@@ -142,7 +142,7 @@ const DashboardModel = {
   PROC,
   DOC_GEN,
   DOCS_IN,
-  BOOK,
+  BOOKING,
   LOAN_ACTIVITY,
   GROUPS,
   GROUP_INFO,
