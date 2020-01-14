@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SweetAlert from 'sweetalert2-react';
 
 const SweetAlertBox = ({
-  imageUrl, title, message, show, onConfirm,
+  imageUrl, message, show, onConfirm,
 }) => (
   <>
     <SweetAlert
@@ -13,7 +13,6 @@ const SweetAlertBox = ({
       onConfirm={onConfirm}
       padding="3em"
       show={show}
-      text={title}
       title={message}
       width="600"
     />
@@ -21,7 +20,6 @@ const SweetAlertBox = ({
 );
 
 SweetAlertBox.defaultProps = {
-  title: 'Message',
   show: false,
 };
 
@@ -30,7 +28,6 @@ SweetAlertBox.propTypes = {
   message: PropTypes.string.isRequired,
   onConfirm: PropTypes.func.isRequired,
   show: PropTypes.bool,
-  title: PropTypes.string,
 };
 
 export default SweetAlertBox;

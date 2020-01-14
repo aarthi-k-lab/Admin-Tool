@@ -50,18 +50,18 @@ class SlaRules extends React.Component {
                 <b>{title}</b>
               </span>
               <span>
-                {result === 'false' ? (
-                  <>
-                    <FormLabel component="legend" styleName="margin">{displayName}</FormLabel>
+                <FormLabel component="legend" styleName="margin">{displayName}</FormLabel>
+                {!R.isEmpty(text)
+                  ? (
                     <div styleName="notificationMsg">
                       <UserNotification
-                        level="error"
+                        level={result === 'false' ? 'error' : 'success'}
                         message={parse(text)}
                         type="alert-box"
                       />
                     </div>
-                  </>
-                ) : (<FormLabel component="legend" styleName="margin">{displayName}</FormLabel>)}
+                  )
+                  : null}
               </span>
               <span>
                 {result === 'false'

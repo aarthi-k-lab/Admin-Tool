@@ -37,7 +37,7 @@ class EvaluationPage extends React.PureComponent {
   canShowSendToDocsIn() {
     const { group, user, isAssigned } = this.props;
     const groups = user && user.groupList;
-    return group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !isAssigned;
+    return group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !R.isNil(isAssigned) && !isAssigned;
   }
 
   renderDashboard() {
@@ -106,7 +106,7 @@ EvaluationPage.propTypes = {
 };
 const mapStateToProps = state => ({
   taskName: selectors.processName(state),
-  isAssigned: selectors.isAssigned(state),
+  isAssigned: selectors.showAssign(state),
   stagerTaskName: selectors.stagerTaskName(state),
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),

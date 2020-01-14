@@ -156,7 +156,7 @@ class LabelWithIcon extends React.PureComponent {
 
           <Grid styleName="customalign" xs={2}>
             <Button
-              disabled={disabled}
+              disabled={passedRules.length === 0}
               onClick={() => this.handleFilterClick(true)}
               style={{ margin: '0px 9px 0px 9.5rem' }}
               styleName={filter ? 'statusbtnClicked' : 'statusbtn'}
@@ -169,7 +169,7 @@ class LabelWithIcon extends React.PureComponent {
           </Grid>
           <Grid styleName="customalign" xs={2}>
             <Button
-              disabled={disabled}
+              disabled={failedRules.length === 0}
               onClick={() => this.handleFilterClick(false)}
               style={{ margin: '0px 8px 0px 0px' }}
               styleName={filter === false ? 'statusbtnClicked' : 'statusbtn'}
