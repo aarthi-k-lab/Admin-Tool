@@ -8,7 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
-import { isSLAGroup } from 'models/AppGroupName';
+import { isSLAGroup, PENDING_BOOKING } from 'models/AppGroupName';
 import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
@@ -57,7 +57,6 @@ class SearchLoan extends React.PureComponent {
     if (validLoanNumber && exisitngSearch) {
       onSearchLoan(loanNumber);
     }
-    this.canRedirect = true;
   }
 
   getLoanActivityPath() {
@@ -87,8 +86,9 @@ class SearchLoan extends React.PureComponent {
     const { user } = this.props;
     const adGroups = user && user.groupList;
     const isSlaGroup = isSLAGroup(adGroups);
+    const isPostModInQueue = payload.milestone === 'Post Mod' && RouteAccess.hasSlaAccess(adGroups);
     if (rowInfo.Header !== 'ACTIONS') {
-      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
+      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName) || isPostModInQueue) && payload.assignee !== 'N/A') {
         const {
           onSelectEval, onGetGroupName, onGetChecklistHistory,
         } = this.props;
@@ -115,7 +115,7 @@ class SearchLoan extends React.PureComponent {
             group = 'DOCSIN';
             this.redirectPath = '/docs-in';
             break;
-          case 'Pending Booking':
+          case PENDING_BOOKING:
             group = 'BOOKING';
             this.redirectPath = '/special-loan';
             break;
@@ -139,7 +139,7 @@ class SearchLoan extends React.PureComponent {
       }
 
       if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
-        || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
+        || (payload.tstatus === 'Active' && payload.taskName === PENDING_BOOKING)
         || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
         const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/docs-in-back';
@@ -148,7 +148,10 @@ class SearchLoan extends React.PureComponent {
         this.setState({ isRedirect: true });
       }
 
-      if (payload.taskName === 'Pending Booking' && isSlaGroup) {
+      if ((
+        payload.taskName === PENDING_BOOKING
+        || isPostModInQueue
+      ) && isSlaGroup) {
         const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/special-loan';
         onGetGroupName('BOOKING');

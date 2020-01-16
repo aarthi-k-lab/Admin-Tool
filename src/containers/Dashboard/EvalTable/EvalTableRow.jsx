@@ -6,7 +6,9 @@ import {
   selectors as loginSelectors,
 } from 'ducks/login';
 import EvalTableCell from './EvalTableCell';
+import RouteAccess from '../../../lib/RouteAccess';
 import DashboardModel from '../../../models/Dashboard';
+import AppGroupName from '../../../models/AppGroupName';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
 
@@ -48,49 +50,74 @@ class EvalTableRow extends React.PureComponent {
     }
   }
 
+  showBooking = () => {
+    const { row, user } = this.props;
+    const groups = user && user.groupList;
+    return RouteAccess.hasSlaAccess(groups) && ((row.original.taskName === AppGroupName.PENDING_BOOKING) || (row.original.milestone === 'Post Mod' && row.original.assignee === 'In Queue'));
+  }
+
+  getStyles = () => {
+    const { row, user } = this.props;
+    const groups = user && user.groupList;
+    let styles = '';
+    if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
+      styles = 'redText pointer';
+    } else if (row.original.assignee
+      && (row.original.assignee === 'In Queue' && row.original.milestone === 'PostMod' && !RouteAccess.hasSlaAccess(groups))
+      && (
+        (row.original.assignee === 'In Queue' && !DashboardModel.ALLOW_IN_QUEUE.includes(row.original.taskName))
+        || row.original.assignee === 'N/A')
+    ) {
+      styles = 'blackText';
+    } else {
+      styles = 'blackText pointer';
+    }
+    return styles;
+  };
+
+  getAction = (row) => {
+    if (showReject(row)) {
+      return (
+        <EvalTableCell
+          click={() => this.handleLinkClick('Un-reject')}
+          styleProps={this.getStyles(row)}
+          value="Un-reject"
+        />
+      );
+    }
+    if (this.showBooking()) {
+      return (
+        <EvalTableCell
+          click={() => this.handleLinkClick('Un-reject')}
+          styleProps={this.getStyles(row)}
+          value="Booking"
+        />
+      );
+    }
+    return (<EvalTableCell styleProps={this.getStyles(row)} value={row.value} />);
+  };
+
   render() {
-    const getStyles = (row) => {
-      let styles = '';
-      if (!row.original.assignee && row.column.Header === 'ASSIGNED TO') {
-        styles = 'redText pointer';
-      } else if (row.original.assignee && ((row.original.assignee === 'In Queue' && !DashboardModel.ALLOW_IN_QUEUE.includes(row.original.taskName)) || row.original.assignee === 'N/A')) {
-        styles = 'blackText';
-      } else {
-        styles = 'blackText pointer';
-      }
-      return styles;
-    };
     const { row } = this.props;
-    const displayReject = showReject(row);
     let cellData = null;
     switch (row.column.Header) {
       case 'ASSIGNED TO':
-        cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
+        cellData = <EvalTableCell styleProps={this.getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
         break;
       case 'HISTORY':
         cellData = (
           <EvalTableCell
             click={() => this.handleLinkClick('Loan Activity')}
-            styleProps={getStyles(row)}
+            styleProps={this.getStyles(row)}
             value="Loan Activity"
           />
         );
         break;
       case 'ACTIONS':
-        cellData = (
-          displayReject
-            ? (
-              <EvalTableCell
-                click={() => this.handleLinkClick('Un-reject')}
-                styleProps={getStyles(row)}
-                value="Un-reject"
-              />
-            )
-            : <EvalTableCell styleProps={getStyles(row)} value={row.value} />
-        );
+        cellData = this.getAction(row);
         break;
       default:
-        cellData = <EvalTableCell styleProps={getStyles(row)} value={row.value} />;
+        cellData = <EvalTableCell styleProps={this.getStyles(row)} value={row.value} />;
     }
     return (
       <div>
@@ -108,7 +135,10 @@ EvalTableRow.propTypes = {
       Header: PropTypes.string,
     }),
     original: PropTypes.shape({
+      assignee: PropTypes.string,
       evalId: PropTypes.string,
+      milestone: PropTypes.string,
+      taskName: PropTypes.string,
     }),
     value: PropTypes.string,
   }).isRequired,

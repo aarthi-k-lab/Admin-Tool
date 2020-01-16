@@ -57,6 +57,13 @@ class EvalTableCell extends React.PureComponent {
           </Tooltip>
         );
         break;
+      case 'Booking':
+        renderCellValue = (
+          <IconButton styleName="reject-icon">
+            <img alt="Booking" src="/static/img/booking.svg" />
+          </IconButton>
+        );
+        break;
       default:
         renderCellValue = (
           <span styleName={styleProps}>
