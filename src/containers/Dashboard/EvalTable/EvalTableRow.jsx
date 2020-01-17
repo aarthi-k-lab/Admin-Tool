@@ -8,7 +8,6 @@ import {
 import EvalTableCell from './EvalTableCell';
 import RouteAccess from '../../../lib/RouteAccess';
 import DashboardModel from '../../../models/Dashboard';
-import AppGroupName from '../../../models/AppGroupName';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
 
@@ -53,7 +52,7 @@ class EvalTableRow extends React.PureComponent {
   showBooking = () => {
     const { row, user } = this.props;
     const groups = user && user.groupList;
-    return RouteAccess.hasSlaAccess(groups) && ((row.original.taskName === AppGroupName.PENDING_BOOKING) || (row.original.milestone === 'Post Mod' && row.original.assignee === 'In Queue'));
+    return RouteAccess.hasSlaAccess(groups) && ((row.original.taskName === DashboardModel.PENDING_BOOKING) || (row.original.milestone === 'Post Mod' && row.original.assignee === 'In Queue'));
   }
 
   getStyles = () => {

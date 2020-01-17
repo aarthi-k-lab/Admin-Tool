@@ -8,7 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
-import { isSLAGroup, PENDING_BOOKING } from 'models/AppGroupName';
+import { isSLAGroup } from 'models/AppGroupName';
 import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
@@ -115,7 +115,7 @@ class SearchLoan extends React.PureComponent {
             group = 'DOCSIN';
             this.redirectPath = '/docs-in';
             break;
-          case PENDING_BOOKING:
+          case DashboardModel.PENDING_BOOKING:
             group = 'BOOKING';
             this.redirectPath = '/special-loan';
             break;
@@ -139,7 +139,7 @@ class SearchLoan extends React.PureComponent {
       }
 
       if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
-        || (payload.tstatus === 'Active' && payload.taskName === PENDING_BOOKING)
+        || (payload.tstatus === 'Active' && payload.taskName === DashboardModel.PENDING_BOOKING)
         || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
         const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/docs-in-back';
@@ -149,7 +149,7 @@ class SearchLoan extends React.PureComponent {
       }
 
       if ((
-        payload.taskName === PENDING_BOOKING
+        payload.taskName === DashboardModel.PENDING_BOOKING
         || isPostModInQueue
       ) && isSlaGroup) {
         const { onSelectEval, onGetGroupName } = this.props;

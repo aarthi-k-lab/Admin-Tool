@@ -875,6 +875,8 @@ function* assignLoan() {
     if (group === DashboardModel.POSTMODSTAGER) {
       const stagerTaskName = yield select(selectors.stagerTaskName);
       taskName = stagerTaskName.activeTile === 'Recordation' ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
+    } else {
+      taskName = groupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
     }
     const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
