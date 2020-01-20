@@ -320,8 +320,26 @@ function* selectEval(searchItem) {
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
-  evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
-        && assignedTo === evalDetails.assignee.toLowerCase();
+  const appGroupName = yield select(selectors.groupName);
+  const processId = yield select(selectors.processId);
+  if (appGroupName === DashboardModel.BOOKING) {
+    const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${processId}`);
+    const latestPendingBookingTask = R.head(R.filter(
+      task => task.taskName === DashboardModel.PENDING_BOOKING, tasksForProcess,
+    ));
+    const { taskId } = latestPendingBookingTask;
+    const assignmentData = yield call(Api.callGet, `/api/dataservice/api/task/status/${taskId}`);
+    if (assignmentData) {
+      const { assignedTo: assignee, taskSatus, wfTaskId } = assignmentData;
+      evalDetails.assignee = assignee;
+      evalDetails.taskStatus = taskSatus;
+      evalDetails.taskId = wfTaskId;
+    } else {
+      evalDetails.assignee = null;
+    }
+    evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
+    && assignedTo === evalDetails.assignee.toLowerCase();
+  }
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, searchItem);
   // fetch loan activity details from api
@@ -364,7 +382,6 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
 function* watchContinueMyReview() {
   yield takeEvery(CONTINUE_MY_REVIEW, continueMyReviewResult);
 }
-
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
   try {
@@ -1183,7 +1200,6 @@ function* sendToDocsIn() {
   }
   yield put({ type: HIDE_LOADER });
 }
-
 
 function* AddDocsInReceived(payload) {
   const { pageType } = payload.payload;
