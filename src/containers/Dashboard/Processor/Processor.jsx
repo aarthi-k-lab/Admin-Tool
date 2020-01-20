@@ -18,15 +18,15 @@ import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import '../DocsIn/DocsIn.css';
 
-// const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
-// const validateLoanFormat = (evalIds) => {
-//   let isValid = true;
-//   // eslint-disable-next-line
-//   if (validLoanEntries.test(evalIds)) {
-//     isValid = false;
-//   }
-//   return isValid;
-// };
+const validEvalIdEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
+const validateEvalIdFormat = (evalIds) => {
+  let isValid = true;
+  // eslint-disable-next-line
+  if (validEvalIdEntries.test(evalIds)) {
+    isValid = false;
+  }
+  return isValid;
+};
 
 class Processor extends React.PureComponent {
   constructor(props) {
@@ -36,8 +36,7 @@ class Processor extends React.PureComponent {
       hasError: false,
       evalIds: '',
       // loanNumbersCount: 0,
-      isDisabled: 'disabled',
-      value: '',
+      isDisabled: true,
     };
     this.handleChange = this.handleChange.bind(this);
     this.renderDownloadButton = this.renderDownloadButton.bind(this);
@@ -53,27 +52,18 @@ class Processor extends React.PureComponent {
   }
 
   getMessage() {
-    const { hasError, value, selectedStagerTaskOptions } = this.state;
+    const { hasError } = this.state;
     const { tableData } = this.props;
     if (hasError) {
       return 'We are experiencing some issues. Please try after some time.';
     }
     let count = 0;
-    const isRecordationReorder = (value === 'Recordation' && selectedStagerTaskOptions === 'Re-Order');
     if (tableData) {
       const data = Object.assign([], R.flatten(tableData));
       const successRecords = R.filter(obj => obj.statusMessage === 'Successful', data);
-      count = isRecordationReorder ? R.uniq(successRecords.map(o => o.evalId)).length
-        : R.uniq(successRecords.map(o => o.loanNumber)).length;
+      count = R.uniq(successRecords.map(o => o.evalId)).length;
     }
-    const title = isRecordationReorder ? 'Evals' : 'loans';
-    return `${count} ${title} have been processed.`;
-  }
-
-  getSubmitState(value) {
-    const { modReversalReason, value: stateValue } = this.state;
-    if (stateValue === 'modReversal') return ((value.trim() && modReversalReason !== '') ? '' : 'disabled');
-    return (value.trim() ? '' : 'disabled');
+    return `${count} Evals have been processed.`;
   }
 
   showBulkOrderPage() {
@@ -85,8 +75,15 @@ class Processor extends React.PureComponent {
     const { onFailedLoanValidation } = this.props;
     this.setState({
       evalIds: event.target.value,
-      isDisabled: this.getSubmitState(event.target.value),
     });
+    if (validateEvalIdFormat(event.target.value)) {
+      const evalIds = event.target.value.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      if (evalIds.length > 10) {
+        this.setState({ isDisabled: true });
+      } else if (evalIds.length > 0) {
+        this.setState({ isDisabled: false });
+      }
+    }
     const payload = {};
     onFailedLoanValidation(payload);
   }
