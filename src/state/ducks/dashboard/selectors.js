@@ -103,6 +103,7 @@ const resultOperation = state => (state.dashboard && state.dashboard.resultOpera
   ? state.dashboard.resultOperation : {});
 const bulkOrderPageType = state => R.pathOr('', ['dashboard', 'pageType'], state);
 const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
+const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
 
 
 const selectors = {
@@ -156,6 +157,7 @@ const selectors = {
   getModReversalReasons,
   isPostModEndShift,
   incentiveTaskCodes,
+  getResolutionData,
 };
 
 export default selectors;
