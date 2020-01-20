@@ -4,6 +4,7 @@ import Messages from './Messages';
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const PROC = 'PROC';
+const PROCMGR = 'PROC-mgr';
 const LOAN_ACTIVITY = 'LA';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
@@ -141,6 +142,7 @@ const DashboardModel = {
   FEUW,
   BEUW,
   PROC,
+  PROCMGR,
   DOC_GEN,
   DOCS_IN,
   BOOKING,

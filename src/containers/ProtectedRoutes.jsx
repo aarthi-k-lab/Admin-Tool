@@ -31,6 +31,7 @@ import IdleUserHandle from './IdleUserHandler';
 import DocGenGoBack from './Dashboard/DocGenGoBack';
 import DocsInGoBack from './Dashboard/DocsInGoBack';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
+import Processor from './Dashboard/Processor/Processor';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -53,6 +54,7 @@ class ProtectedRoutes extends React.Component {
     this.renderDocsInMainRoute = this.renderDocsInMainRoute.bind(this);
     this.renderSlaPageRoute = this.renderSlaPageRoute.bind(this);
     this.renderBulkOrderPageRoute = this.renderBulkOrderPageRoute.bind(this);
+    this.renderBulkEvalInsertionPageRoute = this.renderBulkEvalInsertionPageRoute.bind(this);
   }
 
   componentDidMount() {
@@ -180,6 +182,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderBulkEvalInsertionPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasDocProcessorAccess(groups)
+        ? <Processor group={DashboardModel.PROCMGR} />
+        : <Redirect to="/unauthorized?error=PROCMGR_ACCESS_NEEDED" />
+    );
+  }
+
   renderSlaPageRoute() {
     const groups = this.getGroups();
     return (
@@ -225,6 +236,7 @@ class ProtectedRoutes extends React.Component {
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
           <Route path="/bulkOrder-page" render={this.renderBulkOrderPageRoute} />
+          <Route path="/bulkEvalInsertion" render={this.renderBulkEvalInsertionPageRoute} />
           <Route path="/special-loan" render={this.renderSlaPageRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
