@@ -153,7 +153,7 @@ function getExpirationDate(evalDetails, groupName, additionalLoanInfo) {
     ? DashboardModel.POSTMODSTAGER : groupName;
   switch (group) {
     case DashboardModel.DOC_GEN:
-    case DashboardModel.BOOK:
+    case DashboardModel.BOOKING:
       return evalDetails.lastPaidDate;
     case DashboardModel.DOCS_IN:
       return evalDetails.modDocsReceivedDate;
@@ -168,13 +168,13 @@ function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName, additionalLoanIn
   const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo), 'America/Chicago');
   const today = moment.tz('America/Chicago');
   const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
-  return generateTombstoneItem(groupName === DashboardModel.BOOK ? 'Days Until SLA Expiration' : 'Days Until CFPB Timeline Expiration', dateDiffDays);
+  return generateTombstoneItem(groupName === DashboardModel.BOOKING ? 'Days Until SLA Expiration' : 'Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
 function getCFPBExpirationDate(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo) {
   const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo), 'America/Chicago');
   const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem(groupName === DashboardModel.BOOK ? 'SLA Expiration Date' : 'CFPB Timeline Expiration Date', dateString);
+  return generateTombstoneItem(groupName === DashboardModel.BOOKING ? 'SLA Expiration Date' : 'CFPB Timeline Expiration Date', dateString);
 }
 
 function getFLDD(loanDetails) {
