@@ -112,6 +112,7 @@ class TasksAndChecklist extends React.PureComponent {
       location,
       resolutionId,
       groupName,
+      resolutionData,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -147,6 +148,7 @@ class TasksAndChecklist extends React.PureComponent {
         location={location}
         onChange={onChecklistChange}
         passedRules={passedRules}
+        resolutionData={resolutionData}
         resolutionId={resolutionId}
         styleName={groupName === DashboardModel.BOOKING ? 'sla-rules' : 'checklist'}
         title={checklistTitle}
@@ -246,6 +248,7 @@ TasksAndChecklist.defaultProps = {
   snackBarData: null,
   showAssign: false,
   isRedirect: false,
+  resolutionData: [],
 };
 
 TasksAndChecklist.propTypes = {
@@ -299,6 +302,7 @@ TasksAndChecklist.propTypes = {
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
   passedRules: PropTypes.shape.isRequired,
+  resolutionData: PropTypes.arrayOf(PropTypes.string),
   resolutionId: PropTypes.string.isRequired,
   rootTaskId: PropTypes.string.isRequired,
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
@@ -407,6 +411,7 @@ function mapStateToProps(state) {
     failedRules: selectors.getFailedRules(state),
     filter: selectors.getFilter(state),
     resolutionId: selectors.getResolutionId(state),
+    resolutionData: dashboardSelectors.getResolutionData(state),
   };
 }
 

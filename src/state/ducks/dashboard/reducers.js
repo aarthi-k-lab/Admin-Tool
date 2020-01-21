@@ -52,6 +52,7 @@ import {
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
   SET_INCENTIVE_TASKCODES,
+  RESOLUTION_DROP_DOWN_VALUES,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -522,6 +523,14 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         modReversalReasons,
+      };
+    }
+
+    case RESOLUTION_DROP_DOWN_VALUES: {
+      const resolutionData = action.payload;
+      return {
+        ...state,
+        resolutionData,
       };
     }
 

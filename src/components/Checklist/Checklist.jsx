@@ -491,7 +491,7 @@ class Checklist extends React.PureComponent {
   render() {
     const {
       checklistItems, children, title,
-      className, location, resolutionId,
+      className, location, resolutionId, resolutionData,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
@@ -503,7 +503,8 @@ class Checklist extends React.PureComponent {
           ? (
             <SlaHeader
               disabled={checklistItems[0].disabled}
-              text={`RESOLUTION ID ${resolutionId}`}
+              resolutionData={resolutionData}
+              text={resolutionId}
               title={title}
             />
           )
@@ -577,6 +578,7 @@ Checklist.propTypes = {
     search: PropTypes.string.isRequired,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
+  resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
   resolutionId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
 };

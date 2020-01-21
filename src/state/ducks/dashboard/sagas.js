@@ -80,6 +80,7 @@ import {
   MOD_REVERSAL_REASONS,
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
+  RESOLUTION_DROP_DOWN_VALUES,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -311,12 +312,26 @@ function* fetchChecklistDetailsForSearchResult(searchItem) {
 //     yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
 //   }
 // }
+function* getResolutionDataForEval(evalId) {
+  try {
+    const response = yield call(Api.callGet, `/api/tkams/fetchResolutionIds/${evalId}`);
+    if (!R.isNil(response) && !R.isEmpty(response)) {
+      yield put({ type: RESOLUTION_DROP_DOWN_VALUES, payload: response });
+    }
+  } catch (err) {
+    yield put({ type: RESOLUTION_DROP_DOWN_VALUES, payload: {} });
+  }
+}
 
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
+  const groupName = yield select(selectors.groupName);
+  if (R.equals(groupName, 'BOOKING')) {
+    yield call(getResolutionDataForEval, evalDetails.evalId);
+  }
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
@@ -335,7 +350,6 @@ function* selectEval(searchItem) {
     yield put({ type: HIDE_LOADER });
   }
 }
-
 function* watchTombstoneLoan() {
   yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
@@ -732,6 +746,9 @@ function* getNext(action) {
         const evalPayload = getEvalPayload(taskDetails);
         const commentsPayLoad = getCommentPayload(taskDetails);
         const { taskName } = taskDetails.taskData.data;
+        if (R.equals(group, 'BOOKING')) {
+          yield call(getResolutionDataForEval, getEvalId(taskDetails));
+        }
         yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
         yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName));
