@@ -38,9 +38,14 @@ class UserReport extends React.PureComponent {
   }
 
   onHandleClick = () => {
-    const { history, setPageType } = this.props;
-    history.push('/bulkOrder-page');
-    setPageType(BULKUPLOAD_STAGER);
+    const { history, setPageType, location } = this.props;
+    const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
+    if (el.group === 'DOCSIN') {
+      history.push('/bulkOrder-page');
+      setPageType(BULKUPLOAD_STAGER);
+    } else if (el.group === 'PROC') {
+      history.push('/bulkEvalInsertion');
+    }
   }
 
   renderReport(powerBIConstants) {
@@ -82,7 +87,7 @@ class UserReport extends React.PureComponent {
     const { powerBIConstants } = this.props;
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
-    this.showAddDocsIn = el.group === 'DOCSIN';
+    this.showAddDocsIn = el.group === 'DOCSIN' || el.group === 'PROC';
     return (
       <>
         <ContentHeader
