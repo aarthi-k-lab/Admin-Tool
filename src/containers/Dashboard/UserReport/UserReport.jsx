@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from 'ducks/config';
+import { selectors as LoginSelectors } from 'ducks/login';
 import { operations as dashboardOperations } from 'ducks/dashboard';
 import * as R from 'ramda';
 import './UserReport.css';
@@ -84,10 +85,10 @@ class UserReport extends React.PureComponent {
   }
 
   render() {
-    const { powerBIConstants } = this.props;
+    const { powerBIConstants, userGroupList } = this.props;
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
-    this.showAddDocsIn = el.group === 'DOCSIN' || el.group === 'PROC';
+    this.showAddDocsIn = el.group === 'DOCSIN' || (userGroupList.find(element => element === 'proc-mgr') && el.group === 'PROC');
     return (
       <>
         <ContentHeader
@@ -109,6 +110,7 @@ class UserReport extends React.PureComponent {
 
 const mapStateToProps = state => ({
   powerBIConstants: selectors.powerBIConstants(state),
+  userGroupList: LoginSelectors.getGroupList(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -145,6 +147,7 @@ UserReport.propTypes = {
     }),
   ),
   setPageType: PropTypes.func.isRequired,
+  userGroupList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const TestHooks = {
