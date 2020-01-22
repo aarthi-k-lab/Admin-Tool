@@ -295,8 +295,7 @@ function* fetchChecklistDetails(checklistId) {
   }
 }
 
-function* fetchChecklistDetailsForSearchResult(searchItem) {
-  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+function* fetchChecklistDetailsForSearchResult(checklistId) {
   yield call(fetchChecklistDetails, checklistId);
 }
 
@@ -314,34 +313,40 @@ function* fetchChecklistDetailsForSearchResult(searchItem) {
 
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
+  let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
-  const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
+  let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
   const appGroupName = yield select(selectors.groupName);
   const processId = yield select(selectors.processId);
-  if (appGroupName === DashboardModel.BOOKING) {
+  if (appGroupName === DashboardModel.BOOKING && processId != null) {
     const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${processId}`);
     const latestPendingBookingTask = R.head(R.filter(
       task => task.taskName === DashboardModel.PENDING_BOOKING, tasksForProcess,
     ));
     const { taskId } = latestPendingBookingTask;
-    const assignmentData = yield call(Api.callGet, `/api/dataservice/api/task/status/${taskId}`);
-    if (assignmentData) {
-      const { assignedTo: assignee, taskSatus, wfTaskId } = assignmentData;
-      evalDetails.assignee = assignee;
-      evalDetails.taskStatus = taskSatus;
+    const assignmentData = yield call(Api.callGet, `/api/dataservice/api/taskInfo/${taskId}`);
+    if (assignmentData && assignmentData.wfTaskId) {
+      const { assignedTo: assignee, taskStatus, wfTaskId } = assignmentData;
+      evalDetails.assignee = taskStatus === 'Assigned' || taskStatus === 'Paused' ? assignee : null;
+      evalDetails.taskStatus = taskStatus;
       evalDetails.taskId = wfTaskId;
+      const { taskCheckListId: checklistId } = assignmentData;
+      taskCheckListId = checklistId;
+      assignedTo = userDetails.email;
     } else {
       evalDetails.assignee = null;
+      taskCheckListId = null;
     }
-    evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
-    && assignedTo === evalDetails.assignee.toLowerCase();
   }
+  evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
+  && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
+
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
-  yield call(fetchChecklistDetailsForSearchResult, searchItem);
+  yield call(fetchChecklistDetailsForSearchResult, taskCheckListId);
   // fetch loan activity details from api
   // if (R.equals(evalDetails.taskName, 'Trial Modification')
   //  || R.equals(evalDetails.taskName, 'Forbearance')) {
@@ -842,7 +847,16 @@ function* unassignLoan() {
     const processId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}`, {});
+    const appgroupName = yield select(selectors.groupName);
+    const group = getGroup(appgroupName);
+    let taskName = '';
+    if (group === DashboardModel.POSTMODSTAGER) {
+      const stagerTaskName = yield select(selectors.stagerTaskName);
+      taskName = stagerTaskName.activeTile === 'Recordation' ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
+    } else {
+      taskName = appgroupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
+    }
+    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&appgroupName=${appgroupName}&taskName=${taskName}`, {});
     if (response !== null) {
       yield put({
         type: UNASSIGN_LOAN_RESULT,
