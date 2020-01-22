@@ -345,10 +345,9 @@ function* selectEval(searchItem) {
     const { taskId } = latestPendingBookingTask;
     const assignmentData = yield call(Api.callGet, `/api/dataservice/api/taskInfo/${taskId}`);
     if (assignmentData && assignmentData.wfTaskId) {
-      const { assignedTo: assignee, taskStatus, wfTaskId } = assignmentData;
+      const { assignedTo: assignee, taskStatus } = assignmentData;
       evalDetails.assignee = taskStatus === 'Assigned' || taskStatus === 'Paused' ? assignee : null;
       evalDetails.taskStatus = taskStatus;
-      evalDetails.taskId = wfTaskId;
       const { taskCheckListId: checklistId } = assignmentData;
       taskCheckListId = checklistId;
       assignedTo = userDetails.email;
@@ -356,6 +355,7 @@ function* selectEval(searchItem) {
       evalDetails.assignee = null;
       taskCheckListId = null;
     }
+    evalDetails.taskId = taskId;
   }
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
   && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
@@ -368,7 +368,8 @@ function* selectEval(searchItem) {
   //   yield call(fetchLoanActivityDetails, searchItem);
   // }
   try {
-    yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber, evalDetails.taskName));
+    yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber,
+      evalDetails.taskName, evalDetails.taskId));
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
@@ -773,7 +774,7 @@ function* getNext(action) {
         }
         yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-        yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName));
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName, taskId));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
