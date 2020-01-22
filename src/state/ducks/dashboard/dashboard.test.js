@@ -221,6 +221,7 @@ describe('getnext Success', () => {
     const actionDispatched = {
       payload: {
         loanNumber: '12345',
+        taskId: '1234',
       },
       type: 'app/tombstone/FETCH_TOMBSTONE_DATA',
     };
