@@ -21,7 +21,9 @@ import UserNotification from '../../../components/UserNotification/UserNotificat
 import './DocsIn.css';
 
 const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
-const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive', 'Investor Data Scrub'];
+const nonDispositionList = ['Value', 'TaxTranscript', 'Incentive',
+  // 'Investor Data Scrub',
+];
 const recordationToOrderTasks = ['Modification Agreement ToOrder', 'Assumption Agreement ToOrder',
   'Partial Claim ToOrder', '258A ToOrder'];
 const recordationOrderedTasks = ['Modification Agreement Ordered', 'Assumption Agreement Ordered',
@@ -137,10 +139,11 @@ const getStagerTaskName = () => {
   }, {
     displayName: 'TAX TRANSCRIPT',
     value: 'TaxTranscript',
-  }, {
-    displayName: 'IDS',
-    value: 'Investor Data Scrub',
   },
+  // {
+  //   displayName: 'IDS',
+  //   value: 'Investor Data Scrub',
+  // },
   ];
   return states;
 };
