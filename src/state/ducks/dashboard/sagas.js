@@ -96,7 +96,11 @@ import {
 
 const {
   Messages:
-  { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS },
+  {
+    LEVEL_ERROR, LEVEL_SUCCESS,
+    MSG_VALIDATION_SUCCESS,
+    MSG_UPDATED_REMEDY,
+  },
 } = DashboardModel;
 
 const setExpandView = function* setExpand() {
@@ -268,7 +272,7 @@ function* fetchChecklistDetails(checklistId) {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, `/api/task-engine/process/5e255cf63cd9ebb9e7d9401a?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -372,6 +376,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
     const groupName = R.propOr({}, 'group', payload);
+    const isAuto = R.propOr(false, 'isAuto', payload);
     const evalId = yield select(selectors.evalId);
     const wfTaskId = yield select(selectors.taskId);
     const assigneeName = yield select(checklistSelectors.getAgentName);
@@ -388,7 +393,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       wfProcessId,
       processStatus,
     };
-    const response = yield call(Api.callPost, '/api/disposition/validate-disposition', request);
+    const response = yield call(Api.callPost, `/api/disposition/validate-disposition?isAuto=${isAuto}`, request);
     const { tkamsValidation, skillValidation } = response;
     yield put({
       type: SET_GET_NEXT_STATUS,
@@ -403,7 +408,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
         },
       });
     } else {
-      let message = MSG_VALIDATION_SUCCESS;
+      let message = isAuto ? MSG_UPDATED_REMEDY : MSG_VALIDATION_SUCCESS;
       let type = LEVEL_SUCCESS;
       if (validateAgent) {
         type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;

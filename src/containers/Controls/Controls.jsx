@@ -116,10 +116,14 @@ class Controls extends React.PureComponent {
   }
 
   validateDisposition() {
-    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
+    const {
+      groupName, validateDispositionTrigger, dispositionCode,
+      showUpdateRemedy,
+    } = this.props;
     const payload = {
       dispositionReason: dispositionCode,
       group: groupName,
+      isAuto: showUpdateRemedy,
     };
     validateDispositionTrigger(payload);
   }
@@ -150,6 +154,7 @@ class Controls extends React.PureComponent {
       showValidate,
       isFirstVisit,
       user,
+      showUpdateRemedy,
       enableSendToDocGen,
       enableSendToDocsIn,
       enableSendToUW,
@@ -158,12 +163,12 @@ class Controls extends React.PureComponent {
     const onEndShiftClick = () => onEndShift(
       EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
     );
-    const validate = showValidate ? (
+    const validate = showValidate || showUpdateRemedy ? (
       <Control
         className={classNames(styles.controls, styles.spacer)}
         controlAction={() => this.validateDisposition()}
         disableValidation={disableValidation}
-        label="Validate"
+        label={showValidate ? 'Validate' : 'Update Remedy'}
       />
     ) : null;
     const getNext = showGetNext
@@ -283,6 +288,7 @@ Controls.propTypes = {
   showSendToDocGenStager: PropTypes.bool,
   showSendToDocsIn: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
+  showUpdateRemedy: PropTypes.bool.isRequired,
   showValidate: PropTypes.bool,
   user: PropTypes.shape({
     groupList: PropTypes.array,
