@@ -68,6 +68,7 @@ import {
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
+  COMPLETE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
@@ -81,6 +82,7 @@ import {
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
   RESOLUTION_DROP_DOWN_VALUES,
+  COMPLETE_MY_REVIEW,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -399,8 +401,35 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
   }
 };
 
+function* completeMyReviewResult(action) {
+  try {
+    const disposition = R.path(['payload'], action);
+    const evalId = yield select(selectors.evalId);
+    const wfTaskId = yield select(selectors.taskId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const request = {
+      evalId,
+      disposition,
+      userName: userPrincipalName,
+      wfTaskId,
+    };
+    const response = yield call(Api.callPost, '/api/disposition/cmodDisposition', request);
+    yield put({
+      type: COMPLETE_MY_REVIEW_RESULT,
+      payload: { error: R.has('error', response) },
+    });
+  } catch (e) {
+    yield put({ type: COMPLETE_MY_REVIEW_RESULT, payload: false });
+  }
+}
+
 function* watchContinueMyReview() {
   yield takeEvery(CONTINUE_MY_REVIEW, continueMyReviewResult);
+}
+
+function* watchCompleteMyReview() {
+  yield takeEvery(COMPLETE_MY_REVIEW, completeMyReviewResult);
 }
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
@@ -1359,6 +1388,7 @@ export const TestExports = {
   watchSendToDocGen,
   watchSendToDocsIn,
   watchContinueMyReview,
+  watchCompleteMyReview,
   watchAddDocsInReceived,
   watchOnSelectReject,
   watchOnSearchWithTask,
@@ -1385,5 +1415,7 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSelectReject(),
     watchOnSearchWithTask(),
     watchOnSelectModReversal(),
+    watchCompleteMyReview(),
+
   ]);
 };

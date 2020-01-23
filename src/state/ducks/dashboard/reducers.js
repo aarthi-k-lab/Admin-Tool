@@ -36,6 +36,7 @@ import {
   SET_RESULT_OPERATION,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW_RESULT,
+  COMPLETE_MY_REVIEW_RESULT,
   SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
@@ -339,6 +340,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskIterationCounter: action.payload.taskIterationCounter,
         showContinueMyReview: action.payload.isSearch ? action.payload.showContinueMyReview : false,
         getSearchLoanResponse: {},
+        completeReviewResponse: null,
       };
       return newState;
     }
@@ -353,11 +355,25 @@ const reducer = (state = { firstVisit: true }, action) => {
       return newState;
     }
 
+    case COMPLETE_MY_REVIEW_RESULT: {
+      return {
+        ...state,
+        completeReviewResponse: action.payload,
+        firstVisit: true,
+        isAssigned: true,
+        clearSearch: true,
+        groupName: state.groupName,
+        stagerTaskName: state.stagerTaskName,
+        getSearchLoanResponse: {},
+      };
+    }
+
     case HIDE_ASSIGN_UNASSIGN: {
       const { assignLoanResponse } = state;
       return {
         ...state,
         showAssign: null,
+        showCompleteMyreview: false,
         isAssigned: !R.isEmpty(assignLoanResponse),
       };
     }

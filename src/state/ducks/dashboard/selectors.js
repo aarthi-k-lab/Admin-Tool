@@ -53,7 +53,7 @@ const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
 const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
-
+const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeReviewResponse'], state);
 
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
@@ -80,6 +80,8 @@ const enableSendToDocsIn = state => (R.pathOr(true, ['dashboard', 'enableSendToD
 const enableSendToUW = state => (R.pathOr(true, ['dashboard', 'enableSendToUW'], state));
 
 const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
+
+const showCompleteMyReview = state => R.pathOr(null, ['dashboard', 'isAssigned'], state) && !isFirstVisit(state);
 
 const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
 
@@ -158,6 +160,8 @@ const selectors = {
   isPostModEndShift,
   incentiveTaskCodes,
   getResolutionData,
+  completeReviewResponse,
+  showCompleteMyReview,
 };
 
 export default selectors;
