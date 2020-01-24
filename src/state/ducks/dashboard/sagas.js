@@ -386,9 +386,10 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
+    const appGroupName = yield select(selectors.groupName);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     if (taskId) {
-      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}`, {});
+      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}&appGroupName=${appGroupName}`, {});
       if (response !== null) {
         yield put({
           type: CONTINUE_MY_REVIEW_RESULT,
