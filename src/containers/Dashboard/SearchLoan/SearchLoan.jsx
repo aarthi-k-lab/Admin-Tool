@@ -113,6 +113,7 @@ class SearchLoan extends React.PureComponent {
             group = 'DOCSIN';
             this.redirectPath = '/docs-in';
             break;
+          case 'FNMA QC':
           case DashboardModel.PENDING_BOOKING:
             group = 'BOOKING';
             this.redirectPath = '/special-loan';
