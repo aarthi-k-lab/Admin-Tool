@@ -330,14 +330,10 @@ function* selectEval(searchItem) {
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
-  const groupName = yield select(selectors.groupName);
-  if (R.equals(groupName, 'BOOKING')) {
-    yield call(getResolutionDataForEval, evalDetails.evalId);
-  }
+  const appGroupName = yield select(selectors.groupName);
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
-  const appGroupName = yield select(selectors.groupName);
   const processId = yield select(selectors.processId);
   if (appGroupName === DashboardModel.BOOKING && processId != null) {
     const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${processId}`);
@@ -364,6 +360,9 @@ function* selectEval(searchItem) {
 
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, taskCheckListId);
+  if (R.equals(appGroupName, 'BOOKING')) {
+    yield call(getResolutionDataForEval, evalDetails.evalId);
+  }
   // fetch loan activity details from api
   // if (R.equals(evalDetails.taskName, 'Trial Modification')
   //  || R.equals(evalDetails.taskName, 'Forbearance')) {
