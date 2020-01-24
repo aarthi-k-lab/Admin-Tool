@@ -8,7 +8,6 @@ import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
-import { isSLAGroup } from 'models/AppGroupName';
 import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
@@ -85,10 +84,9 @@ class SearchLoan extends React.PureComponent {
   handleRowClick(payload, rowInfo) {
     const { user } = this.props;
     const adGroups = user && user.groupList;
-    const isSlaGroup = isSLAGroup(adGroups);
-    const isPostModInQueue = payload.milestone === 'Post Mod' && RouteAccess.hasSlaAccess(adGroups);
+    const isPostMod = payload.milestone === 'Post Mod';
     if (rowInfo.Header !== 'ACTIONS') {
-      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName) || isPostModInQueue) && payload.assignee !== 'N/A') {
+      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName) || (isPostMod && RouteAccess.hasSlaAccess(adGroups))) && payload.assignee !== 'N/A') {
         const {
           onSelectEval, onGetGroupName, onGetChecklistHistory,
         } = this.props;
@@ -115,6 +113,7 @@ class SearchLoan extends React.PureComponent {
             group = 'DOCSIN';
             this.redirectPath = '/docs-in';
             break;
+          case 'FNMA QC':
           case DashboardModel.PENDING_BOOKING:
             group = 'BOOKING';
             this.redirectPath = '/special-loan';
@@ -150,8 +149,8 @@ class SearchLoan extends React.PureComponent {
 
       if ((
         payload.taskName === DashboardModel.PENDING_BOOKING
-        || isPostModInQueue
-      ) && isSlaGroup) {
+        || isPostMod
+      ) && RouteAccess.hasSlaAccess(adGroups)) {
         const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/special-loan';
         onGetGroupName('BOOKING');

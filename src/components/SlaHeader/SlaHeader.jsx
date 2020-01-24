@@ -118,7 +118,7 @@ class LabelWithIcon extends React.PureComponent {
     } = this.props;
     const sortedResData = R.sort(R.descend(R.prop('resolutionId')), resolutionData);
     const { resolutionText } = this.state;
-    let selectedValue = sortedResData[0].resolutionId;
+    let selectedValue = sortedResData[0] ? sortedResData[0].resolutionId : null;
     if (text && !R.isEmpty(text)) {
       selectedValue = text;
     }

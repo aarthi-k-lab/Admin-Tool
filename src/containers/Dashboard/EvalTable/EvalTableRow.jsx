@@ -5,6 +5,7 @@ import * as R from 'ramda';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
+import { withRouter } from 'react-router-dom';
 import EvalTableCell from './EvalTableCell';
 import RouteAccess from '../../../lib/RouteAccess';
 import DashboardModel from '../../../models/Dashboard';
@@ -29,13 +30,19 @@ const getEventName = (pstatusReason, pstatus, taskName) => {
 class EvalTableRow extends React.PureComponent {
   handleLinkClick = (value) => {
     const {
-      row, searchLoanResult, onSelectReject, user,
+      row, searchLoanResult, onSelectReject, user, history,
     } = this.props;
     const { loanNumber } = searchLoanResult;
     const payLoad = { loanNumber, ...row.original };
     if (value === 'Loan Activity') {
       const { onSelectEval } = this.props;
       onSelectEval(payLoad);
+    } else if (value === 'Booking') {
+      const { onSelectEval, onGetGroupName } = this.props;
+      this.redirectPath = '/special-loan';
+      onGetGroupName('BOOKING');
+      onSelectEval(payLoad);
+      history.push(this.redirectPath);
     } else if (((payLoad.pstatus === 'Active' && (payLoad.pstatusReason === 'Rejection Pending' || payLoad.pstatusReason === 'Trial Rejected')) || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended'))) {
       const { evalId } = payLoad;
       const userID = R.path(['userDetails', 'email'], user);
@@ -87,7 +94,7 @@ class EvalTableRow extends React.PureComponent {
     if (this.showBooking()) {
       return (
         <EvalTableCell
-          click={() => this.handleLinkClick('Un-reject')}
+          click={() => this.handleLinkClick('Booking')}
           styleProps={this.getStyles(row)}
           value="Booking"
         />
@@ -127,6 +134,8 @@ class EvalTableRow extends React.PureComponent {
 }
 
 EvalTableRow.propTypes = {
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onGetGroupName: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   onSelectReject: PropTypes.func.isRequired,
   row: PropTypes.shape({
@@ -158,6 +167,7 @@ EvalTableRow.propTypes = {
 const mapDispatchToProps = dispatch => ({
   onSelectEval: operations.onSelectEval(dispatch),
   onSelectReject: operations.onSelectReject(dispatch),
+  onGetGroupName: operations.onGetGroupName(dispatch),
 });
 
 const mapStateToProps = state => ({
@@ -171,4 +181,4 @@ const EvalTableRowContainer = connect(
   mapDispatchToProps,
 )(EvalTableRow);
 
-export default EvalTableRowContainer;
+export default withRouter(EvalTableRowContainer);
