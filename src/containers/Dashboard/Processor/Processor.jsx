@@ -35,6 +35,7 @@ class Processor extends React.PureComponent {
     this.state = {
       hasError: false,
       evalIds: '',
+      evalIdList: [],
       // loanNumbersCount: 0,
       isDisabled: true,
     };
@@ -66,6 +67,12 @@ class Processor extends React.PureComponent {
     return `${count} Evals have been processed.`;
   }
 
+  handleSubmit = () => {
+    const { evalIdList } = this.state;
+    const { onSubmitEval } = this.props;
+    onSubmitEval(evalIdList);
+  }
+
   showBulkOrderPage() {
     const { onSelect } = this.props;
     onSelect();
@@ -78,6 +85,7 @@ class Processor extends React.PureComponent {
     });
     if (validateEvalIdFormat(event.target.value)) {
       const evalIds = event.target.value.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      this.setState({ evalIdList: evalIds });
       if (evalIds.length > 10) {
         this.setState({ isDisabled: true });
       } else if (evalIds.length > 0) {
@@ -116,6 +124,7 @@ class Processor extends React.PureComponent {
     );
   }
 
+
   renderNotepadArea() {
     const { evalIds, isDisabled } = this.state;
     return (
@@ -137,7 +146,7 @@ class Processor extends React.PureComponent {
               color="primary"
               disabled={isDisabled}
               margin="normal"
-              onClick={() => console.log('procmgr')}
+              onClick={this.handleSubmit}
               variant="contained"
             >
                 SUBMIT
@@ -259,6 +268,7 @@ Processor.propTypes = {
   inProgress: PropTypes.bool,
   onFailedLoanValidation: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
+  onSubmitEval: PropTypes.func.isRequired,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
@@ -295,6 +305,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
+  onSubmitEval: operations.onEvalInsertion(dispatch),
   onLoansSubmit: operations.onLoansSubmit(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
   onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),

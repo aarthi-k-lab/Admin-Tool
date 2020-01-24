@@ -40,6 +40,7 @@ import {
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  INSERT_EVALID,
 } from './types';
 
 
@@ -191,6 +192,12 @@ const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
+
+const onEvalInsertionAction = payload => ({
+  type: INSERT_EVALID,
+  payload,
+});
+
 const pageType = pageName => ({
   type: SET_BULK_UPLOAD_PAGE_TYPE,
   payload: pageName,
@@ -263,4 +270,5 @@ export {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onEvalInsertionAction,
 };

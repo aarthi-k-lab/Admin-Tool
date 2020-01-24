@@ -24,6 +24,8 @@ import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 // import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
+  STORE_EVALID_RESPONSE,
+  INSERT_EVALID,
   END_SHIFT,
   SET_INCENTIVE_TASKCODES,
   GET_NEXT,
@@ -1246,6 +1248,17 @@ function* onSelectModReversal() {
   }
 }
 
+function* manualInsertion(payload) {
+  const response = yield all(payload.payload.map(evalId => call(Api.callPost, '/api/disposition/api/insertEval', { evalId })));
+  yield put({
+    type: STORE_EVALID_RESPONSE,
+    payload: response,
+  });
+}
+
+function* watchManualInsertion() {
+  yield takeEvery(INSERT_EVALID, manualInsertion);
+}
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
@@ -1337,5 +1350,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSelectReject(),
     watchOnSearchWithTask(),
     watchOnSelectModReversal(),
+    watchManualInsertion(),
   ]);
 };
