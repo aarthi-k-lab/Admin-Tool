@@ -50,6 +50,8 @@ const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
+const evalData = state => R.pathOr([], ['dashboard', 'evalInsertionStatus'], state);
+
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
 const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
@@ -144,6 +146,7 @@ const selectors = {
   resultUnderwriting,
   resultOperation,
   tableData,
+  evalData,
   wasSearched,
   enableSendToDocGen,
   bulkOrderPageType,

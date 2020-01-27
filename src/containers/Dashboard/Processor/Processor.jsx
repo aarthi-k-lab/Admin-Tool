@@ -276,7 +276,6 @@ Processor.propTypes = {
   tableData: PropTypes.arrayOf(
     PropTypes.shape({
       evalId: PropTypes.string,
-      loanNumber: PropTypes.string,
       pid: PropTypes.string,
       statusMessage: PropTypes.string,
     }),
@@ -295,7 +294,7 @@ Processor.propTypes = {
 const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultOperation: selectors.resultOperation(state),
-  tableData: selectors.tableData(state),
+  tableData: selectors.evalData(state),
   user: LoginSelectors.getUser(state),
   bulkOrderPageType: selectors.bulkOrderPageType(state),
   getStagerValue: stagerSelectors.getStagerValue(state),

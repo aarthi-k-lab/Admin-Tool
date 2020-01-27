@@ -82,6 +82,7 @@ import {
   MOD_REVERSAL_REASONS,
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
+  STORE_EVALID_RESPONSE_ERROR,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1249,11 +1250,31 @@ function* onSelectModReversal() {
 }
 
 function* manualInsertion(payload) {
-  const response = yield all(payload.payload.map(evalId => call(Api.callPost, '/api/disposition/api/insertEval', { evalId })));
-  yield put({
-    type: STORE_EVALID_RESPONSE,
-    payload: response,
-  });
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield all(payload.payload.map(evalId => call(Api.callPost, '/api/disposition/bulk/insertEval', { evalId })));
+    const filteredResponse = [];
+    response.forEach((evalData) => {
+      if (!evalData) {
+        filteredResponse.push({ statusMessage: 'Something went wrong' });
+      } else {
+        filteredResponse.push(evalData);
+      }
+    });
+    yield put({
+      type: STORE_EVALID_RESPONSE,
+      payload: filteredResponse,
+    });
+  } catch (e) {
+    yield put({
+      type: STORE_EVALID_RESPONSE_ERROR,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
 }
 
 function* watchManualInsertion() {
