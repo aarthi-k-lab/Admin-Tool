@@ -334,9 +334,8 @@ function* selectEval(searchItem) {
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
-  const processId = yield select(selectors.processId);
-  if (appGroupName === DashboardModel.BOOKING && processId != null) {
-    const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${processId}`);
+  if (appGroupName === DashboardModel.BOOKING && evalDetails.piid != null) {
+    const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${evalDetails.piid}`);
     const latestPendingBookingTask = R.head(R.filter(
       task => task.taskName === DashboardModel.PENDING_BOOKING, tasksForProcess,
     ));
