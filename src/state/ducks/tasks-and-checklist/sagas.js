@@ -549,7 +549,7 @@ function* makeResolutionIdStatCall(action) {
     const { resolutionId, auditRuleType } = action.payload;
     yield put({ type: SLA_RULES_PROCESSED, payload: false });
     const response = yield call(Api.callPost, `/api/booking/api/bookingAutomation/runAuditRules?resolutionId=${resolutionId}&auditRuleType=${auditRuleType}`);
-    if (!R.isNil(response) && !R.isEmpty(response) && !response.message) {
+    if (!R.isNil(response) && !R.isEmpty(response) && !response.message && !response.error) {
       try {
         const rootTaskId = yield select(selectors.getRootTaskId);
         const request = R.compose(
@@ -577,8 +577,9 @@ function* makeResolutionIdStatCall(action) {
     }
     yield put({
       type: SAVE_RULE_RESPONSE,
+      // eslint-disable-next-line no-nested-ternary
       payload: R.isNil(response) || R.isEmpty(response)
-        ? { error: SOMETHING_WENT_WRONG } : response,
+        ? { error: SOMETHING_WENT_WRONG } : (response.error ? { error: response.error } : response),
     });
   } catch (err) {
     yield put({ type: SAVE_RULE_RESPONSE, payload: { error: SOMETHING_WENT_WRONG } });

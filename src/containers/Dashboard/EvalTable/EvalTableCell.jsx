@@ -59,7 +59,7 @@ class EvalTableCell extends React.PureComponent {
         break;
       case 'Booking':
         renderCellValue = (
-          <IconButton styleName="reject-icon">
+          <IconButton onClick={this.handleLinkClick} styleName="reject-icon">
             <img alt="Booking" src="/static/img/booking.svg" />
           </IconButton>
         );

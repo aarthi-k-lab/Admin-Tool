@@ -1,42 +1,48 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import EditRoundedIcon from '@material-ui/icons/EditRounded';
+// import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import * as R from 'ramda';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 import './SlaHeader.css';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+// import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import SweetAlert from 'sweetalert2-react';
 import { ALERT_PROPS } from '../../models/Alert';
 
 class LabelWithIcon extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { resolutionId } = props;
+    // const { resolutionId } = props;
     this.state = {
       // isclicked: false,
-      searchText: resolutionId,
+      // searchText: resolutionId,
       canEdit: false,
     };
     this.handleAlert = this.handleAlert.bind(this);
+    this.handleValueChange = this.handleValueChange.bind(this);
   }
 
 
-  componentWillReceiveProps(props) {
-    const { resolutionId } = props;
-    this.setState({ searchText: resolutionId });
-  }
+  // componentWillReceiveProps(props) {
+  //   const { resolutionId } = props;
+  //   this.setState({ searchText: resolutionId });
+  // }
 
 
-  onSearchTextChange= (event) => {
-    const re = /^[0-9\b]+$/;
-    if (event.target.value === '' || re.test(event.target.value)) {
-      this.setState({ searchText: event.target.value });
-    }
-  }
+  // onSearchTextChange= (event) => {
+  //   const re = /^[0-9\b]+$/;
+  //   if (event.target.value === '' || re.test(event.target.value)) {
+  //     this.setState({ searchText: event.target.value });
+  //   }
+  // }
 
   getAlertProps = () => {
     const {
@@ -64,7 +70,7 @@ class LabelWithIcon extends React.PureComponent {
   };
 
   handleRunAuditRulesClick = () => {
-    const { searchText: resolutionId } = this.state;
+    const { resolutionText: resolutionId } = this.state;
     const { triggerResolutionIdStats, title } = this.props;
     const auditRuleType = R.contains('Post', title) ? 'post' : 'pre';
     if (resolutionId) {
@@ -83,6 +89,10 @@ class LabelWithIcon extends React.PureComponent {
     const { filter, triggerFilterRules } = this.props;
     triggerFilterRules(value === filter ? null : value);
   }
+
+  handleValueChange = (event) => {
+    this.setState({ resolutionText: event.target.value });
+  };
 
   handleAlert() {
     const { ruleResponse, clearRuleResponse } = this.props;
@@ -103,42 +113,50 @@ class LabelWithIcon extends React.PureComponent {
 
   render() {
     const {
-      text, passedRules, failedRules,
-      slaRulesProcessed, filter, disabled,
+      passedRules, failedRules, isAssigned, text, slaRulesProcessed,
+      filter, resolutionData, showContinueMyReview,
     } = this.props;
-
-    const { searchText, canEdit } = this.state;
+    const sortedResData = R.sort(R.descend(R.prop('resolutionId')), resolutionData);
+    const { resolutionText } = this.state;
+    let selectedValue = sortedResData[0] ? sortedResData[0].resolutionId : null;
+    if (text && !R.isEmpty(text)) {
+      selectedValue = text;
+    }
+    if (resolutionText && !R.isEmpty(resolutionText)) {
+      selectedValue = resolutionText;
+    }
+    this.setState({ resolutionText: selectedValue });
     return (
       <>
         <Grid container styleName="customresolutiongrid">
-          <Grid styleName="custommargin" xs={9}>
-            {canEdit ? (
-              <ClickAwayListener onClickAway={() => this.handleClick()}>
-
-                <TextField
-                  disabled={disabled}
-                  margin="dense"
-                  onChange={this.onSearchTextChange}
-                  placeholder={text}
-                  value={searchText}
-                  variant="outlined"
-                />
-              </ClickAwayListener>
-
-            ) : (
-              <>
-                {text}
-                <EditRoundedIcon disabled={disabled} onClick={() => this.handleClick()} styleName="icon" />
-              </>
-            ) }
+          <Grid xs={10}>
+            <FormControl style={{ width: 180 }}>
+              <InputLabel style={{ fontSize: 13 }}>Select ResolutionId</InputLabel>
+              <Select
+                onChange={event => this.handleValueChange(event)}
+                value={selectedValue}
+              >
+                {
+                sortedResData.map(
+                  items => (
+                    <MenuItem value={items.resolutionId}>
+                      {items.resolutionId}
+                      {' -- '}
+                      {items.status}
+                    </MenuItem>
+                  ),
+                )
+                }
+              </Select>
+            </FormControl>
           </Grid>
           <Grid>
             <Button
               className="material-ui-button"
               color="primary"
-              disabled={!searchText || !slaRulesProcessed || disabled}
+              disabled={!isAssigned || showContinueMyReview || !slaRulesProcessed}
               onClick={() => this.handleRunAuditRulesClick()}
-              style={{ margin: '0px 0px 0px 13px' }}
+              style={{ margin: '13px 0px 0px 0px' }}
               styleName="get-next"
               variant="contained"
             >
@@ -193,9 +211,14 @@ LabelWithIcon.propTypes = {
   disabled: PropTypes.bool.isRequired,
   failedRules: PropTypes.shape.isRequired,
   filter: PropTypes.bool.isRequired,
+  handleValueChange: PropTypes.func.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   passedRules: PropTypes.shape.isRequired,
+  resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
   resolutionId: PropTypes.string.isRequired,
+  resolutionText: PropTypes.string.isRequired,
   ruleResponse: PropTypes.shape.isRequired,
+  showContinueMyReview: PropTypes.bool.isRequired,
   slaRulesProcessed: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
@@ -217,6 +240,8 @@ const mapStateToProps = state => ({
   allRules: selectors.getChecklistItems(state),
   passedRules: selectors.getPassedRules(state),
   failedRules: selectors.getFailedRules(state),
+  isAssigned: dashboardSelectors.isAssigned(state),
+  showContinueMyReview: dashboardSelectors.showContinueMyReview(state),
 });
 
 

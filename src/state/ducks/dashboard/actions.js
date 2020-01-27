@@ -27,6 +27,7 @@ import {
   SET_TASK_SENDTO_DOCSIN,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
+  COMPLETE_MY_REVIEW,
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
@@ -184,6 +185,11 @@ const continueMyReview = taskStatus => ({
   payload: taskStatus,
 });
 
+const completeMyReview = disposition => ({
+  type: COMPLETE_MY_REVIEW,
+  payload: disposition,
+});
+
 const onLoansSubmitAction = payload => ({
   type: SET_ADD_DOCS_IN,
   payload,
@@ -257,6 +263,7 @@ export {
   onSendToDocsInAction,
   cleanResult,
   continueMyReview,
+  completeMyReview,
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,

@@ -23,6 +23,7 @@ import {
   onSendToDocsInAction,
   cleanResult,
   continueMyReview,
+  completeMyReview,
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
@@ -142,12 +143,17 @@ const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isS
 const onSendToDocsIn = dispatch => () => dispatch(onSendToDocsInAction());
 
 const onCleanResult = dispatch => () => dispatch(cleanResult());
+
 const onContinueMyReview = dispatch => (taskStatus) => {
   dispatch(continueMyReview(taskStatus));
 };
 
 const onEvalInsertion = dispatch => (payload) => {
   dispatch(onEvalInsertionAction(payload));
+};
+
+const onCompleteMyReview = dispatch => (disposition) => {
+  dispatch(completeMyReview(disposition));
 };
 
 const onLoansSubmit = dispatch => (payload) => {
@@ -207,6 +213,7 @@ const operations = {
   onSendToDocsIn,
   onCleanResult,
   onContinueMyReview,
+  onCompleteMyReview,
   onLoansSubmit,
   onFailedLoanValidation,
   setBeginSearch,
