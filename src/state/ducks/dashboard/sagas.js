@@ -24,6 +24,8 @@ import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 // import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
+  STORE_EVALID_RESPONSE,
+  INSERT_EVALID,
   END_SHIFT,
   SET_INCENTIVE_TASKCODES,
   GET_NEXT,
@@ -68,6 +70,7 @@ import {
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
+  COMPLETE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
@@ -80,6 +83,9 @@ import {
   MOD_REVERSAL_REASONS,
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
+  STORE_EVALID_RESPONSE_ERROR,
+  RESOLUTION_DROP_DOWN_VALUES,
+  COMPLETE_MY_REVIEW,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -299,8 +305,7 @@ function* fetchChecklistDetails(checklistId) {
   }
 }
 
-function* fetchChecklistDetailsForSearchResult(searchItem) {
-  const checklistId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+function* fetchChecklistDetailsForSearchResult(checklistId) {
   yield call(fetchChecklistDetails, checklistId);
 }
 
@@ -315,31 +320,67 @@ function* fetchChecklistDetailsForSearchResult(searchItem) {
 //     yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
 //   }
 // }
+function* getResolutionDataForEval(evalId) {
+  try {
+    const response = yield call(Api.callGet, `/api/tkams/fetchResolutionIds/${evalId}`);
+    if (!R.isNil(response) && !R.isEmpty(response)) {
+      yield put({ type: RESOLUTION_DROP_DOWN_VALUES, payload: response });
+    }
+  } catch (err) {
+    yield put({ type: RESOLUTION_DROP_DOWN_VALUES, payload: {} });
+  }
+}
 
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
+  let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
+  const appGroupName = yield select(selectors.groupName);
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
-  const assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
+  let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
+  if (appGroupName === DashboardModel.BOOKING && evalDetails.piid != null) {
+    const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${evalDetails.piid}`);
+    const latestPendingBookingTask = R.head(R.filter(
+      task => task.taskName === DashboardModel.PENDING_BOOKING, tasksForProcess,
+    ));
+    const { taskId } = latestPendingBookingTask;
+    const assignmentData = yield call(Api.callGet, `/api/dataservice/api/taskInfo/${taskId}`);
+    if (assignmentData && assignmentData.wfTaskId) {
+      const { assignedTo: assignee, taskStatus } = assignmentData;
+      evalDetails.assignee = taskStatus === 'Assigned' || taskStatus === 'Paused' ? assignee : null;
+      evalDetails.taskStatus = taskStatus;
+      const { taskCheckListId: checklistId } = assignmentData;
+      taskCheckListId = checklistId;
+      assignedTo = userDetails.email;
+    } else {
+      evalDetails.assignee = null;
+      taskCheckListId = null;
+    }
+    evalDetails.taskId = taskId;
+  }
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
-        && assignedTo === evalDetails.assignee.toLowerCase();
+  && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
+
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
-  yield call(fetchChecklistDetailsForSearchResult, searchItem);
+  yield call(fetchChecklistDetailsForSearchResult, taskCheckListId);
+  if (R.equals(appGroupName, 'BOOKING')) {
+    yield call(getResolutionDataForEval, evalDetails.evalId);
+  }
   // fetch loan activity details from api
   // if (R.equals(evalDetails.taskName, 'Trial Modification')
   //  || R.equals(evalDetails.taskName, 'Forbearance')) {
   //   yield call(fetchLoanActivityDetails, searchItem);
   // }
   try {
-    yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber, evalDetails.taskName));
+    yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber,
+      evalDetails.taskName, evalDetails.taskId));
   } catch (e) {
     yield put({ type: HIDE_LOADER });
   }
 }
-
 function* watchTombstoneLoan() {
   yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
@@ -350,9 +391,10 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
     const evalId = yield select(selectors.evalId);
     const user = yield select(loginSelectors.getUser);
     const taskId = yield select(selectors.taskId);
+    const appGroupName = yield select(selectors.groupName);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     if (taskId) {
-      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}`, {});
+      const response = yield call(Api.callPost, `/api/workassign/updateTaskStatus?evalId=${evalId}&assignedTo=${userPrincipalName}&taskStatus=${taskStatusUpdate}&taskId=${taskId}&appGroupName=${appGroupName}`, {});
       if (response !== null) {
         yield put({
           type: CONTINUE_MY_REVIEW_RESULT,
@@ -365,10 +407,36 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
   }
 };
 
+function* completeMyReviewResult(action) {
+  try {
+    const disposition = R.path(['payload'], action);
+    const evalId = yield select(selectors.evalId);
+    const wfTaskId = yield select(selectors.taskId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const request = {
+      evalId,
+      disposition,
+      userName: userPrincipalName,
+      wfTaskId,
+    };
+    const response = yield call(Api.callPost, '/api/disposition/cmodDisposition', request);
+    yield put({
+      type: COMPLETE_MY_REVIEW_RESULT,
+      payload: { error: R.has('error', response) },
+    });
+  } catch (e) {
+    yield put({ type: COMPLETE_MY_REVIEW_RESULT, payload: false });
+  }
+}
+
 function* watchContinueMyReview() {
   yield takeEvery(CONTINUE_MY_REVIEW, continueMyReviewResult);
 }
 
+function* watchCompleteMyReview() {
+  yield takeEvery(COMPLETE_MY_REVIEW, completeMyReviewResult);
+}
 
 const validateDisposition = function* validateDiposition(dispositionPayload) {
   try {
@@ -737,9 +805,12 @@ function* getNext(action) {
         const evalPayload = getEvalPayload(taskDetails);
         const commentsPayLoad = getCommentPayload(taskDetails);
         const { taskName } = taskDetails.taskData.data;
+        if (R.equals(group, 'BOOKING')) {
+          yield call(getResolutionDataForEval, getEvalId(taskDetails));
+        }
         yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
-        yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName));
+        yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName, taskId));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
@@ -830,7 +901,16 @@ function* unassignLoan() {
     const processId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}`, {});
+    const appgroupName = yield select(selectors.groupName);
+    const group = getGroup(appgroupName);
+    let taskName = '';
+    if (group === DashboardModel.POSTMODSTAGER) {
+      const stagerTaskName = yield select(selectors.stagerTaskName);
+      taskName = stagerTaskName.activeTile === 'Recordation' ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
+    } else {
+      taskName = appgroupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
+    }
+    const response = yield call(Api.callPost, `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&appgroupName=${appgroupName}&taskName=${taskName}`, {});
     if (response !== null) {
       yield put({
         type: UNASSIGN_LOAN_RESULT,
@@ -880,6 +960,8 @@ function* assignLoan() {
     if (group === DashboardModel.POSTMODSTAGER) {
       const stagerTaskName = yield select(selectors.stagerTaskName);
       taskName = stagerTaskName.activeTile === 'Recordation' ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
+    } else {
+      taskName = groupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
     }
     const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
@@ -1187,7 +1269,6 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
-
 function* AddDocsInReceived(payload) {
   const { pageType } = payload.payload;
   let response;
@@ -1249,6 +1330,37 @@ function* onSelectModReversal() {
   }
 }
 
+function* manualInsertion(payload) {
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield all(payload.payload.map(evalId => call(Api.callPost, '/api/disposition/bulk/insertEval', { evalId })));
+    const filteredResponse = [];
+    response.forEach((evalData) => {
+      if (!evalData) {
+        filteredResponse.push({ statusMessage: 'Something went wrong' });
+      } else {
+        filteredResponse.push(evalData);
+      }
+    });
+    yield put({
+      type: STORE_EVALID_RESPONSE,
+      payload: filteredResponse,
+    });
+  } catch (e) {
+    yield put({
+      type: STORE_EVALID_RESPONSE_ERROR,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
+function* watchManualInsertion() {
+  yield takeEvery(INSERT_EVALID, manualInsertion);
+}
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
@@ -1314,6 +1426,7 @@ export const TestExports = {
   watchSendToDocGen,
   watchSendToDocsIn,
   watchContinueMyReview,
+  watchCompleteMyReview,
   watchAddDocsInReceived,
   watchOnSelectReject,
   watchOnSearchWithTask,
@@ -1340,5 +1453,7 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSelectReject(),
     watchOnSearchWithTask(),
     watchOnSelectModReversal(),
+    watchManualInsertion(),
+    watchCompleteMyReview(),
   ]);
 };

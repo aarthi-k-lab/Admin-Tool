@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
+import UserNotification from 'components/UserNotification/UserNotification';
 import { selectors } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
@@ -52,7 +53,7 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const {
-      location, group, taskName, checklisttTemplateName, stagerTaskName, isAutoDisposition,
+      location, group, taskName, checklisttTemplateName, stagerTaskName, resultOperation, isAutoDisposition,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -70,6 +71,12 @@ class EvaluationPage extends React.PureComponent {
           />
         </ContentHeader>
         <Tombstone />
+        <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
+          {(resultOperation && resultOperation.status)
+            ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
+            : ''
+          }
+        </div>
         <FullHeightColumn styleName="columns-container">
           {this.renderDashboard()}
         </FullHeightColumn>
@@ -83,6 +90,7 @@ EvaluationPage.defaultProps = {
   checklisttTemplateName: null,
   taskName: '',
   stagerTaskName: '',
+  resultOperation: { level: '', status: '' },
 };
 
 EvaluationPage.propTypes = {
@@ -93,6 +101,10 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  resultOperation: PropTypes.shape({
+    level: PropTypes.string,
+    status: PropTypes.string,
+  }),
   stagerTaskName: PropTypes.string,
   taskName: PropTypes.string,
   user: PropTypes.shape({
@@ -113,6 +125,7 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
   isAutoDisposition: checklistSelectors.getDispositionType(state),
+  resultOperation: selectors.resultOperation(state),
 });
 
 const container = connect(mapStateToProps, null)(EvaluationPage);

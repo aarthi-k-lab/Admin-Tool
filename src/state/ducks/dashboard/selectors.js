@@ -50,10 +50,12 @@ const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
+const evalData = state => R.pathOr([], ['dashboard', 'evalInsertionStatus'], state);
+
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
 const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
-
+const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeReviewResponse'], state);
 
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
@@ -81,6 +83,8 @@ const enableSendToUW = state => (R.pathOr(true, ['dashboard', 'enableSendToUW'],
 
 const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
 
+const showCompleteMyReview = state => R.pathOr(null, ['dashboard', 'isAssigned'], state) && !isFirstVisit(state);
+
 const isAssigned = state => R.pathOr(true, ['dashboard', 'isAssigned'], state);
 
 const getDiscrepancies = state => R.pathOr({}, ['dashboard', 'getNextResponse', 'discrepancies'], state);
@@ -103,6 +107,7 @@ const resultOperation = state => (state.dashboard && state.dashboard.resultOpera
   ? state.dashboard.resultOperation : {});
 const bulkOrderPageType = state => R.pathOr('', ['dashboard', 'pageType'], state);
 const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
+const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
 
 
 const selectors = {
@@ -144,6 +149,7 @@ const selectors = {
   resultUnderwriting,
   resultOperation,
   tableData,
+  evalData,
   wasSearched,
   enableSendToDocGen,
   bulkOrderPageType,
@@ -156,6 +162,9 @@ const selectors = {
   getModReversalReasons,
   isPostModEndShift,
   incentiveTaskCodes,
+  getResolutionData,
+  completeReviewResponse,
+  showCompleteMyReview,
 };
 
 export default selectors;

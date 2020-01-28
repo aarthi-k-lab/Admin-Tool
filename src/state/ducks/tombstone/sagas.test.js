@@ -34,6 +34,7 @@ describe('fetchTombstoneData', () => {
     payload: {
       loanNumber: 596400243,
       taskName: 'FrontEnd Review',
+      taskId: 12345,
     },
   };
   const saga = cloneableGenerator(TestExports.fetchTombstoneData)(payload);
@@ -88,7 +89,7 @@ describe('fetchTombstoneData', () => {
 
   it('should call sods api to fetch loan details', () => {
     expect(saga.next('FrontEnd Review').value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review'));
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345));
   });
   it('should update loandetails in store', () => {
     expect(saga.next(loanDetails).value)
@@ -101,6 +102,7 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
     payload: {
       loanNumber: 596400243,
       taskName: 'FrontEnd Review',
+      taskId: 12345,
     },
   };
   const saga = cloneableGenerator(TestExports.fetchTombstoneData)(payload);
@@ -135,7 +137,7 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
 
   it('should call sods api to fetch loan details', () => {
     expect(saga.next('FrontEnd Review').value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review'));
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345));
   });
 
   it('should update store with ERROR_LOADING_TOMBSTONE_DATA on error', () => {

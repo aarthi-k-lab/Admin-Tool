@@ -27,6 +27,7 @@ import {
   SET_TASK_SENDTO_DOCSIN,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
+  COMPLETE_MY_REVIEW,
   SET_ADD_DOCS_IN,
   SET_RESULT_OPERATION,
   SET_BEGIN_SEARCH,
@@ -40,6 +41,7 @@ import {
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  INSERT_EVALID,
 } from './types';
 
 
@@ -183,6 +185,11 @@ const continueMyReview = taskStatus => ({
   payload: taskStatus,
 });
 
+const completeMyReview = disposition => ({
+  type: COMPLETE_MY_REVIEW,
+  payload: disposition,
+});
+
 const onLoansSubmitAction = payload => ({
   type: SET_ADD_DOCS_IN,
   payload,
@@ -191,6 +198,12 @@ const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
+
+const onEvalInsertionAction = payload => ({
+  type: INSERT_EVALID,
+  payload,
+});
+
 const pageType = pageName => ({
   type: SET_BULK_UPLOAD_PAGE_TYPE,
   payload: pageName,
@@ -250,6 +263,7 @@ export {
   onSendToDocsInAction,
   cleanResult,
   continueMyReview,
+  completeMyReview,
   onLoansSubmitAction,
   onLoanValidationError,
   setBeginSearchAction,
@@ -263,4 +277,5 @@ export {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onEvalInsertionAction,
 };

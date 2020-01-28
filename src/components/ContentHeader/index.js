@@ -8,4 +8,5 @@ export { default as SendToUnderwriting } from './SendToUnderwriting';
 export { default as SendToDocGen } from './SendToDocGen';
 export { default as SendToDocGenStager } from './SendToDocGenStager';
 export { default as ContinueMyReview } from './ContinueMyReview';
+export { default as CompleteMyReview } from './CompleteMyReview';
 export { default as SendToDocsIn } from './SendToDocsIn';

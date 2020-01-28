@@ -8,7 +8,6 @@ import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
-import { isSLAGroup } from 'models/AppGroupName';
 import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
@@ -57,7 +56,6 @@ class SearchLoan extends React.PureComponent {
     if (validLoanNumber && exisitngSearch) {
       onSearchLoan(loanNumber);
     }
-    this.canRedirect = true;
   }
 
   getLoanActivityPath() {
@@ -86,13 +84,10 @@ class SearchLoan extends React.PureComponent {
   handleRowClick(payload, rowInfo) {
     const { user } = this.props;
     const adGroups = user && user.groupList;
-    const isSlaGroup = isSLAGroup(adGroups);
+    const isPostMod = payload.milestone === 'Post Mod';
     if (rowInfo.Header !== 'ACTIONS') {
-      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName)) && payload.assignee !== 'N/A') {
-        const {
-          onSelectEval, onGetGroupName, onGetChecklistHistory,
-        } = this.props;
-        let group = '';
+      let group = '';
+      if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName) || (isPostMod && RouteAccess.hasSlaAccess(adGroups))) && payload.assignee !== 'N/A') {
         switch (payload.taskName) {
           case 'Underwriting':
             group = 'BEUW';
@@ -115,7 +110,7 @@ class SearchLoan extends React.PureComponent {
             group = 'DOCSIN';
             this.redirectPath = '/docs-in';
             break;
-          case 'Pending Booking':
+          case DashboardModel.PENDING_BOOKING:
             group = 'BOOKING';
             this.redirectPath = '/special-loan';
             break;
@@ -123,36 +118,36 @@ class SearchLoan extends React.PureComponent {
             this.redirectPath = '/frontend-checklist';
             group = 'FEUW';
         }
-        onGetGroupName(group);
-        onSelectEval(payload);
-        onGetChecklistHistory(payload.taskId);
-        this.setState({ isRedirect: true });
       }
 
       if ((payload.pstatus === 'Suspended' && payload.pstatusReason === 'Approved for Doc Generation')
         || (payload.tstatus === 'Active' && payload.taskName === 'Docs Sent')) {
-        const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/doc-gen-back';
-        onGetGroupName('DGB');
-        onSelectEval(payload);
-        this.setState({ isRedirect: true });
+        group = 'DGB';
       }
 
       if ((payload.tstatus === 'Active' && payload.taskName === 'Pending Buyout')
-        || (payload.tstatus === 'Active' && payload.taskName === 'Pending Booking')
+        || (payload.tstatus === 'Active' && payload.taskName === DashboardModel.PENDING_BOOKING)
         || (payload.pstatus === 'Suspended' && payload.pstatusReason === 'Mod Booked')) {
-        const { onSelectEval, onGetGroupName } = this.props;
         this.redirectPath = '/docs-in-back';
-        onGetGroupName('DIB');
-        onSelectEval(payload);
-        this.setState({ isRedirect: true });
+        group = 'DIB';
       }
 
-      if (payload.taskName === 'Pending Booking' && isSlaGroup) {
-        const { onSelectEval, onGetGroupName } = this.props;
+      if ((
+        payload.taskName === DashboardModel.PENDING_BOOKING
+        || isPostMod
+      ) && RouteAccess.hasSlaAccess(adGroups)) {
         this.redirectPath = '/special-loan';
-        onGetGroupName('BOOKING');
+        group = 'BOOKING';
+      }
+
+      if (!R.isEmpty(group)) {
+        const {
+          onSelectEval, onGetGroupName, onGetChecklistHistory,
+        } = this.props;
+        onGetGroupName(group);
         onSelectEval(payload);
+        onGetChecklistHistory(payload.taskId);
         this.setState({ isRedirect: true });
       }
     }

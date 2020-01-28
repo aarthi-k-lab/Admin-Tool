@@ -3,8 +3,8 @@ const SOMETHING_WENT_WRONG = 'Something went wrong. Please try again';
 const ALERT_PROPS = {
   SOMETHING_WENT_WRONG: {
     imageUrl: '/static/img/notfound.gif',
-    text: 'Oops.. Something went wrong. Please try again',
-    title: 'Something went Wrong',
+    text: 'Oops.. Sorry for the inconvinience. Please try again later',
+    title: 'Currently one of the service is down',
     show: true,
   },
   INVALID_RESOLUTION_ID: {

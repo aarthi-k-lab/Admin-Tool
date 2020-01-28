@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
-  SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn,
+  SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn, CompleteMyReview,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -77,9 +77,9 @@ class Controls extends React.PureComponent {
     }
   }
 
-  handleSentToUnderwriting() {
-    const { onSentToUnderwriting } = this.props;
-    onSentToUnderwriting();
+  handleCompleteMyReview = () => {
+    const { onCompleteMyReview } = this.props;
+    onCompleteMyReview('Complete My Review');
   }
 
   handleSendToDocGen() {
@@ -105,6 +105,11 @@ class Controls extends React.PureComponent {
   handleContinueMyReview() {
     const { onContinueMyReview } = this.props;
     onContinueMyReview('Assigned');
+  }
+
+  handleSentToUnderwriting() {
+    const { onSentToUnderwriting } = this.props;
+    onSentToUnderwriting();
   }
 
   handlegetNext() {
@@ -150,6 +155,7 @@ class Controls extends React.PureComponent {
       showSendToDocGen,
       showSendToDocsIn,
       showContinueMyReview,
+      showCompleteMyReview,
       showAssign,
       showValidate,
       isFirstVisit,
@@ -217,6 +223,9 @@ class Controls extends React.PureComponent {
     }
     const getContinueMyReviewButton = showContinueMyReview
       ? <ContinueMyReview onClick={this.handleContinueMyReview} /> : null;
+
+    const getCompleteMyreviewButton = showCompleteMyReview && groupName === DashboardModel.BOOKING
+      ? <CompleteMyReview onClick={this.handleCompleteMyReview} /> : null;
     return (
       <>
         {assign}
@@ -228,6 +237,7 @@ class Controls extends React.PureComponent {
         {getSendToDocGenStagerButton}
         {getSendToDocsInButton}
         {getContinueMyReviewButton}
+        {getCompleteMyreviewButton}
         {expand}
       </>
     );
@@ -255,6 +265,7 @@ Controls.defaultProps = {
   showSendToDocsIn: false,
   showSendToDocGenStager: false,
   onContinueMyReview: () => { },
+  onCompleteMyReview: () => { },
   showContinueMyReview: null,
   showAssign: null,
   showValidate: false,
@@ -273,6 +284,7 @@ Controls.propTypes = {
   groupName: PropTypes.string,
   history: PropTypes.shape(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
+  onCompleteMyReview: PropTypes.func,
   onContinueMyReview: PropTypes.func,
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
@@ -281,6 +293,7 @@ Controls.propTypes = {
   onSendToDocsIn: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   showAssign: PropTypes.bool,
+  showCompleteMyReview: PropTypes.bool.isRequired,
   showContinueMyReview: PropTypes.bool,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
@@ -305,13 +318,13 @@ Controls.propTypes = {
 
 const mapStateToProps = (state) => {
   const showDisposition = checklistSelectors.shouldShowDisposition(state);
-  const isNotAssigned = !selectors.isAssigned(state);
+  const isAssigned = selectors.isAssigned(state);
   const group = selectors.groupName(state);
   const enableValidate = !checklistSelectors.showComment(state)
     ? true : checklistSelectors.enableValidate(state);
   const shouldSkipValidation = checklistSelectors.enableValidate(state)
   && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER);
-  const disableValidation = isNotAssigned || !showDisposition || !enableValidate;
+  const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   return {
     disableValidation,
     enableValidate,
@@ -325,6 +338,7 @@ const mapStateToProps = (state) => {
     isFirstVisit: selectors.isFirstVisit(state),
     showAssign: selectors.showAssign(state),
     showContinueMyReview: selectors.showContinueMyReview(state),
+    showCompleteMyReview: selectors.showCompleteMyReview(state),
     user: loginSelectors.getUser(state),
     groupName: selectors.groupName(state),
   };
@@ -340,6 +354,7 @@ const mapDispatchToProps = dispatch => ({
   onSendToDocGen: operations.onSendToDocGen(dispatch),
   onSendToDocsIn: operations.onSendToDocsIn(dispatch),
   onContinueMyReview: operations.onContinueMyReview(dispatch),
+  onCompleteMyReview: operations.onCompleteMyReview(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

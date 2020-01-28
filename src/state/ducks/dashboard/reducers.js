@@ -36,6 +36,7 @@ import {
   SET_RESULT_OPERATION,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW_RESULT,
+  COMPLETE_MY_REVIEW_RESULT,
   SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
@@ -52,10 +53,18 @@ import {
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
   SET_INCENTIVE_TASKCODES,
+  STORE_EVALID_RESPONSE,
+  RESOLUTION_DROP_DOWN_VALUES,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
+    case STORE_EVALID_RESPONSE: {
+      return {
+        ...state,
+        evalInsertionStatus: action.payload,
+      };
+    }
     case SET_INCENTIVE_TASKCODES: {
       return {
         ...state,
@@ -338,6 +347,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         taskIterationCounter: action.payload.taskIterationCounter,
         showContinueMyReview: action.payload.isSearch ? action.payload.showContinueMyReview : false,
         getSearchLoanResponse: {},
+        completeReviewResponse: null,
       };
       return newState;
     }
@@ -352,11 +362,25 @@ const reducer = (state = { firstVisit: true }, action) => {
       return newState;
     }
 
+    case COMPLETE_MY_REVIEW_RESULT: {
+      return {
+        ...state,
+        completeReviewResponse: action.payload,
+        firstVisit: true,
+        isAssigned: true,
+        clearSearch: true,
+        groupName: state.groupName,
+        stagerTaskName: state.stagerTaskName,
+        getSearchLoanResponse: {},
+      };
+    }
+
     case HIDE_ASSIGN_UNASSIGN: {
       const { assignLoanResponse } = state;
       return {
         ...state,
         showAssign: null,
+        showCompleteMyreview: false,
         isAssigned: !R.isEmpty(assignLoanResponse),
       };
     }
@@ -522,6 +546,14 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         modReversalReasons,
+      };
+    }
+
+    case RESOLUTION_DROP_DOWN_VALUES: {
+      const resolutionData = action.payload;
+      return {
+        ...state,
+        resolutionData,
       };
     }
 

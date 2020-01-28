@@ -25,6 +25,10 @@ function getAdditionalLoanInfoUrl(evalId) {
   return `/api/bpm-audit/audit/process/eval/${evalId}`;
 }
 
+function getTaskDataUrl(taskId) {
+  return `/api/bpm-audit/audit/task/${taskId}`;
+}
+
 function getPrioritizationUrl() {
   return '/api/bpm-audit/audit/prioritization/_evalNumbers';
 }
@@ -148,33 +152,35 @@ function getModificationType(_, evalDetails) {
   return generateTombstoneItem('Modification Type', modificationType);
 }
 
-function getExpirationDate(evalDetails, groupName, additionalLoanInfo) {
+function getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData) {
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
     ? DashboardModel.POSTMODSTAGER : groupName;
   switch (group) {
     case DashboardModel.DOC_GEN:
-    case DashboardModel.BOOK:
       return evalDetails.lastPaidDate;
     case DashboardModel.DOCS_IN:
       return evalDetails.modDocsReceivedDate;
     case DashboardModel.POSTMODSTAGER:
       return !R.isEmpty(additionalLoanInfo) ? additionalLoanInfo[0].dueDate : null;
+    case DashboardModel.BOOKING:
+      return taskData && taskData.dueDateTime;
     default:
       return evalDetails.lastDocumentReceivedDate;
   }
 }
 
-function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo) {
-  const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo), 'America/Chicago');
+function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo, _tN, taskData) {
+  const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData), 'America/Chicago');
   const today = moment.tz('America/Chicago');
   const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
-  return generateTombstoneItem(groupName === DashboardModel.BOOK ? 'Days Until SLA Expiration' : 'Days Until CFPB Timeline Expiration', dateDiffDays);
+  return generateTombstoneItem(groupName === DashboardModel.BOOKING ? 'Days Until SLA Expiration' : 'Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
-function getCFPBExpirationDate(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo) {
-  const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo), 'America/Chicago');
+function getCFPBExpirationDate(_, evalDetails, _pdd, _pd,
+  groupName, additionalLoanInfo, _tN, taskData) {
+  const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData), 'America/Chicago');
   const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
-  return generateTombstoneItem(groupName === DashboardModel.BOOK ? 'SLA Expiration Date' : 'CFPB Timeline Expiration Date', dateString);
+  return generateTombstoneItem(groupName === DashboardModel.BOOKING ? 'SLA Expiration Date' : 'CFPB Timeline Expiration Date', dateString);
 }
 
 function getFLDD(loanDetails) {
@@ -291,7 +297,7 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails, groupName, additionalLoanInfo, taskName) {
+  prioritizationDetails, groupName, additionalLoanInfo, taskName, taskData) {
   let dataGenerator = [];
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
     ? DashboardModel.POSTMODSTAGER : groupName;
@@ -382,17 +388,19 @@ function getTombstoneItems(loanDetails,
     prioritizationDetails,
     groupName,
     additionalLoanInfo,
-    taskName));
+    taskName,
+    taskData));
   return data;
 }
 
 
-async function fetchData(loanNumber, evalId, groupName, taskName) {
+async function fetchData(loanNumber, evalId, groupName, taskName, taskId) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
   const prioritizationUrl = getPrioritizationUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
+  const taskDataUrl = getTaskDataUrl(taskId);
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -408,6 +416,10 @@ async function fetchData(loanNumber, evalId, groupName, taskName) {
     headers: { 'content-type': 'application/json' },
   });
 
+  const fetchTaskInfo = fetch(taskDataUrl, {
+    method: 'GET',
+    headers: { 'content-type': 'application/json' },
+  });
 
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
@@ -428,9 +440,10 @@ async function fetchData(loanNumber, evalId, groupName, taskName) {
     evaluationInfoResponse,
     previousDispositionResponse,
     prioritizationResponse,
-    additionalLoanInfoResponse] = await Promise.all(
+    additionalLoanInfoResponse,
+    taskDataResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
-      prioritizationP, additionalLoanInfoP],
+      prioritizationP, additionalLoanInfoP, fetchTaskInfo],
   );
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
@@ -440,47 +453,57 @@ async function fetchData(loanNumber, evalId, groupName, taskName) {
     evalDetails,
     previousDispositionDetails,
     prioritizationDetails,
-    additionalLoanInfo] = [];
+    additionalLoanInfo,
+    taskData] = [];
 
   if (previousDispositionResponse.status === 200 && prioritizationResponse.status === 200) {
     [loanDetails,
       evalDetails,
       previousDispositionDetails,
       prioritizationDetails,
-      additionalLoanInfo] = await Promise.all([
+      additionalLoanInfo,
+      taskData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       prioritizationResponse.json(),
       additionalLoanInfoResponse.json(),
+      taskDataResponse.json(),
     ]);
   } else if (previousDispositionResponse.status === 200) {
     [loanDetails,
       evalDetails,
       previousDispositionDetails,
-      additionalLoanInfo] = await Promise.all([
+      additionalLoanInfo,
+      taskData,
+    ] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       additionalLoanInfoResponse.json(),
+      taskDataResponse.json(),
     ]);
   } else if (prioritizationResponse.status === 200) {
     [loanDetails,
       evalDetails,
       prioritizationDetails,
-      additionalLoanInfo] = await Promise.all([
+      additionalLoanInfo,
+      taskData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       prioritizationResponse.json(),
       additionalLoanInfoResponse.json(),
+      taskDataResponse.json(),
     ]);
   } else {
     [loanDetails,
       evalDetails,
-      additionalLoanInfo] = await Promise.all([
+      additionalLoanInfo,
+      taskData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       additionalLoanInfoResponse.json(),
+      taskDataResponse.json(),
     ]);
   }
 
@@ -492,6 +515,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName) {
     groupName,
     additionalLoanInfo,
     taskName,
+    taskData,
   )];
 }
 

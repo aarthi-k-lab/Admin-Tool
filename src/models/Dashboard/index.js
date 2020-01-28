@@ -4,6 +4,7 @@ import Messages from './Messages';
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const PROC = 'PROC';
+const PROCMGR = 'PROC-mgr';
 const LOAN_ACTIVITY = 'LA';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
@@ -17,6 +18,7 @@ const POSTMODSTAGER = 'POSTMOD';
 const ALL_STAGER = 'ALLSTAGER';
 const POSTMOD_TASKNAMES = ['Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement', 'Pending Buyout - Countersign', '258A Recordation-Ordered', '258A Recordation-ToOrder', 'Assumption Agreement Recordation-Ordered', 'Assumption Agreement Recordation-ToOrder', 'Modification Agreement Recordation-Ordered', 'Modification Agreement Recordation-ToOrder', 'Partial Claim Recordation-Ordered', 'Partial Claim Recordation-ToOrder', 'Recordation-ToOrder'];
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
+const PENDING_BOOKING = 'Pending Booking';
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
@@ -140,6 +142,7 @@ const DashboardModel = {
   FEUW,
   BEUW,
   PROC,
+  PROCMGR,
   DOC_GEN,
   DOCS_IN,
   BOOKING,
@@ -155,6 +158,7 @@ const DashboardModel = {
   STAGER,
   ALL_STAGER,
   POSTMOD_TASKNAMES,
+  PENDING_BOOKING,
 };
 
 export default DashboardModel;

@@ -112,6 +112,7 @@ class TasksAndChecklist extends React.PureComponent {
       location,
       resolutionId,
       groupName,
+      resolutionData,
     } = this.props;
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
@@ -147,6 +148,7 @@ class TasksAndChecklist extends React.PureComponent {
         location={location}
         onChange={onChecklistChange}
         passedRules={passedRules}
+        resolutionData={resolutionData}
         resolutionId={resolutionId}
         styleName={groupName === DashboardModel.BOOKING ? 'sla-rules' : 'checklist'}
         title={checklistTitle}
@@ -185,13 +187,17 @@ class TasksAndChecklist extends React.PureComponent {
       showInstructionsDialog,
       taskFetchError,
       isGetNextError,
-      isRedirect,
+      isPostModEndShift,
+      completeReviewResponse,
       history,
       isAssigned,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
-    if (isRedirect) {
+    if (isPostModEndShift) {
       history.push('/stager');
+    }
+    if (completeReviewResponse && !R.prop('error', completeReviewResponse)) {
+      history.push('/special-loan');
     }
     if (inProgress) {
       return (
@@ -245,7 +251,8 @@ TasksAndChecklist.defaultProps = {
   getDialogContent: '',
   snackBarData: null,
   showAssign: false,
-  isRedirect: false,
+  isPostModEndShift: false,
+  resolutionData: [],
 };
 
 TasksAndChecklist.propTypes = {
@@ -265,6 +272,7 @@ TasksAndChecklist.propTypes = {
   checklistTitle: PropTypes.string.isRequired,
   closeSnackBar: PropTypes.func.isRequired,
   commentsRequired: PropTypes.bool.isRequired,
+  completeReviewResponse: PropTypes.shape.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
@@ -284,7 +292,7 @@ TasksAndChecklist.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   isDialogOpen: PropTypes.bool,
   isGetNextError: PropTypes.bool,
-  isRedirect: PropTypes.bool,
+  isPostModEndShift: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
@@ -299,6 +307,7 @@ TasksAndChecklist.propTypes = {
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
   passedRules: PropTypes.shape.isRequired,
+  resolutionData: PropTypes.arrayOf(PropTypes.string),
   resolutionId: PropTypes.string.isRequired,
   rootTaskId: PropTypes.string.isRequired,
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
@@ -387,7 +396,8 @@ function mapStateToProps(state) {
     isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
     inProgress: dashboardSelectors.inProgress(state),
-    isRedirect: dashboardSelectors.isPostModEndShift(state),
+    isPostModEndShift: dashboardSelectors.isPostModEndShift(state),
+    completeReviewResponse: dashboardSelectors.completeReviewResponse(state),
     instructions: selectors.getInstructions(state),
     message: getUserNotification(dashboardSelectors.getChecklistDiscrepancies(state)),
     noTasksFound,
@@ -407,6 +417,7 @@ function mapStateToProps(state) {
     failedRules: selectors.getFailedRules(state),
     filter: selectors.getFilter(state),
     resolutionId: selectors.getResolutionId(state),
+    resolutionData: dashboardSelectors.getResolutionData(state),
   };
 }
 

@@ -221,6 +221,7 @@ describe('getnext Success', () => {
     const actionDispatched = {
       payload: {
         loanNumber: '12345',
+        taskId: '1234',
       },
       type: 'app/tombstone/FETCH_TOMBSTONE_DATA',
     };
@@ -862,9 +863,14 @@ describe('unassign Loan', () => {
       .toEqual(select(selectors.loanNumber));
   });
 
-  it('should call unassign Api', () => {
+  it('should call select groupName from store', () => {
     expect(saga.next(18008401081).value)
-      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active', {}));
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call unassign Api', () => {
+    expect(saga.next('DIB').value)
+      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&appgroupName=DIB&taskName=', {}));
   });
 
   it('should call UNASSIGN_LOAN_RESULT', () => {
