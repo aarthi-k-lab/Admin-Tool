@@ -53,18 +53,11 @@ import {
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
   SET_INCENTIVE_TASKCODES,
-  STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
-    case STORE_EVALID_RESPONSE: {
-      return {
-        ...state,
-        evalInsertionStatus: action.payload,
-      };
-    }
     case SET_INCENTIVE_TASKCODES: {
       return {
         ...state,
