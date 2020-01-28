@@ -50,10 +50,8 @@ const callPost = function callPost(endpoint, body, params = {}) {
       body: JSON.stringify(body),
     })
     .then((response) => {
-      if (R.prop('ok', response)
-      || R.equals(R.prop('status', response), 422)
-      || R.equals(R.prop('status', response), 500)) {
-        return response ? response.json() : null;
+      if (R.prop('ok', response)) {
+        return response.json();
       }
       return null;
     });
