@@ -13,6 +13,7 @@ import OptionalTaskDetails from '../Tasks/OptionalTask/OptionalTaskDetails';
 import styles from './LeftTaskPane.css';
 import AddTask from '../Tasks/OptionalTask/AddTask';
 import ChecklistHistory from '../Checklist/ChecklistHistory';
+import ExportCurrentChecklist from '../Checklist/ExportCurrentChecklist';
 
 const ALL = 'All';
 const PENDING = 'Pending';
@@ -137,9 +138,12 @@ class LeftTaskPane extends React.Component {
                     <div styleName="checklist-history-icon">
                       <ChecklistHistory
                         checkListData={historicalCheckListData}
-                        margin={{ marginLeft: '3rem' }}
+                        margin={{ marginLeft: '2rem' }}
                         pdfGeneratorConstant={pdfGeneratorConstant}
-
+                      />
+                      <ExportCurrentChecklist
+                        margin={{ marginLeft: '0.5rem' }}
+                        pdfGeneratorConstant={pdfGeneratorConstant}
                       />
                     </div>
                     {shouldShowAddTaskButton(optionalTasks)
