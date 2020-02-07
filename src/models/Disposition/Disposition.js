@@ -3,11 +3,15 @@ import { arrayToString } from 'lib/ArrayUtils';
 import DashboardModel from '../Dashboard';
 
 const ONE_OF = 'oneOf';
+const NONE = 'none';
 
 const generateErrorMessagesFromDiscrepancy = R.compose(
   R.map(([fieldName, discrepancy]) => {
     const expected = R.is(Array, discrepancy.expected)
       ? discrepancy.expected : [discrepancy.expected];
+    if (discrepancy.validation === NONE) {
+      return discrepancy.error;
+    }
     if (discrepancy.validation === ONE_OF) {
       return `${arrayToString([fieldName])} should be ${arrayToString(expected)}`;
     }
