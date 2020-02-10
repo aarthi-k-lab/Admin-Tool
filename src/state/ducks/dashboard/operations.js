@@ -37,6 +37,7 @@ import {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onEvalInsertionAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -147,6 +148,10 @@ const onContinueMyReview = dispatch => (taskStatus) => {
   dispatch(continueMyReview(taskStatus));
 };
 
+const onEvalInsertion = dispatch => (payload) => {
+  dispatch(onEvalInsertionAction(payload));
+};
+
 const onCompleteMyReview = dispatch => (disposition) => {
   dispatch(completeMyReview(disposition));
 };
@@ -224,6 +229,7 @@ const operations = {
   onClearPostModEndShitf,
   onClearStagerTaskName,
   onClearBulkUploadDataAction,
+  onEvalInsertion,
 };
 
 export default operations;
