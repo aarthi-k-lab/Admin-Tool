@@ -53,7 +53,8 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const {
-      location, group, taskName, checklisttTemplateName, stagerTaskName, resultOperation, isAutoDisposition,
+      location, group, taskName, checklisttTemplateName, stagerTaskName,
+      resultOperation, isAutoDisposition,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
