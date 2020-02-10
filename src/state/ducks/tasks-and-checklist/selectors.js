@@ -21,6 +21,8 @@ const getChecklistTitle = state => R.pathOr(
   state.tasksAndChecklist,
 );
 
+const getDispositionType = R.pathOr(false, ['tasksAndChecklist', 'taskTree', 'value', 'isAutoDisposition']);
+
 const getDirtyChecklistItemForSave = (state) => {
   const id = R.head(
     R.pathOr([], ['tasksAndChecklist', 'checklistItemsSaveQueue'], state),
@@ -254,6 +256,7 @@ const selectors = {
   enableValidate,
   getDispositionComment,
   shouldShowInstructionsDialog,
+  getDispositionType,
   getOptionalTasks,
   shouldShowOptionalTasks,
   isDialogOpen,

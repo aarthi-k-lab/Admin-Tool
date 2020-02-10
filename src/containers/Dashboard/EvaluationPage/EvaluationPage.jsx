@@ -53,7 +53,7 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const {
-      location, group, taskName, checklisttTemplateName, stagerTaskName, resultOperation,
+      location, group, taskName, checklisttTemplateName, stagerTaskName, resultOperation, isAutoDisposition,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -66,7 +66,8 @@ class EvaluationPage extends React.PureComponent {
             showGetNext={isNotLoanActivity(group)}
             showSendToDocsIn={this.canShowSendToDocsIn()}
             showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
-            showValidate={canShowValidate(group)}
+            showUpdateRemedy={isAutoDisposition}
+            showValidate={canShowValidate(group) && !isAutoDisposition}
           />
         </ContentHeader>
         <Tombstone />
@@ -96,6 +97,7 @@ EvaluationPage.propTypes = {
   checklisttTemplateName: PropTypes.string,
   group: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
+  isAutoDisposition: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -122,6 +124,7 @@ const mapStateToProps = state => ({
   stagerTaskName: selectors.stagerTaskName(state),
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
+  isAutoDisposition: checklistSelectors.getDispositionType(state),
   resultOperation: selectors.resultOperation(state),
 });
 

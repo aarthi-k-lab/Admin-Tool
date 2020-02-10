@@ -14,6 +14,8 @@ const MSG_CANNOT_UNASSIGN = 'Please note only Manager can unassign the task.';
 const MSG_SHOULD_ASSIGN = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
 const MSG_DSPN_SUCCESS = 'The task has been dispositioned successfully with disposition';
 const MSG_VALIDATION_SUCCESS = 'Validation successful!';
+const MSG_UPDATED_REMEDY = 'Successfully Updated Remedy';
+const SUCCESS_MESSAGES = [MSG_VALIDATION_SUCCESS, MSG_UPDATED_REMEDY];
 
 function reduceMessageListToMessage(acc, msg) {
   acc.push(msg);
@@ -42,7 +44,7 @@ function getMessage(
   } else if (isGetNextError) {
     message = getNextError;
   } else if (errorMessages
-     && !R.is(Array, errorMessages) && errorMessages === MSG_VALIDATION_SUCCESS) {
+    && !R.is(Array, errorMessages) && SUCCESS_MESSAGES.includes(errorMessages)) {
     message = errorMessages;
     level = LEVEL_SUCCESS;
   } else if (errorMessages && errorMessages.length > 0) {
@@ -94,6 +96,7 @@ const Messages = {
   LEVEL_SUCCESS,
   LEVEL_ERROR,
   MSG_VALIDATION_SUCCESS,
+  MSG_UPDATED_REMEDY,
 };
 
 export default Messages;
