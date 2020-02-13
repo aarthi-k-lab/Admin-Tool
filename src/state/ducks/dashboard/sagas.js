@@ -86,6 +86,9 @@ import {
   STORE_EVALID_RESPONSE_ERROR,
   RESOLUTION_DROP_DOWN_VALUES,
   COMPLETE_MY_REVIEW,
+  SET_TRIAL_RESPONSE,
+  TRIAL_TASK,
+  DISABLE_TRIAL_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1269,6 +1272,35 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
+function* onSelectTrialTask(payload) {
+  try {
+    const response = yield call(Api.callPost, '/api/stager/stager/completeTrialForbearanceTasks?bulk=false', payload.payload);
+    if (response !== null) {
+      yield put({
+        type: SET_TRIAL_RESPONSE,
+        payload: {
+          level: response.isError ? 'Warning' : 'Success',
+          status: response.message,
+        },
+      });
+      yield put({
+        type: DISABLE_TRIAL_BUTTON,
+        payload: {
+          disableTrialTaskButton: !response.isError,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_TRIAL_RESPONSE,
+      payload: {
+        level: 'Warning',
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
+
 function* AddDocsInReceived(payload) {
   const { pageType } = payload.payload;
   let response;
@@ -1397,6 +1429,10 @@ function* watchOnSelectModReversal() {
   yield takeEvery(MOD_REVERSAL_REASONS, onSelectModReversal);
 }
 
+function* watchOnTrialTask() {
+  yield takeEvery(TRIAL_TASK, onSelectTrialTask);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -1430,6 +1466,7 @@ export const TestExports = {
   watchAddDocsInReceived,
   watchOnSelectReject,
   watchOnSearchWithTask,
+  watchOnTrialTask,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -1455,5 +1492,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSelectModReversal(),
     watchManualInsertion(),
     watchCompleteMyReview(),
+    watchOnTrialTask(),
   ]);
 };

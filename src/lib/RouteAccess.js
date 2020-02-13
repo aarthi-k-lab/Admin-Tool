@@ -99,6 +99,9 @@ const BOOKING = {
   groups: ['allaccess', 'booking', 'booking-mgr'],
 };
 
+const trial = {
+  groups: ['trial', 'trial-mgr'],
+};
 
 const links = [
   managerDashboard,
@@ -135,6 +138,10 @@ function shouldShowIcon(link, userGroups) {
 
 function hasFrontendChecklistAccess(groups) {
   return hasGroup(feuwTasksAndChecklist.groups, groups);
+}
+
+function hasTrialManagerDashboardAccess(groups) {
+  return hasGroup(trial.groups, groups);
 }
 
 function hasBackendChecklistAccess(groups) {
@@ -208,6 +215,7 @@ module.exports = {
   hasMoveForwardAccess,
   hasStagerDashboardAccess,
   hasLoanActivityAccess,
+  hasTrialManagerDashboardAccess,
   shouldShowIcon,
   hasChecklistAccess,
   // hasDocGenBackAccess,

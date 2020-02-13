@@ -37,6 +37,7 @@ import {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onTrialTaskAction,
   onEvalInsertionAction,
 } from './actions';
 
@@ -142,6 +143,10 @@ const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isS
 
 const onSendToDocsIn = dispatch => () => dispatch(onSendToDocsInAction());
 
+const onTrialTask = dispatch => (payload) => {
+  dispatch(onTrialTaskAction(payload));
+};
+
 const onCleanResult = dispatch => () => dispatch(cleanResult());
 
 const onContinueMyReview = dispatch => (taskStatus) => {
@@ -229,6 +234,7 @@ const operations = {
   onClearPostModEndShitf,
   onClearStagerTaskName,
   onClearBulkUploadDataAction,
+  onTrialTask,
   onEvalInsertion,
 };
 

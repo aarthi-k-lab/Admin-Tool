@@ -55,6 +55,8 @@ import {
   SET_INCENTIVE_TASKCODES,
   STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
+  SET_TRIAL_RESPONSE,
+  DISABLE_TRIAL_BUTTON,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -97,8 +99,10 @@ const reducer = (state = { firstVisit: true }, action) => {
       };
     }
     case CLEAR_SELECT_REJECT: {
+      const trialClosingResponse = null;
       return {
         ...state,
+        trialClosingResponse,
         rejectResponse: null,
       };
     }
@@ -427,10 +431,12 @@ const reducer = (state = { firstVisit: true }, action) => {
     case LOAD_TRIALHEADER_RESULT: {
       const trialHeader = action.payload;
       const enableSendToUW = true;
+      const disableTrialTaskButton = false;
       return {
         ...state,
         trialHeader,
         enableSendToUW,
+        disableTrialTaskButton,
         loading: false,
       };
     }
@@ -557,6 +563,21 @@ const reducer = (state = { firstVisit: true }, action) => {
       };
     }
 
+    case SET_TRIAL_RESPONSE: {
+      const trialClosingResponse = action.payload;
+      return {
+        ...state,
+        trialClosingResponse,
+      };
+    }
+
+    case DISABLE_TRIAL_BUTTON: {
+      return {
+        ...state,
+        disableTrialTaskButton: action.payload.disableTrialTaskButton,
+        enableSendToUW: !action.payload.disableTrialTaskButton,
+      };
+    }
     default:
       return state;
   }

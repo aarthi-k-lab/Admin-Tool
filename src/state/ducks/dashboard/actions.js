@@ -41,6 +41,7 @@ import {
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  TRIAL_TASK,
   INSERT_EVALID,
 } from './types';
 
@@ -235,6 +236,10 @@ const clearPostModEndShitf = () => ({
   type: CLEAR_POSTMOD_END_SHIFT,
 });
 
+const onTrialTaskAction = payload => ({
+  type: TRIAL_TASK,
+  payload,
+});
 
 export {
   autoSave,
@@ -277,5 +282,6 @@ export {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onTrialTaskAction,
   onEvalInsertionAction,
 };

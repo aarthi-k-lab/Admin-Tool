@@ -108,7 +108,8 @@ const resultOperation = state => (state.dashboard && state.dashboard.resultOpera
 const bulkOrderPageType = state => R.pathOr('', ['dashboard', 'pageType'], state);
 const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
 const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
-
+const getTrialResponse = state => R.pathOr({}, ['dashboard', 'trialClosingResponse'], state);
+const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTrialTaskButton'], state);
 
 const selectors = {
   enableEndShift,
@@ -165,6 +166,8 @@ const selectors = {
   getResolutionData,
   completeReviewResponse,
   showCompleteMyReview,
+  getTrialResponse,
+  disableTrialTaskButton,
 };
 
 export default selectors;

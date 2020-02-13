@@ -44,23 +44,15 @@ class Assign extends React.Component {
     const { assignResult } = this.props;
     const { isOpen, buttonDisabled } = this.state;
     let RenderContent = null;
-    let imageUrl = '';
     let renderComponent = null;
     if (assignResult && assignResult.status) {
       RenderContent = assignResult.status;
-      if (assignResult.statusCode === 'Success') {
-        imageUrl = '/static/img/success.gif';
-      } else if (assignResult.statusCode === 'Failed') {
-        imageUrl = '/static/img/failed.gif';
-      } else {
-        imageUrl = '/static/img/warning.gif';
-      }
       renderComponent = (
         <SweetAlertBox
-          imageUrl={imageUrl}
           message={RenderContent}
           onConfirm={this.handleClose}
           show={isOpen}
+          type={assignResult.statusCode}
         />
       );
     }
