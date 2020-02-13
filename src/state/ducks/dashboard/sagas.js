@@ -278,7 +278,7 @@ function* fetchChecklistDetails(checklistId) {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/5e255cf63cd9ebb9e7d9401a?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
