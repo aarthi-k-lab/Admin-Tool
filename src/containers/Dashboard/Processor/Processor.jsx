@@ -18,12 +18,12 @@ import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import '../DocsIn/DocsIn.css';
 
-const validEvalIdEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
+const validEvalIdEntries = RegExp(/^\d+(,\d+|\s\d+)*$/);
 const validateEvalIdFormat = (evalIds) => {
-  let isValid = true;
+  let isValid = false;
   // eslint-disable-next-line
   if (validEvalIdEntries.test(evalIds)) {
-    isValid = false;
+    isValid = true;
   }
   return isValid;
 };
@@ -68,9 +68,17 @@ class Processor extends React.PureComponent {
   }
 
   handleSubmit = () => {
-    const { evalIdList } = this.state;
-    const { onSubmitEval } = this.props;
-    onSubmitEval(evalIdList);
+    const { evalIdList, evalIds } = this.state;
+    const { onSubmitEval, onFailedLoanValidation } = this.props;
+    if (validateEvalIdFormat(evalIds)) {
+      onSubmitEval(evalIdList);
+    } else {
+      const payload = {
+        level: 'error',
+        status: 'Please enter loan number(s) in correct format. Only comma and newline separated loan numbers are accepted',
+      };
+      onFailedLoanValidation(payload);
+    }
   }
 
   showBulkOrderPage() {
@@ -79,7 +87,6 @@ class Processor extends React.PureComponent {
   }
 
   handleChange(event) {
-    const { onFailedLoanValidation } = this.props;
     this.setState({
       evalIds: event.target.value,
     });
@@ -88,12 +95,13 @@ class Processor extends React.PureComponent {
       this.setState({ evalIdList: evalIds });
       if (evalIds.length > 10) {
         this.setState({ isDisabled: true });
-      } else if (evalIds.length > 0) {
+      } else {
         this.setState({ isDisabled: false });
       }
     }
-    const payload = {};
-    onFailedLoanValidation(payload);
+    if (!validateEvalIdFormat(event.target.value)) {
+      this.setState({ isDisabled: true });
+    }
   }
 
   renderDownloadButton() {
