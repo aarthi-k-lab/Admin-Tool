@@ -972,7 +972,7 @@ function* assignLoan() {
     }
     const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
-    if (response !== null) {
+    if (response !== null && !response.error) {
       yield put({
         type: ASSIGN_LOAN_RESULT,
         payload: response,
