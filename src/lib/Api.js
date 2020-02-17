@@ -53,6 +53,13 @@ const callPost = function callPost(endpoint, body, params = {}) {
       if (R.prop('ok', response)
       || R.equals(R.prop('status', response), 422)
       || R.equals(R.prop('status', response), 500)) {
+        if (R.equals(R.prop('status', response), 204)) {
+          return {
+            statusCode: 204,
+            status: 'No Content',
+            ...body,
+          };
+        }
         return response ? response.json() : null;
       }
       return null;

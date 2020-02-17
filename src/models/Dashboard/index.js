@@ -138,6 +138,11 @@ function getTitle(location) {
   }
 }
 
+const InvalidEvalResponse = evalId => ({
+  statusMessage: 'Eval id you have entered is invalid',
+  evalId,
+});
+
 const DashboardModel = {
   FEUW,
   BEUW,
@@ -159,6 +164,7 @@ const DashboardModel = {
   ALL_STAGER,
   POSTMOD_TASKNAMES,
   PENDING_BOOKING,
+  InvalidEvalResponse,
 };
 
 export default DashboardModel;
