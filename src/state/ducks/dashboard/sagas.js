@@ -1369,9 +1369,11 @@ function* manualInsertion(payload) {
     const filteredResponse = [];
     response.forEach((evalData) => {
       if (!evalData) {
-        filteredResponse.push({ statusMessage: 'Something went wrong' });
+        filteredResponse.push();
       } else {
-        filteredResponse.push(evalData);
+        const evalResponse = evalData.statusCode && evalData.statusCode === 204
+          ? DashboardModel.InvalidEvalResponse(evalData.evalId) : null;
+        filteredResponse.push(evalResponse || evalData);
       }
     });
     yield put({
