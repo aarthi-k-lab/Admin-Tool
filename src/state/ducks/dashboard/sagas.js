@@ -344,6 +344,10 @@ function* selectEval(searchItem) {
   evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
   evalDetails.isAssigned = false;
   let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
+  if (appGroupName === DashboardModel.LOAN_ACTIVITY) {
+    const bpmTaskDetail = yield call(Api.callGet, `/api/bpm-audit/audit/task/${evalDetails.taskId}`, {});
+    evalDetails.tstatus = bpmTaskDetail.currentStatus;
+  }
   if (appGroupName === DashboardModel.BOOKING && evalDetails.piid != null) {
     const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${evalDetails.piid}`);
     const latestPendingBookingTask = R.head(R.filter(
