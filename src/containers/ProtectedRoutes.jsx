@@ -31,6 +31,7 @@ import IdleUserHandle from './IdleUserHandler';
 import DocGenGoBack from './Dashboard/DocGenGoBack';
 import DocsInGoBack from './Dashboard/DocsInGoBack';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
+import CoviusBulkOrder from './Dashboard/Covius/CoviusBulkOrder';
 import Processor from './Dashboard/Processor/Processor';
 
 class ProtectedRoutes extends React.Component {
@@ -53,7 +54,9 @@ class ProtectedRoutes extends React.Component {
     this.renderDocGenChecklistRoute = this.renderDocGenChecklistRoute.bind(this);
     this.renderDocsInMainRoute = this.renderDocsInMainRoute.bind(this);
     this.renderSlaPageRoute = this.renderSlaPageRoute.bind(this);
+    this.renderCoviusPageRoute = this.renderCoviusPageRoute.bind(this);
     this.renderBulkOrderPageRoute = this.renderBulkOrderPageRoute.bind(this);
+    this.rendercoviusBulkOrderPageRoute = this.rendercoviusBulkOrderPageRoute.bind(this);
     this.renderBulkEvalInsertionPageRoute = this.renderBulkEvalInsertionPageRoute.bind(this);
   }
 
@@ -200,6 +203,29 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderCoviusPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasCoviusAccess(groups)
+        ? <Dashboard group={DashboardModel.COVIUS} />
+        : <Redirect to="/unauthorized?error=COVIUS_ACCESS_NEEDED" />
+    );
+  }
+
+  rendercoviusBulkOrderPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasCoviusAccess(groups)
+        ? (
+          <CoviusBulkOrder
+            group={DashboardModel.DOCS_IN}
+            groupName={RouteAccess.getStagerGroup(groups)}
+          />
+        )
+        : <Redirect to="/unauthorized?error=DOCSIN_ACCESS_NEEDED" />
+    );
+  }
+
   renderStagerRoute = () => {
     const groups = this.getGroups();
     return (
@@ -238,6 +264,8 @@ class ProtectedRoutes extends React.Component {
           <Route path="/bulkOrder-page" render={this.renderBulkOrderPageRoute} />
           <Route path="/bulkEvalInsertion" render={this.renderBulkEvalInsertionPageRoute} />
           <Route path="/special-loan" render={this.renderSlaPageRoute} />
+          <Route path="/dg-vendor" render={this.renderCoviusPageRoute} />
+          <Route path="/coviusBulkOrder" render={this.rendercoviusBulkOrderPageRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

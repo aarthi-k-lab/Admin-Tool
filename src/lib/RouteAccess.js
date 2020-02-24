@@ -8,7 +8,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'DOCGENVENDOR-MGR'],
 };
 
 const stager = {
@@ -98,6 +98,20 @@ const BOOKING = {
   img: '/static/img/sla.svg',
   groups: ['allaccess', 'booking', 'booking-mgr'],
 };
+// Covius
+const COVIUS = {
+  path: '/dg-vendor',
+  name: 'covius',
+  img: '/static/img/covius.svg',
+  groups: ['allaccess', 'DOCGENVENDOR', 'DOCGENVENDOR-MGR'],
+};
+
+const coviusBulkOrderPage = {
+  path: '/coviusBulkOrder',
+  name: 'Covius Navigation Page',
+  img: '/static/img/covius.svg',
+  groups: ['allaccess', 'DOCGENVENDOR', 'DOCGENVENDOR-MGR'],
+};
 
 const trial = {
   groups: ['trial', 'trial-mgr'],
@@ -116,10 +130,12 @@ const links = [
   docGen,
   docIns,
   docInsPage,
+  coviusBulkOrderPage,
   BOOKING,
+  COVIUS,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back'];
+const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back', '/coviusBulkOrder'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
@@ -191,6 +207,10 @@ function hasDocInsAccess(groups) {
 function hasSlaAccess(groups) {
   return hasGroup(BOOKING.groups, groups);
 }
+
+function hasCoviusAccess(groups) {
+  return hasGroup(COVIUS.groups, groups);
+}
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager'];
@@ -223,5 +243,6 @@ module.exports = {
   hasDocGenAccess,
   hasDocInsAccess,
   hasSlaAccess,
+  hasCoviusAccess,
   getStagerGroup,
 };

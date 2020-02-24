@@ -12,6 +12,7 @@ const DOC_GEN_BACK = 'DGB';
 const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
 const BOOKING = 'BOOKING';
+const COVIUS = 'COVIUS';
 
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
@@ -93,6 +94,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: COVIUS,
+    task: 'COVIUS',
+    taskCode: 'COVIUS',
+    path: '/dg-vendor',
+    showAssignUnassign: false,
+  },
+  {
     group: POSTMODSTAGER,
     task: 'POST MOD STAGER',
     taskCode: 'POST MOD STAGER',
@@ -115,6 +123,7 @@ const GROUPS = {
   '/doc-gen': DOC_GEN,
   '/docs-in': DOCS_IN,
   '/special-loan': BOOKING,
+  '/dg-vendor': COVIUS,
 };
 
 function getTitle(location) {
@@ -133,6 +142,8 @@ function getTitle(location) {
       return 'DocsIn';
     case '/special-loan':
       return 'Special Loan Automation';
+    case '/dg-vendor':
+      return 'COVIUS EVENTS';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -151,6 +162,7 @@ const DashboardModel = {
   DOC_GEN,
   DOCS_IN,
   BOOKING,
+  COVIUS,
   LOAN_ACTIVITY,
   GROUPS,
   GROUP_INFO,
