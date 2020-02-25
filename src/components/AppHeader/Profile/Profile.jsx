@@ -149,6 +149,12 @@ class Profile extends React.Component {
     Auth.getUserGroups(userPrincipalName, true);
   }
 
+  skillsNotFound = () => (
+    <div styleName="row">
+  Skills Not found
+    </div>
+  )
+
   renderRoleAndGroups(groups) {
     const { isChecked, role } = this.state;
 
@@ -267,7 +273,8 @@ class Profile extends React.Component {
           <Typography styleName="field-title" variant="body2">Skills: </Typography>
           <div styleName="skills">
             <ol styleName="group-list">
-              {this.renderSkills(skills)}
+              {R.isEmpty(skills) || R.isNil(skills)
+                ? this.skillsNotFound() : this.renderSkills(skills)}
             </ol>
           </div>
         </div>
