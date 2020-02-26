@@ -48,6 +48,11 @@ class Processor extends React.PureComponent {
     this.showBulkOrderPage = this.showBulkOrderPage.bind(this);
   }
 
+  componentWillUnmount() {
+    const { clearEvalResponse } = this.props;
+    clearEvalResponse();
+  }
+
   onDownloadCSV() {
     this.csvLink.link.click();
   }
@@ -273,6 +278,7 @@ Processor.defaultProps = {
 };
 
 Processor.propTypes = {
+  clearEvalResponse: PropTypes.func.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   onFailedLoanValidation: PropTypes.func,
@@ -312,6 +318,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  clearEvalResponse: operations.clearEvalResponse(dispatch),
   onCleanResult: operations.onCleanResult(dispatch),
   onSubmitEval: operations.onEvalInsertion(dispatch),
   onLoansSubmit: operations.onLoansSubmit(dispatch),

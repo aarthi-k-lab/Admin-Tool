@@ -39,6 +39,7 @@ import {
   clearBulkUploadDataAction,
   onTrialTaskAction,
   onEvalInsertionAction,
+  discardEvalResponse,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -194,7 +195,11 @@ const selectModReversal = dispatch => () => {
   dispatch(onSelectModReversal());
 };
 
+const clearEvalResponse = dispatch => () => dispatch(discardEvalResponse());
+
+
 const operations = {
+  clearEvalResponse,
   onAutoSave,
   onClearDisposition,
   onExpand,

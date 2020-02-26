@@ -43,6 +43,7 @@ import {
   CLEAR_BULKUPLOAD_TABLEDATA,
   TRIAL_TASK,
   INSERT_EVALID,
+  DISCARD_EVAL_RESPONSE,
 } from './types';
 
 
@@ -241,8 +242,13 @@ const onTrialTaskAction = payload => ({
   payload,
 });
 
+const discardEvalResponse = () => ({
+  type: DISCARD_EVAL_RESPONSE,
+});
+
 export {
   autoSave,
+  discardEvalResponse,
   clearDisposition,
   clearFirstVisit,
   displayAssign,
