@@ -228,6 +228,20 @@ const getFilter = state => R.pathOr(null, ['tasksAndChecklist', 'filter'], state
 const getSlaRulesProcessed = state => R.pathOr(true, ['tasksAndChecklist', 'slaRulesprocessed'], state);
 const getRuleResponse = state => R.pathOr('', ['tasksAndChecklist', 'ruleResponse'], state);
 
+const getPDFExportPayload = (state) => {
+  const payload = {};
+  const checklistData = R.pathOr([], ['tasksAndChecklist', 'historicalCheckList'], state);
+  if (checklistData.length) {
+    payload.checklistId = R.pathOr('', ['taskCheckListId'], checklistData[0]);
+    payload.event = R.pathOr('', ['taskCheckListTemplateName'], checklistData[0]);
+    payload.disposition = R.pathOr('', ['dispositionCode'], checklistData[0]);
+    payload.assignedTo = R.pathOr('', ['assignedTo'], checklistData[0]);
+    payload.dispositionDate = R.pathOr('', ['taskCheckListDateTime'], checklistData[0]);
+  }
+  payload.resolutionId = R.pathOr('', ['tasksAndChecklist', 'selectedSLAvalues', 'resolutionId'], state);
+  payload.auditRuleType = R.pathOr('', ['tasksAndChecklist', 'selectedSLAvalues', 'auditRuleType'], state);
+  return payload;
+};
 
 const selectors = {
   getChecklistItems,
@@ -272,6 +286,7 @@ const selectors = {
   getSlaRulesProcessed,
   getRuleResponse,
   getProcessId,
+  getPDFExportPayload,
 };
 
 export default selectors;

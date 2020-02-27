@@ -21,6 +21,7 @@ import {
   setResolutionIdStats,
   setFilterRules,
   discardRuleResponse,
+  setSLAvalues,
 } from './actions';
 
 const fetchHistoricalChecklistData = dispatch => (taskId) => {
@@ -88,6 +89,10 @@ const triggerFilterRules = dispatch => (payload) => {
   dispatch(setFilterRules(payload));
 };
 
+const triggerSetSLAvalues = dispatch => (resolutionId, auditRuleType) => {
+  dispatch(setSLAvalues(resolutionId, auditRuleType));
+};
+
 
 const clearRuleResponse = dispatch => () => dispatch(discardRuleResponse());
 
@@ -114,6 +119,7 @@ const operations = {
   triggerResolutionIdStats,
   triggerFilterRules,
   clearRuleResponse,
+  triggerSetSLAvalues,
 };
 
 export default operations;

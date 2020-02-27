@@ -32,10 +32,41 @@ const styles = theme => ({
 class ExportCurrentChecklist extends Component {
   getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('YYYY-MM-DD HH:mm:ss'));
 
+   openWindowWithPost = (url, data) => {
+     const form = document.createElement('form');
+     form.target = '_blank';
+     form.method = 'post';
+     form.action = url;
+     form.style.display = 'none';
+
+     Object.keys(data).forEach((key) => {
+       if (key) {
+         const input = document.createElement('input');
+         input.type = 'hidden';
+         input.name = key;
+         input.value = data[key];
+         form.appendChild(input);
+       }
+     });
+
+     document.body.appendChild(form);
+     form.submit();
+     document.body.removeChild(form);
+   }
+
   handleExportChecklist = () => {
-    const { pdfGeneratorConstant } = this.props;
-    window.open(`${pdfGeneratorConstant}/api/download/5e1346943cd9eb0442d8b8b7?event= BATv1.8&disposition=null&assignedTo= Rumki.Mitra@mrcooper.com&dispositionDate=${this.getCSTDateTime('2020-01-06T14:39:17.024+0000')}`);
-  }
+    const { pdfGeneratorConstant, taskAuditRuleMapping, pdfExportPayload } = this.props;
+    const data = {
+      event: pdfExportPayload.event,
+      disposition: !pdfExportPayload.disposition ? 'null' : pdfExportPayload.disposition,
+      assignedTo: pdfExportPayload.assignedTo,
+      dispositionDate: pdfExportPayload.dispositionDate,
+      resolutionId: pdfExportPayload.resolutionId,
+      auditRuleType: R.contains('Post', pdfExportPayload.auditRuleType) ? 'post' : 'pre',
+      taskAuditRuleMapping: JSON.stringify(taskAuditRuleMapping),
+    };
+    this.openWindowWithPost(`${pdfGeneratorConstant}/api/download/${pdfExportPayload.checklistId}`, data);
+  };
 
   render() {
     const {
@@ -74,7 +105,9 @@ ExportCurrentChecklist.propTypes = {
   margin: PropTypes.shape({
     marginTop: PropTypes.string,
   }),
+  pdfExportPayload: PropTypes.shape.isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
+  taskAuditRuleMapping: PropTypes.shape.isRequired,
   toolTipPosition: PropTypes.string,
 };
 

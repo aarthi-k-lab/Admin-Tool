@@ -32,6 +32,8 @@ class TaskPane extends React.PureComponent {
       resetDeleteTaskConfirmation,
       historicalCheckListData,
       pdfGeneratorConstant,
+      taskAuditRuleMapping,
+      pdfExportPayload,
     } = this.props;
     return (
       (
@@ -44,12 +46,14 @@ class TaskPane extends React.PureComponent {
           historicalCheckListData={historicalCheckListData}
           onSubTaskClick={onSubTaskClick}
           optionalTasks={optionalTasks}
+          pdfExportPayload={pdfExportPayload}
           pdfGeneratorConstant={pdfGeneratorConstant}
           resetDeleteTaskConfirmation={resetDeleteTaskConfirmation}
           selectedTaskId={selectedTaskId}
           shouldDeleteTask={shouldDeleteTask}
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
+          taskAuditRuleMapping={taskAuditRuleMapping}
           tasks={tasks}
           updateChecklist={updateChecklist}
         />
@@ -81,12 +85,14 @@ TaskPane.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
   optionalTasks: PropTypes.arrayOf(PropTypes.shape(OptionalTaskModel)),
+  pdfExportPayload: PropTypes.shape.isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
   shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
+  taskAuditRuleMapping: PropTypes.shape.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)),
   updateChecklist: PropTypes.func.isRequired,
 };
@@ -102,7 +108,8 @@ const mapStateToProps = state => ({
   shouldDeleteTask: taskSelectors.shouldDeleteTask(state),
   isAssigned: dashboardSelectors.isAssigned(state),
   pdfGeneratorConstant: selectors.pdfUrlConstants(state),
-
+  pdfExportPayload: taskSelectors.getPDFExportPayload(state),
+  taskAuditRuleMapping: selectors.taskAuditRuleMapping(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -113,7 +120,6 @@ const mapDispatchToProps = dispatch => ({
   updateChecklist: taskOperations.handleUpdateChecklist(dispatch),
   resetDeleteTaskConfirmation: taskOperations.resetDeleteTaskConfirmationValues(dispatch),
   fetchPdfGeneratorUrl: configOperations.fetchPdfGeneratorUrl(dispatch),
-
 });
 
 const TaskPaneContainer = connect(mapStateToProps, mapDispatchToProps)(TaskPane);

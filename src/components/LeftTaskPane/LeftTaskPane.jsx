@@ -102,6 +102,7 @@ class LeftTaskPane extends React.Component {
     const {
       dataLoadStatus,
       disableModifyOptionalTasks,
+      pdfExportPayload,
       handleShowOptionalTasks,
       onSubTaskClick,
       resetDeleteTaskConfirmation,
@@ -112,6 +113,7 @@ class LeftTaskPane extends React.Component {
       handleShowDeleteTaskConfirmation, shouldDeleteTask,
       historicalCheckListData,
       pdfGeneratorConstant,
+      taskAuditRuleMapping,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -143,7 +145,9 @@ class LeftTaskPane extends React.Component {
                       />
                       <ExportCurrentChecklist
                         margin={{ marginLeft: '0.5rem' }}
+                        pdfExportPayload={pdfExportPayload}
                         pdfGeneratorConstant={pdfGeneratorConstant}
+                        taskAuditRuleMapping={taskAuditRuleMapping}
                       />
                     </div>
                     {shouldShowAddTaskButton(optionalTasks)
@@ -237,12 +241,14 @@ LeftTaskPane.propTypes = {
   onSubTaskClick: PropTypes.func.isRequired,
   openWidth: PropTypes.string,
   optionalTasks: PropTypes.arrayOf(PropTypes.shape(OptionalTaskModel)),
+  pdfExportPayload: PropTypes.shape.isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string,
   shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
+  taskAuditRuleMapping: PropTypes.shape.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)).isRequired,
   updateChecklist: PropTypes.func.isRequired,
 };
