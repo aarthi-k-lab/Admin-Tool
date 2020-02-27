@@ -91,7 +91,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
             onTouchStart={[Function]}
             style={
               Object {
-                "marginLeft": "3rem",
+                "marginLeft": "2rem",
               }
             }
             tabIndex={0}
@@ -110,6 +110,52 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
               >
                 <path
                   d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
+                />
+              </svg>
+            </span>
+            <span
+              className="MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-describedby={null}
+            aria-label="Export Checklist"
+            className="MuiButtonBase-root MuiFab-root ExportCurrentChecklist-custom-99 MuiFab-secondary"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onDragLeave={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            style={
+              Object {
+                "marginLeft": "0.5rem",
+              }
+            }
+            tabIndex={0}
+            title="Export Current Checklist"
+            type="button"
+          >
+            <span
+              className="MuiFab-label"
+            >
+              <svg
+                aria-hidden="true"
+                className="MuiSvgIcon-root"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"
                 />
               </svg>
             </span>
