@@ -4,6 +4,7 @@ import Messages from './Messages';
 const FEUW = 'FEUW';
 const BEUW = 'BEUW';
 const PROC = 'PROC';
+const PROCMGR = 'PROC-mgr';
 const LOAN_ACTIVITY = 'LA';
 const DOC_GEN = 'DOCGEN';
 const STAGER_TABLE_PAGE_COUNT = 100;
@@ -137,10 +138,16 @@ function getTitle(location) {
   }
 }
 
+const InvalidEvalResponse = evalId => ({
+  statusMessage: 'Eval id you have entered is invalid',
+  evalId,
+});
+
 const DashboardModel = {
   FEUW,
   BEUW,
   PROC,
+  PROCMGR,
   DOC_GEN,
   DOCS_IN,
   BOOKING,
@@ -157,6 +164,7 @@ const DashboardModel = {
   ALL_STAGER,
   POSTMOD_TASKNAMES,
   PENDING_BOOKING,
+  InvalidEvalResponse,
 };
 
 export default DashboardModel;

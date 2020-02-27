@@ -50,6 +50,8 @@ const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 
 const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
+const evalData = state => R.pathOr([], ['dashboard', 'evalInsertionStatus'], state);
+
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
 const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
@@ -106,7 +108,8 @@ const resultOperation = state => (state.dashboard && state.dashboard.resultOpera
 const bulkOrderPageType = state => R.pathOr('', ['dashboard', 'pageType'], state);
 const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
 const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
-
+const getTrialResponse = state => R.pathOr({}, ['dashboard', 'trialClosingResponse'], state);
+const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTrialTaskButton'], state);
 
 const selectors = {
   enableEndShift,
@@ -147,6 +150,7 @@ const selectors = {
   resultUnderwriting,
   resultOperation,
   tableData,
+  evalData,
   wasSearched,
   enableSendToDocGen,
   bulkOrderPageType,
@@ -162,6 +166,8 @@ const selectors = {
   getResolutionData,
   completeReviewResponse,
   showCompleteMyReview,
+  getTrialResponse,
+  disableTrialTaskButton,
 };
 
 export default selectors;

@@ -1,0 +1,9 @@
+.complete-forbearance.complete-forbearance {
+    background-color: var(--light-blue-900);
+    margin-right: 0.5rem;
+  }
+  
+  .complete-forbearance.complete-forbearance:hover {
+    background-color: var(--blue-900);
+  }
+  

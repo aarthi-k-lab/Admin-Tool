@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
-  SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn, CompleteMyReview,
+  SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn,
+  CompleteForbearance, CompleteMyReview,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -38,6 +39,7 @@ class Controls extends React.PureComponent {
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
     this.handleAddDocsInReceived = this.handleAddDocsInReceived.bind(this);
     this.handleSendToDocsIn = this.handleSendToDocsIn.bind(this);
+    this.handleTrial = this.handleTrial.bind(this);
   }
 
   componentDidMount() {
@@ -107,6 +109,21 @@ class Controls extends React.PureComponent {
     onContinueMyReview('Assigned');
   }
 
+  handleTrial() {
+    const {
+      taskName,
+      onTrialTask,
+      evalId,
+      processId,
+    } = this.props;
+    const payload = {
+      taskName: (taskName === 'Trial Plan') ? 'Trial Modification' : 'Forbearance',
+      evalId,
+      processId,
+    };
+    onTrialTask(payload);
+  }
+
   handleSentToUnderwriting() {
     const { onSentToUnderwriting } = this.props;
     onSentToUnderwriting();
@@ -121,10 +138,14 @@ class Controls extends React.PureComponent {
   }
 
   validateDisposition() {
-    const { groupName, validateDispositionTrigger, dispositionCode } = this.props;
+    const {
+      groupName, validateDispositionTrigger, dispositionCode,
+      showUpdateRemedy,
+    } = this.props;
     const payload = {
       dispositionReason: dispositionCode,
       group: groupName,
+      isAuto: showUpdateRemedy,
     };
     validateDispositionTrigger(payload);
   }
@@ -156,20 +177,29 @@ class Controls extends React.PureComponent {
       showValidate,
       isFirstVisit,
       user,
+      showUpdateRemedy,
       enableSendToDocGen,
       enableSendToDocsIn,
       enableSendToUW,
+      taskName,
+      taskStatus,
+      disableTrialTaskButton,
     } = this.props;
+
     let assign = null;
+    const groups = user && user.groupList;
+    const checkTrialAccess = RouteAccess.hasTrialManagerDashboardAccess(groups);
+    const showForbearanceIcon = R.equals('Active', taskStatus) && (R.equals('Forbearance', taskName) || R.equals('Forbearance Plan', taskName)) && checkTrialAccess;
+    const showTrialIcon = R.equals('Active', taskStatus) && (R.equals('Trial Modification', taskName) || R.equals('Trial Plan', taskName)) && checkTrialAccess;
     const onEndShiftClick = () => onEndShift(
       EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
     );
-    const validate = showValidate ? (
+    const validate = showValidate || showUpdateRemedy ? (
       <Control
         className={classNames(styles.controls, styles.spacer)}
         controlAction={() => this.validateDisposition()}
         disableValidation={disableValidation}
-        label="Validate"
+        label={showValidate ? 'Validate' : 'Update Remedy'}
       />
     ) : null;
     const getNext = showGetNext
@@ -189,11 +219,18 @@ class Controls extends React.PureComponent {
           onClick={this.handleSentToUnderwriting}
         />
       ) : null;
-    const getSendToDocGenStagerButton = showSendToDocGenStager
+    const getCompleteForbearanceButton = showForbearanceIcon
+      ? (
+        <CompleteForbearance
+          disabled={disableTrialTaskButton}
+          onClick={this.handleTrial}
+        />
+      ) : null;
+    const getSendToDocGenStagerButton = showSendToDocGenStager || showTrialIcon
       ? (
         <SendToDocGenStager
-          disabled={!enableSendToDocGen}
-          onClick={this.handleSendToDocGenStager}
+          disabled={!enableSendToDocGen || disableTrialTaskButton}
+          onClick={showTrialIcon ? this.handleTrial : this.handleSendToDocGenStager}
         />
       ) : null;
     const getSendToDocGenButton = showSendToDocGen
@@ -208,7 +245,6 @@ class Controls extends React.PureComponent {
     ) {
       assign = <Assign />;
     }
-    const groups = user && user.groupList;
     if (
       RouteAccess.hasManagerDashboardAccess(groups)
       && showAssign
@@ -233,6 +269,7 @@ class Controls extends React.PureComponent {
         {getSendToDocsInButton}
         {getContinueMyReviewButton}
         {getCompleteMyreviewButton}
+        {getCompleteForbearanceButton}
         {expand}
       </>
     );
@@ -253,6 +290,7 @@ Controls.defaultProps = {
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
   onSendToDocsIn: () => { },
+  onTrialTask: () => {},
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
@@ -268,6 +306,7 @@ Controls.defaultProps = {
 };
 
 Controls.propTypes = {
+  disableTrialTaskButton: PropTypes.bool.isRequired,
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
@@ -276,6 +315,7 @@ Controls.propTypes = {
   enableSendToDocsIn: PropTypes.bool,
   enableSendToUW: PropTypes.bool,
   enableValidate: PropTypes.bool,
+  evalId: PropTypes.string.isRequired,
   groupName: PropTypes.string,
   history: PropTypes.shape(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
@@ -287,6 +327,8 @@ Controls.propTypes = {
   onSendToDocGen: PropTypes.func,
   onSendToDocsIn: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
+  onTrialTask: PropTypes.func,
+  processId: PropTypes.string.isRequired,
   showAssign: PropTypes.bool,
   showCompleteMyReview: PropTypes.bool.isRequired,
   showContinueMyReview: PropTypes.bool,
@@ -296,7 +338,10 @@ Controls.propTypes = {
   showSendToDocGenStager: PropTypes.bool,
   showSendToDocsIn: PropTypes.bool,
   showSendToUnderWritingIcon: PropTypes.bool,
+  showUpdateRemedy: PropTypes.bool.isRequired,
   showValidate: PropTypes.bool,
+  taskName: PropTypes.string.isRequired,
+  taskStatus: PropTypes.string.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array),
@@ -335,6 +380,11 @@ const mapStateToProps = (state) => {
     showCompleteMyReview: selectors.showCompleteMyReview(state),
     user: loginSelectors.getUser(state),
     groupName: selectors.groupName(state),
+    taskName: selectors.processName(state),
+    taskStatus: selectors.taskStatus(state),
+    evalId: selectors.evalId(state),
+    processId: selectors.processId(state),
+    disableTrialTaskButton: selectors.disableTrialTaskButton(state),
   };
 };
 
@@ -349,6 +399,7 @@ const mapDispatchToProps = dispatch => ({
   onSendToDocsIn: operations.onSendToDocsIn(dispatch),
   onContinueMyReview: operations.onContinueMyReview(dispatch),
   onCompleteMyReview: operations.onCompleteMyReview(dispatch),
+  onTrialTask: operations.onTrialTask(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

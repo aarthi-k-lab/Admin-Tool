@@ -37,6 +37,9 @@ import {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onTrialTaskAction,
+  onEvalInsertionAction,
+  discardEvalResponse,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -141,10 +144,18 @@ const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isS
 
 const onSendToDocsIn = dispatch => () => dispatch(onSendToDocsInAction());
 
+const onTrialTask = dispatch => (payload) => {
+  dispatch(onTrialTaskAction(payload));
+};
+
 const onCleanResult = dispatch => () => dispatch(cleanResult());
 
 const onContinueMyReview = dispatch => (taskStatus) => {
   dispatch(continueMyReview(taskStatus));
+};
+
+const onEvalInsertion = dispatch => (payload) => {
+  dispatch(onEvalInsertionAction(payload));
 };
 
 const onCompleteMyReview = dispatch => (disposition) => {
@@ -184,7 +195,11 @@ const selectModReversal = dispatch => () => {
   dispatch(onSelectModReversal());
 };
 
+const clearEvalResponse = dispatch => () => dispatch(discardEvalResponse());
+
+
 const operations = {
+  clearEvalResponse,
   onAutoSave,
   onClearDisposition,
   onExpand,
@@ -224,6 +239,8 @@ const operations = {
   onClearPostModEndShitf,
   onClearStagerTaskName,
   onClearBulkUploadDataAction,
+  onTrialTask,
+  onEvalInsertion,
 };
 
 export default operations;

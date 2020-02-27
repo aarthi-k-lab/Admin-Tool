@@ -24,6 +24,8 @@ import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 // import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
+  STORE_EVALID_RESPONSE,
+  INSERT_EVALID,
   END_SHIFT,
   SET_INCENTIVE_TASKCODES,
   GET_NEXT,
@@ -81,8 +83,12 @@ import {
   MOD_REVERSAL_REASONS,
   MOD_REVERSAL_DROPDOWN_VALUES,
   POSTMOD_END_SHIFT,
+  STORE_EVALID_RESPONSE_ERROR,
   RESOLUTION_DROP_DOWN_VALUES,
   COMPLETE_MY_REVIEW,
+  SET_TRIAL_RESPONSE,
+  TRIAL_TASK,
+  DISABLE_TRIAL_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -99,7 +105,11 @@ import {
 
 const {
   Messages:
-  { LEVEL_ERROR, LEVEL_SUCCESS, MSG_VALIDATION_SUCCESS },
+  {
+    LEVEL_ERROR, LEVEL_SUCCESS,
+    MSG_VALIDATION_SUCCESS,
+    MSG_UPDATED_REMEDY,
+  },
 } = DashboardModel;
 
 const setExpandView = function* setExpand() {
@@ -437,6 +447,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const payload = R.propOr({}, 'payload', dispositionPayload);
     const disposition = R.propOr({}, 'dispositionReason', payload);
     const groupName = R.propOr({}, 'group', payload);
+    const isAuto = R.propOr(false, 'isAuto', payload);
     const evalId = yield select(selectors.evalId);
     const wfTaskId = yield select(selectors.taskId);
     const assigneeName = yield select(checklistSelectors.getAgentName);
@@ -453,7 +464,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       wfProcessId,
       processStatus,
     };
-    const response = yield call(Api.callPost, '/api/disposition/validate-disposition', request);
+    const response = yield call(Api.callPost, `/api/disposition/validate-disposition?isAuto=${isAuto}`, request);
     const { tkamsValidation, skillValidation } = response;
     yield put({
       type: SET_GET_NEXT_STATUS,
@@ -468,7 +479,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
         },
       });
     } else {
-      let message = MSG_VALIDATION_SUCCESS;
+      let message = isAuto ? MSG_UPDATED_REMEDY : MSG_VALIDATION_SUCCESS;
       let type = LEVEL_SUCCESS;
       if (validateAgent) {
         type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;
@@ -957,7 +968,7 @@ function* assignLoan() {
     }
     const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
-    if (response !== null) {
+    if (response !== null && !response.error) {
       yield put({
         type: ASSIGN_LOAN_RESULT,
         payload: response,
@@ -1261,6 +1272,35 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
+function* onSelectTrialTask(payload) {
+  try {
+    const response = yield call(Api.callPost, '/api/stager/stager/completeTrialForbearanceTasks?bulk=false', payload.payload);
+    if (response !== null) {
+      yield put({
+        type: SET_TRIAL_RESPONSE,
+        payload: {
+          level: response.isError ? 'Warning' : 'Success',
+          status: response.message,
+        },
+      });
+      yield put({
+        type: DISABLE_TRIAL_BUTTON,
+        payload: {
+          disableTrialTaskButton: !response.isError,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_TRIAL_RESPONSE,
+      payload: {
+        level: 'Warning',
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
+
 function* AddDocsInReceived(payload) {
   const { pageType } = payload.payload;
   let response;
@@ -1322,6 +1362,39 @@ function* onSelectModReversal() {
   }
 }
 
+function* manualInsertion(payload) {
+  try {
+    yield put({ type: SHOW_LOADER });
+    const response = yield all(payload.payload.map(evalId => call(Api.callPost, '/api/disposition/bulk/insertEval', { evalId })));
+    const filteredResponse = [];
+    response.forEach((evalData) => {
+      if (!evalData) {
+        filteredResponse.push();
+      } else {
+        const evalResponse = evalData.statusCode && evalData.statusCode === 204
+          ? DashboardModel.InvalidEvalResponse(evalData.evalId) : null;
+        filteredResponse.push(evalResponse || evalData);
+      }
+    });
+    yield put({
+      type: STORE_EVALID_RESPONSE,
+      payload: filteredResponse,
+    });
+  } catch (e) {
+    yield put({
+      type: STORE_EVALID_RESPONSE_ERROR,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
+function* watchManualInsertion() {
+  yield takeEvery(INSERT_EVALID, manualInsertion);
+}
 function* watchAssignLoan() {
   yield takeEvery(ASSIGN_LOAN, assignLoan);
 }
@@ -1358,6 +1431,10 @@ function* watchOnSelectModReversal() {
   yield takeEvery(MOD_REVERSAL_REASONS, onSelectModReversal);
 }
 
+function* watchOnTrialTask() {
+  yield takeEvery(TRIAL_TASK, onSelectTrialTask);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -1391,6 +1468,7 @@ export const TestExports = {
   watchAddDocsInReceived,
   watchOnSelectReject,
   watchOnSearchWithTask,
+  watchOnTrialTask,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -1414,7 +1492,8 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSelectReject(),
     watchOnSearchWithTask(),
     watchOnSelectModReversal(),
+    watchManualInsertion(),
     watchCompleteMyReview(),
-
+    watchOnTrialTask(),
   ]);
 };

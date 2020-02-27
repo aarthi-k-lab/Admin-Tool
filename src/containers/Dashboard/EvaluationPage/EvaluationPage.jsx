@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import UserNotification from 'components/UserNotification/UserNotification';
-import { selectors } from '../../../state/ducks/dashboard';
+import { selectors, operations } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
 function isNotLoanActivity(group) {
@@ -29,6 +29,12 @@ function isTrialOrForbearance(taskName) {
   return taskName && taskName.includes('Trial') ? 'Trial ' : 'Forbearance ';
 }
 class EvaluationPage extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    const { onCleanResult } = props;
+    onCleanResult();
+  }
+
   haveGroupTrial() {
     const { user } = this.props;
     const groups = user && user.groupList;
@@ -53,7 +59,8 @@ class EvaluationPage extends React.PureComponent {
 
   render() {
     const {
-      location, group, taskName, checklisttTemplateName, stagerTaskName, resultOperation,
+      location, group, taskName, checklisttTemplateName, stagerTaskName,
+      resultOperation, isAutoDisposition,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -66,7 +73,8 @@ class EvaluationPage extends React.PureComponent {
             showGetNext={isNotLoanActivity(group)}
             showSendToDocsIn={this.canShowSendToDocsIn()}
             showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
-            showValidate={canShowValidate(group)}
+            showUpdateRemedy={isAutoDisposition}
+            showValidate={canShowValidate(group) && !isAutoDisposition}
           />
         </ContentHeader>
         <Tombstone />
@@ -90,15 +98,18 @@ EvaluationPage.defaultProps = {
   taskName: '',
   stagerTaskName: '',
   resultOperation: { level: '', status: '' },
+  onCleanResult: () => {},
 };
 
 EvaluationPage.propTypes = {
   checklisttTemplateName: PropTypes.string,
   group: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
+  isAutoDisposition: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  onCleanResult: PropTypes.func,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
@@ -122,10 +133,15 @@ const mapStateToProps = state => ({
   stagerTaskName: selectors.stagerTaskName(state),
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
+  isAutoDisposition: checklistSelectors.getDispositionType(state),
   resultOperation: selectors.resultOperation(state),
 });
 
-const container = connect(mapStateToProps, null)(EvaluationPage);
+const mapDispatchToProps = dispatch => ({
+  onCleanResult: operations.onCleanResult(dispatch),
+});
+
+const container = connect(mapStateToProps, mapDispatchToProps)(EvaluationPage);
 const TestHooks = {
   EvaluationPage,
 };

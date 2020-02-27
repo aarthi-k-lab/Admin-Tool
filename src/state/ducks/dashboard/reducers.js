@@ -53,11 +53,27 @@ import {
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
   SET_INCENTIVE_TASKCODES,
+  STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
+  SET_TRIAL_RESPONSE,
+  DISABLE_TRIAL_BUTTON,
+  DISCARD_EVAL_RESPONSE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
+    case DISCARD_EVAL_RESPONSE: {
+      return {
+        ...state,
+        evalInsertionStatus: null,
+      };
+    }
+    case STORE_EVALID_RESPONSE: {
+      return {
+        ...state,
+        evalInsertionStatus: action.payload,
+      };
+    }
     case SET_INCENTIVE_TASKCODES: {
       return {
         ...state,
@@ -90,8 +106,10 @@ const reducer = (state = { firstVisit: true }, action) => {
       };
     }
     case CLEAR_SELECT_REJECT: {
+      const trialClosingResponse = null;
       return {
         ...state,
+        trialClosingResponse,
         rejectResponse: null,
       };
     }
@@ -420,10 +438,12 @@ const reducer = (state = { firstVisit: true }, action) => {
     case LOAD_TRIALHEADER_RESULT: {
       const trialHeader = action.payload;
       const enableSendToUW = true;
+      const disableTrialTaskButton = false;
       return {
         ...state,
         trialHeader,
         enableSendToUW,
+        disableTrialTaskButton,
         loading: false,
       };
     }
@@ -550,6 +570,21 @@ const reducer = (state = { firstVisit: true }, action) => {
       };
     }
 
+    case SET_TRIAL_RESPONSE: {
+      const trialClosingResponse = action.payload;
+      return {
+        ...state,
+        trialClosingResponse,
+      };
+    }
+
+    case DISABLE_TRIAL_BUTTON: {
+      return {
+        ...state,
+        disableTrialTaskButton: action.payload.disableTrialTaskButton,
+        enableSendToUW: !action.payload.disableTrialTaskButton,
+      };
+    }
     default:
       return state;
   }

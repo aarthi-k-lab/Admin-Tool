@@ -10,3 +10,4 @@ export { default as SendToDocGenStager } from './SendToDocGenStager';
 export { default as ContinueMyReview } from './ContinueMyReview';
 export { default as CompleteMyReview } from './CompleteMyReview';
 export { default as SendToDocsIn } from './SendToDocsIn';
+export { default as CompleteForbearance } from './CompleteForbearance';

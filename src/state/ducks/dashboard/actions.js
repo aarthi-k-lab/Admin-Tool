@@ -41,6 +41,9 @@ import {
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  TRIAL_TASK,
+  INSERT_EVALID,
+  DISCARD_EVAL_RESPONSE,
 } from './types';
 
 
@@ -197,6 +200,12 @@ const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
+
+const onEvalInsertionAction = payload => ({
+  type: INSERT_EVALID,
+  payload,
+});
+
 const pageType = pageName => ({
   type: SET_BULK_UPLOAD_PAGE_TYPE,
   payload: pageName,
@@ -228,9 +237,18 @@ const clearPostModEndShitf = () => ({
   type: CLEAR_POSTMOD_END_SHIFT,
 });
 
+const onTrialTaskAction = payload => ({
+  type: TRIAL_TASK,
+  payload,
+});
+
+const discardEvalResponse = () => ({
+  type: DISCARD_EVAL_RESPONSE,
+});
 
 export {
   autoSave,
+  discardEvalResponse,
   clearDisposition,
   clearFirstVisit,
   displayAssign,
@@ -270,4 +288,6 @@ export {
   onSelectModReversal,
   clearPostModEndShitf,
   clearBulkUploadDataAction,
+  onTrialTaskAction,
+  onEvalInsertionAction,
 };
