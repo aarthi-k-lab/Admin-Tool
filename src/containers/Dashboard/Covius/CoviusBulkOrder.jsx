@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import './CoviusBulkOrder.css';
 import Simpleselect from 'react-select';
 import ErrorIcon from '@material-ui/icons/Error';
+import TabView from './TabView';
 
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
@@ -34,11 +35,11 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
-          {'New Bulk Upload'}
+          {'New Event Request'}
         </span>
         <div styleName="loan-numbers">
           <span>
-            {'Request Category'}
+            {'Event Category'}
           </span>
           <span styleName="errorIcon">
             <ErrorIcon styleName="errorSvg" />
@@ -53,7 +54,7 @@ class CoviusBulkOrder extends React.PureComponent {
         </div>
         <div styleName="loan-numbers">
           <span>
-            {'Request Code'}
+            {'Event Name'}
           </span>
           <span styleName="errorIcon">
             <ErrorIcon styleName="errorSvg" />
@@ -86,7 +87,6 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
-              disabled
               margin="normal"
               styleName="submitButton"
               variant="contained"
@@ -115,6 +115,7 @@ class CoviusBulkOrder extends React.PureComponent {
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
           <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
+          <Grid item xs={10}><TabView /></Grid>
         </Grid>
       </>
     );

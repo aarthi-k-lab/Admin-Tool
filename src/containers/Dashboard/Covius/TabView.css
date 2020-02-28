@@ -1,0 +1,13 @@
+.failedTab {
+    margin: 0rem 0rem -1.5rem -8rem !important;
+    color: red;
+}
+
+.passedTab {
+    margin: 0rem 0rem -1.5rem -8rem !important;
+    color: green;
+}
+
+.uploadTab {
+    margin: 0rem 0rem -1.5rem -8rem !important;
+}
