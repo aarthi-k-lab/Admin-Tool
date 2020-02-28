@@ -43,6 +43,7 @@ import {
   CLEAR_BULKUPLOAD_TABLEDATA,
   TRIAL_TASK,
   INSERT_EVALID,
+  PROCESS_COVIUS_BULK,
 } from './types';
 
 
@@ -195,6 +196,12 @@ const onLoansSubmitAction = payload => ({
   type: SET_ADD_DOCS_IN,
   payload,
 });
+
+const onCoviusBulkSubmit = payload => ({
+  type: PROCESS_COVIUS_BULK,
+  payload,
+});
+
 const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
@@ -284,4 +291,5 @@ export {
   clearBulkUploadDataAction,
   onTrialTaskAction,
   onEvalInsertionAction,
+  onCoviusBulkSubmit,
 };

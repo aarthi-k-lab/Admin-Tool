@@ -39,6 +39,7 @@ import {
   clearBulkUploadDataAction,
   onTrialTaskAction,
   onEvalInsertionAction,
+  onCoviusBulkSubmit,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -164,6 +165,11 @@ const onCompleteMyReview = dispatch => (disposition) => {
 const onLoansSubmit = dispatch => (payload) => {
   dispatch(onLoansSubmitAction(payload));
 };
+
+const onCoviusLoansSubmit = dispatch => (payload) => {
+  dispatch(onCoviusBulkSubmit(payload));
+};
+
 const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
 };
@@ -236,6 +242,7 @@ const operations = {
   onClearBulkUploadDataAction,
   onTrialTask,
   onEvalInsertion,
+  onCoviusLoansSubmit,
 };
 
 export default operations;

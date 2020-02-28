@@ -72,6 +72,8 @@ import {
   CONTINUE_MY_REVIEW_RESULT,
   COMPLETE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
+  SET_COVIUS_BULK_UPLOAD_RESULT,
+  PROCESS_COVIUS_BULK,
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
@@ -365,7 +367,7 @@ function* selectEval(searchItem) {
     evalDetails.taskId = taskId;
   }
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
-  && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
+    && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
 
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   yield call(fetchChecklistDetailsForSearchResult, taskCheckListId);
@@ -1061,7 +1063,7 @@ function* loadTrials(payload) {
     let message = '';
     if (evalStatus !== 'Approved' || trialHeader.resolutionStatus !== 'Closed') {
       message = 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
-                + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
+        + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.';
     }
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
@@ -1076,7 +1078,7 @@ function* loadTrials(payload) {
       payload: {
         level: LEVEL_ERROR,
         status: 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
-                    + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
+          + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
       },
     });
   }
@@ -1122,7 +1124,7 @@ function* sentToUnderwriting() {
         }
       } else {
         const message = 'Unable to send back to Underwriting because either eval is not '
-                    + 'in Active status or Resolution is not in Open status.';
+          + 'in Active status or Resolution is not in Open status.';
         yield put({
           type: SET_TASK_UNDERWRITING_RESULT,
           payload: {
@@ -1301,6 +1303,41 @@ function* onSelectTrialTask(payload) {
   }
 }
 
+function* onCoviusBulkUpload(payload) {
+  const { loanNumbers } = payload.payload;
+  let response;
+  try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    yield put({ type: SHOW_LOADER });
+    response = yield call(Api.callPost,
+      `/api/release/api/process/covius?user=${userPrincipalName}`, loanNumbers);
+    if (response !== null) {
+      yield put({
+        type: SET_COVIUS_BULK_UPLOAD_RESULT,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR,
+          status: 'This loan do not exist or currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* AddDocsInReceived(payload) {
   const { pageType } = payload.payload;
   let response;
@@ -1392,6 +1429,10 @@ function* manualInsertion(payload) {
   yield put({ type: HIDE_LOADER });
 }
 
+function* watchCoviusBulkOrder() {
+  yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
+}
+
 function* watchManualInsertion() {
   yield takeEvery(INSERT_EVALID, manualInsertion);
 }
@@ -1469,6 +1510,7 @@ export const TestExports = {
   watchOnSelectReject,
   watchOnSearchWithTask,
   watchOnTrialTask,
+  watchCoviusBulkOrder,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -1495,5 +1537,6 @@ export const combinedSaga = function* combinedSaga() {
     watchManualInsertion(),
     watchCompleteMyReview(),
     watchOnTrialTask(),
+    watchCoviusBulkOrder(),
   ]);
 };

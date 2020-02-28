@@ -40,6 +40,7 @@ import {
   SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
+  SET_COVIUS_BULK_UPLOAD_RESULT,
   SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
   CLEAR_USER_NOTIF_MSG,
@@ -482,6 +483,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         resultOperation,
         tableData: [],
+        resultData: [],
         loading: false,
       };
     }
@@ -511,6 +513,15 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         tableData,
+        loading: false,
+      };
+    }
+
+    case SET_COVIUS_BULK_UPLOAD_RESULT: {
+      const resultData = action.payload;
+      return {
+        ...state,
+        resultData,
         loading: false,
       };
     }
