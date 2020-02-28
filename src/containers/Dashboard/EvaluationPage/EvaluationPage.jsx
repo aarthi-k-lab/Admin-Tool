@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import UserNotification from 'components/UserNotification/UserNotification';
-import { selectors } from '../../../state/ducks/dashboard';
+import { selectors, operations } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 
 function isNotLoanActivity(group) {
@@ -29,6 +29,12 @@ function isTrialOrForbearance(taskName) {
   return taskName && taskName.includes('Trial') ? 'Trial ' : 'Forbearance ';
 }
 class EvaluationPage extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    const { onCleanResult } = props;
+    onCleanResult();
+  }
+
   haveGroupTrial() {
     const { user } = this.props;
     const groups = user && user.groupList;
@@ -92,6 +98,7 @@ EvaluationPage.defaultProps = {
   taskName: '',
   stagerTaskName: '',
   resultOperation: { level: '', status: '' },
+  onCleanResult: () => {},
 };
 
 EvaluationPage.propTypes = {
@@ -102,6 +109,7 @@ EvaluationPage.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  onCleanResult: PropTypes.func,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
@@ -129,7 +137,11 @@ const mapStateToProps = state => ({
   resultOperation: selectors.resultOperation(state),
 });
 
-const container = connect(mapStateToProps, null)(EvaluationPage);
+const mapDispatchToProps = dispatch => ({
+  onCleanResult: operations.onCleanResult(dispatch),
+});
+
+const container = connect(mapStateToProps, mapDispatchToProps)(EvaluationPage);
 const TestHooks = {
   EvaluationPage,
 };

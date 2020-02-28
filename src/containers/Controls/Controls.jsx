@@ -188,7 +188,7 @@ class Controls extends React.PureComponent {
 
     let assign = null;
     const groups = user && user.groupList;
-    const checkTrialAccess = RouteAccess.hasTrialManagerDashboardAccess(user);
+    const checkTrialAccess = RouteAccess.hasTrialManagerDashboardAccess(groups);
     const showForbearanceIcon = R.equals('Active', taskStatus) && (R.equals('Forbearance', taskName) || R.equals('Forbearance Plan', taskName)) && checkTrialAccess;
     const showTrialIcon = R.equals('Active', taskStatus) && (R.equals('Trial Modification', taskName) || R.equals('Trial Plan', taskName)) && checkTrialAccess;
     const onEndShiftClick = () => onEndShift(

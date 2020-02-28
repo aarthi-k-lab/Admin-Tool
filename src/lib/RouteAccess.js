@@ -114,7 +114,7 @@ const coviusBulkOrderPage = {
 };
 
 const trial = {
-  groups: ['trial', 'trial-mgr'],
+  groups: ['trial-mgr'],
 };
 
 const links = [

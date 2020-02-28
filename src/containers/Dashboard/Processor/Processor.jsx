@@ -18,12 +18,12 @@ import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import '../DocsIn/DocsIn.css';
 
-const validEvalIdEntries = RegExp(/^\d+(,\d+|\s\d+)*$/);
+const validEvalIdEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
 const validateEvalIdFormat = (evalIds) => {
-  let isValid = false;
+  let isValid = true;
   // eslint-disable-next-line
-  if (validEvalIdEntries.test(evalIds)) {
-    isValid = true;
+  if (evalIds === '' || validEvalIdEntries.test(evalIds)) {
+    isValid = false;
   }
   return isValid;
 };
@@ -91,7 +91,8 @@ class Processor extends React.PureComponent {
       evalIds: event.target.value,
     });
     if (validateEvalIdFormat(event.target.value)) {
-      const evalIds = event.target.value.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      const evalIdArray = event.target.value.trim().replace(/\n|\s/g, ',').split(',').map(s => s.trim());
+      const evalIds = R.filter(str => str !== '', evalIdArray);
       this.setState({ evalIdList: evalIds });
       if (evalIds.length > 10) {
         this.setState({ isDisabled: true });
