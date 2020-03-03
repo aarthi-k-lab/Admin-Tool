@@ -64,8 +64,11 @@
     width: 2rem !important;
     height: 1rem !important;
   }
+
+  .errorSvginfo {
+    float: right;
+  }
   
   .submitButton {
-    float: right;
     margin-right: 1rem !important;
   }

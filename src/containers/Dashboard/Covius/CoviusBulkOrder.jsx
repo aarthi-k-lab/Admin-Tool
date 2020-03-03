@@ -207,8 +207,26 @@ class CoviusBulkOrder extends React.PureComponent {
           <Controls />
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
-          <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
-          {this.renderResults()}
+          <Grid item xs={2}>
+            {this.renderNotepadArea()}
+          </Grid>
+          <Grid item xs={10}>
+            {this.renderResults()}
+            <div styleName="errorSvginfo">
+              <ErrorIcon styleName="errorSvg" />
+              <Button
+                className="material-ui-button"
+                color="primary"
+                margin="normal"
+                startIcon={<ErrorIcon styleName="errorSvg" />
+            }
+                styleName="submitButton"
+                variant="contained"
+              >
+              DOWNLOAD EXCEL TO VERIFY
+              </Button>
+            </div>
+          </Grid>
         </Grid>
       </>
     );
