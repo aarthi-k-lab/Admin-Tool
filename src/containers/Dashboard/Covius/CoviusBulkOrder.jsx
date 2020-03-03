@@ -7,6 +7,7 @@ import Controls from 'containers/Controls';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import './CoviusBulkOrder.css';
+import * as R from 'ramda';
 import Simpleselect from 'react-select';
 import Loader from 'components/Loader/Loader';
 import UserNotification from 'components/UserNotification';
@@ -32,6 +33,8 @@ class CoviusBulkOrder extends React.PureComponent {
     this.state = {
       loanNumbers: '',
       isSubmitDisabled: 'disabled',
+      selectedEventName: '',
+      selectedEventCategory: '',
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -58,14 +61,31 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleLoanChange = (event) => {
+    const { selectedEventName, selectedEventCategory } = this.state;
     this.setState({
       loanNumbers: event.target.value,
-      isSubmitDisabled: event.target.value.trim() ? '' : 'disabled',
+      isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
     });
   }
 
+  handleEventName = (eventName) => {
+    const { loanNumbers, selectedEventCategory } = this.state;
+    let disableSubmit = '';
+    disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(loanNumbers) ? '' : 'disabled';
+    this.setState({ selectedEventName: eventName, isSubmitDisabled: disableSubmit });
+  }
+
+  handleEventCategory = (eventCategory) => {
+    const { loanNumbers, selectedEventName } = this.state;
+    let disableSubmit = '';
+    disableSubmit = !R.isEmpty(eventCategory) && !R.isEmpty(selectedEventName) && !R.isEmpty(loanNumbers) ? '' : 'disabled';
+    this.setState({ selectedEventCategory: eventCategory, isSubmitDisabled: disableSubmit });
+  }
+
   renderNotepadArea() {
-    const { loanNumbers, isSubmitDisabled } = this.state;
+    const {
+      loanNumbers, isSubmitDisabled, selectedEventName, selectedEventCategory,
+    } = this.state;
     const techCompanies = [
       { label: 'Apple', value: 1 },
       { label: 'Facebook', value: 2 },
@@ -91,7 +111,11 @@ class CoviusBulkOrder extends React.PureComponent {
           margin: '0rem 0.5rem 2rem 0.5rem',
         }}
         >
-          <Simpleselect options={techCompanies} />
+          <Simpleselect
+            onChange={category => this.handleEventCategory(category)}
+            options={techCompanies}
+            value={selectedEventCategory}
+          />
 
         </div>
         <div styleName="loan-numbers">
@@ -107,7 +131,9 @@ class CoviusBulkOrder extends React.PureComponent {
         }}
         >
           <Simpleselect
+            onChange={event => this.handleEventName(event)}
             options={techCompanies}
+            value={selectedEventName}
           />
 
         </div>
@@ -145,7 +171,11 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderResults() {
     const { resultData } = this.props;
-    console.log(resultData);
+    if (resultData && !R.isEmpty(resultData)) {
+      return (<Grid item xs={12}><TabView /></Grid>);
+    }
+
+    return <Grid item xs={12}><TabView /></Grid>;
   }
 
   render() {
@@ -178,7 +208,7 @@ class CoviusBulkOrder extends React.PureComponent {
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
           <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
-          <Grid item xs={10}><TabView /></Grid>
+          {this.renderResults()}
         </Grid>
       </>
     );
