@@ -231,17 +231,14 @@ const getSlaRulesProcessed = state => R.pathOr(true, ['tasksAndChecklist', 'slaR
 const getRuleResponse = state => R.pathOr('', ['tasksAndChecklist', 'ruleResponse'], state);
 
 const getPDFExportPayload = (state) => {
-  const payload = {};
-  const checklistData = R.pathOr([], ['tasksAndChecklist', 'historicalCheckList'], state);
-  if (checklistData.length) {
-    payload.checklistId = R.pathOr('', ['taskCheckListId'], checklistData[0]);
-    payload.event = R.pathOr('', ['taskCheckListTemplateName'], checklistData[0]);
-    payload.disposition = R.pathOr('', ['dispositionCode'], checklistData[0]);
-    payload.assignedTo = R.pathOr('', ['assignedTo'], checklistData[0]);
-    payload.dispositionDate = R.pathOr('', ['taskCheckListDateTime'], checklistData[0]);
-  }
-  payload.resolutionId = R.pathOr('', ['tasksAndChecklist', 'selectedSLAvalues', 'resolutionId'], state);
-  payload.auditRuleType = R.pathOr('', ['tasksAndChecklist', 'selectedSLAvalues', 'auditRuleType'], state);
+  const payload = {
+    checklistId: R.pathOr('', ['tasksAndChecklist', 'processId'], state),
+    event: getChecklistTemplate(state),
+    disposition: 'NA',
+    assignedTo: R.pathOr('', ['user', 'userDetails', 'email'], state),
+    dispositionDate: R.pathOr(new Date().toISOString(), ['tasksAndChecklist', 'taskTree', 'createdDate'], state),
+    resolutionId: R.pathOr('', ['tasksAndChecklist', 'selectedSLAvalues', 'resolutionId'], state),
+  };
   return payload;
 };
 
