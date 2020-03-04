@@ -13,7 +13,6 @@ import {
   SET_FEATURES,
   GET_PDFGENRATOR_URL,
   SET_PDFGENRATOR_URL,
-  GET_TASK_AUDIT_RULE_MAPPING_FOR_SLA,
 } from './types';
 
 export const fetchPowerBIConfig = function* fetchPowerBIConfig() {
@@ -39,27 +38,16 @@ function* getPdfGeneratorUrl() {
   try {
     const response = yield call(Api.callGet, 'api/config');
     const pdfUrl = R.pathOr({}, ['pdfGenerator', 'pdfGeneratorUrl'], response);
-    const taskAuditRuleMapping = R.pathOr({}, ['pdfGenerator', 'taskAuditRuleMapping'], response);
     if (pdfUrl != null) {
       yield put({
         type: GET_PDFGENRATOR_URL,
         payload: pdfUrl,
       });
     }
-    if (Object.keys(taskAuditRuleMapping).length) {
-      yield put({
-        type: GET_TASK_AUDIT_RULE_MAPPING_FOR_SLA,
-        payload: taskAuditRuleMapping,
-      });
-    }
   } catch (e) {
     yield put({
       type: GET_PDFGENRATOR_URL,
       payload: '',
-    });
-    yield put({
-      type: GET_TASK_AUDIT_RULE_MAPPING_FOR_SLA,
-      payload: {},
     });
   }
 }

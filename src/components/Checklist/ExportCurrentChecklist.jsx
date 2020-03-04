@@ -5,9 +5,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 
-import moment from 'moment-timezone';
-import * as R from 'ramda';
-
 
 const styles = theme => ({
   margin: {
@@ -30,8 +27,6 @@ const styles = theme => ({
 });
 
 class ExportCurrentChecklist extends Component {
-  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('YYYY-MM-DD HH:mm:ss'));
-
    openWindowWithPost = (url, data) => {
      const form = document.createElement('form');
      form.target = '_blank';
@@ -55,15 +50,13 @@ class ExportCurrentChecklist extends Component {
    }
 
   handleExportChecklist = () => {
-    const { pdfGeneratorConstant, taskAuditRuleMapping, pdfExportPayload } = this.props;
+    const { pdfGeneratorConstant, pdfExportPayload } = this.props;
     const data = {
       event: pdfExportPayload.event,
       disposition: !pdfExportPayload.disposition ? 'null' : pdfExportPayload.disposition,
       assignedTo: pdfExportPayload.assignedTo,
       dispositionDate: pdfExportPayload.dispositionDate,
       resolutionId: pdfExportPayload.resolutionId,
-      auditRuleType: R.contains('Post', pdfExportPayload.auditRuleType) ? 'post' : 'pre',
-      taskAuditRuleMapping: JSON.stringify(taskAuditRuleMapping),
     };
     this.openWindowWithPost(`${pdfGeneratorConstant}/api/download/${pdfExportPayload.checklistId}`, data);
   };
@@ -107,7 +100,6 @@ ExportCurrentChecklist.propTypes = {
   }),
   pdfExportPayload: PropTypes.shape.isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
-  taskAuditRuleMapping: PropTypes.shape.isRequired,
   toolTipPosition: PropTypes.string,
 };
 

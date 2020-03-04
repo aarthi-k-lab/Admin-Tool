@@ -3,7 +3,6 @@ import {
   POWER_BI_CONSTANTS_FAILURE,
   SET_FEATURES,
   GET_PDFGENRATOR_URL,
-  GET_TASK_AUDIT_RULE_MAPPING_FOR_SLA,
 } from './types';
 
 
@@ -30,13 +29,6 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         pdfGeneratorUrl,
-      };
-    }
-    case GET_TASK_AUDIT_RULE_MAPPING_FOR_SLA: {
-      const taskAuditRuleMapping = action.payload ? action.payload : {};
-      return {
-        ...state,
-        taskAuditRuleMapping,
       };
     }
     default:

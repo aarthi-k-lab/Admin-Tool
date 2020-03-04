@@ -32,7 +32,6 @@ class TaskPane extends React.PureComponent {
       resetDeleteTaskConfirmation,
       historicalCheckListData,
       pdfGeneratorConstant,
-      taskAuditRuleMapping,
       pdfExportPayload,
     } = this.props;
     return (
@@ -53,7 +52,6 @@ class TaskPane extends React.PureComponent {
           shouldDeleteTask={shouldDeleteTask}
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
-          taskAuditRuleMapping={taskAuditRuleMapping}
           tasks={tasks}
           updateChecklist={updateChecklist}
         />
@@ -92,7 +90,6 @@ TaskPane.propTypes = {
   shouldDeleteTask: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
-  taskAuditRuleMapping: PropTypes.shape.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)),
   updateChecklist: PropTypes.func.isRequired,
 };
@@ -109,7 +106,6 @@ const mapStateToProps = state => ({
   isAssigned: dashboardSelectors.isAssigned(state),
   pdfGeneratorConstant: selectors.pdfUrlConstants(state),
   pdfExportPayload: taskSelectors.getPDFExportPayload(state),
-  taskAuditRuleMapping: selectors.taskAuditRuleMapping(state),
 });
 
 const mapDispatchToProps = dispatch => ({
