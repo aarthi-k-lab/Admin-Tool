@@ -117,52 +117,6 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
               className="MuiTouchRipple-root"
             />
           </button>
-          <button
-            aria-describedby={null}
-            aria-label="Export Checklist"
-            className="MuiButtonBase-root MuiFab-root ExportCurrentChecklist-custom-99 MuiFab-secondary"
-            disabled={false}
-            onBlur={[Function]}
-            onClick={[Function]}
-            onDragLeave={[Function]}
-            onFocus={[Function]}
-            onKeyDown={[Function]}
-            onKeyUp={[Function]}
-            onMouseDown={[Function]}
-            onMouseLeave={[Function]}
-            onMouseOver={[Function]}
-            onMouseUp={[Function]}
-            onTouchEnd={[Function]}
-            onTouchMove={[Function]}
-            onTouchStart={[Function]}
-            style={
-              Object {
-                "marginLeft": "0.5rem",
-              }
-            }
-            tabIndex={0}
-            title="Export Current Checklist"
-            type="button"
-          >
-            <span
-              className="MuiFab-label"
-            >
-              <svg
-                aria-hidden="true"
-                className="MuiSvgIcon-root"
-                focusable="false"
-                role="presentation"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"
-                />
-              </svg>
-            </span>
-            <span
-              className="MuiTouchRipple-root"
-            />
-          </button>
         </div>
       </div>
       <span
