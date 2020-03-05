@@ -113,6 +113,7 @@ class LeftTaskPane extends React.Component {
       handleShowDeleteTaskConfirmation, shouldDeleteTask,
       historicalCheckListData,
       pdfGeneratorConstant,
+      showExportChecklist,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -142,11 +143,16 @@ class LeftTaskPane extends React.Component {
                         margin={{ marginLeft: '2rem' }}
                         pdfGeneratorConstant={pdfGeneratorConstant}
                       />
-                      <ExportCurrentChecklist
-                        margin={{ marginLeft: '0.5rem' }}
-                        pdfExportPayload={pdfExportPayload}
-                        pdfGeneratorConstant={pdfGeneratorConstant}
-                      />
+                      {
+                        showExportChecklist && (
+                        <ExportCurrentChecklist
+                          margin={{ marginLeft: '0.5rem' }}
+                          pdfExportPayload={pdfExportPayload}
+                          pdfGeneratorConstant={pdfGeneratorConstant}
+                        />
+                        )
+                      }
+
                     </div>
                     {shouldShowAddTaskButton(optionalTasks)
                       ? (
@@ -244,6 +250,7 @@ LeftTaskPane.propTypes = {
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string,
   shouldDeleteTask: PropTypes.bool.isRequired,
+  showExportChecklist: PropTypes.bool.isRequired,
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)).isRequired,

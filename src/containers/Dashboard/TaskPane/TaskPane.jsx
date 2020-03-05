@@ -7,6 +7,7 @@ import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import LeftTaskPane from 'components/LeftTaskPane';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
+import DashboardModel from '../../../models/Dashboard';
 
 class TaskPane extends React.PureComponent {
   componentDidMount() {
@@ -33,6 +34,7 @@ class TaskPane extends React.PureComponent {
       historicalCheckListData,
       pdfGeneratorConstant,
       pdfExportPayload,
+      group,
     } = this.props;
     return (
       (
@@ -50,6 +52,7 @@ class TaskPane extends React.PureComponent {
           resetDeleteTaskConfirmation={resetDeleteTaskConfirmation}
           selectedTaskId={selectedTaskId}
           shouldDeleteTask={shouldDeleteTask}
+          showExportChecklist={group === DashboardModel.BOOKING}
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
           tasks={tasks}
@@ -74,6 +77,7 @@ TaskPane.propTypes = {
   className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
   fetchPdfGeneratorUrl: PropTypes.func.isRequired,
+  group: PropTypes.string.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
   historicalCheckListData: PropTypes.arrayOf(PropTypes.shape({
@@ -106,6 +110,7 @@ const mapStateToProps = state => ({
   isAssigned: dashboardSelectors.isAssigned(state),
   pdfGeneratorConstant: selectors.pdfUrlConstants(state),
   pdfExportPayload: taskSelectors.getPDFExportPayload(state),
+  group: dashboardSelectors.groupName(state),
 });
 
 const mapDispatchToProps = dispatch => ({
