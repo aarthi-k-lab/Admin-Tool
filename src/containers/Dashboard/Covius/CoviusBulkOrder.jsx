@@ -208,7 +208,9 @@ class CoviusBulkOrder extends React.PureComponent {
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
           <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
-          {this.renderResults()}
+          <Grid item xs={10}>
+            {this.renderResults()}
+          </Grid>
         </Grid>
       </>
     );

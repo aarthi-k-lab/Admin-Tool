@@ -1,13 +1,23 @@
 .failedTab {
-    margin: 0rem 0rem -1.5rem -8rem !important;
-    color: red;
+  margin: -7rem -2.5rem -1.5rem -8rem !important;
+  color: red;
+  font-size: 14px !important;
 }
 
 .passedTab {
-    margin: 0rem 0rem -1.5rem -8rem !important;
-    color: green;
+  margin: -7rem -2.5rem -1.5rem -8rem !important;
+  color: green;
+  font-size: 14px !important;
 }
 
 .uploadTab {
-    margin: 0rem 0rem -1.5rem -8rem !important;
+  margin: -7rem -2.5rem -1.5rem -8rem !important;
+  font-size: 14px !important;
+}
+
+.tabStyle {
+  margin: 1rem -6rem -6rem -5rem !important;
+  font-size: 1rem !important;
+  min-width: 20rem !important;
+  padding: 0rem !important;
 }
