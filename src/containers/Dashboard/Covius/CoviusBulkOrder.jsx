@@ -14,7 +14,6 @@ import UserNotification from 'components/UserNotification';
 import ErrorIcon from '@material-ui/icons/Error';
 import { selectors, operations } from 'ducks/dashboard';
 import { PropTypes } from 'prop-types';
-import ReactTable from 'react-table';
 import TabView from './TabView';
 
 
@@ -171,54 +170,13 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-  renderTableData() {
-    const { tableData } = this.props;
-    return (
-      <Grid container direction="column">
-        <div styleName="table-container">
-          <div styleName="height-limiter">
-            <ReactTable
-              className="-striped -highlight"
-              columns={[
-                {
-                  Header: 'LOAN NUMBER', accessor: 'loanNumber', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
-                },
-                {
-                  Header: 'PID', accessor: 'pid', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
-                },
-                {
-                  Header: 'EVAL ID', accessor: 'evalId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
-                },
-                {
-                  Header: 'STATUS', accessor: 'statusMessage', minWidth: 700, maxWidth: 1000, style: { width: '54%' }, headerStyle: { textAlign: 'left' },
-                },
-              ]}
-              data={R.flatten(tableData) || []}
-              defaultPageSize={25}
-              /* eslint-disable-next-line */
-              getTrProps={(state, rowInfo, column) => {
-                return {
-                  /* eslint-disable-next-line */
-                  style: { background: !rowInfo ? '' : (rowInfo.row.statusMessage === 'Successful' ? '' : '#ffe1e1') },
-                };
-              }}
-              pageSizeOptions={[10, 20, 25, 50, 100]}
-              styleName="table"
-            />
-          </div>
-        </div>
-      </Grid>
-    );
-  }
 
   renderResults() {
     const { resultData } = this.props;
     if (resultData && !R.isEmpty(resultData)) {
       return (
         <Grid item xs={12}>
-          <TabView />
-          {this.renderTableData()}
-
+          <TabView tableData={resultData} />
           <div styleName="errorSvginfo">
             <ErrorIcon styleName="errorSvg" />
             <Button
@@ -226,7 +184,7 @@ class CoviusBulkOrder extends React.PureComponent {
               color="primary"
               margin="normal"
               startIcon={<ErrorIcon styleName="errorSvg" />
-            }
+              }
               styleName="submitButton"
               variant="contained"
             >
@@ -240,7 +198,6 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <Grid item xs={12}>
         <TabView />
-        {this.renderTableData()}
 
         <div styleName="errorSvginfo">
           <ErrorIcon styleName="errorSvg" />
@@ -253,7 +210,7 @@ class CoviusBulkOrder extends React.PureComponent {
             styleName="submitButton"
             variant="contained"
           >
-              DOWNLOAD EXCEL TO VERIFY
+            DOWNLOAD EXCEL TO VERIFY
           </Button>
         </div>
       </Grid>
@@ -305,11 +262,6 @@ CoviusBulkOrder.defaultProps = {
   onFailedLoanValidation: () => { },
   resultData: [],
   resultOperation: { level: '', status: '' },
-  tableData: [
-    {
-      loanNumber: '', pid: 0, evalId: 0, statusMessage: '',
-    },
-  ],
 };
 
 CoviusBulkOrder.propTypes = {
@@ -327,21 +279,11 @@ CoviusBulkOrder.propTypes = {
     level: PropTypes.string,
     status: PropTypes.string,
   }),
-  tableData: PropTypes.arrayOf(
-    PropTypes.shape({
-      evalId: PropTypes.string,
-      loanNumber: PropTypes.string,
-      pid: PropTypes.string,
-      statusMessage: PropTypes.string,
-    }),
-  ),
 };
 
 const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
-  tableData: selectors.tableData(state),
-
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -23,13 +23,6 @@
     /* float: left; */
     padding: 0 30% 0 20%;
   }
-
-  .table {
-    flex-basis: 60%;
-    text-align: left !important;
-  
-    /* margin: 0 0.5rem; */
-  }
   
   .regColumn {
     width: 15%;
@@ -90,16 +83,4 @@
   
   .submitButton {
     margin-right: 1rem !important;
-  }
-
-  .table-container {
-    display: flex;
-    flex-grow: 1;
-    max-width: 100%;
-  }
-  
-  .height-limiter {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
   }

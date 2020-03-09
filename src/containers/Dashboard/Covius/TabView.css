@@ -16,8 +16,26 @@
 }
 
 .tabStyle {
-  margin: 1rem -6rem -6rem -5rem !important;
+  margin: 1rem -5rem -3rem -5rem !important;
   font-size: 1rem !important;
-  min-width: 20rem !important;
+  min-width: 40rem !important;
   padding: 0rem !important;
+  min-height:10rem !important;
+}
+
+.table-container {
+  display: flex;
+  flex-grow: 1;
+  max-width: 100%;
+}
+
+.height-limiter {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+}
+
+.table {
+  flex-basis: 60%;
+  text-align: left !important;
 }
