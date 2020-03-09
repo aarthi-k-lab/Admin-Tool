@@ -32,6 +32,7 @@ import {
   SLA_RULES_PROCESSED,
   SAVE_RULE_RESPONSE,
   CLEAR_RULE_RESPONSE,
+  SET_SLA_VALUES,
 } from './types';
 
 const FAILED = 'failed';
@@ -294,6 +295,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         ruleResponse: null,
+      };
+    }
+    case SET_SLA_VALUES: {
+      return {
+        ...state,
+        selectedSLAvalues: action.payload,
       };
     }
     default:

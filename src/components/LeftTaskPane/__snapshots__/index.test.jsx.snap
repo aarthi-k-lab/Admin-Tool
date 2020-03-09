@@ -91,7 +91,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
             onTouchStart={[Function]}
             style={
               Object {
-                "marginLeft": "3rem",
+                "marginLeft": "2rem",
               }
             }
             tabIndex={0}

@@ -58,10 +58,17 @@ import {
   RESOLUTION_DROP_DOWN_VALUES,
   SET_TRIAL_RESPONSE,
   DISABLE_TRIAL_BUTTON,
+  DISCARD_EVAL_RESPONSE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
+    case DISCARD_EVAL_RESPONSE: {
+      return {
+        ...state,
+        evalInsertionStatus: null,
+      };
+    }
     case STORE_EVALID_RESPONSE: {
       return {
         ...state,

@@ -230,6 +230,17 @@ const getFilter = state => R.pathOr(null, ['tasksAndChecklist', 'filter'], state
 const getSlaRulesProcessed = state => R.pathOr(true, ['tasksAndChecklist', 'slaRulesprocessed'], state);
 const getRuleResponse = state => R.pathOr('', ['tasksAndChecklist', 'ruleResponse'], state);
 
+const getPDFExportPayload = (state) => {
+  const payload = {
+    checklistId: R.pathOr('', ['tasksAndChecklist', 'processId'], state),
+    event: getChecklistTemplate(state),
+    disposition: 'NA',
+    assignedTo: R.pathOr('', ['user', 'userDetails', 'email'], state),
+    dispositionDate: R.pathOr(new Date().toISOString(), ['tasksAndChecklist', 'taskTree', 'createdDate'], state),
+    resolutionId: R.pathOr('', ['tasksAndChecklist', 'selectedSLAvalues', 'resolutionId'], state),
+  };
+  return payload;
+};
 
 const selectors = {
   getChecklistItems,
@@ -275,6 +286,7 @@ const selectors = {
   getSlaRulesProcessed,
   getRuleResponse,
   getProcessId,
+  getPDFExportPayload,
 };
 
 export default selectors;

@@ -30,6 +30,11 @@ class LabelWithIcon extends React.PureComponent {
     this.handleValueChange = this.handleValueChange.bind(this);
   }
 
+  componentDidMount() {
+    const { resolutionId, title, triggerSetSLAvalues } = this.props;
+    triggerSetSLAvalues(resolutionId, title);
+  }
+
 
   // componentWillReceiveProps(props) {
   //   const { resolutionId } = props;
@@ -71,8 +76,9 @@ class LabelWithIcon extends React.PureComponent {
 
   handleRunAuditRulesClick = () => {
     const { resolutionText: resolutionId } = this.state;
-    const { triggerResolutionIdStats, title } = this.props;
+    const { triggerResolutionIdStats, title, triggerSetSLAvalues } = this.props;
     const auditRuleType = R.contains('Post', title) ? 'post' : 'pre';
+    triggerSetSLAvalues(resolutionId, auditRuleType);
     if (resolutionId) {
       triggerResolutionIdStats(resolutionId, auditRuleType);
     }
@@ -91,7 +97,9 @@ class LabelWithIcon extends React.PureComponent {
   }
 
   handleValueChange = (event) => {
+    const { title, triggerSetSLAvalues } = this.props;
     this.setState({ resolutionText: event.target.value });
+    triggerSetSLAvalues(event.target.value, title);
   };
 
   handleAlert() {
@@ -224,12 +232,14 @@ LabelWithIcon.propTypes = {
   title: PropTypes.string.isRequired,
   triggerFilterRules: PropTypes.string.isRequired,
   triggerResolutionIdStats: PropTypes.func.isRequired,
+  triggerSetSLAvalues: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   triggerResolutionIdStats: operations.triggerResolutionIdStats(dispatch),
   triggerFilterRules: operations.triggerFilterRules(dispatch),
   clearRuleResponse: operations.clearRuleResponse(dispatch),
+  triggerSetSLAvalues: operations.triggerSetSLAvalues(dispatch),
 });
 
 const mapStateToProps = state => ({

@@ -44,6 +44,7 @@ import {
   TRIAL_TASK,
   INSERT_EVALID,
   PROCESS_COVIUS_BULK,
+  DISCARD_EVAL_RESPONSE,
 } from './types';
 
 
@@ -248,8 +249,13 @@ const onTrialTaskAction = payload => ({
   payload,
 });
 
+const discardEvalResponse = () => ({
+  type: DISCARD_EVAL_RESPONSE,
+});
+
 export {
   autoSave,
+  discardEvalResponse,
   clearDisposition,
   clearFirstVisit,
   displayAssign,

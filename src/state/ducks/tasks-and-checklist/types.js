@@ -41,7 +41,7 @@ const FILTER_RULES = 'app/tasks-and-checklist/FILTER_RULES';
 const SLA_RULES_PROCESSED = 'app/tasks-and-checklist/SLA_RULES_PROCESSED';
 const SAVE_RULE_RESPONSE = 'app/tasks-and-checklist/SAVE_RULE_RESPONSE';
 const CLEAR_RULE_RESPONSE = 'app/tasks-and-checklist/CLEAR_RULE_RESPONSE';
-
+const SET_SLA_VALUES = 'app/tasks-and-checklist/SET_SLA_VALUES';
 
 export {
   GET_NEXT_CHECKLIST,
@@ -87,5 +87,5 @@ export {
   SLA_RULES_PROCESSED,
   SAVE_RULE_RESPONSE,
   CLEAR_RULE_RESPONSE,
-
+  SET_SLA_VALUES,
 };

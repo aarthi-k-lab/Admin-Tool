@@ -27,6 +27,7 @@ import {
   GET_RESOLUTION_ID_STATS,
   FILTER_RULES,
   CLEAR_RULE_RESPONSE,
+  SET_SLA_VALUES,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -183,6 +184,13 @@ const discardRuleResponse = () => ({
   type: CLEAR_RULE_RESPONSE,
 });
 
+const setSLAvalues = (resolutionId, auditRuleType) => ({
+  type: SET_SLA_VALUES,
+  payload: {
+    resolutionId, auditRuleType,
+  },
+});
+
 export {
   getNextChecklist,
   getPrevChecklist,
@@ -212,4 +220,5 @@ export {
   setResolutionIdStats,
   setFilterRules,
   discardRuleResponse,
+  setSLAvalues,
 };
