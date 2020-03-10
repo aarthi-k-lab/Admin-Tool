@@ -69,12 +69,10 @@ class TabView extends React.Component {
             data={tableData || []}
             defaultPageSize={25}
             /* eslint-disable-next-line */
-            getTrProps={(state, rowInfo, column) => {
-              return {
-                /* eslint-disable-next-line */
-                style: { background: !rowInfo ? '' : (rowInfo.row.success === true ? '' : '#ffe1e1') },
-              };
-            }}
+            // getTrProps={(state, rowInfo, column) => {
+            //   return {
+            //   };
+            // }}
             pageSizeOptions={[10, 20, 25, 50, 100]}
             styleName="table"
           />
@@ -88,7 +86,8 @@ class TabView extends React.Component {
     const { tableData } = this.props;
     return (
       <>
-        <Paper color="default" position="static" style={{ height: '4rem' }}>
+        <Paper color="default" position="static" style={{ height: '3rem' }}>
+
           <Tabs
             indicatorColor="primary"
             onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
@@ -98,23 +97,24 @@ class TabView extends React.Component {
             <Tab
               icon={<FiberManualRecordIcon styleName="failedTab" />}
               label="Failed"
-              styleName="tabStyle"
               {...a11yProps(0)}
+              styleName="tabStyle"
             />
             <Tab
               icon={<FiberManualRecordIcon styleName="passedTab" />}
               label="Passed"
-              styleName="tabStyle"
               {...a11yProps(1)}
+              styleName="tabStyle"
             />
             <Tab
               icon={<PublishIcon styleName="uploadTab" />}
               label="Upload"
-              styleName="tabStyle"
               {...a11yProps(3)}
+              styleName="tabStyle"
             />
           </Tabs>
         </Paper>
+
         <TabPanel index={0} value={value}>
           {this.renderTableData(R.filter(row => row.success === false, tableData), 'failure')}
         </TabPanel>
@@ -124,6 +124,7 @@ class TabView extends React.Component {
         <TabPanel index={2} value={value}>
           {this.renderTableData()}
         </TabPanel>
+
       </>
     );
   }

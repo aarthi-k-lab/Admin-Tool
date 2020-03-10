@@ -526,9 +526,11 @@ const reducer = (state = { firstVisit: true }, action) => {
 
     case SET_COVIUS_BULK_UPLOAD_RESULT: {
       const resultData = action.payload;
+      const resultOperation = {};
       return {
         ...state,
         resultData,
+        resultOperation,
         loading: false,
       };
     }

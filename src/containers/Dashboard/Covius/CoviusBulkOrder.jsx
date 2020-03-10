@@ -8,8 +8,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import './CoviusBulkOrder.css';
 import * as R from 'ramda';
-import Simpleselect from 'react-select';
+import Select from '@material-ui/core/Select';
 import Loader from 'components/Loader/Loader';
+import MenuItem from '@material-ui/core/MenuItem';
 import UserNotification from 'components/UserNotification';
 import ErrorIcon from '@material-ui/icons/Error';
 import { selectors, operations } from 'ducks/dashboard';
@@ -17,11 +18,11 @@ import { PropTypes } from 'prop-types';
 import TabView from './TabView';
 
 
-const validLoanEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
-const validateLoanFormat = (loanNumbers) => {
+const validCaseEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
+const validateCaseFormat = (caseIds) => {
   let isValid = true;
   // eslint-disable-next-line
-  if (validLoanEntries.test(loanNumbers)) {
+  if (validCaseEntries.test(caseIds)) {
     isValid = false;
   }
   return isValid;
@@ -32,7 +33,7 @@ class CoviusBulkOrder extends React.PureComponent {
     super(props);
     this.csvLink = React.createRef();
     this.state = {
-      loanNumbers: '',
+      caseIds: '',
       isSubmitDisabled: 'disabled',
       selectedEventName: '',
       selectedEventCategory: '',
@@ -41,51 +42,53 @@ class CoviusBulkOrder extends React.PureComponent {
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
   }
 
-  OnSubmitLoans = () => {
-    const { loanNumbers } = this.state;
+  OnSubmitCases = () => {
+    const { caseIds } = this.state;
     const { onCoviusBulkSubmit, onFailedLoanValidation } = this.props;
-    if (validateLoanFormat(loanNumbers)) {
+    if (validateCaseFormat(caseIds)) {
       this.setState({ isSubmitDisabled: 'disabled' });
-      const loans = loanNumbers.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-      const loanNumbersList = new Set(loans);
+      const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+      const caseIdsList = new Set(cases);
       const payload = {
-        loanNumbers: [...loanNumbersList],
+        caseIds: [...caseIdsList],
       };
       onCoviusBulkSubmit(payload);
     } else {
       const payload = {
         level: 'error',
-        status: 'Please enter loan number(s) in correct format. Only comma and newline separated loan numbers are accepted',
+        status: 'Please enter case id(s) in correct format. Only comma and newline separated case numbers are accepted.',
       };
       onFailedLoanValidation(payload);
     }
   }
 
-  handleLoanChange = (event) => {
+  handleCaseChange = (event) => {
     const { selectedEventName, selectedEventCategory } = this.state;
     this.setState({
-      loanNumbers: event.target.value,
+      caseIds: event.target.value,
       isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
     });
   }
 
-  handleEventName = (eventName) => {
-    const { loanNumbers, selectedEventCategory } = this.state;
+  handleEventName = (event) => {
+    const { caseIds, selectedEventCategory } = this.state;
+    const eventName = event.target.value;
     let disableSubmit = '';
-    disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(loanNumbers) ? '' : 'disabled';
+    disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(caseIds) ? '' : 'disabled';
     this.setState({ selectedEventName: eventName, isSubmitDisabled: disableSubmit });
   }
 
-  handleEventCategory = (eventCategory) => {
-    const { loanNumbers, selectedEventName } = this.state;
+  handleEventCategory = (event) => {
+    const { caseIds, selectedEventName } = this.state;
+    const eventCategory = event.target.value;
     let disableSubmit = '';
-    disableSubmit = !R.isEmpty(eventCategory) && !R.isEmpty(selectedEventName) && !R.isEmpty(loanNumbers) ? '' : 'disabled';
+    disableSubmit = !R.isEmpty(eventCategory) && !R.isEmpty(selectedEventName) && !R.isEmpty(caseIds) ? '' : 'disabled';
     this.setState({ selectedEventCategory: eventCategory, isSubmitDisabled: disableSubmit });
   }
 
   renderNotepadArea() {
     const {
-      loanNumbers, isSubmitDisabled, selectedEventName, selectedEventCategory,
+      caseIds, isSubmitDisabled, selectedEventName, selectedEventCategory,
     } = this.state;
     const techCompanies = [
       { label: 'Apple', value: 1 },
@@ -112,11 +115,17 @@ class CoviusBulkOrder extends React.PureComponent {
           margin: '0rem 0.5rem 2rem 0.5rem',
         }}
         >
-          <Simpleselect
-            onChange={category => this.handleEventCategory(category)}
-            options={techCompanies}
+          <Select
+            onChange={this.handleEventCategory}
+            styleName="drop-down-select"
             value={selectedEventCategory}
-          />
+          >
+            {techCompanies.map(item => (
+              <MenuItem key={item} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </Select>
 
         </div>
         <div styleName="loan-numbers">
@@ -131,11 +140,13 @@ class CoviusBulkOrder extends React.PureComponent {
           margin: '0rem 0.5rem 2rem 0.5rem',
         }}
         >
-          <Simpleselect
+          <Select
             onChange={event => this.handleEventName(event)}
-            options={techCompanies}
+            styleName="drop-down-select"
             value={selectedEventName}
-          />
+          >
+            {techCompanies.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+          </Select>
 
         </div>
         <span styleName="loan-numbers">
@@ -143,12 +154,12 @@ class CoviusBulkOrder extends React.PureComponent {
         </span>
         <div styleName="status-details">
           <TextField
-            id="loanNumbers"
+            id="caseIds"
             margin="normal"
             multiline
-            onChange={event => this.handleLoanChange(event)}
+            onChange={event => this.handleCaseChange(event)}
             style={{ height: '98%', width: '99%', resize: 'none' }}
-            value={loanNumbers}
+            value={caseIds}
           />
         </div>
         <div styleName="interactive-button">
@@ -158,7 +169,7 @@ class CoviusBulkOrder extends React.PureComponent {
               color="primary"
               disabled={isSubmitDisabled}
               margin="normal"
-              onClick={() => this.OnSubmitLoans()}
+              onClick={() => this.OnSubmitCases()}
               styleName="submitButton"
               variant="contained"
             >
@@ -177,7 +188,7 @@ class CoviusBulkOrder extends React.PureComponent {
       return (
         <Grid item xs={12}>
           <TabView tableData={resultData} />
-          <div styleName="errorSvginfo">
+          <div styleName="infoMessage">
             <ErrorIcon styleName="errorSvg" />
             <Button
               className="material-ui-button"
@@ -196,22 +207,9 @@ class CoviusBulkOrder extends React.PureComponent {
     }
 
     return (
-      <Grid item xs={12}>
-        <TabView />
-
-        <div styleName="errorSvginfo">
-          <ErrorIcon styleName="errorSvg" />
-          <Button
-            className="material-ui-button"
-            color="primary"
-            margin="normal"
-            startIcon={<ErrorIcon styleName="errorSvg" />
-            }
-            styleName="submitButton"
-            variant="contained"
-          >
-            DOWNLOAD EXCEL TO VERIFY
-          </Button>
+      <Grid item xs={6}>
+        <div styleName="infoMessage">
+          Processed loan information will be displayed here
         </div>
       </Grid>
     );
@@ -235,7 +233,7 @@ class CoviusBulkOrder extends React.PureComponent {
               </div>
             </Grid>
             <Grid item xs={4}>
-              <div styleName="title-row">
+              <div styleName="error-message">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                   : ''
@@ -284,10 +282,11 @@ CoviusBulkOrder.propTypes = {
 const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
+  resultOperation: selectors.resultOperation(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCoviusBulkSubmit: operations.onCoviusLoansSubmit(dispatch),
+  onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
   onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
 });
 

@@ -167,7 +167,7 @@ const onLoansSubmit = dispatch => (payload) => {
   dispatch(onLoansSubmitAction(payload));
 };
 
-const onCoviusLoansSubmit = dispatch => (payload) => {
+const onCoviusCasesSubmit = dispatch => (payload) => {
   dispatch(onCoviusBulkSubmit(payload));
 };
 
@@ -247,7 +247,7 @@ const operations = {
   onClearBulkUploadDataAction,
   onTrialTask,
   onEvalInsertion,
-  onCoviusLoansSubmit,
+  onCoviusCasesSubmit,
 };
 
 export default operations;

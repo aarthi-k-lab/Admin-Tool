@@ -1304,14 +1304,23 @@ function* onSelectTrialTask(payload) {
 }
 
 function* onCoviusBulkUpload(payload) {
-  const { loanNumbers } = payload.payload;
+  const { caseIds } = payload.payload;
   let response;
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
     response = yield call(Api.callPost,
-      `/api/release/api/process/covius?user=${userPrincipalName}`, loanNumbers);
+      `/api/release/api/process/covius?user=${userPrincipalName}`, caseIds);
+    response = [
+      {
+        loanNumber: '165231', pid: '0', evalId: '1', statusMessage: '', success: true,
+      }, {
+        caseId: '186482', statusMessage: '', success: false,
+      }, {
+        caseId: '848487', statusMessage: '', success: false,
+      },
+    ];
     if (response !== null) {
       yield put({
         type: SET_COVIUS_BULK_UPLOAD_RESULT,

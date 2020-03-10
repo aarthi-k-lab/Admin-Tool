@@ -1,86 +1,92 @@
+.interactive-button {
+  position: relative;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
 
-  
-  .interactive-button {
-    position: relative;
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
+.loan-numbers {
+  font-size: 1.1rem;
+  padding-left: 0.7rem;
+}
 
-  .loan-numbers {
-    font-size: 1.1rem;
-    padding-left: 0.7rem;
-  }
-  
-  .coviusLabel {
-    margin-left: -2rem;
-    font-size: 20px;
-    padding-top: 0.2rem;
-  }
-  
-  .title-row {
-    /* width: 50rem; */
-  
-    /* float: left; */
-    padding: 0 30% 0 20%;
-  }
-  
-  .regColumn {
-    width: 15%;
-  }
-  
-  .statusColumn {
-    width: 55%;
-  }
-  
-  .download-btn {
-    color: rgba(0, 0, 0, 0.87) !important;
-  }
-  
-  .status-details-parent {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: auto;
-    height: 97%;
-    background-color: #eaeaea;
-  }
-  
-  .status-details {
-    flex-grow: 1;
-    flex-basis: 0;
-    overflow: auto;
-    width: 95%;
-    margin: auto;
-    padding-top: 0.2rem;
-    padding-bottom: 0.5rem;
-  }
-  
-  .loan-activity {
-    align-self: stretch;
-    height: 93%;
-  }
-  
-  .newBulkUpload {
-    margin: 1rem 0rem 2rem 0rem;
-    font-weight: bold;
-    font-size: 1.2rem;
-    padding-left: 0.7rem;
-  }
+.coviusLabel {
+  margin-left: -2rem;
+  font-size: 20px;
+  padding-top: 0.2rem;
+}
 
-  .errorIcon {
-    float: right !important;
-  }
-  
-  .errorSvg {
-    width: 2rem !important;
-    height: 1rem !important;
-  }
+.error-message {
+  width: 50rem;
+  margin-left: 26rem;
+  padding: 0 30% 0 20%;
+}
 
-  .errorSvginfo {
-    float: right;
-  }
-  
-  .submitButton {
-    margin-right: 1rem !important;
-  }
+.regColumn {
+  width: 15%;
+}
+
+.statusColumn {
+  width: 55%;
+}
+
+.download-btn {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.drop-down-select {
+  margin-right: 4rem;
+  min-width: 18rem !important;
+}
+
+.status-details-parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  height: 97%;
+  background-color: #eaeaea;
+}
+
+.status-details {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  width: 95%;
+  margin: auto;
+  padding-top: 0.2rem;
+  padding-bottom: 0.5rem;
+}
+
+.loan-activity {
+  align-self: stretch;
+  height: 93%;
+}
+
+.newBulkUpload {
+  margin: 1rem 0rem 2rem 0rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding-left: 0.7rem;
+}
+
+.errorIcon {
+  float: right !important;
+}
+
+.errorSvg {
+  width: 2rem !important;
+  height: 1rem !important;
+}
+
+.infoMessage {
+  margin-left: 31rem;
+  width: 22rem;
+  margin-top: 3rem;
+  color: var(--grey-590);
+  font-weight: 700;
+}
+
+.submitButton {
+  margin-right: 1rem !important;
+}
