@@ -100,7 +100,7 @@ const BOOKING = {
 };
 
 const trial = {
-  groups: ['trial-mgr'],
+  groups: ['trial-mgr', 'feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr'],
 };
 
 const links = [
