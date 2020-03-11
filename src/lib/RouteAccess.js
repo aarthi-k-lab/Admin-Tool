@@ -52,7 +52,7 @@ const loanActivity = {
   path: '/loan-activity',
   name: 'loan-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw', 'feuw-mgr', 'feuw-beta', 'beta', 'proc', 'proc-mgr', 'beuw', 'beuw-mgr', 'util-mgr', 'stager', 'stager-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'postmodstager', 'booking', 'postmodstager-mgr', 'booking-mgr'],
 };
 
 const docGenBack = {
