@@ -195,7 +195,7 @@ class CoviusBulkOrder extends React.PureComponent {
               color="primary"
               margin="normal"
               startIcon={<ErrorIcon styleName="errorSvg" />
-            }
+              }
               styleName="submitButton"
               variant="contained"
             >
@@ -218,11 +218,7 @@ class CoviusBulkOrder extends React.PureComponent {
   render() {
     const { inProgress, resultOperation } = this.props;
     const title = '';
-    if (inProgress) {
-      return (
-        <Loader message="Please Wait" />
-      );
-    }
+
     return (
       <>
         <ContentHeader title={title}>
@@ -248,7 +244,11 @@ class CoviusBulkOrder extends React.PureComponent {
             {this.renderNotepadArea()}
           </Grid>
           <Grid item xs={10}>
-            {this.renderResults()}
+            {
+              inProgress
+                ? <Loader message="Loading" />
+                : this.renderResults()
+            }
           </Grid>
         </Grid>
       </>

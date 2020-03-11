@@ -11,12 +11,6 @@ import ReactTable from 'react-table';
 import * as R from 'ramda';
 import TabPanel from './TabPanel';
 
-
-const a11yProps = index => ({
-  id: `full-width-tab-${index}`,
-  'aria-controls': `full-width-tabpanel-${index}`,
-});
-
 class TabView extends React.Component {
   constructor(props) {
     super(props);
@@ -66,11 +60,11 @@ class TabView extends React.Component {
             columns={this.getColumns(status)}
             data={tableData || []}
             defaultPageSize={25}
-          /* eslint-disable-next-line */
-          // getTrProps={(state, rowInfo, column) => {
-          //   return {
-          //   };
-          // }}
+            /* eslint-disable-next-line */
+            // getTrProps={(state, rowInfo, column) => {
+            //   return {
+            //   };
+            // }}
             pageSizeOptions={[10, 20, 25, 50, 100]}
             styleName="table"
           />
@@ -85,30 +79,29 @@ class TabView extends React.Component {
 
     return (
       <>
-        <Paper color="default" position="static" styleName="padding">
-          <Tabs
-            indicatorColor="primary"
-            onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
-            styleName="padding"
-            textColor="primary"
-            value={value}
-            variant="fullWidth"
-          >
-            <Tab icon={<FiberManualRecordIcon styleName="failedTab" />} label="Failed" styleName="padding" {...a11yProps(0)} />
-            <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label="Passed" {...a11yProps(1)} />
-            <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" {...a11yProps(3)} />
+        <div>
+          <Paper color="default" position="static">
+            <Tabs
+              indicatorColor="primary"
+              onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
+              textColor="primary"
+              value={value}
+            >
+              <Tab icon={<FiberManualRecordIcon styleName="failedTab" />} label="Failed" />
+              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label="Passed" />
+              <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" />
 
-          </Tabs>
-        </Paper>
-        <TabPanel index={0} value={value}>
-
+            </Tabs>
+          </Paper>
+        </div>
+        <TabPanel index={0} styleName="tabStyle" value={value}>
           {this.renderTableData(R.filter(row => row.success === false, tableData), 'failure')}
         </TabPanel>
-        <TabPanel index={1} styleName="padding" value={value}>
+        <TabPanel index={1} styleName="tabStyle" value={value}>
           {this.renderTableData(R.filter(row => row.success === true, tableData), 'success')}
         </TabPanel>
         <TabPanel index={2} value={value}>
-         Upload
+            Upload
         </TabPanel>
       </>
     );
