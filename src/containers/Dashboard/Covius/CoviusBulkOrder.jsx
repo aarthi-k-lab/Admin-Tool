@@ -28,6 +28,22 @@ const validateCaseFormat = (caseIds) => {
   return isValid;
 };
 
+const events = [
+  { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
+  { category: 'X Request', label: 'Post Data', value: 2 },
+  { category: 'Y Request', label: 'Get Data', value: 3 },
+  { category: 'X Request', label: 'Print Data', value: 4 },
+  { category: 'Fulfillment Request', label: 'Send Data', value: 5 },
+];
+
+const getEventCategories = [
+  { label: 'Fulfillment Request', value: 1 },
+  { label: 'X Request', value: 2 },
+  { label: 'Y Request', value: 3 },
+];
+
+const getEventNames = category => R.filter(item => item.category === category, events);
+
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -37,6 +53,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isSubmitDisabled: 'disabled',
       selectedEventName: '',
       selectedEventCategory: '',
+      eventNames: [],
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -79,25 +96,55 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleEventCategory = (event) => {
-    const { caseIds, selectedEventName } = this.state;
     const eventCategory = event.target.value;
-    let disableSubmit = '';
-    disableSubmit = !R.isEmpty(eventCategory) && !R.isEmpty(selectedEventName) && !R.isEmpty(caseIds) ? '' : 'disabled';
-    this.setState({ selectedEventCategory: eventCategory, isSubmitDisabled: disableSubmit });
+    const eventNames = getEventNames(eventCategory);
+    this.setState({
+      selectedEventCategory: eventCategory,
+      isSubmitDisabled: 'disabled',
+      selectedEventName: '',
+      eventNames,
+    });
+  }
+
+  renderCategoryDropDown = () => {
+    const { selectedEventCategory } = this.state;
+    return (
+      <div>
+        <Select
+          label="category"
+          onChange={this.handleEventCategory}
+          styleName="drop-down-select"
+          value={selectedEventCategory}
+        >
+          {getEventCategories.map(item => (
+            <MenuItem key={item} value={item.label}>
+              {item.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+    );
+  }
+
+  renderNamesDropDown(eventNames) {
+    const { selectedEventName } = this.state;
+    return (
+      <div>
+        <Select
+          onChange={event => this.handleEventName(event)}
+          styleName="drop-down-select"
+          value={selectedEventName}
+        >
+          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+        </Select>
+      </div>
+    );
   }
 
   renderNotepadArea() {
     const {
-      caseIds, isSubmitDisabled, selectedEventName, selectedEventCategory,
+      caseIds, isSubmitDisabled, eventNames,
     } = this.state;
-    const techCompanies = [
-      { label: 'Apple', value: 1 },
-      { label: 'Facebook', value: 2 },
-      { label: 'Netflix', value: 3 },
-      { label: 'Tesla', value: 4 },
-      { label: 'Amazon', value: 5 },
-      { label: 'Alphabet', value: 6 },
-    ];
     return (
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
@@ -111,23 +158,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <ErrorIcon styleName="errorSvg" />
           </span>
         </div>
-        <div style={{
-          margin: '0rem 0.5rem 2rem 0.5rem',
-        }}
-        >
-          <Select
-            onChange={this.handleEventCategory}
-            styleName="drop-down-select"
-            value={selectedEventCategory}
-          >
-            {techCompanies.map(item => (
-              <MenuItem key={item} value={item.value}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </Select>
-
-        </div>
+        {this.renderCategoryDropDown()}
         <div styleName="loan-numbers">
           <span>
             {'Event Name'}
@@ -136,19 +167,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <ErrorIcon styleName="errorSvg" />
           </span>
         </div>
-        <div style={{
-          margin: '0rem 0.5rem 2rem 0.5rem',
-        }}
-        >
-          <Select
-            onChange={event => this.handleEventName(event)}
-            styleName="drop-down-select"
-            value={selectedEventName}
-          >
-            {techCompanies.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
-          </Select>
-
-        </div>
+        {this.renderNamesDropDown(eventNames)}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>

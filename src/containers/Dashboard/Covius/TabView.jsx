@@ -26,13 +26,13 @@ class TabView extends React.Component {
           Header: 'LOAN NUMBER', accessor: 'loanNumber', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'PID', accessor: 'pid', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'EVAL ID', accessor: 'evalId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID', accessor: 'requestId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'STATUS', accessor: 'statusMessage', minWidth: 700, maxWidth: 1000, style: { width: '54%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'evalId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
       ];
     }
@@ -42,7 +42,7 @@ class TabView extends React.Component {
         Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'statusMessage', minWidth: 700, maxWidth: 1000, style: { width: '54%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'statusMessage', minWidth: 100, maxWidth: 300, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }

@@ -1314,11 +1314,11 @@ function* onCoviusBulkUpload(payload) {
       `/api/release/api/process/covius?user=${userPrincipalName}`, caseIds);
     response = [
       {
-        loanNumber: '165231', pid: '0', evalId: '1', statusMessage: '', success: true,
+        loanNumber: '165231', caseId: '7477', evalId: '17547', requestId: '5425', success: true,
       }, {
-        caseId: '186482', statusMessage: '', success: false,
+        caseId: '186482', statusMessage: 'Enter correct data', success: false,
       }, {
-        caseId: '848487', statusMessage: '', success: false,
+        caseId: '848487', statusMessage: 'Enter correct data', success: false,
       },
     ];
     if (response !== null) {
