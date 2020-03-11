@@ -10,11 +10,11 @@ import './CoviusBulkOrder.css';
 import * as R from 'ramda';
 import Select from '@material-ui/core/Select';
 import Loader from 'components/Loader/Loader';
-import MenuItem from '@material-ui/core/MenuItem';
 import UserNotification from 'components/UserNotification';
 import ErrorIcon from '@material-ui/icons/Error';
 import { selectors, operations } from 'ducks/dashboard';
 import { PropTypes } from 'prop-types';
+import MenuItem from '@material-ui/core/MenuItem';
 import TabView from './TabView';
 
 
@@ -181,21 +181,21 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-
   renderResults() {
     const { resultData } = this.props;
     if (resultData && !R.isEmpty(resultData)) {
       return (
         <Grid item xs={12}>
           <TabView tableData={resultData} />
-          <div styleName="infoMessage">
+
+          <div styleName="errorSvginfo">
             <ErrorIcon styleName="errorSvg" />
             <Button
               className="material-ui-button"
               color="primary"
               margin="normal"
               startIcon={<ErrorIcon styleName="errorSvg" />
-              }
+            }
               styleName="submitButton"
               variant="contained"
             >
@@ -208,7 +208,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
     return (
       <Grid item xs={6}>
-        <div styleName="infoMessage">
+        <div styleName="errorSvginfo">
           Processed loan information will be displayed here
         </div>
       </Grid>
@@ -233,7 +233,7 @@ class CoviusBulkOrder extends React.PureComponent {
               </div>
             </Grid>
             <Grid item xs={4}>
-              <div styleName="error-message">
+              <div styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                   : ''
@@ -244,7 +244,9 @@ class CoviusBulkOrder extends React.PureComponent {
           <Controls />
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
-          <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
+          <Grid item xs={2}>
+            {this.renderNotepadArea()}
+          </Grid>
           <Grid item xs={10}>
             {this.renderResults()}
           </Grid>
@@ -283,6 +285,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
+
 });
 
 const mapDispatchToProps = dispatch => ({

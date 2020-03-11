@@ -1,39 +1,42 @@
 .failedTab {
-  margin: -0.5rem -2.5rem -1.5rem -8rem !important;
+  margin: 0rem 0rem -1.5rem -8rem !important;
   color: red;
-  font-size: 14px !important;
 }
 
 .passedTab {
-  margin: -0.5rem -2.5rem -1.5rem -8rem !important;
+  margin: 0rem 0rem -1.5rem -8rem !important;
   color: green;
-  font-size: 14px !important;
 }
 
 .uploadTab {
-  margin: -0.5rem -2.5rem -1.5rem -8rem !important;
-  font-size: 14px !important;
-}
-
-.tabStyle {
-  min-height: 0rem !important;
+  margin: 0rem 0rem -1.5rem -8rem !important;
 }
 
 .table-container {
-  margin-left: -2.35rem;
-  margin-top: -2.5rem;
-  display: flex;
-  flex-grow: 1;
-  max-width: 100%;
+display: flex;
+flex-grow: 1;
+max-width: 100%;
+}
+.tabStyle {
+margin: 1rem -5rem -3rem -5rem !important;
+font-size: 1rem !important;
+min-width: 40rem !important;
+padding: 0rem !important;
+min-height:10rem !important;
 }
 
 .height-limiter {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
+display: flex;
+flex-direction: column;
+flex-basis: 100%;
+width: 0;
 }
 
 .table {
-  flex-basis: 60%;
-  text-align: left !important;
+flex-basis: 60%;
+text-align: left !important;
+padding: 0 !important;
+}
+.padding {
+padding: 0 !important;
 }
