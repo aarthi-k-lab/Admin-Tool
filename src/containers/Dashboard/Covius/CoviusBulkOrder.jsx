@@ -10,11 +10,11 @@ import './CoviusBulkOrder.css';
 import * as R from 'ramda';
 import Select from '@material-ui/core/Select';
 import Loader from 'components/Loader/Loader';
-import MenuItem from '@material-ui/core/MenuItem';
 import UserNotification from 'components/UserNotification';
 import ErrorIcon from '@material-ui/icons/Error';
 import { selectors, operations } from 'ducks/dashboard';
 import { PropTypes } from 'prop-types';
+import MenuItem from '@material-ui/core/MenuItem';
 import TabView from './TabView';
 
 
@@ -28,6 +28,22 @@ const validateCaseFormat = (caseIds) => {
   return isValid;
 };
 
+const events = [
+  { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
+  { category: 'X Request', label: 'Post Data', value: 2 },
+  { category: 'Y Request', label: 'Get Data', value: 3 },
+  { category: 'X Request', label: 'Print Data', value: 4 },
+  { category: 'Fulfillment Request', label: 'Send Data', value: 5 },
+];
+
+const getEventCategories = [
+  { label: 'Fulfillment Request', value: 1 },
+  { label: 'X Request', value: 2 },
+  { label: 'Y Request', value: 3 },
+];
+
+const getEventNames = category => R.filter(item => item.category === category, events);
+
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -37,6 +53,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isSubmitDisabled: 'disabled',
       selectedEventName: '',
       selectedEventCategory: '',
+      eventNames: [],
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -79,25 +96,55 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleEventCategory = (event) => {
-    const { caseIds, selectedEventName } = this.state;
     const eventCategory = event.target.value;
-    let disableSubmit = '';
-    disableSubmit = !R.isEmpty(eventCategory) && !R.isEmpty(selectedEventName) && !R.isEmpty(caseIds) ? '' : 'disabled';
-    this.setState({ selectedEventCategory: eventCategory, isSubmitDisabled: disableSubmit });
+    const eventNames = getEventNames(eventCategory);
+    this.setState({
+      selectedEventCategory: eventCategory,
+      isSubmitDisabled: 'disabled',
+      selectedEventName: '',
+      eventNames,
+    });
+  }
+
+  renderCategoryDropDown = () => {
+    const { selectedEventCategory } = this.state;
+    return (
+      <div>
+        <Select
+          label="category"
+          onChange={this.handleEventCategory}
+          styleName="drop-down-select"
+          value={selectedEventCategory}
+        >
+          {getEventCategories.map(item => (
+            <MenuItem key={item} value={item.label}>
+              {item.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+    );
+  }
+
+  renderNamesDropDown(eventNames) {
+    const { selectedEventName } = this.state;
+    return (
+      <div>
+        <Select
+          onChange={event => this.handleEventName(event)}
+          styleName="drop-down-select"
+          value={selectedEventName}
+        >
+          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+        </Select>
+      </div>
+    );
   }
 
   renderNotepadArea() {
     const {
-      caseIds, isSubmitDisabled, selectedEventName, selectedEventCategory,
+      caseIds, isSubmitDisabled, eventNames,
     } = this.state;
-    const techCompanies = [
-      { label: 'Apple', value: 1 },
-      { label: 'Facebook', value: 2 },
-      { label: 'Netflix', value: 3 },
-      { label: 'Tesla', value: 4 },
-      { label: 'Amazon', value: 5 },
-      { label: 'Alphabet', value: 6 },
-    ];
     return (
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
@@ -111,23 +158,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <ErrorIcon styleName="errorSvg" />
           </span>
         </div>
-        <div style={{
-          margin: '0rem 0.5rem 2rem 0.5rem',
-        }}
-        >
-          <Select
-            onChange={this.handleEventCategory}
-            styleName="drop-down-select"
-            value={selectedEventCategory}
-          >
-            {techCompanies.map(item => (
-              <MenuItem key={item} value={item.value}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </Select>
-
-        </div>
+        {this.renderCategoryDropDown()}
         <div styleName="loan-numbers">
           <span>
             {'Event Name'}
@@ -136,19 +167,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <ErrorIcon styleName="errorSvg" />
           </span>
         </div>
-        <div style={{
-          margin: '0rem 0.5rem 2rem 0.5rem',
-        }}
-        >
-          <Select
-            onChange={event => this.handleEventName(event)}
-            styleName="drop-down-select"
-            value={selectedEventName}
-          >
-            {techCompanies.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
-          </Select>
-
-        </div>
+        {this.renderNamesDropDown(eventNames)}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
@@ -181,14 +200,14 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-
   renderResults() {
     const { resultData } = this.props;
     if (resultData && !R.isEmpty(resultData)) {
       return (
         <Grid item xs={12}>
           <TabView tableData={resultData} />
-          <div styleName="infoMessage">
+
+          <div styleName="errorSvginfo">
             <ErrorIcon styleName="errorSvg" />
             <Button
               className="material-ui-button"
@@ -208,7 +227,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
     return (
       <Grid item xs={6}>
-        <div styleName="infoMessage">
+        <div styleName="errorSvginfo">
           Processed loan information will be displayed here
         </div>
       </Grid>
@@ -218,11 +237,7 @@ class CoviusBulkOrder extends React.PureComponent {
   render() {
     const { inProgress, resultOperation } = this.props;
     const title = '';
-    if (inProgress) {
-      return (
-        <Loader message="Please Wait" />
-      );
-    }
+
     return (
       <>
         <ContentHeader title={title}>
@@ -233,7 +248,7 @@ class CoviusBulkOrder extends React.PureComponent {
               </div>
             </Grid>
             <Grid item xs={4}>
-              <div styleName="error-message">
+              <div styleName="title-row">
                 {(resultOperation && resultOperation.status)
                   ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                   : ''
@@ -244,9 +259,15 @@ class CoviusBulkOrder extends React.PureComponent {
           <Controls />
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
-          <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
+          <Grid item xs={2}>
+            {this.renderNotepadArea()}
+          </Grid>
           <Grid item xs={10}>
-            {this.renderResults()}
+            {
+              inProgress
+                ? <Loader message="Loading" />
+                : this.renderResults()
+            }
           </Grid>
         </Grid>
       </>
@@ -283,6 +304,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
+
 });
 
 const mapDispatchToProps = dispatch => ({

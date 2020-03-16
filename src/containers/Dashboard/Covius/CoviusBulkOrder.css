@@ -15,10 +15,18 @@
   padding-top: 0.2rem;
 }
 
-.error-message {
-  width: 50rem;
-  margin-left: 26rem;
+.title-row {
+  /* width: 50rem; */
+
+  /* float: left; */
   padding: 0 30% 0 20%;
+}
+
+.table {
+  flex-basis: 60%;
+  text-align: left !important;
+
+  /* margin: 0 0.5rem; */
 }
 
 .regColumn {
@@ -31,11 +39,6 @@
 
 .download-btn {
   color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.drop-down-select {
-  margin-right: 4rem;
-  min-width: 18rem !important;
 }
 
 .status-details-parent {
@@ -79,14 +82,27 @@
   height: 1rem !important;
 }
 
-.infoMessage {
-  margin-left: 31rem;
-  width: 22rem;
-  margin-top: 3rem;
-  color: var(--grey-590);
-  font-weight: 700;
+.errorSvginfo {
+  float: right;
 }
 
 .submitButton {
   margin-right: 1rem !important;
+}
+
+.table-container {
+  display: flex;
+  flex-grow: 1;
+  max-width: 100%;
+}
+
+.height-limiter {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+}
+
+.drop-down-select {
+  width: 90%;
+  margin: 0rem 2rem 2rem 0.75rem;
 }

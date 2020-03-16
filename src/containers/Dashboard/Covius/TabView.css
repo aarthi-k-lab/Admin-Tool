@@ -1,40 +1,36 @@
 .failedTab {
-  margin: -0.5rem -2.5rem -1.5rem -8rem !important;
   color: red;
-  font-size: 14px !important;
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .passedTab {
-  margin: -0.5rem -2.5rem -1.5rem -8rem !important;
   color: green;
-  font-size: 14px !important;
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .uploadTab {
-  margin: -0.5rem -2.5rem -1.5rem -8rem !important;
-  font-size: 14px !important;
-}
-
-.tabStyle {
-  min-height: 0rem !important;
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .table-container {
-  margin-left: -2.35rem;
-  margin-top: -2.5rem;
   display: flex;
   flex-grow: 1;
   max-width: 100%;
 }
 
 .height-limiter {
-  display: flex;
-  flex-direction: column;
   flex-basis: 100%;
+  width: 100%;
 }
 
 .table {
-  flex-basis: 60%;
+  flex-basis: 80%;
   text-align: left !important;
 }
 
@@ -58,4 +54,12 @@
 
 .uploadButton {
   margin: 2rem 0 0 51rem !important;
+}
+
+.tabStyle > div {
+  padding: 0rem !important; 
+}
+
+.tabStyle > span {
+  flex-direction: row !important;
 }
