@@ -25,6 +25,7 @@
     "airbrake-js": "^1.6.2",
     "classnames": "^2.2.6",
     "cross-fetch": "^3.0.0",
+    "ext-name": "^5.0.0",
     "hotkeys-js": "^3.6.14",
     "html-react-parser": "^0.10.0",
     "moment": "^2.24.0",
@@ -53,7 +54,8 @@
     "redux-saga": "^0.16.0",
     "svg-inline-loader": "^0.8.0",
     "sweetalert2-react": "^0.8.3",
-    "universal-cookie": "^3.0.4"
+    "universal-cookie": "^3.0.4",
+    "xlsx": "^0.15.5"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
