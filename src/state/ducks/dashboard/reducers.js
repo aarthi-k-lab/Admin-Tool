@@ -59,6 +59,7 @@ import {
   SET_TRIAL_RESPONSE,
   DISABLE_TRIAL_BUTTON,
   DISCARD_EVAL_RESPONSE,
+  SAVE_PROCESSED_FILE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -598,6 +599,13 @@ const reducer = (state = { firstVisit: true }, action) => {
         enableSendToUW: !action.payload.disableTrialTaskButton,
       };
     }
+
+    case SAVE_PROCESSED_FILE:
+      return {
+        ...state,
+        excelParsedData: action.payload,
+      };
+
     default:
       return state;
   }

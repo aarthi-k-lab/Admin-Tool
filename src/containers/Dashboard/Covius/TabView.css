@@ -37,3 +37,25 @@
   flex-basis: 60%;
   text-align: left !important;
 }
+
+.uploadImage {
+  font-size: 10rem !important;
+  margin: 6rem 8rem 0rem 49rem;
+  padding: 0rem;
+}
+
+.uploadPage {
+  height: 100%;
+}
+
+.uploadMsg {
+  font-size: 1.5rem;
+  align-items: center;
+  margin: 0rem 8rem 0rem 42rem;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.uploadButton {
+  margin: 2rem 0 0 51rem !important;
+}

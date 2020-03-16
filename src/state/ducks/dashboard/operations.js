@@ -41,6 +41,7 @@ import {
   onEvalInsertionAction,
   onCoviusBulkSubmit,
   discardEvalResponse,
+  processFileAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -203,6 +204,9 @@ const selectModReversal = dispatch => () => {
 
 const clearEvalResponse = dispatch => () => dispatch(discardEvalResponse());
 
+const onProcessFile = dispatch => (payload) => {
+  dispatch(processFileAction(payload));
+};
 
 const operations = {
   clearEvalResponse,
@@ -248,6 +252,7 @@ const operations = {
   onTrialTask,
   onEvalInsertion,
   onCoviusCasesSubmit,
+  onProcessFile,
 };
 
 export default operations;

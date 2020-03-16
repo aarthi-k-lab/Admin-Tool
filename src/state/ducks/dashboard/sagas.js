@@ -20,6 +20,7 @@ import {
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import processExcel from '../../../lib/excelParser';
 import { POST_COMMENT_SAGA } from '../comments/types';
 import selectors from './selectors';
 // import { mockData } from '../../../containers/LoanActivity/LoanActivity';
@@ -91,6 +92,8 @@ import {
   SET_TRIAL_RESPONSE,
   TRIAL_TASK,
   DISABLE_TRIAL_BUTTON,
+  PROCESS_FILE,
+  SAVE_PROCESSED_FILE,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1438,6 +1441,20 @@ function* manualInsertion(payload) {
   yield put({ type: HIDE_LOADER });
 }
 
+function* onUploadingFile(action) {
+  const file = action.payload;
+  if (file) {
+    const data = yield call(processExcel, file);
+    if (data) {
+      yield put({
+        type: SAVE_PROCESSED_FILE,
+        payload: data,
+      });
+    }
+    // yield call(Api.callPost, 'http://localhost:9090/upload', data);
+  }
+}
+
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
 }
@@ -1485,6 +1502,9 @@ function* watchOnTrialTask() {
   yield takeEvery(TRIAL_TASK, onSelectTrialTask);
 }
 
+function* watchOnUploadFile() {
+  yield takeEvery(PROCESS_FILE, onUploadingFile);
+}
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -1520,6 +1540,7 @@ export const TestExports = {
   watchOnSearchWithTask,
   watchOnTrialTask,
   watchCoviusBulkOrder,
+  watchOnUploadFile,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -1547,5 +1568,6 @@ export const combinedSaga = function* combinedSaga() {
     watchCompleteMyReview(),
     watchOnTrialTask(),
     watchCoviusBulkOrder(),
+    watchOnUploadFile(),
   ]);
 };

@@ -9,6 +9,11 @@ import './TabView.css';
 import { PropTypes } from 'prop-types';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
+import Button from '@material-ui/core/Button';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { operations, selectors } from 'ducks/dashboard';
+import extName from 'ext-name';
+import { connect } from 'react-redux';
 import TabPanel from './TabPanel';
 
 
@@ -17,12 +22,20 @@ const a11yProps = index => ({
   'aria-controls': `simple-tabpanel-${index}`,
 });
 
+const EXCEL_FORMATS = ['xlsx', 'xls'];
+
 class TabView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       value: 0,
+      isUploading: false,
     };
+  }
+
+  static getDerivedStateFromProps(props) {
+    const { getExcelFile } = props;
+    return { isUploading: !!R.isNil(getExcelFile) };
   }
 
   getColumns = (status) => {
@@ -58,6 +71,54 @@ class TabView extends React.Component {
     this.setState({ value: newValue });
   }
 
+
+  handleUpload = (event) => {
+    const { onProcessFile } = this.props;
+    console.log('EVENT', event.target.files[0]);
+    if (event.target.files[0]) {
+      const fileName = event.target.files[0].name;
+      const fileExtension = extName(fileName);
+      const ext = R.compose(
+        R.prop('ext'),
+        R.head,
+      )(fileExtension);
+      if (EXCEL_FORMATS.includes(ext)) {
+        onProcessFile(event.target.files[0]);
+      }
+      // handle else part
+    }
+    this.setState({ isUploading: true });
+  };
+
+  renderUploadPanel = () => {
+    const { isUploading } = this.state;
+    return (
+      <Grid container>
+        <div>
+          <div>
+            <CloudUploadIcon styleName="uploadImage" />
+            <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
+          </div>
+          <Button
+            color="primary"
+            component="label"
+            onChange={this.handleUpload}
+            style={{
+              label: 'uploadLabel',
+            }}
+            styleName="uploadButton"
+            variant="contained"
+          >
+            {isUploading ? 'UPLOAD' : 'UPLOADING...'}
+            <input
+              style={{ display: 'none' }}
+              type="file"
+            />
+          </Button>
+        </div>
+      </Grid>
+    );
+  }
 
   renderTableData = (tableData, status) => (
     <Grid container direction="column">
@@ -121,8 +182,8 @@ class TabView extends React.Component {
         <TabPanel index={1} value={value}>
           {this.renderTableData(R.filter(row => row.success === true, tableData), 'success')}
         </TabPanel>
-        <TabPanel index={2} value={value}>
-          {this.renderTableData()}
+        <TabPanel index={2} styleName="uploadPage" value={value}>
+          {this.renderUploadPanel()}
         </TabPanel>
 
       </>
@@ -131,6 +192,8 @@ class TabView extends React.Component {
 }
 
 TabView.propTypes = {
+  getExcelFile: PropTypes.shape.isRequired,
+  onProcessFile: PropTypes.func.isRequired,
   tableData: PropTypes.arrayOf(
     PropTypes.shape({
       evalId: PropTypes.string,
@@ -140,6 +203,15 @@ TabView.propTypes = {
     }),
   ),
 };
+
+const mapStateToProps = state => ({
+  getExcelFile: selectors.getUploadedFile(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onProcessFile: operations.onProcessFile(dispatch),
+});
+
 
 TabView.defaultProps = {
   tableData: [
@@ -153,4 +225,4 @@ TabView.defaultProps = {
   ],
 };
 
-export default TabView;
+export default connect(mapStateToProps, mapDispatchToProps)(TabView);

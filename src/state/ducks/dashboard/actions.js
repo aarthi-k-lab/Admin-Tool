@@ -45,6 +45,7 @@ import {
   INSERT_EVALID,
   PROCESS_COVIUS_BULK,
   DISCARD_EVAL_RESPONSE,
+  PROCESS_FILE,
 } from './types';
 
 
@@ -253,6 +254,11 @@ const discardEvalResponse = () => ({
   type: DISCARD_EVAL_RESPONSE,
 });
 
+const processFileAction = payload => ({
+  type: PROCESS_FILE,
+  payload,
+});
+
 export {
   autoSave,
   discardEvalResponse,
@@ -298,4 +304,5 @@ export {
   onTrialTaskAction,
   onEvalInsertionAction,
   onCoviusBulkSubmit,
+  processFileAction,
 };

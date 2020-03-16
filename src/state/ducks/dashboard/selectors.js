@@ -112,6 +112,7 @@ const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalRe
 const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
 const getTrialResponse = state => R.pathOr({}, ['dashboard', 'trialClosingResponse'], state);
 const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTrialTaskButton'], state);
+const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData'], state);
 
 const selectors = {
   enableEndShift,
@@ -171,6 +172,7 @@ const selectors = {
   getTrialResponse,
   disableTrialTaskButton,
   resultData,
+  getUploadedFile,
 };
 
 export default selectors;
