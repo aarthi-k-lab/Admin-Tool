@@ -15,6 +15,7 @@ import { operations, selectors } from 'ducks/dashboard';
 import extName from 'ext-name';
 import { connect } from 'react-redux';
 import TabPanel from './TabPanel';
+import ReUploadFile from './ReUploadFile';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 
@@ -24,12 +25,14 @@ class TabView extends React.Component {
     this.state = {
       value: 0,
       isUploading: false,
+      showUpload: true,
     };
   }
 
-  static getDerivedStateFromProps(props) {
-    const { getExcelFile } = props;
-    return { isUploading: !!R.isNil(getExcelFile) };
+  static getDerivedStateFromProps(nextProps) {
+    const { getExcelFile } = nextProps;
+    if (R.isNil(getExcelFile)) return { isUploading: false };
+    return { isUploading: false };
   }
 
   getColumns = (status) => {
@@ -78,17 +81,21 @@ class TabView extends React.Component {
       }
       // handle else part
     }
-    this.setState({ isUploading: true });
+    this.setState({ isUploading: true, showUpload: false });
   };
 
+  renderUploadFile = () => (
+    <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
+  );
+
   renderUploadPanel = () => {
-    const { isUploading } = this.state;
+    const { isUploading, showUpload } = this.state;
     return (
       <Grid container>
         <div>
           <div>
             <CloudUploadIcon styleName="uploadImage" />
-            <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
+            {showUpload ? this.renderUploadFile() : <ReUploadFile />}
           </div>
           <Button
             color="primary"
@@ -100,7 +107,7 @@ class TabView extends React.Component {
             styleName="uploadButton"
             variant="contained"
           >
-            {isUploading ? 'UPLOAD' : 'UPLOADING...'}
+            {isUploading ? 'UPLOADING...' : 'UPLOAD'}
             <input
               style={{ display: 'none' }}
               type="file"
