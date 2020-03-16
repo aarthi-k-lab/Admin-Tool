@@ -23,16 +23,16 @@ class TabView extends React.Component {
     if (status === 'success') {
       return [
         {
-          Header: 'LOAN NUMBER', accessor: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'LOAN NUMBER', accessor: 'LOAN_NUMBER', field: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'CASEID', field: 'UserFields.CASEID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Request ID', accessor: 'RequestId', minWidth: 300, maxWidth: 700, style: { width: '40%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID', accessor: 'RequestId', field: 'RequestId', minWidth: 300, maxWidth: 700, style: { width: '40%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'EVAL_ID', field: 'UserFields.EVAL_ID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
       ];
     }
@@ -74,14 +74,23 @@ class TabView extends React.Component {
 
   getTableData = (status) => {
     const { tableData } = this.props;
-    const fields = R.pluck('accessor', this.getColumns(status));
     if (status === 'success') {
-      return R.map(R.pickAll(fields), tableData.DocumentRequests);
+      const fields = R.pluck('field', this.getColumns(status));
+      const objects = [];
+      tableData.DocumentRequests.forEach((req) => {
+        const object = {};
+        R.forEach((field) => {
+          const array = field.split('.');
+          const { length, [length - 1]: last } = array;
+          object[`${last}`] = R.path(array, req);
+        }, fields);
+        objects.push(object);
+      });
+      return objects;
     }
-
+    const fields = R.pluck('accessor', this.getColumns(status));
     return R.map(R.pickAll(fields), tableData.invalidCases);
   }
-
 
   render() {
     const { value } = this.state;
