@@ -23,26 +23,25 @@ class TabView extends React.Component {
     if (status === 'success') {
       return [
         {
-          Header: 'LOAN NUMBER', accessor: 'loanNumber', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'LOAN NUMBER', accessor: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Request ID', accessor: 'requestId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID', accessor: 'RequestId', minWidth: 300, maxWidth: 700, style: { width: '40%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'evalId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
         },
       ];
     }
-
     return [
       {
         Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'statusMessage', minWidth: 100, maxWidth: 300, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -51,14 +50,14 @@ class TabView extends React.Component {
     this.setState({ value: newValue });
   }
 
-  renderTableData = (tableData, status) => (
+  renderTableData = status => (
     <Grid container direction="column">
       <div styleName="table-container">
         <div styleName="height-limiter">
           <ReactTable
             className="-striped -highlight"
             columns={this.getColumns(status)}
-            data={tableData || []}
+            data={this.getTableData(status) || []}
             defaultPageSize={25}
             /* eslint-disable-next-line */
             // getTrProps={(state, rowInfo, column) => {
@@ -73,35 +72,43 @@ class TabView extends React.Component {
     </Grid>
   );
 
+  getTableData = (status) => {
+    const { tableData } = this.props;
+    const fields = R.pluck('accessor', this.getColumns(status));
+    if (status === 'success') {
+      return R.map(R.pickAll(fields), tableData.DocumentRequests);
+    }
+
+    return R.map(R.pickAll(fields), tableData.invalidCases);
+  }
+
+
   render() {
     const { value } = this.state;
-    const { tableData } = this.props;
-
     return (
       <>
         <div>
-          <Paper color="default" position="static">
+          <Paper color="default">
             <Tabs
               indicatorColor="primary"
               onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
               textColor="primary"
               value={value}
             >
-              <Tab icon={<FiberManualRecordIcon styleName="failedTab" />} label="Failed" />
-              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label="Passed" />
-              <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" />
-
+              <Tab icon={<FiberManualRecordIcon styleName="failedTab" />} label="Failed" styleName="tabStyle" />
+              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label="Passed" styleName="tabStyle" />
+              <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
             </Tabs>
           </Paper>
         </div>
         <TabPanel index={0} styleName="tabStyle" value={value}>
-          {this.renderTableData(R.filter(row => row.success === false, tableData), 'failure')}
+          {this.renderTableData('failure')}
         </TabPanel>
         <TabPanel index={1} styleName="tabStyle" value={value}>
-          {this.renderTableData(R.filter(row => row.success === true, tableData), 'success')}
+          {this.renderTableData('success')}
         </TabPanel>
         <TabPanel index={2} value={value}>
-            Upload
+          Upload
         </TabPanel>
       </>
     );
@@ -109,26 +116,27 @@ class TabView extends React.Component {
 }
 
 TabView.propTypes = {
-  tableData: PropTypes.arrayOf(
-    PropTypes.shape({
-      evalId: PropTypes.string,
-      loanNumber: PropTypes.string,
-      pid: PropTypes.string,
-      statusMessage: PropTypes.string,
+  tableData: PropTypes.shape({
+    DocumentRequests: PropTypes.arrayOf({
+      UserDetails: PropTypes.shape({
+        CASEID: PropTypes.string,
+        EVAL_ID: PropTypes.string,
+        LOAN_NUMBER: PropTypes.string,
+      }),
+      RequestId: PropTypes.string,
     }),
-  ),
+    invalidCases: PropTypes.arrayOf({
+      caseId: PropTypes.string,
+      message: PropTypes.string,
+    }),
+  }),
 };
 
 TabView.defaultProps = {
-  tableData: [
-    {
-      loanNumber: '165231', pid: '0', evalId: '1', statusMessage: '', success: true,
-    }, {
-      caseId: '186482', statusMessage: '', success: false,
-    }, {
-      caseId: '848487', statusMessage: '', success: false,
-    },
-  ],
+  tableData: {
+    DocumentRequests: [],
+    invalidCases: [],
+  },
 };
 
 export default TabView;

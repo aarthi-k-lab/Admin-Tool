@@ -1,15 +1,21 @@
 .failedTab {
   color: red;
-  font-size: x-small;
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .passedTab {
   color: green;
-  font-size: x-small;
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .uploadTab {
-  font-size: x-small;
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .table-container {
@@ -28,6 +34,11 @@
   text-align: left !important;
   padding: 0 !important;
 }
+
 .tabStyle > div {
   padding: 0rem !important; 
+}
+
+.tabStyle > span {
+  flex-direction: row !important;
 }
