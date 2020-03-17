@@ -2323,6 +2323,14 @@ function* onCoviusBulkUpload(payload) {
           caseId: '545656',
           message: 'Case is not Active',
         },
+        {
+          caseId: '875858',
+          message: "CaseId doesn't exist",
+        },
+        {
+          caseId: '725722',
+          message: 'Case is not Active',
+        },
       ],
     };
 

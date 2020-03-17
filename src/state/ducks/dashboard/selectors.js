@@ -19,7 +19,7 @@ const clearSearch = state => R.pathOr(false, ['dashboard', 'clearSearch'], state
 
 const inProgress = state => R.pathOr(false, ['dashboard', 'inProgress'], state);
 
-const resultData = state => R.pathOr([], ['dashboard', 'resultData'], state);
+const resultData = state => R.pathOr({}, ['dashboard', 'resultData'], state);
 
 const wasSearched = state => R.pathOr(false, ['dashboard', 'wasSearched'], state);
 

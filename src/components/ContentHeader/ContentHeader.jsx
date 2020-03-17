@@ -65,7 +65,7 @@ const ContentHeader = ({
       aria-label="add"
       onClick={handleClick()}
       size="small"
-      styleName={title === 'COVIUS' ? 'addGreenIcon' : 'addSecondaryIcon'}
+      styleName="addSecondaryIcon"
       title="Add Docs Received"
     >
       <AddIcon styleName="plusicon" />
