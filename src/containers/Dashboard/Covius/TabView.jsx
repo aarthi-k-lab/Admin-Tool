@@ -90,12 +90,13 @@ class TabView extends React.Component {
 
   renderUploadPanel = () => {
     const { isUploading, showUpload } = this.state;
+    const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
     return (
       <Grid container>
         <div>
           <div>
-            <CloudUploadIcon styleName="uploadImage" />
-            {showUpload ? this.renderUploadFile() : <ReUploadFile />}
+            { showUpload && <CloudUploadIcon styleName="uploadImage" /> }
+            {showUpload ? this.renderUploadFile() : <ReUploadFile onChange={this.handleChange} />}
           </div>
           <Button
             color="primary"
@@ -107,7 +108,7 @@ class TabView extends React.Component {
             styleName="uploadButton"
             variant="contained"
           >
-            {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+            {showUpload ? Upload : 'SUBMIT TO COVIUS'}
             <input
               style={{ display: 'none' }}
               type="file"
@@ -158,6 +159,11 @@ class TabView extends React.Component {
     }
     const fields = R.pluck('accessor', this.getColumns(status));
     return R.map(R.pickAll(fields), tableData.invalidCases);
+  }
+
+  handleChange = (value) => {
+    console.log(value);
+    this.setState({ showUpload: !value });
   }
 
   render() {

@@ -1,30 +1,43 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
-import './SubmitFileError.css';
+import './ReUploadFile.css';
 import Button from '@material-ui/core/Button';
 
-const ReUploadFile = ({ fileName }) => (
+// const handleChange = () => {
+//   const { onChange } = this.props;
+//   onChange(true);
+// };
+
+const ReUploadFile = ({ fileName, onChange }) => (
   <>
     <div>
-      <img alt="submit_error_icon" src="/static/img/default_selected_green.svg" styleName="largeIcon" />
-      <span>Excel document uploaded Successfully.</span>
-      <div>
+      <div styleName="msgblock">
+        <img alt="submit_error_icon" src="/static/img/default_selected_green.svg" styleName="largeIcon" />
+        <span styleName="reuploadmsg">Excel document uploaded Successfully.</span>
+      </div>
+      <div styleName="msgblock1">
         <TextField
           InputProps={{
             readOnly: true,
+            style: {
+              fontSize: '1.1rem',
+              padding: '5.5px 5.5px !important',
+              // margin: '0rem 1rem 0rem 42rem',
+            },
           }}
-          size="small"
+          styleName="fileTextBox"
           value={fileName}
           variant="outlined"
         />
         <Button
           color="secondary"
           component="label"
-                    // onChange={this.handleUpload}
+          onChange={onChange(true)}
+          styleName="deletebtn"
           variant="contained"
         >
-                    DELETE
+          DELETE
         </Button>
       </div>
     </div>
@@ -37,6 +50,7 @@ ReUploadFile.defaultProps = {
 
 ReUploadFile.propTypes = {
   fileName: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
 };
 
 
