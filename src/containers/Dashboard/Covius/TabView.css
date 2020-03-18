@@ -1,13 +1,13 @@
 .failedTab {
   color: red;
-  font-size: medium !important;
+  font-size: small !important;
   margin-right: 0.5rem !important;
   margin-bottom: 0.25rem !important;
 }
 
 .passedTab {
   color: green;
-  font-size: medium !important;
+  font-size: small !important;
   margin-right: 0.5rem !important;
   margin-bottom: 0.25rem !important;
 }
@@ -40,6 +40,15 @@
   padding: 0rem;
 }
 
+.countStyle {
+  background: #eee;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  width: auto;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+}
+
 .uploadPage {
   height: 100%;
 }
@@ -57,7 +66,7 @@
 }
 
 .tabStyle > div {
-  padding: 0rem !important; 
+  padding: 0rem !important;
 }
 
 .tabStyle > span {
