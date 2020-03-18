@@ -177,7 +177,8 @@ class CoviusBulkOrder extends React.PureComponent {
             margin="normal"
             multiline
             onChange={event => this.handleCaseChange(event)}
-            style={{ height: '98%', width: '99%', resize: 'none' }}
+            rows={30}
+            style={{ width: '99%', resize: 'none' }}
             value={caseIds}
           />
         </div>
