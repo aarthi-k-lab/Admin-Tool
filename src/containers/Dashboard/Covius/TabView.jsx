@@ -36,7 +36,7 @@ class TabView extends React.Component {
   }
 
   getColumns = (status) => {
-    if (status === 'success') {
+    if (status === 'Passed') {
       return [
         {
           Header: 'LOAN NUMBER', accessor: 'LOAN_NUMBER', field: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
@@ -66,7 +66,6 @@ class TabView extends React.Component {
     this.setState({ value: newValue });
   }
 
-
   handleUpload = (event) => {
     const { onProcessFile } = this.props;
     if (event.target.files[0]) {
@@ -83,6 +82,40 @@ class TabView extends React.Component {
     }
     this.setState({ isUploading: true, showUpload: false });
   };
+
+  getRow = (rowData, fields) => {
+    const object = {};
+    R.forEach((field) => {
+      const array = field.split('.');
+      const { length, [length - 1]: last } = array;
+      object[`${last}`] = R.path(array, rowData);
+    }, fields);
+    return object;
+  }
+
+  getTableData = (status) => {
+    const { tableData } = this.props;
+    if (R.isEmpty(tableData)) {
+      return [];
+    }
+    if (status === 'Passed') {
+      const fields = R.pluck('field', this.getColumns(status));
+      return R.map(docRequest => this.getRow(docRequest, fields),
+        tableData.DocumentRequests);
+    }
+    const fields = R.pluck('accessor', this.getColumns(status));
+    return R.map(R.pickAll(fields), tableData.invalidCases);
+  }
+
+  getCount = (text) => {
+    const { tableData } = this.props;
+    if (R.isEmpty(tableData)) {
+      return 0;
+    }
+    return text === 'Passed'
+      ? tableData.DocumentRequests.length
+      : tableData.invalidCases.length;
+  }
 
   renderUploadFile = () => (
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
@@ -119,7 +152,7 @@ class TabView extends React.Component {
     );
   }
 
-  renderTableData = (tableData, status) => (
+  renderTableData = status => (
     <Grid container direction="column">
       <div styleName="table-container">
         <div styleName="height-limiter">
@@ -141,25 +174,16 @@ class TabView extends React.Component {
     </Grid>
   );
 
-  getTableData = (status) => {
-    const { tableData } = this.props;
-    if (status === 'success') {
-      const fields = R.pluck('field', this.getColumns(status));
-      const objects = [];
-      tableData.DocumentRequests.forEach((req) => {
-        const object = {};
-        R.forEach((field) => {
-          const array = field.split('.');
-          const { length, [length - 1]: last } = array;
-          object[`${last}`] = R.path(array, req);
-        }, fields);
-        objects.push(object);
-      });
-      return objects;
-    }
-    const fields = R.pluck('accessor', this.getColumns(status));
-    return R.map(R.pickAll(fields), tableData.invalidCases);
-  }
+  renderCountLabel = text => (
+    <>
+      <div>
+        {text}
+      </div>
+      <div styleName="countStyle">
+        {this.getCount(text)}
+      </div>
+    </>
+  );
 
   handleChange = (value) => {
     console.log(value);
@@ -178,17 +202,21 @@ class TabView extends React.Component {
               textColor="primary"
               value={value}
             >
-              <Tab icon={<FiberManualRecordIcon styleName="failedTab" />} label="Failed" styleName="tabStyle" />
-              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label="Passed" styleName="tabStyle" />
+              <Tab
+                icon={<FiberManualRecordIcon styleName="failedTab" />}
+                label={this.renderCountLabel('Failed')}
+                styleName="tabStyle"
+              />
+              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
               <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
             </Tabs>
           </Paper>
         </div>
         <TabPanel index={0} styleName="tabStyle" value={value}>
-          {this.renderTableData('failure')}
+          {this.renderTableData('Failed')}
         </TabPanel>
         <TabPanel index={1} styleName="tabStyle" value={value}>
-          {this.renderTableData('success')}
+          {this.renderTableData('Passed')}
         </TabPanel>
         <TabPanel index={2} styleName="uploadPage" value={value}>
           {this.renderUploadPanel()}

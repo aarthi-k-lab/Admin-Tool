@@ -202,33 +202,22 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderResults() {
     const { resultData } = this.props;
-    if (resultData && !R.isEmpty(resultData)) {
-      return (
-        <Grid item xs={12}>
-          <TabView tableData={resultData} />
-
-          <div styleName="errorSvginfo">
-            <ErrorIcon styleName="errorSvg" />
-            <Button
-              className="material-ui-button"
-              color="primary"
-              margin="normal"
-              startIcon={<ErrorIcon styleName="errorSvg" />
-              }
-              styleName="submitButton"
-              variant="contained"
-            >
-              DOWNLOAD EXCEL TO VERIFY
-            </Button>
-          </div>
-        </Grid>
-      );
-    }
-
     return (
-      <Grid item xs={6}>
+      <Grid item xs={12}>
+        <TabView tableData={resultData} />
         <div styleName="errorSvginfo">
-          Processed loan information will be displayed here
+          <ErrorIcon styleName="errorSvg" />
+          <Button
+            className="material-ui-button"
+            color="primary"
+            margin="normal"
+            startIcon={<ErrorIcon styleName="errorSvg" />
+            }
+            styleName="submitButton"
+            variant="contained"
+          >
+            DOWNLOAD EXCEL TO VERIFY
+          </Button>
         </div>
       </Grid>
     );
@@ -279,7 +268,10 @@ CoviusBulkOrder.defaultProps = {
   inProgress: false,
   onCoviusBulkSubmit: () => { },
   onFailedLoanValidation: () => { },
-  resultData: [],
+  resultData: {
+    DocumentRequests: [],
+    invalidCases: [],
+  },
   resultOperation: { level: '', status: '' },
 };
 
@@ -287,13 +279,20 @@ CoviusBulkOrder.propTypes = {
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onFailedLoanValidation: PropTypes.func,
-  resultData: PropTypes.arrayOf(
-    PropTypes.shape({
-      evalId: PropTypes.string,
-      pid: PropTypes.string,
-      statusMessage: PropTypes.string,
+  resultData: PropTypes.shape({
+    DocumentRequests: PropTypes.arrayOf({
+      UserDetails: PropTypes.shape({
+        CASEID: PropTypes.string,
+        EVAL_ID: PropTypes.string,
+        LOAN_NUMBER: PropTypes.string,
+      }),
+      RequestId: PropTypes.string,
     }),
-  ),
+    invalidCases: PropTypes.arrayOf({
+      caseId: PropTypes.string,
+      message: PropTypes.string,
+    }),
+  }),
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
