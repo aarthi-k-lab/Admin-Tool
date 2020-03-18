@@ -24,20 +24,8 @@
   font-size: 0.8rem;
 }
 
-.addGreenIcon {
-  background: #64dd17 !important;
+.plusIcon {
   margin-left: 1rem !important;
   width: 34px !important;
   height: 20px !important;
-}
-
-.addSecondaryIcon {
-  background: #0d47a1 !important;
-  margin-left: 1rem !important;
-  width: 34px !important;
-  height: 20px !important;
-}
-
-.plusicon {
-  color: white;
 }

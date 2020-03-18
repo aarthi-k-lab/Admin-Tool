@@ -61,15 +61,16 @@ const ContentHeader = ({
       <h3 styleName="title">{title}</h3>
     </Tooltip>
     {showAddButton && (
-    <Fab
-      aria-label="add"
-      onClick={handleClick()}
-      size="small"
-      styleName={title === 'COVIUS' ? 'addGreenIcon' : 'addSecondaryIcon'}
-      title="Add Docs Received"
-    >
-      <AddIcon styleName="plusicon" />
-    </Fab>
+      <Fab
+        aria-label="add"
+        color="secondary"
+        onClick={handleClick()}
+        size="small"
+        styleName="plusIcon"
+        title="Add Docs Received"
+      >
+        <AddIcon />
+      </Fab>
     )}
     <span styleName="spacer" />
     {children}
