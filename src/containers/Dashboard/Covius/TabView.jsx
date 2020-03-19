@@ -16,6 +16,7 @@ import extName from 'ext-name';
 import { connect } from 'react-redux';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
+import SubmitFileError from './SubmitFileError';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 
@@ -24,6 +25,7 @@ class TabView extends React.Component {
     super(props);
     this.state = {
       value: 0,
+      isFailed: false,
       isUploading: false,
       showUpload: true,
     };
@@ -122,14 +124,15 @@ class TabView extends React.Component {
   );
 
   renderUploadPanel = () => {
-    const { isUploading, showUpload } = this.state;
-    const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
+    const { isUploading, showUpload, isFailed } = this.state;
+    const Upload = isUploading || isFailed ? 'UPLOADING...' : 'UPLOAD';
+    const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div>
           <div>
-            { showUpload && <CloudUploadIcon styleName="uploadImage" /> }
-            {showUpload ? this.renderUploadFile() : <ReUploadFile onChange={this.handleChange} />}
+            { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
+            {showUpload ? renderMessage : <ReUploadFile onChange={this.handleChange} />}
           </div>
           <Button
             color="primary"

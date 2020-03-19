@@ -13,7 +13,7 @@ const ReUploadFile = ({ fileName, onChange }) => (
   <>
     <div>
       <div styleName="msgblock">
-        <img alt="submit_error_icon" src="/static/img/default_selected_green.svg" styleName="largeIcon" />
+        <img alt="submit_error_icon" src="/static/img/default_selected_green_small.svg" styleName="largeIcon" />
         <span styleName="reuploadmsg">Excel document uploaded Successfully.</span>
       </div>
       <div styleName="msgblock1">
