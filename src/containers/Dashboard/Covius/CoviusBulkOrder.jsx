@@ -127,11 +127,11 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <FormControl variant="outlined">
         <Select
-          input={<OutlinedInput name="category" />}
+          input={<OutlinedInput name="selectedEventCategory" />}
           label="category"
           onChange={this.handleEventCategory}
           styleName="drop-down-select"
-          value={selectedEventCategory.category}
+          value={selectedEventCategory}
         >
           {getEventCategories.map(item => (
             <MenuItem key={item} value={item.label}>
@@ -149,10 +149,10 @@ class CoviusBulkOrder extends React.PureComponent {
 
       <FormControl variant="outlined">
         <Select
-          input={<OutlinedInput name="name" />}
+          input={<OutlinedInput name="selectedEventName" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
-          value={selectedEventName.name}
+          value={selectedEventName}
         >
           {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
 
