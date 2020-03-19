@@ -33,6 +33,8 @@ class TabView extends React.Component {
 
   static getDerivedStateFromProps(nextProps) {
     const { getExcelFile } = nextProps;
+    // console.log(prevState);
+    // console.log('next props', nextProps);
     if (R.isNil(getExcelFile)) return { isUploading: false };
     return { isUploading: false };
   }
@@ -123,16 +125,19 @@ class TabView extends React.Component {
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
   );
 
+  renderReupload = () => (<ReUploadFile />)
+  ;
+
   renderUploadPanel = () => {
     const { isUploading, showUpload, isFailed } = this.state;
-    const Upload = isUploading || isFailed ? 'UPLOADING...' : 'UPLOAD';
+    const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div>
           <div>
             { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
-            {showUpload ? renderMessage : <ReUploadFile onChange={this.handleChange} />}
+            {showUpload ? renderMessage : this.renderReupload() }
           </div>
           <Button
             color="primary"
