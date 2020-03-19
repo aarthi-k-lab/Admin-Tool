@@ -6,6 +6,7 @@ import waterfallLookup from './waterfallLookup';
 import DashboardModel from '../Dashboard/index';
 
 export const NA = 'NA';
+const pandemicFlagCommentCode = 'PCIM';
 
 const { getOr } = Validators;
 
@@ -32,6 +33,11 @@ function getTaskDataUrl(taskId) {
 function getPrioritizationUrl() {
   return '/api/bpm-audit/audit/prioritization/_evalNumbers';
 }
+
+function getPandemicFlagUrl(loanNumber, brand) {
+  return `/api/booking/api/lsamsCommentCodeFilter?loanNumber=${loanNumber}&brand=${brand}&commentCode=${pandemicFlagCommentCode}`;
+}
+
 
 function generateTombstoneItem(title, content) {
   return {
@@ -295,14 +301,18 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
 }
 
 function getPandamicFlagItem(_l, _e, _p, _pr, _g, _a, _t, _ta, fetchPandemicFlagResponseData) {
-  const pandemicFlagItem = R.has('getCommentCodesByFilterResult', fetchPandemicFlagResponseData) ? {
-    flag: 'Yes',
-    style: 'highlight',
-  } : {
-    flag: 'No',
-    style: '',
-  };
-  return generateTombstoneItem('Pandemic Flag', pandemicFlagItem);
+  if (fetchPandemicFlagResponseData) {
+    const pandemicFlagItem = R.is(Array, fetchPandemicFlagResponseData)
+    && !R.isEmpty(fetchPandemicFlagResponseData) ? {
+        flag: 'Yes',
+        style: 'highlight',
+      } : {
+        flag: 'No',
+        style: '',
+      };
+    return generateTombstoneItem('Pandemic Flag', pandemicFlagItem);
+  }
+  return {};
 }
 
 function getTombstoneItems(loanDetails,
@@ -405,7 +415,7 @@ function getTombstoneItems(loanDetails,
     additionalLoanInfo,
     taskName,
     taskData, fetchPandemicFlagResponseData));
-  return data;
+  return R.filter(item => !R.isEmpty(item), data);
 }
 
 
@@ -416,7 +426,6 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   const prioritizationUrl = getPrioritizationUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
-  const pandemicFlagCommentCode = 'PCIM';
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -525,17 +534,14 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     ]);
   }
 
-  const fetchPandemicFlagP = await fetch('/api/utility/GetLsamsCommentCodeFilter', {
-    method: 'POST',
-    body: JSON.stringify({
-      loanID: loanNumber,
-      brand: brand || loanDetails.brandName,
-      commentCode: pandemicFlagCommentCode,
-    }),
-    headers: { 'content-type': 'application/json-patch+json' },
-  });
+  const pandemicFlagUrl = getPandemicFlagUrl(loanNumber,
+    brand || (loanDetails && loanDetails.brandName));
 
-  // const fetchPandemicFlagResponse = await new Promise(fetchPandemicFlagP).;
+
+  const fetchPandemicFlagP = await fetch(pandemicFlagUrl, {
+    method: 'GET',
+    headers: { 'content-type': 'application/json' },
+  });
 
   if (fetchPandemicFlagP.status === 200) {
     fetchPandemicFlagResponseData = await fetchPandemicFlagP.json();
