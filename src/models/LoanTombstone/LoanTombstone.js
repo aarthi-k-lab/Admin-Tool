@@ -310,7 +310,7 @@ function getPandamicFlagItem(_l, _e, _p, _pr, _g, _a, _t, _ta, fetchPandemicFlag
         flag: 'No',
         style: '',
       };
-    return generateTombstoneItem('Pandemic Flag', pandemicFlagItem);
+    return generateTombstoneItem('Pandemic Impacted', pandemicFlagItem);
   }
   return {};
 }
