@@ -64,7 +64,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
   onResetClick = () => {
     this.setState({
-      selectedEventCategory: '',
+      selectedEventCategory: ' ',
       selectedEventName: '',
       caseIds: '',
       isSubmitDisabled: 'disabled',
@@ -127,11 +127,11 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <FormControl variant="outlined">
         <Select
-          input={<OutlinedInput name="eventCategory" />}
+          input={<OutlinedInput name="category" />}
           label="category"
           onChange={this.handleEventCategory}
           styleName="drop-down-select"
-          value={selectedEventCategory.eventCategory}
+          value={selectedEventCategory.category}
         >
           {getEventCategories.map(item => (
             <MenuItem key={item} value={item.label}>
@@ -149,10 +149,10 @@ class CoviusBulkOrder extends React.PureComponent {
 
       <FormControl variant="outlined">
         <Select
-          input={<OutlinedInput name="eventName" />}
+          input={<OutlinedInput name="name" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
-          value={selectedEventName.eventName}
+          value={selectedEventName.name}
         >
           {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
 
@@ -169,8 +169,7 @@ class CoviusBulkOrder extends React.PureComponent {
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
           {'New Event Request'}
-        </span>
-        <span styleName="resetButton">
+
           <Button
             className="material-ui-button"
             color="primary"
@@ -181,7 +180,10 @@ class CoviusBulkOrder extends React.PureComponent {
           >
             RESET
           </Button>
+
+
         </span>
+
         <div styleName="loan-numbers">
           <span>
             {'Event Category'}
