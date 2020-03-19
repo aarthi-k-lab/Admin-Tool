@@ -60,6 +60,7 @@ import {
   DISABLE_TRIAL_BUTTON,
   DISCARD_EVAL_RESPONSE,
   SAVE_PROCESSED_FILE,
+  DELETE_FILE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -604,6 +605,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         excelParsedData: action.payload,
+      };
+
+    case DELETE_FILE:
+      return {
+        ...state,
+        isFileDeleted: action.payload,
       };
 
     default:

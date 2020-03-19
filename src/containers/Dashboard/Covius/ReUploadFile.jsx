@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 //   onChange(true);
 // };
 
-const ReUploadFile = ({ fileName }) => (
+const ReUploadFile = ({ fileName, onChange }) => (
   <>
     <div>
       <div styleName="msgblock">
@@ -32,7 +32,7 @@ const ReUploadFile = ({ fileName }) => (
         <Button
           color="secondary"
           component="label"
-          // onClick={onChange(true)}
+          onClick={onChange}
           styleName="deletebtn"
           variant="contained"
         >
@@ -49,7 +49,7 @@ ReUploadFile.defaultProps = {
 
 ReUploadFile.propTypes = {
   fileName: PropTypes.string,
-  // onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 

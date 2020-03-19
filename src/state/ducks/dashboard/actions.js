@@ -46,6 +46,7 @@ import {
   PROCESS_COVIUS_BULK,
   DISCARD_EVAL_RESPONSE,
   PROCESS_FILE,
+  DELETE_FILE,
 } from './types';
 
 
@@ -259,6 +260,11 @@ const processFileAction = payload => ({
   payload,
 });
 
+const deleteFileAction = payload => ({
+  type: DELETE_FILE,
+  payload,
+});
+
 export {
   autoSave,
   discardEvalResponse,
@@ -305,4 +311,5 @@ export {
   onEvalInsertionAction,
   onCoviusBulkSubmit,
   processFileAction,
+  deleteFileAction,
 };

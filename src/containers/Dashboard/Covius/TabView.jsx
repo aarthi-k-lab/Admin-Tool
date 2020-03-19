@@ -43,25 +43,25 @@ class TabView extends React.Component {
     if (status === 'Passed') {
       return [
         {
-          Header: 'LOAN NUMBER', accessor: 'LOAN_NUMBER', field: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number', accessor: 'UserFields.LOAN_NUMBER', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'CASEID', field: 'UserFields.CASEID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Request ID', accessor: 'RequestId', field: 'RequestId', minWidth: 300, maxWidth: 700, style: { width: '40%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'EVAL_ID', field: 'UserFields.EVAL_ID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 200, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
         },
       ];
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -71,7 +71,7 @@ class TabView extends React.Component {
   }
 
   handleUpload = (event) => {
-    const { onProcessFile } = this.props;
+    const { onProcessFile, onDeleteFile } = this.props;
     if (event.target.files[0]) {
       const fileName = event.target.files[0].name;
       const fileExtension = extName(fileName);
@@ -81,21 +81,12 @@ class TabView extends React.Component {
       )(fileExtension);
       if (EXCEL_FORMATS.includes(ext)) {
         onProcessFile(event.target.files[0]);
+        onDeleteFile(false);
+        this.setState({ isUploading: true, showUpload: false });
       }
-      // handle else part
+      // handle else part handle excel upload failed
     }
-    this.setState({ isUploading: true, showUpload: false });
   };
-
-  getRow = (rowData, fields) => {
-    const object = {};
-    R.forEach((field) => {
-      const array = field.split('.');
-      const { length, [length - 1]: last } = array;
-      object[`${last}`] = R.path(array, rowData);
-    }, fields);
-    return object;
-  }
 
   getTableData = (status) => {
     const { tableData } = this.props;
@@ -103,12 +94,9 @@ class TabView extends React.Component {
       return [];
     }
     if (status === 'Passed') {
-      const fields = R.pluck('field', this.getColumns(status));
-      return R.map(docRequest => this.getRow(docRequest, fields),
-        tableData.DocumentRequests);
+      return tableData.DocumentRequests;
     }
-    const fields = R.pluck('accessor', this.getColumns(status));
-    return R.map(R.pickAll(fields), tableData.invalidCases);
+    return tableData.invalidCases;
   }
 
   getCount = (text) => {
@@ -125,19 +113,18 @@ class TabView extends React.Component {
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
   );
 
-  renderReupload = () => (<ReUploadFile />)
-  ;
-
   renderUploadPanel = () => {
     const { isUploading, showUpload, isFailed } = this.state;
+    const { isFileRemoved } = this.props;
     const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div styleName="testing">
           <div>
-            { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
-            {showUpload ? renderMessage : this.renderReupload() }
+            { (showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" /> }
+            {showUpload || isFileRemoved ? renderMessage
+              : <ReUploadFile onChange={this.handleChange} /> }
           </div>
           <Button
             color="primary"
@@ -149,11 +136,13 @@ class TabView extends React.Component {
             styleName={showUpload ? 'uploadButton' : 'submitToCoviusButton'}
             variant="contained"
           >
-            {showUpload ? Upload : 'SUBMIT TO COVIUS'}
+            {showUpload || isFileRemoved ? Upload : 'SUBMIT TO COVIUS'}
+            { (showUpload || isFileRemoved) && (
             <input
               style={{ display: 'none' }}
               type="file"
             />
+            ) }
           </Button>
         </div>
       </Grid>
@@ -176,7 +165,7 @@ class TabView extends React.Component {
             //   };
             // }}
             style={{
-              height: '50rem',
+              height: '47rem',
             }}
             styleName="table"
           />
@@ -196,9 +185,9 @@ class TabView extends React.Component {
     </>
   );
 
-  handleChange = (value) => {
-    console.log(value);
-    this.setState({ showUpload: !value });
+  handleChange = () => {
+    const { onDeleteFile } = this.props;
+    onDeleteFile(true);
   }
 
   render() {
@@ -219,6 +208,11 @@ class TabView extends React.Component {
             />
             <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
             <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
+            <Tab
+              icon={<FiberManualRecordIcon styleName="failedTab" />}
+              label={this.renderCountLabel('Upload Failed')}
+              styleName="tabStyle"
+            />
           </Tabs>
         </Paper>
         <TabPanel index={0} styleName="tabStyle" value={value}>
@@ -230,12 +224,17 @@ class TabView extends React.Component {
         <TabPanel index={2} styleName="uploadPage" value={value}>
           {this.renderUploadPanel()}
         </TabPanel>
+        <TabPanel index={3} styleName="tabStyle" value={value}>
+          {this.renderTableData('Failed')}
+        </TabPanel>
       </>
     );
   }
 }
 
 TabView.propTypes = {
+  isFileRemoved: PropTypes.string.isRequired,
+  onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
   tableData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
@@ -255,10 +254,12 @@ TabView.propTypes = {
 
 const mapStateToProps = state => ({
   getExcelFile: selectors.getUploadedFile(state),
+  isFileRemoved: selectors.getDeletedFile(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
+  onDeleteFile: operations.onDeleteFile(dispatch),
 });
 
 
