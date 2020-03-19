@@ -138,7 +138,7 @@ const config = merge(
           },
         },
         '/api/utility': {
-          target: 'https://cmodutilityqa.int.mrcooper.io',
+          target: 'https://api.qa.int.mrcooper.io/cmod/utility',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

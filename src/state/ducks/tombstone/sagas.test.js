@@ -82,14 +82,19 @@ describe('fetchTombstoneData', () => {
       .toEqual(select(dashboardSelectors.groupName));
   });
 
-  it('should select groupName from store', () => {
+  it('should select Stager Task from store', () => {
     expect(saga.next('FrontEnd Review').value)
       .toEqual(select(dashboardSelectors.stagerTaskName));
   });
 
-  it('should call sods api to fetch loan details', () => {
+  it('should select brand from store', () => {
     expect(saga.next('FrontEnd Review').value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345));
+      .toEqual(select(dashboardSelectors.brand));
+  });
+
+  it('should call sods api to fetch loan details', () => {
+    expect(saga.next('NSM').value)
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM'));
   });
   it('should update loandetails in store', () => {
     expect(saga.next(loanDetails).value)
@@ -135,9 +140,14 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
       .toEqual(select(dashboardSelectors.stagerTaskName));
   });
 
-  it('should call sods api to fetch loan details', () => {
+  it('should select Brand from store', () => {
     expect(saga.next('FrontEnd Review').value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345));
+      .toEqual(select(dashboardSelectors.brand));
+  });
+
+  it('should call sods api to fetch loan details', () => {
+    expect(saga.next('NSM').value)
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM'));
   });
 
   it('should update store with ERROR_LOADING_TOMBSTONE_DATA on error', () => {

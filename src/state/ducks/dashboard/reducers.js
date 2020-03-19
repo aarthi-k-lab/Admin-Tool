@@ -344,6 +344,7 @@ const reducer = (state = { firstVisit: true }, action) => {
     case SAVE_EVALID_LOANNUMBER: {
       const newState = {
         ...state,
+        brand: action.payload.brand,
         evalId: action.payload.evalId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
