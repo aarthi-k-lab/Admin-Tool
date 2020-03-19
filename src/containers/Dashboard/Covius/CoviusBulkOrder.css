@@ -47,7 +47,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: 97%;
+  height: 100%;
   background-color: #eaeaea;
 }
 
@@ -83,12 +83,13 @@
 }
 
 .errorSvg {
-  width: 2rem !important;
+  width: 4rem !important;
   height: 1rem !important;
 }
 
 .errorSvginfo {
   float: right;
+  margin-top: 1rem !important;
 }
 
 .submitButton {
@@ -110,4 +111,5 @@
 .drop-down-select {
   width: 90%;
   margin: 0rem 2rem 2rem 0.75rem;
+  background-color: white !important;
 }
