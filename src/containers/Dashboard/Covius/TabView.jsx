@@ -164,12 +164,15 @@ class TabView extends React.Component {
             columns={this.getColumns(status)}
             data={this.getTableData(status) || []}
             defaultPageSize={25}
+            pageSizeOptions={[10, 20, 25, 50, 100]}
             /* eslint-disable-next-line */
             // getTrProps={(state, rowInfo, column) => {
             //   return {
             //   };
             // }}
-            pageSizeOptions={[10, 20, 25, 50, 100]}
+            style={{
+              height: '50rem',
+            }}
             styleName="table"
           />
         </div>
@@ -197,24 +200,22 @@ class TabView extends React.Component {
     const { value } = this.state;
     return (
       <>
-        <div>
-          <Paper color="default">
-            <Tabs
-              indicatorColor="primary"
-              onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
-              textColor="primary"
-              value={value}
-            >
-              <Tab
-                icon={<FiberManualRecordIcon styleName="failedTab" />}
-                label={this.renderCountLabel('Failed')}
-                styleName="tabStyle"
-              />
-              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
-              <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
-            </Tabs>
-          </Paper>
-        </div>
+        <Paper color="default">
+          <Tabs
+            indicatorColor="primary"
+            onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
+            textColor="primary"
+            value={value}
+          >
+            <Tab
+              icon={<FiberManualRecordIcon styleName="failedTab" />}
+              label={this.renderCountLabel('Failed')}
+              styleName="tabStyle"
+            />
+            <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
+            <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
+          </Tabs>
+        </Paper>
         <TabPanel index={0} styleName="tabStyle" value={value}>
           {this.renderTableData('Failed')}
         </TabPanel>
