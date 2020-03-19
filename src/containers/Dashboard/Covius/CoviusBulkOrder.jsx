@@ -27,7 +27,6 @@ const validateCaseFormat = (caseIds) => {
   }
   return isValid;
 };
-
 const events = [
   { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
   { category: 'X Request', label: 'Post Data', value: 2 },
@@ -54,12 +53,24 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventName: '',
       selectedEventCategory: '',
       eventNames: [],
+      isResetDisabled: 'disabled',
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
   }
 
-  OnSubmitCases = () => {
+  onResetClick = () => {
+    this.setState({
+      selectedEventCategory: '',
+      selectedEventName: '',
+      caseIds: '',
+      isSubmitDisabled: 'disabled',
+      isResetDisabled: 'disabled',
+      eventNames: [],
+    });
+  }
+
+  onSubmitCases = () => {
     const { caseIds } = this.state;
     const { onCoviusBulkSubmit, onFailedLoanValidation } = this.props;
     if (validateCaseFormat(caseIds)) {
@@ -84,6 +95,7 @@ class CoviusBulkOrder extends React.PureComponent {
     this.setState({
       caseIds: event.target.value,
       isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
+      isResetDisabled: event.target.value.trim() || !R.isEmpty(selectedEventName) || !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
     });
   }
 
@@ -103,6 +115,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isSubmitDisabled: 'disabled',
       selectedEventName: '',
       eventNames,
+      isResetDisabled: '',
     });
   }
 
@@ -143,12 +156,24 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderNotepadArea() {
     const {
-      caseIds, isSubmitDisabled, eventNames,
+      caseIds, isSubmitDisabled, eventNames, isResetDisabled,
     } = this.state;
     return (
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
           {'New Event Request'}
+        </span>
+        <span styleName="resetButton">
+          <Button
+            className="material-ui-button"
+            color="primary"
+            disabled={isResetDisabled}
+            onClick={() => this.onResetClick()}
+            styleName="reset-button-style"
+            variant="contained"
+          >
+            RESET
+          </Button>
         </span>
         <div styleName="loan-numbers">
           <span>
@@ -189,7 +214,7 @@ class CoviusBulkOrder extends React.PureComponent {
               color="primary"
               disabled={isSubmitDisabled}
               margin="normal"
-              onClick={() => this.OnSubmitCases()}
+              onClick={() => this.onSubmitCases()}
               styleName="submitButton"
               variant="contained"
             >
