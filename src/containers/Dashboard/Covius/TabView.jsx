@@ -71,7 +71,7 @@ class TabView extends React.Component {
   }
 
   handleUpload = (event) => {
-    const { onProcessFile } = this.props;
+    const { onProcessFile, onDeleteFile } = this.props;
     if (event.target.files[0]) {
       const fileName = event.target.files[0].name;
       const fileExtension = extName(fileName);
@@ -81,10 +81,11 @@ class TabView extends React.Component {
       )(fileExtension);
       if (EXCEL_FORMATS.includes(ext)) {
         onProcessFile(event.target.files[0]);
+        onDeleteFile(false);
+        this.setState({ isUploading: true, showUpload: false });
       }
-      // handle else part
+      // handle else part handle excel upload failed
     }
-    this.setState({ isUploading: true, showUpload: false });
   };
 
   getRow = (rowData, fields) => {
@@ -125,19 +126,18 @@ class TabView extends React.Component {
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
   );
 
-  renderReupload = () => (<ReUploadFile />)
-  ;
-
   renderUploadPanel = () => {
     const { isUploading, showUpload, isFailed } = this.state;
+    const { isFileRemoved } = this.props;
     const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div>
           <div>
-            { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
-            {showUpload ? renderMessage : this.renderReupload() }
+            { (showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" /> }
+            {showUpload || isFileRemoved ? renderMessage
+              : <ReUploadFile onChange={this.handleChange} /> }
           </div>
           <Button
             color="primary"
@@ -149,11 +149,13 @@ class TabView extends React.Component {
             styleName="uploadButton"
             variant="contained"
           >
-            {showUpload ? Upload : 'SUBMIT TO COVIUS'}
+            {showUpload || isFileRemoved ? Upload : 'SUBMIT TO COVIUS'}
+            { (showUpload || isFileRemoved) && (
             <input
               style={{ display: 'none' }}
               type="file"
             />
+            ) }
           </Button>
         </div>
       </Grid>
@@ -196,9 +198,9 @@ class TabView extends React.Component {
     </>
   );
 
-  handleChange = (value) => {
-    console.log(value);
-    this.setState({ showUpload: !value });
+  handleChange = () => {
+    const { onDeleteFile } = this.props;
+    onDeleteFile(true);
   }
 
   render() {
@@ -236,6 +238,8 @@ class TabView extends React.Component {
 }
 
 TabView.propTypes = {
+  isFileRemoved: PropTypes.string.isRequired,
+  onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
   tableData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
@@ -255,10 +259,12 @@ TabView.propTypes = {
 
 const mapStateToProps = state => ({
   getExcelFile: selectors.getUploadedFile(state),
+  isFileRemoved: selectors.getDeletedFile(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
+  onDeleteFile: operations.onDeleteFile(dispatch),
 });
 
 
