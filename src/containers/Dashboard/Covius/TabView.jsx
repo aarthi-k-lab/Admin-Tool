@@ -168,7 +168,7 @@ class TabView extends React.Component {
             //   };
             // }}
             style={{
-              height: '50rem',
+              height: '47rem',
             }}
             styleName="table"
           />
@@ -211,6 +211,11 @@ class TabView extends React.Component {
             />
             <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
             <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
+            <Tab
+              icon={<FiberManualRecordIcon styleName="failedTab" />}
+              label={this.renderCountLabel('Upload Failed')}
+              styleName="tabStyle"
+            />
           </Tabs>
         </Paper>
         <TabPanel index={0} styleName="tabStyle" value={value}>
@@ -221,6 +226,9 @@ class TabView extends React.Component {
         </TabPanel>
         <TabPanel index={2} styleName="uploadPage" value={value}>
           {this.renderUploadPanel()}
+        </TabPanel>
+        <TabPanel index={3} styleName="tabStyle" value={value}>
+          {this.renderTableData('Failed')}
         </TabPanel>
       </>
     );

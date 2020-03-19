@@ -12,8 +12,11 @@ import Select from '@material-ui/core/Select';
 import Loader from 'components/Loader/Loader';
 import UserNotification from 'components/UserNotification';
 import ErrorIcon from '@material-ui/icons/Error';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { selectors, operations } from 'ducks/dashboard';
 import { PropTypes } from 'prop-types';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import TabView from './TabView';
 
@@ -109,12 +112,13 @@ class CoviusBulkOrder extends React.PureComponent {
   renderCategoryDropDown = () => {
     const { selectedEventCategory } = this.state;
     return (
-      <div>
+      <FormControl variant="outlined">
         <Select
+          input={<OutlinedInput name="eventCategory" />}
           label="category"
           onChange={this.handleEventCategory}
           styleName="drop-down-select"
-          value={selectedEventCategory}
+          value={selectedEventCategory.eventCategory}
         >
           {getEventCategories.map(item => (
             <MenuItem key={item} value={item.label}>
@@ -122,22 +126,25 @@ class CoviusBulkOrder extends React.PureComponent {
             </MenuItem>
           ))}
         </Select>
-      </div>
+      </FormControl>
     );
   }
 
   renderNamesDropDown(eventNames) {
     const { selectedEventName } = this.state;
     return (
-      <div>
+
+      <FormControl variant="outlined">
         <Select
+          input={<OutlinedInput name="eventName" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
-          value={selectedEventName}
+          value={selectedEventName.eventName}
         >
           {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+
         </Select>
-      </div>
+      </FormControl>
     );
   }
 
@@ -212,7 +219,7 @@ class CoviusBulkOrder extends React.PureComponent {
             className="material-ui-button"
             color="primary"
             margin="normal"
-            startIcon={<ErrorIcon styleName="errorSvg" />
+            startIcon={<GetAppIcon />
             }
             styleName="submitButton"
             variant="contained"
