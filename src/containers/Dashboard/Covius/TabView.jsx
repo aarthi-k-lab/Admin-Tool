@@ -134,7 +134,7 @@ class TabView extends React.Component {
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
-        <div>
+        <div styleName="testing">
           <div>
             { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
             {showUpload ? renderMessage : this.renderReupload() }
@@ -146,7 +146,7 @@ class TabView extends React.Component {
             style={{
               label: 'uploadLabel',
             }}
-            styleName="uploadButton"
+            styleName={showUpload ? 'uploadButton' : 'submitToCoviusButton'}
             variant="contained"
           >
             {showUpload ? Upload : 'SUBMIT TO COVIUS'}

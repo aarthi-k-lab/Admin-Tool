@@ -65,10 +65,19 @@
   margin: 2rem 0 0 51rem !important;
 }
 
+.submitToCoviusButton {
+  margin: 2rem 0 0 45rem !important;
+  margin-top: -40px !important;
+}
+
 .tabStyle > div {
   padding: 0rem !important;
 }
 
 .tabStyle > span {
   flex-direction: row !important;
+}
+
+.testing{
+  width: 100%;
 }

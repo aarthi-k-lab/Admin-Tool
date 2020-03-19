@@ -23,12 +23,11 @@ const ReUploadFile = ({ fileName }) => (
             style: {
               fontSize: '1.1rem',
               padding: '5.5px 5.5px !important',
-              // margin: '0rem 1rem 0rem 42rem',
             },
+            disableUnderline: 'true',
           }}
           styleName="fileTextBox"
           value={fileName}
-          variant="outlined"
         />
         <Button
           color="secondary"
