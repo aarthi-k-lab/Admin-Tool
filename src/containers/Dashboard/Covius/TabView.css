@@ -35,7 +35,7 @@
 }
 
 .uploadImage {
-  font-size: 10rem !important;
+  font-size: 6rem !important;
   margin: 6rem 8rem 0rem 49rem;
   padding: 0rem;
 }
@@ -54,7 +54,7 @@
 }
 
 .uploadMsg {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   align-items: center;
   margin: 0rem 8rem 0rem 42rem;
   flex-direction: column;
@@ -62,7 +62,7 @@
 }
 
 .uploadButton {
-  margin: 2rem 0 0 51rem !important;
+  margin: 2rem 0 0 49rem !important;
 }
 
 .submitToCoviusButton {

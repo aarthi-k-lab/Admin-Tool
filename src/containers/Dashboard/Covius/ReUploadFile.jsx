@@ -21,8 +21,9 @@ const ReUploadFile = ({ fileName, onChange }) => (
           InputProps={{
             readOnly: true,
             style: {
-              fontSize: '1.1rem',
+              fontSize: '1.4rem',
               padding: '5.5px 5.5px !important',
+              fontStyle: 'italic',
             },
             disableUnderline: 'true',
           }}

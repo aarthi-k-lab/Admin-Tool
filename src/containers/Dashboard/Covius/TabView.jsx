@@ -133,7 +133,7 @@ class TabView extends React.Component {
             style={{
               label: 'uploadLabel',
             }}
-            styleName={showUpload ? 'uploadButton' : 'submitToCoviusButton'}
+            styleName={showUpload || isFileRemoved ? 'uploadButton' : 'submitToCoviusButton'}
             variant="contained"
           >
             {showUpload || isFileRemoved ? Upload : 'SUBMIT TO COVIUS'}
