@@ -43,25 +43,25 @@ class TabView extends React.Component {
     if (status === 'Passed') {
       return [
         {
-          Header: 'LOAN NUMBER', accessor: 'LOAN_NUMBER', field: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number', accessor: 'UserFields.LOAN_NUMBER', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'CASEID', field: 'UserFields.CASEID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Request ID', accessor: 'RequestId', field: 'RequestId', minWidth: 300, maxWidth: 700, style: { width: '40%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'EVAL_ID', field: 'UserFields.EVAL_ID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 200, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
         },
       ];
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -88,28 +88,15 @@ class TabView extends React.Component {
     }
   };
 
-  getRow = (rowData, fields) => {
-    const object = {};
-    R.forEach((field) => {
-      const array = field.split('.');
-      const { length, [length - 1]: last } = array;
-      object[`${last}`] = R.path(array, rowData);
-    }, fields);
-    return object;
-  }
-
   getTableData = (status) => {
     const { tableData } = this.props;
     if (R.isEmpty(tableData)) {
       return [];
     }
     if (status === 'Passed') {
-      const fields = R.pluck('field', this.getColumns(status));
-      return R.map(docRequest => this.getRow(docRequest, fields),
-        tableData.DocumentRequests);
+      return tableData.DocumentRequests;
     }
-    const fields = R.pluck('accessor', this.getColumns(status));
-    return R.map(R.pickAll(fields), tableData.invalidCases);
+    return tableData.invalidCases;
   }
 
   getCount = (text) => {
@@ -178,7 +165,7 @@ class TabView extends React.Component {
             //   };
             // }}
             style={{
-              height: '50rem',
+              height: '47rem',
             }}
             styleName="table"
           />
@@ -221,6 +208,11 @@ class TabView extends React.Component {
             />
             <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
             <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
+            <Tab
+              icon={<FiberManualRecordIcon styleName="failedTab" />}
+              label={this.renderCountLabel('Upload Failed')}
+              styleName="tabStyle"
+            />
           </Tabs>
         </Paper>
         <TabPanel index={0} styleName="tabStyle" value={value}>
@@ -231,6 +223,9 @@ class TabView extends React.Component {
         </TabPanel>
         <TabPanel index={2} styleName="uploadPage" value={value}>
           {this.renderUploadPanel()}
+        </TabPanel>
+        <TabPanel index={3} styleName="tabStyle" value={value}>
+          {this.renderTableData('Failed')}
         </TabPanel>
       </>
     );
