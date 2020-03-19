@@ -16,6 +16,7 @@ import extName from 'ext-name';
 import { connect } from 'react-redux';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
+import SubmitFileError from './SubmitFileError';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 
@@ -24,6 +25,7 @@ class TabView extends React.Component {
     super(props);
     this.state = {
       value: 0,
+      isFailed: false,
       isUploading: false,
       showUpload: true,
     };
@@ -31,6 +33,8 @@ class TabView extends React.Component {
 
   static getDerivedStateFromProps(nextProps) {
     const { getExcelFile } = nextProps;
+    // console.log(prevState);
+    // console.log('next props', nextProps);
     if (R.isNil(getExcelFile)) return { isUploading: false };
     return { isUploading: false };
   }
@@ -108,14 +112,19 @@ class TabView extends React.Component {
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
   );
 
+  renderReupload = () => (<ReUploadFile />)
+  ;
+
   renderUploadPanel = () => {
-    const { isUploading, showUpload } = this.state;
+    const { isUploading, showUpload, isFailed } = this.state;
+    const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
+    const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div>
           <div>
-            <CloudUploadIcon styleName="uploadImage" />
-            {showUpload ? this.renderUploadFile() : <ReUploadFile />}
+            { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
+            {showUpload ? renderMessage : this.renderReupload() }
           </div>
           <Button
             color="primary"
@@ -127,7 +136,7 @@ class TabView extends React.Component {
             styleName="uploadButton"
             variant="contained"
           >
-            {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+            {showUpload ? Upload : 'SUBMIT TO COVIUS'}
             <input
               style={{ display: 'none' }}
               type="file"
@@ -147,12 +156,15 @@ class TabView extends React.Component {
             columns={this.getColumns(status)}
             data={this.getTableData(status) || []}
             defaultPageSize={25}
+            pageSizeOptions={[10, 20, 25, 50, 100]}
             /* eslint-disable-next-line */
             // getTrProps={(state, rowInfo, column) => {
             //   return {
             //   };
             // }}
-            pageSizeOptions={[10, 20, 25, 50, 100]}
+            style={{
+              height: '50rem',
+            }}
             styleName="table"
           />
         </div>
@@ -171,28 +183,31 @@ class TabView extends React.Component {
     </>
   );
 
+  handleChange = (value) => {
+    console.log(value);
+    this.setState({ showUpload: !value });
+  }
+
   render() {
     const { value } = this.state;
     return (
       <>
-        <div>
-          <Paper color="default">
-            <Tabs
-              indicatorColor="primary"
-              onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
-              textColor="primary"
-              value={value}
-            >
-              <Tab
-                icon={<FiberManualRecordIcon styleName="failedTab" />}
-                label={this.renderCountLabel('Failed')}
-                styleName="tabStyle"
-              />
-              <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
-              <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
-            </Tabs>
-          </Paper>
-        </div>
+        <Paper color="default">
+          <Tabs
+            indicatorColor="primary"
+            onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
+            textColor="primary"
+            value={value}
+          >
+            <Tab
+              icon={<FiberManualRecordIcon styleName="failedTab" />}
+              label={this.renderCountLabel('Failed')}
+              styleName="tabStyle"
+            />
+            <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
+            <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
+          </Tabs>
+        </Paper>
         <TabPanel index={0} styleName="tabStyle" value={value}>
           {this.renderTableData('Failed')}
         </TabPanel>

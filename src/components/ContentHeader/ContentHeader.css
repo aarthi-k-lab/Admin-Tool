@@ -24,13 +24,8 @@
   font-size: 0.8rem;
 }
 
-.addSecondaryIcon {
-  background: #0d47a1 !important;
+.plusIcon {
   margin-left: 1rem !important;
   width: 34px !important;
   height: 20px !important;
-}
-
-.plusicon {
-  color: white;
 }

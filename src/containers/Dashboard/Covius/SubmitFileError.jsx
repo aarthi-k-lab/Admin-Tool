@@ -3,9 +3,9 @@ import './SubmitFileError.css';
 
 const SubmitFileError = () => (
   <>
-    <div>
-      <img alt="submit_error_icon" src="/static/img/default_error.svg" styleName="largeIcon" />
-      <span>Excel document upload failed.</span>
+    <div styleName="msgblock">
+      <img alt="submit_error_icon" src="/static/img/default_error_small.svg" styleName="largeIcon" />
+      <span styleName="failedmsg">Excel document upload failed.</span>
     </div>
   </>
 );
