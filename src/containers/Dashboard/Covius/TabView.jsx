@@ -16,6 +16,7 @@ import extName from 'ext-name';
 import { connect } from 'react-redux';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
+import SubmitFileError from './SubmitFileError';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 
@@ -24,6 +25,7 @@ class TabView extends React.Component {
     super(props);
     this.state = {
       value: 0,
+      isFailed: false,
       isUploading: false,
       showUpload: true,
     };
@@ -31,6 +33,8 @@ class TabView extends React.Component {
 
   static getDerivedStateFromProps(nextProps) {
     const { getExcelFile } = nextProps;
+    // console.log(prevState);
+    // console.log('next props', nextProps);
     if (R.isNil(getExcelFile)) return { isUploading: false };
     return { isUploading: false };
   }
@@ -39,25 +43,25 @@ class TabView extends React.Component {
     if (status === 'Passed') {
       return [
         {
-          Header: 'LOAN NUMBER', accessor: 'LOAN_NUMBER', field: 'UserFields.LOAN_NUMBER', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number', accessor: 'UserFields.LOAN_NUMBER', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'CASEID', field: 'UserFields.CASEID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Request ID', accessor: 'RequestId', field: 'RequestId', minWidth: 300, maxWidth: 700, style: { width: '40%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'EVAL_ID', field: 'UserFields.EVAL_ID', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 200, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
         },
       ];
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 100, maxWidth: 200, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -83,28 +87,15 @@ class TabView extends React.Component {
     this.setState({ isUploading: true, showUpload: false });
   };
 
-  getRow = (rowData, fields) => {
-    const object = {};
-    R.forEach((field) => {
-      const array = field.split('.');
-      const { length, [length - 1]: last } = array;
-      object[`${last}`] = R.path(array, rowData);
-    }, fields);
-    return object;
-  }
-
   getTableData = (status) => {
     const { tableData } = this.props;
     if (R.isEmpty(tableData)) {
       return [];
     }
     if (status === 'Passed') {
-      const fields = R.pluck('field', this.getColumns(status));
-      return R.map(docRequest => this.getRow(docRequest, fields),
-        tableData.DocumentRequests);
+      return tableData.DocumentRequests;
     }
-    const fields = R.pluck('accessor', this.getColumns(status));
-    return R.map(R.pickAll(fields), tableData.invalidCases);
+    return tableData.invalidCases;
   }
 
   getCount = (text) => {
@@ -121,15 +112,19 @@ class TabView extends React.Component {
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
   );
 
+  renderReupload = () => (<ReUploadFile />)
+  ;
+
   renderUploadPanel = () => {
-    const { isUploading, showUpload } = this.state;
+    const { isUploading, showUpload, isFailed } = this.state;
     const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
+    const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div>
           <div>
-            { showUpload && <CloudUploadIcon styleName="uploadImage" /> }
-            {showUpload ? this.renderUploadFile() : <ReUploadFile onChange={this.handleChange} />}
+            { (showUpload || isFailed) && <CloudUploadIcon styleName="uploadImage" /> }
+            {showUpload ? renderMessage : this.renderReupload() }
           </div>
           <Button
             color="primary"

@@ -9,11 +9,11 @@ import Button from '@material-ui/core/Button';
 //   onChange(true);
 // };
 
-const ReUploadFile = ({ fileName, onChange }) => (
+const ReUploadFile = ({ fileName }) => (
   <>
     <div>
       <div styleName="msgblock">
-        <img alt="submit_error_icon" src="/static/img/default_selected_green.svg" styleName="largeIcon" />
+        <img alt="submit_error_icon" src="/static/img/default_selected_green_small.svg" styleName="largeIcon" />
         <span styleName="reuploadmsg">Excel document uploaded Successfully.</span>
       </div>
       <div styleName="msgblock1">
@@ -33,7 +33,7 @@ const ReUploadFile = ({ fileName, onChange }) => (
         <Button
           color="secondary"
           component="label"
-          onChange={onChange(true)}
+          // onClick={onChange(true)}
           styleName="deletebtn"
           variant="contained"
         >
@@ -50,7 +50,7 @@ ReUploadFile.defaultProps = {
 
 ReUploadFile.propTypes = {
   fileName: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
+  // onChange: PropTypes.func.isRequired,
 };
 
 
