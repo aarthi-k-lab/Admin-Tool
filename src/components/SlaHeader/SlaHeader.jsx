@@ -20,34 +20,29 @@ import { ALERT_PROPS } from '../../models/Alert';
 class LabelWithIcon extends React.PureComponent {
   constructor(props) {
     super(props);
-    // const { resolutionId } = props;
     this.state = {
-      // isclicked: false,
-      // searchText: resolutionId,
       canEdit: false,
     };
     this.handleAlert = this.handleAlert.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
   }
 
-  componentDidMount() {
-    const { resolutionId, title, triggerSetSLAvalues } = this.props;
-    triggerSetSLAvalues(resolutionId, title);
+  static getDerivedStateFromProps(props, state) {
+    const { resolutionText } = state;
+    if (resolutionText) {
+      return null;
+    }
+    const {
+      resolutionData, text, title, triggerSetSLAvalues,
+    } = props;
+    const sortedResData = R.sort(R.descend(R.prop('resolutionId')), resolutionData);
+    let selectedValue = sortedResData[0] ? sortedResData[0].resolutionId : null;
+    if (text && !R.isEmpty(text)) {
+      selectedValue = text;
+    }
+    triggerSetSLAvalues(selectedValue, title);
+    return { resolutionText: selectedValue };
   }
-
-
-  // componentWillReceiveProps(props) {
-  //   const { resolutionId } = props;
-  //   this.setState({ searchText: resolutionId });
-  // }
-
-
-  // onSearchTextChange= (event) => {
-  //   const re = /^[0-9\b]+$/;
-  //   if (event.target.value === '' || re.test(event.target.value)) {
-  //     this.setState({ searchText: event.target.value });
-  //   }
-  // }
 
   getAlertProps = () => {
     const {
@@ -87,7 +82,6 @@ class LabelWithIcon extends React.PureComponent {
   handleClick = () => {
     this.setState(prevState => ({
       canEdit: !prevState.canEdit,
-      // isclicked: false,
     }));
   };
 
@@ -121,19 +115,13 @@ class LabelWithIcon extends React.PureComponent {
 
   render() {
     const {
-      passedRules, failedRules, isAssigned, text, slaRulesProcessed,
-      filter, resolutionData, showContinueMyReview,
+      passedRules, failedRules, isAssigned, slaRulesProcessed, resolutionData,
+      filter, showContinueMyReview,
     } = this.props;
+
+    const { resolutionText: selectedValue } = this.state;
     const sortedResData = R.sort(R.descend(R.prop('resolutionId')), resolutionData);
-    const { resolutionText } = this.state;
-    let selectedValue = sortedResData[0] ? sortedResData[0].resolutionId : null;
-    if (text && !R.isEmpty(text)) {
-      selectedValue = text;
-    }
-    if (resolutionText && !R.isEmpty(resolutionText)) {
-      selectedValue = resolutionText;
-    }
-    this.setState({ resolutionText: selectedValue });
+
     return (
       <>
         <Grid container styleName="customresolutiongrid">
