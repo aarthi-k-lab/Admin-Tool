@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import {
   select,
   takeEvery,
@@ -26,14 +27,14 @@ function* fetchTombstoneData(payload) {
   const evalId = yield select(dashboardSelectors.evalId);
   const groupName = yield select(dashboardSelectors.groupName);
   const postModTaskName = yield select(dashboardSelectors.stagerTaskName);
-
+  const brand = yield select(dashboardSelectors.brand);
   // const evalId = '1928799';
   // const loanNumber = '596815091';
-
   try {
     const userGroup = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
     const group = userGroup === 'Recordation' || userGroup === 'Countersign' ? taskName : userGroup;
-    const data = yield call(LoanTombstone.fetchData, loanNumber, evalId, group, taskName, taskId);
+    const data = yield call(LoanTombstone.fetchData,
+      loanNumber, evalId, group, taskName, taskId, brand);
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {

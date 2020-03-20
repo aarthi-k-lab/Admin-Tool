@@ -58,3 +58,13 @@
 .tombstone-table {
   height: 100%;
 }
+
+.highlight {
+  background-color: red;
+  border-right: dashed 0.0625rem var(--grey-350);
+  text-align: center;
+  vertical-align: center;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}

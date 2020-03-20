@@ -562,6 +562,7 @@ function* makeResolutionIdStatCall(action) {
             [auditRuleType]: {
               ruleResult: request,
               resolutionId,
+              lastUpdate: new Date().toISOString(),
             },
           },
         };
