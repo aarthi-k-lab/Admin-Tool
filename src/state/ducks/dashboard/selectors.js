@@ -55,6 +55,7 @@ const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
 const evalData = state => R.pathOr([], ['dashboard', 'evalInsertionStatus'], state);
 
 const stagerTaskName = state => R.pathOr(null, ['dashboard', 'stagerTaskName'], state);
+const brand = state => R.pathOr(null, ['dashboard', 'brand'], state);
 const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
 const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeReviewResponse'], state);
@@ -175,6 +176,7 @@ const selectors = {
   resultData,
   getUploadedFile,
   getDeletedFile,
+  brand,
 };
 
 export default selectors;

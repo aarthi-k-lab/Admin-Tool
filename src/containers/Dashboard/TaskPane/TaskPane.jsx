@@ -42,6 +42,7 @@ class TaskPane extends React.PureComponent {
           className={className}
           dataLoadStatus={dataLoadStatus}
           disableModifyOptionalTasks={!isAssigned}
+          groupName={group}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}
           historicalCheckListData={historicalCheckListData}

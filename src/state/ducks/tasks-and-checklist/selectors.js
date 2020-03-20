@@ -123,7 +123,7 @@ const getDisposition = R.pathOr('-', ['tasksAndChecklist', 'taskTree', 'value', 
 
 const getDispositionCode = R.pathOr('', ['tasksAndChecklist', 'taskTree', 'value', 'dispositionCode']);
 
-const getResolutionId = R.pathOr('', ['tasksAndChecklist', 'checklist', 'value']);
+const getResolutionId = R.pathOr('', ['tasksAndChecklist', 'checklist', 'value', 'resolutionId']);
 
 const getChecklistTemplate = R.pathOr(null, ['tasksAndChecklist', 'checklist', 'processBlueprintCode']);
 
