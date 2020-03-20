@@ -10,7 +10,7 @@ import './CoviusBulkOrder.css';
 import * as R from 'ramda';
 import Select from '@material-ui/core/Select';
 import Loader from 'components/Loader/Loader';
-import UserNotification from 'components/UserNotification';
+import SweetAlertBox from 'components/SweetAlertBox';
 import ErrorIcon from '@material-ui/icons/Error';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { selectors, operations } from 'ducks/dashboard';
@@ -47,6 +47,7 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventCategory: '',
       eventNames: [],
       isResetDisabled: 'disabled',
+      isOpen: true,
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -107,6 +108,10 @@ class CoviusBulkOrder extends React.PureComponent {
     });
   }
 
+  handleClose = () => {
+    this.setState({ isOpen: false });
+  }
+
   renderCategoryDropDown = () => {
     const { selectedEventCategory } = this.state;
     return (
@@ -131,7 +136,6 @@ class CoviusBulkOrder extends React.PureComponent {
   renderNamesDropDown(eventNames) {
     const { selectedEventName } = this.state;
     return (
-
       <FormControl variant="outlined">
         <Select
           input={<OutlinedInput name="selectedEventName" />}
@@ -153,7 +157,6 @@ class CoviusBulkOrder extends React.PureComponent {
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
           {'New Event Request'}
-
           <Button
             className="material-ui-button"
             color="primary"
@@ -228,8 +231,7 @@ class CoviusBulkOrder extends React.PureComponent {
             className="material-ui-button"
             color="primary"
             margin="normal"
-            startIcon={<GetAppIcon />
-            }
+            startIcon={<GetAppIcon />}
             styleName="submitButton"
             variant="contained"
           >
@@ -242,8 +244,19 @@ class CoviusBulkOrder extends React.PureComponent {
 
   render() {
     const { inProgress, resultOperation } = this.props;
+    const { isOpen } = this.state;
     const title = '';
-
+    let renderAlert = null;
+    if (resultOperation && resultOperation.status) {
+      renderAlert = (
+        <SweetAlertBox
+          message={resultOperation.status}
+          onConfirm={this.handleClose}
+          show={isOpen}
+          type={resultOperation.level}
+        />
+      );
+    }
     return (
       <>
         <ContentHeader title={title}>
@@ -255,10 +268,7 @@ class CoviusBulkOrder extends React.PureComponent {
             </Grid>
             <Grid item xs={4}>
               <div styleName="title-row">
-                {(resultOperation && resultOperation.status)
-                  ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
-                  : ''
-                }
+                {renderAlert}
               </div>
             </Grid>
           </Grid>
