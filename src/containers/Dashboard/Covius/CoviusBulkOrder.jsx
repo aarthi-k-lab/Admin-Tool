@@ -20,16 +20,6 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import TabView from './TabView';
 
-
-const validCaseEntries = RegExp(/[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/);
-const validateCaseFormat = (caseIds) => {
-  let isValid = true;
-  // eslint-disable-next-line
-  if (validCaseEntries.test(caseIds)) {
-    isValid = false;
-  }
-  return isValid;
-};
 const events = [
   { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
   { category: 'X Request', label: 'Post Data', value: 2 },
@@ -75,31 +65,26 @@ class CoviusBulkOrder extends React.PureComponent {
 
   onSubmitCases = () => {
     const { caseIds } = this.state;
-    const { onCoviusBulkSubmit, onFailedLoanValidation } = this.props;
-    if (validateCaseFormat(caseIds)) {
-      this.setState({ isSubmitDisabled: 'disabled' });
-      const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-      const caseIdsList = new Set(cases);
-      const payload = {
-        caseIds: [...caseIdsList],
-      };
-      onCoviusBulkSubmit(payload);
-    } else {
-      const payload = {
-        level: 'error',
-        status: 'Please enter case id(s) in correct format. Only comma and newline separated case numbers are accepted.',
-      };
-      onFailedLoanValidation(payload);
-    }
+    const { onCoviusBulkSubmit } = this.props;
+    this.setState({ isSubmitDisabled: 'disabled' });
+    const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+    const caseIdsList = new Set(cases);
+    const payload = {
+      caseIds: R.filter(caseId => !R.isEmpty(caseId), [...caseIdsList]),
+    };
+    onCoviusBulkSubmit(payload);
   }
 
   handleCaseChange = (event) => {
     const { selectedEventName, selectedEventCategory } = this.state;
-    this.setState({
-      caseIds: event.target.value,
-      isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
-      isResetDisabled: event.target.value.trim() || !R.isEmpty(selectedEventName) || !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
-    });
+    const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/;
+    if (event.target.value === '' || !re.test(event.target.value)) {
+      this.setState({
+        caseIds: event.target.value,
+        isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
+        isResetDisabled: event.target.value.trim() || !R.isEmpty(selectedEventName) || !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
+      });
+    }
   }
 
   handleEventName = (event) => {
@@ -155,7 +140,6 @@ class CoviusBulkOrder extends React.PureComponent {
           value={selectedEventName}
         >
           {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
-
         </Select>
       </FormControl>
     );
@@ -180,8 +164,6 @@ class CoviusBulkOrder extends React.PureComponent {
           >
             RESET
           </Button>
-
-
         </span>
 
         <div styleName="loan-numbers">
@@ -302,7 +284,6 @@ class CoviusBulkOrder extends React.PureComponent {
 CoviusBulkOrder.defaultProps = {
   inProgress: false,
   onCoviusBulkSubmit: () => { },
-  onFailedLoanValidation: () => { },
   resultData: {
     DocumentRequests: [],
     invalidCases: [],
@@ -313,7 +294,6 @@ CoviusBulkOrder.defaultProps = {
 CoviusBulkOrder.propTypes = {
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
-  onFailedLoanValidation: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
       UserDetails: PropTypes.shape({
@@ -343,7 +323,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
-  onFailedLoanValidation: operations.onFailedLoanValidation(dispatch),
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
