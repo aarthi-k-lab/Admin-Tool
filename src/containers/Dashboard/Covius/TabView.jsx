@@ -126,6 +126,7 @@ class TabView extends React.Component {
             {showUpload || isFileRemoved ? renderMessage
               : <ReUploadFile onChange={this.handleChange} /> }
           </div>
+          {(showUpload || isFileRemoved) && (
           <Button
             color="primary"
             component="label"
@@ -133,17 +134,17 @@ class TabView extends React.Component {
             style={{
               label: 'uploadLabel',
             }}
-            styleName={showUpload || isFileRemoved ? 'uploadButton' : 'submitToCoviusButton'}
+            styleName="uploadButton"
             variant="contained"
           >
-            {showUpload || isFileRemoved ? Upload : 'SUBMIT TO COVIUS'}
-            { (showUpload || isFileRemoved) && (
+            {Upload}
             <input
               style={{ display: 'none' }}
               type="file"
             />
-            ) }
           </Button>
+          )}
+
         </div>
       </Grid>
     );

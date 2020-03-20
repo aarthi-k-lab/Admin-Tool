@@ -13,25 +13,22 @@
 }
 
 .fileTextBox {
-    height: '60px';
-    width: '100px';
-    overflow: hidden;
-    padding: 7.5px 14px !important;
-    align-self: center;
-    grid-column: 1 / 3;
-    grid-row: 2 / 3;
-    justify-self: center;
+    padding: 7.5px!important;
+    padding-bottom: 20px !important;
 }
 
 .deletebtn {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    margin-left: 54rem !important;
-    margin-top: 20px !important;
     background-color: white !important;
     color: #00B4D2 !important;
+    margin-left: 10px !important;
     border: 1px solid #00B4D2 !important;
+}
+
+.submitToCovius{
+    margin-left: 15px !important;
 }
 
 .msgblock{

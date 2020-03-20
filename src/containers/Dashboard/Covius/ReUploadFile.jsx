@@ -39,8 +39,16 @@ const ReUploadFile = ({ fileName, onChange }) => (
             />
           </Grid>
         </Grid>
-        <Grid container direction="column" item xs={12}>
-          <Grid item xs={12}>
+        <Grid container direction="row" item xs={12}>
+          <Grid alignItems="center" container direction="row" justify="center" xs={12}>
+            <Button
+              color="primary"
+              component="label"
+              styleName="submitToCovius"
+              variant="contained"
+            >
+          SUBMIT TO COVIUS
+            </Button>
             <Button
               component="label"
               onClick={onChange}
