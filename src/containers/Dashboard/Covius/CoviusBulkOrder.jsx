@@ -53,6 +53,10 @@ class CoviusBulkOrder extends React.PureComponent {
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
   }
 
+  componentWillMount() {
+    this.setState({ isOpen: true });
+  }
+
   onResetClick = () => {
     this.setState({
       selectedEventCategory: ' ',
