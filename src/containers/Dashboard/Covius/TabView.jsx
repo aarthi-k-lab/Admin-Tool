@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
 import SubmitFileError from './SubmitFileError';
+import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 
@@ -28,7 +29,11 @@ class TabView extends React.Component {
       isFailed: false,
       isUploading: false,
       showUpload: true,
+      fileName: '',
+      isOpen: true,
+      uploadNonExcel: null,
     };
+    this.invokeNotification = this.invokeNotification.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -67,11 +72,25 @@ class TabView extends React.Component {
   }
 
   handleTabSelection = (event, newValue) => {
-    this.setState({ value: newValue });
+    const { onChange } = this.props;
+    if (newValue === 2) onChange(false); else onChange(true);
+    this.setState({ value: newValue, uploadNonExcel: null });
+  }
+
+  invokeNotification = (message, level) => {
+    const { isOpen } = this.state;
+    return (
+      <SweetAlertBox
+        message={message}
+        show={isOpen}
+        type={level}
+      />
+    );
   }
 
   handleUpload = (event) => {
     const { onProcessFile, onDeleteFile } = this.props;
+    this.setState({ uploadNonExcel: null });
     if (event.target.files[0]) {
       const fileName = event.target.files[0].name;
       const fileExtension = extName(fileName);
@@ -82,7 +101,14 @@ class TabView extends React.Component {
       if (EXCEL_FORMATS.includes(ext)) {
         onProcessFile(event.target.files[0]);
         onDeleteFile(false);
-        this.setState({ isUploading: true, showUpload: false });
+        this.setState({
+          isUploading: true,
+          showUpload: false,
+          fileName: event.target.files[0].name,
+        });
+      } else {
+        const uploadNonExcelFile = this.invokeNotification('Kindly upload an excel File', 'Warning');
+        this.setState({ uploadNonExcel: uploadNonExcelFile });
       }
       // handle else part handle excel upload failed
     }
@@ -114,17 +140,20 @@ class TabView extends React.Component {
   );
 
   renderUploadPanel = () => {
-    const { isUploading, showUpload, isFailed } = this.state;
+    const {
+      isUploading, showUpload, isFailed, fileName, uploadNonExcel,
+    } = this.state;
     const { isFileRemoved } = this.props;
     const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div styleName="testing">
+          {uploadNonExcel}
           <div>
-            { (showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" /> }
+            {(showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" />}
             {showUpload || isFileRemoved ? renderMessage
-              : <ReUploadFile onChange={this.handleChange} /> }
+              : <ReUploadFile fileName={fileName} onChange={this.handleChange} />}
           </div>
           <Button
             color="primary"
@@ -234,6 +263,7 @@ class TabView extends React.Component {
 
 TabView.propTypes = {
   isFileRemoved: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
   onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
   tableData: PropTypes.shape({

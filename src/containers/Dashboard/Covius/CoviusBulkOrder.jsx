@@ -57,6 +57,7 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventCategory: '',
       eventNames: [],
       isResetDisabled: 'disabled',
+      isVisible: true,
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -143,22 +144,8 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-  renderNamesDropDown(eventNames) {
-    const { selectedEventName } = this.state;
-    return (
-
-      <FormControl variant="outlined">
-        <Select
-          input={<OutlinedInput name="eventName" />}
-          onChange={event => this.handleEventName(event)}
-          styleName="drop-down-select"
-          value={selectedEventName.eventName}
-        >
-          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
-
-        </Select>
-      </FormControl>
-    );
+  handleTabChange = (value) => {
+    this.setState({ isVisible: value });
   }
 
   renderNotepadArea() {
@@ -233,25 +220,46 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
+  renderNamesDropDown(eventNames) {
+    const { selectedEventName } = this.state;
+    return (
+
+      <FormControl variant="outlined">
+        <Select
+          input={<OutlinedInput name="eventName" />}
+          onChange={event => this.handleEventName(event)}
+          styleName="drop-down-select"
+          value={selectedEventName.eventName}
+        >
+          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+
+        </Select>
+      </FormControl>
+    );
+  }
+
   renderResults() {
     const { resultData } = this.props;
+    const { isVisible } = this.state;
     return (
       <Grid item xs={12}>
-        <TabView tableData={resultData} />
-        <div styleName="errorSvginfo">
-          <ErrorIcon styleName="errorSvg" />
-          <Button
-            className="material-ui-button"
-            color="primary"
-            margin="normal"
-            startIcon={<GetAppIcon />
-            }
-            styleName="submitButton"
-            variant="contained"
-          >
-            DOWNLOAD EXCEL TO VERIFY
-          </Button>
-        </div>
+        <TabView onChange={this.handleTabChange} tableData={resultData} />
+        {isVisible && (
+          <div styleName="errorSvginfo">
+            <ErrorIcon styleName="errorSvg" />
+            <Button
+              className="material-ui-button"
+              color="primary"
+              margin="normal"
+              startIcon={<GetAppIcon />
+              }
+              styleName="submitButton"
+              variant="contained"
+            >
+              DOWNLOAD EXCEL TO VERIFY
+            </Button>
+          </div>
+        )}
       </Grid>
     );
   }
