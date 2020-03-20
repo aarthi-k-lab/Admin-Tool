@@ -66,8 +66,8 @@
 }
 
 .submitToCoviusButton {
-  margin: 2rem 0 0 45rem !important;
-  margin-top: -40px !important;
+  margin-left: 41rem !important;
+  margin-top: -42px !important;
 }
 
 .tabStyle > div {
@@ -78,6 +78,6 @@
   flex-direction: row !important;
 }
 
-.testing{
+.tabViewDiv{
   width: 100%;
 }
