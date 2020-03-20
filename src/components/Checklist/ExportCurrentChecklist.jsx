@@ -53,10 +53,8 @@ class ExportCurrentChecklist extends Component {
     const { pdfGeneratorConstant, pdfExportPayload } = this.props;
     const data = {
       event: pdfExportPayload.event,
-      disposition: !pdfExportPayload.disposition ? 'null' : pdfExportPayload.disposition,
       assignedTo: pdfExportPayload.assignedTo,
       dispositionDate: pdfExportPayload.dispositionDate,
-      resolutionId: pdfExportPayload.resolutionId,
     };
     this.openWindowWithPost(`${pdfGeneratorConstant}/api/download/${pdfExportPayload.checklistId}`, data);
   };

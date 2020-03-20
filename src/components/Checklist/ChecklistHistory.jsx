@@ -72,16 +72,14 @@ class ChecklistHistory extends React.Component {
     document.body.removeChild(form);
   }
 
-  downloadChecklist = () => {
-    const { pdfGeneratorConstant, pdfExportPayload } = this.props;
+  downloadChecklist = (checklistData) => {
+    const { pdfGeneratorConstant } = this.props;
     const data = {
-      event: pdfExportPayload.event,
-      disposition: !pdfExportPayload.disposition ? 'null' : pdfExportPayload.disposition,
-      assignedTo: pdfExportPayload.assignedTo,
-      dispositionDate: pdfExportPayload.dispositionDate,
-      resolutionId: pdfExportPayload.resolutionId,
+      event: checklistData.taskCheckListTemplateName,
+      assignedTo: checklistData.assignedTo && checklistData.assignedTo.replace('.', ' ').replace('@mrcooper.com', ''),
+      dispositionDate: checklistData.taskCheckListDateTime,
     };
-    this.openWindowWithPost(`${pdfGeneratorConstant}/api/download/${pdfExportPayload.checklistId}`, data);
+    this.openWindowWithPost(`${pdfGeneratorConstant}/api/download/${checklistData.taskCheckListId}`, data);
   }
 
   render() {
@@ -123,7 +121,7 @@ class ChecklistHistory extends React.Component {
 
                 groupName === DashboardModel.BOOKING
                   ? (
-                    <MenuItem key={option} className="menuItem" onClick={this.downloadChecklist}>
+                    <MenuItem key={option} className="menuItem" onClick={() => this.downloadChecklist(option)}>
                       <div>
                         {`${option.taskCheckListTemplateName} - ${option.assignedTo.replace('.', ' ').replace('@mrcooper.com', '')}`}
                         <br />
@@ -187,7 +185,6 @@ ChecklistHistory.propTypes = {
   margin: PropTypes.shape({
     marginTop: PropTypes.string,
   }),
-  pdfExportPayload: PropTypes.shape.isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
   toolTipPosition: PropTypes.string,
 };
