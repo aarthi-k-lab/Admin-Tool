@@ -120,7 +120,7 @@ class TabView extends React.Component {
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
-        <div styleName="testing">
+        <div styleName="tabViewDiv">
           <div>
             { (showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" /> }
             {showUpload || isFileRemoved ? renderMessage
