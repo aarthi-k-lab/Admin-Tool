@@ -294,10 +294,22 @@ function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
   return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
 }
 
+function getPandamicFlagItem(_l, _e, _p, _pr, _g, _a, _t, _ta, fetchPandemicFlagResponseData) {
+  const pandemicFlagItem = R.has('getCommentCodesByFilterResult', fetchPandemicFlagResponseData) ? {
+    flag: 'Yes',
+    style: 'highlight',
+  } : {
+    flag: 'No',
+    style: '',
+  };
+  return generateTombstoneItem('Pandemic Flag', pandemicFlagItem);
+}
+
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails, groupName, additionalLoanInfo, taskName, taskData) {
+  prioritizationDetails, groupName, additionalLoanInfo, taskName, taskData,
+  fetchPandemicFlagResponseData) {
   let dataGenerator = [];
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
     ? DashboardModel.POSTMODSTAGER : groupName;
@@ -308,6 +320,7 @@ function getTombstoneItems(loanDetails,
         getLoanItem,
         getInvestorLoanItem,
         getEvalIdItem,
+        getPandamicFlagItem,
         getEvalFlag,
         getLoanTypeDescription,
         getInvestorItem,
@@ -333,6 +346,7 @@ function getTombstoneItems(loanDetails,
         getLoanItem,
         getInvestorLoanItem,
         getEvalIdItem,
+        getPandamicFlagItem,
         getEvalFlag,
         getLoanTypeDescription,
         getInvestorItem,
@@ -358,6 +372,7 @@ function getTombstoneItems(loanDetails,
       dataGenerator = [
         getLoanItem,
         getEvalIdItem,
+        getPandamicFlagItem,
         getPreviousDisposition,
         getLatestHandOffDisposition,
         getInvestorLoanItem,
@@ -389,18 +404,19 @@ function getTombstoneItems(loanDetails,
     groupName,
     additionalLoanInfo,
     taskName,
-    taskData));
+    taskData, fetchPandemicFlagResponseData));
   return data;
 }
 
 
-async function fetchData(loanNumber, evalId, groupName, taskName, taskId) {
+async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
   const prioritizationUrl = getPrioritizationUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
+  const pandemicFlagCommentCode = 'PCIM';
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -445,6 +461,8 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId) {
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
       prioritizationP, additionalLoanInfoP, fetchTaskInfo],
   );
+
+
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
   }
@@ -454,7 +472,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId) {
     previousDispositionDetails,
     prioritizationDetails,
     additionalLoanInfo,
-    taskData] = [];
+    taskData, fetchPandemicFlagResponseData] = [];
 
   if (previousDispositionResponse.status === 200 && prioritizationResponse.status === 200) {
     [loanDetails,
@@ -507,6 +525,22 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId) {
     ]);
   }
 
+  const fetchPandemicFlagP = await fetch('/api/utility/GetLsamsCommentCodeFilter', {
+    method: 'POST',
+    body: JSON.stringify({
+      loanID: loanNumber,
+      brand: brand || loanDetails.brandName,
+      commentCode: pandemicFlagCommentCode,
+    }),
+    headers: { 'content-type': 'application/json-patch+json' },
+  });
+
+  // const fetchPandemicFlagResponse = await new Promise(fetchPandemicFlagP).;
+
+  if (fetchPandemicFlagP.status === 200) {
+    fetchPandemicFlagResponseData = await fetchPandemicFlagP.json();
+  }
+
   return [...getTombstoneItems(
     loanDetails,
     evalDetails,
@@ -516,6 +550,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId) {
     additionalLoanInfo,
     taskName,
     taskData,
+    fetchPandemicFlagResponseData,
   )];
 }
 

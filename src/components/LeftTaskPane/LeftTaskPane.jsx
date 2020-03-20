@@ -114,6 +114,7 @@ class LeftTaskPane extends React.Component {
       historicalCheckListData,
       pdfGeneratorConstant,
       showExportChecklist,
+      groupName,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -140,7 +141,9 @@ class LeftTaskPane extends React.Component {
                     <div styleName="checklist-history-icon">
                       <ChecklistHistory
                         checkListData={historicalCheckListData}
+                        groupName={groupName}
                         margin={{ marginLeft: '2rem' }}
+                        pdfExportPayload={pdfExportPayload}
                         pdfGeneratorConstant={pdfGeneratorConstant}
                       />
                       {
@@ -236,6 +239,7 @@ LeftTaskPane.propTypes = {
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
   disableModifyOptionalTasks: PropTypes.bool.isRequired,
+  groupName: PropTypes.string,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
   historicalCheckListData: PropTypes.arrayOf(PropTypes.shape({
@@ -265,5 +269,6 @@ LeftTaskPane.defaultProps = {
   openWidth: '20rem',
   selectedTaskId: '',
   optionalTasks: [],
+  groupName: '',
 };
 export default (LeftTaskPane);

@@ -148,13 +148,14 @@ class TabView extends React.Component {
     const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
-        <div styleName="testing">
+        <div styleName="tabViewDiv">
           {uploadNonExcel}
           <div>
             {(showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" />}
             {showUpload || isFileRemoved ? renderMessage
               : <ReUploadFile fileName={fileName} onChange={this.handleChange} />}
           </div>
+          {(showUpload || isFileRemoved) && (
           <Button
             color="primary"
             component="label"
@@ -162,17 +163,17 @@ class TabView extends React.Component {
             style={{
               label: 'uploadLabel',
             }}
-            styleName={showUpload || isFileRemoved ? 'uploadButton' : 'submitToCoviusButton'}
+            styleName="uploadButton"
             variant="contained"
           >
-            {showUpload || isFileRemoved ? Upload : 'SUBMIT TO COVIUS'}
-            { (showUpload || isFileRemoved) && (
+            {Upload}
             <input
               style={{ display: 'none' }}
               type="file"
             />
-            ) }
           </Button>
+          )}
+
         </div>
       </Grid>
     );

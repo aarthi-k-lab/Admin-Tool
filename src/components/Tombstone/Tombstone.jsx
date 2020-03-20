@@ -88,12 +88,12 @@ class Tombstone extends React.Component {
             open={open}
           >
             {menuItem.map(option => (
-              <MenuItem key={option.title} styleName="menuItem">
+              <MenuItem key={option.title} styleName={option.content.style || 'menuItem'}>
                 <div>
                   {option.title}
                   <br />
                   <span styleName="menuItemContent">
-                    {option.content}
+                    {option.content.flag || option.content}
                   </span>
                 </div>
               </MenuItem>
@@ -160,8 +160,8 @@ Tombstone.getItems = function getItems(items) {
   const arrayLength = items.length;
   return items.map(({ content, title }) => (
     (
-      <td key={title} style={{ maxWidth: screenWidth / arrayLength }} styleName="itemTd">
-        <Item key={title} content={content} title={title} />
+      <td key={title} style={{ maxWidth: screenWidth / arrayLength }} styleName={content.style || 'itemTd'}>
+        <Item key={title} content={content.flag || content} title={title} />
       </td>
     )
   ));
