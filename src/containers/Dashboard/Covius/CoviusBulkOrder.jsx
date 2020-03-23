@@ -18,6 +18,7 @@ import { PropTypes } from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
+import * as XLSX from 'xlsx';
 import TabView from './TabView';
 
 const events = [
@@ -49,6 +50,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isResetDisabled: 'disabled',
       isVisible: true,
       isOpen: true,
+      tabIndex: 0,
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -134,8 +136,27 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-  handleTabChange = (value) => {
-    this.setState({ isVisible: value });
+  handleTabChange = (value, tabIndex) => {
+    this.setState({ isVisible: value, tabIndex });
+  }
+
+  jsonToExcelDownload = (fileName, data) => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, fileName);
+    XLSX.writeFile(wb, fileName);
+  }
+
+  handleDownload = () => {
+    const { tabIndex } = this.state;
+    const { coviusSubmitData } = this.props;
+    if (tabIndex === 0) {
+      const failedData = coviusSubmitData.failed;
+      this.jsonToExcelDownload('failed.xlsx', failedData);
+    } else if (tabIndex === 1) {
+      const passedData = coviusSubmitData.passed;
+      this.jsonToExcelDownload('passed.xlsx', passedData);
+    }
   }
 
   renderNotepadArea() {
@@ -240,6 +261,7 @@ class CoviusBulkOrder extends React.PureComponent {
               className="material-ui-button"
               color="primary"
               margin="normal"
+              onClick={this.handleDownload}
               startIcon={<GetAppIcon />
               }
               styleName="submitButton"
@@ -313,6 +335,7 @@ CoviusBulkOrder.defaultProps = {
 };
 
 CoviusBulkOrder.propTypes = {
+  coviusSubmitData: PropTypes.shape.isRequired,
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   resultData: PropTypes.shape({
@@ -339,6 +362,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
+  coviusSubmitData: selectors.getCoviusSubmitData(state),
 
 });
 

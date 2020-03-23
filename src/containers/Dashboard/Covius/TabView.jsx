@@ -10,7 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import ReactTable from 'react-table';
 import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { operations, selectors } from 'ducks/dashboard';
 import extName from 'ext-name';
 import { connect } from 'react-redux';
@@ -72,9 +71,13 @@ class TabView extends React.Component {
   }
 
   handleTabSelection = (event, newValue) => {
-    const { onChange } = this.props;
-    if (newValue === 2) onChange(false); else onChange(true);
+    const {
+      onChange,
+      clearSubmitDataResponse,
+    } = this.props;
+    if (newValue === 2) onChange(false, newValue); else onChange(true, newValue);
     this.setState({ value: newValue, uploadNonExcel: null });
+    clearSubmitDataResponse();
   }
 
   invokeNotification = (message, level) => {
@@ -151,27 +154,29 @@ class TabView extends React.Component {
         <div styleName="tabViewDiv">
           {uploadNonExcel}
           <div>
-            {(showUpload || isFailed || isFileRemoved) && <CloudUploadIcon styleName="uploadImage" />}
+            {(showUpload || isFailed || isFileRemoved)
+              && <img alt="landing page placeholder" src="/static/img/upload.svg" styleName="uploadImage" />
+          }
             {showUpload || isFileRemoved ? renderMessage
               : <ReUploadFile fileName={fileName} onChange={this.handleChange} />}
           </div>
           {(showUpload || isFileRemoved) && (
-          <Button
-            color="primary"
-            component="label"
-            onChange={this.handleUpload}
-            style={{
-              label: 'uploadLabel',
-            }}
-            styleName="uploadButton"
-            variant="contained"
-          >
-            {Upload}
-            <input
-              style={{ display: 'none' }}
-              type="file"
-            />
-          </Button>
+            <Button
+              color="primary"
+              component="label"
+              onChange={this.handleUpload}
+              style={{
+                label: 'uploadLabel',
+              }}
+              styleName="uploadButton"
+              variant="contained"
+            >
+              {Upload}
+              <input
+                style={{ display: 'none' }}
+                type="file"
+              />
+            </Button>
           )}
 
         </div>
@@ -218,6 +223,7 @@ class TabView extends React.Component {
   handleChange = () => {
     const { onDeleteFile } = this.props;
     onDeleteFile(true);
+    this.setState({ showUpload: true });
   }
 
   render() {
@@ -263,6 +269,7 @@ class TabView extends React.Component {
 }
 
 TabView.propTypes = {
+  clearSubmitDataResponse: PropTypes.func.isRequired,
   isFileRemoved: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onDeleteFile: PropTypes.func.isRequired,
@@ -291,6 +298,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
   onDeleteFile: operations.onDeleteFile(dispatch),
+  clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
 });
 
 
