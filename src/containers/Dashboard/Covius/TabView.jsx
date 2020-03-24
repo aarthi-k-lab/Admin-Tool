@@ -26,21 +26,23 @@ class TabView extends React.Component {
     this.state = {
       value: 0,
       isFailed: false,
-      isUploading: false,
-      showUpload: true,
+      buttonState: 'UPLOAD',
       fileName: '',
       isOpen: true,
       uploadNonExcel: null,
+      refreshHooks: true,
+      isFirstVist: true,
+      hasError: false,
     };
     this.invokeNotification = this.invokeNotification.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     const { getExcelFile } = nextProps;
-    // console.log(prevState);
-    // console.log('next props', nextProps);
-    if (R.isNil(getExcelFile)) return { isUploading: false };
-    return { isUploading: false };
+    const { refreshHooks, isFirstVist } = prevState;
+    if (!R.isNil(getExcelFile) && isFirstVist) return { buttonState: 'UPLOAD' };
+    if (!R.isNil(getExcelFile) && !isFirstVist) return { buttonState: 'SUBMIT' };
+    return { refreshHooks: !refreshHooks };
   }
 
   getColumns = (status) => {
@@ -91,9 +93,19 @@ class TabView extends React.Component {
     );
   }
 
+  makeUploadDelay = (fileName) => {
+    setTimeout(() => {
+      this.setState({
+        fileName,
+        buttonState: 'SUBMIT',
+        isFirstVist: false,
+      });
+    }, 3000);
+  };
+
   handleUpload = (event) => {
     const { onProcessFile, onDeleteFile } = this.props;
-    this.setState({ uploadNonExcel: null });
+    this.setState({ uploadNonExcel: null, buttonState: 'UPLOADING...', isFailed: false });
     if (event.target.files[0]) {
       const fileName = event.target.files[0].name;
       const fileExtension = extName(fileName);
@@ -104,16 +116,19 @@ class TabView extends React.Component {
       if (EXCEL_FORMATS.includes(ext)) {
         onProcessFile(event.target.files[0]);
         onDeleteFile(false);
-        this.setState({
-          isUploading: true,
-          showUpload: false,
-          fileName: event.target.files[0].name,
-        });
+        this.makeUploadDelay(event.target.files[0].name);
+        this.setState({ isFirstVist: false, fileName: event.target.files[0].name });
       } else {
         const uploadNonExcelFile = this.invokeNotification('Kindly upload an excel File', 'Warning');
-        this.setState({ uploadNonExcel: uploadNonExcelFile });
+        setTimeout(() => {
+          this.setState({
+            uploadNonExcel: uploadNonExcelFile,
+            isFailed: true,
+            buttonState: 'UPLOAD',
+            hasError: true,
+          });
+        }, 2000);
       }
-      // handle else part handle excel upload failed
     }
   };
 
@@ -142,25 +157,45 @@ class TabView extends React.Component {
     <div styleName="uploadMsg">Upload verified excel to submit to Covius</div>
   );
 
+  handleRefresh = () => {
+    const { onDeleteFile } = this.props;
+    this.setState({
+      isFailed: false,
+      buttonState: 'UPLOAD',
+      fileName: '',
+      isOpen: true,
+      uploadNonExcel: null,
+      isFirstVist: true,
+      hasError: false,
+    });
+    onDeleteFile(true);
+  }
+
   renderUploadPanel = () => {
     const {
-      isUploading, showUpload, isFailed, fileName, uploadNonExcel,
+      isFailed, fileName, uploadNonExcel, buttonState, hasError,
     } = this.state;
     const { isFileRemoved } = this.props;
-    const Upload = isUploading ? 'UPLOADING...' : 'UPLOAD';
-    const renderMessage = isFailed ? <SubmitFileError /> : this.renderUploadFile();
+    const checkButtonState = R.equals(buttonState, 'UPLOAD') || R.equals(buttonState, 'UPLOADING...');
+    const renderMessage = isFailed || hasError ? <SubmitFileError /> : this.renderUploadFile();
     return (
       <Grid container>
         <div styleName="tabViewDiv">
           {uploadNonExcel}
           <div>
-            {(showUpload || isFailed || isFileRemoved)
+            {(checkButtonState || isFailed || isFileRemoved)
               && <img alt="landing page placeholder" src="/static/img/upload.svg" styleName="uploadImage" />
-          }
-            {showUpload || isFileRemoved ? renderMessage
-              : <ReUploadFile fileName={fileName} onChange={this.handleChange} />}
+            }
+            {!R.equals(buttonState, 'SUBMIT') || isFileRemoved ? renderMessage
+              : (
+                <ReUploadFile
+                  fileName={fileName}
+                  onChange={this.handleChange}
+                  refreshPage={this.handleRefresh}
+                />
+              )}
           </div>
-          {(showUpload || isFileRemoved) && (
+          {(checkButtonState || isFileRemoved) && (
             <Button
               color="primary"
               component="label"
@@ -171,7 +206,7 @@ class TabView extends React.Component {
               styleName="uploadButton"
               variant="contained"
             >
-              {Upload}
+              {buttonState === 'SUBMIT' ? 'UPLOAD' : buttonState}
               <input
                 style={{ display: 'none' }}
                 type="file"
@@ -223,7 +258,15 @@ class TabView extends React.Component {
   handleChange = () => {
     const { onDeleteFile } = this.props;
     onDeleteFile(true);
-    this.setState({ showUpload: true });
+    this.setState({
+      isFailed: false,
+      buttonState: 'UPLOAD',
+      fileName: '',
+      isOpen: true,
+      uploadNonExcel: null,
+      isFirstVist: true,
+      hasError: false,
+    });
   }
 
   render() {
@@ -292,7 +335,7 @@ TabView.propTypes = {
 
 const mapStateToProps = state => ({
   getExcelFile: selectors.getUploadedFile(state),
-  isFileRemoved: selectors.getDeletedFile(state),
+  isFileRemoved: selectors.isFileDeleted(state),
 });
 
 const mapDispatchToProps = dispatch => ({

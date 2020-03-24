@@ -22,7 +22,7 @@ class ReUploadFile extends React.Component {
   }
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
-    const { getSubmitFileResponse } = nextProps;
+    const { getSubmitFileResponse, refreshPage } = nextProps;
     const { isOpen } = prevState;
     const { message, level } = getSubmitFileResponse;
     if (!R.isEmpty(getSubmitFileResponse)) {
@@ -31,8 +31,9 @@ class ReUploadFile extends React.Component {
           fontSize="1rem"
           icon="error"
           imageHeight="500"
-          imageUrl={level === 'Failed' ? Failed : Success}
-          onConfirm={this.handleClose}
+          imageUrl={level === 'Failed' || level === 'Faliure' ? Failed : Success}
+          // onClose={refreshPage()}
+          onConfirm={refreshPage()}
           padding="3em"
           show={isOpen}
           text={level === 'Failed' ? message.msg : ''}
@@ -131,9 +132,10 @@ const mapDispatchToProps = dispatch => ({
 ReUploadFile.propTypes = {
   fileName: PropTypes.string,
   getSubmitFileResponse:
-  PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
+    PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   onChange: PropTypes.func.isRequired,
   onSubmitFile: PropTypes.func.isRequired,
+  refreshPage: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
 };
 
 

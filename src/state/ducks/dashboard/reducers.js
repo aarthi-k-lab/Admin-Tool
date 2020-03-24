@@ -615,6 +615,8 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         isFileDeleted: action.payload,
+        fileSubmitResponse: {},
+        excelParsedData: null,
       };
     case GET_SUBMIT_RESPONSE:
       return {

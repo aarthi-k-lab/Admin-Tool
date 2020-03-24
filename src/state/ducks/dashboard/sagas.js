@@ -2474,7 +2474,7 @@ function* onFileSubmit() {
   try {
     const file = yield select(selectors.getUploadedFile);
     const fileUploadResponse = {};
-    const response = yield call(Api.callPost, 'api/stager/dashboard/handleUpload', file);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/handleUpload', JSON.parse(file));
     if (response.status === 200) {
       fileUploadResponse.message = 'The request was successfully sent to Covius';
       fileUploadResponse.level = 'Success';
@@ -2498,7 +2498,7 @@ function* onFileSubmit() {
     yield put(
       {
         type: GET_SUBMIT_RESPONSE,
-        payload: { message: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.', level: 'Failed' },
+        payload: { message: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.', level: 'Failure' },
       },
     );
   }
