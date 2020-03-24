@@ -959,77 +959,122 @@ describe('assign Loan', () => {
   });
 });
 
+describe('watch uploadFile ', () => {
+  it('should trigger upload file worker', () => {
+    const saga = cloneableGenerator(TestExports.watchOnUploadFile)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.PROCESS_FILE, TestExports.onUploadingFile));
+  });
+});
+
+
 describe('Parse the Excel file to JSON for covius data input', () => {
-  const payload = [
-    { caseId: 34, message: 'mock1' },
-    { caseId: 33, message: 'mock2' },
-  ];
-  const saga = cloneableGenerator(TestExports.watchOnUploadFile)(payload);
+  const action = {
+    payload: [
+      { caseId: 34, message: 'mock1' },
+      { caseId: 33, message: 'mock2' },
+    ],
+    type: 'app/dashboard/PROCESS_FILE',
+  };
+
   const mockFile = [
     { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
   ];
-  it('should trigger upload file worker', () => {
-    // const saga = cloneableGenerator(TestExports.watchOnUploadFile)();
+  const saga = cloneableGenerator(TestExports.onUploadingFile)(action);
+  it('should call processExcel function', () => {
     expect(saga.next().value)
-      .toEqual(takeEvery(actionTypes.PROCESS_FILE, TestExports.onUploadingFile));
-  });
-
-  it('should store the parsed excel file', () => {
-    expect(saga.next(payload).value)
       .toEqual((call(TestExports.processExcel, mockFile)));
   });
 
-  it('should store the parsed excel file  2', () => {
+  it('should store the parsed excel file', () => {
     expect(saga.next(mockFile).value)
       .toEqual(put({ type: actionTypes.SAVE_PROCESSED_FILE, payload: mockFile }));
   });
+});
 
-  // it('should call select userDetails from store', () => {
-  //   expect(saga.next(3565247).value)
-  //     .toEqual(select(loginSelectors.getUser));
-  // });
+describe('watch submitFile ', () => {
+  it('should trigger submit file worker', () => {
+    const saga = cloneableGenerator(TestExports.watchOnSubmitFile)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.SUBMIT_FILE, TestExports.onFileSubmit));
+  });
+});
 
-  // it('should call select taskId from store', () => {
-  //   expect(saga.next(mockUser).value)
-  //     .toEqual(select(selectors.taskId));
-  // });
+describe('submit file to covius : Success', () => {
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const mockResponse = {
+    status: 200,
+    data: 'mockData',
+  };
+  const mockFileUploadResponse = {};
+  mockFileUploadResponse.message = 'The request was successfully sent to Covius';
+  mockFileUploadResponse.level = 'Success';
+  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  it('should call select uploaded file from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getUploadedFile));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(JSON.stringify(mockFile)).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+  });
+  it('should call GET_COVIUS_DATA', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockResponse.data }));
+  });
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
+  });
+});
 
-  // it('should call select groupName from store', () => {
-  //   expect(saga.next(74365847).value)
-  //     .toEqual(select(selectors.groupName));
-  // });
+describe('submit file to covius : Failure', () => {
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const mockResponse = {
+    status: 400,
+    data: 'mockData',
+  };
+  const mockFileUploadResponse = {};
+  const message = {
+    title: 'The request failed to send to Covius',
+    msg: 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team',
+  };
+  mockFileUploadResponse.message = message;
+  mockFileUploadResponse.level = 'Failed';
+  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  it('should call select uploaded file from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getUploadedFile));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(JSON.stringify(mockFile)).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+  });
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
+  });
+});
 
-  // it('should call select ProcessId from store', () => {
-  //   expect(saga.next('FEUW').value)
-  //     .toEqual(select(selectors.processId));
-  // });
-
-  // it('should call select Process Status from store', () => {
-  //   expect(saga.next(23456).value)
-  //     .toEqual(select(selectors.processStatus));
-  // });
-
-  // it('should call select loanNumber from store', () => {
-  //   expect(saga.next('Active').value)
-  //     .toEqual(select(selectors.loanNumber));
-  // });
-  // it('should call assign Api', () => {
-  //   expect(saga.next(18008401081).value)
-  //     .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta&taskName=', {}));
-  // });
-  // it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
-  //   const taskid = {
-  //     taskId: 74365847,
-  //   };
-  //   expect(saga.next(mockResponse).value)
-  //     .toEqual(put({
-  //       type: GET_HISTORICAL_CHECKLIST_DATA,
-  //       payload: taskid,
-  //     }));
-  // });
-  // it('should call ASSIGN_LOAN_RESULT', () => {
-  //   expect(saga.next(mockResponse).value)
-  //     .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
-  // });
+describe('submit file to covius : Service down', () => {
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  it('should call select uploaded file from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getUploadedFile));
+  });
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next(mockFile).value)
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' } }));
+  });
 });

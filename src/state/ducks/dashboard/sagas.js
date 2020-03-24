@@ -2457,7 +2457,7 @@ function* manualInsertion(payload) {
 }
 
 
-function* onUploadingFile(action) {
+const onUploadingFile = function* onUploadingFile(action) {
   const file = action.payload;
   if (file) {
     const data = yield call(processExcel, file);
@@ -2468,11 +2468,13 @@ function* onUploadingFile(action) {
       });
     }
   }
-}
+};
 
-function* onFileSubmit() {
+const onFileSubmit = function* onFileSubmit() {
   try {
     const file = yield select(selectors.getUploadedFile);
+    // const evalId = yield select(selectors.evalId);
+    // console.log(evalId);
     const fileUploadResponse = {};
     const response = yield call(Api.callPost, 'api/stager/dashboard/handleUpload', JSON.parse(file));
     if (response.status === 200) {
@@ -2502,7 +2504,7 @@ function* onFileSubmit() {
       },
     );
   }
-}
+};
 
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
@@ -2578,6 +2580,7 @@ export const TestExports = {
   watchGetNext,
   getNext,
   onUploadingFile,
+  onFileSubmit,
   watchDispositionSave,
   watchSearchLoan,
   watchTombstoneLoan,
@@ -2596,6 +2599,7 @@ export const TestExports = {
   watchOnTrialTask,
   watchCoviusBulkOrder,
   watchOnUploadFile,
+  watchOnSubmitFile,
 };
 
 export const combinedSaga = function* combinedSaga() {
