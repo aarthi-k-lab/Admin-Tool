@@ -10,4 +10,9 @@ const SubmitFileError = () => (
   </>
 );
 
+const TestHooks = {
+  SubmitFileError,
+};
+
 export default SubmitFileError;
+export { TestHooks };

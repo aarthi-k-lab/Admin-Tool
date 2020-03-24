@@ -86,6 +86,7 @@ class TabView extends React.Component {
     const { isOpen } = this.state;
     return (
       <SweetAlertBox
+        id="sweetAlert"
         message={message}
         show={isOpen}
         type={level}
@@ -190,6 +191,7 @@ class TabView extends React.Component {
               : (
                 <ReUploadFile
                   fileName={fileName}
+                  id="reupload"
                   onChange={this.handleChange}
                   refreshPage={this.handleRefresh}
                 />
@@ -199,6 +201,7 @@ class TabView extends React.Component {
             <Button
               color="primary"
               component="label"
+              id="upload"
               onChange={this.handleUpload}
               style={{
                 label: 'uploadLabel',
@@ -213,7 +216,6 @@ class TabView extends React.Component {
               />
             </Button>
           )}
-
         </div>
       </Grid>
     );
@@ -352,4 +354,8 @@ TabView.defaultProps = {
   },
 };
 
+const TestHooks = {
+  TabView,
+};
+export { TestHooks };
 export default connect(mapStateToProps, mapDispatchToProps)(TabView);

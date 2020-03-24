@@ -260,6 +260,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
+              id="download"
               margin="normal"
               onClick={this.handleDownload}
               startIcon={<GetAppIcon />
@@ -372,5 +373,9 @@ const mapDispatchToProps = dispatch => ({
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
 
+const TestHooks = {
+  CoviusBulkOrder,
+};
 
+export { TestHooks };
 export default withRouter(CoviusBulkOrderContainer);

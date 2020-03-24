@@ -958,3 +958,78 @@ describe('assign Loan', () => {
       .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
   });
 });
+
+describe('Parse the Excel file to JSON for covius data input', () => {
+  const payload = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const saga = cloneableGenerator(TestExports.watchOnUploadFile)(payload);
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  it('should trigger upload file worker', () => {
+    // const saga = cloneableGenerator(TestExports.watchOnUploadFile)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.PROCESS_FILE, TestExports.onUploadingFile));
+  });
+
+  it('should store the parsed excel file', () => {
+    expect(saga.next(payload).value)
+      .toEqual((call(TestExports.processExcel, mockFile)));
+  });
+
+  it('should store the parsed excel file  2', () => {
+    expect(saga.next(mockFile).value)
+      .toEqual(put({ type: actionTypes.SAVE_PROCESSED_FILE, payload: mockFile }));
+  });
+
+  // it('should call select userDetails from store', () => {
+  //   expect(saga.next(3565247).value)
+  //     .toEqual(select(loginSelectors.getUser));
+  // });
+
+  // it('should call select taskId from store', () => {
+  //   expect(saga.next(mockUser).value)
+  //     .toEqual(select(selectors.taskId));
+  // });
+
+  // it('should call select groupName from store', () => {
+  //   expect(saga.next(74365847).value)
+  //     .toEqual(select(selectors.groupName));
+  // });
+
+  // it('should call select ProcessId from store', () => {
+  //   expect(saga.next('FEUW').value)
+  //     .toEqual(select(selectors.processId));
+  // });
+
+  // it('should call select Process Status from store', () => {
+  //   expect(saga.next(23456).value)
+  //     .toEqual(select(selectors.processStatus));
+  // });
+
+  // it('should call select loanNumber from store', () => {
+  //   expect(saga.next('Active').value)
+  //     .toEqual(select(selectors.loanNumber));
+  // });
+  // it('should call assign Api', () => {
+  //   expect(saga.next(18008401081).value)
+  //     .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta&taskName=', {}));
+  // });
+  // it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+  //   const taskid = {
+  //     taskId: 74365847,
+  //   };
+  //   expect(saga.next(mockResponse).value)
+  //     .toEqual(put({
+  //       type: GET_HISTORICAL_CHECKLIST_DATA,
+  //       payload: taskid,
+  //     }));
+  // });
+  // it('should call ASSIGN_LOAN_RESULT', () => {
+  //   expect(saga.next(mockResponse).value)
+  //     .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
+  // });
+});

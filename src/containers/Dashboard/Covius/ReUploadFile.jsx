@@ -94,6 +94,7 @@ class ReUploadFile extends React.Component {
                 <Button
                   color="primary"
                   component="label"
+                  id="submit"
                   onClick={this.onSubmitToCovius}
                   styleName="submitToCovius"
                   variant="contained"
@@ -102,6 +103,7 @@ class ReUploadFile extends React.Component {
                 </Button>
                 <Button
                   component="label"
+                  id="delete"
                   onClick={onChange}
                   styleName="deletebtn"
                   variant="contained"
@@ -117,6 +119,9 @@ class ReUploadFile extends React.Component {
   }
 }
 
+const TestHooks = {
+  ReUploadFile,
+};
 ReUploadFile.defaultProps = {
   fileName: 'hello.xls',
 };
@@ -138,5 +143,5 @@ ReUploadFile.propTypes = {
   refreshPage: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
 };
 
-
+export { TestHooks };
 export default connect(mapStateToProps, mapDispatchToProps)(ReUploadFile);
