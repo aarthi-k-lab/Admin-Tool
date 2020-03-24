@@ -118,7 +118,7 @@ class ReUploadFile extends React.Component {
 }
 
 ReUploadFile.defaultProps = {
-  fileName: 'hedfgsdfgdfgdsgdfgdsfgdsfgllo.xls',
+  fileName: 'hello.xls',
 };
 
 const mapStateToProps = state => ({

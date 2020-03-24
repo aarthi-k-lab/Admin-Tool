@@ -2498,7 +2498,7 @@ function* onFileSubmit() {
     yield put(
       {
         type: GET_SUBMIT_RESPONSE,
-        payload: { message: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.', level: 'Failure' },
+        payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' },
       },
     );
   }
