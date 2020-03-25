@@ -181,7 +181,7 @@ class CoviusBulkOrder extends React.PureComponent {
             color="primary"
             disabled={isResetDisabled}
             onClick={() => this.onResetClick()}
-            styleName="reset-button-style"
+            styleName={isResetDisabled ? 'reset-button-style' : 'reset-button-style-blue'}
           >
             RESET
           </FormLabel>
@@ -268,6 +268,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
+              disabled
               id="download"
               margin="normal"
               onClick={this.handleDownload}

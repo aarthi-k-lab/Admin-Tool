@@ -11,6 +11,14 @@
   width: 10%;
   float: right !important;
   font-weight: bold !important;
+}
+.reset-button-style-blue {
+  position: relative;
+  margin-right: 2rem;
+  margin-top: 0.25rem;
+  width: 10%;
+  float: right !important;
+  font-weight: bold !important;
   color: var(--light-blue-900) !important;
 }
 
