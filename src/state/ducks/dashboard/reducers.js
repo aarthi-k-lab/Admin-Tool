@@ -53,6 +53,7 @@ import {
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  CLEAR_COVIUS_DATA,
   SET_INCENTIVE_TASKCODES,
   STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
@@ -505,6 +506,18 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         tableData: [],
+      };
+    }
+
+    case CLEAR_COVIUS_DATA: {
+      const resultOperation = {};
+      const resultData = [];
+      const eventNames = [];
+      return {
+        ...state,
+        resultData,
+        resultOperation,
+        eventNames,
       };
     }
 

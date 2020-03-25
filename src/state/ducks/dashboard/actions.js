@@ -40,6 +40,7 @@ import {
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
+  CLEAR_COVIUS_DATA,
   CLEAR_BULKUPLOAD_TABLEDATA,
   TRIAL_TASK,
   INSERT_EVALID,
@@ -248,6 +249,10 @@ const clearPostModEndShitf = () => ({
   type: CLEAR_POSTMOD_END_SHIFT,
 });
 
+const clearCoviusData = () => ({
+  type: CLEAR_COVIUS_DATA,
+});
+
 const onTrialTaskAction = payload => ({
   type: TRIAL_TASK,
   payload,
@@ -294,6 +299,7 @@ export {
   hideAssignUnassign,
   postComment,
   clearBEDisposition,
+  clearCoviusData,
   getGroupName,
   validateDisposition,
   loadTrialsAction,
