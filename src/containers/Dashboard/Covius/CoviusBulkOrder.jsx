@@ -155,13 +155,16 @@ class CoviusBulkOrder extends React.PureComponent {
 
   handleDownload = () => {
     const { tabIndex } = this.state;
-    const { coviusSubmitData } = this.props;
+    const { resultData } = this.props;
     if (tabIndex === 0) {
-      const failedData = coviusSubmitData.failed;
+      const failedData = resultData.failed;
       this.jsonToExcelDownload('failed.xlsx', failedData);
     } else if (tabIndex === 1) {
-      const passedData = coviusSubmitData.passed;
+      const passedData = resultData.passed;
       this.jsonToExcelDownload('passed.xlsx', passedData);
+    } else if (tabIndex === 3) {
+      const passedData = resultData.uploadFailed;
+      this.jsonToExcelDownload('uploadFailed.xlsx', passedData);
     }
   }
 
@@ -341,20 +344,21 @@ CoviusBulkOrder.defaultProps = {
 };
 
 CoviusBulkOrder.propTypes = {
-  coviusSubmitData: PropTypes.shape.isRequired,
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
   resultData: PropTypes.shape({
-    DocumentRequests: PropTypes.arrayOf({
-      UserDetails: PropTypes.shape({
-        CASEID: PropTypes.string,
-        EVAL_ID: PropTypes.string,
-        LOAN_NUMBER: PropTypes.string,
-      }),
-      RequestId: PropTypes.string,
+    failed: PropTypes.arrayOf({
+      caseId: PropTypes.string,
+      message: PropTypes.string,
     }),
-    invalidCases: PropTypes.arrayOf({
+    passed: PropTypes.arrayOf({
+      caseId: PropTypes.string,
+      evalId: PropTypes.string,
+      loanNumber: PropTypes.string,
+      requestId: PropTypes.string,
+    }),
+    uploadFailed: PropTypes.arrayOf({
       caseId: PropTypes.string,
       message: PropTypes.string,
     }),
@@ -369,8 +373,6 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
-  coviusSubmitData: selectors.getCoviusSubmitData(state),
-
 });
 
 const mapDispatchToProps = dispatch => ({

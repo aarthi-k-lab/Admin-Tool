@@ -1312,15 +1312,16 @@ function* onSelectTrialTask(payload) {
 }
 
 function* onCoviusBulkUpload(payload) {
-  const { caseIds } = payload.payload;
-  let response;
+  console.log(payload);
+  // const { caseIds } = payload.payload;
+  // let response;
   try {
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    // const user = yield select(loginSelectors.getUser);
+    // const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
-    response = yield call(Api.callPost,
-      `/api/covius/getEventData?user=${userPrincipalName}`, caseIds);
-    response = {
+    // response = yield call(Api.callPost,
+    //   `/api/covius/getEventData?user=${userPrincipalName}`, caseIds);
+    const response = {
       DocumentRequests: [
         {
           RequestId: '50063C7C-AC12-4035-9F96-9F4FCADEEC1E',
@@ -2319,7 +2320,27 @@ function* onCoviusBulkUpload(payload) {
           ReviewType: 'Internal',
         },
       ],
-      invalidCases: [
+      passed: [
+        {
+          RequestId: '123',
+          caseId: '354654',
+          loanNumber: '452343',
+          EvalId: '45435',
+        },
+        {
+          RequestId: '123',
+          caseId: '354654',
+          loanNumber: '452343',
+          EvalId: '45435',
+        },
+        {
+          RequestId: '123',
+          caseId: '354654',
+          loanNumber: '452343',
+          EvalId: '45435',
+        },
+      ],
+      failed: [
         {
           caseId: '354654',
           message: "CaseId doesn't exist",
