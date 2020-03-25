@@ -64,7 +64,7 @@ class TabView extends React.Component {
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID', accessor: 'caseId', minWidth: 30, maxWidth: 70, style: { width: '5%' }, headerStyle: { textAlign: 'left' },
       },
       {
         Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
