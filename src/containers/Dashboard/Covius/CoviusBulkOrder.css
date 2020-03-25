@@ -6,9 +6,12 @@
 
 .reset-button-style {
   position: relative;
-  margin-right: 6rem;
-  width: 25%;
+  margin-right: 2rem;
+  margin-top: 0.25rem;
+  width: 10%;
   float: right !important;
+  font-weight: bold !important;
+  color: var(--light-blue-900) !important;
 }
 
 .loan-numbers {

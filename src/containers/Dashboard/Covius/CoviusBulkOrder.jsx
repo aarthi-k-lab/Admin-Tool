@@ -16,6 +16,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { selectors, operations } from 'ducks/dashboard';
 import { PropTypes } from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import TabView from './TabView';
@@ -46,7 +47,7 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventName: '',
       selectedEventCategory: '',
       eventNames: [],
-      isResetDisabled: 'disabled',
+      isResetDisabled: true,
       isOpen: true,
     };
 
@@ -63,7 +64,7 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventName: '',
       caseIds: '',
       isSubmitDisabled: 'disabled',
-      isResetDisabled: 'disabled',
+      isResetDisabled: true,
       eventNames: [],
     });
   }
@@ -87,7 +88,8 @@ class CoviusBulkOrder extends React.PureComponent {
       this.setState({
         caseIds: event.target.value,
         isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
-        isResetDisabled: event.target.value.trim() || !R.isEmpty(selectedEventName) || !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
+        isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEventName)
+        && R.isEmpty(selectedEventCategory),
       });
     }
   }
@@ -108,7 +110,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isSubmitDisabled: 'disabled',
       selectedEventName: '',
       eventNames,
-      isResetDisabled: '',
+      isResetDisabled: false,
     });
   }
 
@@ -161,16 +163,15 @@ class CoviusBulkOrder extends React.PureComponent {
       <div styleName="status-details-parent">
         <span styleName="newBulkUpload">
           {'New Event Request'}
-          <Button
-            className="material-ui-button"
+          <FormLabel
+            className="filled"
             color="primary"
             disabled={isResetDisabled}
             onClick={() => this.onResetClick()}
             styleName="reset-button-style"
-            variant="contained"
           >
             RESET
-          </Button>
+          </FormLabel>
         </span>
 
         <div styleName="loan-numbers">
