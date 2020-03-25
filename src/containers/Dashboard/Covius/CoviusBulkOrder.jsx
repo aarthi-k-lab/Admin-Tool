@@ -19,6 +19,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
+import * as XLSX from 'xlsx';
 import TabView from './TabView';
 
 const events = [
@@ -48,7 +49,9 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventCategory: '',
       eventNames: [],
       isResetDisabled: true,
+      isVisible: true,
       isOpen: true,
+      tabIndex: 0,
     };
 
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -139,20 +142,27 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-  renderNamesDropDown(eventNames) {
-    const { selectedEventName } = this.state;
-    return (
-      <FormControl variant="outlined">
-        <Select
-          input={<OutlinedInput name="selectedEventName" />}
-          onChange={event => this.handleEventName(event)}
-          styleName="drop-down-select"
-          value={selectedEventName}
-        >
-          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
-        </Select>
-      </FormControl>
-    );
+  handleTabChange = (value, tabIndex) => {
+    this.setState({ isVisible: value, tabIndex });
+  }
+
+  jsonToExcelDownload = (fileName, data) => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, fileName);
+    XLSX.writeFile(wb, fileName);
+  }
+
+  handleDownload = () => {
+    const { tabIndex } = this.state;
+    const { coviusSubmitData } = this.props;
+    if (tabIndex === 0) {
+      const failedData = coviusSubmitData.failed;
+      this.jsonToExcelDownload('failed.xlsx', failedData);
+    } else if (tabIndex === 1) {
+      const passedData = coviusSubmitData.passed;
+      this.jsonToExcelDownload('passed.xlsx', passedData);
+    }
   }
 
   renderNotepadArea() {
@@ -225,24 +235,48 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
+  renderNamesDropDown(eventNames) {
+    const { selectedEventName } = this.state;
+    return (
+
+      <FormControl variant="outlined">
+        <Select
+          input={<OutlinedInput name="eventName" />}
+          onChange={event => this.handleEventName(event)}
+          styleName="drop-down-select"
+          value={selectedEventName.eventName}
+        >
+          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+
+        </Select>
+      </FormControl>
+    );
+  }
+
   renderResults() {
     const { resultData } = this.props;
+    const { isVisible } = this.state;
     return (
       <Grid item xs={12}>
-        <TabView tableData={resultData} />
-        <div styleName="errorSvginfo">
-          <ErrorIcon styleName="errorSvg" />
-          <Button
-            className="material-ui-button"
-            color="primary"
-            margin="normal"
-            startIcon={<GetAppIcon />}
-            styleName="submitButton"
-            variant="contained"
-          >
-            DOWNLOAD EXCEL TO VERIFY
-          </Button>
-        </div>
+        <TabView onChange={this.handleTabChange} tableData={resultData} />
+        {isVisible && (
+          <div styleName="errorSvginfo">
+            <ErrorIcon styleName="errorSvg" />
+            <Button
+              className="material-ui-button"
+              color="primary"
+              id="download"
+              margin="normal"
+              onClick={this.handleDownload}
+              startIcon={<GetAppIcon />
+              }
+              styleName="submitButton"
+              variant="contained"
+            >
+              DOWNLOAD EXCEL TO VERIFY
+            </Button>
+          </div>
+        )}
       </Grid>
     );
   }
@@ -307,6 +341,7 @@ CoviusBulkOrder.defaultProps = {
 };
 
 CoviusBulkOrder.propTypes = {
+  coviusSubmitData: PropTypes.shape.isRequired,
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   resultData: PropTypes.shape({
@@ -333,6 +368,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
+  coviusSubmitData: selectors.getCoviusSubmitData(state),
 
 });
 
@@ -342,5 +378,9 @@ const mapDispatchToProps = dispatch => ({
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
 
+const TestHooks = {
+  CoviusBulkOrder,
+};
 
+export { TestHooks };
 export default withRouter(CoviusBulkOrderContainer);

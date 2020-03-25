@@ -56,13 +56,13 @@
 .uploadMsg {
   font-size: 1.3rem;
   align-items: center;
-  margin: 0rem 8rem 0rem 42rem;
+  margin: 1rem 8rem 0rem 42rem;
   flex-direction: column;
   justify-content: center;
 }
 
 .uploadButton {
-  margin: 2rem 0 0 49rem !important;
+  margin: 2rem 0 0 51rem !important;
 }
 
 .submitToCoviusButton {

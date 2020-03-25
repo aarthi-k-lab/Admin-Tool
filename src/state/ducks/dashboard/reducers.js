@@ -61,6 +61,9 @@ import {
   DISCARD_EVAL_RESPONSE,
   SAVE_PROCESSED_FILE,
   DELETE_FILE,
+  GET_SUBMIT_RESPONSE,
+  GET_COVIUS_DATA,
+  CLEAR_COVIUS_SUBMIT_DATA,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -612,8 +615,24 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         isFileDeleted: action.payload,
+        fileSubmitResponse: {},
+        excelParsedData: null,
       };
-
+    case GET_SUBMIT_RESPONSE:
+      return {
+        ...state,
+        fileSubmitResponse: action.payload,
+      };
+    case GET_COVIUS_DATA:
+      return {
+        ...state,
+        coviusSubmitData: action.payload,
+      };
+    case CLEAR_COVIUS_SUBMIT_DATA:
+      return {
+        ...state,
+        fileSubmitResponse: {},
+      };
     default:
       return state;
   }

@@ -94,6 +94,9 @@ import {
   DISABLE_TRIAL_BUTTON,
   PROCESS_FILE,
   SAVE_PROCESSED_FILE,
+  SUBMIT_FILE,
+  GET_SUBMIT_RESPONSE,
+  GET_COVIUS_DATA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2453,7 +2456,8 @@ function* manualInsertion(payload) {
   yield put({ type: HIDE_LOADER });
 }
 
-function* onUploadingFile(action) {
+
+const onUploadingFile = function* onUploadingFile(action) {
   const file = action.payload;
   if (file) {
     const data = yield call(processExcel, file);
@@ -2463,9 +2467,44 @@ function* onUploadingFile(action) {
         payload: data,
       });
     }
-    // yield call(Api.callPost, 'http://localhost:9090/upload', data);
   }
-}
+};
+
+const onFileSubmit = function* onFileSubmit() {
+  try {
+    const file = yield select(selectors.getUploadedFile);
+    // const evalId = yield select(selectors.evalId);
+    // console.log(evalId);
+    const fileUploadResponse = {};
+    const response = yield call(Api.callPost, 'api/stager/dashboard/handleUpload', JSON.parse(file));
+    if (response.status === 200) {
+      fileUploadResponse.message = 'The request was successfully sent to Covius';
+      fileUploadResponse.level = 'Success';
+      yield put({
+        type: GET_COVIUS_DATA,
+        payload: response.data,
+      });
+    } else {
+      const message = {
+        title: 'The request failed to send to Covius',
+        msg: 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team',
+      };
+      fileUploadResponse.message = message;
+      fileUploadResponse.level = 'Failed';
+    }
+    yield put({
+      type: GET_SUBMIT_RESPONSE,
+      payload: fileUploadResponse,
+    });
+  } catch (e) {
+    yield put(
+      {
+        type: GET_SUBMIT_RESPONSE,
+        payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' },
+      },
+    );
+  }
+};
 
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
@@ -2517,6 +2556,10 @@ function* watchOnTrialTask() {
 function* watchOnUploadFile() {
   yield takeEvery(PROCESS_FILE, onUploadingFile);
 }
+
+function* watchOnSubmitFile() {
+  yield takeEvery(SUBMIT_FILE, onFileSubmit);
+}
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -2525,6 +2568,7 @@ export const TestExports = {
   fetchChecklistDetails: fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
+  processExcel,
   saveGeneralChecklistDisposition,
   searchLoan,
   selectEval,
@@ -2535,6 +2579,8 @@ export const TestExports = {
   watchSetExpandView,
   watchGetNext,
   getNext,
+  onUploadingFile,
+  onFileSubmit,
   watchDispositionSave,
   watchSearchLoan,
   watchTombstoneLoan,
@@ -2553,6 +2599,7 @@ export const TestExports = {
   watchOnTrialTask,
   watchCoviusBulkOrder,
   watchOnUploadFile,
+  watchOnSubmitFile,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -2581,5 +2628,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnTrialTask(),
     watchCoviusBulkOrder(),
     watchOnUploadFile(),
+    watchOnSubmitFile(),
   ]);
 };

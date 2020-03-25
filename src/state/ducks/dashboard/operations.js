@@ -43,6 +43,8 @@ import {
   discardEvalResponse,
   processFileAction,
   deleteFileAction,
+  submitFileAction,
+  clearSubmitCoviusData,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -213,6 +215,14 @@ const onDeleteFile = dispatch => (payload) => {
   dispatch(deleteFileAction(payload));
 };
 
+const onSubmitFile = dispatch => () => {
+  dispatch(submitFileAction());
+};
+
+const onClearSubmitCoviusData = dispatch => () => {
+  dispatch(clearSubmitCoviusData());
+};
+
 const operations = {
   clearEvalResponse,
   onAutoSave,
@@ -259,6 +269,8 @@ const operations = {
   onCoviusCasesSubmit,
   onProcessFile,
   onDeleteFile,
+  onSubmitFile,
+  onClearSubmitCoviusData,
 };
 
 export default operations;

@@ -114,7 +114,9 @@ const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'],
 const getTrialResponse = state => R.pathOr({}, ['dashboard', 'trialClosingResponse'], state);
 const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTrialTaskButton'], state);
 const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData'], state);
-const getDeletedFile = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
+const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
+const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
+const getCoviusSubmitData = state => R.pathOr({}, ['dashboard', 'coviusSubmitData'], state);
 
 const selectors = {
   enableEndShift,
@@ -175,8 +177,10 @@ const selectors = {
   disableTrialTaskButton,
   resultData,
   getUploadedFile,
-  getDeletedFile,
+  isFileDeleted,
   brand,
+  getFileSubmitResponse,
+  getCoviusSubmitData,
 };
 
 export default selectors;
