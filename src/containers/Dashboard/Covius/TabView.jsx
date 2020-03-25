@@ -49,13 +49,13 @@ class TabView extends React.Component {
     if (status === 'Passed') {
       return [
         {
-          Header: 'Loan Number', accessor: 'loanNumber', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number', accessor: 'UserFields.LOAN_NUMBER', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'EvalId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
           Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 200, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
@@ -140,12 +140,11 @@ class TabView extends React.Component {
     }
 
     switch (status) {
-      case 'Passed':
-      {
-        return tableData.passed;
+      case 'Passed': {
+        return tableData.DocumentRequests;
       }
       case 'Failed': {
-        return tableData.failed;
+        return tableData.invalidCases;
       }
       case 'uploadFailed': {
         return tableData.uploadFailed;
@@ -161,10 +160,10 @@ class TabView extends React.Component {
     }
     switch (text) {
       case 'Passed': {
-        return tableData.passed.length;
+        return tableData.DocumentRequests.length;
       }
       case 'Failed': {
-        return tableData.failed.length;
+        return tableData.invalidCases.length;
       }
       case 'Upload Failed': {
         return tableData.uploadFailed.length;
@@ -344,19 +343,15 @@ TabView.propTypes = {
   onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
   tableData: PropTypes.shape({
-    // DocumentRequests: PropTypes.arrayOf({
-    //   UserDetails: PropTypes.shape({
-    //     CASEID: PropTypes.string,
-    //     EVAL_ID: PropTypes.string,
-    //     LOAN_NUMBER: PropTypes.string,
-    //   }),
-    //   RequestId: PropTypes.string,
-    // }),
-    failed: PropTypes.arrayOf({
-      caseId: PropTypes.string,
-      message: PropTypes.string,
+    DocumentRequests: PropTypes.arrayOf({
+      UserDetails: PropTypes.shape({
+        CASEID: PropTypes.string,
+        EVAL_ID: PropTypes.string,
+        LOAN_NUMBER: PropTypes.string,
+      }),
+      RequestId: PropTypes.string,
     }),
-    passed: PropTypes.arrayOf({
+    invalidCases: PropTypes.arrayOf({
       caseId: PropTypes.string,
       message: PropTypes.string,
     }),
@@ -382,8 +377,8 @@ const mapDispatchToProps = dispatch => ({
 
 TabView.defaultProps = {
   tableData: {
-    passed: [],
-    failed: [],
+    DocumentRequests: [],
+    invalidCases: [],
     uploadFailed: [],
   },
 };
