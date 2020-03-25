@@ -623,11 +623,15 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         fileSubmitResponse: action.payload,
       };
-    case GET_COVIUS_DATA:
+    case GET_COVIUS_DATA: {
+      const { resultData } = state;
+      const { uploadFailed } = action.payload;
       return {
         ...state,
-        coviusSubmitData: action.payload,
+        resultData: { ...resultData, uploadFailed },
+        isUploadFailedTabVisible: !R.isEmpty(uploadFailed),
       };
+    }
     case CLEAR_COVIUS_SUBMIT_DATA:
       return {
         ...state,

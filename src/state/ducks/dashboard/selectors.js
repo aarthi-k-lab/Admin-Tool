@@ -116,7 +116,7 @@ const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTr
 const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData'], state);
 const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
 const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
-const getCoviusSubmitData = state => R.pathOr({}, ['dashboard', 'coviusSubmitData'], state);
+const isUploadFailedTabVisible = state => R.pathOr(false, ['dashboard', 'isUploadFailedTabVisible'], state);
 
 const selectors = {
   enableEndShift,
@@ -180,7 +180,7 @@ const selectors = {
   isFileDeleted,
   brand,
   getFileSubmitResponse,
-  getCoviusSubmitData,
+  isUploadFailedTabVisible,
 };
 
 export default selectors;
