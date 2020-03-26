@@ -62,14 +62,15 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   onResetClick = () => {
+    const { onResetCoviusData } = this.props;
     this.setState({
-      selectedEventCategory: ' ',
       selectedEventName: '',
+      selectedEventCategory: '',
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
-      eventNames: [],
     });
+    onResetCoviusData();
   }
 
   onSubmitCases = () => {
@@ -77,9 +78,8 @@ class CoviusBulkOrder extends React.PureComponent {
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
     const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
-    const caseIdsList = new Set(cases);
     const payload = {
-      caseIds: R.filter(caseId => !R.isEmpty(caseId), [...caseIdsList]),
+      caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
     };
     onCoviusBulkSubmit(payload);
   }
@@ -192,7 +192,7 @@ class CoviusBulkOrder extends React.PureComponent {
             color="primary"
             disabled={isResetDisabled}
             onClick={() => this.onResetClick()}
-            styleName="reset-button-style"
+            styleName={isResetDisabled ? 'reset-button-style' : 'reset-button-style-blue'}
           >
             RESET
           </FormLabel>
@@ -252,10 +252,9 @@ class CoviusBulkOrder extends React.PureComponent {
   renderNamesDropDown(eventNames) {
     const { selectedEventName } = this.state;
     return (
-
       <FormControl variant="outlined">
         <Select
-          input={<OutlinedInput name="eventName" />}
+          input={<OutlinedInput name="selectedEventName" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
           value={selectedEventName}
@@ -352,6 +351,7 @@ class CoviusBulkOrder extends React.PureComponent {
 CoviusBulkOrder.defaultProps = {
   inProgress: false,
   onCoviusBulkSubmit: () => { },
+  onResetCoviusData: () => { },
   resultData: {
     DocumentRequests: [],
     invalidCases: [],
@@ -363,6 +363,7 @@ CoviusBulkOrder.propTypes = {
   inProgress: PropTypes.bool,
   isDownloadVisible: PropTypes.bool.isRequired,
   onCoviusBulkSubmit: PropTypes.func,
+  onResetCoviusData: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
       UserDetails: PropTypes.shape({
@@ -396,6 +397,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
+  onResetCoviusData: operations.onResetCoviusData(dispatch),
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);

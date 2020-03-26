@@ -6,6 +6,7 @@ import {
   endShift,
   onExpandView,
   clearDisposition,
+  clearCoviusData,
   clearFirstVisit,
   getNext,
   searchLoan,
@@ -70,6 +71,7 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf());
 
+const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
@@ -232,6 +234,7 @@ const operations = {
   clearEvalResponse,
   onAutoSave,
   onClearDisposition,
+  onResetCoviusData,
   onExpand,
   onEndShift,
   onDispositionSave,

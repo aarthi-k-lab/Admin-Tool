@@ -1313,16 +1313,26 @@ function* onSelectTrialTask(payload) {
 }
 
 function* onCoviusBulkUpload(payload) {
-  console.log(payload);
-  // const { caseIds } = payload.payload;
-  // let response;
+  const { caseIds } = payload.payload;
+  let response;
   try {
-    // const user = yield select(loginSelectors.getUser);
-    // const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const caseSet = new Set(caseIds);
+    if (caseIds.length !== caseSet.size) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR,
+          status: 'Please remove duplicate case id(s) and submit again.',
+        },
+      });
+      return;
+    }
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     yield put({ type: SHOW_LOADER });
-    // response = yield call(Api.callPost,
-    //   `/api/covius/getEventData?user=${userPrincipalName}`, caseIds);
-    const response = {
+    response = yield call(Api.callPost,
+      `/api/covius/getEventData?user=${userPrincipalName}`, caseIds);
+    response = {
       DocumentRequests: [
         {
           RequestId: '50063C7C-AC12-4035-9F96-9F4FCADEEC1E',
