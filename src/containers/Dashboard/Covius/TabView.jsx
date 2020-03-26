@@ -19,7 +19,9 @@ import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
-
+const hasPassedProp = R.has('DocumentRequests');
+const hasFailedProp = R.has('invalidCases');
+const hasUploadFailedProp = R.has('uploadFailed');
 class TabView extends React.Component {
   constructor(props) {
     super(props);
@@ -49,13 +51,13 @@ class TabView extends React.Component {
     if (status === 'Passed') {
       return [
         {
-          Header: 'Loan Number', accessor: 'loanNumber', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number', accessor: 'UserFields.LOAN_NUMBER', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'EvalId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
           Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 200, style: { width: '20%' }, headerStyle: { textAlign: 'left' },
@@ -76,7 +78,18 @@ class TabView extends React.Component {
     const {
       onChange,
       clearSubmitDataResponse,
+      changeDownloadVisiblity,
+      tableData,
     } = this.props;
+    if (newValue === 0 && hasPassedProp(tableData)) {
+      changeDownloadVisiblity(true);
+    } else if (newValue === 1 && hasFailedProp(tableData)) {
+      changeDownloadVisiblity(true);
+    } else if (newValue === 3) {
+      changeDownloadVisiblity(true);
+    } else {
+      changeDownloadVisiblity(false);
+    }
     if (newValue === 2) onChange(false, newValue); else onChange(true, newValue);
     this.setState({ value: newValue, uploadNonExcel: null });
     clearSubmitDataResponse();
@@ -138,17 +151,16 @@ class TabView extends React.Component {
     if (R.isEmpty(tableData)) {
       return [];
     }
-
     switch (status) {
       case 'Passed':
       {
-        return tableData.passed;
+        return (hasPassedProp(tableData) ? tableData.DocumentRequests : []);
       }
       case 'Failed': {
-        return tableData.failed;
+        return (hasFailedProp(tableData) ? tableData.invalidCases : []);
       }
       case 'uploadFailed': {
-        return tableData.uploadFailed;
+        return (hasUploadFailedProp(tableData) ? tableData.uploadFailed : []);
       }
       default: return [];
     }
@@ -161,13 +173,13 @@ class TabView extends React.Component {
     }
     switch (text) {
       case 'Passed': {
-        return tableData.passed.length;
+        return (hasPassedProp(tableData) ? tableData.DocumentRequests.length : 0);
       }
       case 'Failed': {
-        return tableData.failed.length;
+        return (hasFailedProp(tableData) ? tableData.invalidCases.length : 0);
       }
       case 'Upload Failed': {
-        return tableData.uploadFailed.length;
+        return (hasUploadFailedProp(tableData) ? tableData.uploadFailed.length : 0);
       }
       default: return 0;
     }
@@ -178,7 +190,7 @@ class TabView extends React.Component {
   );
 
   handleRefresh = () => {
-    const { onDeleteFile } = this.props;
+    const { onDeleteFile, onReset, tableData } = this.props;
     this.setState({
       isFailed: false,
       buttonState: 'UPLOAD',
@@ -188,6 +200,7 @@ class TabView extends React.Component {
       isFirstVist: true,
       hasError: false,
     });
+    if (!hasUploadFailedProp(tableData)) onReset();
     onDeleteFile(true);
   }
 
@@ -337,26 +350,24 @@ class TabView extends React.Component {
 }
 
 TabView.propTypes = {
+  changeDownloadVisiblity: PropTypes.func.isRequired,
   clearSubmitDataResponse: PropTypes.func.isRequired,
   isFileRemoved: PropTypes.string.isRequired,
   isUploadFailedTabVisible: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
   tableData: PropTypes.shape({
-    // DocumentRequests: PropTypes.arrayOf({
-    //   UserDetails: PropTypes.shape({
-    //     CASEID: PropTypes.string,
-    //     EVAL_ID: PropTypes.string,
-    //     LOAN_NUMBER: PropTypes.string,
-    //   }),
-    //   RequestId: PropTypes.string,
-    // }),
-    failed: PropTypes.arrayOf({
-      caseId: PropTypes.string,
-      message: PropTypes.string,
+    DocumentRequests: PropTypes.arrayOf({
+      UserDetails: PropTypes.shape({
+        CASEID: PropTypes.string,
+        EVAL_ID: PropTypes.string,
+        LOAN_NUMBER: PropTypes.string,
+      }),
+      RequestId: PropTypes.string,
     }),
-    passed: PropTypes.arrayOf({
+    invalidCases: PropTypes.arrayOf({
       caseId: PropTypes.string,
       message: PropTypes.string,
     }),
@@ -377,13 +388,14 @@ const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
   onDeleteFile: operations.onDeleteFile(dispatch),
   clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
+  changeDownloadVisiblity: operations.changeDownloadVisiblity(dispatch),
 });
 
 
 TabView.defaultProps = {
   tableData: {
-    passed: [],
-    failed: [],
+    DocumentRequests: [],
+    invalidCases: [],
     uploadFailed: [],
   },
 };

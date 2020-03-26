@@ -117,6 +117,7 @@ const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData']
 const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
 const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
 const isUploadFailedTabVisible = state => R.pathOr(false, ['dashboard', 'isUploadFailedTabVisible'], state);
+const isDownloadVisible = state => R.pathOr(false, ['dashboard', 'downloadVisibility'], state);
 
 const selectors = {
   enableEndShift,
@@ -181,6 +182,7 @@ const selectors = {
   brand,
   getFileSubmitResponse,
   isUploadFailedTabVisible,
+  isDownloadVisible,
 };
 
 export default selectors;

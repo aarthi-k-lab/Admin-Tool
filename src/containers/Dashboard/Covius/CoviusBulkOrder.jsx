@@ -53,7 +53,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isOpen: true,
       tabIndex: 0,
     };
-
+    this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
   }
 
@@ -92,7 +92,7 @@ class CoviusBulkOrder extends React.PureComponent {
         caseIds: event.target.value,
         isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
         isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEventName)
-        && R.isEmpty(selectedEventCategory),
+          && R.isEmpty(selectedEventCategory),
       });
     }
   }
@@ -157,15 +157,26 @@ class CoviusBulkOrder extends React.PureComponent {
     const { tabIndex } = this.state;
     const { resultData } = this.props;
     if (tabIndex === 0) {
-      const failedData = resultData.failed;
+      const failedData = resultData.invalidCases;
       this.jsonToExcelDownload('failed.xlsx', failedData);
     } else if (tabIndex === 1) {
-      const passedData = resultData.passed;
+      const passedData = resultData.DocumentRequests;
       this.jsonToExcelDownload('passed.xlsx', passedData);
     } else if (tabIndex === 3) {
       const passedData = resultData.uploadFailed;
       this.jsonToExcelDownload('uploadFailed.xlsx', passedData);
     }
+  }
+
+  handleReset() {
+    this.setState({
+      selectedEventCategory: ' ',
+      selectedEventName: '',
+      caseIds: '',
+      isSubmitDisabled: 'disabled',
+      isResetDisabled: true,
+      eventNames: [],
+    });
   }
 
   renderNotepadArea() {
@@ -247,7 +258,7 @@ class CoviusBulkOrder extends React.PureComponent {
           input={<OutlinedInput name="eventName" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
-          value={selectedEventName.eventName}
+          value={selectedEventName}
         >
           {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
 
@@ -257,17 +268,22 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   renderResults() {
-    const { resultData } = this.props;
+    const { resultData, isDownloadVisible } = this.props;
     const { isVisible } = this.state;
     return (
       <Grid item xs={12}>
-        <TabView onChange={this.handleTabChange} tableData={resultData} />
+        <TabView
+          onChange={this.handleTabChange}
+          onReset={() => this.handleReset()}
+          tableData={resultData}
+        />
         {isVisible && (
           <div styleName="errorSvginfo">
             <ErrorIcon styleName="errorSvg" />
             <Button
               className="material-ui-button"
               color="primary"
+              disabled={!isDownloadVisible}
               id="download"
               margin="normal"
               onClick={this.handleDownload}
@@ -345,17 +361,20 @@ CoviusBulkOrder.defaultProps = {
 
 CoviusBulkOrder.propTypes = {
   inProgress: PropTypes.bool,
+  isDownloadVisible: PropTypes.bool.isRequired,
   onCoviusBulkSubmit: PropTypes.func,
   resultData: PropTypes.shape({
-    failed: PropTypes.arrayOf({
+    DocumentRequests: PropTypes.arrayOf({
+      UserDetails: PropTypes.shape({
+        CASEID: PropTypes.string,
+        EVAL_ID: PropTypes.string,
+        LOAN_NUMBER: PropTypes.string,
+      }),
+      RequestId: PropTypes.string,
+    }),
+    invalidCases: PropTypes.arrayOf({
       caseId: PropTypes.string,
       message: PropTypes.string,
-    }),
-    passed: PropTypes.arrayOf({
-      caseId: PropTypes.string,
-      evalId: PropTypes.string,
-      loanNumber: PropTypes.string,
-      requestId: PropTypes.string,
     }),
     uploadFailed: PropTypes.arrayOf({
       caseId: PropTypes.string,
@@ -372,6 +391,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
+  isDownloadVisible: selectors.isDownloadVisible(state),
 });
 
 const mapDispatchToProps = dispatch => ({

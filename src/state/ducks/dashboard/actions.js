@@ -49,6 +49,7 @@ import {
   DELETE_FILE,
   SUBMIT_FILE,
   CLEAR_COVIUS_SUBMIT_DATA,
+  ENABLE_DOWNLOAD_BUTTON,
 } from './types';
 
 
@@ -274,6 +275,12 @@ const submitFileAction = () => ({
 const clearSubmitCoviusData = () => ({
   type: CLEAR_COVIUS_SUBMIT_DATA,
 });
+
+const enableDownloadButton = payload => ({
+  type: ENABLE_DOWNLOAD_BUTTON,
+  payload,
+});
+
 export {
   autoSave,
   discardEvalResponse,
@@ -323,4 +330,5 @@ export {
   deleteFileAction,
   submitFileAction,
   clearSubmitCoviusData,
+  enableDownloadButton,
 };

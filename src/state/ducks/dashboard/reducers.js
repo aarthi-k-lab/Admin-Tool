@@ -64,6 +64,7 @@ import {
   GET_SUBMIT_RESPONSE,
   GET_COVIUS_DATA,
   CLEAR_COVIUS_SUBMIT_DATA,
+  ENABLE_DOWNLOAD_BUTTON,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -538,6 +539,7 @@ const reducer = (state = { firstVisit: true }, action) => {
         resultData,
         resultOperation,
         loading: false,
+        isUploadFailedTabVisible: false,
       };
     }
 
@@ -628,8 +630,16 @@ const reducer = (state = { firstVisit: true }, action) => {
       const { uploadFailed } = action.payload;
       return {
         ...state,
-        resultData: { ...resultData, uploadFailed },
+        resultData: R.isEmpty(uploadFailed) ? {} : { ...resultData, uploadFailed },
         isUploadFailedTabVisible: !R.isEmpty(uploadFailed),
+        downloadVisibility: !R.isEmpty(uploadFailed),
+      };
+    }
+
+    case ENABLE_DOWNLOAD_BUTTON: {
+      return {
+        ...state,
+        downloadVisibility: action.payload,
       };
     }
     case CLEAR_COVIUS_SUBMIT_DATA:

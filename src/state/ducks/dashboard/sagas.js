@@ -97,6 +97,7 @@ import {
   SUBMIT_FILE,
   GET_SUBMIT_RESPONSE,
   GET_COVIUS_DATA,
+  ENABLE_DOWNLOAD_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2320,27 +2321,7 @@ function* onCoviusBulkUpload(payload) {
           ReviewType: 'Internal',
         },
       ],
-      passed: [
-        {
-          RequestId: '123',
-          caseId: '354654',
-          loanNumber: '452343',
-          EvalId: '45435',
-        },
-        {
-          RequestId: '123',
-          caseId: '354654',
-          loanNumber: '452343',
-          EvalId: '45435',
-        },
-        {
-          RequestId: '123',
-          caseId: '354654',
-          loanNumber: '452343',
-          EvalId: '45435',
-        },
-      ],
-      failed: [
+      invalidCases: [
         {
           caseId: '354654',
           message: "CaseId doesn't exist",
@@ -2364,6 +2345,10 @@ function* onCoviusBulkUpload(payload) {
       yield put({
         type: SET_COVIUS_BULK_UPLOAD_RESULT,
         payload: response,
+      });
+      yield put({
+        type: ENABLE_DOWNLOAD_BUTTON,
+        payload: true,
       });
     } else {
       yield put({

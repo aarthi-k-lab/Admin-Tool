@@ -22,17 +22,19 @@ class ReUploadFile extends React.Component {
   }
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
-    const { getSubmitFileResponse, refreshPage } = nextProps;
-    const { isOpen } = prevState;
+    const {
+      getSubmitFileResponse,
+      refreshPage,
+    } = nextProps;
+    const { isOpen, response } = prevState;
     const { message, level } = getSubmitFileResponse;
     if (!R.isEmpty(getSubmitFileResponse)) {
-      const response = (
+      const alertResponse = (
         <SweetAlert
           fontSize="1rem"
           icon="error"
           imageHeight="500"
           imageUrl={level === 'Failed' || level === 'Faliure' ? Failed : Success}
-          // onClose={refreshPage()}
           onConfirm={refreshPage()}
           padding="3em"
           show={isOpen}
@@ -41,13 +43,34 @@ class ReUploadFile extends React.Component {
           width="600"
         />
       );
-      return { response };
+      return { response: alertResponse };
     }
-    return { response: null };
+    return { response };
+  }
+
+  invokeSubmitToCoviusSweetAlert = () => {
+    const { isOpen } = this.state;
+    const textMsg = 'Please <b>&quot;Do Not Close the Browser&quot;</b> and this will lead you to not see the data that was successfully sent/failed';
+    const sweetAlert = (
+      <SweetAlert
+        fontSize="1rem"
+        html={textMsg}
+        icon="error"
+        imageHeight="500"
+        imageUrl={Failed}
+        padding="3em"
+        show={isOpen}
+        showConfirmButton={false}
+        title="We are almost there to process your request"
+        width="600"
+      />
+    );
+    this.setState({ response: sweetAlert });
   }
 
   onSubmitToCovius = () => {
     const { onSubmitFile } = this.props;
+    this.invokeSubmitToCoviusSweetAlert();
     onSubmitFile();
   }
 

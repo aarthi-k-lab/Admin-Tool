@@ -45,6 +45,7 @@ import {
   deleteFileAction,
   submitFileAction,
   clearSubmitCoviusData,
+  enableDownloadButton,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -223,6 +224,10 @@ const onClearSubmitCoviusData = dispatch => () => {
   dispatch(clearSubmitCoviusData());
 };
 
+const changeDownloadVisiblity = dispatch => (payload) => {
+  dispatch(enableDownloadButton(payload));
+};
+
 const operations = {
   clearEvalResponse,
   onAutoSave,
@@ -271,6 +276,7 @@ const operations = {
   onDeleteFile,
   onSubmitFile,
   onClearSubmitCoviusData,
+  changeDownloadVisiblity,
 };
 
 export default operations;
