@@ -91,11 +91,8 @@ const SUBMIT_FILE = 'app/dashboard/SUBMIT_FILE';
 const GET_SUBMIT_RESPONSE = 'app/dashboard/GET_SUBMIT_RESPONSE';
 const GET_COVIUS_DATA = 'app/dashboard/GET_COVIUS_DATA';
 const CLEAR_COVIUS_SUBMIT_DATA = 'app/dashboard/CLEAR_COVIUS_SUBMIT_DATA';
-<<<<<<< HEAD
 const ENABLE_DOWNLOAD_BUTTON = 'app/dashboard/ENABLE_DOWNLOAD_BUTTON';
-=======
 const CLEAR_COVIUS_DATA = 'app/dashboard/CLEAR_COVIUS_DATA';
->>>>>>> 196231c0ee3ae13871bec1e95fdfa1c2f85aa8d3
 
 export {
   DISCARD_EVAL_RESPONSE,
