@@ -53,6 +53,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isVisible: true,
       isOpen: true,
       tabIndex: 0,
+      isDownloadDisabled: 'disabled',
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -144,7 +145,12 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleTabChange = (value, tabIndex) => {
-    this.setState({ isVisible: value, tabIndex });
+    const downloadDisabled = this.checkDownloadDisabled(tabIndex);
+    this.setState({
+      isVisible: value,
+      tabIndex,
+      isDownloadDisabled: downloadDisabled ? 'disabled' : '',
+    });
   }
 
   jsonToExcelDownload = (fileName, data) => {
@@ -152,6 +158,19 @@ class CoviusBulkOrder extends React.PureComponent {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, fileName);
     XLSX.writeFile(wb, fileName);
+  }
+
+  checkDownloadDisabled = (tabIndex) => {
+    const { resultData } = this.props;
+    if (R.isNil(resultData) || R.isEmpty(resultData)) {
+      return true;
+    }
+    switch (tabIndex) {
+      case 0: return R.isEmpty(resultData.invalidCases);
+      case 1: return R.isEmpty(resultData.DocumentRequests);
+      case 3: return R.isEmpty(resultData.uploadFailed);
+      default: return true;
+    }
   }
 
   handleDownload = () => {
@@ -272,8 +291,8 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   renderResults() {
-    const { resultData, isDownloadVisible } = this.props;
-    const { isVisible } = this.state;
+    const { resultData } = this.props;
+    const { isVisible, isDownloadDisabled } = this.state;
     return (
       <Grid item xs={12}>
         <TabView
@@ -290,7 +309,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
-              disabled={!isDownloadVisible}
+              disabled={isDownloadDisabled}
               id="download"
               margin="normal"
               onClick={this.handleDownload}
@@ -369,7 +388,6 @@ CoviusBulkOrder.defaultProps = {
 
 CoviusBulkOrder.propTypes = {
   inProgress: PropTypes.bool,
-  isDownloadVisible: PropTypes.bool.isRequired,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
   resultData: PropTypes.shape({
@@ -400,7 +418,6 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
-  isDownloadVisible: selectors.isDownloadVisible(state),
 });
 
 const mapDispatchToProps = dispatch => ({

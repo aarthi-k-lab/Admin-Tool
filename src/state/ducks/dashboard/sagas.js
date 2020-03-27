@@ -97,7 +97,6 @@ import {
   SUBMIT_FILE,
   GET_SUBMIT_RESPONSE,
   GET_COVIUS_DATA,
-  ENABLE_DOWNLOAD_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2332,22 +2331,6 @@ function* onCoviusBulkUpload(payload) {
         },
       ],
       invalidCases: [
-        {
-          caseId: '354654',
-          message: "CaseId doesn't exist",
-        },
-        {
-          caseId: '545656',
-          message: 'Case is not Active',
-        },
-        {
-          caseId: '875858',
-          message: "CaseId doesn't exist",
-        },
-        {
-          caseId: '725722',
-          message: 'Case is not Active',
-        },
       ],
     };
 
@@ -2355,10 +2338,6 @@ function* onCoviusBulkUpload(payload) {
       yield put({
         type: SET_COVIUS_BULK_UPLOAD_RESULT,
         payload: response,
-      });
-      yield put({
-        type: ENABLE_DOWNLOAD_BUTTON,
-        payload: true,
       });
     } else {
       yield put({

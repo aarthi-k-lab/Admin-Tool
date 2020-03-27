@@ -78,18 +78,7 @@ class TabView extends React.Component {
     const {
       onChange,
       clearSubmitDataResponse,
-      changeDownloadVisiblity,
-      tableData,
     } = this.props;
-    if (newValue === 0 && hasPassedProp(tableData)) {
-      changeDownloadVisiblity(true);
-    } else if (newValue === 1 && hasFailedProp(tableData)) {
-      changeDownloadVisiblity(true);
-    } else if (newValue === 3) {
-      changeDownloadVisiblity(true);
-    } else {
-      changeDownloadVisiblity(false);
-    }
     if (newValue === 2) onChange(false, newValue); else onChange(true, newValue);
     this.setState({ value: newValue, uploadNonExcel: null });
     clearSubmitDataResponse();
@@ -350,7 +339,6 @@ class TabView extends React.Component {
 }
 
 TabView.propTypes = {
-  changeDownloadVisiblity: PropTypes.func.isRequired,
   clearSubmitDataResponse: PropTypes.func.isRequired,
   isFileRemoved: PropTypes.string.isRequired,
   isUploadFailedTabVisible: PropTypes.string.isRequired,
@@ -388,7 +376,6 @@ const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
   onDeleteFile: operations.onDeleteFile(dispatch),
   clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
-  changeDownloadVisiblity: operations.changeDownloadVisiblity(dispatch),
 });
 
 
