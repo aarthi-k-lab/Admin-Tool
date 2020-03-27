@@ -57,7 +57,7 @@ class CoviusBulkOrder extends React.PureComponent {
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
   }
 
-  componentWillMount() {
+  componentWillReceiveProps() {
     this.setState({ isOpen: true });
   }
 
@@ -304,7 +304,7 @@ class CoviusBulkOrder extends React.PureComponent {
     const { isOpen } = this.state;
     const title = '';
     let renderAlert = null;
-    if (resultOperation && resultOperation.status) {
+    if (inProgress === false && resultOperation.level === 'error') {
       renderAlert = (
         <SweetAlertBox
           message={resultOperation.status}
@@ -356,7 +356,7 @@ CoviusBulkOrder.defaultProps = {
     DocumentRequests: [],
     invalidCases: [],
   },
-  resultOperation: { level: '', status: '' },
+  resultOperation: {},
 };
 
 CoviusBulkOrder.propTypes = {
