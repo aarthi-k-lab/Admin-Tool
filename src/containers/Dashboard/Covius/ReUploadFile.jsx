@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { operations, selectors } from 'ducks/dashboard';
 import * as R from 'ramda';
 import SweetAlert from 'sweetalert2-react';
-import { Success, Failed } from '../../../constants/alertTypes';
+import { Success, Failed, Info } from '../../../constants/alertTypes';
 
 
 class ReUploadFile extends React.Component {
@@ -57,7 +57,7 @@ class ReUploadFile extends React.Component {
         html={textMsg}
         icon="error"
         imageHeight="500"
-        imageUrl={Failed}
+        imageUrl={Info}
         padding="3em"
         show={isOpen}
         showConfirmButton={false}
