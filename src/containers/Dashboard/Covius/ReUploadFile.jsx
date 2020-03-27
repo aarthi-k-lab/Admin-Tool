@@ -50,7 +50,7 @@ class ReUploadFile extends React.Component {
 
   invokeSubmitToCoviusSweetAlert = () => {
     const { isOpen } = this.state;
-    const textMsg = 'Please <b>&quot;Do Not Close the Browser&quot;</b> and this will lead you to not see the data that was successfully sent/failed';
+    const textMsg = 'Please <b style="font-weight: bold;">&quot;Do Not Close the Browser&quot;</b> and this will lead you to not see the data that was successfully sent/failed';
     const sweetAlert = (
       <SweetAlert
         fontSize="1rem"

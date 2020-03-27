@@ -493,7 +493,8 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
 
     case SET_RESULT_OPERATION: {
-      const resultOperation = action.payload;
+      let resultOperation = {};
+      resultOperation = action.payload;
       return {
         ...state,
         resultOperation,
@@ -545,7 +546,8 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
 
     case SET_COVIUS_BULK_UPLOAD_RESULT: {
-      const resultData = action.payload;
+      let resultData = {};
+      resultData = action.payload;
       const resultOperation = {};
       return {
         ...state,
