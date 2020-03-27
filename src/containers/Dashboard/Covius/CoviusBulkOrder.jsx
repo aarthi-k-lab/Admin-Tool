@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select';
 import Loader from 'components/Loader/Loader';
 import SweetAlertBox from 'components/SweetAlertBox';
 import ErrorIcon from '@material-ui/icons/Error';
+import Tooltip from '@material-ui/core/Tooltip';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { selectors, operations } from 'ducks/dashboard';
 import { PropTypes } from 'prop-types';
@@ -203,7 +204,9 @@ class CoviusBulkOrder extends React.PureComponent {
             {'Event Category'}
           </span>
           <span styleName="errorIcon">
-            <ErrorIcon styleName="errorSvg" />
+            <Tooltip title="This is the type of action or information that you want to send to Covius. What type of message is this?">
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
           </span>
         </div>
         {this.renderCategoryDropDown()}
@@ -212,7 +215,9 @@ class CoviusBulkOrder extends React.PureComponent {
             {'Event Name'}
           </span>
           <span styleName="errorIcon">
-            <ErrorIcon styleName="errorSvg" />
+            <Tooltip title="This is the specific action or information that you want to send to Covius. What do you want to tell them?">
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
           </span>
         </div>
         {this.renderNamesDropDown(eventNames)}
@@ -278,7 +283,10 @@ class CoviusBulkOrder extends React.PureComponent {
         />
         {isVisible && (
           <div styleName="errorSvginfo">
-            <ErrorIcon styleName="errorSvg" />
+            <Tooltip title="Create an excel file with the data from this tab for your review.">
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
+            {' '}
             <Button
               className="material-ui-button"
               color="primary"
