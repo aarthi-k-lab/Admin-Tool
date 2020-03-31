@@ -17,6 +17,7 @@ import {
   actions as checklistActions,
   selectors as checklistSelectors,
 } from 'ducks/tasks-and-checklist/index';
+import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -97,6 +98,7 @@ import {
   SUBMIT_FILE,
   GET_SUBMIT_RESPONSE,
   GET_COVIUS_DATA,
+  DOWNLOAD_FILE,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2331,6 +2333,14 @@ function* onCoviusBulkUpload(payload) {
         },
       ],
       invalidCases: [
+        {
+          caseId: '354654',
+          reason: "CaseId doesn't exist",
+        },
+        {
+          caseId: '545656',
+          reason: 'Case is not Active',
+        },
       ],
     };
 
@@ -2472,19 +2482,22 @@ const onFileSubmit = function* onFileSubmit() {
     // console.log(evalId);
     const fileUploadResponse = {};
     const response = yield call(Api.callPost, 'api/stager/dashboard/handleUpload', JSON.parse(file));
+    const message = {};
+    message.title = 'One or more Case Ids have failed validation and the data was not sent to Covius. Please review the Upload Failed tab to view the failed items.';
+    message.msg = '';
     if (response.status === 200) {
-      fileUploadResponse.message = 'The request was successfully sent to Covius';
-      fileUploadResponse.level = 'Success';
+      fileUploadResponse.message = R.isEmpty(response.data.uploadFailed) ? 'The request was successfully sent to Covius' : message;
+      fileUploadResponse.level = R.isEmpty(response.data.uploadFailed) ? 'Success' : 'Failed';
       yield put({
         type: GET_COVIUS_DATA,
         payload: response.data,
       });
     } else {
-      const message = {
+      const failedMessage = {
         title: 'The request failed to send to Covius',
         msg: 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team',
       };
-      fileUploadResponse.message = message;
+      fileUploadResponse.message = failedMessage;
       fileUploadResponse.level = 'Failed';
     }
     yield put({
@@ -2498,6 +2511,31 @@ const onFileSubmit = function* onFileSubmit() {
         payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' },
       },
     );
+  }
+};
+
+const onDownloadFile = function* onDownloadFile(action) {
+  const fileData = action.payload;
+  try {
+    const ws = XLSX.utils.json_to_sheet(fileData.data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, fileData.fileName);
+    XLSX.writeFile(wb, fileData.fileName);
+    yield put({
+      type: GET_SUBMIT_RESPONSE,
+      payload: {
+        message: 'Excel File Downloaded Sucessfully',
+        level: 'Success',
+      },
+    });
+  } catch (e) {
+    yield put({
+      type: GET_SUBMIT_RESPONSE,
+      payload: {
+        message: 'The conversion to excel has failed. Please reach out to the CMOD Support team to troubleshoot.',
+        level: 'Failed',
+      },
+    });
   }
 };
 
@@ -2555,6 +2593,11 @@ function* watchOnUploadFile() {
 function* watchOnSubmitFile() {
   yield takeEvery(SUBMIT_FILE, onFileSubmit);
 }
+
+function* watchOnDownloadFile() {
+  yield takeEvery(DOWNLOAD_FILE, onDownloadFile);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -2624,5 +2667,6 @@ export const combinedSaga = function* combinedSaga() {
     watchCoviusBulkOrder(),
     watchOnUploadFile(),
     watchOnSubmitFile(),
+    watchOnDownloadFile(),
   ]);
 };

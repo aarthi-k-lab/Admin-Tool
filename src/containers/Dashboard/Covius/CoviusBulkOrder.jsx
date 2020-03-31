@@ -54,6 +54,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isOpen: true,
       tabIndex: 0,
       isDownloadDisabled: 'disabled',
+      getAlert: null,
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -61,6 +62,26 @@ class CoviusBulkOrder extends React.PureComponent {
 
   componentWillReceiveProps() {
     this.setState({ isOpen: true });
+  }
+
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    const {
+      getSubmitFileResponse,
+    } = nextProps;
+    const { isOpen } = prevState;
+    const { message, level } = getSubmitFileResponse;
+    if (!R.isEmpty(getSubmitFileResponse)) {
+      const alertResponse = (
+        <SweetAlertBox
+          message={message}
+          onConfirm={this.handleClose}
+          show={isOpen}
+          type={level}
+        />
+      );
+      return { getAlert: alertResponse };
+    }
+    return { getAlert: null };
   }
 
   onResetClick = () => {
@@ -175,17 +196,24 @@ class CoviusBulkOrder extends React.PureComponent {
 
   handleDownload = () => {
     const { tabIndex } = this.state;
-    const { resultData } = this.props;
+    const { resultData, downloadFile } = this.props;
+    let fileName = '';
+    let data;
     if (tabIndex === 0) {
-      const failedData = resultData.invalidCases;
-      this.jsonToExcelDownload('failed.xlsx', failedData);
+      fileName = 'failed.xlsx';
+      data = resultData.invalidCases;
     } else if (tabIndex === 1) {
-      const passedData = resultData.DocumentRequests;
-      this.jsonToExcelDownload('passed.xlsx', passedData);
+      fileName = 'passed.xlsx';
+      data = resultData.DocumentRequests;
     } else if (tabIndex === 3) {
-      const passedData = resultData.uploadFailed;
-      this.jsonToExcelDownload('uploadFailed.xlsx', passedData);
+      fileName = 'uploadFailed.xlsx';
+      data = resultData.uploadFailed;
     }
+    const payload = {
+      fileName,
+      data,
+    };
+    downloadFile(payload);
   }
 
   handleReset() {
@@ -328,7 +356,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
   render() {
     const { inProgress, resultOperation } = this.props;
-    const { isOpen } = this.state;
+    const { isOpen, getAlert } = this.state;
     const title = '';
     let renderAlert = null;
     if (inProgress === false && resultOperation.level === 'error') {
@@ -360,6 +388,7 @@ class CoviusBulkOrder extends React.PureComponent {
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
           <Grid item xs={2}>
+            {getAlert}
             {this.renderNotepadArea()}
           </Grid>
           <Grid item xs={10}>
@@ -387,6 +416,9 @@ CoviusBulkOrder.defaultProps = {
 };
 
 CoviusBulkOrder.propTypes = {
+  downloadFile: PropTypes.func.isRequired,
+  getSubmitFileResponse:
+  PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
@@ -418,11 +450,13 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
+  getSubmitFileResponse: selectors.getFileSubmitResponse(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
   onResetCoviusData: operations.onResetCoviusData(dispatch),
+  downloadFile: operations.downloadFile(dispatch),
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
