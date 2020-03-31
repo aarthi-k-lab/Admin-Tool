@@ -321,13 +321,13 @@ class TabView extends React.Component {
             }
           </Tabs>
         </Paper>
-        <TabPanel index={0} styleName="tabStyle" value={value}>
+        <TabPanel id="failedTab" index={0} styleName="tabStyle" value={value}>
           {this.renderTableData('Failed')}
         </TabPanel>
-        <TabPanel index={1} styleName="tabStyle" value={value}>
+        <TabPanel id="passedTab" index={1} styleName="tabStyle" value={value}>
           {this.renderTableData('Passed')}
         </TabPanel>
-        <TabPanel index={2} styleName="uploadPage" value={value}>
+        <TabPanel id="uploadTab" index={2} styleName="uploadPage" value={value}>
           {this.renderUploadPanel()}
         </TabPanel>
         <TabPanel index={3} styleName="tabStyle" value={value}>
