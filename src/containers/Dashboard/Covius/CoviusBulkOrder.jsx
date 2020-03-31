@@ -23,6 +23,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import * as XLSX from 'xlsx';
 import TabView from './TabView';
 
+
 const events = [
   { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
   { category: 'X Request', label: 'Post Data', value: 2 },
@@ -66,11 +67,11 @@ class CoviusBulkOrder extends React.PureComponent {
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
-      getSubmitFileResponse,
+      getDownloadResponse,
     } = nextProps;
     const { isOpen } = prevState;
-    const { message, level } = getSubmitFileResponse;
-    if (!R.isEmpty(getSubmitFileResponse)) {
+    const { message, level } = getDownloadResponse;
+    if (!R.isEmpty(getDownloadResponse)) {
       const alertResponse = (
         <SweetAlertBox
           message={message}
@@ -420,8 +421,8 @@ CoviusBulkOrder.defaultProps = {
 
 CoviusBulkOrder.propTypes = {
   downloadFile: PropTypes.func.isRequired,
-  getSubmitFileResponse:
-  PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
+  getDownloadResponse:
+    PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
@@ -453,7 +454,7 @@ const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
-  getSubmitFileResponse: selectors.getFileSubmitResponse(state),
+  getDownloadResponse: selectors.getDownloadResponse(state),
 });
 
 const mapDispatchToProps = dispatch => ({

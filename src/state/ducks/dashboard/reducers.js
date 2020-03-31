@@ -65,6 +65,7 @@ import {
   GET_SUBMIT_RESPONSE,
   GET_COVIUS_DATA,
   CLEAR_COVIUS_SUBMIT_DATA,
+  SET_DOWNLOAD_RESPONSE,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -653,6 +654,12 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         fileSubmitResponse: {},
+        downloadResponse: {},
+      };
+    case SET_DOWNLOAD_RESPONSE:
+      return {
+        ...state,
+        downloadResponse: action.payload,
       };
     default:
       return state;

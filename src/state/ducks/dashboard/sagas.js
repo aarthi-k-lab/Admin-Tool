@@ -99,6 +99,7 @@ import {
   GET_SUBMIT_RESPONSE,
   GET_COVIUS_DATA,
   DOWNLOAD_FILE,
+  SET_DOWNLOAD_RESPONSE,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2522,7 +2523,7 @@ const onDownloadFile = function* onDownloadFile(action) {
     XLSX.utils.book_append_sheet(wb, ws, fileData.fileName);
     XLSX.writeFile(wb, fileData.fileName);
     yield put({
-      type: GET_SUBMIT_RESPONSE,
+      type: SET_DOWNLOAD_RESPONSE,
       payload: {
         message: 'Excel File Downloaded Sucessfully',
         level: 'Success',
@@ -2530,7 +2531,7 @@ const onDownloadFile = function* onDownloadFile(action) {
     });
   } catch (e) {
     yield put({
-      type: GET_SUBMIT_RESPONSE,
+      type: SET_DOWNLOAD_RESPONSE,
       payload: {
         message: 'The conversion to excel has failed. Please reach out to the CMOD Support team to troubleshoot.',
         level: 'Failed',

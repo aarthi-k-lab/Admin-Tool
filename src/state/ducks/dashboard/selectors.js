@@ -116,6 +116,7 @@ const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTr
 const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData'], state);
 const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
 const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
+const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const isUploadFailedTabVisible = state => R.pathOr(false, ['dashboard', 'isUploadFailedTabVisible'], state);
 
 const selectors = {
@@ -181,6 +182,7 @@ const selectors = {
   brand,
   getFileSubmitResponse,
   isUploadFailedTabVisible,
+  getDownloadResponse,
 };
 
 export default selectors;
