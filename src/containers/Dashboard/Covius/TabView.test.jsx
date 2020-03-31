@@ -3,6 +3,27 @@ import { shallow, mount } from 'enzyme';
 import { TestHooks } from './TabView';
 
 describe('renders <TabView />', () => {
+  it('renders Failed Tab', () => {
+    const wrapper = shallow(
+      <TestHooks.TabView />,
+    );
+    wrapper.setState({ value: 0 });
+    expect(wrapper.find('TabPanel#failedTab')).toHaveLength(1);
+  });
+  it('renders Passed Tab', () => {
+    const wrapper = shallow(
+      <TestHooks.TabView />,
+    );
+    wrapper.setState({ value: 1 });
+    expect(wrapper.find('TabPanel#passedTab')).toHaveLength(1);
+  });
+  it('renders Upload Tab', () => {
+    const wrapper = shallow(
+      <TestHooks.TabView />,
+    );
+    wrapper.setState({ value: 2 });
+    expect(wrapper.find('TabPanel#uploadTab')).toHaveLength(1);
+  });
   it('renders Upload Tab on UploadTab Selection', () => {
     const wrapper = shallow(
       <TestHooks.TabView />,
