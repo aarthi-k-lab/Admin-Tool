@@ -2620,6 +2620,7 @@ export const TestExports = {
   getNext,
   onUploadingFile,
   onFileSubmit,
+  onDownloadFile,
   watchDispositionSave,
   watchSearchLoan,
   watchTombstoneLoan,
@@ -2639,6 +2640,7 @@ export const TestExports = {
   watchCoviusBulkOrder,
   watchOnUploadFile,
   watchOnSubmitFile,
+  watchOnDownloadFile,
 };
 
 export const combinedSaga = function* combinedSaga() {
