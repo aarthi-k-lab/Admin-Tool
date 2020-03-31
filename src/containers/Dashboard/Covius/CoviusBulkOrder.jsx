@@ -67,7 +67,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
-      getDownloadResponse,
+      getDownloadResponse, resultData,
     } = nextProps;
     const { isOpen } = prevState;
     const { message, level } = getDownloadResponse;
@@ -81,6 +81,11 @@ class CoviusBulkOrder extends React.PureComponent {
         />
       );
       return { getAlert: alertResponse };
+    }
+    if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
+      return {
+        isDownloadDisabled: false, getAlert: null,
+      };
     }
     return { getAlert: null };
   }
@@ -325,11 +330,6 @@ class CoviusBulkOrder extends React.PureComponent {
   renderResults() {
     const { resultData } = this.props;
     const { isVisible, isDownloadDisabled } = this.state;
-    if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
-      this.setState({
-        isDownloadDisabled: false,
-      });
-    }
     return (
       <Grid item xs={12}>
         <TabView
