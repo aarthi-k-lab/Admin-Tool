@@ -149,6 +149,7 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <FormControl variant="outlined">
         <Select
+          id="eventCategoryDropdown"
           input={<OutlinedInput name="selectedEventCategory" />}
           label="category"
           onChange={this.handleEventCategory}
@@ -288,6 +289,7 @@ class CoviusBulkOrder extends React.PureComponent {
               className="material-ui-button"
               color="primary"
               disabled={isSubmitDisabled}
+              id="submitButton"
               margin="normal"
               onClick={() => this.onSubmitCases()}
               styleName="submitButton"
@@ -306,6 +308,7 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <FormControl variant="outlined">
         <Select
+          id="eventNamesDropdown"
           input={<OutlinedInput name="selectedEventName" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
@@ -424,7 +427,7 @@ CoviusBulkOrder.propTypes = {
   onResetCoviusData: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
-      UserDetails: PropTypes.shape({
+      UserFields: PropTypes.shape({
         CASEID: PropTypes.string,
         EVAL_ID: PropTypes.string,
         LOAN_NUMBER: PropTypes.string,
