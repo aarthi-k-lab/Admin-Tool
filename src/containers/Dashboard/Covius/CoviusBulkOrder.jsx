@@ -325,6 +325,11 @@ class CoviusBulkOrder extends React.PureComponent {
   renderResults() {
     const { resultData } = this.props;
     const { isVisible, isDownloadDisabled } = this.state;
+    if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
+      this.setState({
+        isDownloadDisabled: false,
+      });
+    }
     return (
       <Grid item xs={12}>
         <TabView
