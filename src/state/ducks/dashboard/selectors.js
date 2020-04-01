@@ -64,9 +64,9 @@ const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
 const enableGetNext = state => (
   ((isFirstVisit(state)
-  || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
-  || (isFirstVisit(state)
-  || R.pathOr(false, ['dashboard', 'showGetNext'], state))) && (R.pathOr(true, ['dashboard', 'getNextProcessed'], state))
+    || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
+    || (isFirstVisit(state)
+      || R.pathOr(false, ['dashboard', 'showGetNext'], state))) && (R.pathOr(true, ['dashboard', 'getNextProcessed'], state))
 );
 
 // enableEndShift has same conditions as getnext to get enabled
@@ -118,7 +118,7 @@ const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], stat
 const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
 const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const isUploadFailedTabVisible = state => R.pathOr(false, ['dashboard', 'isUploadFailedTabVisible'], state);
-
+const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
 const selectors = {
   enableEndShift,
   enableGetNext,
@@ -183,6 +183,7 @@ const selectors = {
   getFileSubmitResponse,
   isUploadFailedTabVisible,
   getDownloadResponse,
+  getcoviusEventOptions,
 };
 
 export default selectors;

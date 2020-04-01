@@ -100,6 +100,8 @@ import {
   GET_COVIUS_DATA,
   DOWNLOAD_FILE,
   SET_DOWNLOAD_RESPONSE,
+  POPULATE_EVENTS_DROPDOWN,
+  SAVE_EVENTS_DROPDOWN,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1314,6 +1316,24 @@ function* onSelectTrialTask(payload) {
   }
 }
 
+function* populateDropdown() {
+  try {
+    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes');
+    const events = R.flatten(response);
+    yield put({
+      type: SAVE_EVENTS_DROPDOWN,
+      payload: events,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
 function* onCoviusBulkUpload(payload) {
   const { caseIds } = payload.payload;
   let response;
@@ -2336,11 +2356,11 @@ function* onCoviusBulkUpload(payload) {
       invalidCases: [
         {
           caseId: '354654',
-          reason: "CaseId doesn't exist",
+          message: "CaseId doesn't exist",
         },
         {
           caseId: '545656',
-          reason: 'Case is not Active',
+          message: 'Case is not Active',
         },
       ],
     };
@@ -2540,6 +2560,10 @@ const onDownloadFile = function* onDownloadFile(action) {
   }
 };
 
+function* watchPopulateEventsDropDown() {
+  yield takeEvery(POPULATE_EVENTS_DROPDOWN, populateDropdown);
+}
+
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
 }
@@ -2639,6 +2663,7 @@ export const TestExports = {
   watchCoviusBulkOrder,
   watchOnUploadFile,
   watchOnSubmitFile,
+  watchPopulateEventsDropDown,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -2669,5 +2694,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnUploadFile(),
     watchOnSubmitFile(),
     watchOnDownloadFile(),
+    watchPopulateEventsDropDown(),
   ]);
 };
