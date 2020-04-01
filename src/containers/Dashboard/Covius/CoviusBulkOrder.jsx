@@ -42,6 +42,7 @@ class CoviusBulkOrder extends React.PureComponent {
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -55,11 +56,12 @@ class CoviusBulkOrder extends React.PureComponent {
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
-      getDownloadResponse,
+      getDownloadResponse, resultData,
+      clearSubmitDataResponse,
     } = nextProps;
     const { isOpen } = prevState;
-    const { message, level } = getDownloadResponse;
     if (!R.isEmpty(getDownloadResponse)) {
+      const { message, level } = getDownloadResponse;
       const alertResponse = (
         <SweetAlertBox
           message={message}
@@ -68,7 +70,13 @@ class CoviusBulkOrder extends React.PureComponent {
           type={level}
         />
       );
+      clearSubmitDataResponse();
       return { getAlert: alertResponse };
+    }
+    if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
+      return {
+        isDownloadDisabled: '', getAlert: null,
+      };
     }
     return { getAlert: null };
   }
@@ -318,11 +326,6 @@ class CoviusBulkOrder extends React.PureComponent {
   renderResults() {
     const { resultData } = this.props;
     const { isVisible, isDownloadDisabled } = this.state;
-    if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
-      this.setState({
-        isDownloadDisabled: false,
-      });
-    }
     return (
       <Grid item xs={12}>
         <TabView
@@ -365,7 +368,7 @@ class CoviusBulkOrder extends React.PureComponent {
       renderAlert = (
         <SweetAlertBox
           message={resultOperation.status}
-          onConfirm={this.handleClose}
+          onConfirm={() => this.handleClose()}
           show={isOpen}
           type={resultOperation.level}
         />
@@ -420,11 +423,11 @@ CoviusBulkOrder.defaultProps = {
 };
 
 CoviusBulkOrder.propTypes = {
+  clearSubmitDataResponse:
+  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   coviusEventOptions: PropTypes.arrayOf({
     eventCode: PropTypes.string,
     eventCategory: PropTypes.string,
-    eventDescription: PropTypes.string,
-    eventType: PropTypes.string,
   }),
   downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   getDownloadResponse:
@@ -470,6 +473,7 @@ const mapDispatchToProps = dispatch => ({
   onResetCoviusData: operations.onResetCoviusData(dispatch),
   downloadFile: operations.downloadFile(dispatch),
   populateDropdown: operations.populateEvents(dispatch),
+  clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);

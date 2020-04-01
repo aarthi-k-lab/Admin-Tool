@@ -959,14 +959,6 @@ describe('assign Loan', () => {
   });
 });
 
-describe('watch uploadFile ', () => {
-  it('should trigger upload file worker', () => {
-    const saga = cloneableGenerator(TestExports.watchOnUploadFile)();
-    expect(saga.next().value)
-      .toEqual(takeEvery(actionTypes.PROCESS_FILE, TestExports.onUploadingFile));
-  });
-});
-
 
 describe('Parse the Excel file to JSON for covius data input', () => {
   const action = {
@@ -1008,11 +1000,58 @@ describe('submit file to covius : Success', () => {
   ];
   const mockResponse = {
     status: 200,
-    data: 'mockData',
+    data: {
+      uploadFailed: [],
+    },
   };
   const mockFileUploadResponse = {};
   mockFileUploadResponse.message = 'The request was successfully sent to Covius';
   mockFileUploadResponse.level = 'Success';
+  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  it('should call select uploaded file from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getUploadedFile));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(JSON.stringify(mockFile)).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+  });
+  it('should call GET_COVIUS_DATA', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockResponse.data }));
+  });
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
+  });
+});
+
+describe('submit file to covius : Upload Failed', () => {
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const mockResponse = {
+    status: 200,
+    data: {
+      uploadFailed: [
+        {
+          caseId: '354654',
+          message: "CaseId doesn't exist",
+        },
+        {
+          caseId: '545656',
+          message: 'Case is not Active',
+        },
+      ],
+    },
+  };
+  const message = {};
+  message.title = 'One or more Case Ids have failed validation and the data was not sent to Covius. Please review the Upload Failed tab to view the failed items.';
+  message.msg = '';
+  const mockFileUploadResponse = {};
+  mockFileUploadResponse.message = message;
+  mockFileUploadResponse.level = 'Failed';
   const saga = cloneableGenerator(TestExports.onFileSubmit)();
   it('should call select uploaded file from store', () => {
     expect(saga.next().value)
@@ -1076,5 +1115,78 @@ describe('submit file to covius : Service down', () => {
   it('should call GET_SUBMIT_RESPONSE', () => {
     expect(saga.next(mockFile).value)
       .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' } }));
+  });
+});
+
+describe('watch downloadFile ', () => {
+  it('should trigger download file worker', () => {
+    const saga = cloneableGenerator(TestExports.watchOnDownloadFile)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.DOWNLOAD_FILE, TestExports.onDownloadFile));
+  });
+});
+
+describe('onDownloadFile Success case', () => {
+  const action = {
+    payload: {
+      fileName: 'mock filename',
+      data: [
+        {
+          caseId: '123',
+          reason: "CaseId doesn't exist",
+        },
+      ],
+    },
+  };
+  const mockPayload = {
+    message: 'Excel File Downloaded Sucessfully',
+    level: 'Success',
+  };
+  const saga = cloneableGenerator(TestExports.onDownloadFile)(action);
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SET_DOWNLOAD_RESPONSE, payload: mockPayload }));
+  });
+});
+
+describe('onDownloadFile Failed case', () => {
+  const action = {
+    payload: {
+    },
+  };
+  const mockPayload = {
+    message: 'The conversion to excel has failed. Please reach out to the CMOD Support team to troubleshoot.',
+    level: 'Failed',
+  };
+  const saga = cloneableGenerator(TestExports.onDownloadFile)(action);
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SET_DOWNLOAD_RESPONSE, payload: mockPayload }));
+  });
+});
+
+describe('watch uploadFile ', () => {
+  it('should trigger upload file worker', () => {
+    const saga = cloneableGenerator(TestExports.watchOnUploadFile)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.PROCESS_FILE, TestExports.onUploadingFile));
+  });
+});
+
+describe('onUploadingfile', () => {
+  const action = {
+    payload: {
+      mockFile: 'mock file data',
+    },
+  };
+  const mockData = 'mock data';
+  const saga = cloneableGenerator(TestExports.onUploadingFile)(action);
+  it('should call processExcel', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.processExcel, action.payload));
+  });
+  it('should call SAVE_PROCESSED_FILE', () => {
+    expect(saga.next(mockData).value)
+      .toEqual(put({ type: actionTypes.SAVE_PROCESSED_FILE, payload: mockData }));
   });
 });

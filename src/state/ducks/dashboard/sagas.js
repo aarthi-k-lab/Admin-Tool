@@ -2644,6 +2644,7 @@ export const TestExports = {
   getNext,
   onUploadingFile,
   onFileSubmit,
+  onDownloadFile,
   watchDispositionSave,
   watchSearchLoan,
   watchTombstoneLoan,
@@ -2664,6 +2665,7 @@ export const TestExports = {
   watchOnUploadFile,
   watchOnSubmitFile,
   watchPopulateEventsDropDown,
+  watchOnDownloadFile,
 };
 
 export const combinedSaga = function* combinedSaga() {
