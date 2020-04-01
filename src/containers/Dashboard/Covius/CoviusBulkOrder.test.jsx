@@ -3,8 +3,16 @@ import { shallow } from 'enzyme';
 import { TestHooks } from './CoviusBulkOrder';
 
 describe('renders <CoviusBulkOrder />', () => {
+  const getDownloadResponse = {
+    message: 'mock',
+    level: 'level',
+  };
+  const clearSubmitDataResponse = jest.fn();
   const wrapper = shallow(
-    <TestHooks.CoviusBulkOrder />,
+    <TestHooks.CoviusBulkOrder
+      clearSubmitDataResponse={clearSubmitDataResponse}
+      getDownloadResponse={getDownloadResponse}
+    />,
   );
   const wrapperState = wrapper.instance().state;
   it('renders download button', () => {
@@ -28,6 +36,10 @@ describe('renders <CoviusBulkOrder />', () => {
 });
 
 describe('Download Button Enabling', () => {
+  const getDownloadResponse = {
+    message: 'mock',
+    level: 'level',
+  };
   const mockData = {
     DocumentRequests: [],
     invalidCases:
@@ -36,9 +48,14 @@ describe('Download Button Enabling', () => {
         message: 'mock1',
       }],
   };
+  const clearSubmitDataResponse = jest.fn();
 
   const wrapper = shallow(
-    <TestHooks.CoviusBulkOrder resultData={mockData} />,
+    <TestHooks.CoviusBulkOrder
+      clearSubmitDataResponse={clearSubmitDataResponse}
+      getDownloadResponse={getDownloadResponse}
+      resultData={mockData}
+    />,
   );
 
   it('disables download button in the passed tab when there are no passed caseid(s)', () => {
@@ -79,8 +96,16 @@ describe('Download Button Enabling', () => {
 });
 
 describe('Reset Button Enabling', () => {
+  const getDownloadResponse = {
+    message: 'mock',
+    level: 'level',
+  };
+  const clearSubmitDataResponse = jest.fn();
   const wrapper = shallow(
-    <TestHooks.CoviusBulkOrder />,
+    <TestHooks.CoviusBulkOrder
+      clearSubmitDataResponse={clearSubmitDataResponse}
+      getDownloadResponse={getDownloadResponse}
+    />,
   );
   const resetButton = wrapper.find('WithStyles(WithFormControlContext(ForwardRef(FormLabel)))');
   it('enables reset button when any event category is selected', () => {
@@ -99,8 +124,16 @@ describe('Reset Button Enabling', () => {
 });
 
 describe('Submit Button Enabling', () => {
+  const getDownloadResponse = {
+    message: 'mock',
+    level: 'level',
+  };
+  const clearSubmitDataResponse = jest.fn();
   const wrapper = shallow(
-    <TestHooks.CoviusBulkOrder />,
+    <TestHooks.CoviusBulkOrder
+      clearSubmitDataResponse={clearSubmitDataResponse}
+      getDownloadResponse={getDownloadResponse}
+    />,
   );
   it('enables submit button only when all the input values are entered', () => {
     wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))#eventCategoryDropdown').simulate('change', { target: { value: 'X Request' } });
@@ -119,25 +152,22 @@ describe('Submit Button Enabling', () => {
   });
 });
 
-
-// it('downloads the excel when download button is clicked', () => {
-//   const coviusSubmitData = {
-//     passed:
-//       [{
-//         caseId: 32,
-//         message: 'mock1',
-//       }],
-//     failed:
-//       [{
-//         caseId: 32,
-//         message: 'mock1',
-//       }],
-//   };
-//   const wrapper = shallow(
-//     <TestHooks.CoviusBulkOrder coviusSubmitData={coviusSubmitData} />,
-//   );
-//   console.log(wrapper.debug());
-//   expect(wrapper.instance().state.isVisible).toBe(true);
-//   wrapper.find('WithStyles(ForwardRef(Button))').at(2).simulate('Click');
-//   wrapper.instance().handleDownload();
-// });
+it('downloads the excel when download button is clicked', () => {
+  const getDownloadResponse = {
+    message: 'mock',
+    level: 'level',
+  };
+  const downloadFile = jest.fn();
+  const clearSubmitDataResponse = jest.fn();
+  const wrapper = shallow(
+    <TestHooks.CoviusBulkOrder
+      clearSubmitDataResponse={clearSubmitDataResponse}
+      downloadFile={downloadFile}
+      getDownloadResponse={getDownloadResponse}
+    />,
+  );
+  expect(wrapper.instance().state.isVisible).toBe(true);
+  wrapper.find('#download').simulate('Click');
+  wrapper.instance().handleDownload();
+  expect(downloadFile.mock.calls).toHaveLength(2);
+});

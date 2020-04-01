@@ -84,12 +84,17 @@ class TabView extends React.Component {
     clearSubmitDataResponse();
   }
 
+  hideAlert = () => {
+    this.setState({ uploadNonExcel: null });
+  }
+
   invokeNotification = (message, level) => {
     const { isOpen } = this.state;
     return (
       <SweetAlertBox
         id="sweetAlert"
         message={message}
+        onConfirm={() => this.hideAlert()}
         show={isOpen}
         type={level}
       />
@@ -299,6 +304,7 @@ class TabView extends React.Component {
       <>
         <Paper color="default">
           <Tabs
+            id="Tabs"
             indicatorColor="primary"
             onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
             textColor="primary"

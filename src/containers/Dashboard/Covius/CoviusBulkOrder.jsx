@@ -59,6 +59,7 @@ class CoviusBulkOrder extends React.PureComponent {
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentWillReceiveProps() {
@@ -68,10 +69,11 @@ class CoviusBulkOrder extends React.PureComponent {
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
       getDownloadResponse, resultData,
+      clearSubmitDataResponse,
     } = nextProps;
     const { isOpen } = prevState;
-    const { message, level } = getDownloadResponse;
     if (!R.isEmpty(getDownloadResponse)) {
+      const { message, level } = getDownloadResponse;
       const alertResponse = (
         <SweetAlertBox
           message={message}
@@ -80,11 +82,12 @@ class CoviusBulkOrder extends React.PureComponent {
           type={level}
         />
       );
+      clearSubmitDataResponse();
       return { getAlert: alertResponse };
     }
     if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
       return {
-        isDownloadDisabled: false, getAlert: null,
+        isDownloadDisabled: '', getAlert: null,
       };
     }
     return { getAlert: null };
@@ -372,7 +375,7 @@ class CoviusBulkOrder extends React.PureComponent {
       renderAlert = (
         <SweetAlertBox
           message={resultOperation.status}
-          onConfirm={this.handleClose}
+          onConfirm={() => this.handleClose()}
           show={isOpen}
           type={resultOperation.level}
         />
@@ -425,6 +428,8 @@ CoviusBulkOrder.defaultProps = {
 };
 
 CoviusBulkOrder.propTypes = {
+  clearSubmitDataResponse:
+  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   downloadFile: PropTypes.func.isRequired,
   getDownloadResponse:
     PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
@@ -466,6 +471,7 @@ const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
   onResetCoviusData: operations.onResetCoviusData(dispatch),
   downloadFile: operations.downloadFile(dispatch),
+  clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
