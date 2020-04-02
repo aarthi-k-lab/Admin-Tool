@@ -20,6 +20,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
+import Switch from '@material-ui/core/Switch';
 import * as XLSX from 'xlsx';
 import TabView from './TabView';
 
@@ -235,7 +236,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderNotepadArea() {
     const {
-      caseIds, isSubmitDisabled, eventNames, isResetDisabled,
+      caseIds, isSubmitDisabled, eventNames, isResetDisabled, selectedEventCategory,
     } = this.state;
     return (
       <div styleName="status-details-parent">
@@ -274,6 +275,20 @@ class CoviusBulkOrder extends React.PureComponent {
           </span>
         </div>
         {this.renderNamesDropDown(eventNames)}
+
+        <Grid alignItems="center" component="label" container styleName={selectedEventCategory === 'Fulfillment Request' ? 'showHandleAuto' : 'hideHandleAuto'}>
+          <Grid styleName="loan-numbers">
+            {'Hold Automation'}
+          </Grid>
+          <Grid item>
+            <Switch
+              color="primary"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+              name="checkedB"
+            />
+          </Grid>
+        </Grid>
+
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
