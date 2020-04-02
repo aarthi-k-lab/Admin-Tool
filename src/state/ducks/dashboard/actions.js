@@ -51,6 +51,7 @@ import {
   SUBMIT_FILE,
   CLEAR_COVIUS_SUBMIT_DATA,
   DOWNLOAD_FILE,
+  POPULATE_EVENTS_DROPDOWN,
 } from './types';
 
 
@@ -286,6 +287,11 @@ const downloadFileAction = payload => ({
   type: DOWNLOAD_FILE,
   payload,
 });
+
+const populateEventsDropdown = () => ({
+  type: POPULATE_EVENTS_DROPDOWN,
+});
+
 export {
   autoSave,
   discardEvalResponse,
@@ -337,4 +343,5 @@ export {
   submitFileAction,
   clearSubmitCoviusData,
   downloadFileAction,
+  populateEventsDropdown,
 };

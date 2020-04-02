@@ -47,6 +47,7 @@ import {
   submitFileAction,
   clearSubmitCoviusData,
   downloadFileAction,
+  populateEventsDropdown,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -230,6 +231,9 @@ const downloadFile = dispatch => (payload) => {
   dispatch(downloadFileAction(payload));
 };
 
+const populateEvents = dispatch => () => {
+  dispatch(populateEventsDropdown());
+};
 const operations = {
   clearEvalResponse,
   onAutoSave,
@@ -280,6 +284,7 @@ const operations = {
   onSubmitFile,
   onClearSubmitCoviusData,
   downloadFile,
+  populateEvents,
 };
 
 export default operations;

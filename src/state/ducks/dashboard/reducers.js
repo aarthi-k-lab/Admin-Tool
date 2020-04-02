@@ -66,6 +66,7 @@ import {
   GET_COVIUS_DATA,
   CLEAR_COVIUS_SUBMIT_DATA,
   SET_DOWNLOAD_RESPONSE,
+  SAVE_EVENTS_DROPDOWN,
 } from './types';
 
 const reducer = (state = { firstVisit: true }, action) => {
@@ -640,7 +641,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       const { resultData } = state;
       return {
         ...state,
-        resultData: R.equals(eventCategory, 'Document Fulfillment success') ? {} : resultData,
+        resultData: R.equals(eventCategory, 'FulfillmentRequest success') ? {} : resultData,
         fileSubmitResponse: action.payload,
       };
     }
@@ -664,6 +665,11 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         downloadResponse: action.payload,
+      };
+    case SAVE_EVENTS_DROPDOWN:
+      return {
+        ...state,
+        coviusEventOptions: action.payload,
       };
     default:
       return state;

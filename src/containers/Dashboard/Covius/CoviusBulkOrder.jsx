@@ -20,25 +20,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
+import Switch from '@material-ui/core/Switch';
 import * as XLSX from 'xlsx';
 import TabView from './TabView';
-
-
-const events = [
-  { category: 'Document Fulfillment', label: 'Get Data', value: 1 },
-  { category: 'X Request', label: 'Post Data', value: 2 },
-  { category: 'Y Request', label: 'Get Data', value: 3 },
-  { category: 'X Request', label: 'Print Data', value: 4 },
-  { category: 'Document Fulfillment', label: 'Send Data', value: 5 },
-];
-
-const getEventCategories = [
-  { label: 'Document Fulfillment', value: 1 },
-  { label: 'X Request', value: 2 },
-  { label: 'Y Request', value: 3 },
-];
-
-const getEventNames = category => R.filter(item => item.category === category, events);
 
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
@@ -56,10 +40,16 @@ class CoviusBulkOrder extends React.PureComponent {
       tabIndex: 0,
       isDownloadDisabled: 'disabled',
       getAlert: null,
+      holdAutomation: false,
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
     this.handleClose = this.handleClose.bind(this);
+  }
+
+  componentDidMount() {
+    const { populateDropdown } = this.props;
+    populateDropdown();
   }
 
   componentWillReceiveProps() {
@@ -106,15 +96,24 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   onSubmitCases = () => {
-    const { caseIds } = this.state;
+    const {
+      caseIds, selectedEventName, selectedEventCategory, holdAutomation,
+    } = this.state;
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
     const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
     const payload = {
       caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
+      eventCode: selectedEventName,
+      eventCategory: selectedEventCategory,
+      holdAutomation,
     };
     onCoviusBulkSubmit(payload);
   }
+
+  onToggleHoldAutomation = (event) => {
+    this.setState({ holdAutomation: event.target.checked });
+  };
 
   handleCaseChange = (event) => {
     const { selectedEventName, selectedEventCategory } = this.state;
@@ -138,8 +137,11 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleEventCategory = (event) => {
+    const { coviusEventOptions } = this.props;
     const eventCategory = event.target.value;
-    const eventNames = getEventNames(eventCategory);
+    const eventList = R.compose(R.filter(item => item.eventCategory === eventCategory),
+      R.flatten)(coviusEventOptions);
+    const eventNames = R.pluck('eventCode', eventList);
     this.setState({
       selectedEventCategory: eventCategory,
       isSubmitDisabled: 'disabled',
@@ -155,6 +157,8 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderCategoryDropDown = () => {
     const { selectedEventCategory } = this.state;
+    const { coviusEventOptions } = this.props;
+    const eventCategories = R.compose(R.uniq, R.pluck('eventCategory'), R.flatten)(coviusEventOptions);
     return (
       <FormControl variant="outlined">
         <Select
@@ -165,9 +169,9 @@ class CoviusBulkOrder extends React.PureComponent {
           styleName="drop-down-select"
           value={selectedEventCategory}
         >
-          {getEventCategories.map(item => (
-            <MenuItem key={item} value={item.label}>
-              {item.label}
+          {eventCategories.map(item => (
+            <MenuItem key={item} value={item}>
+              {item}
             </MenuItem>
           ))}
         </Select>
@@ -237,9 +241,26 @@ class CoviusBulkOrder extends React.PureComponent {
     });
   }
 
+  renderHoldAutomationToggle = () => (
+    <Grid alignItems="center" component="label" container>
+      <Grid styleName="loan-numbers">
+        {'Hold Automation'}
+      </Grid>
+      <Grid item>
+        <Switch
+          color="primary"
+          inputProps={{ 'aria-label': 'primary checkbox' }}
+          name="holdAutomation"
+          onChange={this.onToggleHoldAutomation}
+        />
+      </Grid>
+    </Grid>
+  );
+
   renderNotepadArea() {
     const {
       caseIds, isSubmitDisabled, eventNames, isResetDisabled,
+      selectedEventCategory,
     } = this.state;
     return (
       <div styleName="status-details-parent">
@@ -278,6 +299,8 @@ class CoviusBulkOrder extends React.PureComponent {
           </span>
         </div>
         {this.renderNamesDropDown(eventNames)}
+
+        {selectedEventCategory.trim() === 'FulfillmentRequest' && this.renderHoldAutomationToggle()}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
@@ -323,7 +346,7 @@ class CoviusBulkOrder extends React.PureComponent {
           styleName="drop-down-select"
           value={selectedEventName}
         >
-          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+          {eventNames.map(item => <MenuItem value={item}>{item}</MenuItem>)}
 
         </Select>
       </FormControl>
@@ -421,22 +444,29 @@ CoviusBulkOrder.defaultProps = {
   inProgress: false,
   onCoviusBulkSubmit: () => { },
   onResetCoviusData: () => { },
+  populateDropdown: () => { },
   resultData: {
     DocumentRequests: [],
     invalidCases: [],
   },
   resultOperation: {},
+  coviusEventOptions: [],
 };
 
 CoviusBulkOrder.propTypes = {
   clearSubmitDataResponse:
-  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
-  downloadFile: PropTypes.func.isRequired,
+    PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  coviusEventOptions: PropTypes.arrayOf({
+    eventCode: PropTypes.string,
+    eventCategory: PropTypes.string,
+  }),
+  downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   getDownloadResponse:
     PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
+  populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
       UserFields: PropTypes.shape({
@@ -466,12 +496,14 @@ const mapStateToProps = state => ({
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
   getDownloadResponse: selectors.getDownloadResponse(state),
+  coviusEventOptions: selectors.getcoviusEventOptions(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
   onResetCoviusData: operations.onResetCoviusData(dispatch),
   downloadFile: operations.downloadFile(dispatch),
+  populateDropdown: operations.populateEvents(dispatch),
   clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
 });
 

@@ -100,6 +100,8 @@ import {
   GET_COVIUS_DATA,
   DOWNLOAD_FILE,
   SET_DOWNLOAD_RESPONSE,
+  POPULATE_EVENTS_DROPDOWN,
+  SAVE_EVENTS_DROPDOWN,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1314,8 +1316,29 @@ function* onSelectTrialTask(payload) {
   }
 }
 
+function* populateDropdown() {
+  try {
+    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes');
+    const events = R.flatten(response);
+    yield put({
+      type: SAVE_EVENTS_DROPDOWN,
+      payload: events,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
+
 function* onCoviusBulkUpload(payload) {
-  const { caseIds } = payload.payload;
+  const {
+    caseIds, holdAutomation, eventCode, eventCategory,
+  } = payload.payload;
   let response;
   try {
     const caseSet = new Set(caseIds);
@@ -1330,10 +1353,17 @@ function* onCoviusBulkUpload(payload) {
       return;
     }
     const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const userEmail = R.path(['userDetails', 'email'], user);
+    const requestBody = {
+      holdAutomation,
+      caseIds,
+      eventCode: eventCode.trim(),
+      eventCategory: eventCategory.trim(),
+      user: userEmail,
+    };
     yield put({ type: SHOW_LOADER });
     response = yield call(Api.callPost,
-      `/api/covius/getEventData?user=${userPrincipalName}`, caseIds);
+      '/api/covius/getEventData', requestBody);
     response = {
       DocumentRequests: [
         {
@@ -2336,11 +2366,11 @@ function* onCoviusBulkUpload(payload) {
       invalidCases: [
         {
           caseId: '354654',
-          reason: "CaseId doesn't exist",
+          message: "CaseId doesn't exist",
         },
         {
           caseId: '545656',
-          reason: 'Case is not Active',
+          message: 'Case is not Active',
         },
       ],
     };
@@ -2489,8 +2519,8 @@ const onFileSubmit = function* onFileSubmit(action) {
     message.msg = '';
     const hasData = R.has('data');
     if (response.status === 200) {
-      fileUploadResponse.message = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'Document Fulfillment') ? 'The request was successfully sent to Covius' : message;
-      fileUploadResponse.level = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'Document Fulfillment') ? 'Success' : 'Failed';
+      fileUploadResponse.message = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'FulfillmentRequest') ? 'The request was successfully sent to Covius' : message;
+      fileUploadResponse.level = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'FulfillmentRequest') ? 'Success' : 'Failed';
       fileUploadResponse.eventCategory = `${eventCategory} success`;
       yield put({
         type: GET_COVIUS_DATA,
@@ -2543,6 +2573,10 @@ const onDownloadFile = function* onDownloadFile(action) {
     });
   }
 };
+
+function* watchPopulateEventsDropDown() {
+  yield takeEvery(POPULATE_EVENTS_DROPDOWN, populateDropdown);
+}
 
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
@@ -2644,6 +2678,7 @@ export const TestExports = {
   watchCoviusBulkOrder,
   watchOnUploadFile,
   watchOnSubmitFile,
+  watchPopulateEventsDropDown,
   watchOnDownloadFile,
 };
 
@@ -2675,5 +2710,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnUploadFile(),
     watchOnSubmitFile(),
     watchOnDownloadFile(),
+    watchPopulateEventsDropDown(),
   ]);
 };
