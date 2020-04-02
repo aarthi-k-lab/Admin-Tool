@@ -40,6 +40,7 @@ class CoviusBulkOrder extends React.PureComponent {
       tabIndex: 0,
       isDownloadDisabled: 'disabled',
       getAlert: null,
+      holdAutomation: false,
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -95,7 +96,9 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   onSubmitCases = () => {
-    const { caseIds, selectedEventName, selectedEventCategory } = this.state;
+    const {
+      caseIds, selectedEventName, selectedEventCategory, holdAutomation,
+    } = this.state;
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
     const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
@@ -103,10 +106,14 @@ class CoviusBulkOrder extends React.PureComponent {
       caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
       eventCode: selectedEventName,
       eventCategory: selectedEventCategory,
-      holdAutomation: false,
+      holdAutomation,
     };
     onCoviusBulkSubmit(payload);
   }
+
+  onToggleHoldAutomation = (event) => {
+    this.setState({ holdAutomation: event.target.checked });
+  };
 
   handleCaseChange = (event) => {
     const { selectedEventName, selectedEventCategory } = this.state;
@@ -234,9 +241,26 @@ class CoviusBulkOrder extends React.PureComponent {
     });
   }
 
+  renderHoldAutomationToggle = () => (
+    <Grid alignItems="center" component="label" container>
+      <Grid styleName="loan-numbers">
+        {'Hold Automation'}
+      </Grid>
+      <Grid item>
+        <Switch
+          color="primary"
+          inputProps={{ 'aria-label': 'primary checkbox' }}
+          name="holdAutomation"
+          onChange={this.onToggleHoldAutomation}
+        />
+      </Grid>
+    </Grid>
+  );
+
   renderNotepadArea() {
     const {
-      caseIds, isSubmitDisabled, eventNames, isResetDisabled, selectedEventCategory,
+      caseIds, isSubmitDisabled, eventNames, isResetDisabled,
+      selectedEventCategory,
     } = this.state;
     return (
       <div styleName="status-details-parent">
@@ -276,19 +300,7 @@ class CoviusBulkOrder extends React.PureComponent {
         </div>
         {this.renderNamesDropDown(eventNames)}
 
-        <Grid alignItems="center" component="label" container styleName={selectedEventCategory === 'Fulfillment Request' ? 'showHandleAuto' : 'hideHandleAuto'}>
-          <Grid styleName="loan-numbers">
-            {'Hold Automation'}
-          </Grid>
-          <Grid item>
-            <Switch
-              color="primary"
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-              name="checkedB"
-            />
-          </Grid>
-        </Grid>
-
+        {selectedEventCategory.trim() === 'FulfillmentRequest' && this.renderHoldAutomationToggle()}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
