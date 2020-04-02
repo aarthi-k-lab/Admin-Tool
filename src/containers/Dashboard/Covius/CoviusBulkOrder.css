@@ -27,6 +27,18 @@
   padding-left: 0.7rem;
 }
 
+.handleAuto {
+  font-size: 1.1rem;
+  padding-left: 0.7rem;
+}
+
+.hideHandleAuto {
+  display: none !important;
+}
+
+.showHandleAuto {
+visibility: visible !important ;
+}
 .coviusLabel {
   margin-left: -2rem;
   font-size: 20px;
