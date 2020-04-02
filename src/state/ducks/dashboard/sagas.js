@@ -1334,8 +1334,11 @@ function* populateDropdown() {
     });
   }
 }
+
 function* onCoviusBulkUpload(payload) {
-  const { caseIds } = payload.payload;
+  const {
+    caseIds, holdAutomation, eventCode, eventCategory,
+  } = payload.payload;
   let response;
   try {
     const caseSet = new Set(caseIds);
@@ -1350,10 +1353,17 @@ function* onCoviusBulkUpload(payload) {
       return;
     }
     const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const userEmail = R.path(['userDetails', 'email'], user);
+    const requestBody = {
+      holdAutomation,
+      caseIds,
+      eventCode: eventCode.trim(),
+      eventCategory: eventCategory.trim(),
+      user: userEmail,
+    };
     yield put({ type: SHOW_LOADER });
     response = yield call(Api.callPost,
-      `/api/covius/getEventData?user=${userPrincipalName}`, caseIds);
+      '/api/covius/getEventData', requestBody);
     response = {
       DocumentRequests: [
         {

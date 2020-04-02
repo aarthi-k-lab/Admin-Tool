@@ -94,12 +94,15 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   onSubmitCases = () => {
-    const { caseIds } = this.state;
+    const { caseIds, selectedEventName, selectedEventCategory } = this.state;
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
     const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
     const payload = {
       caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
+      eventCode: selectedEventName,
+      eventCategory: selectedEventCategory,
+      holdAutomation: false,
     };
     onCoviusBulkSubmit(payload);
   }
@@ -424,7 +427,7 @@ CoviusBulkOrder.defaultProps = {
 
 CoviusBulkOrder.propTypes = {
   clearSubmitDataResponse:
-  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+    PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   coviusEventOptions: PropTypes.arrayOf({
     eventCode: PropTypes.string,
     eventCategory: PropTypes.string,
