@@ -82,6 +82,7 @@ class TabView extends React.Component {
     if (newValue === 2) onChange(false, newValue); else onChange(true, newValue);
     this.setState({ value: newValue, uploadNonExcel: null });
     clearSubmitDataResponse();
+    // this.handleRefresh();
   }
 
   hideAlert = () => {
@@ -125,7 +126,12 @@ class TabView extends React.Component {
         onProcessFile(event.target.files[0]);
         onDeleteFile(false);
         this.makeUploadDelay(event.target.files[0].name);
-        this.setState({ isFirstVist: false, fileName: event.target.files[0].name });
+        this.setState({
+          isFirstVist: false,
+          fileName: event.target.files[0].name,
+          isFailed: false,
+          hasError: false,
+        });
       } else {
         const uploadNonExcelFile = this.invokeNotification('Kindly upload an excel File', 'Warning');
         setTimeout(() => {
@@ -184,7 +190,7 @@ class TabView extends React.Component {
   );
 
   handleRefresh = () => {
-    const { onDeleteFile, onReset, tableData } = this.props;
+    const { onReset, tableData } = this.props;
     this.setState({
       isFailed: false,
       buttonState: 'UPLOAD',
@@ -195,14 +201,13 @@ class TabView extends React.Component {
       hasError: false,
     });
     if (!hasUploadFailedProp(tableData)) onReset();
-    onDeleteFile(true);
   }
 
   renderUploadPanel = () => {
     const {
       isFailed, fileName, uploadNonExcel, buttonState, hasError,
     } = this.state;
-    const { isFileRemoved } = this.props;
+    const { isFileRemoved, eventCategory } = this.props;
     const checkButtonState = R.equals(buttonState, 'UPLOAD') || R.equals(buttonState, 'UPLOADING...');
     const renderMessage = isFailed || hasError ? <SubmitFileError /> : this.renderUploadFile();
     return (
@@ -216,6 +221,7 @@ class TabView extends React.Component {
             {!R.equals(buttonState, 'SUBMIT') || isFileRemoved ? renderMessage
               : (
                 <ReUploadFile
+                  eventCategory={eventCategory}
                   fileName={fileName}
                   id="reupload"
                   onChange={this.handleChange}
@@ -346,6 +352,7 @@ class TabView extends React.Component {
 
 TabView.propTypes = {
   clearSubmitDataResponse: PropTypes.func.isRequired,
+  eventCategory: PropTypes.string.isRequired,
   isFileRemoved: PropTypes.string.isRequired,
   isUploadFailedTabVisible: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -25,15 +25,15 @@ import TabView from './TabView';
 
 
 const events = [
-  { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
+  { category: 'Document Fulfillment', label: 'Get Data', value: 1 },
   { category: 'X Request', label: 'Post Data', value: 2 },
   { category: 'Y Request', label: 'Get Data', value: 3 },
   { category: 'X Request', label: 'Print Data', value: 4 },
-  { category: 'Fulfillment Request', label: 'Send Data', value: 5 },
+  { category: 'Document Fulfillment', label: 'Send Data', value: 5 },
 ];
 
 const getEventCategories = [
-  { label: 'Fulfillment Request', value: 1 },
+  { label: 'Document Fulfillment', value: 1 },
   { label: 'X Request', value: 2 },
   { label: 'Y Request', value: 3 },
 ];
@@ -332,10 +332,11 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderResults() {
     const { resultData } = this.props;
-    const { isVisible, isDownloadDisabled } = this.state;
+    const { isVisible, isDownloadDisabled, selectedEventCategory } = this.state;
     return (
       <Grid item xs={12}>
         <TabView
+          eventCategory={selectedEventCategory}
           onChange={this.handleTabChange}
           onReset={() => this.handleReset()}
           tableData={resultData}

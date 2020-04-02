@@ -635,11 +635,15 @@ const reducer = (state = { firstVisit: true }, action) => {
         fileSubmitResponse: {},
         excelParsedData: null,
       };
-    case GET_SUBMIT_RESPONSE:
+    case GET_SUBMIT_RESPONSE: {
+      const { eventCategory } = action.payload;
+      const { resultData } = state;
       return {
         ...state,
+        resultData: R.equals(eventCategory, 'Document Fulfillment success') ? {} : resultData,
         fileSubmitResponse: action.payload,
       };
+    }
     case GET_COVIUS_DATA: {
       const { resultData } = state;
       const { uploadFailed } = action.payload;
