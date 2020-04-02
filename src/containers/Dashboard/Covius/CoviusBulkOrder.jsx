@@ -24,23 +24,6 @@ import Switch from '@material-ui/core/Switch';
 import * as XLSX from 'xlsx';
 import TabView from './TabView';
 
-
-const events = [
-  { category: 'Fulfillment Request', label: 'Get Data', value: 1 },
-  { category: 'X Request', label: 'Post Data', value: 2 },
-  { category: 'Y Request', label: 'Get Data', value: 3 },
-  { category: 'X Request', label: 'Print Data', value: 4 },
-  { category: 'Fulfillment Request', label: 'Send Data', value: 5 },
-];
-
-const getEventCategories = [
-  { label: 'Fulfillment Request', value: 1 },
-  { label: 'X Request', value: 2 },
-  { label: 'Y Request', value: 3 },
-];
-
-const getEventNames = category => R.filter(item => item.category === category, events);
-
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -60,6 +43,12 @@ class CoviusBulkOrder extends React.PureComponent {
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  componentDidMount() {
+    const { populateDropdown } = this.props;
+    populateDropdown();
   }
 
   componentWillReceiveProps() {
@@ -69,10 +58,11 @@ class CoviusBulkOrder extends React.PureComponent {
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
       getDownloadResponse, resultData,
+      clearSubmitDataResponse,
     } = nextProps;
     const { isOpen } = prevState;
-    const { message, level } = getDownloadResponse;
     if (!R.isEmpty(getDownloadResponse)) {
+      const { message, level } = getDownloadResponse;
       const alertResponse = (
         <SweetAlertBox
           message={message}
@@ -81,11 +71,12 @@ class CoviusBulkOrder extends React.PureComponent {
           type={level}
         />
       );
+      clearSubmitDataResponse();
       return { getAlert: alertResponse };
     }
     if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
       return {
-        isDownloadDisabled: false, getAlert: null,
+        isDownloadDisabled: '', getAlert: null,
       };
     }
     return { getAlert: null };
@@ -136,8 +127,11 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleEventCategory = (event) => {
+    const { coviusEventOptions } = this.props;
     const eventCategory = event.target.value;
-    const eventNames = getEventNames(eventCategory);
+    const eventList = R.compose(R.filter(item => item.eventCategory === eventCategory),
+      R.flatten)(coviusEventOptions);
+    const eventNames = R.pluck('eventCode', eventList);
     this.setState({
       selectedEventCategory: eventCategory,
       isSubmitDisabled: 'disabled',
@@ -153,6 +147,8 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderCategoryDropDown = () => {
     const { selectedEventCategory } = this.state;
+    const { coviusEventOptions } = this.props;
+    const eventCategories = R.compose(R.uniq, R.pluck('eventCategory'), R.flatten)(coviusEventOptions);
     return (
       <FormControl variant="outlined">
         <Select
@@ -163,9 +159,9 @@ class CoviusBulkOrder extends React.PureComponent {
           styleName="drop-down-select"
           value={selectedEventCategory}
         >
-          {getEventCategories.map(item => (
-            <MenuItem key={item} value={item.label}>
-              {item.label}
+          {eventCategories.map(item => (
+            <MenuItem key={item} value={item}>
+              {item}
             </MenuItem>
           ))}
         </Select>
@@ -335,7 +331,7 @@ class CoviusBulkOrder extends React.PureComponent {
           styleName="drop-down-select"
           value={selectedEventName}
         >
-          {eventNames.map(item => <MenuItem value={item.value}>{item.label}</MenuItem>)}
+          {eventNames.map(item => <MenuItem value={item}>{item}</MenuItem>)}
 
         </Select>
       </FormControl>
@@ -387,7 +383,7 @@ class CoviusBulkOrder extends React.PureComponent {
       renderAlert = (
         <SweetAlertBox
           message={resultOperation.status}
-          onConfirm={this.handleClose}
+          onConfirm={() => this.handleClose()}
           show={isOpen}
           type={resultOperation.level}
         />
@@ -432,20 +428,29 @@ CoviusBulkOrder.defaultProps = {
   inProgress: false,
   onCoviusBulkSubmit: () => { },
   onResetCoviusData: () => { },
+  populateDropdown: () => { },
   resultData: {
     DocumentRequests: [],
     invalidCases: [],
   },
   resultOperation: {},
+  coviusEventOptions: [],
 };
 
 CoviusBulkOrder.propTypes = {
-  downloadFile: PropTypes.func.isRequired,
+  clearSubmitDataResponse:
+  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  coviusEventOptions: PropTypes.arrayOf({
+    eventCode: PropTypes.string,
+    eventCategory: PropTypes.string,
+  }),
+  downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   getDownloadResponse:
     PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
+  populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
       UserFields: PropTypes.shape({
@@ -475,12 +480,15 @@ const mapStateToProps = state => ({
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
   getDownloadResponse: selectors.getDownloadResponse(state),
+  coviusEventOptions: selectors.getcoviusEventOptions(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
   onResetCoviusData: operations.onResetCoviusData(dispatch),
   downloadFile: operations.downloadFile(dispatch),
+  populateDropdown: operations.populateEvents(dispatch),
+  clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);

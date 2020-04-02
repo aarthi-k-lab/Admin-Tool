@@ -57,4 +57,17 @@ describe('renders <TabView />', () => {
     wrapper.instance().handleChange();
     expect(onDeleteFile.mock.calls).toHaveLength(1);
   });
+
+  it('it refreshes data upon tab selection', () => {
+    const onChange = jest.fn();
+    const clearSubmitDataResponse = jest.fn();
+    const wrapper = shallow(
+      <TestHooks.TabView clearSubmitDataResponse={clearSubmitDataResponse} onChange={onChange} />,
+    );
+    wrapper.setState({ value: 2 });
+    wrapper.find('#Tabs').at(0).simulate('click');
+    wrapper.instance().handleTabSelection(0, 3);
+    expect(wrapper.instance().state.value).toBe(3);
+    expect(clearSubmitDataResponse.mock.calls).toHaveLength(1);
+  });
 });
