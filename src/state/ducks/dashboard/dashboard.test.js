@@ -994,6 +994,9 @@ describe('watch submitFile ', () => {
 });
 
 describe('submit file to covius : Success', () => {
+  const action = {
+    payload: 'X request',
+  };
   const mockFile = [
     { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
@@ -1007,7 +1010,8 @@ describe('submit file to covius : Success', () => {
   const mockFileUploadResponse = {};
   mockFileUploadResponse.message = 'The request was successfully sent to Covius';
   mockFileUploadResponse.level = 'Success';
-  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  mockFileUploadResponse.eventCategory = `${action.payload} success`;
+  const saga = cloneableGenerator(TestExports.onFileSubmit)(action);
   it('should call select uploaded file from store', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
@@ -1027,6 +1031,9 @@ describe('submit file to covius : Success', () => {
 });
 
 describe('submit file to covius : Upload Failed', () => {
+  const action = {
+    payload: 'X request',
+  };
   const mockFile = [
     { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
@@ -1052,7 +1059,8 @@ describe('submit file to covius : Upload Failed', () => {
   const mockFileUploadResponse = {};
   mockFileUploadResponse.message = message;
   mockFileUploadResponse.level = 'Failed';
-  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  mockFileUploadResponse.eventCategory = `${action.payload} success`;
+  const saga = cloneableGenerator(TestExports.onFileSubmit)(action);
   it('should call select uploaded file from store', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
@@ -1072,6 +1080,9 @@ describe('submit file to covius : Upload Failed', () => {
 });
 
 describe('submit file to covius : Failure', () => {
+  const action = {
+    payload: 'X request',
+  };
   const mockFile = [
     { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
@@ -1087,7 +1098,8 @@ describe('submit file to covius : Failure', () => {
   };
   mockFileUploadResponse.message = message;
   mockFileUploadResponse.level = 'Failed';
-  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  mockFileUploadResponse.eventCategory = `${action.payload} failed`;
+  const saga = cloneableGenerator(TestExports.onFileSubmit)(action);
   it('should call select uploaded file from store', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
@@ -1103,18 +1115,21 @@ describe('submit file to covius : Failure', () => {
 });
 
 describe('submit file to covius : Service down', () => {
+  const action = {
+    payload: 'X request',
+  };
   const mockFile = [
     { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
   ];
-  const saga = cloneableGenerator(TestExports.onFileSubmit)();
+  const saga = cloneableGenerator(TestExports.onFileSubmit)(action);
   it('should call select uploaded file from store', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
     expect(saga.next(mockFile).value)
-      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' } }));
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed', eventCategory: `${action.payload} failed` } }));
   });
 });
 
@@ -1188,5 +1203,76 @@ describe('onUploadingfile', () => {
   it('should call SAVE_PROCESSED_FILE', () => {
     expect(saga.next(mockData).value)
       .toEqual(put({ type: actionTypes.SAVE_PROCESSED_FILE, payload: mockData }));
+  });
+});
+
+describe('submit file to covius (FulfillmentRequest) : Success', () => {
+  const action = {
+    payload: 'FulfillmentRequest',
+  };
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const mockResponse = {
+    status: 200,
+    data: {
+    },
+  };
+  const mockFileUploadResponse = {};
+  mockFileUploadResponse.message = 'The request was successfully sent to Covius';
+  mockFileUploadResponse.level = 'Success';
+  mockFileUploadResponse.eventCategory = `${action.payload} success`;
+  const saga = cloneableGenerator(TestExports.onFileSubmit)(action);
+  it('should call select uploaded file from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getUploadedFile));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(JSON.stringify(mockFile)).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+  });
+  it('should call GET_COVIUS_DATA', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockResponse.data }));
+  });
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
+  });
+});
+
+describe('submit file to covius (FulfillmentRequest) : Failure', () => {
+  const action = {
+    payload: 'FulfillmentRequest',
+  };
+  const mockFile = [
+    { caseId: 34, message: 'mock1' },
+    { caseId: 33, message: 'mock2' },
+  ];
+  const mockResponse = {
+    status: 400,
+    data: {},
+  };
+  const mockFileUploadResponse = {};
+  const message = {
+    title: 'The request failed to send to Covius',
+    msg: 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team',
+  };
+  mockFileUploadResponse.message = message;
+  mockFileUploadResponse.level = 'Failed';
+  mockFileUploadResponse.eventCategory = `${action.payload} failed`;
+  const saga = cloneableGenerator(TestExports.onFileSubmit)(action);
+  it('should call select uploaded file from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getUploadedFile));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(JSON.stringify(mockFile)).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+  });
+  it('should call GET_SUBMIT_RESPONSE', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
   });
 });

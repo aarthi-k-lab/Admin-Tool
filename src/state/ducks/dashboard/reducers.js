@@ -69,6 +69,7 @@ import {
   SAVE_EVENTS_DROPDOWN,
 } from './types';
 
+const hasUploadFailedProp = R.has('uploadFailed');
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
     case DISCARD_EVAL_RESPONSE: {
@@ -651,7 +652,7 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         resultData: R.isEmpty(uploadFailed) ? {} : { ...resultData, uploadFailed },
-        isUploadFailedTabVisible: !R.isEmpty(uploadFailed),
+        isUploadFailedTabVisible: (hasUploadFailedProp(action.payload) && !R.isEmpty(uploadFailed)),
       };
     }
 
