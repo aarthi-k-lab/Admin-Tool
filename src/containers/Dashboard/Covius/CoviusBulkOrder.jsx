@@ -91,6 +91,7 @@ class CoviusBulkOrder extends React.PureComponent {
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
+      isDownloadDisabled: 'disabled',
     });
     onResetCoviusData();
   }

@@ -1318,11 +1318,10 @@ function* onSelectTrialTask(payload) {
 
 function* populateDropdown() {
   try {
-    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes');
-    const events = R.flatten(response);
+    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Incoming');
     yield put({
       type: SAVE_EVENTS_DROPDOWN,
-      payload: events,
+      payload: response,
     });
   } catch (e) {
     yield put({
@@ -1363,7 +1362,7 @@ function* onCoviusBulkUpload(payload) {
     };
     yield put({ type: SHOW_LOADER });
     response = yield call(Api.callPost,
-      '/api/covius/getEventData', requestBody);
+      '/api/docfulfillment/api/covius/getEventData', requestBody);
     response = {
       DocumentRequests: [
         {
