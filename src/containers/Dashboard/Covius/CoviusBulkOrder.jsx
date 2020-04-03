@@ -56,6 +56,11 @@ class CoviusBulkOrder extends React.PureComponent {
     this.setState({ isOpen: true });
   }
 
+  componentWillUnmount() {
+    const { onResetCoviusData } = this.props;
+    onResetCoviusData();
+  }
+
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
       getDownloadResponse, resultData,

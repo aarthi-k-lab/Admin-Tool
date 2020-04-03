@@ -1361,8 +1361,9 @@ function* onCoviusBulkUpload(payload) {
       user: userEmail,
     };
     yield put({ type: SHOW_LOADER });
-    response = yield call(Api.callPost,
-      '/api/docfulfillment/api/covius/getEventData', requestBody);
+    console.log(requestBody);
+    // response = yield call(Api.callPost,
+    //   '/api/docfulfillment/api/covius/getEventData', requestBody);
     response = {
       DocumentRequests: [
         {
