@@ -274,8 +274,9 @@ const deleteFileAction = payload => ({
   payload,
 });
 
-const submitFileAction = () => ({
+const submitFileAction = payload => ({
   type: SUBMIT_FILE,
+  payload,
 });
 
 const clearSubmitCoviusData = () => ({

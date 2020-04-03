@@ -2505,7 +2505,8 @@ const onUploadingFile = function* onUploadingFile(action) {
   }
 };
 
-const onFileSubmit = function* onFileSubmit() {
+const onFileSubmit = function* onFileSubmit(action) {
+  const eventCategory = action.payload;
   try {
     const file = yield select(selectors.getUploadedFile);
     // const evalId = yield select(selectors.evalId);
@@ -2515,9 +2516,11 @@ const onFileSubmit = function* onFileSubmit() {
     const message = {};
     message.title = 'One or more Case Ids have failed validation and the data was not sent to Covius. Please review the Upload Failed tab to view the failed items.';
     message.msg = '';
+    const hasData = R.has('data');
     if (response.status === 200) {
-      fileUploadResponse.message = R.isEmpty(response.data.uploadFailed) ? 'The request was successfully sent to Covius' : message;
-      fileUploadResponse.level = R.isEmpty(response.data.uploadFailed) ? 'Success' : 'Failed';
+      fileUploadResponse.message = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'FulfillmentRequest') ? 'The request was successfully sent to Covius' : message;
+      fileUploadResponse.level = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'FulfillmentRequest') ? 'Success' : 'Failed';
+      fileUploadResponse.eventCategory = `${eventCategory} success`;
       yield put({
         type: GET_COVIUS_DATA,
         payload: response.data,
@@ -2529,6 +2532,7 @@ const onFileSubmit = function* onFileSubmit() {
       };
       fileUploadResponse.message = failedMessage;
       fileUploadResponse.level = 'Failed';
+      fileUploadResponse.eventCategory = `${eventCategory} failed`;
     }
     yield put({
       type: GET_SUBMIT_RESPONSE,
@@ -2538,7 +2542,7 @@ const onFileSubmit = function* onFileSubmit() {
     yield put(
       {
         type: GET_SUBMIT_RESPONSE,
-        payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed' },
+        payload: { message: { title: '', msg: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' }, level: 'Failed', eventCategory: `${eventCategory} failed` },
       },
     );
   }

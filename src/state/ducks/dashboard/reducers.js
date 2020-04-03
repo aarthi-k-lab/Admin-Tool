@@ -69,6 +69,7 @@ import {
   SAVE_EVENTS_DROPDOWN,
 } from './types';
 
+const hasUploadFailedProp = R.has('uploadFailed');
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
     case DISCARD_EVAL_RESPONSE: {
@@ -636,18 +637,22 @@ const reducer = (state = { firstVisit: true }, action) => {
         fileSubmitResponse: {},
         excelParsedData: null,
       };
-    case GET_SUBMIT_RESPONSE:
+    case GET_SUBMIT_RESPONSE: {
+      const { eventCategory } = action.payload;
+      const { resultData } = state;
       return {
         ...state,
+        resultData: R.equals(eventCategory, 'FulfillmentRequest success') ? {} : resultData,
         fileSubmitResponse: action.payload,
       };
+    }
     case GET_COVIUS_DATA: {
       const { resultData } = state;
       const { uploadFailed } = action.payload;
       return {
         ...state,
         resultData: R.isEmpty(uploadFailed) ? {} : { ...resultData, uploadFailed },
-        isUploadFailedTabVisible: !R.isEmpty(uploadFailed),
+        isUploadFailedTabVisible: (hasUploadFailedProp(action.payload) && !R.isEmpty(uploadFailed)),
       };
     }
 

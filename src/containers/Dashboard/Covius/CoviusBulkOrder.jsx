@@ -356,10 +356,11 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderResults() {
     const { resultData } = this.props;
-    const { isVisible, isDownloadDisabled } = this.state;
+    const { isVisible, isDownloadDisabled, selectedEventCategory } = this.state;
     return (
       <Grid item xs={12}>
         <TabView
+          eventCategory={selectedEventCategory}
           onChange={this.handleTabChange}
           onReset={() => this.handleReset()}
           tableData={resultData}

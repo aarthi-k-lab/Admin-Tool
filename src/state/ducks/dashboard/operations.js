@@ -219,8 +219,8 @@ const onDeleteFile = dispatch => (payload) => {
   dispatch(deleteFileAction(payload));
 };
 
-const onSubmitFile = dispatch => () => {
-  dispatch(submitFileAction());
+const onSubmitFile = dispatch => (payload) => {
+  dispatch(submitFileAction(payload));
 };
 
 const onClearSubmitCoviusData = dispatch => () => {

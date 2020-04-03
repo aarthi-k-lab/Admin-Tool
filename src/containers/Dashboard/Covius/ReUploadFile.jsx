@@ -24,7 +24,7 @@ class ReUploadFile extends React.Component {
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const {
       getSubmitFileResponse,
-      refreshPage,
+      refreshPage, onDeleteFile,
     } = nextProps;
     const { isOpen, response } = prevState;
     const { message, level } = getSubmitFileResponse;
@@ -35,7 +35,7 @@ class ReUploadFile extends React.Component {
           icon="error"
           imageHeight="500"
           imageUrl={level === 'Failed' || level === 'Faliure' ? Failed : Success}
-          onConfirm={refreshPage()}
+          onConfirm={level === 'Success' ? refreshPage() : ''}
           padding="3em"
           show={isOpen}
           text={level === 'Failed' ? message.msg : ''}
@@ -43,6 +43,7 @@ class ReUploadFile extends React.Component {
           width="600"
         />
       );
+      onDeleteFile(true);
       return { response: alertResponse };
     }
     return { response };
@@ -69,9 +70,9 @@ class ReUploadFile extends React.Component {
   }
 
   onSubmitToCovius = () => {
-    const { onSubmitFile } = this.props;
+    const { onSubmitFile, eventCategory } = this.props;
     this.invokeSubmitToCoviusSweetAlert();
-    onSubmitFile();
+    onSubmitFile(eventCategory);
   }
 
   handleClose = () => {
@@ -155,13 +156,16 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onSubmitFile: operations.onSubmitFile(dispatch),
+  onDeleteFile: operations.onDeleteFile(dispatch),
 });
 
 ReUploadFile.propTypes = {
+  eventCategory: PropTypes.string.isRequired,
   fileName: PropTypes.string,
   getSubmitFileResponse:
     PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   onChange: PropTypes.func.isRequired,
+  onDeleteFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   onSubmitFile: PropTypes.func.isRequired,
   refreshPage: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
 };

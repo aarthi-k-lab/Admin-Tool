@@ -6,6 +6,7 @@ describe('renders <ReUploadFile />', () => {
   const fileName = 'hello.xls';
   const onChange = jest.fn();
   const refreshPage = jest.fn();
+  const onDeleteFile = jest.fn();
   const getSubmitFileResponse = {
     message: 'mock msg',
     level: 'success',
@@ -16,6 +17,7 @@ describe('renders <ReUploadFile />', () => {
         fileName={fileName}
         getSubmitFileResponse={getSubmitFileResponse}
         onChange={onChange}
+        onDeleteFile={onDeleteFile}
         refreshPage={refreshPage}
       />,
     );
@@ -27,6 +29,7 @@ describe('renders <ReUploadFile />', () => {
         fileName={fileName}
         getSubmitFileResponse={getSubmitFileResponse}
         onChange={onChange}
+        onDeleteFile={onDeleteFile}
         refreshPage={refreshPage}
       />,
     );
@@ -58,6 +61,7 @@ describe('renders <ReUploadFile />', () => {
         fileName={fileName}
         getSubmitFileResponse={response}
         onChange={onChange}
+        onDeleteFile={onDeleteFile}
         onSubmitFile={onSubmitFile}
         refreshPage={refreshPage}
       />,
@@ -72,10 +76,12 @@ describe('renders <ReUploadFile />', () => {
         fileName={fileName}
         getSubmitFileResponse={getSubmitFileResponse}
         onChange={onChange}
+        onDeleteFile={onDeleteFile}
         refreshPage={refreshPage}
       />,
     );
     wrapper.find('#delete').at(0).simulate('click');
     expect(onChange.mock.calls).toHaveLength(1);
+    expect(onDeleteFile.mock.calls).toHaveLength(5);
   });
 });
