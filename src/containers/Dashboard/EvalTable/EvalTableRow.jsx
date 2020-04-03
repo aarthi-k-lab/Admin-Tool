@@ -41,7 +41,7 @@ class EvalTableRow extends React.PureComponent {
       const { onSelectEval, onGetGroupName } = this.props;
       this.redirectPath = '/special-loan';
       onGetGroupName('BOOKING');
-      onSelectEval(payLoad);
+      onSelectEval({ ...payLoad, isSearch: true });
       history.push(this.redirectPath);
     } else if (((payLoad.pstatus === 'Active' && (payLoad.pstatusReason === 'Rejection Pending' || payLoad.pstatusReason === 'Trial Rejected')) || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended'))) {
       const { evalId } = payLoad;
