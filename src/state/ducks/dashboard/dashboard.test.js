@@ -1204,6 +1204,16 @@ describe('onUploadingfile', () => {
     expect(saga.next(mockData).value)
       .toEqual(put({ type: actionTypes.SAVE_PROCESSED_FILE, payload: mockData }));
   });
+  it('should call SET_DOWNLOAD_RESPONSE', () => {
+    expect(saga.next().value)
+      .toEqual(put({
+        type: actionTypes.SET_DOWNLOAD_RESPONSE,
+        payload: {
+          message: 'Excel file uploaded successfully',
+          level: 'Success',
+        },
+      }));
+  });
 });
 
 describe('submit file to covius (FulfillmentRequest) : Success', () => {
