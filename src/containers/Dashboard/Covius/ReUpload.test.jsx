@@ -7,6 +7,7 @@ describe('renders <ReUploadFile />', () => {
   const onChange = jest.fn();
   const refreshPage = jest.fn();
   const onDeleteFile = jest.fn();
+  const switchToUploadFailedTab = jest.fn();
   const getSubmitFileResponse = {
     message: 'mock msg',
     level: 'success',
@@ -19,6 +20,7 @@ describe('renders <ReUploadFile />', () => {
         onChange={onChange}
         onDeleteFile={onDeleteFile}
         refreshPage={refreshPage}
+        switchToUploadFailedTab={switchToUploadFailedTab}
       />,
     );
     expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(8);
@@ -31,6 +33,7 @@ describe('renders <ReUploadFile />', () => {
         onChange={onChange}
         onDeleteFile={onDeleteFile}
         refreshPage={refreshPage}
+        switchToUploadFailedTab={switchToUploadFailedTab}
       />,
     );
     expect(wrapper.find('WithStyles(ForwardRef(TextField))')).toHaveLength(1);
@@ -45,6 +48,7 @@ describe('renders <ReUploadFile />', () => {
         onChange={onChange}
         onSubmitFile={onSubmitFile}
         refreshPage={refreshPage}
+        switchToUploadFailedTab={switchToUploadFailedTab}
       />,
     );
     wrapper.find('#submit').at(0).simulate('click');
@@ -64,6 +68,7 @@ describe('renders <ReUploadFile />', () => {
         onDeleteFile={onDeleteFile}
         onSubmitFile={onSubmitFile}
         refreshPage={refreshPage}
+        switchToUploadFailedTab={switchToUploadFailedTab}
       />,
     );
     wrapper.find('#submit').at(0).simulate('click');
@@ -78,6 +83,7 @@ describe('renders <ReUploadFile />', () => {
         onChange={onChange}
         onDeleteFile={onDeleteFile}
         refreshPage={refreshPage}
+        switchToUploadFailedTab={switchToUploadFailedTab}
       />,
     );
     wrapper.find('#delete').at(0).simulate('click');
