@@ -89,6 +89,13 @@ class TabView extends React.Component {
     this.setState({ uploadNonExcel: null });
   }
 
+  switchToUploadFailedTab = () => {
+    const { isUploadFailedTabVisible } = this.props;
+    if (isUploadFailedTabVisible) {
+      this.setState({ value: 3 });
+    }
+  }
+
   invokeNotification = (message, level) => {
     const { isOpen } = this.state;
     return (
@@ -226,6 +233,7 @@ class TabView extends React.Component {
                   id="reupload"
                   onChange={this.handleChange}
                   refreshPage={this.handleRefresh}
+                  switchToUploadFailedTab={this.switchToUploadFailedTab}
                 />
               )}
           </div>

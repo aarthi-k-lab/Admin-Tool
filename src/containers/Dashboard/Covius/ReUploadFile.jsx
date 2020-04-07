@@ -25,6 +25,7 @@ class ReUploadFile extends React.Component {
     const {
       getSubmitFileResponse,
       refreshPage, onDeleteFile,
+      switchToUploadFailedTab,
     } = nextProps;
     const { isOpen, response } = prevState;
     const { message, level } = getSubmitFileResponse;
@@ -35,7 +36,7 @@ class ReUploadFile extends React.Component {
           icon="error"
           imageHeight="500"
           imageUrl={level === 'Failed' || level === 'Faliure' ? Failed : Success}
-          onConfirm={level === 'Success' ? refreshPage() : ''}
+          onConfirm={level === 'Success' ? refreshPage() : switchToUploadFailedTab()}
           padding="3em"
           show={isOpen}
           text={level === 'Failed' ? message.msg : ''}
@@ -168,6 +169,8 @@ ReUploadFile.propTypes = {
   onDeleteFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   onSubmitFile: PropTypes.func.isRequired,
   refreshPage: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  switchToUploadFailedTab:
+  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
 };
 
 export { TestHooks };
