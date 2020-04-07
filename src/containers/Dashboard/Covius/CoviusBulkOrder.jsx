@@ -151,7 +151,7 @@ class CoviusBulkOrder extends React.PureComponent {
     this.setState({
       selectedEventCategory: eventCategory,
       isSubmitDisabled: 'disabled',
-      selectedEventName: '',
+      selectedEventName: !R.isEmpty(eventNames) ? eventNames[0] : '',
       eventNames,
       isResetDisabled: false,
     });
