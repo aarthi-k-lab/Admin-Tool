@@ -2668,6 +2668,8 @@ export const TestExports = {
   selectEval,
   unassignLoan,
   assignLoan,
+  populateDropdown,
+  onCoviusBulkUpload,
   watchAutoSave,
   watchEndShift,
   watchSetExpandView,

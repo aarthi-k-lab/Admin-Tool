@@ -1286,3 +1286,51 @@ describe('submit file to covius (FulfillmentRequest) : Failure', () => {
       .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
   });
 });
+
+describe('watch populateDropdown', () => {
+  it('should trigger populate dropdown', () => {
+    const saga = cloneableGenerator(TestExports.watchPopulateEventsDropDown)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.POPULATE_EVENTS_DROPDOWN, TestExports.populateDropdown));
+  });
+});
+
+describe('populateDropdown saga ', () => {
+  const saga = cloneableGenerator(TestExports.populateDropdown)();
+  const mockResponse = [
+    {
+      eventCode: 'abc',
+      eventCategor: 'def',
+    },
+  ];
+  it('should call populate event service', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Incoming'));
+  });
+  it('should call SAVE_EVENTS_DROPDOWN', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.SAVE_EVENTS_DROPDOWN, payload: mockResponse }));
+  });
+});
+
+describe('watch onCoviusBulkUpload', () => {
+  it('should trigger covius bulk order', () => {
+    const saga = cloneableGenerator(TestExports.watchCoviusBulkOrder)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.PROCESS_COVIUS_BULK, TestExports.onCoviusBulkUpload));
+  });
+});
+
+describe('onCoviusBulkUpload saga ', () => {
+  const payload = {
+    payload: {
+      caseIds: ['12', '52', '32'],
+    },
+  };
+  const saga = cloneableGenerator(TestExports.onCoviusBulkUpload)(payload);
+
+  it('should call select user from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+});
