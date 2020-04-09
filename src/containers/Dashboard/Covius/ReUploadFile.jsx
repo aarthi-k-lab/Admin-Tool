@@ -32,6 +32,7 @@ class ReUploadFile extends React.Component {
     if (!R.isEmpty(getSubmitFileResponse)) {
       const alertResponse = (
         <SweetAlert
+          confirmButtonColor="#004261"
           fontSize="1rem"
           icon="error"
           imageHeight="500"
@@ -52,18 +53,16 @@ class ReUploadFile extends React.Component {
 
   invokeSubmitToCoviusSweetAlert = () => {
     const { isOpen } = this.state;
-    const textMsg = 'Please <b style="font-weight: bold;">&quot;Do Not Close the Browser&quot;</b> and this will lead you to not see the data that was successfully sent/failed';
     const sweetAlert = (
       <SweetAlert
         fontSize="1rem"
-        html={textMsg}
         icon="error"
         imageHeight="500"
         imageUrl={Info}
         padding="3em"
         show={isOpen}
         showConfirmButton={false}
-        title="We are almost there to process your request"
+        title="We are processing your request.  Please do not close the browser."
         width="600"
       />
     );

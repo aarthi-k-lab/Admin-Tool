@@ -92,7 +92,7 @@ class TabView extends React.Component {
   switchToUploadFailedTab = () => {
     const { isUploadFailedTabVisible } = this.props;
     if (isUploadFailedTabVisible) {
-      this.setState({ value: 3 });
+      this.handleTabSelection('', 3);
     }
   }
 
@@ -100,6 +100,7 @@ class TabView extends React.Component {
     const { isOpen } = this.state;
     return (
       <SweetAlertBox
+        confirmButtonColor="#004261"
         id="sweetAlert"
         message={message}
         onConfirm={() => this.hideAlert()}

@@ -71,6 +71,7 @@ class CoviusBulkOrder extends React.PureComponent {
       const { message, level } = getDownloadResponse;
       const alertResponse = (
         <SweetAlertBox
+          confirmButtonColor="#004261"
           message={message}
           onConfirm={this.handleClose}
           show={isOpen}
@@ -404,6 +405,7 @@ class CoviusBulkOrder extends React.PureComponent {
     if (inProgress === false && resultOperation.level === 'error') {
       renderAlert = (
         <SweetAlertBox
+          confirmButtonColor="#004261"
           message={resultOperation.status}
           onConfirm={() => this.handleClose()}
           show={isOpen}
