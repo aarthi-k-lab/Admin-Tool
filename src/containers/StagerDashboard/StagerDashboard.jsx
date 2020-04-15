@@ -73,7 +73,10 @@ class StagerDashboard extends React.Component {
   onOrderClick(data, searchTerm) {
     const { triggerOrderCall, user } = this.props;
     const userPrincipalName = user.userDetails.email;
-    const endPoint = R.contains('Reclass', searchTerm) ? 'reclass' : 'valuation';
+    let endPoint = R.contains('Reclass', searchTerm) ? 'reclass' : 'valuation';
+    if (R.equals(R.toLower(searchTerm), 'taxtranscriptordered')) {
+      endPoint = searchTerm;
+    }
     const orderPayload = R.map(dataUnit => ({
       evalId: dataUnit['Eval ID'] && dataUnit['Eval ID'].toString(),
       taskId: dataUnit.TKIID && dataUnit.TKIID.toString(),
