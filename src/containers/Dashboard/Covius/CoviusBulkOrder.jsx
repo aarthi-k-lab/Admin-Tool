@@ -21,8 +21,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
+import SweetAlert from 'sweetalert2-react';
 import * as XLSX from 'xlsx';
 import TabView from './TabView';
+import { Info } from '../../../constants/alertTypes';
 
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
@@ -38,6 +41,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isVisible: true,
       isOpen: true,
       tabIndex: 0,
+      response: null,
       isDownloadDisabled: 'disabled',
       getAlert: null,
       holdAutomation: false,
@@ -71,7 +75,6 @@ class CoviusBulkOrder extends React.PureComponent {
       const { message, level } = getDownloadResponse;
       const alertResponse = (
         <SweetAlertBox
-          confirmButtonColor="#004261"
           message={message}
           onConfirm={this.handleClose}
           show={isOpen}
@@ -237,6 +240,31 @@ class CoviusBulkOrder extends React.PureComponent {
     downloadFile(payload);
   }
 
+  onSubmitToCovius = () => {
+    const { onSubmitFile, eventCategory } = this.props;
+    this.invokeSubmitToCoviusSweetAlert();
+    onSubmitFile(eventCategory);
+  }
+
+  invokeSubmitToCoviusSweetAlert = () => {
+    const { isOpen } = this.state;
+    const sweetAlert = (
+      <SweetAlert
+        fontSize="1rem"
+        icon="error"
+        imageHeight="500"
+        imageUrl={Info}
+        padding="3em"
+        show={isOpen}
+        showConfirmButton={false}
+        title="We are processing your request.  Please do not close the browser."
+        width="600"
+      />
+    );
+    this.setState({ response: sweetAlert });
+  }
+
+
   handleReset() {
     this.setState({
       selectedEventCategory: ' ',
@@ -249,19 +277,37 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   renderHoldAutomationToggle = () => (
-    <Grid alignItems="center" component="label" container>
-      <Grid styleName="loan-numbers">
-        {'Hold Automation'}
+    <>
+      <div styleName="loan-numbers">
+        <span>
+          {'Hold Automation'}
+        </span>
+        <span styleName="errorIcon">
+          <Tooltip
+            placement="right-end"
+            title={(
+              <Typography>
+                Hold Automation
+              </Typography>
+)}
+          >
+            <ErrorIcon styleName="errorSvg" />
+          </Tooltip>
+        </span>
+      </div>
+      <Grid alignItems="center" component="label" container>
+        <Grid item styleName="loan-numbers">NO</Grid>
+        <Grid item>
+          <Switch
+            color="primary"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+            name="holdAutomation"
+            onChange={this.onToggleHoldAutomation}
+          />
+        </Grid>
+        <Grid item>YES</Grid>
       </Grid>
-      <Grid item>
-        <Switch
-          color="primary"
-          inputProps={{ 'aria-label': 'primary checkbox' }}
-          name="holdAutomation"
-          onChange={this.onToggleHoldAutomation}
-        />
-      </Grid>
-    </Grid>
+    </>
   );
 
   renderNotepadArea() {
@@ -289,7 +335,15 @@ class CoviusBulkOrder extends React.PureComponent {
             {'Event Category'}
           </span>
           <span styleName="errorIcon">
-            <Tooltip title="This is the type of action or information that you want to send to Covius. What type of message is this?">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+                This is the type of action or information that you
+                want to send to Covius. What type of message is this?
+                </Typography>
+)}
+            >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
           </span>
@@ -299,15 +353,23 @@ class CoviusBulkOrder extends React.PureComponent {
           <span>
             {'Event Name'}
           </span>
-          <span styleName="errorIcon">
-            <Tooltip title="This is the specific action or information that you want to send to Covius. What do you want to tell them?">
+          <span styleName="errorIcon ">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+This is the specific action or information
+that you want to send to Covius. What do you want to tell them?
+                </Typography>
+)}
+            >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
           </span>
         </div>
         {this.renderNamesDropDown(eventNames)}
 
-        {selectedEventCategory.trim() === 'FulfillmentRequest' && this.renderHoldAutomationToggle()}
+        {selectedEventCategory.trim() === 'Fulfillment Request' && this.renderHoldAutomationToggle()}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
@@ -360,23 +422,54 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
+
   renderResults() {
     const { resultData } = this.props;
-    const { isVisible, isDownloadDisabled, selectedEventCategory } = this.state;
+    const {
+      isVisible,
+      isDownloadDisabled,
+      selectedEventCategory,
+      tabIndex,
+      response,
+    } = this.state;
     return (
       <Grid item xs={12}>
+        {response}
         <TabView
           eventCategory={selectedEventCategory}
           onChange={this.handleTabChange}
           onReset={() => this.handleReset()}
           tableData={resultData}
         />
+        {tabIndex === 1
+          ? (
+            <div styleName="errorSvginfo">
+              <Button
+                color="primary"
+                component="label"
+                id="submit"
+                onClick={this.onSubmitToCovius}
+                styleName="submitButton"
+                variant="contained"
+              >
+                  SUBMIT TO COVIUS
+              </Button>
+            </div>
+          )
+          : null
+  }
         {isVisible && (
           <div styleName="errorSvginfo">
-            <Tooltip title="Create an excel file with the data from this tab for your review.">
+            <Tooltip
+              placement="right-end"
+              title={(
+                <Typography>
+Create an excel file with the data from this tab for your review.
+                </Typography>
+)}
+            >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
-            {' '}
             <Button
               className="material-ui-button"
               color="primary"
@@ -469,11 +562,13 @@ CoviusBulkOrder.propTypes = {
     eventCategory: PropTypes.string,
   }),
   downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  eventCategory: PropTypes.string.isRequired,
   getDownloadResponse:
     PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
+  onSubmitFile: PropTypes.func.isRequired,
   populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
@@ -493,10 +588,12 @@ CoviusBulkOrder.propTypes = {
       message: PropTypes.string,
     }),
   }),
+
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
   }),
+
 };
 
 const mapStateToProps = state => ({
@@ -513,6 +610,8 @@ const mapDispatchToProps = dispatch => ({
   downloadFile: operations.downloadFile(dispatch),
   populateDropdown: operations.populateEvents(dispatch),
   clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
+  onSubmitFile: operations.onSubmitFile(dispatch),
+
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
