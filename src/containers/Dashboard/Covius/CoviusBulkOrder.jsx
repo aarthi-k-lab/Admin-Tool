@@ -287,7 +287,8 @@ class CoviusBulkOrder extends React.PureComponent {
             placement="right-end"
             title={(
               <Typography>
-                Hold Automation
+                Select Yes if you want to hold the doc gen request file from being sent automatically to the vendor for up to 5 days.
+
               </Typography>
 )}
           >
