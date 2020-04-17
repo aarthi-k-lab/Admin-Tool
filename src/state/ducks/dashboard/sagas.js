@@ -2509,10 +2509,8 @@ const onFileSubmit = function* onFileSubmit(action) {
   const eventCategory = action.payload;
   try {
     const file = yield select(selectors.getUploadedFile);
-    // const evalId = yield select(selectors.evalId);
-    // console.log(evalId);
     const fileUploadResponse = {};
-    const response = yield call(Api.callPost, 'api/stager/dashboard/handleUpload', JSON.parse(file));
+    const response = yield call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', JSON.parse(file));
     const message = {};
     message.title = 'One or more Case Ids have failed validation and the data was not sent to Covius. Please review the Upload Failed tab to view the failed items.';
     message.msg = '';
