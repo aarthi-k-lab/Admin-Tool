@@ -34,7 +34,7 @@ class CoviusBulkOrder extends React.PureComponent {
     this.state = {
       caseIds: '',
       isSubmitDisabled: 'disabled',
-      selectedEventName: '',
+      selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
       eventNames: [],
       isResetDisabled: true,
@@ -95,7 +95,7 @@ class CoviusBulkOrder extends React.PureComponent {
   onResetClick = () => {
     const { onResetCoviusData } = this.props;
     this.setState({
-      selectedEventName: '',
+      selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
       caseIds: '',
       isSubmitDisabled: 'disabled',
@@ -107,14 +107,14 @@ class CoviusBulkOrder extends React.PureComponent {
 
   onSubmitCases = () => {
     const {
-      caseIds, selectedEventName, selectedEventCategory, holdAutomation,
+      caseIds, selectedEvent, selectedEventCategory, holdAutomation,
     } = this.state;
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
     const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
     const payload = {
       caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
-      eventCode: selectedEventName,
+      eventCode: selectedEvent.eventCode,
       eventCategory: selectedEventCategory,
       holdAutomation,
     };
@@ -126,13 +126,13 @@ class CoviusBulkOrder extends React.PureComponent {
   };
 
   handleCaseChange = (event) => {
-    const { selectedEventName, selectedEventCategory } = this.state;
+    const { selectedEvent, selectedEventCategory } = this.state;
     const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/;
     if (event.target.value === '' || !re.test(event.target.value)) {
       this.setState({
         caseIds: event.target.value,
-        isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
-        isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEventName)
+        isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEvent.eventCode) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
+        isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEvent.eventCode)
           && R.isEmpty(selectedEventCategory),
       });
     }
@@ -140,10 +140,12 @@ class CoviusBulkOrder extends React.PureComponent {
 
   handleEventName = (event) => {
     const { caseIds, selectedEventCategory } = this.state;
+    const { coviusEventOptions } = this.props;
     const eventName = event.target.value;
+    const selectedEvent = R.find(item => item.eventCode === eventName, coviusEventOptions);
     let disableSubmit = '';
     disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(caseIds) ? '' : 'disabled';
-    this.setState({ selectedEventName: eventName, isSubmitDisabled: disableSubmit });
+    this.setState({ selectedEvent, isSubmitDisabled: disableSubmit });
   }
 
   handleEventCategory = (event) => {
@@ -151,12 +153,16 @@ class CoviusBulkOrder extends React.PureComponent {
     const eventCategory = event.target.value;
     const eventList = R.compose(R.filter(item => item.eventCategory === eventCategory),
       R.flatten)(coviusEventOptions);
-    const eventNames = R.pluck('eventCode', eventList);
+    const eventObj = {
+      target: {
+        value: eventList[0].eventCode,
+      },
+    };
+    this.handleEventName(eventObj);
     this.setState({
       selectedEventCategory: eventCategory,
       isSubmitDisabled: 'disabled',
-      selectedEventName: !R.isEmpty(eventNames) ? eventNames[0] : '',
-      eventNames,
+      eventNames: eventList,
       isResetDisabled: false,
     });
   }
@@ -268,7 +274,7 @@ class CoviusBulkOrder extends React.PureComponent {
   handleReset() {
     this.setState({
       selectedEventCategory: ' ',
-      selectedEventName: '',
+      selectedEvent: { eventCode: '', hasMetadata: false },
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
@@ -287,10 +293,11 @@ class CoviusBulkOrder extends React.PureComponent {
             placement="right-end"
             title={(
               <Typography>
-                Select Yes if you want to hold the doc gen request file from being sent automatically to the vendor for up to 5 days.
+                Select Yes if you want to hold the doc gen request file
+                from being sent automatically to the vendor for up to 5 days.
 
               </Typography>
-)}
+            )}
           >
             <ErrorIcon styleName="errorSvg" />
           </Tooltip>
@@ -340,10 +347,10 @@ class CoviusBulkOrder extends React.PureComponent {
               placement="left-end"
               title={(
                 <Typography>
-                This is the type of action or information that you
-                want to send to Covius. What type of message is this?
+                  This is the type of action or information that you
+                  want to send to Covius. What type of message is this?
                 </Typography>
-)}
+              )}
             >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
@@ -359,10 +366,10 @@ class CoviusBulkOrder extends React.PureComponent {
               placement="left-end"
               title={(
                 <Typography>
-This is the specific action or information
-that you want to send to Covius. What do you want to tell them?
+                  This is the specific action or information
+                  that you want to send to Covius. What do you want to tell them?
                 </Typography>
-)}
+              )}
             >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
@@ -406,17 +413,17 @@ that you want to send to Covius. What do you want to tell them?
   }
 
   renderNamesDropDown(eventNames) {
-    const { selectedEventName } = this.state;
+    const { selectedEvent } = this.state;
     return (
       <FormControl variant="outlined">
         <Select
           id="eventNamesDropdown"
-          input={<OutlinedInput name="selectedEventName" />}
+          input={<OutlinedInput name="selectedEvent" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
-          value={selectedEventName}
+          value={selectedEvent.eventCode}
         >
-          {eventNames.map(item => <MenuItem value={item}>{item}</MenuItem>)}
+          {eventNames.map(item => <MenuItem value={item.eventCode}>{item.eventCode}</MenuItem>)}
 
         </Select>
       </FormControl>
@@ -430,6 +437,7 @@ that you want to send to Covius. What do you want to tell them?
       isVisible,
       isDownloadDisabled,
       selectedEventCategory,
+      selectedEvent,
       tabIndex,
       response,
     } = this.state;
@@ -442,7 +450,7 @@ that you want to send to Covius. What do you want to tell them?
           onReset={() => this.handleReset()}
           tableData={resultData}
         />
-        {tabIndex === 1
+        {tabIndex === 1 && !selectedEvent.hasMetadata
           ? (
             <div styleName="errorSvginfo">
               <Button
@@ -453,21 +461,21 @@ that you want to send to Covius. What do you want to tell them?
                 styleName="submitButton"
                 variant="contained"
               >
-                  SUBMIT TO COVIUS
+                SUBMIT TO COVIUS
               </Button>
             </div>
           )
           : null
-  }
+        }
         {isVisible && (
           <div styleName="errorSvginfo">
             <Tooltip
               placement="right-end"
               title={(
                 <Typography>
-Create an excel file with the data from this tab for your review.
+                  Create an excel file with the data from this tab for your review.
                 </Typography>
-)}
+              )}
             >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
@@ -561,6 +569,7 @@ CoviusBulkOrder.propTypes = {
   coviusEventOptions: PropTypes.arrayOf({
     eventCode: PropTypes.string,
     eventCategory: PropTypes.string,
+    hasMetadata: PropTypes.bool,
   }),
   downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   eventCategory: PropTypes.string.isRequired,
