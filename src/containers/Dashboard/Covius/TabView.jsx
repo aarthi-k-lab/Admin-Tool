@@ -89,10 +89,18 @@ class TabView extends React.Component {
     this.setState({ uploadNonExcel: null });
   }
 
+  switchToUploadFailedTab = () => {
+    const { isUploadFailedTabVisible } = this.props;
+    if (isUploadFailedTabVisible) {
+      this.handleTabSelection('', 3);
+    }
+  }
+
   invokeNotification = (message, level) => {
     const { isOpen } = this.state;
     return (
       <SweetAlertBox
+        confirmButtonColor="#004261"
         id="sweetAlert"
         message={message}
         onConfirm={() => this.hideAlert()}
@@ -226,6 +234,7 @@ class TabView extends React.Component {
                   id="reupload"
                   onChange={this.handleChange}
                   refreshPage={this.handleRefresh}
+                  switchToUploadFailedTab={this.switchToUploadFailedTab}
                 />
               )}
           </div>

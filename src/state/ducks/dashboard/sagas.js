@@ -1361,8 +1361,9 @@ function* onCoviusBulkUpload(payload) {
       user: userEmail,
     };
     yield put({ type: SHOW_LOADER });
-    response = yield call(Api.callPost,
-      '/api/docfulfillment/api/covius/getEventData', requestBody);
+    console.log(requestBody);
+    // response = yield call(Api.callPost,
+    //   '/api/docfulfillment/api/covius/getEventData', requestBody);
     response = {
       DocumentRequests: [
         {
@@ -2494,14 +2495,31 @@ function* manualInsertion(payload) {
 
 const onUploadingFile = function* onUploadingFile(action) {
   const file = action.payload;
-  if (file) {
-    const data = yield call(processExcel, file);
-    if (data) {
+  try {
+    if (file) {
+      const data = yield call(processExcel, file);
+      if (data) {
+        yield put({
+          type: SAVE_PROCESSED_FILE,
+          payload: data,
+        });
+      }
       yield put({
-        type: SAVE_PROCESSED_FILE,
-        payload: data,
+        type: SET_DOWNLOAD_RESPONSE,
+        payload: {
+          message: 'Excel file uploaded successfully',
+          level: 'Success',
+        },
       });
     }
+  } catch (e) {
+    yield put({
+      type: SET_DOWNLOAD_RESPONSE,
+      payload: {
+        message: 'The conversion to json has failed. Please reach out to the CMOD Support team to troubleshoot.',
+        level: 'Failed',
+      },
+    });
   }
 };
 
@@ -2648,6 +2666,8 @@ export const TestExports = {
   selectEval,
   unassignLoan,
   assignLoan,
+  populateDropdown,
+  onCoviusBulkUpload,
   watchAutoSave,
   watchEndShift,
   watchSetExpandView,

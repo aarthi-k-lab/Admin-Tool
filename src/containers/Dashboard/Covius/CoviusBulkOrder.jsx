@@ -21,8 +21,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
+import SweetAlert from 'sweetalert2-react';
 import * as XLSX from 'xlsx';
 import TabView from './TabView';
+import { Info } from '../../../constants/alertTypes';
 
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
@@ -31,13 +34,14 @@ class CoviusBulkOrder extends React.PureComponent {
     this.state = {
       caseIds: '',
       isSubmitDisabled: 'disabled',
-      selectedEventName: '',
+      selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
       eventNames: [],
       isResetDisabled: true,
       isVisible: true,
       isOpen: true,
       tabIndex: 0,
+      response: null,
       isDownloadDisabled: 'disabled',
       getAlert: null,
       holdAutomation: false,
@@ -54,6 +58,11 @@ class CoviusBulkOrder extends React.PureComponent {
 
   componentWillReceiveProps() {
     this.setState({ isOpen: true });
+  }
+
+  componentWillUnmount() {
+    const { onResetCoviusData } = this.props;
+    onResetCoviusData();
   }
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
@@ -86,7 +95,7 @@ class CoviusBulkOrder extends React.PureComponent {
   onResetClick = () => {
     const { onResetCoviusData } = this.props;
     this.setState({
-      selectedEventName: '',
+      selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
       caseIds: '',
       isSubmitDisabled: 'disabled',
@@ -98,14 +107,14 @@ class CoviusBulkOrder extends React.PureComponent {
 
   onSubmitCases = () => {
     const {
-      caseIds, selectedEventName, selectedEventCategory, holdAutomation,
+      caseIds, selectedEvent, selectedEventCategory, holdAutomation,
     } = this.state;
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
     const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
     const payload = {
       caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
-      eventCode: selectedEventName,
+      eventCode: selectedEvent.eventCode,
       eventCategory: selectedEventCategory,
       holdAutomation,
     };
@@ -117,13 +126,13 @@ class CoviusBulkOrder extends React.PureComponent {
   };
 
   handleCaseChange = (event) => {
-    const { selectedEventName, selectedEventCategory } = this.state;
+    const { selectedEvent, selectedEventCategory } = this.state;
     const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/;
     if (event.target.value === '' || !re.test(event.target.value)) {
       this.setState({
         caseIds: event.target.value,
-        isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEventName) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
-        isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEventName)
+        isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEvent.eventCode) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
+        isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEvent.eventCode)
           && R.isEmpty(selectedEventCategory),
       });
     }
@@ -131,10 +140,12 @@ class CoviusBulkOrder extends React.PureComponent {
 
   handleEventName = (event) => {
     const { caseIds, selectedEventCategory } = this.state;
+    const { coviusEventOptions } = this.props;
     const eventName = event.target.value;
+    const selectedEvent = R.find(item => item.eventCode === eventName, coviusEventOptions);
     let disableSubmit = '';
     disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(caseIds) ? '' : 'disabled';
-    this.setState({ selectedEventName: eventName, isSubmitDisabled: disableSubmit });
+    this.setState({ selectedEvent, isSubmitDisabled: disableSubmit });
   }
 
   handleEventCategory = (event) => {
@@ -142,12 +153,16 @@ class CoviusBulkOrder extends React.PureComponent {
     const eventCategory = event.target.value;
     const eventList = R.compose(R.filter(item => item.eventCategory === eventCategory),
       R.flatten)(coviusEventOptions);
-    const eventNames = R.pluck('eventCode', eventList);
+    const eventObj = {
+      target: {
+        value: eventList[0].eventCode,
+      },
+    };
+    this.handleEventName(eventObj);
     this.setState({
       selectedEventCategory: eventCategory,
       isSubmitDisabled: 'disabled',
-      selectedEventName: '',
-      eventNames,
+      eventNames: eventList,
       isResetDisabled: false,
     });
   }
@@ -231,10 +246,35 @@ class CoviusBulkOrder extends React.PureComponent {
     downloadFile(payload);
   }
 
+  onSubmitToCovius = () => {
+    const { onSubmitFile, eventCategory } = this.props;
+    this.invokeSubmitToCoviusSweetAlert();
+    onSubmitFile(eventCategory);
+  }
+
+  invokeSubmitToCoviusSweetAlert = () => {
+    const { isOpen } = this.state;
+    const sweetAlert = (
+      <SweetAlert
+        fontSize="1rem"
+        icon="error"
+        imageHeight="500"
+        imageUrl={Info}
+        padding="3em"
+        show={isOpen}
+        showConfirmButton={false}
+        title="We are processing your request.  Please do not close the browser."
+        width="600"
+      />
+    );
+    this.setState({ response: sweetAlert });
+  }
+
+
   handleReset() {
     this.setState({
       selectedEventCategory: ' ',
-      selectedEventName: '',
+      selectedEvent: { eventCode: '', hasMetadata: false },
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
@@ -243,19 +283,39 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   renderHoldAutomationToggle = () => (
-    <Grid alignItems="center" component="label" container>
-      <Grid styleName="loan-numbers">
-        {'Hold Automation'}
+    <>
+      <div styleName="loan-numbers">
+        <span>
+          {'Hold Automation'}
+        </span>
+        <span styleName="errorIcon">
+          <Tooltip
+            placement="right-end"
+            title={(
+              <Typography>
+                Select Yes if you want to hold the doc gen request file
+                from being sent automatically to the vendor for up to 5 days.
+
+              </Typography>
+            )}
+          >
+            <ErrorIcon styleName="errorSvg" />
+          </Tooltip>
+        </span>
+      </div>
+      <Grid alignItems="center" component="label" container>
+        <Grid item styleName="loan-numbers">NO</Grid>
+        <Grid item>
+          <Switch
+            color="primary"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+            name="holdAutomation"
+            onChange={this.onToggleHoldAutomation}
+          />
+        </Grid>
+        <Grid item>YES</Grid>
       </Grid>
-      <Grid item>
-        <Switch
-          color="primary"
-          inputProps={{ 'aria-label': 'primary checkbox' }}
-          name="holdAutomation"
-          onChange={this.onToggleHoldAutomation}
-        />
-      </Grid>
-    </Grid>
+    </>
   );
 
   renderNotepadArea() {
@@ -283,7 +343,15 @@ class CoviusBulkOrder extends React.PureComponent {
             {'Event Category'}
           </span>
           <span styleName="errorIcon">
-            <Tooltip title="This is the type of action or information that you want to send to Covius. What type of message is this?">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+                  This is the type of action or information that you
+                  want to send to Covius. What type of message is this?
+                </Typography>
+              )}
+            >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
           </span>
@@ -293,15 +361,23 @@ class CoviusBulkOrder extends React.PureComponent {
           <span>
             {'Event Name'}
           </span>
-          <span styleName="errorIcon">
-            <Tooltip title="This is the specific action or information that you want to send to Covius. What do you want to tell them?">
+          <span styleName="errorIcon ">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+                  This is the specific action or information
+                  that you want to send to Covius. What do you want to tell them?
+                </Typography>
+              )}
+            >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
           </span>
         </div>
         {this.renderNamesDropDown(eventNames)}
 
-        {selectedEventCategory.trim() === 'FulfillmentRequest' && this.renderHoldAutomationToggle()}
+        {selectedEventCategory.trim() === 'Fulfillment Request' && this.renderHoldAutomationToggle()}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
@@ -337,40 +413,72 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   renderNamesDropDown(eventNames) {
-    const { selectedEventName } = this.state;
+    const { selectedEvent } = this.state;
     return (
       <FormControl variant="outlined">
         <Select
           id="eventNamesDropdown"
-          input={<OutlinedInput name="selectedEventName" />}
+          input={<OutlinedInput name="selectedEvent" />}
           onChange={event => this.handleEventName(event)}
           styleName="drop-down-select"
-          value={selectedEventName}
+          value={selectedEvent.eventCode}
         >
-          {eventNames.map(item => <MenuItem value={item}>{item}</MenuItem>)}
+          {eventNames.map(item => <MenuItem value={item.eventCode}>{item.eventCode}</MenuItem>)}
 
         </Select>
       </FormControl>
     );
   }
 
+
   renderResults() {
     const { resultData } = this.props;
-    const { isVisible, isDownloadDisabled, selectedEventCategory } = this.state;
+    const {
+      isVisible,
+      isDownloadDisabled,
+      selectedEventCategory,
+      selectedEvent,
+      tabIndex,
+      response,
+    } = this.state;
     return (
       <Grid item xs={12}>
+        {response}
         <TabView
           eventCategory={selectedEventCategory}
           onChange={this.handleTabChange}
           onReset={() => this.handleReset()}
           tableData={resultData}
         />
+        {tabIndex === 1 && !selectedEvent.hasMetadata
+          ? (
+            <div styleName="errorSvginfo">
+              <Button
+                color="primary"
+                component="label"
+                id="submit"
+                onClick={this.onSubmitToCovius}
+                styleName="submitButton"
+                variant="contained"
+              >
+                SUBMIT TO COVIUS
+              </Button>
+            </div>
+          )
+          : null
+        }
         {isVisible && (
           <div styleName="errorSvginfo">
-            <Tooltip title="Create an excel file with the data from this tab for your review.">
+            <Tooltip
+              placement="right-end"
+              title={(
+                <Typography>
+                  Create an excel file with the data from this tab for your review.
+                </Typography>
+              )}
+            >
               <ErrorIcon styleName="errorSvg" />
             </Tooltip>
-            {' '}
             <Button
               className="material-ui-button"
               color="primary"
@@ -399,6 +507,7 @@ class CoviusBulkOrder extends React.PureComponent {
     if (inProgress === false && resultOperation.level === 'error') {
       renderAlert = (
         <SweetAlertBox
+          confirmButtonColor="#004261"
           message={resultOperation.status}
           onConfirm={() => this.handleClose()}
           show={isOpen}
@@ -460,13 +569,16 @@ CoviusBulkOrder.propTypes = {
   coviusEventOptions: PropTypes.arrayOf({
     eventCode: PropTypes.string,
     eventCategory: PropTypes.string,
+    hasMetadata: PropTypes.bool,
   }),
   downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  eventCategory: PropTypes.string.isRequired,
   getDownloadResponse:
     PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
+  onSubmitFile: PropTypes.func.isRequired,
   populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
     DocumentRequests: PropTypes.arrayOf({
@@ -486,10 +598,12 @@ CoviusBulkOrder.propTypes = {
       message: PropTypes.string,
     }),
   }),
+
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
   }),
+
 };
 
 const mapStateToProps = state => ({
@@ -506,6 +620,8 @@ const mapDispatchToProps = dispatch => ({
   downloadFile: operations.downloadFile(dispatch),
   populateDropdown: operations.populateEvents(dispatch),
   clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
+  onSubmitFile: operations.onSubmitFile(dispatch),
+
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);
