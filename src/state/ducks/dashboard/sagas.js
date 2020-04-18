@@ -2523,23 +2523,41 @@ const onUploadingFile = function* onUploadingFile(action) {
   }
 };
 
+function constructObject(failedCaseIds) {
+  const obj = R.map(failedCaseId => ({
+    caseId: failedCaseId,
+    message: 'CaseId was failed to upload',
+  }), failedCaseIds);
+  return obj;
+}
+
 const onFileSubmit = function* onFileSubmit(action) {
   const eventCategory = action.payload;
   try {
     const file = yield select(selectors.getUploadedFile);
     const fileUploadResponse = {};
-    const response = yield call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', JSON.parse(file));
+    const documentRequests = {};
+    documentRequests.request = JSON.parse(file);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const body = {
+      user: userPrincipalName,
+      documentRequests,
+    };
+    const response = yield call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', body);
     const message = {};
     message.title = 'One or more Case Ids have failed validation and the data was not sent to Covius. Please review the Upload Failed tab to view the failed items.';
     message.msg = '';
-    const hasData = R.has('data');
-    if (response.status === 200) {
-      fileUploadResponse.message = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'FulfillmentRequest') ? 'The request was successfully sent to Covius' : message;
-      fileUploadResponse.level = (hasData(response) && R.isEmpty(response.data.uploadFailed)) || R.equals(eventCategory, 'FulfillmentRequest') ? 'Success' : 'Failed';
+    if (response !== null) {
+      const data = {};
+      const failedCaseIds = R.isEmpty(response) ? {} : response.invalidCases;
+      data.uploadFailed = R.isEmpty(response) ? failedCaseIds : constructObject(failedCaseIds);
+      fileUploadResponse.message = R.isEmpty(response) || R.equals(eventCategory, 'FulfillmentRequest') ? 'The request was successfully sent to Covius' : message;
+      fileUploadResponse.level = R.isEmpty(response) || R.equals(eventCategory, 'FulfillmentRequest') ? 'Success' : 'Failed';
       fileUploadResponse.eventCategory = `${eventCategory} success`;
       yield put({
         type: GET_COVIUS_DATA,
-        payload: response.data,
+        payload: data,
       });
     } else {
       const failedMessage = {
