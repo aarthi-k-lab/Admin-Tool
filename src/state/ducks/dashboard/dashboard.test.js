@@ -1002,10 +1002,16 @@ describe('submit file to covius : Success', () => {
     { caseId: 33, message: 'mock2' },
   ];
   const mockResponse = {
-    status: 200,
-    data: {
-      uploadFailed: [],
+  };
+
+  const mockUser = {
+    userDetails: {
+      email: 'mockUser@mrcooper.com',
     },
+  };
+  const mockReq = {
+    documentRequests: { request: mockFile },
+    user: mockUser.userDetails.email,
   };
   const mockFileUploadResponse = {};
   mockFileUploadResponse.message = 'The request was successfully sent to Covius';
@@ -1016,16 +1022,20 @@ describe('submit file to covius : Success', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
-  it('should call handle upload service', () => {
+  it('should call select getUser using loginSelector', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
+      .toEqual(select(loginSelectors.getUser));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockReq));
   });
   it('should call GET_COVIUS_DATA', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockResponse.data }));
+      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: { uploadFailed: {} } }));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
-    expect(saga.next(mockResponse).value)
+    expect(saga.next().value)
       .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
   });
 });
@@ -1040,18 +1050,34 @@ describe('submit file to covius : Upload Failed', () => {
   ];
   const mockResponse = {
     status: 200,
-    data: {
-      uploadFailed: [
-        {
-          caseId: '354654',
-          message: "CaseId doesn't exist",
-        },
-        {
-          caseId: '545656',
-          message: 'Case is not Active',
-        },
-      ],
+    invalidCases: [
+      {
+        caseId: '354654',
+        message: "CaseId doesn't exist",
+      },
+      {
+        caseId: '545656',
+        message: 'Case is not Active',
+      },
+    ],
+  };
+  const mockdata = {
+    uploadFailed: [{
+      caseId: mockResponse.invalidCases[0],
+      message: 'CaseId was failed to upload',
+    }, {
+      caseId: mockResponse.invalidCases[1],
+      message: 'CaseId was failed to upload',
+    }],
+  };
+  const mockUser = {
+    userDetails: {
+      email: 'mockUser@mrcooper.com',
     },
+  };
+  const mockReq = {
+    documentRequests: { request: mockFile },
+    user: mockUser.userDetails.email,
   };
   const message = {};
   message.title = 'One or more Case Ids have failed validation and the data was not sent to Covius. Please review the Upload Failed tab to view the failed items.';
@@ -1065,13 +1091,17 @@ describe('submit file to covius : Upload Failed', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
-  it('should call handle upload service', () => {
+  it('should call select getUser using loginSelector', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
+      .toEqual(select(loginSelectors.getUser));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockReq));
   });
   it('should call GET_COVIUS_DATA', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockResponse.data }));
+      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockdata }));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
     expect(saga.next(mockResponse).value)
@@ -1091,6 +1121,15 @@ describe('submit file to covius : Failure', () => {
     status: 400,
     data: 'mockData',
   };
+  const mockUser = {
+    userDetails: {
+      email: 'mockUser@mrcooper.com',
+    },
+  };
+  const mockReq = {
+    documentRequests: { request: mockFile },
+    user: mockUser.userDetails.email,
+  };
   const mockFileUploadResponse = {};
   const message = {
     title: 'The request failed to send to Covius',
@@ -1104,12 +1143,16 @@ describe('submit file to covius : Failure', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
-  it('should call handle upload service', () => {
+  it('should call select getUser using loginSelector', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
+      .toEqual(select(loginSelectors.getUser));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockReq));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
-    expect(saga.next(mockResponse).value)
+    expect(saga.next(null).value)
       .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
   });
 });
@@ -1225,9 +1268,16 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
     { caseId: 33, message: 'mock2' },
   ];
   const mockResponse = {
-    status: 200,
-    data: {
+  };
+
+  const mockUser = {
+    userDetails: {
+      email: 'mockUser@mrcooper.com',
     },
+  };
+  const mockReq = {
+    documentRequests: { request: mockFile },
+    user: mockUser.userDetails.email,
   };
   const mockFileUploadResponse = {};
   mockFileUploadResponse.message = 'The request was successfully sent to Covius';
@@ -1238,16 +1288,20 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
-  it('should call handle upload service', () => {
+  it('should call select getUser using loginSelector', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
+      .toEqual(select(loginSelectors.getUser));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockReq));
   });
   it('should call GET_COVIUS_DATA', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: mockResponse.data }));
+      .toEqual(put({ type: actionTypes.GET_COVIUS_DATA, payload: { uploadFailed: {} } }));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
-    expect(saga.next(mockResponse).value)
+    expect(saga.next().value)
       .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
   });
 });
@@ -1260,9 +1314,15 @@ describe('submit file to covius (FulfillmentRequest) : Failure', () => {
     { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
   ];
-  const mockResponse = {
-    status: 400,
-    data: {},
+
+  const mockUser = {
+    userDetails: {
+      email: 'mockUser@mrcooper.com',
+    },
+  };
+  const mockReq = {
+    documentRequests: { request: mockFile },
+    user: mockUser.userDetails.email,
   };
   const mockFileUploadResponse = {};
   const message = {
@@ -1277,12 +1337,16 @@ describe('submit file to covius (FulfillmentRequest) : Failure', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
-  it('should call handle upload service', () => {
+  it('should call select getUser using loginSelector', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
+      .toEqual(select(loginSelectors.getUser));
+  });
+  it('should call handle upload service', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockReq));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
-    expect(saga.next(mockResponse).value)
+    expect(saga.next(null).value)
       .toEqual(put({ type: actionTypes.GET_SUBMIT_RESPONSE, payload: mockFileUploadResponse }));
   });
 });
