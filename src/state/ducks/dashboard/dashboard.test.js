@@ -1018,7 +1018,7 @@ describe('submit file to covius : Success', () => {
   });
   it('should call handle upload service', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
   });
   it('should call GET_COVIUS_DATA', () => {
     expect(saga.next(mockResponse).value)
@@ -1067,7 +1067,7 @@ describe('submit file to covius : Upload Failed', () => {
   });
   it('should call handle upload service', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
   });
   it('should call GET_COVIUS_DATA', () => {
     expect(saga.next(mockResponse).value)
@@ -1106,7 +1106,7 @@ describe('submit file to covius : Failure', () => {
   });
   it('should call handle upload service', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
     expect(saga.next(mockResponse).value)
@@ -1240,7 +1240,7 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
   });
   it('should call handle upload service', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
   });
   it('should call GET_COVIUS_DATA', () => {
     expect(saga.next(mockResponse).value)
@@ -1279,7 +1279,7 @@ describe('submit file to covius (FulfillmentRequest) : Failure', () => {
   });
   it('should call handle upload service', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/handleUpload', mockFile));
+      .toEqual(call(Api.callPost, '/api/docFulfillment/api/covius/manualDocumentFulfillmentRequest', mockFile));
   });
   it('should call GET_SUBMIT_RESPONSE', () => {
     expect(saga.next(mockResponse).value)

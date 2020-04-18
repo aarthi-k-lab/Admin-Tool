@@ -42,7 +42,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isOpen: true,
       tabIndex: 0,
       response: null,
-      isDownloadDisabled: 'disabled',
+      // isDownloadDisabled: 'disabled',
       getAlert: null,
       holdAutomation: false,
     };
@@ -86,7 +86,7 @@ class CoviusBulkOrder extends React.PureComponent {
     }
     if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
       return {
-        isDownloadDisabled: '', getAlert: null,
+        getAlert: null,
       };
     }
     return { getAlert: null };
@@ -100,7 +100,7 @@ class CoviusBulkOrder extends React.PureComponent {
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
-      isDownloadDisabled: 'disabled',
+      // isDownloadDisabled: 'disabled',
     });
     onResetCoviusData();
   }
@@ -196,11 +196,11 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleTabChange = (value, tabIndex) => {
-    const downloadDisabled = this.checkDownloadDisabled(tabIndex);
+    // const downloadDisabled = this.checkDownloadDisabled(tabIndex);
     this.setState({
       isVisible: value,
       tabIndex,
-      isDownloadDisabled: downloadDisabled ? 'disabled' : '',
+      // isDownloadDisabled: downloadDisabled,
     });
   }
 
@@ -435,7 +435,6 @@ class CoviusBulkOrder extends React.PureComponent {
     const { resultData } = this.props;
     const {
       isVisible,
-      isDownloadDisabled,
       selectedEventCategory,
       selectedEvent,
       tabIndex,
@@ -482,7 +481,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
-              disabled={isDownloadDisabled}
+              disabled={this.checkDownloadDisabled(tabIndex)}
               id="download"
               margin="normal"
               onClick={this.handleDownload}
