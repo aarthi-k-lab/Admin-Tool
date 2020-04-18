@@ -95,63 +95,6 @@ describe('Download Button Enabling', () => {
   });
 });
 
-describe('Reset Button Enabling', () => {
-  const getDownloadResponse = {
-    message: 'mock',
-    level: 'level',
-  };
-  const clearSubmitDataResponse = jest.fn();
-  const wrapper = shallow(
-    <TestHooks.CoviusBulkOrder
-      clearSubmitDataResponse={clearSubmitDataResponse}
-      getDownloadResponse={getDownloadResponse}
-    />,
-  );
-  const resetButton = wrapper.find('WithStyles(WithFormControlContext(ForwardRef(FormLabel)))');
-  it('enables reset button when any event category is selected', () => {
-    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))#eventCategoryDropdown').simulate('change', { target: { value: 'X Request' } });
-    expect(wrapper.instance().state.isResetDisabled).toBe(false);
-  });
-  it('disables reset button when fields are reset', () => {
-    resetButton.simulate('Click');
-    expect(wrapper.instance().state.isResetDisabled).toBe(true);
-  });
-  it('enables reset button when any case id is entered', () => {
-    wrapper.find('ForwardRef(TextareaAutosize)#caseIds').simulate('change', { target: { value: '123' } });
-    expect(wrapper.instance().state.isResetDisabled).toBe(false);
-  });
-  resetButton.simulate('Click');
-});
-
-describe('Submit Button Enabling', () => {
-  const getDownloadResponse = {
-    message: 'mock',
-    level: 'level',
-  };
-  const clearSubmitDataResponse = jest.fn();
-  const wrapper = shallow(
-    <TestHooks.CoviusBulkOrder
-      clearSubmitDataResponse={clearSubmitDataResponse}
-      getDownloadResponse={getDownloadResponse}
-    />,
-  );
-  it('enables submit button only when all the input values are entered', () => {
-    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))#eventCategoryDropdown').simulate('change', { target: { value: 'X Request' } });
-    expect(wrapper.instance().state.isSubmitDisabled).toBe('disabled');
-
-    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))#eventNamesDropdown').simulate('change', { target: { value: 'Post Data' } });
-    expect(wrapper.instance().state.isSubmitDisabled).toBe('disabled');
-
-    wrapper.find('ForwardRef(TextareaAutosize)#caseIds').simulate('change', { target: { value: '123' } });
-    expect(wrapper.instance().state.isSubmitDisabled).toBe('');
-  });
-
-  it('disables submit button when any input value is cleared', () => {
-    wrapper.find('ForwardRef(TextareaAutosize)#caseIds').simulate('change', { target: { value: '' } });
-    expect(wrapper.instance().state.isSubmitDisabled).toBe('disabled');
-  });
-});
-
 it('downloads the excel when download button is clicked', () => {
   const getDownloadResponse = {
     message: 'mock',
