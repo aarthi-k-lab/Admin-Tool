@@ -9,7 +9,7 @@ module.exports = {
     '\\.(css|less)$': 'identity-obj-proxy',
     '^ducks(.*)': '<rootDir>/src/state/ducks$1',
   },
-  roots: ['<rootDir>/src/state/ducks/dashboard'],
+  roots: ['<rootDir>/src'],
   transformIgnorePatterns: [
     '/node_modules/',
   ],

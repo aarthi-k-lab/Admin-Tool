@@ -27,6 +27,9 @@ import * as XLSX from 'xlsx';
 import TabView from './TabView';
 import { Info } from '../../../constants/alertTypes';
 
+const hasPassedProp = R.has('DocumentRequests');
+const hasFailedProp = R.has('invalidCases');
+
 class CoviusBulkOrder extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -42,7 +45,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isOpen: true,
       tabIndex: 0,
       response: null,
-      // isDownloadDisabled: 'disabled',
+      isDownloadDisabled: 'disabled',
       getAlert: null,
       holdAutomation: false,
     };
@@ -100,7 +103,7 @@ class CoviusBulkOrder extends React.PureComponent {
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
-      // isDownloadDisabled: 'disabled',
+      isDownloadDisabled: 'disabled',
     });
     onResetCoviusData();
   }
@@ -196,11 +199,10 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleTabChange = (value, tabIndex) => {
-    // const downloadDisabled = this.checkDownloadDisabled(tabIndex);
     this.setState({
       isVisible: value,
       tabIndex,
-      // isDownloadDisabled: downloadDisabled,
+      isDownloadDisabled: this.checkDownloadDisabled(tabIndex),
     });
   }
 
@@ -217,8 +219,8 @@ class CoviusBulkOrder extends React.PureComponent {
       return true;
     }
     switch (tabIndex) {
-      case 0: return R.isEmpty(resultData.invalidCases);
-      case 1: return R.isEmpty(resultData.DocumentRequests);
+      case 0: return R.isEmpty(resultData.invalidCases) || !hasPassedProp(resultData);
+      case 1: return R.isEmpty(resultData.DocumentRequests) || !hasFailedProp(resultData);
       case 3: return R.isEmpty(resultData.uploadFailed);
       default: return true;
     }
@@ -438,6 +440,7 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventCategory,
       selectedEvent,
       tabIndex,
+      isDownloadDisabled,
       response,
     } = this.state;
     return (
@@ -481,7 +484,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
-              disabled={this.checkDownloadDisabled(tabIndex)}
+              disabled={isDownloadDisabled}
               id="download"
               margin="normal"
               onClick={this.handleDownload}

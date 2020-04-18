@@ -60,12 +60,12 @@ describe('Download Button Enabling', () => {
 
   it('disables download button in the passed tab when there are no passed caseid(s)', () => {
     wrapper.find('Connect(TabView)').simulate('change', false, 1);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe('disabled');
+    expect(wrapper.instance().state.isDownloadDisabled).toBe(true);
   });
 
   it('enables download button in the failed tab only when there is at least 1 failed caseid', () => {
     wrapper.find('Connect(TabView)').simulate('change', false, 0);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe('');
+    expect(wrapper.instance().state.isDownloadDisabled).toBe(false);
   });
 
 
@@ -86,12 +86,12 @@ describe('Download Button Enabling', () => {
     });
 
     wrapper.find('Connect(TabView)').simulate('change', false, 1);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe('');
+    expect(wrapper.instance().state.isDownloadDisabled).toBe(false);
   });
 
   it('disables download button in the failed tab when there are no failed caseid(s)', () => {
     wrapper.find('Connect(TabView)').simulate('change', false, 0);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe('disabled');
+    expect(wrapper.instance().state.isDownloadDisabled).toBe(true);
   });
 });
 
