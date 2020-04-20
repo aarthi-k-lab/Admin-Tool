@@ -219,8 +219,8 @@ class CoviusBulkOrder extends React.PureComponent {
       return true;
     }
     switch (tabIndex) {
-      case 0: return R.isEmpty(resultData.invalidCases) || !hasPassedProp(resultData);
-      case 1: return R.isEmpty(resultData.DocumentRequests) || !hasFailedProp(resultData);
+      case 0: return R.isEmpty(resultData.invalidCases) || !hasFailedProp(resultData);
+      case 1: return R.isEmpty(resultData.DocumentRequests) || !hasPassedProp(resultData);
       case 3: return R.isEmpty(resultData.uploadFailed);
       default: return true;
     }
@@ -458,6 +458,7 @@ class CoviusBulkOrder extends React.PureComponent {
               <Button
                 color="primary"
                 component="label"
+                disabled={R.isEmpty(resultData.DocumentRequests) || !hasPassedProp(resultData)}
                 id="submit"
                 onClick={this.onSubmitToCovius}
                 styleName="submitButton"
