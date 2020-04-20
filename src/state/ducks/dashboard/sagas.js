@@ -2465,7 +2465,10 @@ function* onSelectModReversal() {
 function* manualInsertion(payload) {
   try {
     yield put({ type: SHOW_LOADER });
-    const response = yield all(payload.payload.map(evalId => call(Api.callPost, '/api/disposition/bulk/insertEval', { evalId })));
+    const dataPay = {
+      evalIds: payload.payload,
+    };
+    const response = yield call(Api.callPost, '/api/disposition/bulk/insertEval', dataPay);
     const filteredResponse = [];
     response.forEach((evalData) => {
       if (!evalData) {
