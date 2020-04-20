@@ -1370,7 +1370,7 @@ function* manualInsertion(payload) {
     const dataPay = {
       evalIds: payload.payload,
     };
-    const response = yield call(Api.callPost, '/api/disposition/bulk/insertEval', { dataPay });
+    const response = yield call(Api.callPost, '/api/disposition/bulk/insertEval', dataPay);
     const filteredResponse = [];
     response.forEach((evalData) => {
       if (!evalData) {
