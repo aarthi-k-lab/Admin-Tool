@@ -1,0 +1,83 @@
+.failedTab {
+  color: red;
+  font-size: small !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.passedTab {
+  color: green;
+  font-size: small !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.uploadTab {
+  font-size: medium !important;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.table-container {
+  display: flex;
+  flex-grow: 1;
+  max-width: 100%;
+}
+
+.height-limiter {
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.table {
+  flex-basis: 80%;
+  text-align: left !important;
+}
+
+.uploadImage {
+  font-size: 6rem !important;
+  margin: 6rem 8rem 0rem 49rem;
+  padding: 0rem;
+}
+
+.countStyle {
+  background: #eee;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  width: auto;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+}
+
+.uploadPage {
+  height: 100%;
+}
+
+.uploadMsg {
+  font-size: 1.3rem;
+  align-items: center;
+  margin: 1rem 8rem 0rem 42rem;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.uploadButton {
+  margin: 2rem 0 0 51rem !important;
+}
+
+.submitToCoviusButton {
+  margin-left: 41rem !important;
+  margin-top: -42px !important;
+}
+
+.tabStyle > div {
+  padding: 0rem !important;
+}
+
+.tabStyle > span {
+  flex-direction: row !important;
+}
+
+.tabViewDiv{
+  width: 100%;
+}

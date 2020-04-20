@@ -176,6 +176,13 @@ const config = merge(
           pathRewrite: {
             '^/api/booking': '',
           },
+          '/api/docFulfillment': {
+            target: 'https://cmodfulfillmentdev.int.mrcooper.io',
+            secure: false,
+            changeOrigin: true,
+            pathRewrite: {
+              '^/api/docFulfillment': '',
+            },
         },
       },
       publicPath: '/',

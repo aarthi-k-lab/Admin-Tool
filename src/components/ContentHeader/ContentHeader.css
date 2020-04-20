@@ -23,3 +23,9 @@
 .tooltip.tooltip {
   font-size: 0.8rem;
 }
+
+.plusIcon {
+  margin-left: 1rem !important;
+  width: 34px !important;
+  height: 20px !important;
+}

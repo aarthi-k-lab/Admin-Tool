@@ -40,10 +40,18 @@ import {
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
+  CLEAR_COVIUS_DATA,
   CLEAR_BULKUPLOAD_TABLEDATA,
   TRIAL_TASK,
   INSERT_EVALID,
+  PROCESS_COVIUS_BULK,
   DISCARD_EVAL_RESPONSE,
+  PROCESS_FILE,
+  DELETE_FILE,
+  SUBMIT_FILE,
+  CLEAR_COVIUS_SUBMIT_DATA,
+  DOWNLOAD_FILE,
+  POPULATE_EVENTS_DROPDOWN,
 } from './types';
 
 
@@ -196,6 +204,12 @@ const onLoansSubmitAction = payload => ({
   type: SET_ADD_DOCS_IN,
   payload,
 });
+
+const onCoviusBulkSubmit = payload => ({
+  type: PROCESS_COVIUS_BULK,
+  payload,
+});
+
 const onLoanValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
@@ -237,6 +251,10 @@ const clearPostModEndShitf = () => ({
   type: CLEAR_POSTMOD_END_SHIFT,
 });
 
+const clearCoviusData = () => ({
+  type: CLEAR_COVIUS_DATA,
+});
+
 const onTrialTaskAction = payload => ({
   type: TRIAL_TASK,
   payload,
@@ -244,6 +262,34 @@ const onTrialTaskAction = payload => ({
 
 const discardEvalResponse = () => ({
   type: DISCARD_EVAL_RESPONSE,
+});
+
+const processFileAction = payload => ({
+  type: PROCESS_FILE,
+  payload,
+});
+
+const deleteFileAction = payload => ({
+  type: DELETE_FILE,
+  payload,
+});
+
+const submitFileAction = payload => ({
+  type: SUBMIT_FILE,
+  payload,
+});
+
+const clearSubmitCoviusData = () => ({
+  type: CLEAR_COVIUS_SUBMIT_DATA,
+});
+
+const downloadFileAction = payload => ({
+  type: DOWNLOAD_FILE,
+  payload,
+});
+
+const populateEventsDropdown = () => ({
+  type: POPULATE_EVENTS_DROPDOWN,
 });
 
 export {
@@ -266,6 +312,7 @@ export {
   hideAssignUnassign,
   postComment,
   clearBEDisposition,
+  clearCoviusData,
   getGroupName,
   validateDisposition,
   loadTrialsAction,
@@ -290,4 +337,11 @@ export {
   clearBulkUploadDataAction,
   onTrialTaskAction,
   onEvalInsertionAction,
+  onCoviusBulkSubmit,
+  processFileAction,
+  deleteFileAction,
+  submitFileAction,
+  clearSubmitCoviusData,
+  downloadFileAction,
+  populateEventsDropdown,
 };

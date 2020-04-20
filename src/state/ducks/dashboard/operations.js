@@ -6,6 +6,7 @@ import {
   endShift,
   onExpandView,
   clearDisposition,
+  clearCoviusData,
   clearFirstVisit,
   getNext,
   searchLoan,
@@ -39,7 +40,14 @@ import {
   clearBulkUploadDataAction,
   onTrialTaskAction,
   onEvalInsertionAction,
+  onCoviusBulkSubmit,
   discardEvalResponse,
+  processFileAction,
+  deleteFileAction,
+  submitFileAction,
+  clearSubmitCoviusData,
+  downloadFileAction,
+  populateEventsDropdown,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -64,6 +72,7 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf());
 
+const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(autoSave(taskStatus));
@@ -165,6 +174,11 @@ const onCompleteMyReview = dispatch => (disposition) => {
 const onLoansSubmit = dispatch => (payload) => {
   dispatch(onLoansSubmitAction(payload));
 };
+
+const onCoviusCasesSubmit = dispatch => (payload) => {
+  dispatch(onCoviusBulkSubmit(payload));
+};
+
 const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
 };
@@ -197,11 +211,34 @@ const selectModReversal = dispatch => () => {
 
 const clearEvalResponse = dispatch => () => dispatch(discardEvalResponse());
 
+const onProcessFile = dispatch => (payload) => {
+  dispatch(processFileAction(payload));
+};
 
+const onDeleteFile = dispatch => (payload) => {
+  dispatch(deleteFileAction(payload));
+};
+
+const onSubmitFile = dispatch => (payload) => {
+  dispatch(submitFileAction(payload));
+};
+
+const onClearSubmitCoviusData = dispatch => () => {
+  dispatch(clearSubmitCoviusData());
+};
+
+const downloadFile = dispatch => (payload) => {
+  dispatch(downloadFileAction(payload));
+};
+
+const populateEvents = dispatch => () => {
+  dispatch(populateEventsDropdown());
+};
 const operations = {
   clearEvalResponse,
   onAutoSave,
   onClearDisposition,
+  onResetCoviusData,
   onExpand,
   onEndShift,
   onDispositionSave,
@@ -241,6 +278,13 @@ const operations = {
   onClearBulkUploadDataAction,
   onTrialTask,
   onEvalInsertion,
+  onCoviusCasesSubmit,
+  onProcessFile,
+  onDeleteFile,
+  onSubmitFile,
+  onClearSubmitCoviusData,
+  downloadFile,
+  populateEvents,
 };
 
 export default operations;

@@ -9,3 +9,4 @@ export const DOC_PROCESSOR = 'proc';
 export const DOC_GEN = 'docgen';
 export const DOCS_IN = 'docsin';
 export const BOOKING = 'booking';
+export const COVIUS = 'covius';

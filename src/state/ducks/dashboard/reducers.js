@@ -40,6 +40,7 @@ import {
   SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
+  SET_COVIUS_BULK_UPLOAD_RESULT,
   SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
   CLEAR_USER_NOTIF_MSG,
@@ -52,14 +53,23 @@ import {
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
+  CLEAR_COVIUS_DATA,
   SET_INCENTIVE_TASKCODES,
   STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
   SET_TRIAL_RESPONSE,
   DISABLE_TRIAL_BUTTON,
   DISCARD_EVAL_RESPONSE,
+  SAVE_PROCESSED_FILE,
+  DELETE_FILE,
+  GET_SUBMIT_RESPONSE,
+  GET_COVIUS_DATA,
+  CLEAR_COVIUS_SUBMIT_DATA,
+  SET_DOWNLOAD_RESPONSE,
+  SAVE_EVENTS_DROPDOWN,
 } from './types';
 
+const hasUploadFailedProp = R.has('uploadFailed');
 const reducer = (state = { firstVisit: true }, action) => {
   switch (action.type) {
     case DISCARD_EVAL_RESPONSE: {
@@ -485,11 +495,13 @@ const reducer = (state = { firstVisit: true }, action) => {
     }
 
     case SET_RESULT_OPERATION: {
-      const resultOperation = action.payload;
+      let resultOperation = {};
+      resultOperation = action.payload;
       return {
         ...state,
         resultOperation,
         tableData: [],
+        resultData: {},
         loading: false,
       };
     }
@@ -498,6 +510,18 @@ const reducer = (state = { firstVisit: true }, action) => {
       return {
         ...state,
         tableData: [],
+      };
+    }
+
+    case CLEAR_COVIUS_DATA: {
+      const resultOperation = {};
+      const resultData = {};
+      const eventNames = [];
+      return {
+        ...state,
+        resultData,
+        resultOperation,
+        eventNames,
       };
     }
 
@@ -520,6 +544,19 @@ const reducer = (state = { firstVisit: true }, action) => {
         ...state,
         tableData,
         loading: false,
+      };
+    }
+
+    case SET_COVIUS_BULK_UPLOAD_RESULT: {
+      let resultData = {};
+      resultData = action.payload;
+      const resultOperation = {};
+      return {
+        ...state,
+        resultData,
+        resultOperation,
+        loading: false,
+        isUploadFailedTabVisible: false,
       };
     }
 
@@ -586,6 +623,55 @@ const reducer = (state = { firstVisit: true }, action) => {
         enableSendToUW: !action.payload.disableTrialTaskButton,
       };
     }
+
+    case SAVE_PROCESSED_FILE:
+      return {
+        ...state,
+        excelParsedData: action.payload,
+      };
+
+    case DELETE_FILE:
+      return {
+        ...state,
+        isFileDeleted: action.payload,
+        fileSubmitResponse: {},
+        excelParsedData: null,
+      };
+    case GET_SUBMIT_RESPONSE: {
+      const { eventCategory } = action.payload;
+      const { resultData } = state;
+      return {
+        ...state,
+        resultData: R.equals(eventCategory, 'FulfillmentRequest success') ? {} : resultData,
+        fileSubmitResponse: action.payload,
+      };
+    }
+    case GET_COVIUS_DATA: {
+      const { resultData } = state;
+      const { uploadFailed } = action.payload;
+      return {
+        ...state,
+        resultData: R.isEmpty(uploadFailed) ? {} : { ...resultData, uploadFailed },
+        isUploadFailedTabVisible: (hasUploadFailedProp(action.payload) && !R.isEmpty(uploadFailed)),
+      };
+    }
+
+    case CLEAR_COVIUS_SUBMIT_DATA:
+      return {
+        ...state,
+        fileSubmitResponse: {},
+        downloadResponse: {},
+      };
+    case SET_DOWNLOAD_RESPONSE:
+      return {
+        ...state,
+        downloadResponse: action.payload,
+      };
+    case SAVE_EVENTS_DROPDOWN:
+      return {
+        ...state,
+        coviusEventOptions: action.payload,
+      };
     default:
       return state;
   }

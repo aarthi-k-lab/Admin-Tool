@@ -31,14 +31,13 @@ class CompleteMyReview extends React.Component {
     const { isOpen } = this.state;
 
     let renderComponent = null;
-    const imageUrl = '/static/img/failed.gif';
     if (completeReviewResponse && R.prop('error', completeReviewResponse)) {
       renderComponent = (
         <SweetAlertBox
-          imageUrl={imageUrl}
           message={SOMETHING_WENT_WRONG}
           onConfirm={this.handleClose}
           show={isOpen}
+          type="Failed"
         />
       );
     }

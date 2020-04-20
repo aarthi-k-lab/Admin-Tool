@@ -12,6 +12,7 @@ import DashboardModel from 'models/Dashboard';
 import { operations, selectors } from 'ducks/config';
 import { selectors as LoginSelectors } from 'ducks/login';
 import { operations as dashboardOperations } from 'ducks/dashboard';
+import Expand from 'components/ContentHeader/Expand';
 import * as R from 'ramda';
 import './UserReport.css';
 
@@ -46,6 +47,8 @@ class UserReport extends React.PureComponent {
       setPageType(BULKUPLOAD_STAGER);
     } else if (el.group === 'PROC') {
       history.push('/bulkEvalInsertion');
+    } else if (el.group === 'COVIUS') {
+      history.push('/coviusBulkOrder');
     }
   }
 
@@ -85,10 +88,10 @@ class UserReport extends React.PureComponent {
   }
 
   render() {
-    const { powerBIConstants, userGroupList } = this.props;
+    const { powerBIConstants, userGroupList, onExpand } = this.props;
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
-    this.showAddDocsIn = el.group === 'DOCSIN' || (userGroupList.find(element => element === 'proc-mgr') && el.group === 'PROC');
+    this.showAddDocsIn = el.group === 'DOCSIN' || (userGroupList.find(element => element === 'proc-mgr') && el.group === 'PROC') || el.group === 'COVIUS';
     return (
       <>
         <ContentHeader
@@ -96,9 +99,13 @@ class UserReport extends React.PureComponent {
           showAddButton={this.showAddDocsIn}
           title={el.task}
         >
-          <Controls
-            showGetNext
-          />
+          {el.group === 'COVIUS' ? <Expand onClick={onExpand} />
+            : (
+              <Controls
+                showGetNext
+              />
+            )
+    }
         </ContentHeader>
         <div styleName="report">
           {this.renderReport(powerBIConstants)}
@@ -122,6 +129,7 @@ UserReport.defaultProps = {
   location: {
     pathname: '',
   },
+  onExpand: () => { },
   powerBIConstants: [
     {
       groupId: 'Loan #',
@@ -138,6 +146,7 @@ UserReport.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }),
+  onExpand: PropTypes.func,
   powerBIConstants: PropTypes.arrayOf(
     PropTypes.shape({
       groupId: PropTypes.string.isRequired,

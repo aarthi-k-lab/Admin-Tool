@@ -19,6 +19,8 @@ const clearSearch = state => R.pathOr(false, ['dashboard', 'clearSearch'], state
 
 const inProgress = state => R.pathOr(false, ['dashboard', 'inProgress'], state);
 
+const resultData = state => R.pathOr({}, ['dashboard', 'resultData'], state);
+
 const wasSearched = state => R.pathOr(false, ['dashboard', 'wasSearched'], state);
 
 const saveInProgress = state => R.pathOr(false, ['dashboard', 'saveInProgress'], state);
@@ -62,9 +64,9 @@ const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
 const enableGetNext = state => (
   ((isFirstVisit(state)
-  || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
-  || (isFirstVisit(state)
-  || R.pathOr(false, ['dashboard', 'showGetNext'], state))) && (R.pathOr(true, ['dashboard', 'getNextProcessed'], state))
+    || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
+    || (isFirstVisit(state)
+      || R.pathOr(false, ['dashboard', 'showGetNext'], state))) && (R.pathOr(true, ['dashboard', 'getNextProcessed'], state))
 );
 
 // enableEndShift has same conditions as getnext to get enabled
@@ -111,7 +113,12 @@ const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalRe
 const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
 const getTrialResponse = state => R.pathOr({}, ['dashboard', 'trialClosingResponse'], state);
 const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTrialTaskButton'], state);
-
+const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData'], state);
+const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
+const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
+const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
+const isUploadFailedTabVisible = state => R.pathOr(false, ['dashboard', 'isUploadFailedTabVisible'], state);
+const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
 const selectors = {
   enableEndShift,
   enableGetNext,
@@ -169,7 +176,14 @@ const selectors = {
   showCompleteMyReview,
   getTrialResponse,
   disableTrialTaskButton,
+  resultData,
+  getUploadedFile,
+  isFileDeleted,
   brand,
+  getFileSubmitResponse,
+  isUploadFailedTabVisible,
+  getDownloadResponse,
+  getcoviusEventOptions,
 };
 
 export default selectors;

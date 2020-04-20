@@ -57,12 +57,20 @@ const ContentHeader = ({
       styleName="tooltip"
       title={checklistTemplateName}
     >
+
       <h3 styleName="title">{title}</h3>
     </Tooltip>
     {showAddButton && (
-    <Fab aria-label="add" color="secondary" onClick={handleClick()} size="small" style={{ marginLeft: '1rem', width: '34px', height: '20px' }} title="Add Docs Received">
-      <AddIcon />
-    </Fab>
+      <Fab
+        aria-label="add"
+        color="secondary"
+        onClick={handleClick()}
+        size="small"
+        styleName="plusIcon"
+        title="Add Docs Received"
+      >
+        <AddIcon />
+      </Fab>
     )}
     <span styleName="spacer" />
     {children}
