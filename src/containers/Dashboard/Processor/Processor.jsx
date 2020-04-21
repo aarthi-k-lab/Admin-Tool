@@ -99,7 +99,7 @@ class Processor extends React.PureComponent {
       const evalIdArray = event.target.value.trim().replace(/\n|\s/g, ',').split(',').map(s => s.trim());
       const evalIds = R.filter(str => str !== '', evalIdArray);
       this.setState({ evalIdList: evalIds });
-      if (evalIds.length > 10) {
+      if (evalIds.length > 99) {
         this.setState({ isDisabled: true });
       } else {
         this.setState({ isDisabled: false });
