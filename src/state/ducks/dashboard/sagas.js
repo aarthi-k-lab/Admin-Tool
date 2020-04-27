@@ -102,6 +102,7 @@ import {
   SET_DOWNLOAD_RESPONSE,
   POPULATE_EVENTS_DROPDOWN,
   SAVE_EVENTS_DROPDOWN,
+  SEND_TO_FEUW_SAGA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1272,6 +1273,50 @@ function* sendToDocsIn() {
         payload: {
           level: LEVEL_ERROR,
           status: message,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
+function* sendToFeuw(action) {
+  try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const request = {
+      ...action.payload,
+      userPrincipalName,
+    };
+    yield put({ type: SHOW_LOADER });
+    // add endpoint in workassignment
+    const response = yield call(Api.callPost, '/api/workassign/sendToFeuw', request);
+    if (response !== null) { // add appropriate checks for response
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_SUCCESS,
+          status: 'The loan has been successfully sent back to Docs In',
+        },
+      });
+      yield put({
+        type: SET_ENABLE_SEND_BACK_DOCSIN, // TODO disable button on success
+        payload: false,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR, // TODO handle all failure scenarios
+          status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
       });
     }
@@ -2641,6 +2686,10 @@ function* watchSendToDocsIn() {
   yield takeEvery(SET_TASK_SENDTO_DOCSIN, sendToDocsIn);
 }
 
+function* watchSendToFeuw() {
+  yield takeEvery(SEND_TO_FEUW_SAGA, sendToFeuw);
+}
+
 function* watchAddDocsInReceived() {
   yield takeEvery(SET_ADD_DOCS_IN, AddDocsInReceived);
 }
@@ -2736,6 +2785,7 @@ export const combinedSaga = function* combinedSaga() {
     watchSentToUnderwriting(),
     watchSendToDocGen(),
     watchSendToDocsIn(),
+    watchSendToFeuw(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
     watchOnSelectReject(),

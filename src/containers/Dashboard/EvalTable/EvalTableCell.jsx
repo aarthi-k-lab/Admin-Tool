@@ -64,6 +64,13 @@ class EvalTableCell extends React.PureComponent {
           </IconButton>
         );
         break;
+      case 'SendToFEUW':
+        renderCellValue = (
+          <IconButton onClick={this.handleLinkClick} styleName="reject-icon">
+            <img alt="Send To FEUW" src="/static/img/Revoke.svg" />
+          </IconButton>
+        );
+        break;
       default:
         renderCellValue = (
           <span styleName={styleProps}>
