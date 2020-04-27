@@ -88,6 +88,5 @@ describe('renders <ReUploadFile />', () => {
     );
     wrapper.find('#delete').at(0).simulate('click');
     expect(onChange.mock.calls).toHaveLength(1);
-    expect(onDeleteFile.mock.calls).toHaveLength(5);
   });
 });

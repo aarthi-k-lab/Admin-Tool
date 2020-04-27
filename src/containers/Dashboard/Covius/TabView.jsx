@@ -13,20 +13,21 @@ import Button from '@material-ui/core/Button';
 import { operations, selectors } from 'ducks/dashboard';
 import extName from 'ext-name';
 import { connect } from 'react-redux';
+import DashboardModel from 'models/Dashboard';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
 import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
 
+
 const EXCEL_FORMATS = ['xlsx', 'xls'];
-const hasPassedProp = R.has('DocumentRequests');
+const hasPassedProp = R.has('request');
 const hasFailedProp = R.has('invalidCases');
 const hasUploadFailedProp = R.has('uploadFailed');
 class TabView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
       isFailed: false,
       buttonState: 'UPLOAD',
       fileName: '',
@@ -40,24 +41,46 @@ class TabView extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { getExcelFile } = nextProps;
+    const { getExcelFile, fileSubmitResponse } = nextProps;
     const { refreshHooks, isFirstVist } = prevState;
-    if (!R.isNil(getExcelFile) && isFirstVist) return { buttonState: 'UPLOAD' };
-    if (!R.isNil(getExcelFile) && !isFirstVist) return { buttonState: 'SUBMIT' };
-    return { refreshHooks: !refreshHooks };
+    let newState = {};
+    if (fileSubmitResponse
+      && R.equals(fileSubmitResponse.level, DashboardModel.Messages.LEVEL_SUCCESS)) {
+      newState = {
+        isFailed: false,
+        buttonState: 'UPLOAD',
+        fileName: '',
+        isOpen: true,
+        uploadNonExcel: null,
+        isFirstVist: true,
+        hasError: false,
+      };
+    }
+    if (!R.isNil(getExcelFile)) {
+      newState = Object.assign(newState, { buttonState: isFirstVist ? 'UPLOAD' : 'SUBMIT' });
+    }
+
+    Object.assign(newState, { refreshHooks: !refreshHooks });
+    return newState;
   }
+
+  isFulfillmentRequest = () => {
+    const { eventCategory } = this.props;
+    return eventCategory === 'FulfillmentRequest';
+  }
+
 
   getColumns = (status) => {
     if (status === 'Passed') {
       return [
         {
-          Header: 'Loan Number', accessor: 'UserFields.LOAN_NUMBER', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number', accessor: this.isFulfillmentRequest() ? 'UserFields.LoanNumber' : 'LoanNumber', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: 'UserFields.EVAL_ID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID', accessor: this.isFulfillmentRequest() ? 'UserFields.EvalId' : 'EvalId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: 'UserFields.CASEID', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID', accessor: this.isFulfillmentRequest() ? 'UserFields.CaseId' : 'CaseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
         },
         {
           Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 400, style: { width: '80%' }, headerStyle: { textAlign: 'left' },
@@ -69,31 +92,22 @@ class TabView extends React.Component {
         Header: 'Case ID', accessor: 'caseId', minWidth: 30, maxWidth: 70, style: { width: '5%' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'message', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'reason', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
 
   handleTabSelection = (event, newValue) => {
     const {
-      onChange,
-      clearSubmitDataResponse,
+      clearSubmitDataResponse, setCoviusIndex,
     } = this.props;
-    if (newValue === 2) onChange(false, newValue); else onChange(true, newValue);
-    this.setState({ value: newValue, uploadNonExcel: null });
+    setCoviusIndex({ coviusTabIndex: newValue });
+    this.setState({ uploadNonExcel: null });
     clearSubmitDataResponse();
-    // this.handleRefresh();
   }
 
   hideAlert = () => {
     this.setState({ uploadNonExcel: null });
-  }
-
-  switchToUploadFailedTab = () => {
-    const { isUploadFailedTabVisible } = this.props;
-    if (isUploadFailedTabVisible) {
-      this.handleTabSelection('', 3);
-    }
   }
 
   invokeNotification = (message, level) => {
@@ -162,13 +176,13 @@ class TabView extends React.Component {
     switch (status) {
       case 'Passed':
       {
-        return (hasPassedProp(tableData) ? tableData.DocumentRequests : []);
+        return (hasPassedProp(tableData) ? tableData.request : []);
       }
       case 'Failed': {
         return (hasFailedProp(tableData) ? tableData.invalidCases : []);
       }
       case 'uploadFailed': {
-        return (hasUploadFailedProp(tableData) ? tableData.uploadFailed : []);
+        return (hasUploadFailedProp(tableData) ? tableData.uploadFailed : null);
       }
       default: return [];
     }
@@ -181,13 +195,13 @@ class TabView extends React.Component {
     }
     switch (text) {
       case 'Passed': {
-        return (hasPassedProp(tableData) ? tableData.DocumentRequests.length : 0);
+        return (tableData.request ? tableData.request.length : 0);
       }
       case 'Failed': {
-        return (hasFailedProp(tableData) ? tableData.invalidCases.length : 0);
+        return (tableData.invalidCases ? tableData.invalidCases.length : 0);
       }
       case 'Upload Failed': {
-        return (hasUploadFailedProp(tableData) ? tableData.uploadFailed.length : 0);
+        return (tableData.uploadFailed && tableData.uploadFailed.length);
       }
       default: return 0;
     }
@@ -262,30 +276,28 @@ class TabView extends React.Component {
     );
   }
 
-  renderTableData = status => (
-    <Grid container direction="column">
-      <div styleName="table-container">
-        <div styleName="height-limiter">
-          <ReactTable
-            className="-striped -highlight"
-            columns={this.getColumns(status)}
-            data={this.getTableData(status) || []}
-            defaultPageSize={25}
-            pageSizeOptions={[10, 20, 25, 50, 100]}
-            /* eslint-disable-next-line */
-            // getTrProps={(state, rowInfo, column) => {
-            //   return {
-            //   };
-            // }}
-            style={{
-              height: '47rem',
-            }}
-            styleName="table"
-          />
+  renderTableData = (status) => {
+    const data = this.getTableData(status);
+    return (
+      <Grid container direction="column">
+        <div styleName="table-container">
+          <div styleName="height-limiter">
+            <ReactTable
+              className="-striped -highlight"
+              columns={this.getColumns(status)}
+              data={data || []}
+              defaultPageSize={25}
+              pageSizeOptions={[10, 20, 25, 50, 100]}
+              style={{
+                height: '47rem',
+              }}
+              styleName="table"
+            />
+          </div>
         </div>
-      </div>
-    </Grid>
-  );
+      </Grid>
+    );
+  }
 
   renderCountLabel = text => (
     <>
@@ -313,8 +325,7 @@ class TabView extends React.Component {
   }
 
   render() {
-    const { value } = this.state;
-    const { isUploadFailedTabVisible } = this.props;
+    const { coviusTabIndex } = this.props;
     return (
       <>
         <Paper color="default">
@@ -323,7 +334,7 @@ class TabView extends React.Component {
             indicatorColor="primary"
             onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
             textColor="primary"
-            value={value}
+            value={coviusTabIndex}
           >
             <Tab
               icon={<FiberManualRecordIcon styleName="failedTab" />}
@@ -332,7 +343,7 @@ class TabView extends React.Component {
             />
             <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
             <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
-            {isUploadFailedTabVisible && (
+            { this.getCount('Upload Failed') && (
               <Tab
                 icon={<FiberManualRecordIcon styleName="failedTab" />}
                 label={this.renderCountLabel('Upload Failed')}
@@ -342,16 +353,16 @@ class TabView extends React.Component {
             }
           </Tabs>
         </Paper>
-        <TabPanel id="failedTab" index={0} styleName="tabStyle" value={value}>
+        <TabPanel id="failedTab" index={0} styleName="tabStyle" value={coviusTabIndex}>
           {this.renderTableData('Failed')}
         </TabPanel>
-        <TabPanel id="passedTab" index={1} styleName="tabStyle" value={value}>
+        <TabPanel id="passedTab" index={1} styleName="tabStyle" value={coviusTabIndex}>
           {this.renderTableData('Passed')}
         </TabPanel>
-        <TabPanel id="uploadTab" index={2} styleName="uploadPage" value={value}>
+        <TabPanel id="uploadTab" index={2} styleName="uploadPage" value={coviusTabIndex}>
           {this.renderUploadPanel()}
         </TabPanel>
-        <TabPanel index={3} styleName="tabStyle" value={value}>
+        <TabPanel index={3} styleName="tabStyle" value={coviusTabIndex}>
           {this.renderTableData('uploadFailed')}
         </TabPanel>
       </>
@@ -361,25 +372,28 @@ class TabView extends React.Component {
 
 TabView.propTypes = {
   clearSubmitDataResponse: PropTypes.func.isRequired,
+  coviusTabIndex: PropTypes.number,
   eventCategory: PropTypes.string.isRequired,
+  fileSubmitResponse: PropTypes.shape({
+    level: PropTypes.string,
+  }),
   isFileRemoved: PropTypes.string.isRequired,
-  isUploadFailedTabVisible: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
   onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
+  setCoviusIndex: PropTypes.func.isRequired,
   tableData: PropTypes.shape({
-    DocumentRequests: PropTypes.arrayOf({
+    invalidCases: PropTypes.arrayOf({
+      caseId: PropTypes.string,
+      message: PropTypes.string,
+    }),
+    request: PropTypes.arrayOf({
       UserDetails: PropTypes.shape({
         CASEID: PropTypes.string,
         EVAL_ID: PropTypes.string,
         LOAN_NUMBER: PropTypes.string,
       }),
       RequestId: PropTypes.string,
-    }),
-    invalidCases: PropTypes.arrayOf({
-      caseId: PropTypes.string,
-      message: PropTypes.string,
     }),
     uploadFailed: PropTypes.arrayOf({
       caseId: PropTypes.string,
@@ -392,21 +406,26 @@ const mapStateToProps = state => ({
   getExcelFile: selectors.getUploadedFile(state),
   isFileRemoved: selectors.isFileDeleted(state),
   isUploadFailedTabVisible: selectors.isUploadFailedTabVisible(state),
+  fileSubmitResponse: selectors.getFileSubmitResponse(state),
+  coviusTabIndex: selectors.getCoviusTabIndex(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
   onDeleteFile: operations.onDeleteFile(dispatch),
   clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
+  setCoviusIndex: operations.setCoviusIndex(dispatch),
 });
 
 
 TabView.defaultProps = {
   tableData: {
-    DocumentRequests: [],
+    request: [],
     invalidCases: [],
     uploadFailed: [],
   },
+  fileSubmitResponse: {},
+  coviusTabIndex: 0,
 };
 
 const TestHooks = {

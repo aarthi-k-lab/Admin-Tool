@@ -22,12 +22,11 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import SweetAlert from 'sweetalert2-react';
 import * as XLSX from 'xlsx';
+import DashboardModel from 'models/Dashboard';
 import TabView from './TabView';
-import { Info } from '../../../constants/alertTypes';
 
-const hasPassedProp = R.has('DocumentRequests');
+const hasPassedProp = R.has('request');
 const hasFailedProp = R.has('invalidCases');
 
 class CoviusBulkOrder extends React.PureComponent {
@@ -41,58 +40,16 @@ class CoviusBulkOrder extends React.PureComponent {
       selectedEventCategory: '',
       eventNames: [],
       isResetDisabled: true,
-      isVisible: true,
-      isOpen: true,
-      tabIndex: 0,
       response: null,
-      isDownloadDisabled: 'disabled',
-      getAlert: null,
       holdAutomation: false,
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
-    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
     const { populateDropdown } = this.props;
     populateDropdown();
-  }
-
-  componentWillReceiveProps() {
-    this.setState({ isOpen: true });
-  }
-
-  componentWillUnmount() {
-    const { onResetCoviusData } = this.props;
-    onResetCoviusData();
-  }
-
-  static getDerivedStateFromProps = (nextProps, prevState) => {
-    const {
-      getDownloadResponse, resultData,
-      clearSubmitDataResponse,
-    } = nextProps;
-    const { isOpen } = prevState;
-    if (!R.isEmpty(getDownloadResponse)) {
-      const { message, level } = getDownloadResponse;
-      const alertResponse = (
-        <SweetAlertBox
-          message={message}
-          onConfirm={this.handleClose}
-          show={isOpen}
-          type={level}
-        />
-      );
-      clearSubmitDataResponse();
-      return { getAlert: alertResponse };
-    }
-    if (!R.isNil(resultData) && !R.isEmpty(resultData) && !R.isEmpty(resultData.invalidCases)) {
-      return {
-        getAlert: null,
-      };
-    }
-    return { getAlert: null };
   }
 
   onResetClick = () => {
@@ -103,7 +60,6 @@ class CoviusBulkOrder extends React.PureComponent {
       caseIds: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
-      isDownloadDisabled: 'disabled',
     });
     onResetCoviusData();
   }
@@ -152,8 +108,9 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleEventCategory = (event) => {
-    const { coviusEventOptions } = this.props;
+    const { coviusEventOptions, onResetCoviusData } = this.props;
     const eventCategory = event.target.value;
+    onResetCoviusData();
     const eventList = R.compose(R.filter(item => item.eventCategory === eventCategory),
       R.flatten)(coviusEventOptions);
     const eventObj = {
@@ -170,8 +127,12 @@ class CoviusBulkOrder extends React.PureComponent {
     });
   }
 
-  handleClose = () => {
-    this.setState({ isOpen: false });
+  handleClose = (level) => {
+    const { closeSweetAlert } = this.props;
+    if (level === DashboardModel.Messages.LEVEL_SUCCESS) {
+      this.onResetClick();
+    }
+    closeSweetAlert();
   }
 
   renderCategoryDropDown = () => {
@@ -198,14 +159,6 @@ class CoviusBulkOrder extends React.PureComponent {
     );
   }
 
-  handleTabChange = (value, tabIndex) => {
-    this.setState({
-      isVisible: value,
-      tabIndex,
-      isDownloadDisabled: this.checkDownloadDisabled(tabIndex),
-    });
-  }
-
   jsonToExcelDownload = (fileName, data) => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -213,31 +166,30 @@ class CoviusBulkOrder extends React.PureComponent {
     XLSX.writeFile(wb, fileName);
   }
 
-  checkDownloadDisabled = (tabIndex) => {
-    const { resultData } = this.props;
+  isDownloadDisabled = () => {
+    const { resultData, coviusTabIndex } = this.props;
     if (R.isNil(resultData) || R.isEmpty(resultData)) {
       return true;
     }
-    switch (tabIndex) {
+    switch (coviusTabIndex) {
       case 0: return R.isEmpty(resultData.invalidCases) || !hasFailedProp(resultData);
-      case 1: return R.isEmpty(resultData.DocumentRequests) || !hasPassedProp(resultData);
+      case 1: return R.isEmpty(resultData.request) || !hasPassedProp(resultData);
       case 3: return R.isEmpty(resultData.uploadFailed);
       default: return true;
     }
   }
 
   handleDownload = () => {
-    const { tabIndex } = this.state;
-    const { resultData, downloadFile } = this.props;
+    const { resultData, downloadFile, coviusTabIndex } = this.props;
     let fileName = '';
     let data;
-    if (tabIndex === 0) {
+    if (coviusTabIndex === 0) {
       fileName = 'failed.xlsx';
       data = resultData.invalidCases;
-    } else if (tabIndex === 1) {
+    } else if (coviusTabIndex === 1) {
       fileName = 'passed.xlsx';
-      data = resultData.DocumentRequests;
-    } else if (tabIndex === 3) {
+      data = resultData.request;
+    } else if (coviusTabIndex === 3) {
       fileName = 'uploadFailed.xlsx';
       data = resultData.uploadFailed;
     }
@@ -249,29 +201,18 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   onSubmitToCovius = () => {
-    const { onSubmitFile, eventCategory } = this.props;
-    this.invokeSubmitToCoviusSweetAlert();
-    onSubmitFile(eventCategory);
+    const { submitToCovius } = this.props;
+    const { selectedEvent } = this.state;
+    const status = 'We are processing your request.  Please do not close the browser.';
+    const level = 'Info';
+    const showConfirmButton = false;
+    const sweetAlertPayload = {
+      status,
+      level,
+      showConfirmButton,
+    };
+    submitToCovius(selectedEvent.eventCode, sweetAlertPayload);
   }
-
-  invokeSubmitToCoviusSweetAlert = () => {
-    const { isOpen } = this.state;
-    const sweetAlert = (
-      <SweetAlert
-        fontSize="1rem"
-        icon="error"
-        imageHeight="500"
-        imageUrl={Info}
-        padding="3em"
-        show={isOpen}
-        showConfirmButton={false}
-        title="We are processing your request.  Please do not close the browser."
-        width="600"
-      />
-    );
-    this.setState({ response: sweetAlert });
-  }
-
 
   handleReset() {
     this.setState({
@@ -297,7 +238,6 @@ class CoviusBulkOrder extends React.PureComponent {
               <Typography>
                 Select Yes if you want to hold the doc gen request file
                 from being sent automatically to the vendor for up to 5 days.
-
               </Typography>
             )}
           >
@@ -379,7 +319,7 @@ class CoviusBulkOrder extends React.PureComponent {
         </div>
         {this.renderNamesDropDown(eventNames)}
 
-        {selectedEventCategory.trim() === 'Fulfillment Request' && this.renderHoldAutomationToggle()}
+        {selectedEventCategory.trim() === 'FulfillmentRequest' && this.renderHoldAutomationToggle()}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
@@ -389,7 +329,7 @@ class CoviusBulkOrder extends React.PureComponent {
             margin="normal"
             multiline
             onChange={event => this.handleCaseChange(event)}
-            rows={30}
+            rows={32}
             style={{ width: '99%', resize: 'none' }}
             value={caseIds}
           />
@@ -425,7 +365,14 @@ class CoviusBulkOrder extends React.PureComponent {
           styleName="drop-down-select"
           value={selectedEvent.eventCode}
         >
-          {eventNames.map(item => <MenuItem value={item.eventCode}>{item.eventCode}</MenuItem>)}
+          {eventNames.map(item => (
+            <MenuItem
+              key={item.eventCode}
+              value={item.eventCode}
+            >
+              {item.eventCode}
+            </MenuItem>
+          ))}
 
         </Select>
       </FormControl>
@@ -434,13 +381,10 @@ class CoviusBulkOrder extends React.PureComponent {
 
 
   renderResults() {
-    const { resultData } = this.props;
+    const { resultData, coviusTabIndex } = this.props;
     const {
-      isVisible,
       selectedEventCategory,
       selectedEvent,
-      tabIndex,
-      isDownloadDisabled,
       response,
     } = this.state;
     return (
@@ -448,17 +392,16 @@ class CoviusBulkOrder extends React.PureComponent {
         {response}
         <TabView
           eventCategory={selectedEventCategory}
-          onChange={this.handleTabChange}
           onReset={() => this.handleReset()}
           tableData={resultData}
         />
-        {tabIndex === 1 && !selectedEvent.hasMetadata
+        {coviusTabIndex === 1 && !selectedEvent.hasMetadata
+        && resultData.request && resultData.request.length
           ? (
             <div styleName="errorSvginfo">
               <Button
                 color="primary"
                 component="label"
-                disabled={R.isEmpty(resultData.DocumentRequests) || !hasPassedProp(resultData)}
                 id="submit"
                 onClick={this.onSubmitToCovius}
                 styleName="submitButton"
@@ -470,7 +413,7 @@ class CoviusBulkOrder extends React.PureComponent {
           )
           : null
         }
-        {isVisible && (
+        {(coviusTabIndex !== 2) && (
           <div styleName="errorSvginfo">
             <Tooltip
               placement="right-end"
@@ -485,7 +428,7 @@ class CoviusBulkOrder extends React.PureComponent {
             <Button
               className="material-ui-button"
               color="primary"
-              disabled={isDownloadDisabled}
+              disabled={this.isDownloadDisabled()}
               id="download"
               margin="normal"
               onClick={this.handleDownload}
@@ -504,20 +447,17 @@ class CoviusBulkOrder extends React.PureComponent {
 
   render() {
     const { inProgress, resultOperation } = this.props;
-    const { isOpen, getAlert } = this.state;
     const title = '';
-    let renderAlert = null;
-    if (inProgress === false && resultOperation.level === 'error') {
-      renderAlert = (
-        <SweetAlertBox
-          confirmButtonColor="#004261"
-          message={resultOperation.status}
-          onConfirm={() => this.handleClose()}
-          show={isOpen}
-          type={resultOperation.level}
-        />
-      );
-    }
+    const renderAlert = (
+      <SweetAlertBox
+        confirmButtonColor="#004261"
+        message={resultOperation.status}
+        onConfirm={() => this.handleClose(resultOperation.level)}
+        show={resultOperation.isOpen}
+        showConfirmButton={resultOperation.showConfirmButton}
+        type={resultOperation.level}
+      />
+    );
     return (
       <>
         <ContentHeader title={title}>
@@ -537,7 +477,6 @@ class CoviusBulkOrder extends React.PureComponent {
         </ContentHeader>
         <Grid container styleName="loan-activity" xs={12}>
           <Grid item xs={2}>
-            {getAlert}
             {this.renderNotepadArea()}
           </Grid>
           <Grid item xs={10}>
@@ -559,32 +498,32 @@ CoviusBulkOrder.defaultProps = {
   onResetCoviusData: () => { },
   populateDropdown: () => { },
   resultData: {
-    DocumentRequests: [],
-    invalidCases: [],
+    request: [],
   },
   resultOperation: {},
   coviusEventOptions: [],
+  coviusTabIndex: 0,
 };
 
 CoviusBulkOrder.propTypes = {
-  clearSubmitDataResponse:
-    PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  closeSweetAlert: PropTypes.func.isRequired,
   coviusEventOptions: PropTypes.arrayOf({
     eventCode: PropTypes.string,
     eventCategory: PropTypes.string,
     hasMetadata: PropTypes.bool,
   }),
-  downloadFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
-  eventCategory: PropTypes.string.isRequired,
-  getDownloadResponse:
-    PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
+  coviusTabIndex: PropTypes.number,
+  downloadFile: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
   onResetCoviusData: PropTypes.func,
-  onSubmitFile: PropTypes.func.isRequired,
   populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
-    DocumentRequests: PropTypes.arrayOf({
+    invalidCases: PropTypes.arrayOf({
+      caseId: PropTypes.string,
+      message: PropTypes.string,
+    }),
+    request: PropTypes.arrayOf({
       UserFields: PropTypes.shape({
         CASEID: PropTypes.string,
         EVAL_ID: PropTypes.string,
@@ -592,29 +531,26 @@ CoviusBulkOrder.propTypes = {
       }),
       RequestId: PropTypes.string,
     }),
-    invalidCases: PropTypes.arrayOf({
-      caseId: PropTypes.string,
-      message: PropTypes.string,
-    }),
     uploadFailed: PropTypes.arrayOf({
       caseId: PropTypes.string,
       message: PropTypes.string,
     }),
   }),
-
   resultOperation: PropTypes.shape({
+    isOpen: PropTypes.bool,
     level: PropTypes.string,
+    showConfirmButton: PropTypes.bool,
     status: PropTypes.string,
   }),
-
+  submitToCovius: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   inProgress: selectors.inProgress(state),
   resultData: selectors.resultData(state),
   resultOperation: selectors.resultOperation(state),
-  getDownloadResponse: selectors.getDownloadResponse(state),
   coviusEventOptions: selectors.getcoviusEventOptions(state),
+  coviusTabIndex: selectors.getCoviusTabIndex(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -622,8 +558,8 @@ const mapDispatchToProps = dispatch => ({
   onResetCoviusData: operations.onResetCoviusData(dispatch),
   downloadFile: operations.downloadFile(dispatch),
   populateDropdown: operations.populateEvents(dispatch),
-  clearSubmitDataResponse: operations.onClearSubmitCoviusData(dispatch),
-  onSubmitFile: operations.onSubmitFile(dispatch),
+  submitToCovius: operations.submitToCovius(dispatch),
+  closeSweetAlert: operations.closeSweetAlert(dispatch),
 
 });
 

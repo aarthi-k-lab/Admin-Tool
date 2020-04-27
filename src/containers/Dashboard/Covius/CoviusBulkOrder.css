@@ -111,6 +111,8 @@
 
 .submitButton {
   margin-right: 1rem !important;
+  float: right;
+  padding-left: 0.5rem;
 }
 
 .table-container {
@@ -129,4 +131,5 @@
   width: 90%;
   margin: 0rem 2rem 2rem 0.75rem;
   background-color: white !important;
+  height: 3rem !important;
 }

@@ -6,7 +6,10 @@ import * as R from 'ramda';
 
 const LEVEL_ERROR = 'error';
 const LEVEL_SUCCESS = 'success';
-
+const LEVEL_FAILED = 'Failed';
+const MSG_SERVICE_DOWN = 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.';
+const MSG_FILE_UPLOAD_FAILURE = 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team';
+const MSG_FILE_DOWNLOAD_FAILURE = 'The conversion to excel has failed. Please reach out to the CMOD Support team to troubleshoot.';
 const MSG_TASK_FETCH_ERROR = 'Task Fetch Failed. Please try again Later';
 const MSG_NO_TASKS_FOUND = 'No tasks assigned. Please contact your manager';
 const MSG_CAN_UNASSIGN = 'Please click Unassign to unassign the task from the user.';
@@ -97,6 +100,10 @@ const Messages = {
   LEVEL_ERROR,
   MSG_VALIDATION_SUCCESS,
   MSG_UPDATED_REMEDY,
+  MSG_SERVICE_DOWN,
+  LEVEL_FAILED,
+  MSG_FILE_UPLOAD_FAILURE,
+  MSG_FILE_DOWNLOAD_FAILURE,
 };
 
 export default Messages;

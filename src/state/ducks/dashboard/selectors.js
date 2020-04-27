@@ -116,10 +116,15 @@ const disableTrialTaskButton = state => R.pathOr(false, ['dashboard', 'disableTr
 const getUploadedFile = state => R.pathOr(null, ['dashboard', 'excelParsedData'], state);
 const isFileDeleted = state => R.pathOr('', ['dashboard', 'isFileDeleted'], state);
 const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitResponse'], state);
+const getSendToCoviusResponse = state => R.pathOr({}, ['dashboard', 'sendToCoviusResponse'], state);
 const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const isUploadFailedTabVisible = state => R.pathOr(false, ['dashboard', 'isUploadFailedTabVisible'], state);
 const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
+const getCoviusTabIndex = state => R.pathOr(0, ['dashboard', 'coviusTabIndex'], state);
+
 const selectors = {
+  getCoviusTabIndex,
+  getSendToCoviusResponse,
   enableEndShift,
   enableGetNext,
   evalId,

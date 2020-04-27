@@ -52,6 +52,9 @@ import {
   CLEAR_COVIUS_SUBMIT_DATA,
   DOWNLOAD_FILE,
   POPULATE_EVENTS_DROPDOWN,
+  SEND_TO_COVIUS,
+  CLOSE_SWEET_ALERT,
+  SET_COVIUS_TABINDEX,
 } from './types';
 
 
@@ -292,7 +295,31 @@ const populateEventsDropdown = () => ({
   type: POPULATE_EVENTS_DROPDOWN,
 });
 
+const submitToCoviusAction = payload => ({
+  type: SEND_TO_COVIUS,
+  payload,
+});
+
+
+const closeSweetAlertAction = () => ({
+  type: CLOSE_SWEET_ALERT,
+});
+
+const openSweetAlertAction = payload => ({
+  type: SET_RESULT_OPERATION,
+  payload,
+});
+
+const setCoviusIndexAction = payload => ({
+  type: SET_COVIUS_TABINDEX,
+  payload,
+});
+
 export {
+  setCoviusIndexAction,
+  openSweetAlertAction,
+  closeSweetAlertAction,
+  submitToCoviusAction,
   autoSave,
   discardEvalResponse,
   clearDisposition,

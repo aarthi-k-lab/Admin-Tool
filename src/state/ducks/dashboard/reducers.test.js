@@ -78,7 +78,7 @@ const state = {};
 
 describe('Ducks :: dashboard -> reducer', () => {
   it('initialization', () => {
-    expect(reducer(undefined, { type: 'init' })).toEqual({ firstVisit: true });
+    expect(reducer(undefined, { type: 'init' })).toEqual({ firstVisit: true, coviusTabIndex: 0 });
   });
 
   it('Success unAssignLoan action', () => {
