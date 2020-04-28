@@ -216,12 +216,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasCoviusAccess(groups)
-        ? (
-          <CoviusBulkOrder
-            group={DashboardModel.COVIUS}
-            groupName={RouteAccess.getStagerGroup(groups)}
-          />
-        )
+        ? <CoviusBulkOrder />
         : <Redirect to="/unauthorized?error=COVIUS_ACCESS_NEEDED" />
     );
   }

@@ -126,6 +126,7 @@ const {
     LEVEL_FAILED,
     MSG_FILE_UPLOAD_FAILURE,
     MSG_FILE_DOWNLOAD_FAILURE,
+    MSG_SENDTOCOVIUS_FAILED,
   },
 } = DashboardModel;
 
@@ -1349,7 +1350,7 @@ function* onCoviusBulkUpload(payload) {
         type: SET_RESULT_OPERATION,
         payload: {
           level: LEVEL_ERROR,
-          status: 'Please remove duplicate case id(s) and submit again.',
+          status: 'There are duplicate case id(s). Please correct and resubmit',
         },
       });
       return;
@@ -1529,7 +1530,8 @@ const sendToCovius = function* sendToCovius(eventCode, payload) {
   level = R.equals(response.status, 200) ? LEVEL_SUCCESS : LEVEL_FAILED;
   const status = {
     uploadFailed: response.invalidCases,
-    message: response.message ? response.message : MSG_SERVICE_DOWN,
+    message: response && R.equals(response.status, 200)
+      ? response.message : MSG_SENDTOCOVIUS_FAILED,
     level,
     eventCode,
   };

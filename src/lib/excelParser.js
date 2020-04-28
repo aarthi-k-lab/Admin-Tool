@@ -32,9 +32,6 @@ const processFile1 = async (file) => {
   });
 };
 
-const processFile = async (file) => {
-  const data1 = processFile1(file).then(data => data);
-  return data1;
-};
+const processFile = async file => processFile1(file).then(data => data);
 
 export default processFile;
