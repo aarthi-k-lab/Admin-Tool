@@ -1366,7 +1366,12 @@ function* onCoviusBulkUpload(payload) {
     };
     yield put({ type: SHOW_LOADER });
     response = yield call(Api.callPost, '/api/docfulfillment/api/covius/getEventData', requestBody);
-    if (response !== null) {
+    // Clearing resultData before getting eventData
+    yield put({
+      type: SET_COVIUS_BULK_UPLOAD_RESULT,
+      payload: {},
+    });
+    if (response !== null && (R.has('invalidCases', response) || R.has('request', response))) {
       yield put({
         type: SET_COVIUS_BULK_UPLOAD_RESULT,
         payload: response,
@@ -1528,18 +1533,19 @@ const sendToCovius = function* sendToCovius(eventCode, payload) {
   const response = yield call(Api.callPost, `/api/docfulfillment/api${requestEndpoint}`, body);
   let level = '';
   level = R.equals(response.status, 200) ? LEVEL_SUCCESS : LEVEL_FAILED;
-  const status = {
+  const result = {
     uploadFailed: response.invalidCases,
     message: response && R.equals(response.status, 200)
       ? response.message : MSG_SENDTOCOVIUS_FAILED,
     level,
     eventCode,
+    clearData: R.equals(response.status, 200),
   };
   yield put({
     type: SET_COVIUS_TABINDEX,
     payload: { coviusTabIndex: R.equals(level, LEVEL_FAILED) ? 3 : 0 },
   });
-  return status;
+  return result;
 };
 
 const onFileSubmit = function* onFileSubmit() {
@@ -1556,6 +1562,7 @@ const onFileSubmit = function* onFileSubmit() {
       payload: {
         status: response.message,
         level: response.level,
+        clearData: response.clearData,
       },
     });
   } catch (e) {
@@ -1590,6 +1597,7 @@ const submitToCovius = function* submitToCovius(action) {
       payload: {
         status: response.message,
         level: response.level,
+        clearData: response.clearData,
       },
     });
   } catch (e) {

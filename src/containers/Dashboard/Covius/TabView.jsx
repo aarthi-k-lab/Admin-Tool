@@ -1,7 +1,6 @@
 import React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Paper from '@material-ui/core/Paper';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import PublishIcon from '@material-ui/icons/Publish';
 import './TabView.css';
@@ -14,16 +13,17 @@ import { operations, selectors } from 'ducks/dashboard';
 import extName from 'ext-name';
 import { connect } from 'react-redux';
 import DashboardModel from 'models/Dashboard';
+import Box from '@material-ui/core/Box';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
 import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
 
-
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 const hasPassedProp = R.has('request');
 const hasFailedProp = R.has('invalidCases');
 const hasUploadFailedProp = R.has('uploadFailed');
+
 class TabView extends React.Component {
   constructor(props) {
     super(props);
@@ -289,7 +289,7 @@ class TabView extends React.Component {
               defaultPageSize={25}
               pageSizeOptions={[10, 20, 25, 50, 100]}
               style={{
-                height: '47rem',
+                height: '52rem',
               }}
               styleName="table"
             />
@@ -328,41 +328,49 @@ class TabView extends React.Component {
     const { coviusTabIndex } = this.props;
     return (
       <>
-        <Paper color="default">
+        <Box borderBottom={1} borderTop={1} style={{ color: '#eaeaea' }}>
           <Tabs
             id="Tabs"
             indicatorColor="primary"
             onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
             textColor="primary"
             value={coviusTabIndex}
+            wrapped
           >
             <Tab
               icon={<FiberManualRecordIcon styleName="failedTab" />}
               label={this.renderCountLabel('Failed')}
               styleName="tabStyle"
             />
-            <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
-            <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
+            <Tab
+              icon={<FiberManualRecordIcon styleName="passedTab" />}
+              label={this.renderCountLabel('Passed')}
+              styleName="tabStyle"
+            />
+            <Tab
+              icon={<PublishIcon styleName="uploadTab" />}
+              label="Upload"
+              styleName="tabStyle"
+            />
             { this.getCount('Upload Failed') && (
-              <Tab
-                icon={<FiberManualRecordIcon styleName="failedTab" />}
-                label={this.renderCountLabel('Upload Failed')}
-                styleName="tabStyle"
-              />
-            )
-            }
+            <Tab
+              icon={<FiberManualRecordIcon styleName="uploadfailedTab" />}
+              label={this.renderCountLabel('Upload Failed')}
+              styleName="tabStyle"
+            />
+            )}
           </Tabs>
-        </Paper>
-        <TabPanel id="failedTab" index={0} styleName="tabStyle" value={coviusTabIndex}>
+        </Box>
+        <TabPanel id="failedTab" index={0} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('Failed')}
         </TabPanel>
-        <TabPanel id="passedTab" index={1} styleName="tabStyle" value={coviusTabIndex}>
+        <TabPanel id="passedTab" index={1} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('Passed')}
         </TabPanel>
-        <TabPanel id="uploadTab" index={2} styleName="uploadPage" value={coviusTabIndex}>
+        <TabPanel id="uploadTab" index={2} value={coviusTabIndex}>
           {this.renderUploadPanel()}
         </TabPanel>
-        <TabPanel index={3} styleName="tabStyle" value={coviusTabIndex}>
+        <TabPanel index={3} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('uploadFailed')}
         </TabPanel>
       </>

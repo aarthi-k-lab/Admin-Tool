@@ -5,7 +5,7 @@ import imageUrls from '../../constants/alertTypes';
 
 const SweetAlertBox = ({
   message, show, onConfirm, type, confirmButtonColor,
-  showConfirmButton,
+  showConfirmButton, title,
 }) => {
   let imageUrl = '';
   imageUrl = imageUrls[type] ? imageUrls[type] : imageUrls.Warning;
@@ -19,7 +19,8 @@ const SweetAlertBox = ({
       padding="3em"
       show={show}
       showConfirmButton={showConfirmButton}
-      title={message}
+      text={title && message}
+      title={title || message}
       width="600"
     />
   );
@@ -30,6 +31,7 @@ SweetAlertBox.defaultProps = {
   confirmButtonColor: '',
   onConfirm() {},
   showConfirmButton: true,
+  title: '',
 };
 
 SweetAlertBox.propTypes = {
@@ -38,6 +40,7 @@ SweetAlertBox.propTypes = {
   onConfirm: PropTypes.func,
   show: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
+  title: PropTypes.string,
   type: PropTypes.string.isRequired,
 };
 

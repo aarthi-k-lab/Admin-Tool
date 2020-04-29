@@ -495,9 +495,11 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
     }
 
     case SET_RESULT_OPERATION: {
+      const { clearData } = action.payload;
       const resultOperation = {
-        isOpen: true,
         ...action.payload,
+        isOpen: true,
+        clearData: clearData || false,
       };
       return {
         ...state,
@@ -525,6 +527,7 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         resultOperation,
         eventNames,
         sendToCoviusSuccess,
+        coviusTabIndex: 0,
       };
     }
 
@@ -674,11 +677,15 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         ...state,
         downloadResponse: action.payload,
       };
-    case SAVE_EVENTS_DROPDOWN:
+    case SAVE_EVENTS_DROPDOWN: {
+      const { payload } = action;
+      payload[51].hasMetadata = true;
       return {
         ...state,
-        coviusEventOptions: action.payload,
+        coviusEventOptions: payload,
       };
+    }
+
     default:
       return state;
   }
