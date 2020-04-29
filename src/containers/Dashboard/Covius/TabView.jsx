@@ -1,8 +1,4 @@
 import React from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import PublishIcon from '@material-ui/icons/Publish';
 import './TabView.css';
 import { PropTypes } from 'prop-types';
 import Grid from '@material-ui/core/Grid';
@@ -13,11 +9,11 @@ import { operations, selectors } from 'ducks/dashboard';
 import extName from 'ext-name';
 import { connect } from 'react-redux';
 import DashboardModel from 'models/Dashboard';
-import Box from '@material-ui/core/Box';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
 import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
+import SimpleTabs from './Tabs';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 const hasPassedProp = R.has('request');
@@ -328,7 +324,7 @@ class TabView extends React.Component {
     const { coviusTabIndex } = this.props;
     return (
       <>
-        <Box borderBottom={1} borderTop={1} style={{ color: '#eaeaea' }}>
+        {/* <Box borderBottom={1} borderTop={1} style={{ color: '#eaeaea' }}>
           <Tabs
             id="Tabs"
             indicatorColor="primary"
@@ -360,7 +356,13 @@ class TabView extends React.Component {
             />
             )}
           </Tabs>
-        </Box>
+        </Box> */}
+        <SimpleTabs
+          coviusTabIndex={coviusTabIndex}
+          getCount={this.getCount}
+          handleTabSelection={this.handleTabSelection}
+          renderCountLabel={this.renderCountLabel}
+        />
         <TabPanel id="failedTab" index={0} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('Failed')}
         </TabPanel>

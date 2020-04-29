@@ -679,7 +679,6 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       };
     case SAVE_EVENTS_DROPDOWN: {
       const { payload } = action;
-      payload[51].hasMetadata = true;
       return {
         ...state,
         coviusEventOptions: payload,
