@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -27,12 +26,6 @@ export default function SimpleTabs({
   handleTabSelection, renderCountLabel, getCount, coviusTabIndex,
 }) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   return (
     <Box borderBottom={1} borderTop={1} style={{ color: '#eaeaea' }}>
       <Tabs

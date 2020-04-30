@@ -65,7 +65,6 @@ class TabView extends React.Component {
     return eventCategory === 'FulfillmentRequest';
   }
 
-
   getColumns = (status) => {
     if (status === 'Passed') {
       return [
@@ -85,10 +84,10 @@ class TabView extends React.Component {
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 30, maxWidth: 70, style: { width: '5%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%', whiteSpace: 'unset' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'reason', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'reason', minWidth: 100, maxWidth: 400, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -285,7 +284,7 @@ class TabView extends React.Component {
               defaultPageSize={25}
               pageSizeOptions={[10, 20, 25, 50, 100]}
               style={{
-                height: '52rem',
+                height: '53rem',
               }}
               styleName="table"
             />
@@ -324,39 +323,6 @@ class TabView extends React.Component {
     const { coviusTabIndex } = this.props;
     return (
       <>
-        {/* <Box borderBottom={1} borderTop={1} style={{ color: '#eaeaea' }}>
-          <Tabs
-            id="Tabs"
-            indicatorColor="primary"
-            onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
-            textColor="primary"
-            value={coviusTabIndex}
-            wrapped
-          >
-            <Tab
-              icon={<FiberManualRecordIcon styleName="failedTab" />}
-              label={this.renderCountLabel('Failed')}
-              styleName="tabStyle"
-            />
-            <Tab
-              icon={<FiberManualRecordIcon styleName="passedTab" />}
-              label={this.renderCountLabel('Passed')}
-              styleName="tabStyle"
-            />
-            <Tab
-              icon={<PublishIcon styleName="uploadTab" />}
-              label="Upload"
-              styleName="tabStyle"
-            />
-            { this.getCount('Upload Failed') && (
-            <Tab
-              icon={<FiberManualRecordIcon styleName="uploadfailedTab" />}
-              label={this.renderCountLabel('Upload Failed')}
-              styleName="tabStyle"
-            />
-            )}
-          </Tabs>
-        </Box> */}
         <SimpleTabs
           coviusTabIndex={coviusTabIndex}
           getCount={this.getCount}

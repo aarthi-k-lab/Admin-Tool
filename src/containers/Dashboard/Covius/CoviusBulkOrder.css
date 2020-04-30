@@ -21,11 +21,13 @@
   float: right !important;
   font-weight: bold !important;
   color: var(--light-blue-900) !important;
+  cursor: pointer;
 }
 
 .loan-numbers {
   font-size: 1.1rem;
   padding-left: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 .handleAuto {
