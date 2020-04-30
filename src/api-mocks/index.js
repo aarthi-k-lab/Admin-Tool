@@ -11,9 +11,9 @@ function mock() {
   } = require('fetch-mock');
   fetchMock.post(/\/api\/auth\/jwt\/verify/, 200);
   fetchMock.get(/\/api\/auth\/ad\/app\/users\/.*\/groups/, [{
-    groupName: 'DOCGENVENDOR'
+    groupName: 'docgenvendor'
   }, {
-    groupName: 'DOCGENVENDOR-MGR'
+    groupName: 'docgenvendor-mgr'
   }, {
     groupName: 'booking'
   }, {
