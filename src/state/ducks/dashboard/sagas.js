@@ -1322,7 +1322,7 @@ function* onSelectTrialTask(payload) {
 
 function* populateDropdown() {
   try {
-    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Incoming');
+    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Outgoing');
     yield put({
       type: SAVE_EVENTS_DROPDOWN,
       payload: response,
@@ -1529,7 +1529,7 @@ const sendToCovius = function* sendToCovius(eventCode, payload) {
     user: userPrincipalName,
     request: payload,
   };
-  const requestEndpoint = R.equals(eventCode, 'GetData') ? '/covius/manualDocumentFulfillmentRequest' : '/covius/statusChangeRequest';
+  const requestEndpoint = eventCode ? '/covius/statusChangeRequest' : '/covius/manualDocumentFulfillmentRequest';
   const response = yield call(Api.callPost, `/api/docfulfillment/api${requestEndpoint}`, body);
   let level = '';
   level = R.equals(response.status, 200) ? LEVEL_SUCCESS : LEVEL_FAILED;
@@ -1551,7 +1551,7 @@ const sendToCovius = function* sendToCovius(eventCode, payload) {
 const onFileSubmit = function* onFileSubmit() {
   try {
     const file = yield select(selectors.getUploadedFile);
-    const eventCode = file && R.prop('EventCode', R.head(JSON.parse(file)));
+    const eventCode = file && R.has('EventCode', R.head(JSON.parse(file)));
     const response = yield call(sendToCovius, eventCode, JSON.parse(file));
     yield put({
       type: SET_COVIUS_DATA,
@@ -1566,12 +1566,6 @@ const onFileSubmit = function* onFileSubmit() {
       },
     });
   } catch (e) {
-    yield put(
-      {
-        type: SET_COVIUS_DATA,
-        payload: { message: MSG_SERVICE_DOWN, level: LEVEL_FAILED },
-      },
-    );
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
@@ -1601,10 +1595,6 @@ const submitToCovius = function* submitToCovius(action) {
       },
     });
   } catch (e) {
-    yield put({
-      type: SET_COVIUS_DATA,
-      payload: { message: MSG_SERVICE_DOWN, level: LEVEL_FAILED },
-    });
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
