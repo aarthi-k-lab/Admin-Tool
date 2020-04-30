@@ -562,7 +562,6 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         resultData,
         resultOperation,
         loading: false,
-        isUploadFailedTabVisible: false,
       };
     }
 
@@ -645,12 +644,11 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       };
     case SET_COVIUS_DATA: {
       const { resultData } = state;
-      const { uploadFailed, eventCategory } = action.payload;
+      const { uploadFailed } = action.payload;
       return {
         ...state,
-        resultData: R.equals(eventCategory, 'FulfillmentRequest success') || R.isEmpty(uploadFailed) ? {} : { ...resultData, uploadFailed },
+        resultData: R.isEmpty(uploadFailed) ? {} : { ...resultData, uploadFailed },
         fileSubmitResponse: action.payload,
-        isUploadFailedTabVisible: !!uploadFailed,
       };
     }
     case SET_COVIUS_TABINDEX: {

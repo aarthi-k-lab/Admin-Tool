@@ -20,6 +20,7 @@
 
 .uploadfailedTab {
   font-size: medium !important;
+  color: red;
   margin-right: 0.5rem !important;
   margin-bottom: 0.25rem !important;
 }

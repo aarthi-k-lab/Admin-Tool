@@ -1017,7 +1017,7 @@ describe('submit file to covius : Success', () => {
 
   it('should call sendToCovius saga', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(TestExports.sendToCovius, 'mockCode', mockFile));
+      .toEqual(call(TestExports.sendToCovius, true, mockFile));
   });
 
   it('should call SET_COVIUS_DATA', () => {
@@ -1057,7 +1057,7 @@ describe('submit file to covius : Upload Failed', () => {
 
   it('should call sendToCovius saga', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(TestExports.sendToCovius, 'mockCode', mockFile));
+      .toEqual(call(TestExports.sendToCovius, true, mockFile));
   });
 
   it('should call SET_COVIUS_DATA', () => {
@@ -1084,7 +1084,7 @@ describe('submit file to covius : Failure', () => {
 
   it('should call sendToCovius saga', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(TestExports.sendToCovius, 'mockCode', mockFile));
+      .toEqual(call(TestExports.sendToCovius, true, mockFile));
   });
   it('should call SET_COVIUS_DATA', () => {
     expect(saga.next(null).value)
@@ -1105,11 +1105,11 @@ describe('submit file to covius : Service down', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getUploadedFile));
   });
-  it('should call SET_COVIUS_DATA', () => {
+  it('should call SET_RESULT_OPERATION', () => {
     expect(saga.next(mockFile).value)
       .toEqual(put({
-        type: actionTypes.SET_COVIUS_DATA,
-        payload: { message: MSG_SERVICE_DOWN, level: LEVEL_FAILED },
+        type: actionTypes.SET_RESULT_OPERATION,
+        payload: { status: MSG_SERVICE_DOWN, level: LEVEL_FAILED },
       }));
   });
 });
@@ -1199,7 +1199,7 @@ describe('onUploadingfile', () => {
 
 describe('submit file to covius (FulfillmentRequest) : Success', () => {
   const mockFile = [
-    { EventCode: 'GetData', caseId: 34, message: 'mock1' },
+    { caseId: 34, message: 'mock1' },
     { caseId: 33, message: 'mock2' },
   ];
 
@@ -1219,7 +1219,7 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
 
   it('should call sendToCovius saga', () => {
     expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(TestExports.sendToCovius, 'GetData', mockFile));
+      .toEqual(call(TestExports.sendToCovius, false, mockFile));
   });
 
   it('should call SET_COVIUS_DATA', () => {
@@ -1229,30 +1229,6 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
   it('should call SET_RESULT_OPERATION', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { status: 'File submitted to Covius successfully', level: LEVEL_SUCCESS } }));
-  });
-});
-
-describe('submit file to covius (FulfillmentRequest) : Failure', () => {
-  const mockFile = [
-    { EventCode: 'GetData', caseId: 34, message: 'mock1' },
-    { caseId: 33, message: 'mock2' },
-  ];
-
-  const saga = cloneableGenerator(TestExports.onFileSubmit)();
-  it('should call select uploaded file from store', () => {
-    expect(saga.next().value)
-      .toEqual(select(selectors.getUploadedFile));
-  });
-  it('should call sendToCovius saga', () => {
-    expect(saga.next(JSON.stringify(mockFile)).value)
-      .toEqual(call(TestExports.sendToCovius, 'GetData', mockFile));
-  });
-
-  it('should call SET_COVIUS_DATA', () => {
-    expect(saga.next(null).value)
-      .toEqual(put(
-        { type: actionTypes.SET_COVIUS_DATA, payload: null },
-      ));
   });
 });
 
@@ -1274,7 +1250,7 @@ describe('populateDropdown saga ', () => {
   ];
   it('should call populate event service', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Incoming'));
+      .toEqual(call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Outgoing'));
   });
   it('should call SAVE_EVENTS_DROPDOWN', () => {
     expect(saga.next(mockResponse).value)

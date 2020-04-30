@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import {
   select,
 } from 'redux-saga/effects';
+import DashboardModel from 'models/Dashboard';
 import { selectors } from '../../../state/ducks/dashboard';
 import { TestHooks } from './CoviusBulkOrder';
 
@@ -81,7 +82,7 @@ describe('Download Button Enabling', () => {
 
   it('enables download button in the passed tab only when there is at least 1 passed caseid', () => {
     wrapper.setProps({
-      eventCategory: 'FulfillmentRequest',
+      eventCategory: DashboardModel.EVENT_CATEGORY_FILTER,
       resultData: {
         request:
           [{

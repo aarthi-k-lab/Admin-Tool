@@ -60,34 +60,64 @@ class TabView extends React.Component {
     return newState;
   }
 
-  isFulfillmentRequest = () => {
-    const { eventCategory } = this.props;
-    return eventCategory === 'FulfillmentRequest';
-  }
-
   getColumns = (status) => {
+    const { eventCategory } = this.props;
+    const isSubmitFullment = eventCategory === DashboardModel.EVENT_CATEGORY_FILTER;
     if (status === 'Passed') {
       return [
         {
-          Header: 'Loan Number', accessor: this.isFulfillmentRequest() ? 'UserFields.LoanNumber' : 'LoanNumber', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Loan Number',
+          accessor: isSubmitFullment ? d => d['UserFields.LON'] : 'LoanNumber',
+          minWidth: 50,
+          id: 'UserFields.LON',
+          maxWidth: 100,
+          style: { width: '10%' },
+          headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Eval ID', accessor: this.isFulfillmentRequest() ? 'UserFields.EvalId' : 'EvalId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Eval ID',
+          accessor: isSubmitFullment ? d => d['UserFields.EVALID'] : 'EvalId',
+          id: 'UserFields.EVALID',
+          minWidth: 50,
+          maxWidth: 100,
+          style: { width: '10%' },
+          headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Case ID', accessor: this.isFulfillmentRequest() ? 'UserFields.CaseId' : 'CaseId', minWidth: 50, maxWidth: 100, style: { width: '10%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Case ID',
+          accessor: isSubmitFullment ? d => d['UserFields.CASEID'] : 'EvalId',
+          id: 'UserFields.CASEID',
+          minWidth: 50,
+          maxWidth: 100,
+          style: { width: '10%' },
+          headerStyle: { textAlign: 'left' },
         },
         {
-          Header: 'Request ID', accessor: 'RequestId', minWidth: 100, maxWidth: 400, style: { width: '80%' }, headerStyle: { textAlign: 'left' },
+          Header: 'Request ID',
+          accessor: 'RequestId',
+          minWidth: 100,
+          maxWidth: 400,
+          style: { width: '80%' },
+          headerStyle: { textAlign: 'left' },
         },
       ];
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%', whiteSpace: 'unset' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID',
+        accessor: 'caseId',
+        minWidth: 50,
+        maxWidth: 100,
+        style: { width: '10%', whiteSpace: 'unset' },
+        headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'reason', minWidth: 100, maxWidth: 400, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message',
+        accessor: 'reason',
+        minWidth: 100,
+        maxWidth: 400,
+        style: { width: '15%' },
+        headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -381,7 +411,6 @@ TabView.propTypes = {
 const mapStateToProps = state => ({
   getExcelFile: selectors.getUploadedFile(state),
   isFileRemoved: selectors.isFileDeleted(state),
-  isUploadFailedTabVisible: selectors.isUploadFailedTabVisible(state),
   fileSubmitResponse: selectors.getFileSubmitResponse(state),
   coviusTabIndex: selectors.getCoviusTabIndex(state),
 });

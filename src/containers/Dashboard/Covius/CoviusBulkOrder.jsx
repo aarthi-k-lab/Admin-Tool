@@ -23,6 +23,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import * as XLSX from 'xlsx';
+import DashboardModel from 'models/Dashboard';
 import TabView from './TabView';
 
 const hasPassedProp = R.has('request');
@@ -317,8 +318,8 @@ class CoviusBulkOrder extends React.PureComponent {
           </span>
         </div>
         {this.renderNamesDropDown(eventNames)}
-
-        {selectedEventCategory.trim() === 'FulfillmentRequest' && this.renderHoldAutomationToggle()}
+        {selectedEventCategory.trim() === DashboardModel.EVENT_CATEGORY_FILTER
+        && this.renderHoldAutomationToggle()}
         <span styleName="loan-numbers">
           {'Case id(s)'}
         </span>
