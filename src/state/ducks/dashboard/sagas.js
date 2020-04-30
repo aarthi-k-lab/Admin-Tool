@@ -126,6 +126,7 @@ const {
     LEVEL_FAILED,
     MSG_FILE_UPLOAD_FAILURE,
     MSG_FILE_DOWNLOAD_FAILURE,
+    MSG_SENDTOCOVIUS_FAILED,
   },
 } = DashboardModel;
 
@@ -1349,7 +1350,7 @@ function* onCoviusBulkUpload(payload) {
         type: SET_RESULT_OPERATION,
         payload: {
           level: LEVEL_ERROR,
-          status: 'Please remove duplicate case id(s) and submit again.',
+          status: 'There are duplicate case id(s). Please correct and resubmit',
         },
       });
       return;
@@ -1365,7 +1366,12 @@ function* onCoviusBulkUpload(payload) {
     };
     yield put({ type: SHOW_LOADER });
     response = yield call(Api.callPost, '/api/docfulfillment/api/covius/getEventData', requestBody);
-    if (response !== null) {
+    // Clearing resultData before getting eventData
+    yield put({
+      type: SET_COVIUS_BULK_UPLOAD_RESULT,
+      payload: {},
+    });
+    if (response !== null && (R.has('invalidCases', response) || R.has('request', response))) {
       yield put({
         type: SET_COVIUS_BULK_UPLOAD_RESULT,
         payload: response,
@@ -1527,17 +1533,19 @@ const sendToCovius = function* sendToCovius(eventCode, payload) {
   const response = yield call(Api.callPost, `/api/docfulfillment/api${requestEndpoint}`, body);
   let level = '';
   level = R.equals(response.status, 200) ? LEVEL_SUCCESS : LEVEL_FAILED;
-  const status = {
+  const result = {
     uploadFailed: response.invalidCases,
-    message: response.message ? response.message : MSG_SERVICE_DOWN,
+    message: response && R.equals(response.status, 200)
+      ? response.message : MSG_SENDTOCOVIUS_FAILED,
     level,
     eventCode,
+    clearData: R.equals(response.status, 200),
   };
   yield put({
     type: SET_COVIUS_TABINDEX,
     payload: { coviusTabIndex: R.equals(level, LEVEL_FAILED) ? 3 : 0 },
   });
-  return status;
+  return result;
 };
 
 const onFileSubmit = function* onFileSubmit() {
@@ -1554,6 +1562,7 @@ const onFileSubmit = function* onFileSubmit() {
       payload: {
         status: response.message,
         level: response.level,
+        clearData: response.clearData,
       },
     });
   } catch (e) {
@@ -1588,6 +1597,7 @@ const submitToCovius = function* submitToCovius(action) {
       payload: {
         status: response.message,
         level: response.level,
+        clearData: response.clearData,
       },
     });
   } catch (e) {

@@ -12,7 +12,7 @@ const DOC_GEN_BACK = 'DGB';
 const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
 const BOOKING = 'BOOKING';
-const COVIUS = 'COVIUS';
+const COVIUS = 'DOCGENVENDOR';
 
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';

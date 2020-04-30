@@ -7,6 +7,7 @@ import * as R from 'ramda';
 const LEVEL_ERROR = 'error';
 const LEVEL_SUCCESS = 'success';
 const LEVEL_FAILED = 'Failed';
+const MSG_SENDTOCOVIUS_FAILED = 'Unable to send to Covius at this time. Please try again later.';
 const MSG_SERVICE_DOWN = 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.';
 const MSG_FILE_UPLOAD_FAILURE = 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team';
 const MSG_FILE_DOWNLOAD_FAILURE = 'The conversion to excel has failed. Please reach out to the CMOD Support team to troubleshoot.';
@@ -104,6 +105,7 @@ const Messages = {
   LEVEL_FAILED,
   MSG_FILE_UPLOAD_FAILURE,
   MSG_FILE_DOWNLOAD_FAILURE,
+  MSG_SENDTOCOVIUS_FAILED,
 };
 
 export default Messages;

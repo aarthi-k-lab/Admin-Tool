@@ -1,9 +1,4 @@
 import React from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Paper from '@material-ui/core/Paper';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import PublishIcon from '@material-ui/icons/Publish';
 import './TabView.css';
 import { PropTypes } from 'prop-types';
 import Grid from '@material-ui/core/Grid';
@@ -18,12 +13,13 @@ import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
 import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
-
+import SimpleTabs from './Tabs';
 
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 const hasPassedProp = R.has('request');
 const hasFailedProp = R.has('invalidCases');
 const hasUploadFailedProp = R.has('uploadFailed');
+
 class TabView extends React.Component {
   constructor(props) {
     super(props);
@@ -69,7 +65,6 @@ class TabView extends React.Component {
     return eventCategory === 'FulfillmentRequest';
   }
 
-
   getColumns = (status) => {
     if (status === 'Passed') {
       return [
@@ -89,10 +84,10 @@ class TabView extends React.Component {
     }
     return [
       {
-        Header: 'Case ID', accessor: 'caseId', minWidth: 30, maxWidth: 70, style: { width: '5%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Case ID', accessor: 'caseId', minWidth: 50, maxWidth: 100, style: { width: '10%', whiteSpace: 'unset' }, headerStyle: { textAlign: 'left' },
       },
       {
-        Header: 'Message', accessor: 'reason', minWidth: 100, maxWidth: 300, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
+        Header: 'Message', accessor: 'reason', minWidth: 100, maxWidth: 400, style: { width: '15%' }, headerStyle: { textAlign: 'left' },
       },
     ];
   }
@@ -289,7 +284,7 @@ class TabView extends React.Component {
               defaultPageSize={25}
               pageSizeOptions={[10, 20, 25, 50, 100]}
               style={{
-                height: '47rem',
+                height: '53rem',
               }}
               styleName="table"
             />
@@ -328,41 +323,22 @@ class TabView extends React.Component {
     const { coviusTabIndex } = this.props;
     return (
       <>
-        <Paper color="default">
-          <Tabs
-            id="Tabs"
-            indicatorColor="primary"
-            onChange={(tab, newValue) => this.handleTabSelection(tab, newValue)}
-            textColor="primary"
-            value={coviusTabIndex}
-          >
-            <Tab
-              icon={<FiberManualRecordIcon styleName="failedTab" />}
-              label={this.renderCountLabel('Failed')}
-              styleName="tabStyle"
-            />
-            <Tab icon={<FiberManualRecordIcon styleName="passedTab" />} label={this.renderCountLabel('Passed')} styleName="tabStyle" />
-            <Tab icon={<PublishIcon styleName="uploadTab" />} label="Upload" styleName="tabStyle" />
-            { this.getCount('Upload Failed') && (
-              <Tab
-                icon={<FiberManualRecordIcon styleName="failedTab" />}
-                label={this.renderCountLabel('Upload Failed')}
-                styleName="tabStyle"
-              />
-            )
-            }
-          </Tabs>
-        </Paper>
-        <TabPanel id="failedTab" index={0} styleName="tabStyle" value={coviusTabIndex}>
+        <SimpleTabs
+          coviusTabIndex={coviusTabIndex}
+          getCount={this.getCount}
+          handleTabSelection={this.handleTabSelection}
+          renderCountLabel={this.renderCountLabel}
+        />
+        <TabPanel id="failedTab" index={0} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('Failed')}
         </TabPanel>
-        <TabPanel id="passedTab" index={1} styleName="tabStyle" value={coviusTabIndex}>
+        <TabPanel id="passedTab" index={1} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('Passed')}
         </TabPanel>
-        <TabPanel id="uploadTab" index={2} styleName="uploadPage" value={coviusTabIndex}>
+        <TabPanel id="uploadTab" index={2} value={coviusTabIndex}>
           {this.renderUploadPanel()}
         </TabPanel>
-        <TabPanel index={3} styleName="tabStyle" value={coviusTabIndex}>
+        <TabPanel index={3} styleName="tabPanelStyle" value={coviusTabIndex}>
           {this.renderTableData('uploadFailed')}
         </TabPanel>
       </>

@@ -10,7 +10,7 @@ const UTIL = 'UTIL';
 const POSTMODSTAGER = 'POSTMODSTAGER';
 const POSTMOD = 'POSTMOD';
 const BOOKING = 'BOOKING';
-const COVIUS = 'COVIUS';
+const DOCGENVENDOR = 'DOCGENVENDOR';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -20,7 +20,6 @@ const checklistGroupNames = [
   DOCS_IN,
   POSTMOD,
   BOOKING,
-  COVIUS,
 ];
 
 const userGroupList = [
@@ -35,7 +34,7 @@ const userGroupList = [
   UTIL,
   POSTMODSTAGER,
   BOOKING,
-  COVIUS,
+  DOCGENVENDOR,
 ];
 
 

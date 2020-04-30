@@ -23,7 +23,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import * as XLSX from 'xlsx';
-import DashboardModel from 'models/Dashboard';
 import TabView from './TabView';
 
 const hasPassedProp = R.has('request');
@@ -127,9 +126,9 @@ class CoviusBulkOrder extends React.PureComponent {
     });
   }
 
-  handleClose = (level) => {
-    const { closeSweetAlert } = this.props;
-    if (level === DashboardModel.Messages.LEVEL_SUCCESS) {
+  handleClose = () => {
+    const { closeSweetAlert, resultOperation } = this.props;
+    if (resultOperation.clearData) {
       this.onResetClick();
     }
     closeSweetAlert();
@@ -329,8 +328,8 @@ class CoviusBulkOrder extends React.PureComponent {
             margin="normal"
             multiline
             onChange={event => this.handleCaseChange(event)}
-            rows={32}
-            style={{ width: '99%', resize: 'none' }}
+            rows={30}
+            style={{ width: '95%', resize: 'none' }}
             value={caseIds}
           />
         </div>
@@ -452,9 +451,10 @@ class CoviusBulkOrder extends React.PureComponent {
       <SweetAlertBox
         confirmButtonColor="#004261"
         message={resultOperation.status}
-        onConfirm={() => this.handleClose(resultOperation.level)}
+        onConfirm={() => this.handleClose()}
         show={resultOperation.isOpen}
         showConfirmButton={resultOperation.showConfirmButton}
+        title={resultOperation.title}
         type={resultOperation.level}
       />
     );
@@ -537,10 +537,12 @@ CoviusBulkOrder.propTypes = {
     }),
   }),
   resultOperation: PropTypes.shape({
+    clearData: PropTypes.string,
     isOpen: PropTypes.bool,
     level: PropTypes.string,
     showConfirmButton: PropTypes.bool,
     status: PropTypes.string,
+    title: PropTypes.string,
   }),
   submitToCovius: PropTypes.func.isRequired,
 };

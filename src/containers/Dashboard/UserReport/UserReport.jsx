@@ -47,7 +47,7 @@ class UserReport extends React.PureComponent {
       setPageType(BULKUPLOAD_STAGER);
     } else if (el.group === 'PROC') {
       history.push('/bulkEvalInsertion');
-    } else if (el.group === 'COVIUS') {
+    } else if (el.group === 'DOCGENVENDOR') {
       history.push('/coviusBulkOrder');
     }
   }
@@ -91,7 +91,9 @@ class UserReport extends React.PureComponent {
     const { powerBIConstants, userGroupList, onExpand } = this.props;
     const { location } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
-    this.showAddDocsIn = el.group === 'DOCSIN' || (userGroupList.find(element => element === 'proc-mgr') && el.group === 'PROC') || el.group === 'COVIUS';
+    this.showAddDocsIn = el.group === 'DOCSIN'
+    || (userGroupList.find(element => element === 'proc-mgr') && el.group === 'PROC')
+    || el.group === 'DOCGENVENDOR';
     return (
       <>
         <ContentHeader
@@ -99,7 +101,7 @@ class UserReport extends React.PureComponent {
           showAddButton={this.showAddDocsIn}
           title={el.task}
         >
-          {el.group === 'COVIUS' ? <Expand onClick={onExpand} />
+          {el.group === 'DOCGENVENDOR' ? <Expand onClick={onExpand} />
             : (
               <Controls
                 showGetNext
