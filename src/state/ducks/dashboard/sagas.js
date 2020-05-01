@@ -1577,11 +1577,11 @@ const onFileSubmit = function* onFileSubmit() {
 };
 
 const submitToCovius = function* submitToCovius(action) {
-  const eventCode = action.payload;
-
+  const eventCategory = action.payload;
+  const isStatusChangeRequest = eventCategory !== DashboardModel.EVENT_CATEGORY_FILTER;
   const { request } = yield select(selectors.resultData);
   try {
-    const response = yield call(sendToCovius, eventCode, request);
+    const response = yield call(sendToCovius, isStatusChangeRequest, request);
     yield put({
       type: SET_COVIUS_DATA,
       payload: response,

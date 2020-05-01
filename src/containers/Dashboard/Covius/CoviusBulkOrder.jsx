@@ -202,7 +202,7 @@ class CoviusBulkOrder extends React.PureComponent {
 
   onSubmitToCovius = () => {
     const { submitToCovius } = this.props;
-    const { selectedEvent } = this.state;
+    const { selectedEventCategory } = this.state;
     const status = 'We are processing your request.  Please do not close the browser.';
     const level = 'Info';
     const showConfirmButton = false;
@@ -211,7 +211,7 @@ class CoviusBulkOrder extends React.PureComponent {
       level,
       showConfirmButton,
     };
-    submitToCovius(selectedEvent.eventCode, sweetAlertPayload);
+    submitToCovius(selectedEventCategory, sweetAlertPayload);
   }
 
   handleReset() {
