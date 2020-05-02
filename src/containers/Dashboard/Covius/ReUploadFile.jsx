@@ -16,7 +16,7 @@ class ReUploadFile extends React.Component {
   }
 
   onSubmitToCovius = () => {
-    const { onSubmitFile, eventCategory } = this.props;
+    const { onSubmitFile } = this.props;
     const status = 'We are processing your request.  Please do not close the browser.';
     const level = 'Info';
     const showConfirmButton = false;
@@ -25,7 +25,7 @@ class ReUploadFile extends React.Component {
       level,
       showConfirmButton,
     };
-    onSubmitFile(eventCategory, sweetAlertPayload);
+    onSubmitFile(sweetAlertPayload);
   }
 
   render() {
@@ -107,7 +107,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 ReUploadFile.propTypes = {
-  eventCategory: PropTypes.string.isRequired,
   fileName: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   onSubmitFile: PropTypes.func.isRequired,
