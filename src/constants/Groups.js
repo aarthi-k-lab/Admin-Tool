@@ -9,5 +9,5 @@ export const DOC_PROCESSOR = 'proc';
 export const DOC_GEN = 'docgen';
 export const DOCS_IN = 'docsin';
 export const BOOKING = 'booking';
-export const COVIUS = 'DOCGENVENDOR';
-export const COVIUS_MGR = 'DOCGENVENDOR-MGR';
+export const COVIUS = 'docgenvendor';
+export const COVIUS_MGR = 'docgenvendor-mgr';
