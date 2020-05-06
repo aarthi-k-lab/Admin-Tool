@@ -1293,7 +1293,7 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
-function* sendToFeuw(action) {
+function* sendToFEUW(action) {
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -1302,7 +1302,7 @@ function* sendToFeuw(action) {
       userPrincipalName,
     };
     yield put({ type: SHOW_LOADER });
-    const response = yield call(Api.callPost, '/api/workassign/sendToFeuw', request);
+    const response = yield call(Api.callPost, '/api/workassign/sendToFEUW', request);
     const { status, message } = response;
     if (status === '200') {
       yield put({
@@ -1711,8 +1711,8 @@ function* watchSendToDocsIn() {
   yield takeEvery(SET_TASK_SENDTO_DOCSIN, sendToDocsIn);
 }
 
-function* watchSendToFeuw() {
-  yield takeEvery(SEND_TO_FEUW_SAGA, sendToFeuw);
+function* watchSendToFEUW() {
+  yield takeEvery(SEND_TO_FEUW_SAGA, sendToFEUW);
 }
 
 function* watchAddDocsInReceived() {
@@ -1772,7 +1772,7 @@ export const TestExports = {
   onFileSubmit,
   onDownloadFile,
   sendToCovius,
-  sendToFeuw,
+  sendToFEUW,
   watchDispositionSave,
   watchSearchLoan,
   watchTombstoneLoan,
@@ -1783,7 +1783,7 @@ export const TestExports = {
   watchLoadTrials,
   watchSendToDocGen,
   watchSendToDocsIn,
-  watchSendToFeuw,
+  watchSendToFEUW,
   watchContinueMyReview,
   watchCompleteMyReview,
   watchAddDocsInReceived,
@@ -1814,7 +1814,7 @@ export const combinedSaga = function* combinedSaga() {
     watchSentToUnderwriting(),
     watchSendToDocGen(),
     watchSendToDocsIn(),
-    watchSendToFeuw(),
+    watchSendToFEUW(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
     watchOnSelectReject(),

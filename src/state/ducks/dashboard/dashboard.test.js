@@ -895,15 +895,15 @@ describe('watch assign Loan ', () => {
   });
 });
 
-describe('watch sendToFeuw ', () => {
-  it('should trigger sendToFeuw worker', () => {
-    const saga = cloneableGenerator(TestExports.watchSendToFeuw)();
+describe('watch sendToFEUW ', () => {
+  it('should trigger sendToFEUW worker', () => {
+    const saga = cloneableGenerator(TestExports.watchSendToFEUW)();
     expect(saga.next().value)
-      .toEqual(takeEvery(actionTypes.SEND_TO_FEUW_SAGA, TestExports.sendToFeuw));
+      .toEqual(takeEvery(actionTypes.SEND_TO_FEUW_SAGA, TestExports.sendToFEUW));
   });
 });
 
-describe('send to feuw : success', () => {
+describe('send to FEUW : success', () => {
   const action = {
     payload: {
       processId: '1234',
@@ -929,7 +929,7 @@ describe('send to feuw : success', () => {
     message: 'Sent to FEUW successfully',
   };
 
-  const saga = cloneableGenerator(TestExports.sendToFeuw)(action);
+  const saga = cloneableGenerator(TestExports.sendToFEUW)(action);
 
   it('should call select userDetails from store', () => {
     expect(saga.next().value)
@@ -941,9 +941,9 @@ describe('send to feuw : success', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should call sendToFeuw Api', () => {
+  it('should call sendToFEUW Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, '/api/workassign/sendToFeuw', mockRequest));
+      .toEqual(call(Api.callPost, '/api/workassign/sendToFEUW', mockRequest));
   });
 
   it('should dispatch action SET_RESULT_OPERATION', () => {
@@ -957,7 +957,7 @@ describe('send to feuw : success', () => {
   });
 });
 
-describe('send to feuw : failure', () => {
+describe('send to FEUW : failure', () => {
   const action = {
     payload: {
       processId: '1234',
@@ -983,7 +983,7 @@ describe('send to feuw : failure', () => {
     message: 'Invalid Event',
   };
 
-  const saga = cloneableGenerator(TestExports.sendToFeuw)(action);
+  const saga = cloneableGenerator(TestExports.sendToFEUW)(action);
 
   it('should call select userDetails from store', () => {
     expect(saga.next().value)
@@ -995,9 +995,9 @@ describe('send to feuw : failure', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should call sendToFeuw Api', () => {
+  it('should call sendToFEUW Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, '/api/workassign/sendToFeuw', mockRequest));
+      .toEqual(call(Api.callPost, '/api/workassign/sendToFEUW', mockRequest));
   });
 
   it('should dispatch action SET_RESULT_OPERATION', () => {
@@ -1006,7 +1006,7 @@ describe('send to feuw : failure', () => {
   });
 });
 
-describe('send to feuw : failure', () => {
+describe('send to FEUW : error', () => {
   const action = {
     payload: {
       processId: '1234',
@@ -1027,7 +1027,7 @@ describe('send to feuw : failure', () => {
     userPrincipalName: 'bren@mrcooper.com',
   };
 
-  const saga = cloneableGenerator(TestExports.sendToFeuw)(action);
+  const saga = cloneableGenerator(TestExports.sendToFEUW)(action);
 
   it('should call select userDetails from store', () => {
     expect(saga.next().value)
@@ -1039,9 +1039,9 @@ describe('send to feuw : failure', () => {
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
   });
 
-  it('should call sendToFeuw Api', () => {
+  it('should call sendToFEUW Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callPost, '/api/workassign/sendToFeuw', mockRequest));
+      .toEqual(call(Api.callPost, '/api/workassign/sendToFEUW', mockRequest));
   });
 
   it('should dispatch action SET_RESULT_OPERATION', () => {

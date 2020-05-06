@@ -164,7 +164,7 @@ describe('Ducks :: dashboard -> reducer', () => {
     expect(reducer(state, taskFetchErrorAction)).toEqual(expectedState);
   });
 
-  it('disableSendToFeuw action', () => {
+  it('disableSendToFEUW action', () => {
     const expectedState = {
       disableSendToFEUW: true,
     };

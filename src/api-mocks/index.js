@@ -36,11 +36,9 @@ function mock() {
     groupName: 'admin'
   }, {
     groupName: 'beuw-mgr'
-  }, 
-  {
+  }, {
     groupName: 'feuw-mgr'
-  },
-   {
+  }, {
     groupName: 'stager-mgr'
   }, {
     groupName: 'proc-mgr'
