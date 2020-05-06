@@ -6,6 +6,8 @@ import {
   DOCS_IN,
   DOC_GEN,
   BOOKING,
+  COVIUS,
+  COVIUS_MGR,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -289,6 +291,7 @@ Auth.failureMessages = {
   STAGER_DASHBOARD_ACCESS_NEEDED: 'Stager Dashboard Access is needed to view the Stager Dashboard',
   USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
+  COVIUS_ACCESS_NEEDED: 'COVIUS Group Access is needed to view the Covius Bulk order page.',
 };
 
 Auth.homePage = [
@@ -319,6 +322,14 @@ Auth.homePage = [
   {
     groupName: BOOKING,
     path: '/special-loan',
+  },
+  {
+    groupName: COVIUS,
+    path: '/dg-vendor',
+  },
+  {
+    groupName: COVIUS_MGR,
+    path: '/dg-vendor',
   },
 ];
 

@@ -6,6 +6,7 @@ import {
   SAVE_EVALID_LOANNUMBER,
   SEARCH_LOAN_RESULT,
   UNASSIGN_LOAN_RESULT,
+  DISABLE_SEND_TO_FEUW,
 } from './types';
 
 const saveDispositionAction = {
@@ -36,6 +37,10 @@ const taskFetchErrorAction = {
   payload: {
     taskfetchError: true,
   },
+};
+
+const disableSendToFEUWAction = {
+  type: DISABLE_SEND_TO_FEUW,
 };
 
 const searchLoanAction = {
@@ -78,7 +83,7 @@ const state = {};
 
 describe('Ducks :: dashboard -> reducer', () => {
   it('initialization', () => {
-    expect(reducer(undefined, { type: 'init' })).toEqual({ firstVisit: true });
+    expect(reducer(undefined, { type: 'init' })).toEqual({ firstVisit: true, coviusTabIndex: 0 });
   });
 
   it('Success unAssignLoan action', () => {
@@ -157,6 +162,13 @@ describe('Ducks :: dashboard -> reducer', () => {
       taskId: null,
     };
     expect(reducer(state, taskFetchErrorAction)).toEqual(expectedState);
+  });
+
+  it('disableSendToFeuw action', () => {
+    const expectedState = {
+      disableSendToFEUW: true,
+    };
+    expect(reducer(state, disableSendToFEUWAction)).toEqual(expectedState);
   });
 
   it('searchLoan Result action', () => {

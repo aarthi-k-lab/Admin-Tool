@@ -4,7 +4,7 @@ import {
   TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOC_GEN_ACTION, SET_STAGER_VALUE,
   SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_STAGER_GROUP,
   GET_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE, CLEAR_STAGER_RESPONSE,
-  TRIGGER_STAGER_TILE_SAGA, SEND_TO_FEUW_SAGA,
+  TRIGGER_STAGER_TILE_SAGA,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -52,11 +52,6 @@ const setStartEndDate = payload => ({
   payload,
 });
 
-const sendToFEUW = payload => ({
-  type: SEND_TO_FEUW_SAGA,
-  payload,
-});
-
 const clearDocGenAction = () => ({
   type: CLEAR_DOC_GEN_RESPONSE,
 });
@@ -101,5 +96,4 @@ export {
   clearSearchResponse,
   clearStagerResponse,
   onLoansSubmitAction,
-  sendToFEUW,
 };

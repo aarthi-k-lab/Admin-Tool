@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SweetAlert from 'sweetalert2-react';
-import { Success, Failed, Warning } from '../../constants/alertTypes';
+import imageUrls from '../../constants/alertTypes';
 
 const SweetAlertBox = ({
   message, show, onConfirm, type, confirmButtonColor,
+  showConfirmButton, title,
 }) => {
   let imageUrl = '';
-  if (type === 'Success') {
-    imageUrl = Success;
-  } else if (type === 'Failed') {
-    imageUrl = Failed;
-  } else {
-    imageUrl = Warning;
-  }
+  imageUrl = imageUrls[type] ? imageUrls[type] : imageUrls.Warning;
   return (
     <SweetAlert
       confirmButtonColor={confirmButtonColor}
@@ -23,7 +18,9 @@ const SweetAlertBox = ({
       onConfirm={onConfirm}
       padding="3em"
       show={show}
-      title={message}
+      showConfirmButton={showConfirmButton}
+      text={title && message}
+      title={title || message}
       width="600"
     />
   );
@@ -32,13 +29,18 @@ const SweetAlertBox = ({
 SweetAlertBox.defaultProps = {
   show: false,
   confirmButtonColor: '',
+  onConfirm() {},
+  showConfirmButton: true,
+  title: '',
 };
 
 SweetAlertBox.propTypes = {
   confirmButtonColor: PropTypes.string,
   message: PropTypes.string.isRequired,
-  onConfirm: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func,
   show: PropTypes.bool,
+  showConfirmButton: PropTypes.bool,
+  title: PropTypes.string,
   type: PropTypes.string.isRequired,
 };
 

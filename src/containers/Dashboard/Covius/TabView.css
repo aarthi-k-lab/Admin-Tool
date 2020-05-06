@@ -18,6 +18,13 @@
   margin-bottom: 0.25rem !important;
 }
 
+.uploadfailedTab {
+  font-size: medium !important;
+  color: red;
+  margin-right: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
 .table-container {
   display: flex;
   flex-grow: 1;
@@ -49,10 +56,6 @@
   padding-right: 0.2rem;
 }
 
-.uploadPage {
-  height: 100%;
-}
-
 .uploadMsg {
   font-size: 1.3rem;
   align-items: center;
@@ -70,10 +73,6 @@
   margin-top: -42px !important;
 }
 
-.tabStyle > div {
-  padding: 0rem !important;
-}
-
 .tabStyle > span {
   flex-direction: row !important;
 }
@@ -81,3 +80,9 @@
 .tabViewDiv{
   width: 100%;
 }
+
+.tabPanelStyle > div  {
+  padding: 0rem !important;
+
+}
+

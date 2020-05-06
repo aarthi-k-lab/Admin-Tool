@@ -12,8 +12,9 @@ const DOC_GEN_BACK = 'DGB';
 const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
 const BOOKING = 'BOOKING';
-const COVIUS = 'COVIUS';
+const COVIUS = 'docgenvendor';
 
+const EVENT_CATEGORY_FILTER = 'SubmitFullmentRequest';
 const STAGER = 'STAGER';
 const POSTMODSTAGER = 'POSTMOD';
 const ALL_STAGER = 'ALLSTAGER';
@@ -155,6 +156,7 @@ const InvalidEvalResponse = evalId => ({
 });
 
 const DashboardModel = {
+  EVENT_CATEGORY_FILTER,
   FEUW,
   BEUW,
   PROC,

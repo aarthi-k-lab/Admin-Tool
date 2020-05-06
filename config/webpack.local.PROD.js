@@ -168,12 +168,13 @@ const config = merge(
           pathRewrite: {
             '^/api/dataservice': '',
           },
-          '/api/docFulfillment': {
+        },
+        '/api/docfulfillment': {
             target: 'https://cmodfulfillment.int.mrcooper.io',
             secure: false,
             changeOrigin: true,
             pathRewrite: {
-              '^/api/docFulfillment': '',
+              '^/api/docfulfillment': '',
             },
           },
         },

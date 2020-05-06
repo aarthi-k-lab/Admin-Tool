@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors } from 'ducks/dashboard';
 import RouteAccess from 'lib/RouteAccess';
 import './EvalTableCell.css';
-// import styles from './EvalTableCell.css';
 
 class EvalTableCell extends React.PureComponent {
   constructor(props) {
@@ -31,7 +31,7 @@ class EvalTableCell extends React.PureComponent {
   }
 
   render() {
-    const { value, styleProps } = this.props;
+    const { value, styleProps, disableSendToFEUW } = this.props;
     let renderCellValue = '';
     switch (value) {
       case 'Loan Activity':
@@ -66,7 +66,7 @@ class EvalTableCell extends React.PureComponent {
         break;
       case 'SendToFEUW':
         renderCellValue = (
-          <IconButton onClick={this.handleLinkClick} styleName="reject-icon">
+          <IconButton disabled={disableSendToFEUW} onClick={this.handleLinkClick} styleName="reject-icon">
             <img alt="Send To FEUW" src="/static/img/Revoke.svg" />
           </IconButton>
         );
@@ -86,12 +86,16 @@ class EvalTableCell extends React.PureComponent {
   }
 }
 
+EvalTableCell.defaultProps = {
+  disableSendToFEUW: false,
+};
+
 EvalTableCell.propTypes = {
   click: PropTypes.func.isRequired,
+  disableSendToFEUW: PropTypes.bool,
   styleProps: PropTypes.string.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
-    skills: PropTypes.objectOf(PropTypes.array).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,
@@ -104,6 +108,12 @@ EvalTableCell.propTypes = {
 
 const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
+  disableSendToFEUW: selectors.disableSendToFEUW(state),
 });
 
+const TestHooks = {
+  EvalTableCell,
+};
+
 export default connect(mapStateToProps, null)(EvalTableCell);
+export { TestHooks };

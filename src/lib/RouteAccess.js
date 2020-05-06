@@ -8,7 +8,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'DOCGENVENDOR-MGR'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr'],
 };
 
 const stager = {
@@ -103,14 +103,14 @@ const COVIUS = {
   path: '/dg-vendor',
   name: 'covius',
   img: '/static/img/covius.svg',
-  groups: ['allaccess', 'DOCGENVENDOR', 'DOCGENVENDOR-MGR'],
+  groups: ['allaccess', 'docgenvendor', 'docgenvendor-mgr'],
 };
 
 const coviusBulkOrderPage = {
   path: '/coviusBulkOrder',
   name: 'Covius Navigation Page',
   img: '/static/img/covius.svg',
-  groups: ['allaccess', 'DOCGENVENDOR', 'DOCGENVENDOR-MGR'],
+  groups: ['allaccess', 'docgenvendor', 'docgenvendor-mgr'],
 };
 
 const trial = {

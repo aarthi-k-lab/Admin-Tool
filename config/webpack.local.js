@@ -169,20 +169,20 @@ const config = merge(
             '^/api/dataservice': '',
           },
         },
-      },
-      '/api/booking': {
-        target: 'https://api.dev.int.mrcooper.io/cmod/booking',
-        secure: false,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/booking': '',
+        '/api/booking': {
+          target: 'https://api.dev.int.mrcooper.io/cmod/booking',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/booking': '',
+          },
         },
-        '/api/docFulfillment': {
+        '/api/docfulfillment': {
           target: 'https://cmodfulfillmentdev.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/docFulfillment': '',
+            '^/api/docfulfillment': '',
           },
         },
       },

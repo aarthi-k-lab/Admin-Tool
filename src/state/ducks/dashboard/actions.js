@@ -20,6 +20,7 @@ import {
   GROUP_NAME,
   SAVE_LOANNUMBER_PROCESSID,
   VALIDATE_DISPOSITION_SAGA,
+  SEND_TO_FEUW_SAGA,
   // GET_LOAN_ACTIVITY_DETAILS,
   LOAD_TRIALS_SAGA,
   SET_TASK_UNDERWRITING,
@@ -52,6 +53,9 @@ import {
   CLEAR_COVIUS_SUBMIT_DATA,
   DOWNLOAD_FILE,
   POPULATE_EVENTS_DROPDOWN,
+  SEND_TO_COVIUS,
+  CLOSE_SWEET_ALERT,
+  SET_COVIUS_TABINDEX,
 } from './types';
 
 
@@ -274,9 +278,8 @@ const deleteFileAction = payload => ({
   payload,
 });
 
-const submitFileAction = payload => ({
+const submitFileAction = () => ({
   type: SUBMIT_FILE,
-  payload,
 });
 
 const clearSubmitCoviusData = () => ({
@@ -292,7 +295,36 @@ const populateEventsDropdown = () => ({
   type: POPULATE_EVENTS_DROPDOWN,
 });
 
+const submitToCoviusAction = payload => ({
+  type: SEND_TO_COVIUS,
+  payload,
+});
+
+const sendToFEUW = payload => ({
+  type: SEND_TO_FEUW_SAGA,
+  payload,
+});
+
+const closeSweetAlertAction = () => ({
+  type: CLOSE_SWEET_ALERT,
+});
+
+const openSweetAlertAction = payload => ({
+  type: SET_RESULT_OPERATION,
+  payload,
+});
+
+const setCoviusIndexAction = payload => ({
+  type: SET_COVIUS_TABINDEX,
+  payload,
+});
+
+
 export {
+  setCoviusIndexAction,
+  openSweetAlertAction,
+  closeSweetAlertAction,
+  submitToCoviusAction,
   autoSave,
   discardEvalResponse,
   clearDisposition,
@@ -344,4 +376,5 @@ export {
   clearSubmitCoviusData,
   downloadFileAction,
   populateEventsDropdown,
+  sendToFEUW,
 };

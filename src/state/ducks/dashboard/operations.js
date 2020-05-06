@@ -49,6 +49,10 @@ import {
   downloadFileAction,
   populateEventsDropdown,
   sendToFEUW,
+  submitToCoviusAction,
+  openSweetAlertAction,
+  closeSweetAlertAction,
+  setCoviusIndexAction,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -220,8 +224,9 @@ const onDeleteFile = dispatch => (payload) => {
   dispatch(deleteFileAction(payload));
 };
 
-const onSubmitFile = dispatch => (payload) => {
-  dispatch(submitFileAction(payload));
+const onSubmitFile = dispatch => (sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
+  dispatch(submitFileAction());
 };
 
 const onClearSubmitCoviusData = dispatch => () => {
@@ -239,7 +244,25 @@ const downloadFile = dispatch => (payload) => {
 const populateEvents = dispatch => () => {
   dispatch(populateEventsDropdown());
 };
+
+const submitToCovius = dispatch => (eventCode, sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
+  dispatch(submitToCoviusAction(eventCode));
+};
+
+const closeSweetAlert = dispatch => () => {
+  dispatch(closeSweetAlertAction());
+};
+
+const setCoviusIndex = dispatch => (payload) => {
+  dispatch(setCoviusIndexAction(payload));
+};
+
 const operations = {
+  setCoviusIndex,
+  openSweetAlertAction,
+  closeSweetAlert,
+  submitToCovius,
   clearEvalResponse,
   onAutoSave,
   onClearDisposition,

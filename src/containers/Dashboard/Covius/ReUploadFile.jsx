@@ -6,83 +6,31 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 import { operations, selectors } from 'ducks/dashboard';
-import * as R from 'ramda';
-import SweetAlert from 'sweetalert2-react';
-import { Success, Failed, Info } from '../../../constants/alertTypes';
-
 
 class ReUploadFile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       response: null,
-      isOpen: true, // eslint-disable-line react/no-unused-state
     };
-    this.onSubmitToCovius = this.onSubmitToCovius.bind(this);
-  }
-
-  static getDerivedStateFromProps = (nextProps, prevState) => {
-    const {
-      getSubmitFileResponse,
-      refreshPage, onDeleteFile,
-      switchToUploadFailedTab,
-    } = nextProps;
-    const { isOpen, response } = prevState;
-    const { message, level } = getSubmitFileResponse;
-    if (!R.isEmpty(getSubmitFileResponse)) {
-      const alertResponse = (
-        <SweetAlert
-          confirmButtonColor="#004261"
-          fontSize="1rem"
-          icon="error"
-          imageHeight="500"
-          imageUrl={level === 'Failed' || level === 'Faliure' ? Failed : Success}
-          onConfirm={level === 'Success' ? refreshPage() : switchToUploadFailedTab()}
-          padding="3em"
-          show={isOpen}
-          text={level === 'Failed' ? message.msg : ''}
-          title={level === 'Failed' ? message.title : message}
-          width="600"
-        />
-      );
-      onDeleteFile(true);
-      return { response: alertResponse };
-    }
-    return { response };
-  }
-
-  invokeSubmitToCoviusSweetAlert = () => {
-    const { isOpen } = this.state;
-    const sweetAlert = (
-      <SweetAlert
-        fontSize="1rem"
-        icon="error"
-        imageHeight="500"
-        imageUrl={Info}
-        padding="3em"
-        show={isOpen}
-        showConfirmButton={false}
-        title="We are processing your request.  Please do not close the browser."
-        width="600"
-      />
-    );
-    this.setState({ response: sweetAlert });
   }
 
   onSubmitToCovius = () => {
-    const { onSubmitFile, eventCategory } = this.props;
-    this.invokeSubmitToCoviusSweetAlert();
-    onSubmitFile(eventCategory);
-  }
-
-  handleClose = () => {
-    this.setState({ isOpen: false }); // eslint-disable-line react/no-unused-state
+    const { onSubmitFile } = this.props;
+    const status = 'We are processing your request.  Please do not close the browser.';
+    const level = 'Info';
+    const showConfirmButton = false;
+    const sweetAlertPayload = {
+      status,
+      level,
+      showConfirmButton,
+    };
+    onSubmitFile(sweetAlertPayload);
   }
 
   render() {
     const { fileName, onChange } = this.props;
     const { response } = this.state;
-    // console.log(getSubmitFileResponse, isOpen);
     return (
       <>
         <div>
@@ -151,25 +99,17 @@ ReUploadFile.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  getSubmitFileResponse: selectors.getFileSubmitResponse(state),
+  fileSubmitResponse: selectors.getFileSubmitResponse(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onSubmitFile: operations.onSubmitFile(dispatch),
-  onDeleteFile: operations.onDeleteFile(dispatch),
 });
 
 ReUploadFile.propTypes = {
-  eventCategory: PropTypes.string.isRequired,
   fileName: PropTypes.string,
-  getSubmitFileResponse:
-    PropTypes.shape.isRequired, // eslint-disable-line react/no-unused-prop-types
   onChange: PropTypes.func.isRequired,
-  onDeleteFile: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   onSubmitFile: PropTypes.func.isRequired,
-  refreshPage: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
-  switchToUploadFailedTab:
-  PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
 };
 
 export { TestHooks };

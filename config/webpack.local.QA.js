@@ -49,12 +49,12 @@ const config = merge(
           target: 'http://127.0.0.1:7600',
           pathRewrite: authPathRewrite,
         },
-        '/api/docFulfillment': {
+        '/api/docfulfillment': {
           target: 'https://cmodfulfillmentqa.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/docFulfillment': '',
+            '^/api/docfulfillment': '',
           },
         },
         '/api/ods-gateway': {

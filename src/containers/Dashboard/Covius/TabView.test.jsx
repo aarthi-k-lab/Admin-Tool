@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { TestHooks } from './TabView';
 
 describe('renders <TabView />', () => {
@@ -32,7 +32,7 @@ describe('renders <TabView />', () => {
     expect(wrapper.find('WithStyles(ForwardRef(Grid))').at(2)).toHaveLength(1);
   });
   it('renders SubmitError when the file upload is non excel', () => {
-    const wrapper = mount(
+    const wrapper = shallow(
       <TestHooks.TabView />,
     );
     wrapper.setState({ isFailed: true, value: 2 });
@@ -60,14 +60,16 @@ describe('renders <TabView />', () => {
 
   it('it refreshes data upon tab selection', () => {
     const onChange = jest.fn();
+    const setCoviusIndex = jest.fn();
     const clearSubmitDataResponse = jest.fn();
     const wrapper = shallow(
-      <TestHooks.TabView clearSubmitDataResponse={clearSubmitDataResponse} onChange={onChange} />,
+      <TestHooks.TabView
+        clearSubmitDataResponse={clearSubmitDataResponse}
+        onChange={onChange}
+        setCoviusIndex={setCoviusIndex}
+      />,
     );
-    wrapper.setState({ value: 2 });
-    wrapper.find('#Tabs').at(0).simulate('click');
     wrapper.instance().handleTabSelection(0, 3);
-    expect(wrapper.instance().state.value).toBe(3);
     expect(clearSubmitDataResponse.mock.calls).toHaveLength(1);
   });
 });

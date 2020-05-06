@@ -1,5 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import {
+  select,
+} from 'redux-saga/effects';
+import DashboardModel from 'models/Dashboard';
+import { selectors } from '../../../state/ducks/dashboard';
 import { TestHooks } from './CoviusBulkOrder';
 
 describe('renders <CoviusBulkOrder />', () => {
@@ -16,10 +21,10 @@ describe('renders <CoviusBulkOrder />', () => {
   );
   const wrapperState = wrapper.instance().state;
   it('renders download button', () => {
-    expect(wrapperState.isVisible).toBe(true);
+    expect(select(selectors.getCoviusTabIndex)).not.toBe(2);
     const element = wrapper.find('WithStyles(ForwardRef(Button))#download');
     expect(element.text()).toBe('DOWNLOAD EXCEL TO VERIFY');
-    expect(wrapperState.isDownloadDisabled).toBe('disabled');
+    expect(wrapper.instance().isDownloadDisabled()).toBe(true);
   });
 
   it('renders reset button', () => {
@@ -41,11 +46,11 @@ describe('Download Button Enabling', () => {
     level: 'level',
   };
   const mockData = {
-    DocumentRequests: [],
+    request: [],
     invalidCases:
       [{
         caseId: 32,
-        message: 'mock1',
+        reason: 'mock1',
       }],
   };
   const clearSubmitDataResponse = jest.fn();
@@ -58,40 +63,55 @@ describe('Download Button Enabling', () => {
     />,
   );
 
+  it('disables download button in the failed tab when there are no failed caseid(s)', () => {
+    wrapper.setProps({
+      coviusTabIndex: 0,
+      resultData: {},
+    });
+    expect(wrapper.instance().isDownloadDisabled()).toBe(true);
+  });
+
   it('disables download button in the passed tab when there are no passed caseid(s)', () => {
-    wrapper.find('Connect(TabView)').simulate('change', false, 1);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe(true);
+    wrapper.setProps({
+      coviusTabIndex: 1,
+      resultData: {
+      },
+    });
+    expect(wrapper.instance().isDownloadDisabled()).toBe(true);
   });
-
-  it('enables download button in the failed tab only when there is at least 1 failed caseid', () => {
-    wrapper.find('Connect(TabView)').simulate('change', false, 0);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe(false);
-  });
-
 
   it('enables download button in the passed tab only when there is at least 1 passed caseid', () => {
     wrapper.setProps({
+      eventCategory: DashboardModel.EVENT_CATEGORY_FILTER,
       resultData: {
-        DocumentRequests:
+        request:
           [{
             RequestId: '50063C7C-AC12-4035-9F96-9F4FCADEEC1E',
             UserFields: {
-              EVAL_ID: '3468435146',
-              CASEID: '3516543',
-              LOAN_NUMBER: '3468435146',
+              EvalId: '3468435146',
+              CaseId: '3516543',
+              LoanNumber: '3468435146',
             },
           }],
-        invalidCases: [],
       },
+      coviusTabIndex: 1,
     });
-
-    wrapper.find('Connect(TabView)').simulate('change', false, 1);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe(false);
+    expect(wrapper.instance().isDownloadDisabled()).toBe(false);
   });
 
-  it('disables download button in the failed tab when there are no failed caseid(s)', () => {
-    wrapper.find('Connect(TabView)').simulate('change', false, 0);
-    expect(wrapper.instance().state.isDownloadDisabled).toBe(true);
+  it('enables download button in the failed tab only when there is at least 1 failed caseid', () => {
+    wrapper.setProps({
+      coviusTabIndex: 0,
+      resultData: {
+        invalidCases: [
+          {
+            caseId: '354654',
+            reason: "CaseId doesn't exist",
+          },
+        ],
+      },
+    });
+    expect(wrapper.instance().isDownloadDisabled()).toBe(false);
   });
 });
 
@@ -109,7 +129,7 @@ it('downloads the excel when download button is clicked', () => {
       getDownloadResponse={getDownloadResponse}
     />,
   );
-  expect(wrapper.instance().state.isVisible).toBe(true);
+  expect(select(selectors.getCoviusTabIndex)).not.toBe(2);
   wrapper.find('#download').simulate('Click');
   wrapper.instance().handleDownload();
   expect(downloadFile.mock.calls).toHaveLength(2);
