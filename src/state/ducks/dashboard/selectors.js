@@ -59,7 +59,7 @@ const brand = state => R.pathOr(null, ['dashboard', 'brand'], state);
 const stagerValueState = state => R.pathOr(null, ['dashboard', 'stagerValueAndState'], state);
 const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift'], state);
 const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeReviewResponse'], state);
-
+const disableSendToFEUW = state => R.pathOr(false, ['dashboard', 'disableSendToFEUW'], state);
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
 const enableGetNext = state => (
@@ -187,6 +187,7 @@ const selectors = {
   getFileSubmitResponse,
   getDownloadResponse,
   getcoviusEventOptions,
+  disableSendToFEUW,
 };
 
 export default selectors;

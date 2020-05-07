@@ -43,6 +43,10 @@ class EvalTableRow extends React.PureComponent {
       onGetGroupName('BOOKING');
       onSelectEval({ ...payLoad, isSearch: true });
       history.push(this.redirectPath);
+    } else if (value === 'SendToFEUW') {
+      const { onSendToFEUW } = this.props;
+      const { piid: processId, evalId } = row.original;
+      onSendToFEUW({ processId, evalId });
     } else if (((payLoad.pstatus === 'Active' && (payLoad.pstatusReason === 'Rejection Pending' || payLoad.pstatusReason === 'Trial Rejected')) || (payLoad.pstatusReason === 'Reject Suspend State' && payLoad.pstatus === 'Suspended'))) {
       const { evalId } = payLoad;
       const userID = R.path(['userDetails', 'email'], user);
@@ -60,6 +64,12 @@ class EvalTableRow extends React.PureComponent {
     const { row, user } = this.props;
     const groups = user && user.groupList;
     return RouteAccess.hasSlaAccess(groups) && ((row.original.taskName === DashboardModel.PENDING_BOOKING) || (row.original.milestone === 'Post Mod' && row.original.assignee === 'In Queue'));
+  }
+
+  sendToFEUW = () => {
+    const { row, user } = this.props;
+    const groups = user && user.groupList;
+    return RouteAccess.hasFrontEndManagerAccess(groups) && row.original.milestone === 'BackEnd Stager' && row.original.tstatus === 'Active';
   }
 
   getStyles = () => {
@@ -97,6 +107,16 @@ class EvalTableRow extends React.PureComponent {
           click={() => this.handleLinkClick('Booking')}
           styleProps={this.getStyles(row)}
           value="Booking"
+        />
+      );
+    }
+
+    if (this.sendToFEUW()) {
+      return (
+        <EvalTableCell
+          click={() => this.handleLinkClick('SendToFEUW')}
+          styleProps={this.getStyles(row)}
+          value="SendToFEUW"
         />
       );
     }
@@ -138,6 +158,7 @@ EvalTableRow.propTypes = {
   onGetGroupName: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   onSelectReject: PropTypes.func.isRequired,
+  onSendToFEUW: PropTypes.func.isRequired,
   row: PropTypes.shape({
     column: PropTypes.shape({
       Header: PropTypes.string,
@@ -146,7 +167,9 @@ EvalTableRow.propTypes = {
       assignee: PropTypes.string,
       evalId: PropTypes.string,
       milestone: PropTypes.string,
+      piid: PropTypes.string,
       taskName: PropTypes.string,
+      tstatus: PropTypes.string,
     }),
     value: PropTypes.string,
   }).isRequired,
@@ -168,6 +191,7 @@ const mapDispatchToProps = dispatch => ({
   onSelectEval: operations.onSelectEval(dispatch),
   onSelectReject: operations.onSelectReject(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onSendToFEUW: operations.onSendToFEUW(dispatch),
 });
 
 const mapStateToProps = state => ({

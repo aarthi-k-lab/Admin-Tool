@@ -68,6 +68,7 @@ import {
   SAVE_EVENTS_DROPDOWN,
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
+  DISABLE_SEND_TO_FEUW,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
@@ -586,6 +587,13 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         enableSendToDocsIn,
+      };
+    }
+
+    case DISABLE_SEND_TO_FEUW: {
+      return {
+        ...state,
+        disableSendToFEUW: true,
       };
     }
 

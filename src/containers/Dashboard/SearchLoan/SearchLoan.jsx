@@ -8,6 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
+import SweetAlertBox from 'components/SweetAlertBox';
 import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
@@ -74,6 +75,11 @@ class SearchLoan extends React.PureComponent {
   getGroups() {
     const { user } = this.props;
     return user && user.groupList;
+  }
+
+  handleClose = () => {
+    const { closeSweetAlert } = this.props;
+    closeSweetAlert();
   }
 
   handleBackButton() {
@@ -245,12 +251,28 @@ class SearchLoan extends React.PureComponent {
     return null;
   }
 
+  renderAlert = () => {
+    const { resultOperation } = this.props;
+    const { status, level, isOpen } = resultOperation;
+    return !R.isEmpty(resultOperation) ? (
+      <SweetAlertBox
+        confirmButtonColor="#004261"
+        message={status}
+        onConfirm={() => this.handleClose()}
+        show={isOpen}
+        showConfirmButton
+        type={level}
+      />
+    ) : null;
+  };
+
   render() {
     return (
       <>
         <span styleName="backButton"><Link onClick={this.handleBackButton} to="/">&lt; BACK</Link></span>
         {this.renderRejectResults()}
         {this.renderSearchResults()}
+        {this.renderAlert()}
       </>
     );
   }
@@ -350,9 +372,11 @@ SearchLoan.COLUMN_DATA = [
 SearchLoan.defaultProps = {
   enableGetNext: false,
   inProgress: false,
+  resultOperation: {},
 };
 
 SearchLoan.propTypes = {
+  closeSweetAlert: PropTypes.func.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
   getRejectResponse: PropTypes.arrayOf(PropTypes.shape({
@@ -371,6 +395,13 @@ SearchLoan.propTypes = {
   onGetGroupName: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
+  resultOperation: PropTypes.shape(
+    {
+      isOpen: PropTypes.bool,
+      level: PropTypes.string,
+      status: PropTypes.string,
+    },
+  ),
   searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
@@ -393,9 +424,11 @@ const mapStateToProps = state => ({
   getRejectResponse: selectors.getRejectResponse(state),
   user: loginSelectors.getUser(state),
   inProgress: selectors.inProgress(state),
+  resultOperation: selectors.resultOperation(state),
 });
 
 const mapDispatchToProps = dispatch => ({
+  closeSweetAlert: operations.closeSweetAlert(dispatch),
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),
@@ -410,4 +443,9 @@ const SearchLoanContainer = connect(
   mapDispatchToProps,
 )(SearchLoan);
 
+const TestHooks = {
+  SearchLoan,
+};
+
 export default withRouter(SearchLoanContainer);
+export { TestHooks };

@@ -20,6 +20,7 @@ import {
   GROUP_NAME,
   SAVE_LOANNUMBER_PROCESSID,
   VALIDATE_DISPOSITION_SAGA,
+  SEND_TO_FEUW_SAGA,
   // GET_LOAN_ACTIVITY_DETAILS,
   LOAD_TRIALS_SAGA,
   SET_TASK_UNDERWRITING,
@@ -299,6 +300,10 @@ const submitToCoviusAction = payload => ({
   payload,
 });
 
+const sendToFEUW = payload => ({
+  type: SEND_TO_FEUW_SAGA,
+  payload,
+});
 
 const closeSweetAlertAction = () => ({
   type: CLOSE_SWEET_ALERT,
@@ -313,6 +318,7 @@ const setCoviusIndexAction = payload => ({
   type: SET_COVIUS_TABINDEX,
   payload,
 });
+
 
 export {
   setCoviusIndexAction,
@@ -370,4 +376,5 @@ export {
   clearSubmitCoviusData,
   downloadFileAction,
   populateEventsDropdown,
+  sendToFEUW,
 };

@@ -117,6 +117,8 @@ const trial = {
   groups: ['trial-mgr', 'feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'stager-mgr', 'postmodstager-mgr', 'booking-mgr'],
 };
 
+const FEUW_MANAGER = 'feuw-mgr';
+
 const links = [
   managerDashboard,
   docProcessor,
@@ -184,6 +186,10 @@ function hasManagerDashboardAccess(groups) {
   return hasGroup(managerDashboard.groups, groups);
 }
 
+function hasFrontEndManagerAccess(groups) {
+  return R.contains(FEUW_MANAGER, groups);
+}
+
 function hasStagerDashboardAccess(groups) {
   return hasGroup(stager.groups, groups);
 }
@@ -245,4 +251,5 @@ module.exports = {
   hasSlaAccess,
   hasCoviusAccess,
   getStagerGroup,
+  hasFrontEndManagerAccess,
 };

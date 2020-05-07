@@ -48,6 +48,7 @@ import {
   clearSubmitCoviusData,
   downloadFileAction,
   populateEventsDropdown,
+  sendToFEUW,
   submitToCoviusAction,
   openSweetAlertAction,
   closeSweetAlertAction,
@@ -232,6 +233,10 @@ const onClearSubmitCoviusData = dispatch => () => {
   dispatch(clearSubmitCoviusData());
 };
 
+const onSendToFEUW = dispatch => (payload) => {
+  dispatch(sendToFEUW(payload));
+};
+
 const downloadFile = dispatch => (payload) => {
   dispatch(downloadFileAction(payload));
 };
@@ -308,6 +313,7 @@ const operations = {
   onClearSubmitCoviusData,
   downloadFile,
   populateEvents,
+  onSendToFEUW,
 };
 
 export default operations;

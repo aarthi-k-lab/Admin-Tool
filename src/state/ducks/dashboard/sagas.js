@@ -101,7 +101,9 @@ import {
   DOWNLOAD_FILE,
   POPULATE_EVENTS_DROPDOWN,
   SAVE_EVENTS_DROPDOWN,
+  SEND_TO_FEUW_SAGA,
   SEND_TO_COVIUS,
+  DISABLE_SEND_TO_FEUW,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1291,6 +1293,49 @@ function* sendToDocsIn() {
   yield put({ type: HIDE_LOADER });
 }
 
+function* sendToFEUW(action) {
+  try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const request = {
+      ...action.payload,
+      userPrincipalName,
+    };
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callPost, '/api/workassign/sendToFEUW', request);
+    const { status, message } = response;
+    if (status === '200') {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_SUCCESS,
+          status: message,
+        },
+      });
+      yield put({
+        type: DISABLE_SEND_TO_FEUW,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_FAILED,
+          status: status === '500' ? MSG_SERVICE_DOWN : message,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: LEVEL_ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* onSelectTrialTask(payload) {
   try {
     const response = yield call(Api.callPost, '/api/stager/stager/completeTrialForbearanceTasks?bulk=false', payload.payload);
@@ -1666,6 +1711,10 @@ function* watchSendToDocsIn() {
   yield takeEvery(SET_TASK_SENDTO_DOCSIN, sendToDocsIn);
 }
 
+function* watchSendToFEUW() {
+  yield takeEvery(SEND_TO_FEUW_SAGA, sendToFEUW);
+}
+
 function* watchAddDocsInReceived() {
   yield takeEvery(SET_ADD_DOCS_IN, AddDocsInReceived);
 }
@@ -1723,6 +1772,7 @@ export const TestExports = {
   onFileSubmit,
   onDownloadFile,
   sendToCovius,
+  sendToFEUW,
   watchDispositionSave,
   watchSearchLoan,
   watchTombstoneLoan,
@@ -1733,6 +1783,7 @@ export const TestExports = {
   watchLoadTrials,
   watchSendToDocGen,
   watchSendToDocsIn,
+  watchSendToFEUW,
   watchContinueMyReview,
   watchCompleteMyReview,
   watchAddDocsInReceived,
@@ -1763,6 +1814,7 @@ export const combinedSaga = function* combinedSaga() {
     watchSentToUnderwriting(),
     watchSendToDocGen(),
     watchSendToDocsIn(),
+    watchSendToFEUW(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
     watchOnSelectReject(),
