@@ -1053,6 +1053,58 @@ describe('send to FEUW : error', () => {
   });
 });
 
+describe('send to FEUW : 500 error', () => {
+  const action = {
+    payload: {
+      processId: '1234',
+      evalId: '6567',
+    },
+    type: 'app/dashboard/SEND_TO_FEUW_SAGA',
+  };
+
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+  };
+
+  const mockRequest = {
+    processId: '1234',
+    evalId: '6567',
+    userPrincipalName: 'bren@mrcooper.com',
+  };
+
+  const mockResponse = {
+    status: '500',
+    message: 'The workflow could not move forward at this time',
+  };
+
+  const saga = cloneableGenerator(TestExports.sendToFEUW)(action);
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should dispatch action SHOW_LOADER', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call sendToFEUW Api', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callPost, '/api/workassign/sendToFEUW', mockRequest));
+  });
+
+  it('should dispatch action SET_RESULT_OPERATION', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({
+        type: actionTypes.SET_RESULT_OPERATION,
+        payload: { level: LEVEL_FAILED, status: MSG_SERVICE_DOWN },
+      }));
+  });
+});
+
 describe('assign Loan', () => {
   const mockUser = {
     userDetails: {
