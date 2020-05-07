@@ -1320,7 +1320,7 @@ function* sendToFEUW(action) {
         type: SET_RESULT_OPERATION,
         payload: {
           level: LEVEL_FAILED,
-          status: message,
+          status: status === '500' ? MSG_SERVICE_DOWN : message,
         },
       });
     }
