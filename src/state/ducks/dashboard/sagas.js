@@ -1661,7 +1661,7 @@ const onDownloadFile = function* onDownloadFile(action) {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        status: 'Excel File Downloaded Sucessfully',
+        status: 'Excel File Downloaded Successfully',
         level: LEVEL_SUCCESS,
       },
     });

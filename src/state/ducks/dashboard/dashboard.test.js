@@ -1346,7 +1346,7 @@ describe('onDownloadFile Success case', () => {
     },
   };
   const mockPayload = {
-    status: 'Excel File Downloaded Sucessfully',
+    status: 'Excel File Downloaded Successfully',
     level: LEVEL_SUCCESS,
   };
   const saga = cloneableGenerator(TestExports.onDownloadFile)(action);
