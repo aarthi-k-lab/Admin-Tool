@@ -67,17 +67,17 @@ class TabView extends React.Component {
       return [
         {
           Header: 'Loan Number',
-          accessor: isSubmitFullment ? d => d['UserFields.LON'] : 'LoanNumber',
+          accessor: isSubmitFullment ? d => d['UserFields.Content.LON'] : 'LoanNumber',
           minWidth: 50,
-          id: 'UserFields.LON',
+          id: 'UserFields.Content.LON',
           maxWidth: 100,
           style: { width: '10%' },
           headerStyle: { textAlign: 'left' },
         },
         {
           Header: 'Eval ID',
-          accessor: isSubmitFullment ? d => d['UserFields.EVALID'] : 'EvalId',
-          id: 'UserFields.EVALID',
+          accessor: isSubmitFullment ? d => d['UserFields.Content.EVALID'] : 'EvalId',
+          id: 'UserFields.Content.EVALID',
           minWidth: 50,
           maxWidth: 100,
           style: { width: '10%' },
@@ -85,8 +85,8 @@ class TabView extends React.Component {
         },
         {
           Header: 'Case ID',
-          accessor: isSubmitFullment ? d => d['UserFields.CASEID'] : 'EvalId',
-          id: 'UserFields.CASEID',
+          accessor: isSubmitFullment ? d => d['UserFields.Content.CASEID'] : 'CaseId',
+          id: 'UserFields.Content.CASEID',
           minWidth: 50,
           maxWidth: 100,
           style: { width: '10%' },
