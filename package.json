@@ -63,6 +63,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "@storybook/react": "^5.1.9",
+    "@testing-library/dom": "^7.5.9",
     "autoprefixer": "^9.1.5",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.6",
