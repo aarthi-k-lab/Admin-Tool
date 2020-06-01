@@ -14,7 +14,7 @@ const {
 const slaGroups = ['booking', 'booking-mgr'];
 
 function disableGroups(role, groups, group) {
-  if (R.equals(group, BETA) && !R.equals(groups.indexOf(group.toLowerCase()), -1)) {
+  if (groups && R.equals(group, BETA) && !R.equals(groups.indexOf(group.toLowerCase()), -1)) {
     return false;
   }
   return !(R.equals(role, 'Manager') ? !R.equals(groups.indexOf(`${group.toLowerCase()}-mgr`), -1) : !R.equals(groups.indexOf(`${group.toLowerCase()}`), -1));

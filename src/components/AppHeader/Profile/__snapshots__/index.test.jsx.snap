@@ -29,14 +29,168 @@ exports[`<Profile /> snapshot test 1`] = `
         <p
           className="MuiTypography-root MuiTypography-body2"
         >
-          group1
+          proc
         </p>
       </li>
       <li>
         <p
           className="MuiTypography-root MuiTypography-body2"
         >
-          group2
+          proc-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          feuw
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          feuw-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          beuw
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          beuw-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          docgen
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          docgen-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          docsin
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          docsin-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          beta
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          beta-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          stager
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          stager-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          trial
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          trial-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          util
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          util-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          postmodstager
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          postmodstager-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          booking
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          booking-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          docgenvendor
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          docgenvendor-mgr
         </p>
       </li>
     </ol>
