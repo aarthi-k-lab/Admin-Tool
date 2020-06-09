@@ -260,6 +260,7 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         wasSearched: false,
+        resultOperation: {},
       };
     }
     case SHOW_SAVING_LOADER: {
