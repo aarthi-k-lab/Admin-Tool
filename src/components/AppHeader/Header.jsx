@@ -15,7 +15,6 @@ import { operations as loginOperations, selectors as loginSelectors } from '../.
 import { selectors as configSelectors } from '../../state/ducks/config';
 import './Header.css';
 
-const HOTKEY_S = ['s', 'S'];
 class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -67,10 +66,8 @@ class Header extends React.Component {
     return (host === 'PROD' || host === '') ? '' : ((host === 'LOCALHOST' || host === '127') ? ' - LOCAL' : ` - ${host}`);
   }
 
-  handleHotKeyPress = (handler) => {
-    if (HOTKEY_S.includes(handler.key)) {
-      this.textInput.current.focus();
-    }
+  handleHotKeyPress = () => {
+    this.textInput.current.focus();
   }
 
   handleSearchLoan(event) {
@@ -107,12 +104,6 @@ class Header extends React.Component {
     }
     onClearStagerTaskName();
     onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
-  }
-
-  static renderName(userDetails) {
-    return (
-      <span styleName="name">{userDetails && userDetails.name}</span>
-    );
   }
 
   renderProfileDetails(user) {

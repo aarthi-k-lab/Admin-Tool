@@ -40,8 +40,8 @@ class Profile extends React.Component {
           isAgent = true;
         }
       });
-      const role = isAgent ? AGENT : MANAGER;
-      setRoleCallBack(role);
+      const defaultRole = isAgent ? AGENT : MANAGER;
+      setRoleCallBack(defaultRole);
     }
     if (R.isNil(state.role) || !R.equals(props.userRole, state.role)) {
       let isChecked = [];
