@@ -222,13 +222,6 @@ function* makeOrderBpmCall(payload) {
   }
 }
 
-function* watchDashboardCountsFetch() {
-  yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
-}
-
-function* watchOrderCall() {
-  yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
-}
 function* makeStagerSearchLoanCall(payload) {
   try {
     const searchLoanNumber = payload.payload;
@@ -289,6 +282,14 @@ function* makeDispositionOperationCall(payload) {
   }
 }
 
+function* watchDashboardCountsFetch() {
+  yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
+}
+
+function* watchOrderCall() {
+  yield takeEvery(TRIGGER_ORDER_SAGA, makeOrderBpmCall);
+}
+
 function* watchDispositionOperationCall() {
   yield takeEvery(TRIGGER_DISPOSITION_OPERATION_SAGA, makeDispositionOperationCall);
 }
@@ -311,14 +312,21 @@ function* watchStagerSearchLoanCall() {
 
 export const TestExports = {
   watchDashboardCountsFetch,
-  fetchDashboardCounts,
-  fetchDashboardData,
-  fireSnackBar,
   watchDashboardDataFetch,
+  watchDownloadDataFetch,
   watchTableCheckboxSelect,
   watchOrderCall,
-  makeOrderBpmCall,
+  watchDispositionOperationCall,
+  watchStagerSearchLoanCall,
+  fetchDashboardCounts,
+  fetchDashboardData,
+  fetchDownloadData,
   onCheckboxSelect,
+  makeOrderBpmCall,
+  makeDispositionOperationCall,
+  makeStagerSearchLoanCall,
+  fireSnackBar,
+  setDocGenData,
 };
 
 export function* combinedSaga() {
