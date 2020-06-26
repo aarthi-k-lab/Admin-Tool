@@ -975,6 +975,7 @@ function* getNext(action) {
         }
         yield call(fetchChecklistDetailsForGetNext, taskDetails, action.payload);
         yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalPayload });
+        yield put({ type: SAVE_TASKID, payload: bookingTaskId });
         yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName, taskId));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
@@ -994,7 +995,6 @@ function* getNext(action) {
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       }
-      yield put({ type: SAVE_TASKID, payload: bookingTaskId });
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {

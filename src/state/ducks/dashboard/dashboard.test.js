@@ -228,6 +228,12 @@ describe('getnext Success', () => {
         },
       }));
   });
+
+  it('should dispatch action SAVE_TASKID', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_TASKID, payload: null }));
+  });
+
   it('getnext worker should trigger fetchtombstone action', () => {
     const actionDispatched = {
       payload: {
@@ -239,6 +245,7 @@ describe('getnext Success', () => {
     expect(saga.next().value)
       .toEqual(put(actionDispatched));
   });
+
   it('getnext worker should trigger loadComments action', () => {
     const actionDispatched = {
       payload: {
@@ -370,11 +377,6 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(call(TestExports.errorFetchingChecklistDetails));
   });
 
-  it('should dispatch action SAVE_TASKID', () => {
-    expect(saga.next().value)
-      .toEqual(put({ type: actionTypes.SAVE_TASKID, payload: null }));
-  });
-
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
@@ -485,11 +487,6 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should call error handler for checklist', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.errorFetchingChecklistDetails));
-  });
-
-  it('should dispatch action SAVE_TASKID', () => {
-    expect(saga.next().value)
-      .toEqual(put({ type: actionTypes.SAVE_TASKID, payload: null }));
   });
 
   it('should dispatch action HIDE_LOADER', () => {
