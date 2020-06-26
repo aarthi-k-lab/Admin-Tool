@@ -22,6 +22,10 @@ import {
   setFilterRules,
   discardRuleResponse,
   setSLAvalues,
+  setCurrentChecklistId,
+  setNewChecklist,
+  pushDataAction,
+  computeRulesPassed,
 } from './actions';
 
 const fetchHistoricalChecklistData = dispatch => (taskId) => {
@@ -96,8 +100,20 @@ const triggerSetSLAvalues = dispatch => (resolutionId, auditRuleType) => {
 
 const clearRuleResponse = dispatch => () => dispatch(discardRuleResponse());
 
+const storeCurrentChecklistId = dispatch => (id) => {
+  dispatch(setCurrentChecklistId(id));
+};
+
+const storeNewChecklist = dispatch => (id) => {
+  dispatch(setNewChecklist(id));
+};
+
+const triggerPushData = dispatch => () => dispatch(pushDataAction());
+
+const putComputeRulesPassed = dispatch => payload => dispatch(computeRulesPassed(payload));
 
 const operations = {
+  putComputeRulesPassed,
   fetchChecklist,
   fetchNextChecklist,
   fetchPrevChecklist,
@@ -120,6 +136,9 @@ const operations = {
   triggerFilterRules,
   clearRuleResponse,
   triggerSetSLAvalues,
+  storeCurrentChecklistId,
+  storeNewChecklist,
+  triggerPushData,
 };
 
 export default operations;

@@ -70,6 +70,7 @@ const getChecklistItems = state => R.compose(
     value: getCurrentChecklistValue(checklistItem, state),
     source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
     additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
+    showPushData: R.pathOr(false, ['taskBlueprint', 'showPushData'], checklistItem),
     state: R.pathOr({}, ['state'], checklistItem),
   })),
   R.pathOr([], ['tasksAndChecklist', 'checklist', 'subTasks']),
@@ -80,6 +81,8 @@ const getChecklistLoadStatus = state => R.path(['tasksAndChecklist', 'checklistL
 const getSelectedChecklistId = state => R.pathOr('', ['tasksAndChecklist', 'selectedChecklist'], state);
 
 const getTaskLoadStatus = state => R.path(['tasksAndChecklist', 'taskLoadingStatus'], state);
+
+const getRulesResponse = state => R.pathOr(false, ['tasksAndChecklist', 'isAllRulesPassed'], state);
 
 const getNextChecklistId = (state) => {
   const selectedChecklistId = getSelectedChecklistId(state);
@@ -174,6 +177,7 @@ const selectedTaskBlueprintCode = state => R.pathOr('', ['tasksAndChecklist', 'c
 
 const getDropDownOptions = state => R.pathOr([], ['tasksAndChecklist', 'dropDownOptions'], state);
 
+
 const getPath = (obj, field, match) => {
   const subPath = R.compose(
     R.head,
@@ -242,7 +246,13 @@ const getPDFExportPayload = (state) => {
   return payload;
 };
 
+const getPrevDocsInChecklistId = state => R.pathOr('', ['tasksAndChecklist', 'prevChecklistId'], state);
+const getPrevDocsInRootTaskId = state => R.pathOr('', ['tasksAndChecklist', 'prevRootTaskId'], state);
+const getRuleResultFromTaskTree = state => R.path(['value', 'ruleResult'], R.head(R.pathOr([], ['subTasks'], R.find(R.propEq('taskBlueprintCode', 'SLAPREM'))(R.pathOr([], ['tasksAndChecklist', 'taskTree', 'subTasks'], state)))));
+
+
 const selectors = {
+  getRuleResultFromTaskTree,
   getChecklistItems,
   getChecklistLoadStatus,
   getDisposition,
@@ -287,6 +297,9 @@ const selectors = {
   getRuleResponse,
   getProcessId,
   getPDFExportPayload,
+  getPrevDocsInChecklistId,
+  getPrevDocsInRootTaskId,
+  getRulesResponse,
 };
 
 export default selectors;

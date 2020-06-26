@@ -149,11 +149,10 @@ class SearchLoan extends React.PureComponent {
 
       if (!R.isEmpty(group)) {
         const {
-          onSelectEval, onGetGroupName, onGetChecklistHistory,
+          onSelectEval, onGetGroupName,
         } = this.props;
         onGetGroupName(group);
         onSelectEval(payload);
-        onGetChecklistHistory(payload.taskId);
         this.setState({ isRedirect: true });
       }
     }
@@ -391,7 +390,6 @@ SearchLoan.propTypes = {
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
-  onGetChecklistHistory: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,

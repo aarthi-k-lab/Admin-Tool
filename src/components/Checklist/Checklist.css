@@ -46,6 +46,14 @@
   align-self: flex-end;
 }
 
+.clearButtonWithPushData {
+  flex-grow: 0;
+  flex-basis: 0;
+  align-self: flex-end;
+  margin: 0rem 37rem 0rem 0rem;
+}
+
+
 .subTaskDescParent.subTaskDescParent {
   display: flex;
   flex-direction: row;

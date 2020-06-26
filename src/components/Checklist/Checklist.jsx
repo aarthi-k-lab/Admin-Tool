@@ -54,6 +54,17 @@ class Checklist extends React.PureComponent {
     this.lastEditedValue = undefined;
   }
 
+  componentDidMount() {
+    const { putComputeRulesPassed, ruleResultFromTaskTree } = this.props;
+    const isAllRulesPassed = ruleResultFromTaskTree.map((item) => {
+      const auditRulesResult = JSON.parse(JSON.stringify(item));
+      delete auditRulesResult.text;
+      const val = Object.values(auditRulesResult)[0];
+      return val;
+    }).includes('false');
+    putComputeRulesPassed(!isAllRulesPassed);
+  }
+
   static getDerivedStateFromProps(props) {
     if (props.isDialogOpen) {
       return {
@@ -491,38 +502,44 @@ class Checklist extends React.PureComponent {
   render() {
     const {
       checklistItems, children, title,
-      className, location, resolutionId, resolutionData,
+      className, location, resolutionId, resolutionData, triggerHeader,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
     } = this.state;
+    const addClearButton = !R.equals(checklistItems[0].type, 'sla-rules') ? (
+      <>
+        <div styleName="subTaskDescParent">
+          <div styleName="subTaskDescription">
+            <Typography styleName="checklist-title">{title}</Typography>
+          </div>
+        </div>
+
+        {!(location.pathname === '/special-loan' || triggerHeader) && (
+          <div styleName="clearButton">
+            <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
+            Clear
+            </Button>
+          </div>
+        )}
+      </>
+    ) : null;
     return (
       <section className={className}>
         {children}
-        { location.pathname === '/special-loan'
-          ? (
+        { (location.pathname === '/special-loan' || triggerHeader)
+          && (
             <SlaHeader
               disabled={checklistItems[0].disabled}
+              enablePushDataButton={location.pathname === '/special-loan'}
               resolutionData={resolutionData}
+              showPushDataButton={R.propOr(false, 'showPushData', checklistItems[0])}
               text={resolutionId}
               title={title}
+              triggerHeader={triggerHeader}
             />
-          )
-          : (
-            <>
-              <div styleName="subTaskDescParent">
-                <div styleName="subTaskDescription">
-                  <Typography styleName="checklist-title">{title}</Typography>
-                </div>
-              </div>
-              <div styleName="clearButton">
-                <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
-            Clear
-                </Button>
-              </div>
-            </>
-          )
-    }
+          )}
+        {addClearButton}
         <div styleName="scrollable-checklist">
           <Paper elevation={1} styleName="checklist-form-controls">
             {
@@ -546,6 +563,8 @@ class Checklist extends React.PureComponent {
 Checklist.defaultProps = {
   className: '',
   children: null,
+  triggerHeader: false,
+  ruleResultFromTaskTree: [],
 };
 
 NumberFormatCustom.propTypes = {
@@ -562,6 +581,7 @@ Checklist.propTypes = {
         displayName: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
       })),
+      showPushData: PropTypes.bool.isRequired,
       taskCode: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       type: PropTypes.oneOf(Object.values(HTMLElements)).isRequired,
@@ -578,9 +598,12 @@ Checklist.propTypes = {
     search: PropTypes.string.isRequired,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
+  putComputeRulesPassed: PropTypes.func.isRequired,
   resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
   resolutionId: PropTypes.string.isRequired,
+  ruleResultFromTaskTree: PropTypes.arrayOf(PropTypes.shape),
   title: PropTypes.string.isRequired,
+  triggerHeader: PropTypes.bool,
 };
 
 export default Checklist;

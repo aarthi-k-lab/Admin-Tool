@@ -53,6 +53,10 @@ import {
   openSweetAlertAction,
   closeSweetAlertAction,
   setCoviusIndexAction,
+  widgetClickAction,
+  unassignWidgetLoan,
+  setHomepageVisibleAction,
+  widgetToggle,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -124,6 +128,15 @@ const onUnassignLoan = dispatch => () => {
   dispatch(unassignLoan());
 };
 
+const onUnassignBookingLoan = dispatch => () => {
+  dispatch(unassignWidgetLoan());
+};
+
+const setHomepageVisible = dispatch => (bookingHomePage) => {
+  dispatch(setHomepageVisibleAction(bookingHomePage));
+};
+
+
 const onAssignLoan = dispatch => () => {
   dispatch(assignLoan());
 };
@@ -146,6 +159,10 @@ const onUnassignSuccess = dispatch => () => {
 
 const onGetGroupName = dispatch => (payload) => {
   dispatch(getGroupName(payload));
+};
+
+const onWidgetClick = dispatch => (payload) => {
+  dispatch(widgetClickAction(payload));
 };
 
 const loadTrials = dispatch => evalId => dispatch(loadTrialsAction(evalId));
@@ -258,7 +275,12 @@ const setCoviusIndex = dispatch => (payload) => {
   dispatch(setCoviusIndexAction(payload));
 };
 
+const onWidgetToggle = dispatch => (payload) => {
+  dispatch(widgetToggle(payload));
+};
+
 const operations = {
+  onWidgetToggle,
   setCoviusIndex,
   openSweetAlertAction,
   closeSweetAlert,
@@ -296,6 +318,7 @@ const operations = {
   onLoansSubmitStager,
   onClearUserNotifyMsg,
   onSelectReject,
+  onUnassignBookingLoan,
   onClearSelectReject,
   onSearchLoanWithTask,
   setStagerTaskName,
@@ -314,6 +337,8 @@ const operations = {
   downloadFile,
   populateEvents,
   onSendToFEUW,
+  onWidgetClick,
+  setHomepageVisible,
 };
 
 export default operations;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import { getWidgets, getLoanActivityWidgets } from './WidgetSelects';
+import { getWidgets, getLoanActivityWidgets, getBookingAutomationWidget } from './WidgetSelects';
 import WidgetIcon from './WidgetIcon';
 import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
@@ -34,16 +34,28 @@ class WidgetBuilder extends Component {
         rightAppBar: getLoanActivityWidgets(),
       };
     }
+    if ((props.groupName === 'DOCSIN' || props.groupName === 'BOOKING') && R.isEmpty(rightAppBarSelected)) {
+      return {
+        rightAppBarSelected: 'BookingAutomation',
+        rightAppBar: getBookingAutomationWidget(),
+        rightAppBarOpen: false,
+      };
+    }
     return null;
   }
 
   changeAppBarState(widgetId) {
+    const { triggerHeader } = this.props;
     const { rightAppBarSelected, rightAppBarOpen } = this.state;
     const oldWidgetId = rightAppBarSelected;
     if (widgetId === oldWidgetId) {
-      this.setState({ rightAppBarOpen: !rightAppBarOpen });
+      this.setState({ rightAppBarSelected: null });
+      this.setState({ rightAppBarOpen: widgetId === 'BookingAutomation' ? false : !rightAppBarOpen });
+      triggerHeader(!rightAppBarOpen, widgetId);
     } else {
-      this.setState({ rightAppBarOpen: true, rightAppBarSelected: widgetId });
+      const setrightAppBarOpen = widgetId === 'BookingAutomation';
+      this.setState({ rightAppBarOpen: !setrightAppBarOpen, rightAppBarSelected: widgetId });
+      triggerHeader(rightAppBarOpen, widgetId);
     }
   }
 
@@ -121,6 +133,7 @@ WidgetBuilder.propTypes = {
     trialAcceptanceDate: PropTypes.string,
     trialName: PropTypes.string,
   }),
+  triggerHeader: PropTypes.func.isRequired,
 };
 const mapStateToProps = state => ({
   groupName: selectors.groupName(state),

@@ -7,6 +7,7 @@ import {
   HANDLE_CHECKLIST_ITEM_CHANGE,
   RESET_DATA,
   SET_SELECTED_CHECKLIST,
+  STORE_CURRENT_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
   STORE_PROCESS_DETAILS,
   STORE_TASKS,
@@ -28,6 +29,9 @@ import {
   FILTER_RULES,
   CLEAR_RULE_RESPONSE,
   SET_SLA_VALUES,
+  SET_NEW_CHECKLIST,
+  PUSH_DATA,
+  COMPUTE_RULES_PASSED,
 } from './types';
 
 const getNextChecklist = () => ({
@@ -191,7 +195,31 @@ const setSLAvalues = (resolutionId, auditRuleType) => ({
   },
 });
 
+const setCurrentChecklistId = id => ({
+  type: STORE_CURRENT_CHECKLIST,
+  payload: {
+    id,
+  },
+});
+
+const setNewChecklist = id => ({
+  type: SET_NEW_CHECKLIST,
+  payload: {
+    id,
+  },
+});
+
+const pushDataAction = () => ({
+  type: PUSH_DATA,
+});
+
+const computeRulesPassed = payload => ({
+  type: COMPUTE_RULES_PASSED,
+  payload,
+});
+
 export {
+  computeRulesPassed,
   getNextChecklist,
   getPrevChecklist,
   getChecklist,
@@ -221,4 +249,7 @@ export {
   setFilterRules,
   discardRuleResponse,
   setSLAvalues,
+  setCurrentChecklistId,
+  setNewChecklist,
+  pushDataAction,
 };

@@ -104,6 +104,14 @@ import {
   SEND_TO_FEUW_SAGA,
   SEND_TO_COVIUS,
   DISABLE_SEND_TO_FEUW,
+  WIDGET_CLICK,
+  SAVE_EVAL_FOR_WIDGET,
+  UNASSIGN_WIDGET_LOAN,
+  SAVE_MAIN_CHECKLIST,
+  SET_USER_NOTIF_MESSAGE,
+  TOGGLE_WIDGET,
+  SAVE_TASKID,
+  ENABLE_PUSHDATA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -116,6 +124,7 @@ import {
 import {
   ERROR_LOADING_CHECKLIST,
   ERROR_LOADING_TASKS,
+  RESET_DATA,
 } from '../tasks-and-checklist/types';
 
 const {
@@ -142,6 +151,10 @@ function* watchSetExpandView() {
   while ((yield take(SET_EXPAND_VIEW_SAGA)) !== null) {
     yield fork(setExpandView);
   }
+}
+
+function getGroup(group) {
+  return group === DashboardModel.ALL_STAGER ? DashboardModel.POSTMODSTAGER : group;
 }
 
 const autoSaveOnClose = function* autoSaveOnClose(taskStatus) {
@@ -291,6 +304,14 @@ function* errorFetchingChecklistDetails() {
 
 function* fetchChecklistDetails(checklistId) {
   try {
+    const groupName = yield select(selectors.groupName);
+    const group = getGroup(groupName);
+    const taskId = yield select(selectors.getBookingTaskId);
+    if (R.equals(group, 'BOOKING')) {
+      const response = yield call(Api.callGet, `/api/dataservice/api/getLsamsResponseByTaskId?taskId=${taskId}`);
+      yield put({ type: ENABLE_PUSHDATA, payload: response });
+    }
+
     const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);
     if (isChecklistIdInvalid) {
       yield put({
@@ -354,8 +375,24 @@ function* getResolutionDataForEval(evalId) {
   }
 }
 
+function* fetchChecklistDetailsForAssign(groupName, response) {
+  if (!AppGroupName.hasChecklist(groupName)) {
+    return;
+  }
+  yield put(resetChecklistData());
+  yield put({
+    type: CLEAR_ERROR_MESSAGE,
+    payload: {},
+  });
+  const checklistId = R.pathOr('', ['taskData', 'taskCheckListId'], response);
+  yield call(fetchChecklistDetails, checklistId);
+}
+
+
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
+  const { taskId: bookingTaskId } = evalDetails;
+  yield put({ type: SAVE_TASKID, payload: bookingTaskId });
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
@@ -365,11 +402,7 @@ function* selectEval(searchItem) {
   evalDetails.isAssigned = false;
   let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
   if (appGroupName === DashboardModel.BOOKING && evalDetails.piid != null) {
-    const tasksForProcess = yield call(Api.callGet, `/api/bpm-audit/audit/task/process/${evalDetails.piid}`);
-    const latestPendingBookingTask = R.head(R.filter(
-      task => task.taskName === DashboardModel.PENDING_BOOKING, tasksForProcess,
-    ));
-    const { taskId } = latestPendingBookingTask;
+    const taskId = `${evalDetails.loanNumber}_${evalDetails.evalId}`;
     const assignmentData = yield call(Api.callGet, `/api/dataservice/api/taskInfo/${taskId}`);
     if (assignmentData && assignmentData.wfTaskId) {
       const { assignedTo: assignee, taskStatus } = assignmentData;
@@ -388,7 +421,26 @@ function* selectEval(searchItem) {
     && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
 
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
+  if (R.equals(evalDetails.milestone, 'Pending Booking') || R.equals(evalDetails.milestone, 'Post Mod')) {
+    const groupList = R.pathOr([], ['groupList'], user);
+    const payload = {
+      evalId: evalDetails.evalId,
+      loanNumber: evalDetails.loanNumber,
+      taskName: 'Pending Booking',
+      groupList,
+      appGroupName: 'BOOKING',
+    };
+    let response;
+    if (!taskCheckListId) {
+      response = yield call(Api.callPost, '/api/workassign/createTask', payload);
+    }
+    if (response) {
+      const { taskCheckListId: checkListId } = response;
+      taskCheckListId = checkListId;
+    }
+  }
   yield call(fetchChecklistDetailsForSearchResult, taskCheckListId);
+  yield put(getHistoricalCheckListData(evalDetails.taskId));
   if (R.equals(appGroupName, 'BOOKING')) {
     yield call(getResolutionDataForEval, evalDetails.evalId);
   }
@@ -404,6 +456,98 @@ function* selectEval(searchItem) {
     yield put({ type: HIDE_LOADER });
   }
 }
+
+function* handleWidget() {
+  try {
+    yield put({ type: SHOW_LOADER });
+    const evalId = yield select(selectors.evalId);
+    const loanNumber = yield select(selectors.loanNumber);
+    const isAssigned = yield select(selectors.isAssigned);
+    const processId = yield select(selectors.processId);
+    const groupName = yield select(selectors.groupName);
+    const rootTaskId = yield select(checklistSelectors.getRootTaskId);
+    const selectedChecklistId = yield select(checklistSelectors.getProcessId);
+    const user = yield select(loginSelectors.getUser);
+    const userGroups = R.pathOr([], ['groupList'], user);
+    const taskId = `${loanNumber}_${evalId}`;
+    let evalDetails = {
+      taskId,
+      loanNumber,
+      evalId,
+      processId,
+    };
+    yield put({ type: SAVE_MAIN_CHECKLIST, payload: { rootTaskId, selectedChecklistId } });
+    let response;
+    if (isAssigned) {
+      const userPrincipalName = R.path(['userDetails', 'email'], user);
+      const processStatus = yield select(selectors.processStatus);
+      const group = getGroup(groupName);
+      const taskName = 'Pending Booking';
+      response = yield call(Api.callPost, `/api/workassign/assignBookingLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&processId=${processId}&processStatus=${processStatus}&groupName=${group}&userGroups=${userGroups}&taskName=${taskName}`, {});
+      evalDetails = {
+        evalId: response.taskData.evalId,
+        loanNumber: response.taskData.loanNumber,
+        taskId: response.taskData.taskId,
+        processId: response.taskData.wfProcessId,
+        processStatus: response.taskData.processStatus,
+        appgroupName: response.taskData.groupName,
+      };
+      if (response !== null && !response.statusCode.Warning) {
+        yield put({
+          type: ASSIGN_LOAN_RESULT,
+          payload: response,
+        });
+        yield call(fetchChecklistDetailsForAssign, groupName, response);
+      } else {
+        yield put({
+          type: ASSIGN_LOAN_RESULT,
+          payload: { status: response.status },
+        });
+      }
+    } else {
+      let taskCheckListId;
+      response = yield call(Api.callGet, `/api/dataservice/api/taskInfo/${taskId}`);
+      if (response && response.wfTaskId) {
+        const { assignedTo: assignee, taskStatus } = response;
+        evalDetails.assignee = taskStatus === 'Assigned' || taskStatus === 'Paused' ? assignee : null;
+        evalDetails.taskStatus = taskStatus;
+        const { taskCheckListId: checklistId } = response;
+        taskCheckListId = checklistId;
+      } else {
+        evalDetails.assignee = null;
+        taskCheckListId = null;
+      }
+      evalDetails.taskId = taskId;
+      if (!taskCheckListId) {
+        const payload = {
+          evalId: evalDetails.evalId,
+          loanNumber: evalDetails.loanNumber,
+          taskName: 'Pending Booking',
+          groupList: userGroups,
+          appGroupName: 'BOOKING',
+        };
+        response = yield call(Api.callPost, '/api/workassign/createTask', payload);
+        if (response) {
+          const { taskCheckListId: checkListId } = response;
+          taskCheckListId = checkListId;
+        }
+      }
+      yield put(resetChecklistData());
+      yield put({
+        type: CLEAR_ERROR_MESSAGE,
+        payload: {},
+      });
+      yield call(fetchChecklistDetails, taskCheckListId);
+    }
+    yield put({ type: SAVE_EVAL_FOR_WIDGET, payload: evalDetails });
+    yield put(getHistoricalCheckListData(taskId));
+    yield call(getResolutionDataForEval, evalId);
+  } catch (e) {
+    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
 function* watchTombstoneLoan() {
   yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
 }
@@ -775,10 +919,6 @@ function* saveGeneralChecklistDisposition(payload) {
   return true;
 }
 
-function getGroup(group) {
-  return group === DashboardModel.ALL_STAGER ? DashboardModel.POSTMODSTAGER : group;
-}
-
 function* fetchChecklistDetailsForGetNext(taskDetails, payload) {
   const { appGroupName } = payload;
   const group = getGroup(appGroupName);
@@ -815,6 +955,7 @@ function* getNext(action) {
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
+      const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
@@ -853,6 +994,7 @@ function* getNext(action) {
         yield put(errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       }
+      yield put({ type: SAVE_TASKID, payload: bookingTaskId });
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
@@ -951,21 +1093,47 @@ function* unassignLoan() {
   }
 }
 
-function* watchUnassignLoan() {
-  yield takeEvery(UNASSIGN_LOAN, unassignLoan);
+function* unassignWidgetLoan() {
+  try {
+    yield put({ type: SHOW_LOADER });
+    const widgetLoan = yield select(selectors.getWidgetLoan);
+    const {
+      evalId, taskId, processId, processStatus, loanNumber, appgroupName,
+    } = widgetLoan;
+    if (!R.isNil(evalId) && !R.isEmpty(evalId)) {
+      const user = yield select(loginSelectors.getUser);
+      const userPrincipalName = R.path(['userDetails', 'email'], user);
+      const taskName = appgroupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
+      const response = yield call(Api.callPost,
+        `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&appgroupName=${appgroupName}&taskName=${taskName}&isWidgetLoan=true`, {});
+      if (response !== null) {
+        yield put({ type: RESET_DATA });
+        yield put({
+          type: UNASSIGN_LOAN_RESULT,
+          payload: response,
+        });
+        const selectedChecklistId = yield select(selectors.getSelectedChecklistId);
+        yield call(fetchChecklistDetails, selectedChecklistId);
+      } else {
+        yield put({
+          type: UNASSIGN_LOAN_RESULT,
+          payload: { cmodProcess: { taskStatus: 'ERROR' } },
+        });
+      }
+    } else {
+      yield put({
+        type: UNASSIGN_LOAN_RESULT,
+        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+      });
+    }
+  } catch (e) {
+    yield put({ type: UNASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });
+  }
+  yield put({ type: HIDE_LOADER });
 }
 
-function* fetchChecklistDetailsForAssign(groupName, response) {
-  if (!AppGroupName.hasChecklist(groupName)) {
-    return;
-  }
-  yield put(resetChecklistData());
-  yield put({
-    type: CLEAR_ERROR_MESSAGE,
-    payload: {},
-  });
-  const checklistId = R.pathOr('', ['taskData', 'taskCheckListId'], response);
-  yield call(fetchChecklistDetails, checklistId);
+function* watchUnassignLoan() {
+  yield takeEvery(UNASSIGN_LOAN, unassignLoan);
 }
 
 function* assignLoan() {
@@ -987,7 +1155,8 @@ function* assignLoan() {
     } else {
       taskName = groupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
     }
-    const response = yield call(Api.callPost, `/api/workassign/assignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
+    const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
+    const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({
@@ -995,6 +1164,11 @@ function* assignLoan() {
         payload: response,
       });
       yield call(fetchChecklistDetailsForAssign, groupName, response);
+      if (R.equals(groupName, DashboardModel.BOOKING)) {
+        yield put({ type: TOGGLE_WIDGET, payload: true });
+      } else {
+        yield put({ type: TOGGLE_WIDGET, payload: false });
+      }
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
@@ -1252,7 +1426,7 @@ function* sendToDocsIn() {
       const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.updateInstanceStatusResponse.statusCode === '200');
       if (currentStatus !== null && currentStatus.length > 0) {
         yield put({
-          type: SET_RESULT_OPERATION,
+          type: SET_USER_NOTIF_MESSAGE,
           payload: {
             level: LEVEL_SUCCESS,
             status: 'The loan has been successfully sent back to Docs In',
@@ -1264,7 +1438,7 @@ function* sendToDocsIn() {
         });
       } else {
         yield put({
-          type: SET_RESULT_OPERATION,
+          type: SET_USER_NOTIF_MESSAGE,
           payload: {
             level: LEVEL_ERROR,
             status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
@@ -1274,7 +1448,7 @@ function* sendToDocsIn() {
     } else {
       const message = `Unable to send back to Docs In. Eval status should be ${isModBook ? 'Approved or Completed' : 'Approved'} and the most recent Resolution case (within the eval) Status should be ${isModBook ? 'Approved, Sent for Approval, Closed or Booked' : 'Approved or Sent for Approval'}`;
       yield put({
-        type: SET_RESULT_OPERATION,
+        type: SET_USER_NOTIF_MESSAGE,
         payload: {
           level: LEVEL_ERROR,
           status: message,
@@ -1747,12 +1921,25 @@ function* watchOnDownloadFile() {
   yield takeEvery(DOWNLOAD_FILE, onDownloadFile);
 }
 
+function* watchOnWidgetClick() {
+  yield takeEvery(WIDGET_CLICK, handleWidget);
+}
+
+function* watchUnassignWidgetLoan() {
+  yield takeEvery(UNASSIGN_WIDGET_LOAN, unassignWidgetLoan);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
+  resetChecklistData,
+  unassignWidgetLoan,
+  getResolutionDataForEval,
+  fetchChecklistDetailsForAssign,
   endShift,
   errorFetchingChecklistDetails,
-  fetchChecklistDetails: fetchChecklistDetailsForGetNext,
+  fetchChecklistDetails,
+  fetchChecklistDetailsForGetNext,
   saveDisposition,
   setExpandView,
   processExcel,
@@ -1795,6 +1982,7 @@ export const TestExports = {
   watchOnSubmitFile,
   watchPopulateEventsDropDown,
   watchOnDownloadFile,
+  handleWidget,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -1804,6 +1992,7 @@ export const combinedSaga = function* combinedSaga() {
     watchDispositionSave(),
     watchGetNext(),
     watchSetExpandView(),
+    watchUnassignWidgetLoan(),
     watchEndShift(),
     watchSearchLoan(),
     watchTombstoneLoan(),
@@ -1828,5 +2017,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSubmitFile(),
     watchOnDownloadFile(),
     watchPopulateEventsDropDown(),
+    watchOnWidgetClick(),
   ]);
 };

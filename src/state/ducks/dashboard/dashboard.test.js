@@ -216,7 +216,7 @@ describe('getnext Success', () => {
       isFirstVisit: true,
     };
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(call(TestExports.fetchChecklistDetails, mockTaskDetails, expectedPayload));
+      .toEqual(call(TestExports.fetchChecklistDetailsForGetNext, mockTaskDetails, expectedPayload));
   });
 
   it('should save evalId and loanNumber and taskId from taskDetails Response', () => {
@@ -370,6 +370,11 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(call(TestExports.errorFetchingChecklistDetails));
   });
 
+  it('should dispatch action SAVE_TASKID', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_TASKID, payload: null }));
+  });
+
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
@@ -480,6 +485,11 @@ describe('getnext Failure -  task fetch failure', () => {
   it('should call error handler for checklist', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.errorFetchingChecklistDetails));
+  });
+
+  it('should dispatch action SAVE_TASKID', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_TASKID, payload: null }));
   });
 
   it('should dispatch action HIDE_LOADER', () => {
@@ -1488,5 +1498,708 @@ describe('onCoviusBulkUpload saga ', () => {
   it('should call select user from store', () => {
     expect(saga.next().value)
       .toEqual(select(loginSelectors.getUser));
+  });
+});
+
+describe('handle widget : Loan Assignment Successful', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+    groupList: ['feuw', 'beta'],
+  };
+
+  const mockResponse = {
+    taskData: {
+      evalId: 3565247,
+      taskId: 74365847,
+      loanNumber: 18008401081,
+      wfProcessId: 23456,
+      processStatus: 'Active',
+      groupName: 'BOOKING',
+    },
+    status: 'Loan Assignment Successful',
+    statusCode: {},
+  };
+
+  const mockEvalDetails = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskId: 74365847,
+    processId: 23456,
+    processStatus: 'Active',
+    appgroupName: 'BOOKING',
+  };
+
+  const saga = cloneableGenerator(TestExports.handleWidget)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select evalId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.evalId));
+  });
+  it('should call select loanNumber from store', () => {
+    expect(saga.next(3565247).value)
+      .toEqual(select(selectors.loanNumber));
+  });
+  it('should call select isAssigned from store', () => {
+    expect(saga.next(18008401081).value)
+      .toEqual(select(selectors.isAssigned));
+  });
+
+  it('should call select ProcessId from store', () => {
+    expect(saga.next(true).value)
+      .toEqual(select(selectors.processId));
+  });
+
+  it('should call select groupName from store', () => {
+    expect(saga.next(23456).value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call select RootTaskId from store', () => {
+    expect(saga.next('BOOKING').value)
+      .toEqual(select(checklistSelectors.getRootTaskId));
+  });
+
+  it('should call select selectedChecklistId from store', () => {
+    expect(saga.next(123).value)
+      .toEqual(select(checklistSelectors.getProcessId));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(456).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call SAVE_MAIN_CHECKLIST', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(put({
+        type: actionTypes.SAVE_MAIN_CHECKLIST,
+        payload: { rootTaskId: 123, selectedChecklistId: 456 },
+      }));
+  });
+
+  it('should call select Process Status from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.processStatus));
+  });
+
+  it('should call assign Api', () => {
+    expect(saga.next('Active').value)
+      .toEqual(call(Api.callPost, '/api/workassign/assignBookingLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&processId=23456&processStatus=Active&groupName=BOOKING&userGroups=feuw,beta&taskName=Pending Booking', {}));
+  });
+
+  it('should call ASSIGN_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
+  });
+  it('should call fetchChecklistDetailsForAssign ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.fetchChecklistDetailsForAssign, 'BOOKING', mockResponse));
+  });
+
+  it('should call SAVE_EVAL_FOR_WIDGET', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_EVAL_FOR_WIDGET, payload: mockEvalDetails }));
+  });
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: '18008401081_3565247',
+    };
+    expect(saga.next().value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
+  it('should call getResolutionDataForEval ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.getResolutionDataForEval, 3565247));
+  });
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('handle widget : Loan Assignment unSuccessful', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+    groupList: ['feuw', 'beta'],
+  };
+
+  const mockResponse = {
+    taskData: {
+      evalId: 3565247,
+      taskId: 74365847,
+      loanNumber: 18008401081,
+      wfProcessId: 23456,
+      processStatus: 'Active',
+      groupName: 'BOOKING',
+    },
+    status: 'Loan Assignment Unsuccessful',
+    statusCode: {
+      Warning: true,
+    },
+    bookingTaskId: 1234,
+  };
+
+  const mockEvalDetails = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskId: 74365847,
+    processId: 23456,
+    processStatus: 'Active',
+    appgroupName: 'BOOKING',
+  };
+
+  const saga = cloneableGenerator(TestExports.handleWidget)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select evalId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.evalId));
+  });
+  it('should call select loanNumber from store', () => {
+    expect(saga.next(3565247).value)
+      .toEqual(select(selectors.loanNumber));
+  });
+  it('should call select isAssigned from store', () => {
+    expect(saga.next(18008401081).value)
+      .toEqual(select(selectors.isAssigned));
+  });
+
+  it('should call select ProcessId from store', () => {
+    expect(saga.next(true).value)
+      .toEqual(select(selectors.processId));
+  });
+
+  it('should call select groupName from store', () => {
+    expect(saga.next(23456).value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call select RootTaskId from store', () => {
+    expect(saga.next('BOOKING').value)
+      .toEqual(select(checklistSelectors.getRootTaskId));
+  });
+
+  it('should call select selectedChecklistId from store', () => {
+    expect(saga.next(123).value)
+      .toEqual(select(checklistSelectors.getProcessId));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(456).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call SAVE_MAIN_CHECKLIST', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(put({
+        type: actionTypes.SAVE_MAIN_CHECKLIST,
+        payload: { rootTaskId: 123, selectedChecklistId: 456 },
+      }));
+  });
+
+  it('should call select Process Status from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.processStatus));
+  });
+
+  it('should call assign Api', () => {
+    expect(saga.next('Active').value)
+      .toEqual(call(Api.callPost, '/api/workassign/assignBookingLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&processId=23456&processStatus=Active&groupName=BOOKING&userGroups=feuw,beta&taskName=Pending Booking', {}));
+  });
+
+  it('should call ASSIGN_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({
+        type: actionTypes.ASSIGN_LOAN_RESULT,
+        payload: { status: mockResponse.status },
+      }));
+  });
+
+  it('should call SAVE_EVAL_FOR_WIDGET', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_EVAL_FOR_WIDGET, payload: mockEvalDetails }));
+  });
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: '18008401081_3565247',
+    };
+    expect(saga.next().value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
+  it('should call getResolutionDataForEval ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.getResolutionDataForEval, 3565247));
+  });
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('handle widget not assigned : checklist not found', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+    groupList: ['feuw', 'beta'],
+  };
+
+  const mockResponse = {
+    taskData: {
+      evalId: 3565247,
+      taskId: 74365847,
+      loanNumber: 18008401081,
+      wfProcessId: 23456,
+      processStatus: 'Active',
+      groupName: 'BOOKING',
+    },
+    status: 'Loan Assignment Unsuccessful',
+    statusCode: {
+      Warning: true,
+    },
+    bookingTaskId: 1234,
+  };
+
+  const mockDataserviceResponse = {
+    wfTaskId: 74365847,
+    assignedTo: 'bren@mrcooper.com',
+    taskStatus: 'Assigned',
+    taskCheckListId: 123,
+  };
+
+
+  const mockEvalDetails = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskId: '18008401081_3565247',
+    processId: 23456,
+    taskStatus: 'Assigned',
+    assignee: 'bren@mrcooper.com',
+  };
+
+  const saga = cloneableGenerator(TestExports.handleWidget)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select evalId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.evalId));
+  });
+  it('should call select loanNumber from store', () => {
+    expect(saga.next(3565247).value)
+      .toEqual(select(selectors.loanNumber));
+  });
+  it('should call select isAssigned from store', () => {
+    expect(saga.next(18008401081).value)
+      .toEqual(select(selectors.isAssigned));
+  });
+
+  it('should call select ProcessId from store', () => {
+    expect(saga.next(false).value)
+      .toEqual(select(selectors.processId));
+  });
+
+  it('should call select groupName from store', () => {
+    expect(saga.next(23456).value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call select RootTaskId from store', () => {
+    expect(saga.next('BOOKING').value)
+      .toEqual(select(checklistSelectors.getRootTaskId));
+  });
+
+  it('should call select selectedChecklistId from store', () => {
+    expect(saga.next(123).value)
+      .toEqual(select(checklistSelectors.getProcessId));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(456).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call SAVE_MAIN_CHECKLIST', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(put({
+        type: actionTypes.SAVE_MAIN_CHECKLIST,
+        payload: { rootTaskId: 123, selectedChecklistId: 456 },
+      }));
+  });
+  it('should call dataservie Api to fetch task details', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, '/api/dataservice/api/taskInfo/18008401081_3565247'));
+  });
+  it('should call resetChecklistData', () => {
+    expect(saga.next(mockDataserviceResponse).value)
+      .toEqual(put(TestExports.resetChecklistData()));
+  });
+  it('should call CLEAR_ERROR_MESSAGE', () => {
+    expect(saga.next().value)
+      .toEqual(put({
+        type: actionTypes.CLEAR_ERROR_MESSAGE,
+        payload: { },
+      }));
+  });
+  it('should call fetchChecklistDetails ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.fetchChecklistDetails, 123));
+  });
+  it('should call SAVE_EVAL_FOR_WIDGET', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_EVAL_FOR_WIDGET, payload: mockEvalDetails }));
+  });
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: '18008401081_3565247',
+    };
+    expect(saga.next().value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
+  it('should call getResolutionDataForEval ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.getResolutionDataForEval, 3565247));
+  });
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+describe('handle widget not assigned : checklist found', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+    groupList: ['feuw', 'beta'],
+  };
+
+  const mockResponse = {
+    taskData: {
+      evalId: 3565247,
+      taskId: 74365847,
+      loanNumber: 18008401081,
+      wfProcessId: 23456,
+      processStatus: 'Active',
+      groupName: 'BOOKING',
+    },
+    status: 'Loan Assignment Unsuccessful',
+    statusCode: {
+      Warning: true,
+    },
+    bookingTaskId: 1234,
+  };
+
+  const mockDataserviceResponse = {
+    wfTaskId: 74365847,
+    assignedTo: 'bren@mrcooper.com',
+    taskStatus: 'Assigned',
+  };
+
+  const mockDataServicePayload = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskName: 'Pending Booking',
+    groupList: [
+      'feuw',
+      'beta',
+    ],
+    appGroupName: 'BOOKING',
+  };
+
+
+  const mockEvalDetails = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskId: '18008401081_3565247',
+    processId: 23456,
+    taskStatus: 'Assigned',
+    assignee: 'bren@mrcooper.com',
+  };
+
+  const saga = cloneableGenerator(TestExports.handleWidget)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select evalId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.evalId));
+  });
+  it('should call select loanNumber from store', () => {
+    expect(saga.next(3565247).value)
+      .toEqual(select(selectors.loanNumber));
+  });
+  it('should call select isAssigned from store', () => {
+    expect(saga.next(18008401081).value)
+      .toEqual(select(selectors.isAssigned));
+  });
+
+  it('should call select ProcessId from store', () => {
+    expect(saga.next(false).value)
+      .toEqual(select(selectors.processId));
+  });
+
+  it('should call select groupName from store', () => {
+    expect(saga.next(23456).value)
+      .toEqual(select(selectors.groupName));
+  });
+
+  it('should call select RootTaskId from store', () => {
+    expect(saga.next('BOOKING').value)
+      .toEqual(select(checklistSelectors.getRootTaskId));
+  });
+
+  it('should call select selectedChecklistId from store', () => {
+    expect(saga.next(123).value)
+      .toEqual(select(checklistSelectors.getProcessId));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(456).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call SAVE_MAIN_CHECKLIST', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(put({
+        type: actionTypes.SAVE_MAIN_CHECKLIST,
+        payload: { rootTaskId: 123, selectedChecklistId: 456 },
+      }));
+  });
+  it('should call dataservie Api to fetch task details', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callGet, '/api/dataservice/api/taskInfo/18008401081_3565247'));
+  });
+  it('should call dataservie Api to fetch task details', () => {
+    expect(saga.next(mockDataserviceResponse).value)
+      .toEqual(call(Api.callPost, '/api/workassign/createTask', mockDataServicePayload));
+  });
+  it('should call resetChecklistData', () => {
+    expect(saga.next({ taskCheckListId: 123 }).value)
+      .toEqual(put(TestExports.resetChecklistData()));
+  });
+  it('should call CLEAR_ERROR_MESSAGE', () => {
+    expect(saga.next().value)
+      .toEqual(put({
+        type: actionTypes.CLEAR_ERROR_MESSAGE,
+        payload: { },
+      }));
+  });
+  it('should call fetchChecklistDetails ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.fetchChecklistDetails, 123));
+  });
+  it('should call SAVE_EVAL_FOR_WIDGET', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SAVE_EVAL_FOR_WIDGET, payload: mockEvalDetails }));
+  });
+  it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
+    const taskid = {
+      taskId: '18008401081_3565247',
+    };
+    expect(saga.next().value)
+      .toEqual(put({
+        type: GET_HISTORICAL_CHECKLIST_DATA,
+        payload: taskid,
+      }));
+  });
+  it('should call getResolutionDataForEval ', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.getResolutionDataForEval, 3565247));
+  });
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('unassignWidgetLoan : unassignLoan successful', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+    groupList: ['feuw', 'beta'],
+  };
+
+  const mockResponse = {
+    taskData: {
+      evalId: 3565247,
+      taskId: 74365847,
+      loanNumber: 18008401081,
+      wfProcessId: 23456,
+      processStatus: 'Active',
+      groupName: 'BOOKING',
+    },
+    status: 'Loan Assignment Unsuccessful',
+    bookingTaskId: 1234,
+  };
+
+  const mockWidgetLoan = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskId: 74365847,
+    processId: 23456,
+    processStatus: 'Active',
+    appgroupName: 'BOOKING',
+  };
+
+  const saga = cloneableGenerator(TestExports.unassignWidgetLoan)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select widget loan from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getWidgetLoan));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(mockWidgetLoan).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call assign Api', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&appgroupName=BOOKING&taskName=Pending Booking&isWidgetLoan=true', {}));
+  });
+  it('should call RESET_DATA', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({
+        type: 'app/tasks-and-checklist/RESET_DATA',
+      }));
+  });
+
+  it('should call UNASSIGN_LOAN_RESULT', () => {
+    expect(saga.next().value)
+      .toEqual(put({
+        type: actionTypes.UNASSIGN_LOAN_RESULT,
+        payload: mockResponse,
+      }));
+  });
+  it('should call select selectedChecklistId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getSelectedChecklistId));
+  });
+
+  it('should call fetchChecklistDetails ', () => {
+    expect(saga.next(123).value)
+      .toEqual(call(TestExports.fetchChecklistDetails, 123));
+  });
+
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('unassignWidgetLoan : unassignLoan unsuccessful', () => {
+  const mockUser = {
+    userDetails: {
+      email: 'bren@mrcooper.com',
+    },
+    groupList: ['feuw', 'beta'],
+  };
+
+  const mockResponse = null;
+
+  const mockWidgetLoan = {
+    evalId: 3565247,
+    loanNumber: 18008401081,
+    taskId: 74365847,
+    processId: 23456,
+    processStatus: 'Active',
+    appgroupName: 'BOOKING',
+  };
+
+  const saga = cloneableGenerator(TestExports.unassignWidgetLoan)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select widget loan from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getWidgetLoan));
+  });
+
+  it('should call select userDetails from store', () => {
+    expect(saga.next(mockWidgetLoan).value)
+      .toEqual(select(loginSelectors.getUser));
+  });
+
+  it('should call assign Api', () => {
+    expect(saga.next(mockUser).value)
+      .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&appgroupName=BOOKING&taskName=Pending Booking&isWidgetLoan=true', {}));
+  });
+
+  it('should call UNASSIGN_LOAN_RESULT', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({
+        type: actionTypes.UNASSIGN_LOAN_RESULT,
+        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+      }));
+  });
+
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
+  });
+});
+
+describe('unassignWidgetLoan : Failed', () => {
+  const mockWidgetLoan = {
+    loanNumber: 18008401081,
+    taskId: 74365847,
+    processId: 23456,
+    processStatus: 'Active',
+    appgroupName: 'BOOKING',
+  };
+
+  const saga = cloneableGenerator(TestExports.unassignWidgetLoan)();
+  it('should call show loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.SHOW_LOADER }));
+  });
+
+  it('should call select widget loan from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getWidgetLoan));
+  });
+
+  it('should call UNASSIGN_LOAN_RESULT', () => {
+    expect(saga.next(mockWidgetLoan).value)
+      .toEqual(put({
+        type: actionTypes.UNASSIGN_LOAN_RESULT,
+        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+      }));
+  });
+
+  it('should call hide loader', () => {
+    expect(saga.next().value)
+      .toEqual(put({ type: actionTypes.HIDE_LOADER }));
   });
 });

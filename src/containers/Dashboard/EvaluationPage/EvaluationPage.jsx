@@ -60,7 +60,7 @@ class EvaluationPage extends React.PureComponent {
   render() {
     const {
       location, group, taskName, checklisttTemplateName, stagerTaskName,
-      resultOperation, isAutoDisposition,
+      userNotification, isAutoDisposition,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -79,8 +79,8 @@ class EvaluationPage extends React.PureComponent {
         </ContentHeader>
         <Tombstone />
         <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
-          {(resultOperation && resultOperation.status)
-            ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
+          {(userNotification && userNotification.status)
+            ? <UserNotification level={userNotification.level} message={userNotification.status} type="alert-box" />
             : ''
           }
         </div>
@@ -97,7 +97,7 @@ EvaluationPage.defaultProps = {
   checklisttTemplateName: null,
   taskName: '',
   stagerTaskName: '',
-  resultOperation: { level: '', status: '' },
+  userNotification: { level: '', status: '' },
   onCleanResult: () => {},
 };
 
@@ -110,10 +110,6 @@ EvaluationPage.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
   onCleanResult: PropTypes.func,
-  resultOperation: PropTypes.shape({
-    level: PropTypes.string,
-    status: PropTypes.string,
-  }),
   stagerTaskName: PropTypes.string,
   taskName: PropTypes.string,
   user: PropTypes.shape({
@@ -126,6 +122,10 @@ EvaluationPage.propTypes = {
     }),
     userGroups: PropTypes.array,
   }).isRequired,
+  userNotification: PropTypes.shape({
+    level: PropTypes.string,
+    status: PropTypes.string,
+  }),
 };
 const mapStateToProps = state => ({
   taskName: selectors.processName(state),
@@ -134,7 +134,7 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
   isAutoDisposition: checklistSelectors.getDispositionType(state),
-  resultOperation: selectors.resultOperation(state),
+  userNotification: selectors.userNotification(state),
 });
 
 const mapDispatchToProps = dispatch => ({

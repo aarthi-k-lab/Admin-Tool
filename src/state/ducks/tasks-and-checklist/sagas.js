@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   takeEvery,
   all,
@@ -37,21 +36,39 @@ import {
   GET_RESOLUTION_ID_STATS,
   SLA_RULES_PROCESSED,
   SAVE_RULE_RESPONSE,
+  SET_NEW_CHECKLIST,
+  PUSH_DATA,
+  CHECK_RULES_PASSED,
 } from './types';
 import {
   USER_NOTIF_MSG,
   SET_GET_NEXT_STATUS,
+  SET_RESULT_OPERATION,
+  ENABLE_PUSHDATA,
 } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
 } from '../notifications/types';
 import * as actions from './actions';
 import selectors from './selectors';
-import { selectors as dashboardSelectors } from '../dashboard';
-import { selectors as loginSelectors } from '../login';
+import {
+  selectors as dashboardSelectors,
+} from '../dashboard';
+import {
+  selectors as loginSelectors,
+} from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
-import { SOMETHING_WENT_WRONG } from '../../../models/Alert';
+import {
+  SOMETHING_WENT_WRONG,
+} from '../../../models/Alert';
 // import DropDownSelect from 'containers';
+
+const {
+  Messages: {
+    MSG_SERVICE_DOWN,
+    LEVEL_FAILED,
+  },
+} = DashboardModel;
 
 const ADD = 'ADD';
 // const DELETE = 'DELETE';
@@ -66,7 +83,11 @@ const autoDispositions = [{
 
 function* getChecklist(action) {
   try {
-    const { payload: { taskId } } = action;
+    const {
+      payload: {
+        taskId,
+      },
+    } = action;
     yield put({
       type: LOADING_CHECKLIST,
     });
@@ -145,7 +166,10 @@ const createChecklistNavigation = R.compose(
   R.reduce(R.concat, []),
   R.map(
     R.compose(
-      R.map(checklist => ({ id: R.prop('_id', checklist), state: R.prop('state', checklist) })),
+      R.map(checklist => ({
+        id: R.prop('_id', checklist),
+        state: R.prop('state', checklist),
+      })),
       R.filter(R.propEq('visibility', true)),
       R.propOr([], 'subTasks'),
     ),
@@ -174,7 +198,11 @@ function filterOptionalTasks(allTasks) {
 
 function* getTasks(action) {
   try {
-    const { payload: { depth } } = action;
+    const {
+      payload: {
+        depth,
+      },
+    } = action;
     yield put({
       type: LOADING_TASKS,
     });
@@ -424,13 +452,19 @@ function* updateAndFetchTasks(fieldName, task, requestBody) {
   });
   yield put({
     type: GET_TASKS_SAGA,
-    payload: { depth: 3 },
+    payload: {
+      depth: 3,
+    },
   });
 }
 
 function* updateChecklist(action) {
   try {
-    const { task, fieldName, type } = action.payload;
+    const {
+      task,
+      fieldName,
+      type,
+    } = action.payload;
     const requestBody = {
       // eslint-disable-next-line no-underscore-dangle
       id: task.id ? task.id : task._id,
@@ -459,7 +493,9 @@ function* updateChecklist(action) {
 
 function* getHistoricalChecklistData(action) {
   try {
-    const { taskId } = action.payload;
+    const {
+      taskId,
+    } = action.payload;
     const response = yield call(Api.callGet, `/api/dataservice/api/getTaskDetailsForTaskIds/${taskId}`);
     yield put({
       type: HISTORICAL_CHECKLIST_DATA,
@@ -472,7 +508,11 @@ function* getHistoricalChecklistData(action) {
 
 function* subTaskClearance(action) {
   try {
-    const { id, rootTaskId, taskBlueprintCode } = action.payload;
+    const {
+      id,
+      rootTaskId,
+      taskBlueprintCode,
+    } = action.payload;
     const requestBody = {
       id,
       rootTaskId,
@@ -485,11 +525,15 @@ function* subTaskClearance(action) {
     } else {
       yield put({
         type: GET_CHECKLIST_SAGA,
-        payload: { taskId: id },
+        payload: {
+          taskId: id,
+        },
       });
       yield put({
         type: GET_TASKS_SAGA,
-        payload: { depth: 3 },
+        payload: {
+          depth: 3,
+        },
       });
     }
   } catch (e) {
@@ -505,14 +549,19 @@ function* sortUniqueUsers(usersList) {
 }
 
 function* getUsersForGroup(additionalInfo) {
-  const { group } = additionalInfo;
+  const {
+    group,
+  } = additionalInfo;
   const response = yield call(Api.callGet, 'api/config');
   const handoffADGroups = R.pathOr({}, ['handoffADGroups', group], response);
   const appName = R.pathOr({}, ['appName', 'appName'], response);
   const requestData = {
     url: '/api/auth/ad/usersByGroups',
     method: Api.callPost,
-    body: { groups: handoffADGroups, appName },
+    body: {
+      groups: handoffADGroups,
+      appName,
+    },
     formatResponse: sortUniqueUsers,
   };
   return requestData;
@@ -524,7 +573,10 @@ const sourceToMethodMapping = {
 
 
 function* getdropDownOptions(action) {
-  const { source, additionalInfo } = action.payload;
+  const {
+    source,
+    additionalInfo,
+  } = action.payload;
   const dataFetchMethod = sourceToMethodMapping[source];
   const requestData = yield dataFetchMethod(additionalInfo);
   const {
@@ -545,10 +597,74 @@ function* getdropDownOptions(action) {
   }
 }
 
+const sendToLSAMS = function* sendToLSAMS() {
+  try {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const taskId = yield select(dashboardSelectors.getBookingTaskId);
+    const currentUser = yield select(loginSelectors.getUser);
+    const currentUserMail = R.path(['userDetails', 'email'], currentUser);
+    const payload = {
+      loanNumber,
+      evalId,
+      taskId,
+      applicationName: 'CMOD',
+      user: currentUserMail,
+    };
+    const response = yield call(Api.callPost, '/api/booking/api/bookingAutomation/loadToLSAMS', payload);
+    yield put({ type: ENABLE_PUSHDATA, payload: !R.equals(response.status, 'FAILED') });
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: response.message,
+        level: R.equals(response.status, 'FAILED') ? LEVEL_FAILED : 'Success',
+      },
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: MSG_SERVICE_DOWN,
+        level: LEVEL_FAILED,
+      },
+    });
+  }
+};
+
+function* addPushDataResponse() {
+  try {
+    const requestBody = {
+      value: {
+        pushDataChecklist: true,
+      },
+    };
+    yield put({
+      type: LOADING_CHECKLIST,
+    });
+    const rootTaskId = yield select(selectors.getRootTaskId);
+    yield call(Api.put, `/api/task-engine/task/${rootTaskId}`, requestBody);
+    const selectedChecklistId = yield select(selectors.getSelectedChecklistId);
+    yield all([
+      callAndPut(actions.setSelectedChecklist, selectedChecklistId),
+      callAndPut(actions.getChecklist, selectedChecklistId),
+    ]);
+    yield put(yield call(actions.getTasks));
+    yield call(sendToLSAMS);
+  } catch (err) {
+    yield call(handleSaveChecklistError, err);
+  }
+}
+
 function* makeResolutionIdStatCall(action) {
   try {
-    const { resolutionId, auditRuleType } = action.payload;
-    yield put({ type: SLA_RULES_PROCESSED, payload: false });
+    const {
+      resolutionId,
+      auditRuleType,
+    } = action.payload;
+    yield put({
+      type: SLA_RULES_PROCESSED,
+      payload: false,
+    });
     const response = yield call(Api.callPost, `/api/booking/api/bookingAutomation/runAuditRules?resolutionId=${resolutionId}&auditRuleType=${auditRuleType}`);
     if (!R.isNil(response) && !R.isEmpty(response) && !response.message && !response.error) {
       try {
@@ -557,6 +673,14 @@ function* makeResolutionIdStatCall(action) {
           R.map(R.prop('data')),
           R.path(['modBookingResponse', 'checklist']),
         )(response);
+        const isAllRulesPassed = (request.map((obj) => {
+          const dup = JSON.parse(JSON.stringify(obj));
+          delete dup.text;
+          return Object.values(dup)[0];
+        })).includes('false');
+        if (R.equals(auditRuleType, 'pre')) {
+          yield put({ type: CHECK_RULES_PASSED, payload: !isAllRulesPassed });
+        }
         const requestBody = {
           value: {
             [auditRuleType]: {
@@ -581,12 +705,88 @@ function* makeResolutionIdStatCall(action) {
       type: SAVE_RULE_RESPONSE,
       // eslint-disable-next-line no-nested-ternary
       payload: R.isNil(response) || R.isEmpty(response)
-        ? { error: SOMETHING_WENT_WRONG } : (response.error ? { error: response.error } : response),
+        ? {
+          error: SOMETHING_WENT_WRONG,
+        } : (response.error ? {
+          error: response.error,
+        } : response),
     });
   } catch (err) {
-    yield put({ type: SAVE_RULE_RESPONSE, payload: { error: SOMETHING_WENT_WRONG } });
+    yield put({
+      type: SAVE_RULE_RESPONSE,
+      payload: {
+        error: SOMETHING_WENT_WRONG,
+      },
+    });
   } finally {
-    yield put({ type: SLA_RULES_PROCESSED, payload: true });
+    yield put({
+      type: SLA_RULES_PROCESSED,
+      payload: true,
+    });
+  }
+}
+
+function* setNewChecklist(action) {
+  try {
+    const depth = 3;
+    yield put({
+      type: LOADING_TASKS,
+    });
+    yield put({
+      type: USER_NOTIF_MSG,
+      payload: {},
+    });
+    const {
+      rootTaskId,
+    } = action.payload.id;
+    const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    }
+    const optionalTasks = yield call(filterOptionalTasks, response);
+    yield put({
+      type: STORE_OPTIONAL_TASKS,
+      payload: optionalTasks,
+    });
+    const checklistNavigation = yield call(createChecklistNavigation, response);
+    const checklistNavAction = yield call(actions.storeChecklistNavigation, checklistNavigation);
+    const checklistSelectionIsPresent = yield select(selectors.getSelectedChecklistId);
+    let selectedChecklistId = action.payload.id.checklistId;
+    if (checklistSelectionIsPresent === 'nothing') {
+      selectedChecklistId = action.payload.id.checklistId;
+    }
+    if (selectedChecklistId) {
+      yield all([
+        callAndPut(actions.setSelectedChecklist, selectedChecklistId),
+        callAndPut(actions.getChecklist, selectedChecklistId),
+      ]);
+    }
+    yield put(checklistNavAction);
+    yield put({
+      type: STORE_TASKS,
+      payload: response,
+    });
+    const disposition = autoDispositions.find(disp => disp.dispositionCode === R.pathOr(null, ['value', 'dispositionCode'], response));
+    if (disposition) {
+      yield put(actions.validationDisplayAction(true));
+      yield put(actions.dispositionCommentAction(disposition.dispositionComment));
+    } else if (!R.isNil(yield select(selectors.getChecklistComment))) {
+      const showDisposition = yield select(selectors.shouldShowDisposition);
+      yield put(actions.validationDisplayAction(showDisposition));
+    } else yield put(actions.validationDisplayAction(false));
+  } catch (e) {
+    yield put({
+      type: ERROR_LOADING_TASKS,
+    });
+    const snackBar = {};
+    snackBar.message = 'Task/s fetch failed.';
+    snackBar.type = 'error';
+    snackBar.open = true;
+    yield put({
+      type: SET_SNACK_BAR_VALUES,
+      payload: snackBar,
+    });
   }
 }
 
@@ -629,13 +829,25 @@ function* watchSubtaskClearance() {
 function* watchDropDownOption() {
   yield takeEvery(FETCH_DROPDOWN_OPTIONS_SAGA, getdropDownOptions);
 }
-export const TestExports = {
-  watchGetTasks,
-};
 
 function* watchResolutionIdStatCall() {
   yield takeEvery(GET_RESOLUTION_ID_STATS, makeResolutionIdStatCall);
 }
+
+function* watchSetNewChecklist() {
+  yield takeEvery(SET_NEW_CHECKLIST, setNewChecklist);
+}
+
+function* watchPushDataButton() {
+  yield takeEvery(PUSH_DATA, addPushDataResponse);
+}
+
+export const TestExports = {
+  watchGetTasks,
+  watchPushDataButton,
+  addPushDataResponse,
+  sendToLSAMS,
+};
 
 export function* combinedSaga() {
   yield all([
@@ -650,6 +862,8 @@ export function* combinedSaga() {
     watchSubtaskClearance(),
     watchDropDownOption(),
     watchResolutionIdStatCall(),
+    watchSetNewChecklist(),
+    watchPushDataButton(),
   ]);
   // eslint-disable-next-line eol-last
 }

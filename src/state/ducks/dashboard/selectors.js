@@ -31,6 +31,9 @@ const taskIterationCounter = state => R.pathOr(null, ['dashboard', 'taskIteratio
 
 const taskId = state => R.pathOr(null, ['dashboard', 'taskId'], state);
 
+const getBookingTaskId = state => R.pathOr(null, ['dashboard', 'bookingTaskId'], state);
+
+
 const getDisposition = state => R.pathOr('', ['dashboard', 'selectedDisposition'], state);
 
 const searchLoanResult = state => R.pathOr({}, ['dashboard', 'getSearchLoanResponse'], state);
@@ -106,8 +109,11 @@ const getTrialsDetail = state => (state.dashboard.trialsDetail ? state.dashboard
 const getTrialLetter = state => (state.dashboard.trialsLetter ? state.dashboard.trialsLetter : []);
 const resultUnderwriting = state => (state.dashboard && state.dashboard.resultUnderwriting
   ? state.dashboard.resultUnderwriting : {});
+
 const resultOperation = state => (state.dashboard && state.dashboard.resultOperation
   ? state.dashboard.resultOperation : {});
+
+const userNotification = state => R.pathOr({}, ['dashboard', 'userNotification'], state);
 const bulkOrderPageType = state => R.pathOr('', ['dashboard', 'pageType'], state);
 const getModReversalReasons = state => R.pathOr({}, ['dashboard', 'modReversalReasons'], state);
 const getResolutionData = state => R.pathOr({}, ['dashboard', 'resolutionData'], state);
@@ -120,9 +126,27 @@ const getSendToCoviusResponse = state => R.pathOr({}, ['dashboard', 'sendToCoviu
 const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
 const getCoviusTabIndex = state => R.pathOr(0, ['dashboard', 'coviusTabIndex'], state);
+const getEnablePushData = state => R.pathOr(false, ['dashboard', 'enablePushData'], state);
+
+const getWidgetLoan = state => R.pathOr({}, ['dashboard', 'widgetLoan'], state);
+
+const getRootTaskId = R.pathOr('', ['dashboard', 'rootTaskId']);
+const getSelectedChecklistId = state => R.pathOr('', ['dashboard', 'selectedChecklistId'], state);
+const getProcessId = R.pathOr(null, ['dashboard', 'processId']);
+
+const getToggleWidget = R.pathOr(false, ['dashboard', 'toggleWidget']);
+
+const getHomePagevisible = R.pathOr(false, ['dashboard', 'bookingHomePage']);
 
 const selectors = {
+  getBookingTaskId,
+  getToggleWidget,
+  getProcessId,
+  userNotification,
+  getRootTaskId,
+  getSelectedChecklistId,
   getCoviusTabIndex,
+  getWidgetLoan,
   getSendToCoviusResponse,
   enableEndShift,
   enableGetNext,
@@ -188,6 +212,8 @@ const selectors = {
   getDownloadResponse,
   getcoviusEventOptions,
   disableSendToFEUW,
+  getEnablePushData,
+  getHomePagevisible,
 };
 
 export default selectors;

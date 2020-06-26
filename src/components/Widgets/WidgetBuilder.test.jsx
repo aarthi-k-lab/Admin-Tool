@@ -26,4 +26,37 @@ describe('<WidgetBuilder />', () => {
     );
     expect(wrapper.find('WidgetIcon')).toHaveLength(1);
   });
+
+  it('should render the Booking widget on DOCSIN', () => {
+    const wrapper = shallow(
+      <TestHooks.WidgetBuilder />,
+    );
+    wrapper.setProps({
+      groupName: 'DOCSIN',
+    });
+    expect(wrapper.find('WidgetIcon')).toHaveLength(2);
+  });
+
+  it('should not render the Booking widget on DOC GEN page', () => {
+    const wrapper = shallow(
+      <TestHooks.WidgetBuilder />,
+    );
+    wrapper.setProps({
+      groupName: 'DOCGEN',
+    });
+    expect(wrapper.find('WidgetIcon')).toHaveLength(1);
+  });
+
+  it('should call the triggerHeader function', () => {
+    const triggerHeader = jest.fn();
+    const wrapper = shallow(
+      <TestHooks.WidgetBuilder triggerHeader={triggerHeader} />,
+    );
+    wrapper.setProps({
+      groupName: 'DOCSIN',
+    });
+    expect(wrapper.find('WidgetIcon')).toHaveLength(2);
+    wrapper.find('WidgetIcon').at(1).simulate('WidgetClick');
+    expect(triggerHeader).toBeCalled();
+  });
 });

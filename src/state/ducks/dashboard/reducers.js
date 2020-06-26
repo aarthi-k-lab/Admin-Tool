@@ -69,6 +69,13 @@ import {
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
   DISABLE_SEND_TO_FEUW,
+  SAVE_EVAL_FOR_WIDGET,
+  SAVE_MAIN_CHECKLIST,
+  SET_USER_NOTIF_MESSAGE,
+  TOGGLE_WIDGET,
+  SAVE_TASKID,
+  ENABLE_PUSHDATA,
+  SET_HOMEPAGE_VISIBLE,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
@@ -375,7 +382,20 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       };
       return newState;
     }
-
+    case SAVE_EVAL_FOR_WIDGET: {
+      const widgetLoan = action.payload;
+      return {
+        ...state,
+        widgetLoan,
+      };
+    }
+    case SAVE_MAIN_CHECKLIST: {
+      const checklistDetails = action.payload;
+      return {
+        ...state,
+        ...checklistDetails,
+      };
+    }
     case CONTINUE_MY_REVIEW_RESULT: {
       const newState = {
         ...state,
@@ -495,7 +515,20 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         loading: false,
       };
     }
-
+    case SET_USER_NOTIF_MESSAGE: {
+      const { clearData } = action.payload;
+      const userNotification = {
+        ...action.payload,
+        isOpen: true,
+        clearData: clearData || false,
+      };
+      return {
+        ...state,
+        userNotification,
+        tableData: [],
+        loading: false,
+      };
+    }
     case SET_RESULT_OPERATION: {
       const { clearData } = action.payload;
       const resultOperation = {
@@ -667,6 +700,12 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         coviusTabIndex: coviusTabIndex || 0,
       };
     }
+    case ENABLE_PUSHDATA: {
+      return {
+        ...state,
+        enablePushData: action.payload,
+      };
+    }
     case CLOSE_SWEET_ALERT: {
       return {
         ...state,
@@ -691,7 +730,28 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         coviusEventOptions: payload,
       };
     }
+    case TOGGLE_WIDGET: {
+      const toggleWidget = action.payload;
+      return {
+        ...state,
+        toggleWidget,
+      };
+    }
+    case SAVE_TASKID: {
+      const bookingTaskId = action.payload;
+      return {
+        ...state,
+        bookingTaskId,
+      };
+    }
 
+    case SET_HOMEPAGE_VISIBLE: {
+      const { bookingHomePage } = action.payload;
+      return {
+        ...state,
+        bookingHomePage,
+      };
+    }
     default:
       return state;
   }

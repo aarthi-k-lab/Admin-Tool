@@ -8,6 +8,7 @@ import {
   RESET_DATA,
   SET_SELECTED_CHECKLIST,
   STORE_CHECKLIST,
+  STORE_CURRENT_CHECKLIST,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_NAVIGATION,
   STORE_PROCESS_DETAILS,
@@ -33,6 +34,8 @@ import {
   SAVE_RULE_RESPONSE,
   CLEAR_RULE_RESPONSE,
   SET_SLA_VALUES,
+  CHECK_RULES_PASSED,
+  COMPUTE_RULES_PASSED,
 } from './types';
 
 const FAILED = 'failed';
@@ -148,6 +151,13 @@ const reducer = (state = defaultState, action) => {
         ...state,
         checklist: action.payload,
         checklistLoadingStatus: SUCCEEDED,
+      };
+    }
+    case STORE_CURRENT_CHECKLIST: {
+      return {
+        ...state,
+        prevChecklistId: action.payload.id.checklistId,
+        prevRootTaskId: action.payload.id.rootTaskId,
       };
     }
     case STORE_CHECKLIST_ITEM_CHANGE: {
@@ -301,6 +311,19 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         selectedSLAvalues: action.payload,
+      };
+    }
+
+    case CHECK_RULES_PASSED: {
+      return {
+        ...state,
+        isAllRulesPassed: action.payload,
+      };
+    }
+    case COMPUTE_RULES_PASSED: {
+      return {
+        ...state,
+        isAllRulesPassed: action.payload,
       };
     }
     default:

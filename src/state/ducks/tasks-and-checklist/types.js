@@ -15,6 +15,7 @@ const LOADING_TASKS = 'app/tasks-and-checklist/LOADING_TASKS';
 const REMOVE_DIRTY_CHECKLIST = 'app/tasks-and-checklist/REMOVE_DIRTY_CHECKLIST';
 const SET_SELECTED_CHECKLIST = 'app/tasks-and-checklist/SET_SELECTED_CHECKLIST';
 const STORE_CHECKLIST = 'app/tasks-and-checklist/STORE_CHECKLIST';
+const STORE_CURRENT_CHECKLIST = 'app/tasks-and-checklist/STORE_CURRENT_CHECKLIST';
 const STORE_TASK_FILTER = 'app/tasks-and-checklist/STORE_TASK_FILTER';
 const STORE_CHECKLIST_NAVIGATION = 'app/tasks-and-checklist/STORE_CHECKLIST_NAVIGATION';
 const STORE_CHECKLIST_ITEM_CHANGE = 'app/tasks-and-checklist/STORE_CHECKLIST_ITEM_CHANGE';
@@ -42,8 +43,14 @@ const SLA_RULES_PROCESSED = 'app/tasks-and-checklist/SLA_RULES_PROCESSED';
 const SAVE_RULE_RESPONSE = 'app/tasks-and-checklist/SAVE_RULE_RESPONSE';
 const CLEAR_RULE_RESPONSE = 'app/tasks-and-checklist/CLEAR_RULE_RESPONSE';
 const SET_SLA_VALUES = 'app/tasks-and-checklist/SET_SLA_VALUES';
+const SET_NEW_CHECKLIST = 'app/tasks-and-checklist/SET_NEW_CHECKLIST';
+const PUSH_DATA = 'app/tasks-and-checklist/PUSH_DATA';
+const CHECK_RULES_PASSED = 'app/tasks-and-checklist/CHECK_RULES_PASSED';
+const COMPUTE_RULES_PASSED = 'app/tasks-and-checklist/COMPUTE_RULES_PASSED';
+
 
 export {
+  COMPUTE_RULES_PASSED,
   GET_NEXT_CHECKLIST,
   GET_PREV_CHECKLIST,
   GET_CHECKLIST_SAGA,
@@ -58,6 +65,7 @@ export {
   SET_SELECTED_CHECKLIST,
   RESET_DATA,
   STORE_CHECKLIST,
+  STORE_CURRENT_CHECKLIST,
   STORE_CHECKLIST_NAVIGATION,
   STORE_CHECKLIST_ITEM_CHANGE,
   STORE_PROCESS_DETAILS,
@@ -88,4 +96,7 @@ export {
   SAVE_RULE_RESPONSE,
   CLEAR_RULE_RESPONSE,
   SET_SLA_VALUES,
+  SET_NEW_CHECKLIST,
+  PUSH_DATA,
+  CHECK_RULES_PASSED,
 };

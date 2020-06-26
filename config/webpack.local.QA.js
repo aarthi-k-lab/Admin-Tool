@@ -178,7 +178,7 @@ const config = merge(
           },
         },
         '/api/booking': {
-          target: 'https://api.qa.int.mrcooper.io/cmod/booking',
+          target: 'https://cmodbookingserviceqa.int.mrcooper.io',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

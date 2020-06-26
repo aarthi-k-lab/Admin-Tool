@@ -56,6 +56,10 @@ import {
   SEND_TO_COVIUS,
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
+  WIDGET_CLICK,
+  UNASSIGN_WIDGET_LOAN,
+  SET_HOMEPAGE_VISIBLE,
+  TOGGLE_WIDGET,
 } from './types';
 
 
@@ -110,6 +114,11 @@ const getGroupName = payload => ({
   payload,
 });
 
+const widgetClickAction = payload => ({
+  type: WIDGET_CLICK,
+  payload,
+});
+
 const endShift = (type = EndShift.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA) => ({
   type: END_SHIFT,
   payload: {
@@ -119,6 +128,17 @@ const endShift = (type = EndShift.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA) => 
 
 const unassignLoan = () => ({
   type: UNASSIGN_LOAN,
+});
+
+const unassignWidgetLoan = () => ({
+  type: UNASSIGN_WIDGET_LOAN,
+});
+
+const setHomepageVisibleAction = bookingHomePage => ({
+  type: SET_HOMEPAGE_VISIBLE,
+  payload: {
+    bookingHomePage,
+  },
 });
 
 const postComment = payload => ({
@@ -319,8 +339,14 @@ const setCoviusIndexAction = payload => ({
   payload,
 });
 
+const widgetToggle = payload => ({
+  type: TOGGLE_WIDGET,
+  payload,
+});
 
 export {
+  widgetToggle,
+  unassignWidgetLoan,
   setCoviusIndexAction,
   openSweetAlertAction,
   closeSweetAlertAction,
@@ -377,4 +403,6 @@ export {
   downloadFileAction,
   populateEventsDropdown,
   sendToFEUW,
+  widgetClickAction,
+  setHomepageVisibleAction,
 };
