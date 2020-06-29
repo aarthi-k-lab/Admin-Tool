@@ -44,7 +44,7 @@ import {
   USER_NOTIF_MSG,
   SET_GET_NEXT_STATUS,
   SET_RESULT_OPERATION,
-  ENABLE_PUSHDATA,
+  DISABLE_PUSHDATA,
 } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
@@ -612,7 +612,7 @@ const sendToLSAMS = function* sendToLSAMS() {
       user: currentUserMail,
     };
     const response = yield call(Api.callPost, '/api/booking/api/bookingAutomation/loadToLSAMS', payload);
-    yield put({ type: ENABLE_PUSHDATA, payload: !R.equals(response.status, 'FAILED') });
+    yield put({ type: DISABLE_PUSHDATA, payload: !R.equals(response.status, 'FAILED') });
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {

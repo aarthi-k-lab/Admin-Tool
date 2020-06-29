@@ -150,11 +150,12 @@ class LabelWithIcon extends React.PureComponent {
     const {
       passedRules, failedRules, isAssigned, slaRulesProcessed, resolutionData,
       filter, showContinueMyReview, triggerHeader,
-      showPushDataButton, enablePushDataButton, enablePushData, isAllRulesPassed,
+      showPushDataButton, enablePushDataButton, disablePushData, isAllRulesPassed,
     } = this.props;
     const { resolutionText: selectedValue } = this.state;
     const sortedResData = R.sort(R.descend(R.prop('resolutionId')), resolutionData);
-    const disabled = enablePushDataButton ? (enablePushData || !isAllRulesPassed) : true;
+    const disabled = enablePushDataButton
+      ? (disablePushData || !isAllRulesPassed || !isAssigned || showContinueMyReview) : true;
     return (
       <>
         <Grid container styleName="customresolutiongrid">
@@ -261,7 +262,7 @@ LabelWithIcon.propTypes = {
   clearRuleResponse: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
-  enablePushData: PropTypes.bool.isRequired,
+  disablePushData: PropTypes.bool.isRequired,
   enablePushDataButton: PropTypes.bool.isRequired,
   failedRules: PropTypes.shape.isRequired,
   filter: PropTypes.bool.isRequired,
@@ -315,7 +316,7 @@ const mapStateToProps = state => ({
   isAssigned: dashboardSelectors.isAssigned(state),
   showContinueMyReview: dashboardSelectors.showContinueMyReview(state),
   resultData: dashboardSelectors.resultOperation(state),
-  enablePushData: dashboardSelectors.getEnablePushData(state),
+  disablePushData: dashboardSelectors.getDisablePushData(state),
 });
 
 

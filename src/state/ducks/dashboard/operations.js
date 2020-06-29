@@ -55,7 +55,6 @@ import {
   setCoviusIndexAction,
   widgetClickAction,
   unassignWidgetLoan,
-  setHomepageVisibleAction,
   widgetToggle,
 } from './actions';
 
@@ -84,6 +83,7 @@ const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf()
 const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
 
 const onAutoSave = dispatch => (taskStatus) => {
+  dispatch(unassignWidgetLoan());
   dispatch(autoSave(taskStatus));
 };
 
@@ -131,11 +131,6 @@ const onUnassignLoan = dispatch => () => {
 const onUnassignBookingLoan = dispatch => () => {
   dispatch(unassignWidgetLoan());
 };
-
-const setHomepageVisible = dispatch => (bookingHomePage) => {
-  dispatch(setHomepageVisibleAction(bookingHomePage));
-};
-
 
 const onAssignLoan = dispatch => () => {
   dispatch(assignLoan());
@@ -338,7 +333,6 @@ const operations = {
   populateEvents,
   onSendToFEUW,
   onWidgetClick,
-  setHomepageVisible,
 };
 
 export default operations;

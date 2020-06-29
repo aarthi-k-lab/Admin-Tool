@@ -74,8 +74,7 @@ import {
   SET_USER_NOTIF_MESSAGE,
   TOGGLE_WIDGET,
   SAVE_TASKID,
-  ENABLE_PUSHDATA,
-  SET_HOMEPAGE_VISIBLE,
+  DISABLE_PUSHDATA,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
@@ -700,10 +699,10 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         coviusTabIndex: coviusTabIndex || 0,
       };
     }
-    case ENABLE_PUSHDATA: {
+    case DISABLE_PUSHDATA: {
       return {
         ...state,
-        enablePushData: action.payload,
+        disablePushData: action.payload,
       };
     }
     case CLOSE_SWEET_ALERT: {
@@ -742,14 +741,6 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         bookingTaskId,
-      };
-    }
-
-    case SET_HOMEPAGE_VISIBLE: {
-      const { bookingHomePage } = action.payload;
-      return {
-        ...state,
-        bookingHomePage,
       };
     }
     default:

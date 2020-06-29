@@ -111,7 +111,7 @@ import {
   SET_USER_NOTIF_MESSAGE,
   TOGGLE_WIDGET,
   SAVE_TASKID,
-  ENABLE_PUSHDATA,
+  DISABLE_PUSHDATA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -309,7 +309,7 @@ function* fetchChecklistDetails(checklistId) {
     const taskId = yield select(selectors.getBookingTaskId);
     if (R.equals(group, 'BOOKING')) {
       const response = yield call(Api.callGet, `/api/dataservice/api/getLsamsResponseByTaskId?taskId=${taskId}`);
-      yield put({ type: ENABLE_PUSHDATA, payload: response });
+      yield put({ type: DISABLE_PUSHDATA, payload: response });
     }
 
     const isChecklistIdInvalid = R.isNil(checklistId) || R.isEmpty(checklistId);

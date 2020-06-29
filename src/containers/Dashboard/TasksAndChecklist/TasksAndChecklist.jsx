@@ -37,13 +37,15 @@ class TasksAndChecklist extends Component {
   }
 
   componentDidMount() {
-    const { setHomepageVisible } = this.props;
+    const { onWidgetToggle, groupName } = this.props;
     hotkeys('right,left', (event) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress();
       }
     });
-    setHomepageVisible(false);
+    if (R.equals(groupName, DashboardModel.BOOKING)) {
+      onWidgetToggle(true);
+    }
   }
 
   componentWillUnmount() {
@@ -93,20 +95,20 @@ class TasksAndChecklist extends Component {
   }
 
   handleChange(value, widgetId) {
-    const { groupName, setHomepageVisible, getHomePagevisible } = this.props;
+    const {
+      groupName, onWidgetToggle, toggleWidget,
+    } = this.props;
     if (R.equals(widgetId, widgets.booking)) {
-      if (groupName === DashboardModel.BOOKING) {
-        setHomepageVisible(!getHomePagevisible);
-      } else {
+      onWidgetToggle(!toggleWidget);
+      if (groupName !== DashboardModel.BOOKING) {
         const {
-          onWidgetClick, onUnassignBookingLoan, toggleWidget, onWidgetToggle,
+          onWidgetClick, onUnassignBookingLoan,
         } = this.props;
         if (toggleWidget) {
           onUnassignBookingLoan();
         } else {
           onWidgetClick();
         }
-        onWidgetToggle(!toggleWidget);
       }
     }
   }
@@ -245,7 +247,6 @@ class TasksAndChecklist extends Component {
       history,
       isAssigned,
       toggleWidget,
-      getHomePagevisible,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
     const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
@@ -262,11 +263,7 @@ class TasksAndChecklist extends Component {
     }
     if (noTasksFound || taskFetchError || isGetNextError) {
       return (
-        <>
-          { this.renderTaskErrorMessage() }
-          {groupName === DashboardModel.BOOKING || groupName === DashboardModel.DOCS_IN
-            ? <WidgetBuilder styleName={toggleWidget ? 'task-checklist-bw' : 'task-checklist'} triggerHeader={this.handleChange} /> : null }
-        </>
+        this.renderTaskErrorMessage()
       );
     }
 
@@ -286,14 +283,14 @@ class TasksAndChecklist extends Component {
         )
         }
         <section styleName="tasks-and-checklist">
-          { !getHomePagevisible
-            ? (
+          { groupName === DashboardModel.BOOKING && !toggleWidget
+            ? <BookingHomePage message={bookingHomepageMsg} />
+            : (
               <>
                 <TaskPane styleName="tasks" />
                 {this.renderChecklist()}
               </>
-            )
-            : <BookingHomePage message={bookingHomepageMsg} />}
+            )}
           {this.renderSnackBar()}
           <DialogCard
             commentsRequired={commentsRequired}
@@ -306,7 +303,10 @@ class TasksAndChecklist extends Component {
             styleName="instructions"
             title="Disposition"
           />
-          <WidgetBuilder styleName={toggleWidget ? 'task-checklist-bw' : 'task-checklist'} triggerHeader={this.handleChange} />
+          <WidgetBuilder
+            styleName={groupName === DashboardModel.DOCS_IN && toggleWidget ? 'task-checklist-bw' : 'task-checklist'}
+            triggerHeader={this.handleChange}
+          />
           <Navigation
             className={classNames(styles.footer, styles.navigation)}
             disableNext={disableNext}
@@ -336,8 +336,6 @@ TasksAndChecklist.defaultProps = {
   resolutionData: [],
   toggleWidget: false,
   ruleResultFromTaskTree: [],
-  setHomepageVisible: false,
-  getHomePagevisible: false,
 };
 
 TasksAndChecklist.propTypes = {
@@ -373,7 +371,6 @@ TasksAndChecklist.propTypes = {
       type: PropTypes.oneOf(Object.values(componentTypes)).isRequired,
     }),
   ).isRequired,
-  // checklistId: PropTypes.string.isRequired,
   checklistTitle: PropTypes.string.isRequired,
   closeSnackBar: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
@@ -388,7 +385,6 @@ TasksAndChecklist.propTypes = {
   failedRules: PropTypes.shape.isRequired,
   filter: PropTypes.bool.isRequired,
   getDialogContent: PropTypes.string,
-  getHomePagevisible: PropTypes.bool,
   groupName: PropTypes.string.isRequired,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
@@ -424,7 +420,6 @@ TasksAndChecklist.propTypes = {
   ruleResultFromTaskTree: PropTypes.arrayOf(PropTypes.shape),
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
-  setHomepageVisible: PropTypes.bool,
   showAssign: PropTypes.bool,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
@@ -534,13 +529,10 @@ function mapStateToProps(state) {
     filter: selectors.getFilter(state),
     resolutionId: selectors.getResolutionId(state),
     resolutionData: dashboardSelectors.getResolutionData(state),
-    checklistId: selectors.getSelectedChecklistId(state),
     prevDocsInChecklistId: selectors.getPrevDocsInChecklistId(state),
     prevDocsInRootTaskId: selectors.getPrevDocsInRootTaskId(state),
     toggleWidget: dashboardSelectors.getToggleWidget(state),
     ruleResultFromTaskTree: selectors.getRuleResultFromTaskTree(state),
-    getHomePagevisible: dashboardSelectors.getHomePagevisible(state),
-
   };
 }
 
@@ -559,7 +551,6 @@ function mapDispatchToProps(dispatch) {
     onWidgetClick: dashboardOperations.onWidgetClick(dispatch),
     closeSweetAlert: dashboardOperations.closeSweetAlert(dispatch),
     putComputeRulesPassed: operations.putComputeRulesPassed(dispatch),
-    setHomepageVisible: dashboardOperations.setHomepageVisible(dispatch),
   };
 }
 

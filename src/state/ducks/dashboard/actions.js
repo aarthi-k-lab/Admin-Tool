@@ -58,7 +58,6 @@ import {
   SET_COVIUS_TABINDEX,
   WIDGET_CLICK,
   UNASSIGN_WIDGET_LOAN,
-  SET_HOMEPAGE_VISIBLE,
   TOGGLE_WIDGET,
 } from './types';
 
@@ -132,13 +131,6 @@ const unassignLoan = () => ({
 
 const unassignWidgetLoan = () => ({
   type: UNASSIGN_WIDGET_LOAN,
-});
-
-const setHomepageVisibleAction = bookingHomePage => ({
-  type: SET_HOMEPAGE_VISIBLE,
-  payload: {
-    bookingHomePage,
-  },
 });
 
 const postComment = payload => ({
@@ -404,5 +396,4 @@ export {
   populateEventsDropdown,
   sendToFEUW,
   widgetClickAction,
-  setHomepageVisibleAction,
 };

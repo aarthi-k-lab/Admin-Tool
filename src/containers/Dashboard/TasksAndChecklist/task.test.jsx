@@ -98,7 +98,8 @@ describe('<TasksAndChecklist />', () => {
         <TestHooks.TasksAndChecklist
           checklistItems={bookingChecklistItems}
           {...props}
-          getHomePagevisible
+          groupName="BOOKING"
+          toggleWidget={false}
         />
       ),
     });

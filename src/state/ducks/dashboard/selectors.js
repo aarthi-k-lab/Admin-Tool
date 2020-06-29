@@ -126,7 +126,7 @@ const getSendToCoviusResponse = state => R.pathOr({}, ['dashboard', 'sendToCoviu
 const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
 const getCoviusTabIndex = state => R.pathOr(0, ['dashboard', 'coviusTabIndex'], state);
-const getEnablePushData = state => R.pathOr(false, ['dashboard', 'enablePushData'], state);
+const getDisablePushData = state => R.pathOr(false, ['dashboard', 'disablePushData'], state);
 
 const getWidgetLoan = state => R.pathOr({}, ['dashboard', 'widgetLoan'], state);
 
@@ -135,8 +135,6 @@ const getSelectedChecklistId = state => R.pathOr('', ['dashboard', 'selectedChec
 const getProcessId = R.pathOr(null, ['dashboard', 'processId']);
 
 const getToggleWidget = R.pathOr(false, ['dashboard', 'toggleWidget']);
-
-const getHomePagevisible = R.pathOr(false, ['dashboard', 'bookingHomePage']);
 
 const selectors = {
   getBookingTaskId,
@@ -212,8 +210,7 @@ const selectors = {
   getDownloadResponse,
   getcoviusEventOptions,
   disableSendToFEUW,
-  getEnablePushData,
-  getHomePagevisible,
+  getDisablePushData,
 };
 
 export default selectors;
