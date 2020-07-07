@@ -14,6 +14,7 @@ import {
   SEARCH_SELECT_EVAL,
   UNASSIGN_LOAN,
   ASSIGN_LOAN,
+  ASSIGN_TO_ME_CLICK,
   HIDE_ASSIGN_UNASSIGN,
   POST_COMMENT,
   CLEAR_BE_DISPOSITION,
@@ -140,6 +141,11 @@ const postComment = payload => ({
 
 const assignLoan = () => ({
   type: ASSIGN_LOAN,
+});
+
+const assignToMeClick = payload => ({
+  type: ASSIGN_TO_ME_CLICK,
+  payload,
 });
 
 const clearDisposition = () => ({
@@ -359,6 +365,7 @@ export {
   selectProcessId,
   unassignLoan,
   assignLoan,
+  assignToMeClick,
   hideAssignUnassign,
   postComment,
   clearBEDisposition,

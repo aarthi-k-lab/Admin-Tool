@@ -51,6 +51,8 @@ class Controls extends React.PureComponent {
   }
 
   componentWillUnmount() {
+    const { onAssignToMeClick } = this.props;
+    onAssignToMeClick(false);
     hotkeys.unbind('v,g,m,e');
   }
 
@@ -319,6 +321,7 @@ Controls.propTypes = {
   groupName: PropTypes.string,
   history: PropTypes.shape(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
+  onAssignToMeClick: PropTypes.func.isRequired,
   onCompleteMyReview: PropTypes.func,
   onContinueMyReview: PropTypes.func,
   onEndShift: PropTypes.func,
@@ -400,6 +403,7 @@ const mapDispatchToProps = dispatch => ({
   onContinueMyReview: operations.onContinueMyReview(dispatch),
   onCompleteMyReview: operations.onCompleteMyReview(dispatch),
   onTrialTask: operations.onTrialTask(dispatch),
+  onAssignToMeClick: operations.onAssignToMeClick(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

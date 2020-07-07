@@ -136,6 +136,8 @@ const getProcessId = R.pathOr(null, ['dashboard', 'processId']);
 
 const getToggleWidget = R.pathOr(false, ['dashboard', 'toggleWidget']);
 
+const getAssigntomeBtnStats = R.pathOr(false, ['dashboard', 'disableAssigntomeBtn']);
+
 const selectors = {
   getBookingTaskId,
   getToggleWidget,
@@ -211,6 +213,7 @@ const selectors = {
   getcoviusEventOptions,
   disableSendToFEUW,
   getDisablePushData,
+  getAssigntomeBtnStats,
 };
 
 export default selectors;

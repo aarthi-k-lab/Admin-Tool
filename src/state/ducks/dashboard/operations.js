@@ -13,6 +13,7 @@ import {
   selectEval,
   unassignLoan,
   assignLoan,
+  assignToMeClick,
   hideAssignUnassign,
   postComment,
   clearBEDisposition,
@@ -135,6 +136,11 @@ const onUnassignBookingLoan = dispatch => () => {
 const onAssignLoan = dispatch => () => {
   dispatch(assignLoan());
 };
+
+const onAssignToMeClick = dispatch => (payload) => {
+  dispatch(assignToMeClick(payload));
+};
+
 
 const onSearchLoan = dispatch => (loanNumber) => {
   dispatch(searchLoan(loanNumber));
@@ -294,6 +300,7 @@ const operations = {
   onUnassignLoan,
   onUnassignSuccess,
   onAssignLoan,
+  onAssignToMeClick,
   onDialogClose,
   onPostComment,
   onClearBEDisposition,
