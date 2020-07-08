@@ -75,6 +75,7 @@ import {
   TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
+  ASSIGN_TO_ME_CLICK,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
@@ -216,6 +217,7 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         checklistErrorCode: '',
         inProgress: false,
         wasSearched: true,
+        userNotification: {},
       };
     }
 
@@ -620,6 +622,15 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         enableSendToDocsIn,
+        disableAssigntomeBtn: true,
+      };
+    }
+
+    case ASSIGN_TO_ME_CLICK: {
+      const disableAssigntomeBtn = action.payload;
+      return {
+        ...state,
+        disableAssigntomeBtn,
       };
     }
 

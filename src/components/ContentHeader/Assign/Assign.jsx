@@ -11,10 +11,8 @@ import SweetAlertBox from '../../SweetAlertBox';
 class Assign extends React.Component {
   constructor(props) {
     super(props);
-    const { disabled } = this.props;
     this.state = {
       isOpen: true,
-      buttonDisabled: disabled,
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -25,8 +23,10 @@ class Assign extends React.Component {
   }
 
   handleClick() {
-    this.setState({ buttonDisabled: true });
-    const { onAssignLoan, location, onGetGroupName } = this.props;
+    const {
+      onAssignLoan, location, onGetGroupName, onAssignToMeClick,
+    } = this.props;
+    onAssignToMeClick(true);
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     onGetGroupName(el.group);
     onAssignLoan();
@@ -41,8 +41,8 @@ class Assign extends React.Component {
   }
 
   render() {
-    const { assignResult } = this.props;
-    const { isOpen, buttonDisabled } = this.state;
+    const { assignResult, assigntomeBtnStats } = this.props;
+    const { isOpen } = this.state;
     let RenderContent = null;
     let renderComponent = null;
     if (assignResult && assignResult.status) {
@@ -61,7 +61,7 @@ class Assign extends React.Component {
         <Button
           className="material-ui-button"
           color="primary"
-          disabled={buttonDisabled}
+          disabled={assigntomeBtnStats}
           onClick={this.handleClick}
           styleName="end-shift"
           variant="outlined"
@@ -75,19 +75,21 @@ class Assign extends React.Component {
 }
 
 Assign.defaultProps = {
-  disabled: false,
   onAssignLoan: () => { },
   onDialogClose: () => { },
+  assigntomeBtnStats: false,
 };
 
 const mapStateToProps = state => ({
   assignResult: selectors.assignResult(state),
+  assigntomeBtnStats: selectors.getAssigntomeBtnStats(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onAssignLoan: operations.onAssignLoan(dispatch),
   onDialogClose: operations.onDialogClose(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onAssignToMeClick: operations.onAssignToMeClick(dispatch),
 });
 
 Assign.propTypes = {
@@ -108,12 +110,13 @@ Assign.propTypes = {
       wfTaskId: PropTypes.string.isRequired,
     }),
   }).isRequired,
-  disabled: PropTypes.bool,
+  assigntomeBtnStats: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
   }).isRequired,
   onAssignLoan: PropTypes.func,
+  onAssignToMeClick: PropTypes.func.isRequired,
   onDialogClose: PropTypes.func,
   onGetGroupName: PropTypes.func.isRequired,
 };
