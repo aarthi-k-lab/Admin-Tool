@@ -178,6 +178,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       checklistErrorCode: '',
       unassignLoanResponse: {},
       inProgress: false,
+      userNotification: {},
       wasSearched: true,
       getSearchLoanResponse: {
         loanNumber: '1800840108',
