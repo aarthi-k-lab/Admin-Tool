@@ -443,7 +443,8 @@ class DocsIn extends React.PureComponent {
     const { loansNumber } = this.state;
     const { onLoansSubmit, onFailedLoanValidation, bulkOrderPageType } = this.props;
     if (validateLoanFormat(loansNumber)) {
-      const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim()).filter(s => s.length > 0 );
+      const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim())
+        .filter(s => s.length > 0);
       const loanNumbersList = new Set(loanNumbers);
       const payload = {
         loanNumbers: [...loanNumbersList],
@@ -468,7 +469,8 @@ class DocsIn extends React.PureComponent {
     } = this.props;
     let statusName = '';
     if (validateLoanFormat(loansNumber)) {
-      const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim()).filter(s => s.length > 0 );
+      const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim())
+        .filter(s => s.length > 0);
       const inputValueList = new Set(loanNumbers);
       if (selectedStagerTaskOptions) {
         statusName = selectedStagerTaskOptions;
