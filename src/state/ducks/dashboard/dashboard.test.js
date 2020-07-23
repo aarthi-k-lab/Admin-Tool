@@ -1915,8 +1915,7 @@ describe('handle widget not assigned : checklist found', () => {
   };
 
   const mockDataServicePayload = {
-    evalId: 3565247,
-    loanNumber: 18008401081,
+    taskId: '18008401081_3565247',
     taskName: 'Pending Booking',
     groupList: [
       'feuw',

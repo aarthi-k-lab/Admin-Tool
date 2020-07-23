@@ -424,15 +424,14 @@ function* selectEval(searchItem) {
   if (R.equals(evalDetails.milestone, 'Pending Booking') || R.equals(evalDetails.milestone, 'Post Mod')) {
     const groupList = R.pathOr([], ['groupList'], user);
     const payload = {
-      evalId: evalDetails.evalId,
-      loanNumber: evalDetails.loanNumber,
+      taskId: `${evalDetails.loanNumber}_${evalDetails.evalId}`,
       taskName: 'Pending Booking',
       groupList,
       appGroupName: 'BOOKING',
     };
     let response;
     if (!taskCheckListId) {
-      response = yield call(Api.callPost, '/api/workassign/createTask', payload);
+      response = yield call(Api.callPost, '/api/workassign/generateNewChecklist', payload);
     }
     if (response) {
       const { taskCheckListId: checkListId } = response;
@@ -520,13 +519,12 @@ function* handleWidget() {
       evalDetails.taskId = taskId;
       if (!taskCheckListId) {
         const payload = {
-          evalId: evalDetails.evalId,
-          loanNumber: evalDetails.loanNumber,
+          taskId: `${evalDetails.loanNumber}_${evalDetails.evalId}`,
           taskName: 'Pending Booking',
           groupList: userGroups,
           appGroupName: 'BOOKING',
         };
-        response = yield call(Api.callPost, '/api/workassign/createTask', payload);
+        response = yield call(Api.callPost, '/api/workassign/generateNewChecklist', payload);
         if (response) {
           const { taskCheckListId: checkListId } = response;
           taskCheckListId = checkListId;

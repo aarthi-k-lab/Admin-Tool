@@ -84,7 +84,9 @@ class ChecklistHistory extends React.Component {
 
   render() {
     const { anchorEl } = this.state;
-    const { checkListData: historicalData, groupName, pdfGeneratorConstant } = this.props;
+    const {
+      checkListData: historicalData, groupName, pdfGeneratorConstant, toggleWidget,
+    } = this.props;
     const open = Boolean(anchorEl);
     const {
       margin, toolTipPosition, classes,
@@ -119,7 +121,7 @@ class ChecklistHistory extends React.Component {
               ? historicalData.map(option => (
                 // eslint-disable-next-line react/jsx-no-target-blank
 
-                groupName === DashboardModel.BOOKING
+                groupName === DashboardModel.BOOKING || toggleWidget
                   ? (
                     <MenuItem key={option} className="menuItem" onClick={() => this.downloadChecklist(option)}>
                       <div>
@@ -170,6 +172,7 @@ ChecklistHistory.defaultProps = {
   toolTipPosition: 'bottom',
   classes: {},
   groupName: '',
+  toggleWidget: false,
 };
 
 ChecklistHistory.propTypes = {
@@ -186,6 +189,7 @@ ChecklistHistory.propTypes = {
     marginTop: PropTypes.string,
   }),
   pdfGeneratorConstant: PropTypes.string.isRequired,
+  toggleWidget: PropTypes.bool,
   toolTipPosition: PropTypes.string,
 };
 
