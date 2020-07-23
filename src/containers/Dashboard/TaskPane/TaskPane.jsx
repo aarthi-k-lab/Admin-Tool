@@ -35,6 +35,7 @@ class TaskPane extends React.PureComponent {
       pdfGeneratorConstant,
       pdfExportPayload,
       group,
+      toggleWidget,
     } = this.props;
     return (
       (
@@ -57,6 +58,7 @@ class TaskPane extends React.PureComponent {
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
           tasks={tasks}
+          toggleWidget={toggleWidget}
           updateChecklist={updateChecklist}
         />
       )
@@ -72,6 +74,7 @@ TaskPane.defaultProps = {
   className: '',
   tasks: [],
   optionalTasks: [],
+  toggleWidget: false,
 };
 
 TaskPane.propTypes = {
@@ -96,7 +99,9 @@ TaskPane.propTypes = {
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)),
+  toggleWidget: PropTypes.bool,
   updateChecklist: PropTypes.func.isRequired,
+
 };
 
 const mapStateToProps = state => ({
@@ -112,6 +117,7 @@ const mapStateToProps = state => ({
   pdfGeneratorConstant: selectors.pdfUrlConstants(state),
   pdfExportPayload: taskSelectors.getPDFExportPayload(state),
   group: dashboardSelectors.groupName(state),
+  toggleWidget: dashboardSelectors.getToggleWidget(state),
 });
 
 const mapDispatchToProps = dispatch => ({
