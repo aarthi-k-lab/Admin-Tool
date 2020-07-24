@@ -115,6 +115,7 @@ class LeftTaskPane extends React.Component {
       pdfGeneratorConstant,
       showExportChecklist,
       groupName,
+      toggleWidget,
     } = this.props;
     if (dataLoadStatus === 'failed') {
       return (
@@ -145,6 +146,7 @@ class LeftTaskPane extends React.Component {
                         margin={{ marginLeft: '2rem' }}
                         pdfExportPayload={pdfExportPayload}
                         pdfGeneratorConstant={pdfGeneratorConstant}
+                        toggleWidget={toggleWidget}
                       />
                       {
                         showExportChecklist && (
@@ -258,6 +260,7 @@ LeftTaskPane.propTypes = {
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)).isRequired,
+  toggleWidget: PropTypes.bool,
   updateChecklist: PropTypes.func.isRequired,
 };
 
@@ -270,5 +273,6 @@ LeftTaskPane.defaultProps = {
   selectedTaskId: '',
   optionalTasks: [],
   groupName: '',
+  toggleWidget: false,
 };
 export default (LeftTaskPane);

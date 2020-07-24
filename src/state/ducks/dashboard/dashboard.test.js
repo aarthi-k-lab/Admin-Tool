@@ -1991,7 +1991,7 @@ describe('handle widget not assigned : checklist found', () => {
   });
   it('should call dataservie Api to fetch task details', () => {
     expect(saga.next(mockDataserviceResponse).value)
-      .toEqual(call(Api.callPost, '/api/workassign/createTask', mockDataServicePayload));
+      .toEqual(call(Api.callPost, '/api/workassign/generateNewChecklist', mockDataServicePayload));
   });
   it('should call resetChecklistData', () => {
     expect(saga.next({ taskCheckListId: 123 }).value)
