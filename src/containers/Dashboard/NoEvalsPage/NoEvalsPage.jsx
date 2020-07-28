@@ -20,5 +20,6 @@ const NoEvalsPage = ({ loanNumber }) => (
 NoEvalsPage.propTypes = {
   loanNumber: PropTypes.string.isRequired,
 };
-
+const TestHooks = { NoEvalsPage };
 export default NoEvalsPage;
+export { TestHooks };

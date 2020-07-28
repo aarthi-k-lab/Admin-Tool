@@ -16,4 +16,9 @@ InvalidLoanPage.propTypes = {
   loanNumber: PropTypes.string.isRequired,
 };
 
+const TestHooks = {
+  InvalidLoanPage,
+};
+
 export default InvalidLoanPage;
+export { TestHooks };

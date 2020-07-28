@@ -122,5 +122,9 @@ ManagerDashboard.propTypes = {
     }),
   ),
 };
-
+const TestHooks = {
+  ManagerDashboard,
+};
 export default connect(mapStateToProps, mapDispatchToProps)(ManagerDashboard);
+
+export { TestHooks };

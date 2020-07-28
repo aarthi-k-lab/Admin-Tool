@@ -123,4 +123,10 @@ Assign.propTypes = {
 
 const AssignContainer = connect(mapStateToProps, mapDispatchToProps)(Assign);
 
+const TestHooks = {
+  Assign,
+};
+
 export default withRouter(AssignContainer);
+
+export { TestHooks };

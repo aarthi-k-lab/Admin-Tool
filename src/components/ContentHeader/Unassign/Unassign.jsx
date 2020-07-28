@@ -130,4 +130,10 @@ const mapStateToProps = state => ({
 
 const UnassignContainer = connect(mapStateToProps, mapDispatchToProps)(Unassign);
 
+const TestHooks = {
+  Unassign,
+};
+
 export default UnassignContainer;
+
+export { TestHooks };

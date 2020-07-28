@@ -7,6 +7,7 @@ import styles from './DispositionComment.css';
 import { operations, selectors } from '../../../state/ducks/tasks-and-checklist';
 import { operations as dashBoardoperations } from '../../../state/ducks/dashboard';
 
+
 class DispositionComment extends Component {
   constructor(props) {
     super(props);
@@ -151,3 +152,6 @@ DispositionComment.propTypes = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DispositionComment);
+
+const TestHooks = { DispositionComment };
+export { TestHooks };

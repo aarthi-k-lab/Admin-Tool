@@ -33,6 +33,7 @@ class UserReport extends React.PureComponent {
     this.accessToken = Auth.getPowerBIAccessToken(window.location.pathname);
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
+    this.onHandleClick = this.onHandleClick.bind(this);
   }
 
   componentDidMount() {

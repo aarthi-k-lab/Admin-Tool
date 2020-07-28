@@ -235,4 +235,10 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
 });
 
+const TestHooks = {
+  StagerPopup,
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(StagerPopup);
+
+export { TestHooks };

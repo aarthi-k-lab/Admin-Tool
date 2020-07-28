@@ -77,6 +77,12 @@ const mapDispatchToProps = dispatch => ({
   onDialogClose: operations.onDialogClose(dispatch),
 });
 
+const TestHooks = {
+  CompleteMyReview,
+};
+
 const CompleteMyReviewContainer = connect(mapStateToProps, mapDispatchToProps)(CompleteMyReview);
 
 export default withRouter(CompleteMyReviewContainer);
+
+export { TestHooks };

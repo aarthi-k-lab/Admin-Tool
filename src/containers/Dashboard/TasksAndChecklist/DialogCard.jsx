@@ -59,6 +59,7 @@ class DialogCard extends Component {
             classes={{
               root: styles['sizing-icon'],
             }}
+            id="comment"
             onClick={() => this.changeActiveIcon('comment')}
           >
             <ChatBubbleIcon styleName={activeIcon === 'comment' ? 'active-disp-icon' : 'disp-icon'} />
@@ -67,6 +68,7 @@ class DialogCard extends Component {
             classes={{
               root: styles['sizing-icon'],
             }}
+            id="instructions"
             onClick={() => this.changeActiveIcon('instructions')}
           >
             <InfoIcon styleName={activeIcon === 'instructions' ? 'active-disp-icon' : 'disp-icon'} />
@@ -75,9 +77,10 @@ class DialogCard extends Component {
             classes={{
               root: styles['sizing-icon'],
             }}
+            id="expand"
             onClick={() => this.toggleExpand()}
           >
-            {expanded ? <ExpandIcon styleName="active-disp-icon" /> : <CollapseIcon styleName="active-disp-icon" />}
+            {expanded ? <ExpandIcon id="expanded" styleName="active-disp-icon" /> : <CollapseIcon id="collapsed" styleName="active-disp-icon" />}
           </IconButton>
           <DispositionComment
             activeIcon={activeIcon}
@@ -107,4 +110,6 @@ DialogCard.propTypes = {
   shouldShow: PropTypes.bool,
 };
 
+const TestHooks = { DialogCard };
 export default DialogCard;
+export { TestHooks };

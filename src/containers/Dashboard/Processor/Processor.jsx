@@ -114,13 +114,14 @@ class Processor extends React.PureComponent {
     const { tableData } = this.props;
     return (
       <Grid
+        id="download_btn"
         style={{
           right: '0', position: 'absolute', paddingRight: '64px', paddingTop: '4px',
         }}
         xs={4}
       >
         {(tableData && tableData.length > 0) && (
-          <Button color="primary" onClick={() => this.onDownloadCSV()} variant="contained">
+          <Button color="primary" id="download" onClick={() => this.onDownloadCSV()} variant="contained">
             <DownloadIcon styleName="download-icon" />
             <CSVLink
               // eslint-disable-next-line no-return-assign
@@ -159,6 +160,7 @@ class Processor extends React.PureComponent {
               className="material-ui-button"
               color="primary"
               disabled={isDisabled}
+              id="submit"
               margin="normal"
               onClick={this.handleSubmit}
               variant="contained"
@@ -251,14 +253,14 @@ class Processor extends React.PureComponent {
               {inputTitle}
             </span>
           </Grid>
-          <Grid item xs={5}>
+          <Grid id="message" item xs={5}>
             <span styleName="message">
               {this.getMessage()}
             </span>
           </Grid>
         </Grid>
-        <Grid container styleName="loan-activity" xs={12}>
-          <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
+        <Grid container id="data" styleName="loan-activity" xs={12}>
+          <Grid id="notepad" item xs={2}>{this.renderNotepadArea()}</Grid>
           {this.renderTableData()}
         </Grid>
       </>
