@@ -155,7 +155,8 @@ class LabelWithIcon extends React.PureComponent {
     const { resolutionText: selectedValue } = this.state;
     const sortedResData = R.sort(R.descend(R.prop('resolutionId')), resolutionData);
     const disabled = enablePushDataButton
-      ? (disablePushData || !isAllRulesPassed || !isAssigned || showContinueMyReview) : true;
+      ? (disablePushData || !isAllRulesPassed || !isAssigned
+        || showContinueMyReview || !slaRulesProcessed) : true;
     return (
       <>
         <Grid container styleName="customresolutiongrid">
