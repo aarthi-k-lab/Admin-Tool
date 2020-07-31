@@ -639,6 +639,10 @@ function* addPushDataResponse() {
       },
     };
     yield put({
+      type: SLA_RULES_PROCESSED,
+      payload: false,
+    });
+    yield put({
       type: LOADING_CHECKLIST,
     });
     const rootTaskId = yield select(selectors.getRootTaskId);
@@ -652,6 +656,11 @@ function* addPushDataResponse() {
     yield call(sendToLSAMS);
   } catch (err) {
     yield call(handleSaveChecklistError, err);
+  } finally {
+    yield put({
+      type: SLA_RULES_PROCESSED,
+      payload: true,
+    });
   }
 }
 
