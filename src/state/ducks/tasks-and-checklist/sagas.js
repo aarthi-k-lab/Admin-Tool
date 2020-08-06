@@ -664,6 +664,10 @@ function* addPushDataResponse() {
   }
 }
 
+function getGroup(group) {
+  return group === DashboardModel.ALL_STAGER ? DashboardModel.POSTMODSTAGER : group;
+}
+
 function* makeResolutionIdStatCall(action) {
   try {
     const {
@@ -674,7 +678,14 @@ function* makeResolutionIdStatCall(action) {
       type: SLA_RULES_PROCESSED,
       payload: false,
     });
+    const groupName = yield select(dashboardSelectors.groupName);
+    const group = getGroup(groupName);
+    const taskId = yield select(dashboardSelectors.getBookingTaskId);
     const response = yield call(Api.callPost, `/api/booking/api/bookingAutomation/runAuditRules?resolutionId=${resolutionId}&auditRuleType=${auditRuleType}`);
+    if (R.equals(group, 'BOOKING')) {
+      const disablePushData = yield call(Api.callGet, `/api/dataservice/api/getLsamsResponseByTaskId?taskId=${taskId}`);
+      yield put({ type: DISABLE_PUSHDATA, payload: disablePushData });
+    }
     if (!R.isNil(response) && !R.isEmpty(response) && !response.message && !response.error) {
       try {
         const rootTaskId = yield select(selectors.getRootTaskId);
