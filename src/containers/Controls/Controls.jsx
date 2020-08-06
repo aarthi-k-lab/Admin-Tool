@@ -37,7 +37,6 @@ class Controls extends React.PureComponent {
     this.handleSendToDocGen = this.handleSendToDocGen.bind(this);
     this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
-    this.handleAddDocsInReceived = this.handleAddDocsInReceived.bind(this);
     this.handleSendToDocsIn = this.handleSendToDocsIn.bind(this);
     this.handleTrial = this.handleTrial.bind(this);
   }
@@ -68,8 +67,8 @@ class Controls extends React.PureComponent {
     } = this.props;
     if (HOTKEY_V.includes(handler.key) && !disableValidation) {
       this.validateDisposition();
-    } else if (HOTKEY_G.includes(handler.key) && !(!enableGetNext
-   || (!enableValidate && !isFirstVisit))) {
+    } else if (HOTKEY_G.includes(handler.key)
+    && !(!enableGetNext || (!enableValidate && !isFirstVisit))) {
       this.handlegetNext();
     } else if (HOTKEY_M.includes(handler.key)) {
       onExpand();
@@ -94,11 +93,6 @@ class Controls extends React.PureComponent {
   handleSendToDocsIn() {
     const { onSendToDocsIn } = this.props;
     onSendToDocsIn();
-  }
-
-  handleAddDocsInReceived() {
-    const { history } = this.props;
-    history.push('/bulkOrder-page');
   }
 
   handleSendToDocGenStager() {
@@ -319,7 +313,6 @@ Controls.propTypes = {
   enableValidate: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
   groupName: PropTypes.string,
-  history: PropTypes.shape(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool,
   onAssignToMeClick: PropTypes.func.isRequired,
   onCompleteMyReview: PropTypes.func,
@@ -410,6 +403,7 @@ const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls)
 
 const TestHooks = {
   Controls,
+  mapStateToProps,
 };
 
 export default withRouter(ControlsContainer);

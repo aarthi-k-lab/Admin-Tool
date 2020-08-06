@@ -159,10 +159,11 @@ class TasksAndChecklist extends Component {
     if (dataLoadStatus === 'loading') {
       return <CircularProgress styleName="loader" />;
     }
+
     if (dataLoadStatus === 'failed') {
       return <ErrorIcon fontSize="large" styleName="error-indicator" />;
     }
-    if (checklistItems.length <= 0) {
+    if (checklistItems && checklistItems.length <= 0) {
       return null;
     }
     let notification;
@@ -556,6 +557,8 @@ function mapDispatchToProps(dispatch) {
 
 const TestHooks = {
   TasksAndChecklist,
+  getUserNotification,
+  getChecklistErrorMessage,
 };
 
 

@@ -606,4 +606,13 @@ Checklist.propTypes = {
   triggerHeader: PropTypes.bool,
 };
 
+
+const TestHooks = {
+  Checklist,
+  NumberFormatCustom,
+  removeCharaters,
+};
+
+export { TestHooks };
+
 export default Checklist;

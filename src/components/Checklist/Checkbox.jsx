@@ -38,7 +38,7 @@ function CheckBox({
           options.map(({
             displayName, hint, value, textColor, isEnabled,
           }) => (
-            <div>
+            <div key={displayName}>
               <FormControlLabelWithTooltip
                 key={displayName}
                 classes={getStyleClass(textColor)}
