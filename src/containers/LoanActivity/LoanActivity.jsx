@@ -14,6 +14,7 @@ class LoanActivity extends React.PureComponent {
     this.state = {
       isOpen: true,
     };
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentWillMount() {

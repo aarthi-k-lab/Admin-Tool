@@ -3,7 +3,7 @@ import { cloneableGenerator } from 'redux-saga/utils';
 import * as actionTypes from './types';
 import { setUserSchemaSuccess, setUserSchemaFailure, setUserSchemaTrigger } from './actions';
 import { TestExports } from './sagas';
-import { SET_USER_SCHEMA_SAGA } from './types';
+import { SET_USER_SCHEMA_SAGA, SET_USER_ROLE } from './types';
 
 
 describe('WatchSetUserSchema', () => {
@@ -15,6 +15,13 @@ describe('WatchSetUserSchema', () => {
   it('SetUserSchema should be triggered', () => {
     expect(saga.next({}).value)
       .toEqual(call(TestExports.setUserSchema, {}));
+  });
+  it('should not call setUserSchema', () => {
+    const sagatest = cloneableGenerator(TestExports.watchSetUserSchema)();
+    expect(sagatest.next().value)
+      .toEqual(take(SET_USER_SCHEMA_SAGA));
+    expect(sagatest.next(null).value)
+      .toEqual(undefined);
   });
 });
 
@@ -67,5 +74,37 @@ describe('User object Save on Login actions', () => {
   it('should trigger the setUserSchemaFailure action', () => {
     const response = setUserSchemaFailure(actionTypes.SET_USER_SCHEMA_FAILED);
     expect(response.type).toEqual(actionTypes.SET_USER_SCHEMA_FAILED);
+  });
+});
+describe('watchSetUserRole', () => {
+  const saga = cloneableGenerator(TestExports.watchSetUserRole)();
+  it('watchSetUserRole should be triggered', () => {
+    expect(saga.next().value)
+      .toEqual(take(SET_USER_ROLE));
+  });
+  it('setUserRole should be triggered', () => {
+    expect(saga.next({}).value)
+      .toEqual(call(TestExports.setUserRole, {}));
+  });
+});
+describe('watchSetUserRole: null case', () => {
+  const saga = cloneableGenerator(TestExports.watchSetUserRole)();
+  it('watchSetUserRole should be triggered', () => {
+    expect(saga.next().value)
+      .toEqual(take(SET_USER_ROLE));
+  });
+  it('setUserRole should be triggered', () => {
+    expect(saga.next(null).value)
+      .toEqual(undefined);
+  });
+});
+describe('setUserRole', () => {
+  it('should trigger SET_USER_ROLE', () => {
+    const saga = cloneableGenerator(TestExports.setUserRole)({ payload: {} });
+    expect(saga.next().value)
+      .toEqual(put({
+        type: actionTypes.SET_USER_ROLE,
+        payload: {},
+      }));
   });
 });
