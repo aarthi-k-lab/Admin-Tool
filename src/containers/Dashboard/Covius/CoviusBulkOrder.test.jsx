@@ -13,10 +13,19 @@ describe('renders <CoviusBulkOrder />', () => {
     level: 'level',
   };
   const clearSubmitDataResponse = jest.fn();
+  const onCoviusBulkSubmit = jest.fn();
+  const onResetCoviusData = jest.fn();
+  const coviusEventOptions = [{
+    eventCategory: 'mock',
+    eventCode: 123,
+  }];
   const wrapper = shallow(
     <TestHooks.CoviusBulkOrder
       clearSubmitDataResponse={clearSubmitDataResponse}
+      coviusEventOptions={coviusEventOptions}
       getDownloadResponse={getDownloadResponse}
+      onCoviusBulkSubmit={onCoviusBulkSubmit}
+      onResetCoviusData={onResetCoviusData}
     />,
   );
   const wrapperState = wrapper.instance().state;
@@ -38,6 +47,20 @@ describe('renders <CoviusBulkOrder />', () => {
     expect(element.text()).toBe('SUBMIT');
     expect(wrapperState.isSubmitDisabled).toBe('disabled');
   });
+
+  it('should call onCoviusBulkSubmit on Submit click', () => {
+    wrapper.find('WithStyles(ForwardRef(Button))#submitButton').simulate('click');
+    expect(onCoviusBulkSubmit).toBeCalled();
+  });
+
+  it('should call onResetCoviusData on eventCategoryChange', () => {
+    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))').at(0).simulate('change', { target: { value: 'mock' } });
+    expect(onResetCoviusData).toBeCalled();
+  });
+  it('should call handleCaseChange on TextField Change', () => {
+    wrapper.find('ForwardRef(TextareaAutosize)').at(0).simulate('change', { target: { value: '123' } });
+    expect(wrapper.instance().state.caseIds).toBe('123');
+  });
 });
 
 describe('Download Button Enabling', () => {
@@ -54,12 +77,14 @@ describe('Download Button Enabling', () => {
       }],
   };
   const clearSubmitDataResponse = jest.fn();
+  const submitToCovius = jest.fn();
 
   const wrapper = shallow(
     <TestHooks.CoviusBulkOrder
       clearSubmitDataResponse={clearSubmitDataResponse}
       getDownloadResponse={getDownloadResponse}
       resultData={mockData}
+      submitToCovius={submitToCovius}
     />,
   );
 
@@ -113,7 +138,30 @@ describe('Download Button Enabling', () => {
     });
     expect(wrapper.instance().isDownloadDisabled()).toBe(false);
   });
+  it('renders SUBMIT TO COVIUS Button', () => {
+    wrapper.setProps({
+      eventCategory: DashboardModel.EVENT_CATEGORY_FILTER,
+      resultData: {
+        request:
+          [{
+            RequestId: '50063C7C-AC12-4035-9F96-9F4FCADEEC1E',
+            UserFields: {
+              EvalId: '3468435146',
+              CaseId: '3516543',
+              LoanNumber: '3468435146',
+            },
+          }],
+      },
+      coviusTabIndex: 1,
+    });
+    expect(wrapper.find('WithStyles(ForwardRef(Button))').at(1).text()).toBe('SUBMIT TO COVIUS');
+    wrapper.find('WithStyles(ForwardRef(Button))').at(1).simulate('click');
+    expect(submitToCovius).toBeCalled();
+    wrapper.find('Connect(TabView)').simulate('reset');
+    expect(wrapper.instance().state.selectedEventCategory).toBe(' ');
+  });
 });
+
 
 it('downloads the excel when download button is clicked', () => {
   const getDownloadResponse = {
@@ -133,4 +181,36 @@ it('downloads the excel when download button is clicked', () => {
   wrapper.find('#download').simulate('Click');
   wrapper.instance().handleDownload();
   expect(downloadFile.mock.calls).toHaveLength(2);
+});
+
+describe('SweetAlert functionality', () => {
+  const getDownloadResponse = {
+    message: 'mock',
+    level: 'level',
+  };
+  const clearSubmitDataResponse = jest.fn();
+  const closeSweetAlert = jest.fn();
+  const onResetCoviusData = jest.fn();
+  const resultOperation = {
+    clearData: 'mock',
+  };
+  const props = {
+    resultOperation,
+    closeSweetAlert,
+    onResetCoviusData,
+    clearSubmitDataResponse,
+    getDownloadResponse,
+  };
+
+  const wrapper = shallow(
+    <TestHooks.CoviusBulkOrder
+      {...props}
+    />,
+  );
+  it('should close the sweet alert', () => {
+    expect(wrapper.find('SweetAlertBox')).toHaveLength(1);
+    wrapper.find('SweetAlertBox').simulate('confirm');
+    expect(onResetCoviusData).toBeCalled();
+    expect(closeSweetAlert).toBeCalled();
+  });
 });

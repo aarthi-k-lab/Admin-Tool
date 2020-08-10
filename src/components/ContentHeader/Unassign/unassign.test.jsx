@@ -25,7 +25,6 @@ describe('<Unassign >', () => {
     const wrapper = shallow(
       <TestHooks.Unassign {...props} />,
     );
-    console.log(wrapper.find('DialogBox').debug());
     wrapper.find('WithStyles(ForwardRef(Button))').simulate('click');
     expect(handleClick).toBeCalled();
     wrapper.find('DialogBox').simulate('close');
@@ -47,5 +46,51 @@ describe('<Unassign >', () => {
       <TestHooks.Unassign {...props} />,
     );
     expect(wrapper.find('DialogBox')).toHaveLength(0);
+  });
+  it('should render the dialog box with appropriate message for Not Paused', () => {
+    const unassignResult = {
+      cmodProcess: {
+        taskStatus: 'Not Paused',
+      },
+    };
+    const user = {
+      skills: {},
+    };
+    const props = {
+      onUnassignLoan,
+      onUnassignSuccess,
+      unassignResult,
+      user,
+    };
+    const handleClick = jest.spyOn(TestHooks.Unassign.prototype, 'handleClick');
+    const handleClose = jest.spyOn(TestHooks.Unassign.prototype, 'handleClose');
+    const wrapper = shallow(
+      <TestHooks.Unassign {...props} />,
+    );
+    expect(wrapper.find('DialogBox')).toHaveLength(1);
+    expect(wrapper.find('DialogBox').props().message).toBe('A user is currently working on this task and is unable to be unassigned.');
+  });
+  it('should render the dialog box with appropriate message for default case', () => {
+    const unassignResult = {
+      cmodProcess: {
+        taskStatus: 'mock',
+      },
+    };
+    const user = {
+      skills: {},
+    };
+    const props = {
+      onUnassignLoan,
+      onUnassignSuccess,
+      unassignResult,
+      user,
+    };
+    const handleClick = jest.spyOn(TestHooks.Unassign.prototype, 'handleClick');
+    const handleClose = jest.spyOn(TestHooks.Unassign.prototype, 'handleClose');
+    const wrapper = shallow(
+      <TestHooks.Unassign {...props} />,
+    );
+    expect(wrapper.find('DialogBox')).toHaveLength(1);
+    expect(wrapper.find('DialogBox').props().message).toBe('Currently one of the services is down. Please try again. If you still facing this issue, please reach to IT team.');
   });
 });
