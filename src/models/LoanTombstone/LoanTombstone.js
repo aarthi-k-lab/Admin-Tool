@@ -30,29 +30,15 @@ function getTaskDataUrl(taskId) {
   return `/api/bpm-audit/audit/task/${taskId}`;
 }
 
-function getPrioritizationUrl() {
-  return '/api/bpm-audit/audit/prioritization/_evalNumbers';
-}
-
 function getPandemicFlagUrl(loanNumber, brand) {
   return `/api/booking/api/lsamsCommentCodeFilter?loanNumber=${loanNumber}&brand=${brand}&commentCode=${pandemicFlagCommentCode}`;
 }
-
 
 function generateTombstoneItem(title, content) {
   return {
     title,
     content,
   };
-}
-
-// eslint-disable-next-line no-unused-vars
-function getCFPBDate(loanDetails, evalDetails) {
-  const losmit = loanDetails.LossmitModPline.filter(o => o.evalId === evalDetails.evalId);
-  if (typeof losmit !== 'undefined' && losmit.length > 0) {
-    return moment.tz(losmit[0].lastDocRcvdDttm, 'America/Chicago');
-  }
-  return false;
 }
 
 function getLoanItem(loanDetails) {
@@ -142,12 +128,6 @@ function getNextPaymentDueDateItem(loanDetails) {
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
 
-// eslint-disable-next-line no-unused-vars
-function getWaterfallId(_, evalDetails) {
-  const waterfallId = getOr('waterfallId', evalDetails, NA);
-  return generateTombstoneItem('Waterfall ID', waterfallId);
-}
-
 function getWaterfallName(_, evalDetails) {
   const waterfallId = getOr('waterfallId', evalDetails, NA);
   return generateTombstoneItem('Waterfall Name', waterfallLookup(waterfallId));
@@ -175,14 +155,14 @@ function getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData)
   }
 }
 
-function getDaysUntilCFPB(_, evalDetails, _pdd, _pd, groupName, additionalLoanInfo, _tN, taskData) {
+function getDaysUntilCFPB(_, evalDetails, _pdd, groupName, additionalLoanInfo, _tN, taskData) {
   const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData), 'America/Chicago');
   const today = moment.tz('America/Chicago');
   const dateDiffDays = date.isValid() ? date.add(30, 'days').diff(today, 'days') : NA;
   return generateTombstoneItem(groupName === DashboardModel.BOOKING ? 'Days Until SLA Expiration' : 'Days Until CFPB Timeline Expiration', dateDiffDays);
 }
 
-function getCFPBExpirationDate(_, evalDetails, _pdd, _pd,
+function getCFPBExpirationDate(_, evalDetails, _pdd,
   groupName, additionalLoanInfo, _tN, taskData) {
   const date = moment.tz(getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData), 'America/Chicago');
   const dateString = date.isValid() ? date.add(30, 'days').format('MM/DD/YYYY') : NA;
@@ -215,7 +195,7 @@ function getLienPosition(loanDetails) {
   return generateTombstoneItem('Lien Position', lienPosition);
 }
 
-function getTaskName(_, evalDetails, previousDispositionDetails, a, b, c, taskName) {
+function getTaskName(_, evalDetails, previousDispositionDetails, _gn, _af, taskName) {
   // const taskNm = getOr('lienPosition', loanDetails, NA);
   return generateTombstoneItem('Task Name', taskName);
 }
@@ -225,7 +205,7 @@ function getLoanTypeDescription(loanDetails) {
   return generateTombstoneItem('Loan Type Description', loantypeDescription);
 }
 
-function getPreviousDisposition(_, evalDetails, previousDispositionDetails, a, b, c, taskName) {
+function getPreviousDisposition(_, evalDetails, previousDispositionDetails, _gn, _af, taskName) {
   if (previousDispositionDetails) {
     const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
     const previousDisposition = taskObj
@@ -233,6 +213,17 @@ function getPreviousDisposition(_, evalDetails, previousDispositionDetails, a, b
     return generateTombstoneItem('Previous Disposition', previousDisposition);
   }
   return generateTombstoneItem('Previous Disposition', NA);
+}
+
+function getLatestHandOffDisposition(_, evalDetails,
+  previousDispositionDetails, _gn, _af, taskName) {
+  if (previousDispositionDetails) {
+    const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
+    const previousDisposition = taskObj
+      ? getOr('latestHandOffDispositionCode', taskObj, NA) : NA;
+    return generateTombstoneItem('Latest Handoff Disposition', previousDisposition);
+  }
+  return generateTombstoneItem('Latest Handoff Disposition', NA);
 }
 
 function getEvalType(_, evalDetails) {
@@ -270,37 +261,7 @@ function getBoardingDate(loanDetails) {
   return generateTombstoneItem('Boarding Date', boardingDate);
 }
 
-function handleMultipleRecords(prioritizationDetails) {
-  let latestHandOffDisposition = NA;
-  const withoutNulls = prioritizationDetails.reduce((filteredArray, i) => {
-    if (i.latestHandOffDisposition && i.statusDate) {
-      filteredArray.push(i);
-    }
-    return filteredArray;
-  }, []);
-
-  let latest;
-  if (withoutNulls.length > 0) {
-    latest = withoutNulls.reduce((r, a) => (
-      r.statusDate > a.statusDate ? r : a));
-    latestHandOffDisposition = getOr('latestHandOffDisposition', latest, NA);
-  }
-  return latestHandOffDisposition;
-}
-
-function getLatestHandOffDisposition(_l, _e, _p, prioritizationDetails) {
-  let latestHandOffDisposition = NA;
-  if (prioritizationDetails && prioritizationDetails.length === 1) {
-    latestHandOffDisposition = getOr(
-      'latestHandOffDisposition', prioritizationDetails[0], NA,
-    );
-  } else if (prioritizationDetails && prioritizationDetails.length > 1) {
-    latestHandOffDisposition = handleMultipleRecords(prioritizationDetails);
-  }
-  return generateTombstoneItem('Latest Handoff Disposition', latestHandOffDisposition);
-}
-
-function getPandamicFlagItem(_l, _e, _p, _pr, _g, _a, _t, _ta, fetchPandemicFlagResponseData) {
+function getPandamicFlagItem(_l, _e, _p, _g, _a, _t, _ta, fetchPandemicFlagResponseData) {
   if (fetchPandemicFlagResponseData) {
     const pandemicFlagItem = R.is(Array, fetchPandemicFlagResponseData)
     && !R.isEmpty(fetchPandemicFlagResponseData) ? {
@@ -318,7 +279,7 @@ function getPandamicFlagItem(_l, _e, _p, _pr, _g, _a, _t, _ta, fetchPandemicFlag
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
-  prioritizationDetails, groupName, additionalLoanInfo, taskName, taskData,
+  groupName, additionalLoanInfo, taskName, taskData,
   fetchPandemicFlagResponseData) {
   let dataGenerator = [];
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
@@ -410,7 +371,6 @@ function getTombstoneItems(loanDetails,
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
     previousDispositionDetails,
-    prioritizationDetails,
     groupName,
     additionalLoanInfo,
     taskName,
@@ -423,7 +383,6 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
-  const prioritizationUrl = getPrioritizationUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
 
@@ -452,25 +411,17 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     headers: { 'content-type': 'application/json' },
   });
 
-  const prioritizationP = fetch(`${prioritizationUrl}?appGroup=${groupName.split(/[ -]/).join('_')}`, {
-    method: 'POST',
-    body: JSON.stringify([evalId]),
-    headers: { 'content-type': 'application/json' },
-  });
-
   const evaluationInfoResponseP = fetch(evaluationInfoUrl);
   const additionalLoanInfoP = fetchAdditionalLoanInfo;
 
   const [loanInfoResponse,
     evaluationInfoResponse,
     previousDispositionResponse,
-    prioritizationResponse,
     additionalLoanInfoResponse,
     taskDataResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
-      prioritizationP, additionalLoanInfoP, fetchTaskInfo],
+      additionalLoanInfoP, fetchTaskInfo],
   );
-
 
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
     throw new RangeError('Tombstone API call failed');
@@ -479,46 +430,18 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   let [loanDetails,
     evalDetails,
     previousDispositionDetails,
-    prioritizationDetails,
     additionalLoanInfo,
     taskData, fetchPandemicFlagResponseData] = [];
 
-  if (previousDispositionResponse.status === 200 && prioritizationResponse.status === 200) {
+  if (previousDispositionResponse.status === 200) {
     [loanDetails,
       evalDetails,
       previousDispositionDetails,
-      prioritizationDetails,
       additionalLoanInfo,
       taskData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
-      prioritizationResponse.json(),
-      additionalLoanInfoResponse.json(),
-      taskDataResponse.json(),
-    ]);
-  } else if (previousDispositionResponse.status === 200) {
-    [loanDetails,
-      evalDetails,
-      previousDispositionDetails,
-      additionalLoanInfo,
-      taskData,
-    ] = await Promise.all([
-      loanInfoResponse.json(),
-      evaluationInfoResponse.json(),
-      previousDispositionResponse.json(),
-      additionalLoanInfoResponse.json(),
-      taskDataResponse.json(),
-    ]);
-  } else if (prioritizationResponse.status === 200) {
-    [loanDetails,
-      evalDetails,
-      prioritizationDetails,
-      additionalLoanInfo,
-      taskData] = await Promise.all([
-      loanInfoResponse.json(),
-      evaluationInfoResponse.json(),
-      prioritizationResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
     ]);
@@ -551,7 +474,6 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     loanDetails,
     evalDetails,
     previousDispositionDetails,
-    prioritizationDetails,
     groupName,
     additionalLoanInfo,
     taskName,
