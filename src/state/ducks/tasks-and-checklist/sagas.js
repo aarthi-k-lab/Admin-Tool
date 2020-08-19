@@ -864,6 +864,9 @@ function* watchPushDataButton() {
 
 export const TestExports = {
   watchGetTasks,
+  getTasks,
+  filterOptionalTasks,
+  createChecklistNavigation,
   watchPushDataButton,
   addPushDataResponse,
   sendToLSAMS,
