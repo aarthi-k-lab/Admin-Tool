@@ -26,7 +26,6 @@ describe('<StagerPopUp >', () => {
     const wrapper = shallow(
       <TestHooks.StagerPopup {...props} />,
     );
-    // console.log(wrapper.debug());
     wrapper.find('WithStyles(ForwardRef(ExpansionPanel))').simulate('change');
     expect(handlePopUp).toBeCalled();
     wrapper.find('WithStyles(ForwardRef(Button))').at(1).simulate('click');
@@ -56,7 +55,6 @@ describe('<StagerPopUp >', () => {
     const wrapper = shallow(
       <TestHooks.StagerPopup {...props} />,
     );
-    console.log(wrapper.debug());
     wrapper.find('WithStyles(ForwardRef(ExpansionPanel))').simulate('change');
     expect(handlePopUp).toBeCalled();
     wrapper.find('WithStyles(ForwardRef(Button))').at(1).simulate('click');
@@ -85,7 +83,6 @@ describe('<StagerPopUp >', () => {
     const wrapper = shallow(
       <TestHooks.StagerPopup {...props} />,
     );
-    console.log(wrapper.debug());
     expect(onCloseClick).toBeCalled();
   });
 });

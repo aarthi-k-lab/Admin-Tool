@@ -10,7 +10,6 @@ describe('<AppLayout />', () => {
         <Mock />
       </AppLayout>,
     );
-    console.log(wrapper.debug());
     expect(wrapper.find('Mock')).toHaveLength(1);
   });
 });

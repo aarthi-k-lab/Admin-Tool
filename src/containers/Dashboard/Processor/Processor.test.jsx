@@ -19,7 +19,6 @@ describe('<Processor />', () => {
       },
     ];
     const wrapper = shallow(<Processor tableData={tableData} />);
-    // console.log(wrapper.debug());
     expect(wrapper.find('Link')).toHaveLength(1);
     expect(wrapper.find('#download_btn')).toHaveLength(1);
     expect(wrapper.find('CSVLink')).toHaveLength(1);
@@ -50,7 +49,6 @@ describe('<Processor />', () => {
       return null;
     });
     const wrapper = shallow(<Processor tableData={tableData} />);
-    // console.log(wrapper.debug());
     expect(wrapper.find('#message')).toHaveLength(1);
     wrapper.instance().setState({ hasError: false });
     expect(wrapper.find('span')).toHaveLength(2);

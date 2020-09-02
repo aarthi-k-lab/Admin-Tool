@@ -63,6 +63,5 @@ describe('<ContentHeader />', () => {
     expect(wrap.find('WithStyles(Tooltip)')).toHaveLength(1);
     wrap.find('Link').at(0).simulate('click');
     expect(onAutoSave).toBeCalled();
-    console.log(wrap.debug());
   });
 });

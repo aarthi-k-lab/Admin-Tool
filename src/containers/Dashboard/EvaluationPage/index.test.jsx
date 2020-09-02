@@ -8,7 +8,6 @@ describe('<EvaluationPage />', () => {
     pathname: '/backend-checklist',
   };
   const wrapper = shallow(<TestHooks.EvaluationPage location={location} />);
-  console.log(wrapper.debug());
   it('<ContentHeader /> shows title', () => {
     const contentHeader = wrapper.find('ContentHeader');
     expect(contentHeader).toHaveLength(0);

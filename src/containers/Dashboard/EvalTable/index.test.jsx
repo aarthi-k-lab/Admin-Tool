@@ -78,7 +78,6 @@ describe.only('Eval Table Cell ', () => {
     const styleProps = 'mock-style';
     const click = jest.fn();
     const wrapper = shallow(<EvalTableCell click={click} styleProps={styleProps} user={user} value="Booking" />);
-    console.log(wrapper.debug());
     expect(wrapper.find('WithStyles(ForwardRef(IconButton))')).toHaveLength(1);
   });
 });

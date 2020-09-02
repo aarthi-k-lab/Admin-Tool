@@ -7,7 +7,6 @@ const groups = ['postmodstager', 'postmodstager-mgr', 'stager-mgr', 'stager'];
 describe('DocsIn ', () => {
   it('shows DocsIn widget ', () => {
     const wrapper = shallow(<TestHooks.DocsIn groupName="ALLSTAGER" groups={groups} />);
-    // console.log(wrapper.debug());
     const grid = wrapper.find('ContentHeader');
 
     expect(grid).toHaveLength(0);
