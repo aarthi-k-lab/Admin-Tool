@@ -7,6 +7,7 @@ import {
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import LoanTombstone from 'models/LoanTombstone';
+import { setPaymentDeferral } from 'ducks/dashboard/actions';
 import {
   LOADING_TOMBSTONE_DATA,
   ERROR_LOADING_TOMBSTONE_DATA,
@@ -15,7 +16,6 @@ import {
 } from './types';
 import { TestExports } from './sagas';
 import { selectors as dashboardSelectors } from '../dashboard';
-
 
 describe('tombstone watcher ', () => {
   it('watchTombstone should be triggered', () => {
@@ -96,8 +96,20 @@ describe('fetchTombstoneData', () => {
     expect(saga.next('NSM').value)
       .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM'));
   });
+  it('should update isPayment deferral', () => {
+    expect(saga.next(loanDetails).value).toEqual(call(setPaymentDeferral, false));
+  });
+  it('should update isPayment deferral', () => {
+    expect(saga.next({
+      type: 'app/dashboard/SET_PAYMENT_DEFERRAL',
+      payload: false,
+    }).value).toEqual(put({
+      type: 'app/dashboard/SET_PAYMENT_DEFERRAL',
+      payload: false,
+    }));
+  });
   it('should update loandetails in store', () => {
-    expect(saga.next(loanDetails).value)
+    expect(saga.next().value)
       .toEqual(put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: loanDetails }));
   });
 });

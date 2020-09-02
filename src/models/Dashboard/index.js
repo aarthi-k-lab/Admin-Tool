@@ -155,6 +155,12 @@ const InvalidEvalResponse = evalId => ({
   evalId,
 });
 
+
+const PDD = {
+  title: 'Modification Type',
+  content: 'Payment Deferral Disaster',
+};
+
 const DashboardModel = {
   EVENT_CATEGORY_FILTER,
   FEUW,
@@ -179,6 +185,7 @@ const DashboardModel = {
   POSTMOD_TASKNAMES,
   PENDING_BOOKING,
   InvalidEvalResponse,
+  PDD,
 };
 
 export default DashboardModel;
