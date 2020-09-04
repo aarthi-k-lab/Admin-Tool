@@ -446,11 +446,19 @@ class DocsIn extends React.PureComponent {
       const loanNumbers = loansNumber.trim().replace(/\n/g, ',').split(',').map(s => s.trim())
         .filter(s => s.length > 0);
       const loanNumbersList = new Set(loanNumbers);
-      const payload = {
-        loanNumbers: [...loanNumbersList],
-        pageType: bulkOrderPageType,
-      };
-      onLoansSubmit(payload);
+      if (loanNumbersList.size > 75) {
+        const payload = {
+          level: 'error',
+          status: 'Please enter a maximum of 75 loan numbers.',
+        };
+        onFailedLoanValidation(payload);
+      } else {
+        const payload = {
+          loanNumbers: [...loanNumbersList],
+          pageType: bulkOrderPageType,
+        };
+        onLoansSubmit(payload);
+      }
     } else {
       const payload = {
         level: 'error',
