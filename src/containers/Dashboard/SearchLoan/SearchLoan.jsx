@@ -72,11 +72,6 @@ class SearchLoan extends React.PureComponent {
     return loanNumberSearch.get('loanNumber');
   }
 
-  getGroups() {
-    const { user } = this.props;
-    return user && user.groupList;
-  }
-
   handleClose = () => {
     const { closeSweetAlert } = this.props;
     closeSweetAlert();

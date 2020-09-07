@@ -320,5 +320,8 @@ const mapStateToProps = state => ({
   disablePushData: dashboardSelectors.getDisablePushData(state),
 });
 
-
+const TestHooks = {
+  LabelWithIcon,
+};
+export { TestHooks };
 export default connect(mapStateToProps, mapDispatchToProps)(LabelWithIcon);

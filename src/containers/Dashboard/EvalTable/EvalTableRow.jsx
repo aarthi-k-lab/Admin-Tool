@@ -11,7 +11,6 @@ import RouteAccess from '../../../lib/RouteAccess';
 import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 
-
 const showReject = row => ((row.original.pstatus === 'Active' && (row.original.pstatusReason === 'Rejection Pending' || row.original.pstatusReason === 'Trial Rejected')) || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended'));
 
 const getEventName = (pstatusReason, pstatus, taskName) => {
@@ -200,9 +199,15 @@ const mapStateToProps = state => ({
 
 });
 
+const TestHooks = {
+  EvalTableRow,
+};
+
 const EvalTableRowContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(EvalTableRow);
 
 export default withRouter(EvalTableRowContainer);
+
+export { TestHooks };
