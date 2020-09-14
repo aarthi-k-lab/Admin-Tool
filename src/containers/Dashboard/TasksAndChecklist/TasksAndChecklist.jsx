@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
@@ -156,9 +155,6 @@ class TasksAndChecklist extends Component {
       putComputeRulesPassed,
       ruleResultFromTaskTree,
     } = this.props;
-    if (dataLoadStatus === 'loading') {
-      return <CircularProgress styleName="loader" />;
-    }
 
     if (dataLoadStatus === 'failed') {
       return <ErrorIcon fontSize="large" styleName="error-indicator" />;
@@ -167,7 +163,7 @@ class TasksAndChecklist extends Component {
       return null;
     }
     let notification;
-    if (message.type === 'do-not-display') {
+    if (!message || message.type === 'do-not-display') {
       notification = null;
     } else {
       notification = DashboardModel.Messages.renderErrorNotification(

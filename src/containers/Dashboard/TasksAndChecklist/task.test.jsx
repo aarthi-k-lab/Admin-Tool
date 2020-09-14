@@ -55,7 +55,6 @@ describe('<TasksAndChecklist />', () => {
       type: 'do-not-display',
       msg: null,
     };
-    expect(wrapper.find('WithStyles(ForwardRef(CircularProgress))')).toHaveLength(1);
     wrapper.setProps({ dataLoadStatus: 'failed' });
     expect(wrapper.find(ErrorIcon)).toHaveLength(1);
     wrapper.setProps({ dataLoadStatus: 'completed', checklistItems: [] });

@@ -42,7 +42,7 @@ class TaskPane extends React.PureComponent {
         <LeftTaskPane
           className={className}
           dataLoadStatus={dataLoadStatus}
-          disableModifyOptionalTasks={!isAssigned}
+          disableModifyOptionalTasks={!isAssigned || dataLoadStatus === 'loading'}
           groupName={group}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}

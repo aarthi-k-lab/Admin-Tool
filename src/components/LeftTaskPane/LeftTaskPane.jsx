@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
 import CollapseIcon from 'components/Tasks/CollapseIcon';
@@ -122,11 +121,6 @@ class LeftTaskPane extends React.Component {
         <ErrorIcon fontSize="large" styleName="error-indicator" />
       );
     }
-    if (dataLoadStatus === 'loading') {
-      return (
-        <CircularProgress styleName="loader" />
-      );
-    }
     return (
       <>
         <div styleName={isCollapsed ? 'task-pane-controls task-pane-controls-collapsed' : 'task-pane-controls'}>
@@ -186,6 +180,7 @@ class LeftTaskPane extends React.Component {
           </span>
         </div>
         <LeftParentTasks
+          disabled={dataLoadStatus === 'loading'}
           disableModifyOptionalTasks={disableModifyOptionalTasks}
           handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
           handleShowOptionalTasks={handleShowOptionalTasks}

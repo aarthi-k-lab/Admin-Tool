@@ -130,7 +130,8 @@ class LeftParentTasks extends React.Component {
     );
   }
 
-  renderTasksChecklist(task, selectedTaskId, onSubTaskClick) {
+  renderTasksChecklist(task, selectedTaskId, onSubTaskClick,
+    disabled = false) {
     const isTaskSelected = task.subTasks.some(({ _id: id }) => id === selectedTaskId);
     return (
       <>
@@ -173,6 +174,7 @@ class LeftParentTasks extends React.Component {
                     <SubTask
                       key={subTask._id} // eslint-disable-line
                       data={subTask}
+                      disabled={disabled}
                       onClick={onSubTaskClick}
                       selected={subTask._id === selectedTaskId} // eslint-disable-line
                     />
@@ -187,7 +189,7 @@ class LeftParentTasks extends React.Component {
 
   renderTasks(isCollapsed) {
     const {
-      tasks, onSubTaskClick, selectedTaskId,
+      tasks, onSubTaskClick, selectedTaskId, disabled,
     } = this.props;
     return (
       tasks
@@ -198,7 +200,7 @@ class LeftParentTasks extends React.Component {
             isCollapsed
               ? this.constructor.renderCollapsedView(task)
               : this.renderTasksChecklist(task,
-                selectedTaskId, onSubTaskClick)
+                selectedTaskId, onSubTaskClick, disabled)
             }
           </div>
         ))
@@ -222,9 +224,11 @@ class LeftParentTasks extends React.Component {
 LeftParentTasks.defaultProps = {
   disableModifyOptionalTasks: false,
   selectedTaskId: '',
+  disabled: false,
 };
 
 LeftParentTasks.propTypes = {
+  disabled: PropTypes.bool,
   disableModifyOptionalTasks: PropTypes.bool,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   isCollapsed: PropTypes.bool.isRequired,

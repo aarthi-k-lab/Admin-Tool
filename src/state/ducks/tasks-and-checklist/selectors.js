@@ -61,7 +61,9 @@ const getCurrentChecklistValue = ({ _id: id, value }, state) => {
 const getChecklistItems = state => R.compose(
   R.map(checklistItem => ({
     id: R.prop('_id', checklistItem),
-    disabled: !dashboardSelectors.isAssigned(state) || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem)),
+    disabled: !dashboardSelectors.isAssigned(state)
+    || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem))
+    || R.path(['tasksAndChecklist', 'checklistLoadingStatus'], state) === 'loading',
     isVisible: R.propOr(true, 'visibility', checklistItem),
     options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
     taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),

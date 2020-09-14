@@ -10,8 +10,10 @@ const R = {
   pathOr,
 };
 
-function SubTask({ data, onClick, selected }) {
-  const boundClickHandler = () => onClick(data._id); // eslint-disable-line
+function SubTask({
+  data, onClick, selected, disabled,
+}) {
+  const boundClickHandler = () => !disabled ? onClick(data._id): null; // eslint-disable-line
   return (
     <Grid container item spacing={0}>
       <Grid item xs={2} />
@@ -54,6 +56,7 @@ function SubTask({ data, onClick, selected }) {
 SubTask.defaultProps = {
   onClick: () => {},
   selected: false,
+  disabled: false,
 };
 
 SubTask.propTypes = {
@@ -65,6 +68,7 @@ SubTask.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
+  disabled: PropTypes.bool,
   onClick: PropTypes.func,
   selected: PropTypes.bool,
 };
