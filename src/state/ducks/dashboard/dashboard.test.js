@@ -751,7 +751,7 @@ describe('search Loan Failure - Invalid Loan Number', () => {
 
   it('should call search Api', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
+      .toEqual(call(Api.callGet, '/api/data-aggregator/search/loan/18008401081', {}));
   });
 
   it('should call SEARCH_LOAN_RESULT', () => {
@@ -779,7 +779,7 @@ describe('search Loan Failure - No Eval cases', () => {
     saga.next();
     saga.next();
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
+      .toEqual(call(Api.callGet, '/api/data-aggregator/search/loan/18008401081', {}));
   });
 
   it('should call SEARCH_LOAN_RESULT', () => {
@@ -816,7 +816,7 @@ describe('search Loan Success', () => {
     saga.next();
     saga.next();
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/search-svc/search/loan/18008401081', {}));
+      .toEqual(call(Api.callGet, '/api/data-aggregator/search/loan/18008401081', {}));
   });
 
   it('should call SEARCH_LOAN_RESULT', () => {

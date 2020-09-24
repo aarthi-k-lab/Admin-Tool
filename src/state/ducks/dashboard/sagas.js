@@ -192,7 +192,7 @@ const searchLoan = function* searchLoan(loanNumber) {
   }
   if (!wasSearched) {
     try {
-      const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
+      const response = yield call(Api.callGet, `/api/data-aggregator/search/loan/${searchLoanNumber}`, {});
       if (response !== null) {
         yield put({
           type: SEARCH_LOAN_RESULT,
