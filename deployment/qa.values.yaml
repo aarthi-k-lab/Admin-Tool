@@ -1,0 +1,20 @@
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+config:
+  qa:
+     PORT: 8080
+newrelic:
+  appname: cmoduiqa
+  uri: https://qa.cmod.mrcooper.io/cmodui/health
+  status: enabled
+  email: CMODDev@mrcooper.com
+  frequency: 30 
+  slaThreshold : 5.0

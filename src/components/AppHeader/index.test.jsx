@@ -214,14 +214,14 @@ describe('<Header />', () => {
       />,
     );
     expect(wrapper.find('span').get(0).props.children).toBe(' - LOCAL');
-    setWindowLocation('cmoddev.int.mrcooper.io');
+    setWindowLocation('dev.cmod.mrcooper.io');
     wrapper = shallow(
       <TestExports.Header
         {...props}
       />,
     );
     expect(wrapper.find('span').get(0).props.children).toBe(' - DEV');
-    setWindowLocation('cmod.int.mrcooper.io');
+    setWindowLocation('cmod.mrcooper.io');
     wrapper = shallow(
       <TestExports.Header
         {...props}

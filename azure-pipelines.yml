@@ -1,0 +1,27 @@
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: 'Infrastructure Automation/AzureDevOps.Pipeline.Templates'
+
+parameters:
+  - name: dryrun
+    displayName: helm --dry-run
+    type: boolean
+    default: false  
+
+trigger:
+  branches:
+    include: 
+      - master
+  paths:
+    exclude: 
+      - secrets
+        
+name: Release-$(Rev:r.)
+
+extends:
+  template: k8s.yml@templates
+  parameters:
+    dryrun: ${{ parameters.dryrun }}
+    pool: Reverse
