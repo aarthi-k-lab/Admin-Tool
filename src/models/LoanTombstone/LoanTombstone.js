@@ -30,6 +30,10 @@ function getTaskDataUrl(taskId) {
   return `/api/bpm-audit/audit/task/${taskId}`;
 }
 
+function getBuyoutProcessUrl(loanNumber) {
+  return `/api/ods-gateway/booking/buyout/loans/${loanNumber}`;
+}
+
 function getPandemicFlagUrl(loanNumber, brand) {
   return `/api/booking/api/lsamsCommentCodeFilter?loanNumber=${loanNumber}&brand=${brand}&commentCode=${pandemicFlagCommentCode}`;
 }
@@ -276,17 +280,28 @@ function getPandamicFlagItem(_l, _e, _p, _g, _a, _t, _ta, fetchPandemicFlagRespo
   return {};
 }
 
+function getDelinquencyBuyoutFlagItem(_l, _e, _p, _g, _a, _t, _ta, _pan, buyoutProcessDetails) {
+  const buyoutFlagItem = (buyoutProcessDetails && _e && _e.delinquencyFlag
+      && Boolean(buyoutProcessDetails.delinquencyFlag)) ? {
+      flag: 'Yes',
+      style: 'highlight',
+    } : {
+      flag: 'No',
+      style: '',
+    };
+  return generateTombstoneItem('Delinquency Buyout Flag', buyoutFlagItem);
+}
+
 function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
   groupName, additionalLoanInfo, taskName, taskData,
-  fetchPandemicFlagResponseData) {
+  fetchPandemicFlagResponseData, buyoutProcessDetails) {
   let dataGenerator = [];
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
     ? DashboardModel.POSTMODSTAGER : groupName;
   switch (group) {
     case DashboardModel.DOC_GEN:
-    case DashboardModel.DOCS_IN:
       dataGenerator = [
         getLoanItem,
         getInvestorLoanItem,
@@ -310,6 +325,59 @@ function getTombstoneItems(loanDetails,
         getCFPBExpirationDate,
         getDaysUntilCFPB,
         getBoardingDate,
+      ];
+      break;
+    case DashboardModel.DOCS_IN:
+      dataGenerator = [
+        getLoanItem,
+        getInvestorLoanItem,
+        getEvalIdItem,
+        getPandamicFlagItem,
+        getDelinquencyBuyoutFlagItem,
+        getEvalFlag,
+        getLoanTypeDescription,
+        getInvestorItem,
+        getLienPosition,
+        getPreviousDisposition,
+        getLatestHandOffDisposition,
+        getBorrowerItem,
+        getSsnItem,
+        getSuccessorInInterestStatus,
+        getBrandNameItem,
+        getWaterfallName,
+        getModificationType,
+        getNextPaymentDueDateItem,
+        getForeclosureSalesDate,
+        getFLDD,
+        getCFPBExpirationDate,
+        getDaysUntilCFPB,
+        getBoardingDate,
+      ];
+      break;
+    case DashboardModel.BOOKING:
+      dataGenerator = [
+        getLoanItem,
+        getEvalIdItem,
+        getPandamicFlagItem,
+        getDelinquencyBuyoutFlagItem,
+        getPreviousDisposition,
+        getLatestHandOffDisposition,
+        getInvestorLoanItem,
+        getBorrowerItem,
+        getSsnItem,
+        getSuccessorInInterestStatus,
+        getBrandNameItem,
+        getInvestorItem,
+        getLoanTypeDescription,
+        getUPBItem,
+        getNextPaymentDueDateItem,
+        getWaterfallName,
+        getModificationType,
+        getForeclosureSalesDate,
+        getFLDD,
+        getLienPosition,
+        getCFPBExpirationDate,
+        getDaysUntilCFPB,
       ];
       break;
     case DashboardModel.POSTMODSTAGER:
@@ -374,7 +442,8 @@ function getTombstoneItems(loanDetails,
     groupName,
     additionalLoanInfo,
     taskName,
-    taskData, fetchPandemicFlagResponseData));
+    taskData, fetchPandemicFlagResponseData,
+    buyoutProcessDetails));
   return R.filter(item => !R.isEmpty(item), data);
 }
 
@@ -385,6 +454,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   const previousDispositionUrl = getPreviousDispositionUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
+  const buyoutProcessUrl = getBuyoutProcessUrl(loanNumber);
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -405,6 +475,11 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     headers: { 'content-type': 'application/json' },
   });
 
+  const fetchBuyoutProcessInfo = fetch(buyoutProcessUrl, {
+    method: 'GET',
+    headers: { 'content-type': 'application/json' },
+  });
+
   const previousDispositionP = fetch(previousDispositionUrl, {
     method: 'POST',
     body: JSON.stringify({ evalIds: [evalId], groupName: groupName.split(/[ -]/).join('_') }),
@@ -418,9 +493,9 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     evaluationInfoResponse,
     previousDispositionResponse,
     additionalLoanInfoResponse,
-    taskDataResponse] = await Promise.all(
+    taskDataResponse, buyoutProcessResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
-      additionalLoanInfoP, fetchTaskInfo],
+      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo],
   );
 
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
@@ -433,27 +508,31 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     additionalLoanInfo,
     taskData, fetchPandemicFlagResponseData] = [];
 
+  let buyoutProcessDetails = {};
+
   if (previousDispositionResponse.status === 200) {
     [loanDetails,
       evalDetails,
       previousDispositionDetails,
       additionalLoanInfo,
-      taskData] = await Promise.all([
+      taskData, buyoutProcessDetails] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
+      buyoutProcessResponse.json(),
     ]);
   } else {
     [loanDetails,
       evalDetails,
       additionalLoanInfo,
-      taskData] = await Promise.all([
+      taskData, buyoutProcessDetails] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
+      buyoutProcessResponse.json(),
     ]);
   }
 
@@ -479,6 +558,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     taskName,
     taskData,
     fetchPandemicFlagResponseData,
+    buyoutProcessDetails,
   )];
 }
 
