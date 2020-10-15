@@ -42,13 +42,9 @@ class EvaluationPage extends React.PureComponent {
   }
 
   canShowSendToDocsIn() {
-    const {
-      group, user, isAssigned, processName, taskStatus,
-    } = this.props;
+    const { group, user, isAssigned } = this.props;
     const groups = user && user.groupList;
-    const isPendingloan = R.equals(taskStatus, 'Active')
-    && (R.equals(processName, 'Pending Buyout') || R.equals(processName, DashboardModel.PENDING_BOOKING));
-    return isPendingloan && group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !R.isNil(isAssigned) && !isAssigned;
+    return group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !R.isNil(isAssigned) && !isAssigned;
   }
 
   renderDashboard() {
@@ -114,10 +110,8 @@ EvaluationPage.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
   onCleanResult: PropTypes.func,
-  processName: PropTypes.string.isRequired,
   stagerTaskName: PropTypes.string,
   taskName: PropTypes.string,
-  taskStatus: PropTypes.string.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array).isRequired,
@@ -141,8 +135,6 @@ const mapStateToProps = state => ({
   checklisttTemplateName: checklistSelectors.getChecklistTemplate(state),
   isAutoDisposition: checklistSelectors.getDispositionType(state),
   userNotification: selectors.userNotification(state),
-  processName: selectors.processName(state),
-  taskStatus: selectors.taskStatus(state),
 });
 
 const mapDispatchToProps = dispatch => ({
