@@ -8,9 +8,9 @@ import {
   put,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import { setPaymentDeferral } from 'ducks/dashboard/actions';
+// import * as Api from 'lib/Api';
+// import { actions as tombstoneActions } from 'ducks/tombstone';
 import LoanTombstone from 'models/LoanTombstone';
-import DashboardModel from 'models/Dashboard';
 import {
   LOADING_TOMBSTONE_DATA,
   ERROR_LOADING_TOMBSTONE_DATA,
@@ -29,12 +29,13 @@ function* fetchTombstoneData(payload) {
   const postModTaskName = yield select(dashboardSelectors.stagerTaskName);
   const brand = yield select(dashboardSelectors.brand);
   const tombstoneTaskId = R.equals(groupName, 'BOOKING') ? yield select(dashboardSelectors.getBookingTaskId) : taskId;
+  // const evalId = '1928799';
+  // const loanNumber = '596815091';
   try {
     const userGroup = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
     const group = userGroup === 'Recordation' || userGroup === 'Countersign' ? taskName : userGroup;
     const data = yield call(LoanTombstone.fetchData,
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand);
-    yield put(yield call(setPaymentDeferral, R.contains(DashboardModel.PDD, data)));
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
   } catch (e) {

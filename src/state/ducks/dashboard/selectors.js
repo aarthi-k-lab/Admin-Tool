@@ -138,11 +138,7 @@ const getToggleWidget = R.pathOr(false, ['dashboard', 'toggleWidget']);
 
 const getAssigntomeBtnStats = R.pathOr(false, ['dashboard', 'disableAssigntomeBtn']);
 
-
-const getIsPaymentDeferral = R.pathOr(false, ['dashboard', 'isPaymentDeferral']);
-
 const selectors = {
-  getIsPaymentDeferral,
   getBookingTaskId,
   getToggleWidget,
   getProcessId,
