@@ -1561,6 +1561,16 @@ function* onCoviusBulkUpload(payload) {
   } = payload.payload;
   let response;
   try {
+    if (caseIds.length > 500) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR,
+          status: 'Please upload a maximum of 500 case ids.',
+        },
+      });
+      return;
+    }
     const caseSet = new Set(caseIds);
     if (caseIds.length !== caseSet.size) {
       yield put({
