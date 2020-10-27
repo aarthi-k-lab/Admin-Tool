@@ -76,10 +76,18 @@ import {
   SAVE_TASKID,
   DISABLE_PUSHDATA,
   ASSIGN_TO_ME_CLICK,
+  SET_PAYMENT_DEFERRAL,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
   switch (action.type) {
+    case SET_PAYMENT_DEFERRAL: {
+      const data = action.payload;
+      return {
+        ...state,
+        isPaymentDeferral: data,
+      };
+    }
     case DISCARD_EVAL_RESPONSE: {
       return {
         ...state,

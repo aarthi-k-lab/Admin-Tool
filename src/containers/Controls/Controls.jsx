@@ -360,6 +360,7 @@ const mapStateToProps = (state) => {
   const shouldSkipValidation = checklistSelectors.enableValidate(state)
   && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER);
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
+  const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
   return {
     disableValidation,
     enableValidate,
@@ -367,7 +368,7 @@ const mapStateToProps = (state) => {
     enableGetNext: selectors.enableGetNext(state)
       || shouldSkipValidation,
     enableSendToDocGen: selectors.enableSendToDocGen(state),
-    enableSendToDocsIn: selectors.enableSendToDocsIn(state),
+    enableSendToDocsIn: !isPaymentDeferral && selectors.enableSendToDocsIn(state),
     enableSendToUW: selectors.enableSendToUW(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),

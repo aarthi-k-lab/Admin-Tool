@@ -60,6 +60,7 @@ import {
   WIDGET_CLICK,
   UNASSIGN_WIDGET_LOAN,
   TOGGLE_WIDGET,
+  SET_PAYMENT_DEFERRAL,
 } from './types';
 
 
@@ -342,7 +343,14 @@ const widgetToggle = payload => ({
   payload,
 });
 
+
+const setPaymentDeferral = payload => ({
+  type: SET_PAYMENT_DEFERRAL,
+  payload,
+});
+
 export {
+  setPaymentDeferral,
   widgetToggle,
   unassignWidgetLoan,
   setCoviusIndexAction,
