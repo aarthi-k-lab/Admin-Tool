@@ -10,6 +10,7 @@ import * as R from 'ramda';
 import ListIcon from '@material-ui/icons/List';
 import { CSVLink } from 'react-csv';
 import CustomReactTable from 'components/CustomReactTable';
+import StagerReactTable from 'components/StagerReactTable';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import renderSkeletonLoader from './TableSkeletonLoader';
 import StagerPopup from '../StagerPopUp';
@@ -63,10 +64,21 @@ class StagerDetailsTable extends React.PureComponent {
   }
 
   renderDataTable() {
-    const { data } = this.props;
     const {
       onCheckBoxClick, onSelectAll, selectedData, getStagerSearchResponse,
+      azureSearchToggle, data,
     } = this.props;
+    if (azureSearchToggle) {
+      return (
+        <StagerReactTable
+          data={data}
+          onCheckBoxClick={onCheckBoxClick}
+          onSelectAll={onSelectAll}
+          searchResponse={this.buildSearchResponse(getStagerSearchResponse)}
+          selectedData={selectedData}
+        />
+      );
+    }
     return (
       <CustomReactTable
         data={data}
@@ -204,6 +216,7 @@ StagerDetailsTable.defaultProps = {
 };
 
 StagerDetailsTable.propTypes = {
+  azureSearchToggle: PropTypes.bool.isRequired,
   data: PropTypes.node.isRequired,
   docGenAction: PropTypes.func.isRequired,
   downloadedData: PropTypes.node.isRequired,
@@ -234,6 +247,7 @@ const mapStateToProps = state => ({
   downloadedData: stagerSelectors.getDownloadData(state),
   getSearchStagerLoanNumber: stagerSelectors.getSearchStagerLoanNumber(state),
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
+  azureSearchToggle: stagerSelectors.getAzureSearchToggle(state),
 });
 
 const mapDispatchToProps = dispatch => ({

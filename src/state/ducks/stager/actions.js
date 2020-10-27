@@ -4,7 +4,7 @@ import {
   TRIGGER_DISPOSITION_OPERATION_SAGA, SET_DOC_GEN_ACTION, SET_STAGER_VALUE,
   SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_STAGER_GROUP,
   GET_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE, CLEAR_STAGER_RESPONSE,
-  TRIGGER_STAGER_TILE_SAGA,
+  TRIGGER_STAGER_TILE_SAGA, TOGGLE_AZURE_SEARCH, FETCH_STAGER_PAYLOAD,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -79,8 +79,20 @@ const onLoansSubmitAction = payload => ({
   payload,
 });
 
+const azureSearchToggle = payload => ({
+  type: TOGGLE_AZURE_SEARCH,
+  payload,
+});
+
+
+const fetchStagerPayload = payload => ({
+  type: FETCH_STAGER_PAYLOAD,
+  payload,
+});
 
 export {
+  fetchStagerPayload,
+  azureSearchToggle,
   triggerDashboardCounts,
   triggerDashboardDataFetch,
   triggerDownloadDataFetch,

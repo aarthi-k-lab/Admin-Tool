@@ -13,10 +13,17 @@ import {
   SET_STAGER_GROUP, SEARCH_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE,
   CLEAR_STAGER_RESPONSE,
   SET_STAGER_LOAN_NUMBER,
+  TOGGLE_AZURE_SEARCH,
 } from './types';
 
-const reducer = (state = {}, action) => {
+const reducer = (state = { azureSearchToggle: true }, action) => {
   switch (action.type) {
+    case TOGGLE_AZURE_SEARCH: {
+      return {
+        ...state,
+        azureSearchToggle: action.payload,
+      };
+    }
     case SET_STAGER_DATA_COUNTS:
     {
       const { counts } = action.payload ? action.payload : {};

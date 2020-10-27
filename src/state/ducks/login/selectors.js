@@ -7,7 +7,10 @@ const getUserRole = state => R.pathOr('Agent', ['user', 'role'], state);
 
 const getGroupList = R.pathOr([], ['user', 'groupList']);
 
+const isUtilGroupPresent = state => getGroupList(state).includes('util');
+
 const selectors = {
+  isUtilGroupPresent,
   getUser,
   getUserRole,
   getGroupList,

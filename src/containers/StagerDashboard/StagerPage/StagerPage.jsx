@@ -255,6 +255,7 @@ class StagerPage extends React.PureComponent {
                 </Grid>
               </>
             )}
+          toggleButton
         />
         <Grid container direction="row">
           <Grid container item styleName="scroll-area" xs={3}>

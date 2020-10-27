@@ -14,6 +14,8 @@ import {
   clearSearchResponse,
   clearStagerResponse,
   onLoansSubmitAction,
+  azureSearchToggle,
+  fetchStagerPayload,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
@@ -47,7 +49,15 @@ const onLoansSubmit = dispatch => (payload) => {
   dispatch(onLoansSubmitAction(payload));
 };
 
+
+const handleAzureSearchToggle = dispatch => (payload) => {
+  dispatch(clearStagerResponse());
+  dispatch(azureSearchToggle(payload));
+  dispatch(fetchStagerPayload());
+};
+
 const operations = {
+  handleAzureSearchToggle,
   getDashboardCounts,
   getDashboardData,
   onCheckBoxClick,

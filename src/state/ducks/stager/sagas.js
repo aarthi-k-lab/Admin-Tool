@@ -29,6 +29,7 @@ import {
   SEARCH_STAGER_LOAN_NUMBER,
   GET_STAGER_LOAN_NUMBER,
   SET_STAGER_LOAN_NUMBER,
+  FETCH_STAGER_PAYLOAD,
 } from './types';
 
 import selectors from './selectors';
@@ -79,6 +80,10 @@ function* fetchDashboardData(data) {
   try {
     const searchTerm = data.payload.activeSearchTerm;
     const stagerType = data.payload.stager;
+    const { payload: searchDetails } = data;
+    const {
+      top, page, orderby, orderType, filter,
+    } = searchDetails;
     yield put({
       type: SET_STAGER_DATA_LOADING,
       payload: {
@@ -87,11 +92,25 @@ function* fetchDashboardData(data) {
       },
     });
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(
-      stagerType, stagerStartEndDate,
-      searchTerm,
-    );
-    const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', dateValue);
+    const azureSearchToggle = yield select(selectors.getAzureSearchToggle);
+    let requestPayload = {};
+    if (azureSearchToggle) {
+      requestPayload = {
+        searchTerm,
+        stagerType,
+        top,
+        page,
+        orderby,
+        orderType,
+        filter,
+        azureSearchToggle,
+      };
+    } else {
+      requestPayload = buildDateObj(stagerType,
+        stagerStartEndDate,
+        searchTerm);
+    }
+    const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', requestPayload);
     yield put({
       type: SET_STAGER_ACTIVE_SEARCH_TERM,
       payload: searchTerm,
@@ -119,13 +138,32 @@ function* fetchDashboardData(data) {
   }
 }
 
+function* fetchStagerPayload() {
+  const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
+  const stager = yield select(selectors.getStagerValue);
+  const data = {
+    payload: {
+      activeSearchTerm,
+      stager,
+      top: 100,
+      page: 1,
+    },
+  };
+  yield call(fetchDashboardData, data);
+}
+
 function* fetchDownloadData(callBack) {
   try {
     const stagerType = yield select(selectors.getStagerValue);
     const searchTerm = yield select(selectors.getActiveSearchTerm);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const azureSearchToggle = yield select(selectors.getAzureSearchToggle);
     const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
-    const response = yield call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', dateValue);
+    const downloadPayload = {
+      ...dateValue,
+      azureSearchToggle,
+    };
+    const response = yield call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', downloadPayload);
     if (response != null) {
       yield put({
         type: SET_DOWNLOAD_DATA,
@@ -310,6 +348,11 @@ function* watchStagerSearchLoanCall() {
   yield takeEvery(GET_STAGER_LOAN_NUMBER, makeStagerSearchLoanCall);
 }
 
+
+function* watchfetchStagerPayload() {
+  yield takeEvery(FETCH_STAGER_PAYLOAD, fetchStagerPayload);
+}
+
 export const TestExports = {
   watchDashboardCountsFetch,
   watchDashboardDataFetch,
@@ -338,5 +381,6 @@ export function* combinedSaga() {
     watchOrderCall(),
     watchDispositionOperationCall(),
     watchStagerSearchLoanCall(),
+    watchfetchStagerPayload(),
   ]);
 }

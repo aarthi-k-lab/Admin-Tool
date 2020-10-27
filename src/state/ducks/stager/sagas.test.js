@@ -100,6 +100,7 @@ const dateUTCValue = {
   stagerType: 'UNDERWRITER STAGER',
   toDate: '2019-01-05',
   searchTerm: null,
+  azureSearchToggle: false,
 };
 const mockUser = {
   userDetails: {
@@ -233,8 +234,12 @@ describe('fetchDashboardData - success ', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('call bpm audit data Api', () => {
+  it('get azure search toggle ', () => {
     expect(saga.next(dateUtc).value)
+      .toEqual(select(selectors.getAzureSearchToggle));
+  });
+  it('call bpm audit data Api', () => {
+    expect(saga.next(false).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
   it('should update searchterm ', () => {
@@ -309,8 +314,12 @@ describe('fetchDashboardData - empty response', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('call bpm audit data Api', () => {
+  it('should select Stager date ', () => {
     expect(saga.next(dateUtc).value)
+      .toEqual(select(selectors.getAzureSearchToggle));
+  });
+  it('call bpm audit data Api', () => {
+    expect(saga.next(false).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
   it('should update searchterm ', () => {
@@ -352,9 +361,13 @@ describe('fetchDownloadData - success', () => {
     expect(saga.next(null).value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('call downloadDataByDate Api', () => {
+  it('should select stager date ', () => {
     expect(saga.next(dateUTCValue).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', dateValue));
+      .toEqual(select(selectors.getAzureSearchToggle));
+  });
+  it('call downloadDataByDate Api', () => {
+    expect(saga.next(false).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
   });
   it('update download response in state', () => {
     expect(saga.next({ response: 'data' }).value)
@@ -381,9 +394,13 @@ describe('fetchDownloadData - null response', () => {
     expect(saga.next(null).value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('call downloadDataByDate Api', () => {
+  it('should select stager date ', () => {
     expect(saga.next(dateUTCValue).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', dateValue));
+      .toEqual(select(selectors.getAzureSearchToggle));
+  });
+  it('call downloadDataByDate Api', () => {
+    expect(saga.next(false).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
   });
   it('should complete', () => {
     expect(saga.next(null).done).toEqual(true);
@@ -406,8 +423,12 @@ describe('fetchDownloadData - error', () => {
     expect(saga.next(null).value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('should update state with empty payload', () => {
+  it('should select stager date ', () => {
     expect(saga.next(null).value)
+      .toEqual(select(selectors.getAzureSearchToggle));
+  });
+  it('should update state with empty payload', () => {
+    expect(saga.next(false).value)
       .toEqual(put({ type: SET_DOWNLOAD_DATA, payload: {} }));
   });
   it('should complete', () => {

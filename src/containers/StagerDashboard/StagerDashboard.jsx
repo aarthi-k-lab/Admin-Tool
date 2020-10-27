@@ -116,6 +116,8 @@ class StagerDashboard extends React.Component {
     const payload = {
       activeSearchTerm: searchTerm,
       stager: stager || getStagerValue(group),
+      top: 100,
+      page: 1,
     };
     getDashboardData(payload);
     getDashboardCounts();

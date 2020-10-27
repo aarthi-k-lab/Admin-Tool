@@ -6,9 +6,14 @@ import * as R from 'ramda';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
+import Switch from '@material-ui/core/Switch';
+import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import { selectors as configSelectors } from 'ducks/config';
+import { selectors as loginSelectors } from 'ducks/login';
 import styles from './ContentHeader.css';
 import EndShift from '../../models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
+
 import DashboardModel from '../../models/Dashboard';
 
 const renderBackButtonPage = '/stager';
@@ -22,6 +27,11 @@ const handleBackButton = (onAutoSave,
   }
   onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
 };
+
+const handleAzureToggle = (event, handleToggle) => {
+  handleToggle(event.target.checked);
+};
+
 const ContentHeader = ({
   title,
   children,
@@ -34,6 +44,11 @@ const ContentHeader = ({
   enableGetNext,
   evalId,
   isAssigned,
+  handleToggle,
+  azureSearchToggle,
+  features,
+  isUtilGroupPresent,
+  toggleButton,
 }) => (
   <header styleName="content-header">
     {group === DashboardModel.POSTMODSTAGER ? (
@@ -72,6 +87,21 @@ const ContentHeader = ({
         <AddIcon />
       </Fab>
     )}
+    {R.propOr(false, 'azureSearchToggle', features) && isUtilGroupPresent && toggleButton && (
+    <>
+      <h4>Azure Search</h4>
+      <h4>NO</h4>
+      <Switch
+        checked={azureSearchToggle}
+        color="primary"
+        inputProps={{ 'aria-label': 'primary checkbox' }}
+        name="toggleEL"
+        onChange={event => handleAzureToggle(event, handleToggle)}
+      />
+      <h4>YES</h4>
+
+    </>
+    )}
     <span styleName="spacer" />
     {children}
   </header>
@@ -92,28 +122,37 @@ ContentHeader.defaultProps = {
 };
 
 ContentHeader.propTypes = {
+  azureSearchToggle: PropTypes.bool.isRequired,
   checklistTemplateName: PropTypes.string,
   children: PropTypes.node,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
+  features: PropTypes.arrayOf(PropTypes.shape).isRequired,
   group: PropTypes.string,
   handleClick: PropTypes.func,
+  handleToggle: PropTypes.func.isRequired,
   isAssigned: PropTypes.bool,
+  isUtilGroupPresent: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func,
   onEndShift: PropTypes.func,
   showAddButton: PropTypes.bool,
   title: PropTypes.node,
+  toggleButton: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
+  azureSearchToggle: stagerSelectors.getAzureSearchToggle(state),
+  features: configSelectors.getFeatures(state),
+  isUtilGroupPresent: loginSelectors.isUtilGroupPresent(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
+  handleToggle: stagerOperations.handleAzureSearchToggle(dispatch),
 });
 const TestExports = {
   ContentHeader,

@@ -1,3 +1,5 @@
+import * as R from 'ramda';
+
 const getCounts = state => state.stager.counts;
 const getLoaderInfo = state => state.stager.loading;
 const getdocGenResponse = state => (state.stager.docGenResponse
@@ -14,7 +16,11 @@ const getStagerGroup = state => (state.stager && state.stager.stagerGroup);
 const getStagerSearchResponse = state => (state.stager && state.stager.searchStagerLoanResponse);
 const getSearchStagerLoanNumber = state => (state.stager && state.stager.searchStagerLoanNumber);
 
+
+const getAzureSearchToggle = state => R.pathOr(false, ['stager', 'azureSearchToggle'], state);
+
 const selectors = {
+  getAzureSearchToggle,
   getCounts,
   getLoaderInfo,
   getTableData,
