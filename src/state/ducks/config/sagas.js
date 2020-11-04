@@ -15,6 +15,10 @@ import {
   SET_PDFGENRATOR_URL,
 } from './types';
 
+import {
+  TOGGLE_AZURE_SEARCH,
+} from '../stager/types';
+
 export const fetchPowerBIConfig = function* fetchPowerBIConfig() {
   try {
     const newPayload = yield call(Api.callGet, 'api/config');
@@ -58,6 +62,10 @@ function* fetchFeatureConfig() {
     if (newPayload != null) {
       const getFeatures = R.propOr({}, 'features');
       const features = getFeatures(newPayload);
+      yield put({
+        type: TOGGLE_AZURE_SEARCH,
+        payload: R.prop('azureSearchToggle', features),
+      });
       yield put({
         type: SET_FEATURES,
         payload: features,
