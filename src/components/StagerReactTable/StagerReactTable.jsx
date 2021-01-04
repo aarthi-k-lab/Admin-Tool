@@ -323,6 +323,9 @@ class StagerReactTable extends React.PureComponent {
       <div styleName="stager-table-container">
         <div styleName="stager-table-height-limiter">
           <ReactTable
+            ref={(reactTable) => {
+              this.table = reactTable;
+            }}
             className="-highlight"
             columns={this.getColumnData(data.stagerTaskType,
               data.stagerTaskStatus, data.isManualOrder, data.tableData)}
