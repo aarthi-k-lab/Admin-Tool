@@ -85,6 +85,8 @@ const enableSendToDocGen = state => (R.pathOr(true, ['dashboard', 'enableSendToD
 
 const enableSendToDocsIn = state => (R.pathOr(true, ['dashboard', 'enableSendToDocsIn'], state));
 
+const enableSendToBooking = state => (R.pathOr(true, ['dashboard', 'enableSendToBooking'], state));
+
 const enableSendToUW = state => (R.pathOr(true, ['dashboard', 'enableSendToUW'], state));
 
 const showContinueMyReview = state => R.pathOr(null, ['dashboard', 'showContinueMyReview'], state);
@@ -195,6 +197,7 @@ const selectors = {
   enableSendToDocGen,
   bulkOrderPageType,
   enableSendToDocsIn,
+  enableSendToBooking,
   enableSendToUW,
   getRejectResponse,
   searchLoanTaskResponse,

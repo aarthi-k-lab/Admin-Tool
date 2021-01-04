@@ -11,3 +11,4 @@ export { default as ContinueMyReview } from './ContinueMyReview';
 export { default as CompleteMyReview } from './CompleteMyReview';
 export { default as SendToDocsIn } from './SendToDocsIn';
 export { default as CompleteForbearance } from './CompleteForbearance';
+export { default as SendToBooking } from './SendToBooking';

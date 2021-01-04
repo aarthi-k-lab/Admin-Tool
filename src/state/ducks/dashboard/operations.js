@@ -23,6 +23,7 @@ import {
   onSentToUnderwritingAction,
   onSendToDocGenAction,
   onSendToDocsInAction,
+  onSendToBookingAction,
   cleanResult,
   continueMyReview,
   completeMyReview,
@@ -176,6 +177,8 @@ const onSendToDocGen = dispatch => isStager => dispatch(onSendToDocGenAction(isS
 
 const onSendToDocsIn = dispatch => () => dispatch(onSendToDocsInAction());
 
+const onSendToBooking = dispatch => () => dispatch(onSendToBookingAction());
+
 const onTrialTask = dispatch => (payload) => {
   dispatch(onTrialTaskAction(payload));
 };
@@ -310,6 +313,7 @@ const operations = {
   onSentToUnderwriting,
   onSendToDocGen,
   onSendToDocsIn,
+  onSendToBooking,
   onCleanResult,
   onContinueMyReview,
   onCompleteMyReview,

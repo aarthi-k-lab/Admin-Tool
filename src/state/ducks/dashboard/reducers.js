@@ -43,6 +43,7 @@ import {
   SET_COVIUS_BULK_UPLOAD_RESULT,
   SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
+  SET_ENABLE_SEND_TO_BOOKING,
   CLEAR_USER_NOTIF_MSG,
   SET_ENABLE_SEND_TO_UW, SELECT_REJECT,
   CLEAR_SELECT_REJECT,
@@ -579,11 +580,13 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       const resultOperation = {};
       const enableSendToDocGen = true;
       const enableSendToDocsIn = true;
+      const enableSendToBooking = true;
       return {
         ...state,
         resultOperation,
         enableSendToDocGen,
         enableSendToDocsIn,
+        enableSendToBooking,
         loading: false,
       };
     }
@@ -630,6 +633,15 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         enableSendToDocsIn,
+        disableAssigntomeBtn: true,
+      };
+    }
+
+    case SET_ENABLE_SEND_TO_BOOKING: {
+      const enableSendToBooking = action.payload;
+      return {
+        ...state,
+        enableSendToBooking,
         disableAssigntomeBtn: true,
       };
     }

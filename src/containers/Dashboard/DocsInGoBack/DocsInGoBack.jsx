@@ -65,6 +65,7 @@ class DocsInGoBack extends React.PureComponent {
       <>
         <ContentHeader title={title}>
           <Controls
+            showSendToBooking={showButton}
             showSendToDocsIn={showButton}
           />
         </ContentHeader>

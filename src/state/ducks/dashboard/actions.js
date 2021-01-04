@@ -27,6 +27,7 @@ import {
   SET_TASK_UNDERWRITING,
   SET_TASK_SENDTO_DOCGEN,
   SET_TASK_SENDTO_DOCSIN,
+  SET_TASK_SENDTO_BOOKING,
   CLEAN_RESULT,
   CONTINUE_MY_REVIEW,
   COMPLETE_MY_REVIEW,
@@ -210,6 +211,10 @@ const onSendToDocsInAction = () => ({
   type: SET_TASK_SENDTO_DOCSIN,
 });
 
+const onSendToBookingAction = () => ({
+  type: SET_TASK_SENDTO_BOOKING,
+});
+
 const cleanResult = () => ({
   type: CLEAN_RESULT,
 });
@@ -384,6 +389,7 @@ export {
   onSentToUnderwritingAction,
   onSendToDocGenAction,
   onSendToDocsInAction,
+  onSendToBookingAction,
   cleanResult,
   continueMyReview,
   completeMyReview,

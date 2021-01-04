@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
   SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn,
-  CompleteForbearance, CompleteMyReview,
+  CompleteForbearance, CompleteMyReview, SendToBooking,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
 import DashboardModel from 'models/Dashboard';
@@ -38,6 +38,7 @@ class Controls extends React.PureComponent {
     this.handleSendToDocGenStager = this.handleSendToDocGenStager.bind(this);
     this.handleContinueMyReview = this.handleContinueMyReview.bind(this);
     this.handleSendToDocsIn = this.handleSendToDocsIn.bind(this);
+    this.handleSendToBooking = this.handleSendToBooking.bind(this);
     this.handleTrial = this.handleTrial.bind(this);
   }
 
@@ -93,6 +94,11 @@ class Controls extends React.PureComponent {
   handleSendToDocsIn() {
     const { onSendToDocsIn } = this.props;
     onSendToDocsIn();
+  }
+
+  handleSendToBooking() {
+    const { onSendToBooking } = this.props;
+    onSendToBooking();
   }
 
   handleSendToDocGenStager() {
@@ -167,6 +173,7 @@ class Controls extends React.PureComponent {
       showSendToDocGenStager,
       showSendToDocGen,
       showSendToDocsIn,
+      showSendToBooking,
       showContinueMyReview,
       showCompleteMyReview,
       showAssign,
@@ -176,6 +183,7 @@ class Controls extends React.PureComponent {
       showUpdateRemedy,
       enableSendToDocGen,
       enableSendToDocsIn,
+      enableSendToBooking,
       enableSendToUW,
       taskName,
       taskStatus,
@@ -231,6 +239,8 @@ class Controls extends React.PureComponent {
       ) : null;
     const getSendToDocGenButton = showSendToDocGen
       ? <SendToDocGen disabled={!enableSendToDocGen} onClick={this.handleSendToDocGen} /> : null;
+    const getSendToBookingButton = showSendToBooking
+      ? <SendToBooking disabled={!enableSendToBooking} onClick={this.handleSendToBooking} /> : null;
     const getSendToDocsInButton = showSendToDocsIn
       ? <SendToDocsIn disabled={!enableSendToDocsIn} onClick={this.handleSendToDocsIn} /> : null;
     const expand = <Expand onClick={onExpand} />;
@@ -262,6 +272,7 @@ class Controls extends React.PureComponent {
         {getSendToUnderWritingButton}
         {getSendToDocGenButton}
         {getSendToDocGenStagerButton}
+        {getSendToBookingButton}
         {getSendToDocsInButton}
         {getContinueMyReviewButton}
         {getCompleteMyreviewButton}
@@ -277,6 +288,7 @@ Controls.defaultProps = {
   enableGetNext: false,
   enableSendToDocGen: true,
   enableSendToDocsIn: true,
+  enableSendToBooking: true,
   enableSendToUW: true,
   enableValidate: false,
   isFirstVisit: true,
@@ -286,12 +298,14 @@ Controls.defaultProps = {
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
   onSendToDocsIn: () => { },
+  onSendToBooking: () => { },
   onTrialTask: () => {},
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
   showSendToDocGen: false,
   showSendToDocsIn: false,
+  showSendToBooking: false,
   showSendToDocGenStager: false,
   onContinueMyReview: () => { },
   onCompleteMyReview: () => { },
@@ -307,6 +321,7 @@ Controls.propTypes = {
   dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
+  enableSendToBooking: PropTypes.bool,
   enableSendToDocGen: PropTypes.bool,
   enableSendToDocsIn: PropTypes.bool,
   enableSendToUW: PropTypes.bool,
@@ -320,6 +335,7 @@ Controls.propTypes = {
   onEndShift: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
+  onSendToBooking: PropTypes.func,
   onSendToDocGen: PropTypes.func,
   onSendToDocsIn: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
@@ -330,6 +346,7 @@ Controls.propTypes = {
   showContinueMyReview: PropTypes.bool,
   showEndShift: PropTypes.bool,
   showGetNext: PropTypes.bool,
+  showSendToBooking: PropTypes.bool,
   showSendToDocGen: PropTypes.bool,
   showSendToDocGenStager: PropTypes.bool,
   showSendToDocsIn: PropTypes.bool,
@@ -369,6 +386,7 @@ const mapStateToProps = (state) => {
       || shouldSkipValidation,
     enableSendToDocGen: selectors.enableSendToDocGen(state),
     enableSendToDocsIn: !isPaymentDeferral && selectors.enableSendToDocsIn(state),
+    enableSendToBooking: selectors.enableSendToBooking(state),
     enableSendToUW: selectors.enableSendToUW(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),
@@ -394,6 +412,7 @@ const mapDispatchToProps = dispatch => ({
   onSentToUnderwriting: operations.onSentToUnderwriting(dispatch),
   onSendToDocGen: operations.onSendToDocGen(dispatch),
   onSendToDocsIn: operations.onSendToDocsIn(dispatch),
+  onSendToBooking: operations.onSendToBooking(dispatch),
   onContinueMyReview: operations.onContinueMyReview(dispatch),
   onCompleteMyReview: operations.onCompleteMyReview(dispatch),
   onTrialTask: operations.onTrialTask(dispatch),

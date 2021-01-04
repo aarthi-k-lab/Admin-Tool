@@ -70,6 +70,7 @@ import {
   PUT_PROCESS_NAME,
   SET_TASK_SENDTO_DOCGEN,
   SET_TASK_SENDTO_DOCSIN,
+  SET_TASK_SENDTO_BOOKING,
   SET_RESULT_OPERATION,
   CONTINUE_MY_REVIEW,
   CONTINUE_MY_REVIEW_RESULT,
@@ -80,6 +81,7 @@ import {
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
+  SET_ENABLE_SEND_TO_BOOKING,
   SET_ENABLE_SEND_TO_UW,
   SELECT_REJECT_SAGA,
   SELECT_REJECT,
@@ -108,7 +110,6 @@ import {
   SAVE_EVAL_FOR_WIDGET,
   UNASSIGN_WIDGET_LOAN,
   SAVE_MAIN_CHECKLIST,
-  SET_USER_NOTIF_MESSAGE,
   TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
@@ -1424,7 +1425,7 @@ function* sendToDocsIn() {
       const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.updateInstanceStatusResponse.statusCode === '200');
       if (currentStatus !== null && currentStatus.length > 0) {
         yield put({
-          type: SET_USER_NOTIF_MESSAGE,
+          type: SET_RESULT_OPERATION,
           payload: {
             level: LEVEL_SUCCESS,
             status: 'The loan has been successfully sent back to Docs In',
@@ -1434,9 +1435,13 @@ function* sendToDocsIn() {
           type: SET_ENABLE_SEND_BACK_DOCSIN,
           payload: false,
         });
+        yield put({
+          type: SET_ENABLE_SEND_TO_BOOKING,
+          payload: false,
+        });
       } else {
         yield put({
-          type: SET_USER_NOTIF_MESSAGE,
+          type: SET_RESULT_OPERATION,
           payload: {
             level: LEVEL_ERROR,
             status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
@@ -1446,10 +1451,62 @@ function* sendToDocsIn() {
     } else {
       const message = `Unable to send back to Docs In. Eval status should be ${isModBook ? 'Approved or Completed' : 'Approved'} and the most recent Resolution case (within the eval) Status should be ${isModBook ? 'Approved, Sent for Approval, Closed or Booked' : 'Approved or Sent for Approval'}`;
       yield put({
-        type: SET_USER_NOTIF_MESSAGE,
+        type: SET_RESULT_OPERATION,
         payload: {
           level: LEVEL_ERROR,
           status: message,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: LEVEL_ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+}
+
+function* sendToBooking() {
+  const evalId = yield select(selectors.evalId);
+  try {
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    yield put({ type: SHOW_LOADER });
+    const payload1 = JSON.parse(`{
+        "evalID": "${evalId}",
+        "taskName": "Pending Buyout",
+        "taskStatus": "Force Buyout Completed",
+        "userID": "${userPrincipalName}"
+      }`);
+    const responseSend = yield call(Api.callPost, '/api/release/api/process/movePendingBuyout', payload1);
+    const responseArray = Object.values(responseSend);
+    const currentStatus = responseArray && responseArray.filter(myResponse => myResponse.statusCode === '200');
+    if (currentStatus !== null && currentStatus.length > 0) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_SUCCESS,
+          status: 'The loan is moved to booking.  Please manually code the account for booking',
+        },
+      });
+      yield put({
+        type: SET_ENABLE_SEND_TO_BOOKING,
+        payload: false,
+      });
+      yield put({
+        type: SET_ENABLE_SEND_BACK_DOCSIN,
+        payload: false,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: LEVEL_ERROR,
+          status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
       });
     }
@@ -1893,6 +1950,10 @@ function* watchSendToDocsIn() {
   yield takeEvery(SET_TASK_SENDTO_DOCSIN, sendToDocsIn);
 }
 
+function* watchSendToBooking() {
+  yield takeEvery(SET_TASK_SENDTO_BOOKING, sendToBooking);
+}
+
 function* watchSendToFEUW() {
   yield takeEvery(SEND_TO_FEUW_SAGA, sendToFEUW);
 }
@@ -1978,6 +2039,7 @@ export const TestExports = {
   watchLoadTrials,
   watchSendToDocGen,
   watchSendToDocsIn,
+  watchSendToBooking,
   watchSendToFEUW,
   watchContinueMyReview,
   watchCompleteMyReview,
@@ -2011,6 +2073,7 @@ export const combinedSaga = function* combinedSaga() {
     watchSentToUnderwriting(),
     watchSendToDocGen(),
     watchSendToDocsIn(),
+    watchSendToBooking(),
     watchSendToFEUW(),
     watchContinueMyReview(),
     watchAddDocsInReceived(),
