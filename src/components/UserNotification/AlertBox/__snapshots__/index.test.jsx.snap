@@ -5,10 +5,9 @@ exports[`<AlertBox /> snapshot test for error level 1`] = `
   className="alert-box--error"
 >
   <svg
-    aria-hidden="true"
+    aria-hidden={true}
     className="MuiSvgIcon-root components-UserNotification-AlertBox-AlertBox__error-icon"
     focusable="false"
-    role="presentation"
     viewBox="0 0 24 24"
   >
     <path
@@ -40,10 +39,9 @@ exports[`<AlertBox /> snapshot test for success level 1`] = `
   className="alert-box--success"
 >
   <svg
-    aria-hidden="true"
+    aria-hidden={true}
     className="MuiSvgIcon-root components-UserNotification-AlertBox-AlertBox__success-icon"
     focusable="false"
-    role="presentation"
     viewBox="0 0 24 24"
   >
     <path

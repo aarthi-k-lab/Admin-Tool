@@ -31,10 +31,9 @@ exports[`<UnauthorizedPage /> snapshot test 1`] = `
             className="components-UnauthorizedPage-UnauthorizedPage__column"
           >
             <svg
-              aria-hidden="true"
+              aria-hidden={true}
               className="MuiSvgIcon-root components-UnauthorizedPage-UnauthorizedPage__error-icon"
               focusable="false"
-              role="presentation"
               viewBox="0 0 24 24"
             >
               <path

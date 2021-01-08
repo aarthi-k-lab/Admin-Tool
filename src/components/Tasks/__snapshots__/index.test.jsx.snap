@@ -2,10 +2,9 @@
 
 exports[`<Task Components /> CollapseIcon renders correctly 1`] = `
 <svg
-  aria-hidden="true"
+  aria-hidden={true}
   className="MuiSvgIcon-root"
   focusable="false"
-  role="presentation"
   viewBox="0 0 24 24"
 >
   <path

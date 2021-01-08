@@ -26,6 +26,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
             className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
             data-shrink={true}
             htmlFor="status-selector"
+            id="status-selector-label"
           >
             Status
           </label>
@@ -34,28 +35,33 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
             onClick={[Function]}
           >
             <div
-              aria-haspopup="true"
-              aria-pressed="false"
-              className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input status-select-field-text MuiInputBase-inputSelect"
+              aria-haspopup="listbox"
+              aria-labelledby="status-selector-label status-selector"
+              className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input status-select-field-text"
+              id="status-selector"
               onBlur={[Function]}
-              onClick={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}
+              onMouseDown={[Function]}
               role="button"
               tabIndex={0}
             >
               All
             </div>
             <input
-              id="status-selector"
-              type="hidden"
+              aria-hidden={true}
+              autoFocus={false}
+              className="MuiSelect-nativeInput"
+              onAnimationStart={[Function]}
+              onChange={[Function]}
+              required={false}
+              tabIndex={-1}
               value="All"
             />
             <svg
-              aria-hidden="true"
+              aria-hidden={true}
               className="MuiSvgIcon-root MuiSelect-icon"
               focusable="false"
-              role="presentation"
               viewBox="0 0 24 24"
             >
               <path
@@ -74,7 +80,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           <button
             aria-describedby={null}
             aria-label="Checklist History"
-            className="MuiButtonBase-root MuiFab-root ChecklistHistory-custom-75 MuiFab-secondary"
+            className="MuiButtonBase-root MuiFab-root ChecklistHistory-custom-3 MuiFab-secondary"
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
@@ -102,10 +108,9 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
               className="MuiFab-label"
             >
               <svg
-                aria-hidden="true"
+                aria-hidden={true}
                 className="MuiSvgIcon-root"
                 focusable="false"
-                role="presentation"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -127,10 +132,9 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
         tabIndex={0}
       >
         <svg
-          aria-hidden="true"
+          aria-hidden={true}
           className="MuiSvgIcon-root"
           focusable="false"
-          role="presentation"
           viewBox="0 0 24 24"
         >
           <path

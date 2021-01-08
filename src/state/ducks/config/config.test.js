@@ -12,6 +12,11 @@ import {
   SET_FEATURES,
 } from './types';
 
+
+import {
+  TOGGLE_AZURE_SEARCH,
+} from '../stager/types';
+
 describe('Config actions', () => {
   it('should trigger the POWERBI_CONSTANTS action', () => {
     const response = fetchPowerBIConfig();
@@ -101,6 +106,11 @@ describe('Config actions', () => {
     const saga = cloneableGenerator(TestExports.fetchFeatureConfig)(payload);
     it('should call config service', () => {
       expect(saga.next().value).toEqual(call(Api.callGet, 'api/config'));
+    });
+    it('toggle azure search', () => {
+      expect(saga.next(payload).value).toEqual(put({
+        type: TOGGLE_AZURE_SEARCH,
+      }));
     });
     it('should update features state', () => {
       expect(saga.next(payload).value).toEqual(put({

@@ -93,6 +93,10 @@ function* fetchDashboardData(data) {
     });
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
     const azureSearchToggle = yield select(selectors.getAzureSearchToggle);
+    const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
+    const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
+    const fromDate = new Date(fromDateMoment).toISOString();
+    const toDate = new Date(toDateMoment).toISOString();
     let requestPayload = {};
     if (azureSearchToggle) {
       requestPayload = {
@@ -103,6 +107,8 @@ function* fetchDashboardData(data) {
         orderby,
         orderType,
         filter,
+        fromDate,
+        toDate,
         azureSearchToggle,
       };
     } else {

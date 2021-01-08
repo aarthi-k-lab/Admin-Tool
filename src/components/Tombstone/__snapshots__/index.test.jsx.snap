@@ -5,10 +5,9 @@ exports[`<TombstoneError /> snapshot test 1`] = `
   className="components-Tombstone-TombstoneLoader__tombstone-loader"
 >
   <svg
-    aria-hidden="true"
+    aria-hidden={true}
     className="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge"
     focusable="false"
-    role="presentation"
     viewBox="0 0 24 24"
   >
     <path

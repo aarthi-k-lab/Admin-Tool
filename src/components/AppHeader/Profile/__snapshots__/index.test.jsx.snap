@@ -2,7 +2,7 @@
 
 exports[`<Profile /> snapshot test 1`] = `
 <div
-  className="MuiPaper-root MuiPaper-elevation2 components-AppHeader-Profile-Profile__container MuiPaper-rounded"
+  className="MuiPaper-root components-AppHeader-Profile-Profile__container MuiPaper-elevation2 MuiPaper-rounded"
   tabIndex={-1}
 >
   <div
