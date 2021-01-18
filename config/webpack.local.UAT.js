@@ -89,12 +89,12 @@ const config = merge(
             '^/api/workassign': '',
           },
         },
-        '/api/search-svc': {
-          target: 'https://uat.cmod.mrcooper.io/cmodsearchengine',
+        '/api/dataaggregator': {
+          target: 'https://uat.cmod.mrcooper.io/dataaggregator',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/search-svc': '',
+            '^/api/dataaggregator': '',
           },
         },
         '/api/userskills': {

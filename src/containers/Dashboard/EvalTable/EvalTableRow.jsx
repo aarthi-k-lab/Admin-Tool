@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
+import IconButton from '@material-ui/core/IconButton';
+import HistoryIcon from '@material-ui/icons/History';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
@@ -10,6 +12,7 @@ import EvalTableCell from './EvalTableCell';
 import RouteAccess from '../../../lib/RouteAccess';
 import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
+import './EvalTableCell.css';
 
 const showReject = row => ((row.original.pstatus === 'Active' && (row.original.pstatusReason === 'Rejection Pending' || row.original.pstatusReason === 'Trial Rejected')) || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended'));
 
@@ -27,15 +30,18 @@ const getEventName = (pstatusReason, pstatus, taskName) => {
 };
 
 class EvalTableRow extends React.PureComponent {
-  handleLinkClick = (value) => {
+  handleLinkClick = (event, value) => {
     const {
       row, searchLoanResult, onSelectReject, user, history,
+      onHistorySelect, setTombstoneDataForLoanView,
     } = this.props;
     const { loanNumber } = searchLoanResult;
     const payLoad = { loanNumber, ...row.original };
     if (value === 'Loan Activity') {
-      const { onSelectEval } = this.props;
-      onSelectEval(payLoad);
+      const { onGetGroupName } = this.props;
+      onGetGroupName('MA');
+      setTombstoneDataForLoanView({ ...payLoad, isSearch: true });
+      onHistorySelect(true);
     } else if (value === 'Booking') {
       const { onSelectEval, onGetGroupName } = this.props;
       this.redirectPath = '/special-loan';
@@ -84,6 +90,8 @@ class EvalTableRow extends React.PureComponent {
         || row.original.assignee === 'N/A')
     ) {
       styles = 'blackText';
+    } else if (row.column.Header === '') {
+      styles = row.original.sourceLabel === 'CMOD' ? 'cmod type' : 'remedy type';
     } else {
       styles = 'blackText pointer';
     }
@@ -130,16 +138,17 @@ class EvalTableRow extends React.PureComponent {
         cellData = <EvalTableCell styleProps={this.getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
         break;
       case 'HISTORY':
-        cellData = (
-          <EvalTableCell
-            click={() => this.handleLinkClick('Loan Activity')}
-            styleProps={this.getStyles(row)}
-            value="Loan Activity"
-          />
+        cellData = (row.original.sourceLabel !== 'REMEDY') && (
+          <IconButton onClick={event => this.handleLinkClick(event, 'Loan Activity')} styleName="history-icon">
+            <HistoryIcon />
+          </IconButton>
         );
         break;
       case 'ACTIONS':
         cellData = this.getAction(row);
+        break;
+      case 'EVAL ID':
+        cellData = <EvalTableCell styleProps={this.getStyles(row)} value={row.value === '0' ? '-' : row.value} />;
         break;
       default:
         cellData = <EvalTableCell styleProps={this.getStyles(row)} value={row.value} />;
@@ -155,6 +164,7 @@ class EvalTableRow extends React.PureComponent {
 EvalTableRow.propTypes = {
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   onGetGroupName: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   onSelectReject: PropTypes.func.isRequired,
   onSendToFEUW: PropTypes.func.isRequired,
@@ -167,6 +177,7 @@ EvalTableRow.propTypes = {
       evalId: PropTypes.string,
       milestone: PropTypes.string,
       piid: PropTypes.string,
+      sourceLabel: PropTypes.string,
       taskName: PropTypes.string,
       tstatus: PropTypes.string,
     }),
@@ -176,6 +187,7 @@ EvalTableRow.propTypes = {
     loanNumber: PropTypes.string.isRequired,
     valid: PropTypes.bool,
   })).isRequired,
+  setTombstoneDataForLoanView: PropTypes.func.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     userDetails: PropTypes.shape({
@@ -188,8 +200,10 @@ EvalTableRow.propTypes = {
 };
 const mapDispatchToProps = dispatch => ({
   onSelectEval: operations.onSelectEval(dispatch),
+  setTombstoneDataForLoanView: operations.setTombstoneDataForLoanView(dispatch),
   onSelectReject: operations.onSelectReject(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onHistorySelect: operations.onHistorySelect(dispatch),
   onSendToFEUW: operations.onSendToFEUW(dispatch),
 });
 
@@ -203,11 +217,12 @@ const TestHooks = {
   EvalTableRow,
 };
 
-const EvalTableRowContainer = connect(
+
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(EvalTableRow);
+)(withRouter(EvalTableRow));
 
-export default withRouter(EvalTableRowContainer);
-
-export { TestHooks };
+export {
+  TestHooks,
+};

@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders <Row /> when changeColor is false snapshot test 1`] = `
+<tr
+  className="MuiTableRow-root root "
+  onClick={[MockFunction]}
+  role={null}
+>
+  <th
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={1}
+    role="cell"
+    scope="row"
+  >
+    evalId
+  </th>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+  >
+    resolutionId
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+  >
+    status
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={2}
+  >
+    Invalid date
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={1}
+  >
+    subStatus
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={2}
+  >
+    Invalid date
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    onClick={[Function]}
+    style={
+      Object {
+        "color": "lightseagreen",
+        "whiteSpace": "nowrap",
+      }
+    }
+  >
+    Show History 
+  </td>
+</tr>
+`;
+
+exports[`renders <Row /> when changeColor is true snapshot test 1`] = `
+<tr
+  className="MuiTableRow-root root components-AdditionalInfo-Row__setBackground"
+  onClick={[MockFunction]}
+  role={null}
+>
+  <th
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={1}
+    role="cell"
+    scope="row"
+  >
+    evalId
+  </th>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+  >
+    resolutionId
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+  >
+    status
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={2}
+  >
+    Invalid date
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={1}
+  >
+    subStatus
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    colSpan={2}
+  >
+    Invalid date
+  </td>
+  <td
+    aria-sort={null}
+    className="MuiTableCell-root MuiTableCell-alignCenter"
+    onClick={[Function]}
+    style={
+      Object {
+        "color": "lightseagreen",
+        "whiteSpace": "nowrap",
+      }
+    }
+  >
+    Show History 
+  </td>
+</tr>
+`;

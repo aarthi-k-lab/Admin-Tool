@@ -7,6 +7,8 @@ import { reducers as stager } from './stager';
 import { reducers as notifs } from './notifications';
 import { reducers as tasksAndChecklist } from './tasks-and-checklist';
 import { reducers as comments } from './comments';
+import { reducers as milestoneActivity } from './milestone-activity';
+
 
 const rootReducer = combineReducers({
   appConfig,
@@ -17,6 +19,7 @@ const rootReducer = combineReducers({
   notifs,
   tasksAndChecklist,
   comments,
+  milestoneActivity,
 });
 
 export default rootReducer;

@@ -59,7 +59,7 @@ describe('renders <SlaHeader />', () => {
     expect(props.triggerFilterRules).toBeCalledTimes(2);
   });
   it('should call triggerSetSLAvalues on value change', () => {
-    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))').at(0).simulate('change', { target: { value: 'mock' } });
+    wrapper.find('WithStyles(ForwardRef(Select))').at(0).simulate('change', { target: { value: 'mock' } });
     expect(props.triggerSetSLAvalues).toBeCalledTimes(3);
   });
   it('should call closeSweetAlert  on sweetalert confirm', () => {

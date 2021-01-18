@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-closing-tag-location */
 import React from 'react';
 import ChatIcon from '@material-ui/icons/Chat';
+import HistoryIcon from '@material-ui/icons/History';
 import TrailButton from '@material-ui/icons/Email';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
@@ -13,7 +14,17 @@ const widgets = [
     component: <CommentsWidget />,
     show: true,
   },
-];
+  {
+    id: 'Additional Info',
+    icon: <img alt="Additional Info" src="/static/img/information.png" />,
+    show: true,
+  },
+  {
+    id: 'History',
+    icon: <HistoryIcon />,
+    show: true,
+  }];
+
 let loanActivityWidgets = {
   id: 'customCommunicationLetter',
   icon: <TrailButton />,
@@ -25,7 +36,29 @@ let bookingAutomationWidget = {
   icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
   show: true,
 };
+
+const searchLoanWidgets = [{
+  id: 'Comments',
+  icon: <ChatIcon />,
+  component: <CommentsWidget searchArea />,
+  show: true,
+},
+{
+  id: 'Additional Info',
+  icon: <img alt="Additional Info" src="/static/img/information.png" />,
+  show: true,
+}];
+
+const milestoneActivityWidgets = [{
+  id: 'Comments',
+  icon: <ChatIcon />,
+  component: <CommentsWidget />,
+  show: true,
+}];
+
+
 loanActivityWidgets = [loanActivityWidgets, ...widgets];
+
 function getWidgets() {
   return widgets;
 }
@@ -40,8 +73,18 @@ function getBookingAutomationWidget() {
   return bookingAutomationWidget;
 }
 
+function getSearchLoanWidget() {
+  return searchLoanWidgets;
+}
+
+function getMilestoneActivityWidgets() {
+  return milestoneActivityWidgets;
+}
+
 export {
   getWidgets,
   getLoanActivityWidgets,
   getBookingAutomationWidget,
+  getSearchLoanWidget,
+  getMilestoneActivityWidgets,
 };

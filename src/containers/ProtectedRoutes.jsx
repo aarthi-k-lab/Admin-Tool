@@ -33,6 +33,7 @@ import DocsInGoBack from './Dashboard/DocsInGoBack';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
 import CoviusBulkOrder from './Dashboard/Covius/CoviusBulkOrder';
 import Processor from './Dashboard/Processor/Processor';
+import MilestoneActivity from './LoanActivity/MilestoneActivity';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class ProtectedRoutes extends React.Component {
     this.renderBulkOrderPageRoute = this.renderBulkOrderPageRoute.bind(this);
     this.rendercoviusBulkOrderPageRoute = this.rendercoviusBulkOrderPageRoute.bind(this);
     this.renderBulkEvalInsertionPageRoute = this.renderBulkEvalInsertionPageRoute.bind(this);
+    this.renderMilestoneActivity = this.renderMilestoneActivity.bind(this);
   }
 
   componentDidMount() {
@@ -158,6 +160,18 @@ class ProtectedRoutes extends React.Component {
     return renderComponent;
   }
 
+  renderMilestoneActivity() {
+    const { items, loanNumber } = this.props;
+    const groups = this.getGroups();
+    let renderComponent = null;
+    if (RouteAccess.hasMilestoneActivityAccess(groups)) {
+      renderComponent = (items.length > 0 || loanNumber) ? <MilestoneActivity /> : <Redirect to="/" />;
+    } else {
+      renderComponent = <Redirect to="/unauthorized?error=MILESTONE_ACTIVITY_ACCESS_NEEDED" />;
+    }
+    return renderComponent;
+  }
+
   renderMoveForwardRoute() {
     const groups = this.getGroups();
     return (
@@ -254,6 +268,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/doc-gen-back" render={this.renderDocGenBackRoute} />
           <Route path="/docs-in-back" render={this.renderDocsInBackRoute} />
           <Route path="/doc-gen" render={this.renderDocGenChecklistRoute} />
+          <Route exact path="/milestone-activity" render={this.renderMilestoneActivity} />
           <Route exact path="/move-forward" render={this.renderMoveForwardRoute} />
           <Route path="/docs-in" render={this.renderDocsInMainRoute} />
           <Route path="/bulkOrder-page" render={this.renderBulkOrderPageRoute} />

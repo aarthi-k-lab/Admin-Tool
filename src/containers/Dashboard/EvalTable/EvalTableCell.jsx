@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
@@ -34,17 +33,6 @@ class EvalTableCell extends React.PureComponent {
     const { value, styleProps, disableSendToFEUW } = this.props;
     let renderCellValue = '';
     switch (value) {
-      case 'Loan Activity':
-        renderCellValue = (
-          <Link
-            onClick={this.handleLinkClick}
-            styleName="loanActivityLink"
-            to={this.route()}
-          >
-            {value}
-          </Link>
-        );
-        break;
       case 'Un-reject':
         renderCellValue = (
           <Tooltip
@@ -74,7 +62,7 @@ class EvalTableCell extends React.PureComponent {
       default:
         renderCellValue = (
           <span styleName={styleProps}>
-            {value}
+            {(value === 'CMOD' || value === 'REMEDY') ? <img alt="REMEDY" src={`/static/img/${value}.png`} /> : value}
           </span>
         );
     }

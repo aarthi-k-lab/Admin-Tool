@@ -7,6 +7,7 @@ import { combinedSaga as stagerSaga } from './stager/sagas';
 import { combinedSaga as notifSaga } from './notifications/sagas';
 import { combinedSaga as tasksAndChecklistSaga } from './tasks-and-checklist/sagas';
 import { combinedSaga as commentsSaga } from './comments/sagas';
+import { combinedSaga as milestoneActivitySaga } from './milestone-activity/sagas';
 
 
 export default function* rootSaga() {
@@ -19,5 +20,6 @@ export default function* rootSaga() {
     notifSaga(),
     tasksAndChecklistSaga(),
     commentsSaga(),
+    milestoneActivitySaga(),
   ]);
 }

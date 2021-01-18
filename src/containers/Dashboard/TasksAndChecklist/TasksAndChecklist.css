@@ -74,6 +74,16 @@
   grid-template-rows: minmax(0, 1fr) min-content min-content;
 }
 
+.tasks-and-checklist-loan-audit {
+  align-self: stretch;
+  display: flex;
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: minmax(0, 1fr) min-content min-content;
+}
+
 .instructions {
   align-self: center;
   grid-column: 1 / 3;

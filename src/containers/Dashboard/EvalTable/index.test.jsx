@@ -43,11 +43,11 @@ describe.only('Eval Table Cell ', () => {
         name: 'brent',
       },
     };
-    const styleProps = 'mock-style';
+    const styleProps = 'cmod';
     const click = jest.fn();
-    const wrapper = shallow(<EvalTableCell click={click} styleProps={styleProps} user={user} value="Loan Activity" />);
-    expect(wrapper.find('Link')).toHaveLength(1);
-    wrapper.find('Link').simulate('click');
+    const wrapper = shallow(<EvalTableCell click={click} styleProps={styleProps} user={user} value="Booking" />);
+    expect(wrapper.find('WithStyles(ForwardRef(IconButton))')).toHaveLength(1);
+    wrapper.find('WithStyles(ForwardRef(IconButton))').simulate('click');
     expect(click).toBeCalled();
   });
   it('should show Tooltip to Un-reject', () => {
@@ -62,7 +62,7 @@ describe.only('Eval Table Cell ', () => {
     const styleProps = 'mock-style';
     const click = jest.fn();
     const wrapper = shallow(<EvalTableCell click={click} styleProps={styleProps} user={user} value="Un-reject" />);
-    expect(wrapper.find('WithStyles(Tooltip)')).toHaveLength(1);
+    expect(wrapper.find('WithStyles(ForwardRef(Tooltip))')).toHaveLength(1);
     wrapper.find('WithStyles(ForwardRef(IconButton))').simulate('click');
     expect(click).toBeCalled();
   });

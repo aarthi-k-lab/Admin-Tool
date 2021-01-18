@@ -27,8 +27,27 @@
   position: fixed !important;
   overflow-x: hidden;
   overflow-y: hidden;
-  background: rgb(245, 245, 245);
+  background: rgb(242, 242, 242);
   right: 0;
   margin-bottom: 0;
   stroke: auto;
+  border-left: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+}
+
+.showAV {
+  width: 4.8rem;
+  height: calc(100% - 4.688rem);
+  overflow: auto;
+  position: fixed !important;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: rgb(242, 242, 242);
+  right: 0;
+  margin-bottom: 0;
+  margin-top: 6.2rem;
+  z-index: 100;
+  stroke: auto;
+  border-left: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
 }

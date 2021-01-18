@@ -21,3 +21,15 @@
 .title-row > :last-child {
   border-radius: 0;
 }
+
+.widgetTitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0rem 0rem 0rem 0.8rem;
+}
+
+.bookingWidget {
+  background-color: white;
+  padding: 0.8rem;
+}
+

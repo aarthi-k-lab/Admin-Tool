@@ -58,6 +58,11 @@ import {
   widgetClickAction,
   unassignWidgetLoan,
   widgetToggle,
+  additionalInfo,
+  evalSelectRow,
+  setAdditionalInfoSelected,
+  setHistorySelected,
+  setTombstoneData,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -120,6 +125,10 @@ const onSelectEval = dispatch => (payload) => {
   dispatch(clearFirstVisit());
   dispatch(clearDisposition());
   dispatch(selectEval(payload));
+};
+
+const setTombstoneDataForLoanView = dispatch => (payload) => {
+  dispatch(setTombstoneData(payload));
 };
 
 const onEndShift = dispatch => (type) => {
@@ -283,6 +292,22 @@ const onWidgetToggle = dispatch => (payload) => {
   dispatch(widgetToggle(payload));
 };
 
+const onAdditionalInfoClick = dispatch => (loanNumber) => {
+  dispatch(additionalInfo(loanNumber));
+};
+
+const onEvalRowSelect = dispatch => (evalId, index) => {
+  dispatch(evalSelectRow({ evalId, index }));
+};
+
+const onAdditionalInfoSelect = dispatch => (payload) => {
+  dispatch(setAdditionalInfoSelected(payload));
+};
+
+const onHistorySelect = dispatch => (payload) => {
+  dispatch(setHistorySelected(payload));
+};
+
 const operations = {
   onWidgetToggle,
   setCoviusIndex,
@@ -344,6 +369,11 @@ const operations = {
   populateEvents,
   onSendToFEUW,
   onWidgetClick,
+  onAdditionalInfoClick,
+  onEvalRowSelect,
+  onAdditionalInfoSelect,
+  onHistorySelect,
+  setTombstoneDataForLoanView,
 };
 
 export default operations;

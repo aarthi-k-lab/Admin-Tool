@@ -1,7 +1,11 @@
-import { loadCommentsAction, postCommentAction } from './actions';
+import { loadCommentsAction, postCommentAction, loadCommentsForEvalsAction } from './actions';
 
 const getComments = dispatch => request => dispatch(
   loadCommentsAction(request),
+);
+
+const getCommentsForEvals = dispatch => loanNumber => dispatch(
+  loadCommentsForEvalsAction(loanNumber),
 );
 
 const postComment = dispatch => comment => dispatch(
@@ -11,6 +15,7 @@ const postComment = dispatch => comment => dispatch(
 const operations = {
   getComments,
   postComment,
+  getCommentsForEvals,
 };
 
 export default operations;

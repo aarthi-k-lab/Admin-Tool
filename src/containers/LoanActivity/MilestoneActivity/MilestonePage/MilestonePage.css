@@ -1,0 +1,79 @@
+.columns-container {
+  align-items: flex-start;
+  background-color: var(--grey-200);
+  justify-content: flex-start;
+}
+
+.role-select-header {
+  height: 3rem;
+  background-color: #b1abab;
+  display: flex;
+  align-items: center;
+  padding-left: 2rem;
+}
+
+.role-header {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  padding-left: 2rem;
+}
+
+/* background-color: #b1abab; */
+.refresh-button.refresh-button {
+  margin-left: 0.5rem;
+}
+
+.scroll-area {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.page-header {
+  font-size: 1.3rem;
+  padding: 1rem 2rem;
+}
+
+.leftPanel {
+  background-color: white;
+  /* height: 100%; */
+  vertical-align: top;
+  /* align-self: stretch; */
+}
+
+.status-details-parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  height: 100%;
+  background-color: rgb(235,235,236);
+}
+
+.status-details {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  width: 100%;
+  margin: auto;
+}
+
+.loan-activity {
+  align-self: stretch;
+  height: 100%;
+}
+
+.process-status{
+  font-weight: bold;
+  color: rgb(55, 125, 158);
+}
+
+.postion {
+  position: fixed;
+}
+
+.centerpane {
+   width: 90%;
+} 

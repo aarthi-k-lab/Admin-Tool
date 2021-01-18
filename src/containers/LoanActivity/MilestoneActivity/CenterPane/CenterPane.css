@@ -1,0 +1,29 @@
+.tablealign{
+    margin-left: 3rem;
+}
+
+.taskDetails{
+    margin-bottom: 3rem;
+}
+
+.taskPerformed {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    color: rgb(208, 210, 211)
+}
+
+.taskPerformedstats {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    color: rgb(51, 54, 69)
+
+}
+
+.divider {
+    margin-top: 3rem;
+}
+
+.container {
+    max-height: 31rem !important;
+    border-bottom: 0 !important;
+}

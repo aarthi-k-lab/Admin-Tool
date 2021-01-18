@@ -37,7 +37,7 @@ describe('renders <CoviusBulkOrder />', () => {
   });
 
   it('renders reset button', () => {
-    const element = wrapper.find('WithStyles(WithFormControlContext(ForwardRef(FormLabel)))');
+    const element = wrapper.find('WithStyles(ForwardRef(FormLabel))');
     expect(element.text()).toBe('RESET');
     expect(wrapperState.isResetDisabled).toBe(true);
   });
@@ -54,7 +54,7 @@ describe('renders <CoviusBulkOrder />', () => {
   });
 
   it('should call onResetCoviusData on eventCategoryChange', () => {
-    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(Select)))').at(0).simulate('change', { target: { value: 'mock' } });
+    wrapper.find('WithStyles(ForwardRef(Select))').at(0).simulate('change', { target: { value: 'mock' } });
     expect(onResetCoviusData).toBeCalled();
   });
   it('should call handleCaseChange on TextField Change', () => {

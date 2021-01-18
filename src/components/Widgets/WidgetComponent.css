@@ -4,6 +4,23 @@
   overflow: auto;
 }
 
+.right-app-bar-comment {
+  width: 4.8rem;
+  height: calc(100% - 4.688rem);
+  overflow: auto;
+  position: fixed !important;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: rgb(242, 242, 242);
+  right: 0;
+  margin-bottom: 0;
+  margin-top: 8rem;
+  z-index: 100;
+  stroke: auto;
+  border-left: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+}
+
 .right-app-bar {
   margin-bottom: 0;
   overflow: auto;
@@ -13,6 +30,21 @@
   display: inline-flex;
   right: 4.9rem;
   width: 32rem;
+  height: calc(100% - 4.688rem);
+  position: fixed !important;
+}
+
+.right-app-bar-search {
+  z-index: 100;
+  margin-bottom: 0;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: white;
+  display: inline-flex;
+  right: 4.9rem;
+  width: 32rem;
+  margin-top: 6.2rem;
   height: calc(100% - 4.688rem);
   position: fixed !important;
 }

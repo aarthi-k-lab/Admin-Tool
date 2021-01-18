@@ -10,13 +10,17 @@ import { selectors, operations } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
+import AdditionalInfo from 'containers/AdditionalInfo';
+import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
+import widgets from '../../../constants/widget';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import './DocsInGoBack.css';
 
 class DocsInGoBack extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.handleAIChange = this.handleAIChange.bind(this);
     const { onCleanResult } = props;
     onCleanResult();
   }
@@ -51,8 +55,25 @@ class DocsInGoBack extends React.PureComponent {
     }
   }
 
+  handleAIChange = (value, widgetId) => {
+    const {
+      onAdditionalInfoSelect, isAdditionalInfoOpen, isHistoryOpen,
+      onHistorySelect, onAdditionalInfo, LoanNumber,
+    } = this.props;
+    if (R.equals(widgetId, widgets.additionalInfo)) {
+      onAdditionalInfoSelect(!isAdditionalInfoOpen);
+      onHistorySelect(false);
+      if (!isAdditionalInfoOpen) onAdditionalInfo(LoanNumber);
+    } else if (R.equals(widgetId, widgets.history)) {
+      onHistorySelect(!isHistoryOpen);
+      onAdditionalInfoSelect(false);
+    }
+  }
+
   render() {
-    const { inProgress, user } = this.props;
+    const {
+      inProgress, user, isAdditionalInfoOpen, isHistoryOpen,
+    } = this.props;
     const showButton = user.groupList.includes('docsin-mgr');
     const title = 'Send Back Docs In';
     const { resultOperation } = this.props;
@@ -70,7 +91,17 @@ class DocsInGoBack extends React.PureComponent {
           />
         </ContentHeader>
         <Tombstone />
-        <WidgetBuilder />
+        {isAdditionalInfoOpen && (
+          <div styleName="bookingWidget">
+            <span styleName="widgetTitle">
+              ADDITIONAL INFO
+            </span>
+          </div>
+        )
+        }
+        <WidgetBuilder triggerAI={this.handleAIChange} />
+        { isAdditionalInfoOpen && <AdditionalInfo />}
+        { isHistoryOpen && <MilestoneActivity />}
         <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
           {(resultOperation && resultOperation.status)
             ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
@@ -84,11 +115,13 @@ class DocsInGoBack extends React.PureComponent {
 
 DocsInGoBack.defaultProps = {
   inProgress: false,
+  isAdditionalInfoOpen: false,
   resultOperation: { level: '', status: '' },
   AppName: 'CMOD',
   ProcIdType: 'ProcessId',
   groupName: 'DOCS_IN_BACK',
   onCleanResult: () => {},
+  isHistoryOpen: false,
   // location: {
   //   pathname: '',
   // },
@@ -100,11 +133,16 @@ DocsInGoBack.propTypes = {
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
-  LoanNumber: PropTypes.number.isRequired,
+  isAdditionalInfoOpen: PropTypes.bool,
   // location: PropTypes.shape({
   //   pathname: PropTypes.string,
   // }),
+  isHistoryOpen: PropTypes.bool,
+  LoanNumber: PropTypes.number.isRequired,
+  onAdditionalInfo: PropTypes.func.isRequired,
+  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onCleanResult: PropTypes.func,
+  onHistorySelect: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
   ProcIdType: PropTypes.string,
   resultOperation: PropTypes.shape({
@@ -132,10 +170,15 @@ const mapStateToProps = state => ({
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
   resultOperation: selectors.resultOperation(state),
+  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
+  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
+  onAdditionalInfo: operations.onAdditionalInfoClick(dispatch),
+  onAdditionalInfoSelect: operations.onAdditionalInfoSelect(dispatch),
+  onHistorySelect: operations.onHistorySelect(dispatch),
 });
 
 const DocsInGoBackContainer = connect(mapStateToProps, mapDispatchToProps)(DocsInGoBack);

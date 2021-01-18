@@ -64,7 +64,7 @@ class EvaluationPage extends React.PureComponent {
   render() {
     const {
       location, group, taskName, checklisttTemplateName, stagerTaskName,
-      userNotification, isAutoDisposition,
+      userNotification, isAutoDisposition, isHistoryOpen,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -88,9 +88,11 @@ class EvaluationPage extends React.PureComponent {
             : ''
           }
         </div>
-        <FullHeightColumn styleName="columns-container">
-          {this.renderDashboard()}
-        </FullHeightColumn>
+        {isHistoryOpen ? this.renderDashboard() : (
+          <FullHeightColumn styleName="columns-container">
+            {this.renderDashboard()}
+          </FullHeightColumn>
+        )}
       </>
     );
   }
@@ -110,6 +112,7 @@ EvaluationPage.propTypes = {
   group: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   isAutoDisposition: PropTypes.bool.isRequired,
+  isHistoryOpen: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -143,6 +146,7 @@ const mapStateToProps = state => ({
   userNotification: selectors.userNotification(state),
   processName: selectors.processName(state),
   taskStatus: selectors.taskStatus(state),
+  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({

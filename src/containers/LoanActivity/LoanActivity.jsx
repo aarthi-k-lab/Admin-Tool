@@ -20,8 +20,6 @@ class LoanActivity extends React.PureComponent {
   componentWillMount() {
     const { loadTrials } = this.props;
     const { evalId } = this.props;
-    // const evalId = 1912245;
-    // const evalId = 56629;
     this.setState({ isOpen: true });
     if (evalId) {
       loadTrials(evalId);

@@ -62,6 +62,11 @@ import {
   UNASSIGN_WIDGET_LOAN,
   TOGGLE_WIDGET,
   SET_PAYMENT_DEFERRAL,
+  ADDITIONAL_INFO_CLICK,
+  EVAL_ROW_CLICK,
+  SET_ADDITIONAL_INFO_SELECTED,
+  SET_HISTORY_SELECTED,
+  SET_TOMBSTONE_DATA_FOR_LOANVIEW,
 } from './types';
 
 
@@ -103,6 +108,11 @@ const getNext = payload => ({
 
 const selectEval = payload => ({
   type: SEARCH_SELECT_EVAL,
+  payload,
+});
+
+const setTombstoneData = payload => ({
+  type: SET_TOMBSTONE_DATA_FOR_LOANVIEW,
   payload,
 });
 
@@ -354,6 +364,26 @@ const setPaymentDeferral = payload => ({
   payload,
 });
 
+const additionalInfo = loanNumber => ({
+  type: ADDITIONAL_INFO_CLICK,
+  payload: loanNumber,
+});
+
+const evalSelectRow = payload => ({
+  type: EVAL_ROW_CLICK,
+  payload,
+});
+
+const setAdditionalInfoSelected = payload => ({
+  type: SET_ADDITIONAL_INFO_SELECTED,
+  payload,
+});
+
+const setHistorySelected = payload => ({
+  type: SET_HISTORY_SELECTED,
+  payload,
+});
+
 export {
   setPaymentDeferral,
   widgetToggle,
@@ -375,6 +405,7 @@ export {
   onExpandView,
   searchLoan,
   selectEval,
+  setTombstoneData,
   selectProcessId,
   unassignLoan,
   assignLoan,
@@ -417,4 +448,8 @@ export {
   populateEventsDropdown,
   sendToFEUW,
   widgetClickAction,
+  additionalInfo,
+  evalSelectRow,
+  setAdditionalInfoSelected,
+  setHistorySelected,
 };

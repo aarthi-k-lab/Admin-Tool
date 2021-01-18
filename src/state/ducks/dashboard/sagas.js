@@ -22,7 +22,10 @@ import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import processExcel from '../../../lib/excelParser';
-import { POST_COMMENT_SAGA } from '../comments/types';
+import {
+  GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
+}
+  from '../comments/types';
 import selectors from './selectors';
 // import { mockData } from '../../../containers/LoanActivity/LoanActivity';
 import {
@@ -113,6 +116,13 @@ import {
   TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
+  EVAL_CASE_DETAILS,
+  ADDITIONAL_INFO_CLICK,
+  EVAL_ROW_CLICK,
+  SET_CASE_DETAILS,
+  SET_EVAL_INDEX,
+  SET_TOMBSTONE_DATA_FOR_LOANVIEW,
+  SAVE_EVAL_LOANVIEW,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -183,6 +193,77 @@ function* watchAutoSave() {
   yield takeEvery(AUTO_SAVE_OPERATIONS, autoSaveOnClose);
 }
 
+const fetchEvalComments = function* fetchEvalComments(action) {
+  const { evalId } = R.propOr('', 'payload', action);
+  yield put(commentsActions.loadCommentsForEvalsAction({ evalId }));
+};
+
+const fetchCaseDetails = function* fetchCaseDetails(action) {
+  const { evalId, index } = R.propOr('', 'payload', action);
+  let caseHistoryResponse = [];
+  try {
+    const searchLoanResult = yield select(selectors.searchLoanResult);
+    const loanId = yield select(selectors.loanNumber);
+    const loanNumber = R.isEmpty(searchLoanResult) ? loanId : searchLoanResult.loanNumber;
+    const cases = yield call(Api.callPost, `/api/tkams/getEvalDetails/${loanNumber}/${evalId}`, {});
+    if (cases != null) {
+      caseHistoryResponse = cases.map((item) => {
+        const obj = item;
+        obj.cardHistoryDetails = !R.isNil(item.cardHistoryDetails)
+          ? JSON.parse(item.cardHistoryDetails) : [];
+        obj.cardDetails = !R.isNil(item.cardDetails) ? JSON.parse(item.cardDetails) : [];
+        return obj;
+      });
+      yield put({
+        type: SET_CASE_DETAILS,
+        payload: caseHistoryResponse,
+      });
+      yield call(fetchEvalComments, action);
+      yield put({
+        type: SET_EVAL_INDEX,
+        payload: index,
+      });
+    }
+  } catch (ex) {
+    yield put({
+      type: SET_CASE_DETAILS,
+      payload: caseHistoryResponse,
+    });
+  }
+};
+
+function* fetchEvalCaseDetails(payload) {
+  const loanNumber = R.propOr('', 'payload', payload);
+  let evalHistoryResponse = [];
+  try {
+    const evals = yield call(Api.callPost, `/api/tkams/getEvalDetails/${loanNumber}`, {});
+    if (evals != null) {
+      evalHistoryResponse = evals.map((item) => {
+        const obj = item;
+        obj.evalHistory = !R.isNil(item.evalHistory) ? JSON.parse(item.evalHistory) : [];
+        return obj;
+      });
+      yield put({
+        type: EVAL_CASE_DETAILS,
+        payload: evalHistoryResponse,
+      });
+      const response = R.head(evalHistoryResponse);
+      const action = {
+        payload: {
+          evalId: response.evalId,
+          index: 0,
+        },
+      };
+      yield call(fetchCaseDetails, action);
+    }
+  } catch (ex) {
+    yield put({
+      type: EVAL_CASE_DETAILS,
+      payload: evalHistoryResponse,
+    });
+  }
+}
+
 const searchLoan = function* searchLoan(loanNumber) {
   const searchLoanNumber = R.propOr({}, 'payload', loanNumber);
   const wasSearched = yield select(selectors.wasSearched);
@@ -193,11 +274,15 @@ const searchLoan = function* searchLoan(loanNumber) {
   }
   if (!wasSearched) {
     try {
-      const response = yield call(Api.callGet, `/api/search-svc/search/loan/${searchLoanNumber}`, {});
+      const response = yield call(Api.callGet, `/api/dataaggregator/search/loan/${searchLoanNumber}`, {});
       if (response !== null) {
         yield put({
           type: SEARCH_LOAN_RESULT,
           payload: response,
+        });
+        yield put({
+          type: GET_EVALCOMMENTS_SAGA,
+          payload: { loanNumber: searchLoanNumber },
         });
       } else {
         yield put({
@@ -457,6 +542,42 @@ function* selectEval(searchItem) {
   }
 }
 
+function* setTombstoneDataForLoanview(searchItem) {
+  const evalDetails = R.propOr({}, 'payload', searchItem);
+  const { taskId: bookingTaskId } = evalDetails;
+  yield put({ type: SAVE_TASKID, payload: bookingTaskId });
+  yield put(resetChecklistData());
+  const user = yield select(loginSelectors.getUser);
+  const { userDetails } = user;
+  const appGroupName = yield select(selectors.groupName);
+  evalDetails.assignee = evalDetails.assignee === 'In Queue' ? null : evalDetails.assignee;
+  evalDetails.isAssigned = false;
+  let assignedTo = userDetails.email ? userDetails.email.toLowerCase().split('@')[0].split('.').join(' ') : null;
+  if (appGroupName === DashboardModel.BOOKING && evalDetails.piid != null) {
+    const taskId = `${evalDetails.loanNumber}_${evalDetails.evalId}`;
+    const assignmentData = yield call(Api.callGet, `/api/dataservice/api/taskInfo/${taskId}`);
+    if (assignmentData && assignmentData.wfTaskId) {
+      const { assignedTo: assignee, taskStatus } = assignmentData;
+      evalDetails.assignee = taskStatus === 'Assigned' || taskStatus === 'Paused' ? assignee : null;
+      evalDetails.taskStatus = taskStatus;
+      assignedTo = userDetails.email;
+    } else {
+      evalDetails.assignee = null;
+    }
+    evalDetails.taskId = taskId;
+  }
+  evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
+    && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
+
+  yield put({ type: SAVE_EVAL_LOANVIEW, payload: evalDetails });
+  try {
+    yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber,
+      evalDetails.taskName, evalDetails.taskId));
+  } catch (e) {
+    yield put({ type: HIDE_LOADER });
+  }
+}
+
 function* handleWidget() {
   try {
     yield put({ type: SHOW_LOADER });
@@ -549,6 +670,10 @@ function* handleWidget() {
 
 function* watchTombstoneLoan() {
   yield takeEvery(SEARCH_SELECT_EVAL, selectEval);
+}
+
+function* watchLoanviewTombstoneData() {
+  yield takeEvery(SET_TOMBSTONE_DATA_FOR_LOANVIEW, setTombstoneDataForLoanview);
 }
 
 const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
@@ -1998,6 +2123,14 @@ function* watchUnassignWidgetLoan() {
   yield takeEvery(UNASSIGN_WIDGET_LOAN, unassignWidgetLoan);
 }
 
+function* watchAdditionalInfo() {
+  yield takeEvery(ADDITIONAL_INFO_CLICK, fetchEvalCaseDetails);
+}
+
+function* watchEvalRowSelect() {
+  yield takeEvery(EVAL_ROW_CLICK, fetchCaseDetails);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -2053,6 +2186,7 @@ export const TestExports = {
   watchPopulateEventsDropDown,
   watchOnDownloadFile,
   handleWidget,
+  watchLoanviewTombstoneData,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -2089,5 +2223,8 @@ export const combinedSaga = function* combinedSaga() {
     watchOnDownloadFile(),
     watchPopulateEventsDropDown(),
     watchOnWidgetClick(),
+    watchAdditionalInfo(),
+    watchEvalRowSelect(),
+    watchLoanviewTombstoneData(),
   ]);
 };

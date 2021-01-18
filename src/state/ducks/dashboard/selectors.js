@@ -65,6 +65,9 @@ const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeRe
 const disableSendToFEUW = state => R.pathOr(false, ['dashboard', 'disableSendToFEUW'], state);
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
+const isAdditionalInfoOpen = state => R.pathOr(false, ['dashboard', 'isAdditionalInfoOpen'], state);
+const isHistoryOpen = state => R.pathOr(false, ['dashboard', 'isHistoryOpen'], state);
+
 const enableGetNext = state => (
   ((isFirstVisit(state)
     || R.pathOr(false, ['dashboard', 'getNextResponse', 'enableGetNext'], state))
@@ -131,7 +134,7 @@ const getCoviusTabIndex = state => R.pathOr(0, ['dashboard', 'coviusTabIndex'], 
 const getDisablePushData = state => R.pathOr(false, ['dashboard', 'disablePushData'], state);
 
 const getWidgetLoan = state => R.pathOr({}, ['dashboard', 'widgetLoan'], state);
-
+const getEvalCaseDetails = state => R.pathOr([], ['dashboard', 'evalCaseDetails'], state);
 const getRootTaskId = R.pathOr('', ['dashboard', 'rootTaskId']);
 const getSelectedChecklistId = state => R.pathOr('', ['dashboard', 'selectedChecklistId'], state);
 const getProcessId = R.pathOr(null, ['dashboard', 'processId']);
@@ -142,6 +145,11 @@ const getAssigntomeBtnStats = R.pathOr(false, ['dashboard', 'disableAssigntomeBt
 
 
 const getIsPaymentDeferral = R.pathOr(false, ['dashboard', 'isPaymentDeferral']);
+
+const getCaseDetails = R.pathOr([], ['dashboard', 'caseDetails']);
+
+const getEvalIndex = state => R.pathOr(0, ['dashboard', 'evalIndex'], state);
+
 
 const selectors = {
   getIsPaymentDeferral,
@@ -221,6 +229,11 @@ const selectors = {
   disableSendToFEUW,
   getDisablePushData,
   getAssigntomeBtnStats,
+  getEvalCaseDetails,
+  getCaseDetails,
+  getEvalIndex,
+  isAdditionalInfoOpen,
+  isHistoryOpen,
 };
 
 export default selectors;

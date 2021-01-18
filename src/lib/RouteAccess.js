@@ -118,6 +118,12 @@ const trial = {
 };
 
 const FEUW_MANAGER = 'feuw-mgr';
+const milestoneActivity = {
+  path: '/milestone-activity',
+  name: 'milestone-activity',
+  img: '/static/img/loan-activity.svg',
+  groups: ['allaccess', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
+};
 
 const links = [
   managerDashboard,
@@ -135,9 +141,11 @@ const links = [
   coviusBulkOrderPage,
   BOOKING,
   COVIUS,
+  milestoneActivity,
 ];
 
-const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back', '/coviusBulkOrder'];
+
+const noIcons = ['/loan-activity', '/doc-gen-back', '/bulkOrder-page', '/docs-in-back', '/coviusBulkOrder', '/milestone-activity'];
 
 function hasGroup(requiredGroups, userGroups, notInGroup) {
   if (!R.is(Array, userGroups)) {
@@ -172,6 +180,10 @@ function hasChecklistAccess(groups) {
 
 function hasLoanActivityAccess(groups) {
   return hasGroup(loanActivity.groups, groups);
+}
+
+function hasMilestoneActivityAccess(groups) {
+  return hasGroup(milestoneActivity.groups, groups);
 }
 
 function hasDocProcessorAccess(groups) {
@@ -252,4 +264,5 @@ module.exports = {
   hasCoviusAccess,
   getStagerGroup,
   hasFrontEndManagerAccess,
+  hasMilestoneActivityAccess,
 };

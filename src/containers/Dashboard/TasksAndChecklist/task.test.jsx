@@ -23,6 +23,9 @@ describe('<TasksAndChecklist />', () => {
   const onUnassignBookingLoan = jest.fn();
   const putComputeRulesPassed = jest.fn();
   const setHomepageVisible = jest.fn();
+  const onHistorySelect = jest.fn();
+  const onAdditionalInfoSelect = jest.fn();
+  const onNext = jest.fn();
   const noTasksFoundMessage = 'No tasks assigned.Please contact your manager';
   const getNextErrorMessage = 'Get Next error';
   const taskFetchErrorMessage = 'Task Fetch Failed.Please try again Later';
@@ -38,9 +41,12 @@ describe('<TasksAndChecklist />', () => {
     isAssigned,
     message,
     groupName: 'DOCSIN',
+    onHistorySelect,
     onWidgetClick,
     onWidgetToggle,
+    onAdditionalInfoSelect,
     setHomepageVisible,
+    onNext,
     toggleWidget: false,
   };
 
@@ -110,6 +116,8 @@ describe('<TasksAndChecklist />', () => {
         groupName="DOCSIN"
         handleClearSubTask={handleClearSubTask}
         message={userNotificationMessage}
+        onAdditionalInfoSelect={onAdditionalInfoSelect}
+        onHistorySelect={onHistorySelect}
         onUnassignBookingLoan={onUnassignBookingLoan}
         onWidgetClick={onWidgetClick}
         onWidgetToggle={onWidgetToggle}
@@ -151,14 +159,15 @@ describe('<TasksAndChecklist />', () => {
     expect(onWidgetClick).not.toBeCalled();
 
     jest.clearAllMocks();
+    wrapper.instance().componentDidMount();
+    expect(onWidgetToggle).toBeCalledWith(true);
+
+    jest.clearAllMocks();
+    wrapper.setProps({ groupName: 'DOCSIN' });
     wrapper.setProps({ toggleWidget: true });
     wrapper.find(Checklist).prop('onCompleteMyReviewClick')();
     expect(onWidgetToggle).toBeCalledWith(false);
     expect(onUnassignBookingLoan).toBeCalled();
-
-    jest.clearAllMocks();
-    wrapper.instance().componentDidMount();
-    expect(onWidgetToggle).toBeCalledWith(true);
 
     jest.clearAllMocks();
     wrapper.setProps({ groupName: 'DOCSIN' });
@@ -249,7 +258,6 @@ describe('<TasksAndChecklist />', () => {
       type: 'do-not-display',
       msg: null,
     };
-    const onNext = jest.fn();
     const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
@@ -269,7 +277,6 @@ describe('<TasksAndChecklist />', () => {
     wrapper.setProps({ disableNext: false, onNext });
     document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }));
     document.dispatchEvent(new KeyboardEvent('keyup', { keyCode: 39 }));
-    expect(onNext).toBeCalled();
 
     document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }));
     document.dispatchEvent(new KeyboardEvent('keyup', { keyCode: 37 }));

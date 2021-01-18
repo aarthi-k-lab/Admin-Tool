@@ -2,14 +2,14 @@
   width: 4.8rem;
   height: 4rem;
   cursor: pointer;
-  background: #ccced0;
+  background: #d7d8d9;
 }
 
 .component-not-selected {
   width: 4.8rem;
   height: 4rem;
   cursor: pointer;
-  background: rgb(245, 245, 245);
+  background:  rgb(242, 242, 242);
 }
 
 .icon-component {

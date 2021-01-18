@@ -27,6 +27,24 @@
   padding: 0px 0px 0px 0px;
 }
 
+.history-icon {
+  padding: 0px !important;
+}
+
+.remedy {
+  margin-right: 0rem;
+}
+
+.cmod {
+  margin-right: 0rem;
+}
+
+.type {
+  color: #fafafa;
+  border-radius: 0.5rem;
+  padding: 0.3rem;
+}
+
 .tooltip.tooltip {
   font-size: 0.8rem;
 }

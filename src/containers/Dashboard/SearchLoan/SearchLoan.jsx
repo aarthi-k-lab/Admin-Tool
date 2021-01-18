@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import Loader from 'components/Loader/Loader';
 import * as R from 'ramda';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
 import EndShift from 'models/EndShift';
 import DashboardModel from 'models/Dashboard';
@@ -19,6 +19,12 @@ import { EvalTableRow } from '../EvalTable';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../../state/ducks/tasks-and-checklist';
 import './SearchLoan.css';
+import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
+import AdditionalInfo from '../../AdditionalInfo/AdditionalInfo';
+import GoBackToSearch from '../../../components/GoBackToSearch/GoBackToSearch';
+import widgets from '../../../constants/widget';
+import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
+
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
@@ -35,7 +41,6 @@ class SearchLoan extends React.PureComponent {
     this.validateLoanNumber = this.validateLoanNumber.bind(this);
     this.getLoanActivityPath = this.getLoanActivityPath.bind(this);
   }
-
 
   componentDidMount() {
     const {
@@ -59,6 +64,12 @@ class SearchLoan extends React.PureComponent {
     }
   }
 
+  getMilestoneActivityPath() {
+    const { user } = this.props;
+    const groups = user && user.groupList;
+    return RouteAccess.hasMilestoneActivityAccess(groups) ? '/milestone-activity' : '/';
+  }
+
   getLoanActivityPath() {
     const { user } = this.props;
     const groups = user && user.groupList;
@@ -77,9 +88,21 @@ class SearchLoan extends React.PureComponent {
     closeSweetAlert();
   }
 
-  handleBackButton() {
-    const { onEndShift } = this.props;
-    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+  goToSearchResults = () => {
+    const { onAdditionalInfoSelect, onHistorySelect } = this.props;
+    onAdditionalInfoSelect(false);
+    onHistorySelect(false);
+  }
+
+  handleAIChange = (value, widgetId) => {
+    const {
+      onAdditionalInfoSelect, isAdditionalInfoOpen, onAdditionalInfo, searchLoanResult,
+    } = this.props;
+    const { loanNumber } = searchLoanResult;
+    if (R.equals(widgetId, widgets.additionalInfo)) {
+      onAdditionalInfoSelect(!isAdditionalInfoOpen);
+      if (!isAdditionalInfoOpen) onAdditionalInfo(loanNumber);
+    }
   }
 
   handleRowClick(payload, rowInfo) {
@@ -153,13 +176,16 @@ class SearchLoan extends React.PureComponent {
     }
   }
 
+  handleBackButton() {
+    const { onEndShift } = this.props;
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+  }
+
   validateLoanNumber() {
     const { searchLoanResult } = this.props;
-    // const loanNumber = this.getParamsValue();
     return R.isEmpty(searchLoanResult)
       || (searchLoanResult
         && searchLoanResult.loanNumber);
-    // && loanNumber !== searchLoanResult.loanNumber.toString()
   }
 
   renderRejectResults() {
@@ -221,11 +247,17 @@ class SearchLoan extends React.PureComponent {
                 className="-striped -highlight"
                 columns={SearchLoan.COLUMN_DATA}
                 data={data}
-                getPaginationProps={() => ({ style: { height: '30px' } })}
                 getTdProps={(state, rowInfo, column) => ({
-                  onClick: () => {
+                  onClick: (event) => {
                     const payload = { loanNumber, ...rowInfo.original, isSearch: true };
-                    this.handleRowClick(payload, column);
+                    if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
+                      event.stopPropagation();
+                    } else {
+                      this.handleRowClick(payload, column);
+                    }
+                  },
+                  style: {
+                    height: '3rem',
                   },
                 })}
                 getTheadThProps={() => ({
@@ -234,7 +266,7 @@ class SearchLoan extends React.PureComponent {
                   },
                 })}
                 minRows={20}
-                styleName="evalTable"
+                style={{ marginRight: '4rem', overflow: 'hidden' }}
               />
             </div>
           </div>
@@ -244,6 +276,7 @@ class SearchLoan extends React.PureComponent {
     }
     return null;
   }
+
 
   renderAlert = () => {
     const { resultOperation } = this.props;
@@ -261,18 +294,61 @@ class SearchLoan extends React.PureComponent {
   };
 
   render() {
+    const {
+      searchLoanResult, history, location, isAdditionalInfoOpen, isHistoryOpen,
+    } = this.props;
+    const data = [];
+    const {
+      loanNumber, unAssigned, assigned, valid,
+    } = searchLoanResult;
+    if (valid) {
+      if (unAssigned) {
+        data.push(...unAssigned);
+      }
+      if (assigned) {
+        data.push(...assigned);
+      }
+    }
+
     return (
       <>
-        <span styleName="backButton"><Link onClick={this.handleBackButton} to="/">&lt; BACK</Link></span>
-        {this.renderRejectResults()}
-        {this.renderSearchResults()}
-        {this.renderAlert()}
+        {!R.isEmpty(searchLoanResult) && !isHistoryOpen && <WidgetBuilder inSearchPage triggerAI={this.handleAIChange} type="search" />}
+        {((isAdditionalInfoOpen && valid) || isHistoryOpen) ? (
+          <GoBackToSearch
+            history={history}
+            loanNumber={loanNumber}
+            location={location}
+            onClick={this.goToSearchResults}
+          />
+        )
+          : (
+            <span styleName="backButton">
+              <Link onClick={this.handleBackButton} to="/">&lt; BACK</Link>
+            </span>
+          )
+        }
+        {isAdditionalInfoOpen && valid && <AdditionalInfo data={data} loanNumber={loanNumber} styleName="evalTable" type="searchPage" />}
+        {isHistoryOpen && <MilestoneActivity inSearchPage />}
+        {!(isAdditionalInfoOpen || isHistoryOpen) && (
+        <>
+          {this.renderRejectResults()}
+          {this.renderSearchResults()}
+          {this.renderAlert()}
+        </>
+        )}
       </>
     );
   }
 }
 
 SearchLoan.COLUMN_DATA = [
+  {
+    Header: '',
+    accessor: 'sourceLabel',
+    maxWidth: 60,
+    minWidth: 60,
+    Cell: row => <EvalTableRow row={row} />,
+  },
   {
     Header: 'ACTIONS',
     accessor: 'actions',
@@ -290,6 +366,18 @@ SearchLoan.COLUMN_DATA = [
     accessor: 'piid',
     maxWidth: 70,
     minWidth: 70,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'RESOLUTION ID',
+    accessor: 'resolutionId',
+    maxWidth: 70,
+    minWidth: 70,
+    Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'RESOLUTIONCHOICETYPE',
+    accessor: 'resolutionChoiceType',
+    maxWidth: 150,
+    minWidth: 150,
     Cell: row => <EvalTableRow row={row} />,
   }, {
     Header: 'STATUS',
@@ -359,14 +447,21 @@ SearchLoan.COLUMN_DATA = [
     maxWidth: 200,
     minWidth: 200,
     Cell: row => <EvalTableRow row={row} />,
+  }, {
+    Header: 'HISTORY',
+    accessor: 'history',
+    maxWidth: 80,
+    minWidth: 80,
+    Cell: row => <EvalTableRow row={row} />,
   },
 ];
-
 
 SearchLoan.defaultProps = {
   enableGetNext: false,
   inProgress: false,
   resultOperation: {},
+  isHistoryOpen: false,
+  isAdditionalInfoOpen: false,
 };
 
 SearchLoan.propTypes = {
@@ -378,14 +473,19 @@ SearchLoan.propTypes = {
   })).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
+  isAdditionalInfoOpen: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  isHistoryOpen: PropTypes.bool,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
   }).isRequired,
+  onAdditionalInfo: PropTypes.func.isRequired,
+  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   resultOperation: PropTypes.shape(
@@ -409,6 +509,7 @@ SearchLoan.propTypes = {
     userGroups: PropTypes.array,
   }).isRequired,
 };
+
 const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
@@ -418,6 +519,8 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   inProgress: selectors.inProgress(state),
   resultOperation: selectors.resultOperation(state),
+  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
+  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -429,6 +532,9 @@ const mapDispatchToProps = dispatch => ({
   onGetGroupName: operations.onGetGroupName(dispatch),
   onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
+  onAdditionalInfo: operations.onAdditionalInfoClick(dispatch),
+  onAdditionalInfoSelect: operations.onAdditionalInfoSelect(dispatch),
+  onHistorySelect: operations.onHistorySelect(dispatch),
 });
 
 const SearchLoanContainer = connect(

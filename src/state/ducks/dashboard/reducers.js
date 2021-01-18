@@ -78,6 +78,12 @@ import {
   DISABLE_PUSHDATA,
   ASSIGN_TO_ME_CLICK,
   SET_PAYMENT_DEFERRAL,
+  EVAL_CASE_DETAILS,
+  SET_CASE_DETAILS,
+  SET_EVAL_INDEX,
+  SET_ADDITIONAL_INFO_SELECTED,
+  SET_HISTORY_SELECTED,
+  SAVE_EVAL_LOANVIEW,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
@@ -227,6 +233,8 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         inProgress: false,
         wasSearched: true,
         userNotification: {},
+        isAdditionalInfoOpen: false,
+        isHistoryOpen: false,
       };
     }
 
@@ -774,6 +782,66 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         bookingTaskId,
       };
     }
+
+    case EVAL_CASE_DETAILS: {
+      const evalCaseDetails = action.payload;
+      return {
+        ...state,
+        evalCaseDetails,
+      };
+    }
+
+    case SET_CASE_DETAILS: {
+      const caseDetails = action.payload;
+      return {
+        ...state,
+        caseDetails,
+      };
+    }
+
+    case SET_EVAL_INDEX: {
+      return {
+        ...state,
+        evalIndex: action.payload,
+      };
+    }
+
+    case SET_ADDITIONAL_INFO_SELECTED: {
+      return {
+        ...state,
+        isAdditionalInfoOpen: action.payload,
+      };
+    }
+
+    case SET_HISTORY_SELECTED: {
+      return {
+        ...state,
+        isHistoryOpen: action.payload,
+      };
+    }
+
+    case SAVE_EVAL_LOANVIEW: {
+      const newState = {
+        ...state,
+        brand: action.payload.brand,
+        evalId: action.payload.evalId,
+        loanNumber: action.payload.loanNumber,
+        taskId: action.payload.taskId,
+        processId: action.payload.piid,
+        processStatus: action.payload.pstatus,
+        taskStatus: action.payload.tstatus,
+        processName: action.payload.taskName,
+        showAssign: action.payload.isSearch ? !!action.payload.assignee : null,
+        taskFetchError: false,
+        noTasksFound: false,
+        isAssigned: action.payload.isSearch ? action.payload.isAssigned : true,
+        taskIterationCounter: action.payload.taskIterationCounter,
+        showContinueMyReview: action.payload.isSearch ? action.payload.showContinueMyReview : false,
+        completeReviewResponse: null,
+      };
+      return newState;
+    }
+
     default:
       return state;
   }

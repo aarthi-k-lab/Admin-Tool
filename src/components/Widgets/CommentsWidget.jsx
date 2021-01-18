@@ -114,19 +114,22 @@ class CommentsWidget extends Component {
       ProcIdType,
       onGetComments,
       groupName,
+      isAdditionalInfoOpen,
     } = this.props;
 
     const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
     const eventName = !R.isNil(page) ? page.taskCode : '';
 
-    const payload = {
-      applicationName: AppName,
-      loanNumber: LoanNumber,
-      processIdType: ProcIdType,
-      processId: ProcessId,
-      eventName,
-    };
-    onGetComments(payload);
+    if (!isAdditionalInfoOpen) {
+      const payload = {
+        applicationName: AppName,
+        loanNumber: LoanNumber,
+        processIdType: ProcIdType,
+        processId: ProcessId,
+        eventName,
+      };
+      onGetComments(payload);
+    }
     this.setState({ Loader: false });
   }
 
@@ -202,7 +205,7 @@ class CommentsWidget extends Component {
 
   renderCommentsActivity() {
     const {
-      comments, LoanNumber, EvalId, isAssigned,
+      comments, LoanNumber, EvalId, isAssigned, searchArea,
     } = this.props;
     const { content } = this.state;
     return (
@@ -210,12 +213,12 @@ class CommentsWidget extends Component {
         <div styleName="comment-header">Comments</div>
         <div id="comment_main" styleName="comment-main-style">
           <div ref={(ref) => { this.commentArea = ref; }} styleName="comment-area">
-            { comments && comments.length ? this.showCommentsArea() : renderNoCommentsArea()}
+            {comments && comments.length ? this.showCommentsArea() : renderNoCommentsArea()}
           </div>
           <div id="send_area" styleName="send-area">
             <div id="send_text_area" styleName="send-text-area">
               <TextField
-                disabled={!isAssigned}
+                disabled={!isAssigned || searchArea}
                 InputProps={{ style: { fontSize: '1.1rem' } }}
                 multiline
                 onChange={event => this.onCommentChange(event)}
@@ -230,7 +233,7 @@ class CommentsWidget extends Component {
               <Button
                 color="primary"
                 disabled={content.length === 0
-                  || R.isNil(LoanNumber) || R.isNil(EvalId)}
+                  || R.isNil(LoanNumber) || R.isNil(EvalId) || searchArea}
                 id="post_button"
                 onClick={this.saveComments}
                 styleName="post-button"
@@ -265,12 +268,14 @@ CommentsWidget.propTypes = {
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
+  isAdditionalInfoOpen: PropTypes.bool.isRequired,
   isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
+  searchArea: PropTypes.bool,
   TaskId: PropTypes.number.isRequired,
   taskIterationCounter: PropTypes.number.isRequired,
   User: PropTypes.shape({
@@ -284,10 +289,12 @@ CommentsWidget.defaultProps = {
   AppName: 'CMOD',
   ProcIdType: 'WF_PRCS_ID',
   groupName: '',
+  searchArea: false,
 };
 
 const mapStateToProps = state => ({
   comments: selectors.getCommentsData(state),
+  evalComments: selectors.getEvalComments(state),
   // Disposition: dashboardSelectors.getDisposition(state),
   EvalId: dashboardSelectors.evalId(state),
   TaskId: dashboardSelectors.taskId(state),
@@ -297,6 +304,7 @@ const mapStateToProps = state => ({
   taskIterationCounter: dashboardSelectors.taskIterationCounter(state),
   User: loginSelectors.getUser(state),
   isAssigned: dashboardSelectors.isAssigned(state),
+  isAdditionalInfoOpen: dashboardSelectors.isAdditionalInfoOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({

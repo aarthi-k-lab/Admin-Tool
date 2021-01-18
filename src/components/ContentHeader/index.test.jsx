@@ -30,7 +30,7 @@ describe('<ContentHeader />', () => {
         title={title}
       />,
     );
-    expect(wrap.find('WithStyles(Tooltip)')).toHaveLength(1);
+    expect(wrap.find('WithStyles(ForwardRef(Tooltip))')).toHaveLength(1);
     wrap.find('Link').at(0).simulate('click');
     expect(onAutoSave).toBeCalledTimes(0);
   });
@@ -60,7 +60,7 @@ describe('<ContentHeader />', () => {
         title={title}
       />,
     );
-    expect(wrap.find('WithStyles(Tooltip)')).toHaveLength(1);
+    expect(wrap.find('WithStyles(ForwardRef(Tooltip))')).toHaveLength(1);
     wrap.find('Link').at(0).simulate('click');
     expect(onAutoSave).toBeCalled();
   });

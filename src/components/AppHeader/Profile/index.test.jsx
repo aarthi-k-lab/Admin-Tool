@@ -94,7 +94,7 @@ describe('<Profile />', () => {
     expect(instance.state.isChecked).toEqual(mock.isCheckedFalse);
     button.first().simulate('click');
     expect(Auth.updateUserGroups).toBeCalledWith('email', mock.userGroupsUncheckedAgent);
-    wrapper.find('WithStyles(WithFormControlContext(ForwardRef(SwitchBase)))').first().prop('onChange')({ target: { value: 'Manager' } });
+    wrapper.find('WithStyles(ForwardRef(SwitchBase))').first().prop('onChange')({ target: { value: 'Manager' } });
     expect(wrapper.instance().props.setRoleCallBack).toBeCalledWith('Manager');
     wrapper.setProps({ userRole: 'Manager', userGroups: mock.userGroups });
     wrapper.find('WithStyles(ForwardRef(Checkbox))').forEach((node) => {

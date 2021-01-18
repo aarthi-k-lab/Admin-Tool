@@ -62,7 +62,7 @@ describe('get Comments', () => {
     expect(saga.next(response).value)
       .toEqual(put({
         type: GET_COMMENTS_RESULT,
-        payload: response,
+        payload: { comments: response },
       }));
   });
 });

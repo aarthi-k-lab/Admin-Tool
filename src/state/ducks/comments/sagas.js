@@ -11,6 +11,8 @@ import {
   GET_COMMENTS_SAGA,
   GET_COMMENTS_RESULT,
   POST_COMMENT_SAGA,
+  GET_EVALCOMMENTS_SAGA,
+  GET_EVALCOMMENTS_RESULT,
 } from './types';
 
 import DashboardModel from '../../../models/Dashboard';
@@ -32,15 +34,35 @@ function* getComments(payload) {
   try {
     const req = payload.payload;
     const newPayload = yield call(Api.callGet, `/api/utility/comment?applicationName=${req.applicationName}&loanNumber=${req.loanNumber}&processId=${req.processId}&processIdType=${req.processIdType}`);
-    if (newPayload != null) {
+    if (newPayload) {
       yield put({
         type: GET_COMMENTS_RESULT,
-        payload: newPayload,
+        payload: { comments: newPayload },
       });
     }
   } catch (e) {
     yield put({
       type: GET_COMMENTS_RESULT,
+      payload: {},
+    });
+  }
+}
+
+function* getCommentsForEvals(payload) {
+  try {
+    const { evalId } = payload.payload;
+    const newPayload = yield call(Api.callGet, `/api/utility/comment/byEval?evalId=${evalId}`);
+    if (newPayload) {
+      yield put({
+        type: GET_COMMENTS_RESULT,
+        payload: {
+          comments: newPayload,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: GET_EVALCOMMENTS_RESULT,
       payload: {},
     });
   }
@@ -81,6 +103,10 @@ function* watchGetComments() {
   yield takeEvery(GET_COMMENTS_SAGA, getComments);
 }
 
+function* watchGetCommentsByEval() {
+  yield takeEvery(GET_EVALCOMMENTS_SAGA, getCommentsForEvals);
+}
+
 function* watchPostComment() {
   yield takeEvery(POST_COMMENT_SAGA, postComment);
 }
@@ -97,5 +123,6 @@ export function* combinedSaga() {
   yield all([
     watchGetComments(),
     watchPostComment(),
+    watchGetCommentsByEval(),
   ]);
 }

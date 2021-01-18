@@ -16,9 +16,11 @@ import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import CustomSnackBar from 'components/CustomSnackBar';
+import AdditionalInfo from 'containers/AdditionalInfo';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import hotkeys from 'hotkeys-js';
 import CloseIcon from '@material-ui/icons/Close';
+import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import widgets from '../../../constants/widget';
 import BookingHomePage from './BookingHomePage';
 import Navigation from './Navigation';
@@ -36,20 +38,27 @@ class TasksAndChecklist extends Component {
   }
 
   componentDidMount() {
-    const { onWidgetToggle, groupName } = this.props;
+    const {
+      onWidgetToggle, groupName, isAdditionalInfoOpen, isHistoryOpen,
+    } = this.props;
     hotkeys('right,left', (event) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress();
       }
     });
-    if (R.equals(groupName, DashboardModel.BOOKING)) {
+    if (R.equals(groupName, DashboardModel.BOOKING) && !(isAdditionalInfoOpen || isHistoryOpen)) {
       onWidgetToggle(true);
     }
   }
 
   componentWillUnmount() {
     hotkeys.unbind('right,left');
-    this.handleClose();
+    const {
+      toggleWidget,
+    } = this.props;
+    if (toggleWidget) {
+      this.handleClose();
+    }
   }
 
   getChecklistItems() {
@@ -77,10 +86,31 @@ class TasksAndChecklist extends Component {
   }
 
   handleClose = () => {
-    const { onUnassignBookingLoan, onWidgetToggle } = this.props;
-    onUnassignBookingLoan();
+    const { onUnassignBookingLoan, onWidgetToggle, groupName } = this.props;
+    if (groupName !== DashboardModel.BOOKING) {
+      onUnassignBookingLoan();
+    }
     onWidgetToggle(false);
   }
+
+
+  handleAIChange = (value, widgetId) => {
+    const {
+      onAdditionalInfoSelect, isAdditionalInfoOpen, isHistoryOpen,
+      onHistorySelect, onAdditionalInfo, loanNumber, toggleWidget,
+    } = this.props;
+    if (R.equals(widgetId, widgets.additionalInfo)) {
+      onAdditionalInfoSelect(!isAdditionalInfoOpen);
+      onHistorySelect(false);
+      if (!isAdditionalInfoOpen) onAdditionalInfo(loanNumber);
+      if (toggleWidget) this.handleClose();
+    } else if (R.equals(widgetId, widgets.history)) {
+      onHistorySelect(!isHistoryOpen);
+      onAdditionalInfoSelect(false);
+      if (toggleWidget) this.handleClose();
+    }
+  }
+
 
   handleSubTaskClearance(isConfirmed) {
     if (isConfirmed) {
@@ -95,9 +125,11 @@ class TasksAndChecklist extends Component {
 
   handleChange(value, widgetId) {
     const {
-      groupName, onWidgetToggle, toggleWidget,
+      groupName, onWidgetToggle, toggleWidget, onHistorySelect, onAdditionalInfoSelect,
     } = this.props;
     if (R.equals(widgetId, widgets.booking)) {
+      onHistorySelect(false);
+      onAdditionalInfoSelect(false);
       onWidgetToggle(!toggleWidget);
       if (groupName !== DashboardModel.BOOKING) {
         const {
@@ -222,6 +254,11 @@ class TasksAndChecklist extends Component {
     );
   }
 
+  renderWidgetComponents() {
+    const { isAdditionalInfoOpen } = this.props;
+    return isAdditionalInfoOpen ? <AdditionalInfo /> : <MilestoneActivity />;
+  }
+
   render() {
     const {
       commentsRequired,
@@ -244,6 +281,8 @@ class TasksAndChecklist extends Component {
       history,
       isAssigned,
       toggleWidget,
+      isAdditionalInfoOpen,
+      isHistoryOpen,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
     const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
@@ -266,6 +305,12 @@ class TasksAndChecklist extends Component {
 
     const isHeaderVisible = toggleWidget && !R.equals(groupName, DashboardModel.BOOKING);
     const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
+    const currentOverlay = (isAdditionalInfoOpen || isHistoryOpen) ? null : (
+      <>
+        <TaskPane styleName="tasks" />
+        {this.renderChecklist()}
+      </>
+    );
     return (
       <div styleName="scroll-wrapper">
         {isHeaderVisible && (
@@ -279,37 +324,49 @@ class TasksAndChecklist extends Component {
           </div>
         )
         }
-        <section styleName="tasks-and-checklist">
-          { groupName === DashboardModel.BOOKING && !toggleWidget
+        {isAdditionalInfoOpen && (
+          <div styleName="bookingWidget">
+            <span styleName="widgetTitle">
+              ADDITIONAL INFO
+            </span>
+          </div>
+        )
+        }
+        <section styleName={isHistoryOpen ? 'tasks-and-checklist-loan-audit' : 'tasks-and-checklist'}>
+          {groupName === DashboardModel.BOOKING
+          && !(toggleWidget || isAdditionalInfoOpen || isHistoryOpen)
             ? <BookingHomePage message={bookingHomepageMsg} />
-            : (
-              <>
-                <TaskPane styleName="tasks" />
-                {this.renderChecklist()}
-              </>
-            )}
+            : currentOverlay }
           {this.renderSnackBar()}
-          <DialogCard
-            commentsRequired={commentsRequired}
-            dialogContent={instructions}
-            dialogHeader="Steps to Resolve"
-            message={dispositionMessage}
-            onDialogToggle={onInstuctionDialogToggle}
-            shouldShow={showDialogBox}
-            showDialog={showInstructionsDialog}
-            styleName="instructions"
-            title="Disposition"
-          />
+          {!(isAdditionalInfoOpen || isHistoryOpen) ? (
+            <>
+              <DialogCard
+                commentsRequired={commentsRequired}
+                dialogContent={instructions}
+                dialogHeader="Steps to Resolve"
+                message={dispositionMessage}
+                onDialogToggle={onInstuctionDialogToggle}
+                shouldShow={showDialogBox}
+                showDialog={showInstructionsDialog}
+                styleName="instructions"
+                title="Disposition"
+              />
+              <Navigation
+                className={classNames(styles.footer, styles.navigation)}
+                disableNext={disableNext}
+                disablePrev={disablePrev}
+                onNext={onNext}
+                onPrev={onPrev}
+              />
+            </>
+          ) : this.renderWidgetComponents()}
           <WidgetBuilder
+            isAdditionalInfoOpen={isAdditionalInfoOpen}
+            isHistoryOpen={isHistoryOpen}
             styleName={groupName === DashboardModel.DOCS_IN && toggleWidget ? 'task-checklist-bw' : 'task-checklist'}
+            toggleWidget={toggleWidget}
+            triggerAI={this.handleAIChange}
             triggerHeader={this.handleChange}
-          />
-          <Navigation
-            className={classNames(styles.footer, styles.navigation)}
-            disableNext={disableNext}
-            disablePrev={disablePrev}
-            onNext={onNext}
-            onPrev={onPrev}
           />
         </section>
       </div>
@@ -333,6 +390,9 @@ TasksAndChecklist.defaultProps = {
   resolutionData: [],
   toggleWidget: false,
   ruleResultFromTaskTree: [],
+  isAdditionalInfoOpen: false,
+  isHistoryOpen: false,
+  loanNumber: null,
 };
 
 TasksAndChecklist.propTypes = {
@@ -389,10 +449,13 @@ TasksAndChecklist.propTypes = {
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
+  isAdditionalInfoOpen: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
   isDialogOpen: PropTypes.bool,
   isGetNextError: PropTypes.bool,
+  isHistoryOpen: PropTypes.bool,
   isPostModEndShift: PropTypes.bool,
+  loanNumber: PropTypes.number,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
@@ -402,7 +465,10 @@ TasksAndChecklist.propTypes = {
     type: PropTypes.string,
   }),
   noTasksFound: PropTypes.bool,
+  onAdditionalInfo: PropTypes.func.isRequired,
+  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onChecklistChange: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
@@ -530,6 +596,9 @@ function mapStateToProps(state) {
     prevDocsInRootTaskId: selectors.getPrevDocsInRootTaskId(state),
     toggleWidget: dashboardSelectors.getToggleWidget(state),
     ruleResultFromTaskTree: selectors.getRuleResultFromTaskTree(state),
+    isAdditionalInfoOpen: dashboardSelectors.isAdditionalInfoOpen(state),
+    isHistoryOpen: dashboardSelectors.isHistoryOpen(state),
+    loanNumber: dashboardSelectors.loanNumber(state),
   };
 }
 
@@ -548,6 +617,9 @@ function mapDispatchToProps(dispatch) {
     onWidgetClick: dashboardOperations.onWidgetClick(dispatch),
     closeSweetAlert: dashboardOperations.closeSweetAlert(dispatch),
     putComputeRulesPassed: operations.putComputeRulesPassed(dispatch),
+    onAdditionalInfo: dashboardOperations.onAdditionalInfoClick(dispatch),
+    onAdditionalInfoSelect: dashboardOperations.onAdditionalInfoSelect(dispatch),
+    onHistorySelect: dashboardOperations.onHistorySelect(dispatch),
   };
 }
 
