@@ -83,7 +83,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          //target: 'http://127.0.0.1:7800',
+          // target: 'http://127.0.0.1:7800',
           target: 'https://qa.cmod.mrcooper.io/cmodworkassignment',
           secure: false,
           changeOrigin: true,
@@ -91,12 +91,12 @@ const config = merge(
             '^/api/workassign': '',
           },
         },
-        '/api/dataaggregator': {
-          target: 'https://qa.cmod.mrcooper.io/cmodsearchengine',
+        '/api/data-aggregator': {
+          target: 'https://qa.cmod.mrcooper.io/cmoddataaggregator',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
-            '^/api/dataaggregator': '',
+            '^/api/data-aggregator': '',
           },
         },
         '/api/userskills': {
