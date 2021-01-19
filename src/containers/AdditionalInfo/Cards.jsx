@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import SubdirectoryArrowRightIcon from '@material-ui/icons/SubdirectoryArrowRight';
 import ChatIcon from '@material-ui/icons/Chat';
 import Grid from '@material-ui/core/Grid';
-import moment from 'moment-timezone';
 import * as R from 'ramda';
 import './Cards.css';
 
-const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(`${dateTime}Z`).tz('America/Chicago').format('DD/MM/YYYY HH:mm:ss'));
 
 const getCardSearchDetails = cardDetails => (
   cardDetails && cardDetails.map(datae => (
@@ -17,7 +15,7 @@ const getCardSearchDetails = cardDetails => (
           <span>{datae.ApprovalType}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
-          <span>{getCSTDateTime(datae.ActionDate)}</span>
+          <span>{R.replace('T', ' ', datae.ActionDate)}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
           <span>{R.propOr('N/A', 'UserName', datae)}</span>
@@ -60,17 +58,17 @@ const Cards = (props) => {
                     <Grid item styleName="dateStyle">
                       <span styleName="value-style">StatusDate</span>
                       <br />
-                      <span styleName="header-style">{getCSTDateTime(card.StatusDate)}</span>
+                      <span styleName="header-style">{R.replace('T', ' ', card.StatusDate)}</span>
                     </Grid>
                     <Grid item styleName="dateStyle">
                       <span styleName="value-style">LockedDate</span>
                       <br />
-                      <span styleName="header-style">{getCSTDateTime(card.LockedDate)}</span>
+                      <span styleName="header-style">{R.replace('T', ' ', card.LockedDate)}</span>
                     </Grid>
                     <Grid item styleName="dateStyle">
                       <span styleName="value-style">CaseDate</span>
                       <br />
-                      <span styleName="header-style">{getCSTDateTime(card.CaseOpenDate)}</span>
+                      <span styleName="header-style">{R.replace('T', ' ', card.CaseOpenDate)}</span>
                     </Grid>
                   </Grid>
                 </Grid>
