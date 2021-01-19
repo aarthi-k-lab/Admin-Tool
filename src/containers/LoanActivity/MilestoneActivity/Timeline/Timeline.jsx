@@ -20,7 +20,7 @@ class Timeline extends React.PureComponent {
     const { taskId } = this.state;
     return (
       <div styleName="timeline-container">
-        {groupTaskData.map((taskData, index) => (
+        {groupTaskData && groupTaskData.map((taskData, index) => (
           <TimelineItem
             key={taskData.maxCreDttm}
             active={(taskId === 0 && index === 0) || taskData.taskId === taskId}

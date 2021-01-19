@@ -8,14 +8,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import moment from 'moment-timezone';
 import * as R from 'ramda';
 import './Row.css';
 
 const Row = (props) => {
   const { data, onClick, changeColor } = props;
   const [open, setOpen] = React.useState(false);
-  const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment.utc(dateTime).tz('America/Chicago').format('DD/MM/YYYY HH:mm:ss'));
   return (
     <React.Fragment>
       <TableRow className="root" onClick={onClick} styleName={changeColor ? 'setBackground' : ''}>
@@ -24,9 +22,9 @@ const Row = (props) => {
         </TableCell>
         <TableCell align="center">{data.resolutionId}</TableCell>
         <TableCell align="center">{R.propOr('-', 'status', data)}</TableCell>
-        <TableCell align="center" colSpan={2}>{getCSTDateTime(data.statusDate)}</TableCell>
+        <TableCell align="center" colSpan={2}>{data.statusDate}</TableCell>
         <TableCell align="center" colSpan={1}>{R.propOr('-', 'substatus', data)}</TableCell>
-        <TableCell align="center" colSpan={2}>{getCSTDateTime(data.substatusDate)}</TableCell>
+        <TableCell align="center" colSpan={2}>{data.substatusDate}</TableCell>
         {!R.isNil(data.evalHistory) && !R.isEmpty(data.evalHistory)
           ? (
             <TableCell
@@ -58,7 +56,7 @@ const Row = (props) => {
                     <TableRow key={historyRow.EvalId}>
                       <HistoryRow content={historyRow.ChangeType} />
                       <HistoryRow content={historyRow.ApprovalType} />
-                      <HistoryRow content={getCSTDateTime(historyRow.UpdateDate)} />
+                      <HistoryRow content={R.replace('T', ' ', historyRow.UpdateDate)} />
                       <HistoryRow content={historyRow.UserName} />
                     </TableRow>
                   ))}

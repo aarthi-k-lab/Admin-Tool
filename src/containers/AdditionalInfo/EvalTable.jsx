@@ -38,7 +38,7 @@ const headers = [
   },
   {
     colSpan: 1,
-    name: 'SEARCH HISTORY',
+    name: 'HISTORY',
   },
 ];
 

@@ -30,7 +30,7 @@ const getEventName = (pstatusReason, pstatus, taskName) => {
 };
 
 class EvalTableRow extends React.PureComponent {
-  handleLinkClick = (event, value) => {
+  handleLinkClick = (value) => {
     const {
       row, searchLoanResult, onSelectReject, user, history,
       onHistorySelect, setTombstoneDataForLoanView,
@@ -139,7 +139,7 @@ class EvalTableRow extends React.PureComponent {
         break;
       case 'HISTORY':
         cellData = (row.original.sourceLabel !== 'REMEDY') && (
-          <IconButton onClick={event => this.handleLinkClick(event, 'Loan Activity')} styleName="history-icon">
+          <IconButton onClick={() => this.handleLinkClick('Loan Activity')} styleName="history-icon">
             <HistoryIcon />
           </IconButton>
         );
