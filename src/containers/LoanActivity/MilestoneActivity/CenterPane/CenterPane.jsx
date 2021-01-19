@@ -96,7 +96,13 @@ class CenterPane extends React.PureComponent {
 
         <Paper styleName="tablealign">
           <TableContainer component={Paper} styleName="container">
-            <Table aria-label="sticky table" size="small" stickyHeader>
+            <Table
+              options={{
+                headerStyle: { position: 'sticky' },
+              }}
+              size="small"
+              stickyHeader
+            >
               <TableHead>
                 <TableRow>
                   {columns.map(column => (

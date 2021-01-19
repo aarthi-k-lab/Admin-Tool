@@ -72,7 +72,7 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           colSpan={1}
           scope="col"
         >
-          SEARCH HISTORY
+          HISTORY
         </th>
       </tr>
     </thead>
@@ -111,7 +111,7 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          statusDate
         </td>
         <td
           aria-sort={null}
@@ -125,7 +125,7 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          substatusDate
         </td>
         <td
           aria-sort={null}
@@ -172,7 +172,7 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          statusDate1
         </td>
         <td
           aria-sort={null}
@@ -186,7 +186,7 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          substatusDate1
         </td>
         <td
           aria-sort={null}
@@ -294,7 +294,7 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           colSpan={1}
           scope="col"
         >
-          SEARCH HISTORY
+          HISTORY
         </th>
       </tr>
     </thead>
@@ -333,7 +333,7 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          statusDate
         </td>
         <td
           aria-sort={null}
@@ -347,7 +347,7 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          substatusDate
         </td>
         <td
           aria-sort={null}
@@ -394,7 +394,7 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          statusDate1
         </td>
         <td
           aria-sort={null}
@@ -408,7 +408,7 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          Invalid date
+          substatusDate1
         </td>
         <td
           aria-sort={null}

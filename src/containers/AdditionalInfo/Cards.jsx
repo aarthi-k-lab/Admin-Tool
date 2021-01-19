@@ -6,28 +6,30 @@ import Grid from '@material-ui/core/Grid';
 import * as R from 'ramda';
 import './Cards.css';
 
+const formatDate = date => (date ? R.replace('T', ' ', date) : '-');
+
 
 const getCardSearchDetails = cardDetails => (
-  cardDetails && cardDetails.map(datae => (
+  cardDetails && cardDetails.map(data => (
     <Grid container direction="column" styleName="search-container">
       <Grid container direction="row">
         <Grid item styleName="tableData" xs={2}>
-          <span>{datae.ApprovalType}</span>
+          <span>{data.ApprovalType}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
-          <span>{R.replace('T', ' ', datae.ActionDate)}</span>
+          <span>{formatDate(data.ActionDate)}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
-          <span>{R.propOr('N/A', 'UserName', datae)}</span>
+          <span>{R.propOr('N/A', 'UserName', data)}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
-          <span>{datae.ChangeType}</span>
+          <span>{data.ChangeType}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
-          <span>{R.propOr('N/A', 'Comment', datae)}</span>
+          <span>{R.propOr('N/A', 'Comment', data)}</span>
         </Grid>
         <Grid item styleName="tableData" xs={2}>
-          <span>{R.propOr('N/A', 'SourceName', datae)}</span>
+          <span>{R.propOr('N/A', 'SourceName', data)}</span>
         </Grid>
       </Grid>
     </Grid>
@@ -58,17 +60,17 @@ const Cards = (props) => {
                     <Grid item styleName="dateStyle">
                       <span styleName="value-style">StatusDate</span>
                       <br />
-                      <span styleName="header-style">{R.replace('T', ' ', card.StatusDate)}</span>
+                      <span styleName="header-style">{formatDate(card.StatusDate)}</span>
                     </Grid>
                     <Grid item styleName="dateStyle">
                       <span styleName="value-style">LockedDate</span>
                       <br />
-                      <span styleName="header-style">{R.replace('T', ' ', card.LockedDate)}</span>
+                      <span styleName="header-style">{formatDate(card.LockedDate)}</span>
                     </Grid>
                     <Grid item styleName="dateStyle">
                       <span styleName="value-style">CaseDate</span>
                       <br />
-                      <span styleName="header-style">{R.replace('T', ' ', card.CaseOpenDate)}</span>
+                      <span styleName="header-style">{formatDate(card.CaseOpenDate)}</span>
                     </Grid>
                   </Grid>
                 </Grid>

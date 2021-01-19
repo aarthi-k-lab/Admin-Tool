@@ -11,6 +11,8 @@ import TableRow from '@material-ui/core/TableRow';
 import * as R from 'ramda';
 import './Row.css';
 
+const formatDate = date => (date ? R.replace('T', ' ', date) : '-');
+
 const Row = (props) => {
   const { data, onClick, changeColor } = props;
   const [open, setOpen] = React.useState(false);
@@ -56,7 +58,7 @@ const Row = (props) => {
                     <TableRow key={historyRow.EvalId}>
                       <HistoryRow content={historyRow.ChangeType} />
                       <HistoryRow content={historyRow.ApprovalType} />
-                      <HistoryRow content={R.replace('T', ' ', historyRow.UpdateDate)} />
+                      <HistoryRow content={formatDate(historyRow.UpdateDate)} />
                       <HistoryRow content={historyRow.UserName} />
                     </TableRow>
                   ))}
