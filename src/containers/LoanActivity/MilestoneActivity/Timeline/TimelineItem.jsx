@@ -113,7 +113,7 @@ class TimelineItem extends React.PureComponent {
           <div styleName="timeline-container-inner">
             {' '}
             {stagerTasks && stagerTasks.map(data => (
-              <TimelineSubItem key={data} />
+              <TimelineSubItem key={data.disName} grpData={data} />
             ))}
           </div>
           )
