@@ -80,13 +80,13 @@ class TimelineItem extends React.PureComponent {
                   <span styleName="header-style">{getCSTDateTime(taskData.creDttm)}</span>
                 </Grid>
                 <Grid item styleName="dateStyle" xs={4}>
-                  <span styleName="value-style">END DATA</span>
+                  <span styleName="value-style">END DATE</span>
                   <br />
                   <span styleName="header-style">
                     {
                       taskData.currSts === 'Closed'
                         ? getCSTDateTime(taskData.currStsDttm)
-                        : 'YET NOT END'
+                        : '-'
                     }
                   </span>
                 </Grid>

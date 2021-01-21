@@ -16,16 +16,18 @@ class TimelineSubItem extends React.PureComponent {
   render() {
     const { grpData } = this.props;
     const { isOpen } = this.state;
+    const assignUserName = grpData.lastAsgn.lastIndexOf('@') !== -1
+      ? grpData.lastAsgn.substring(0, grpData.lastAsgn.lastIndexOf('@')) : grpData.lastAsgn;
     return (
       <>
         {isOpen && (
         <div styleName="timeline-item">
           <div styleName="timeline-item-content">
-            <Grid container styleName="main-container">
+            <Grid container>
               <Grid item styleName="user-detail" xs={7}>
                 <span styleName="header-style">{grpData.disName}</span>
                 <br />
-                <span styleName="resolutionChoiceType">{grpData.lastAsgn}</span>
+                <span styleName="resolutionChoiceType">{assignUserName}</span>
               </Grid>
               <Grid item styleName="user-detail" xs={5}>
                 {!R.isNil(grpData) && <div styleName={R.contains(R.propOr('N/A', 'disCat', grpData), ['Rejected', 'Failed']) ? 'failedStatus' : 'successStatus'}>{grpData.disCat}</div>}

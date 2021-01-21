@@ -130,12 +130,19 @@ class EvalTableRow extends React.PureComponent {
     return (<EvalTableCell styleProps={this.getStyles(row)} value={row.value} />);
   };
 
+  getAssignedValue = row => (row.original.sourceLabel === 'REMEDY' ? '' : 'Unassigned');
+
   render() {
     const { row } = this.props;
     let cellData = null;
     switch (row.column.Header) {
       case 'ASSIGNED TO':
-        cellData = <EvalTableCell styleProps={this.getStyles(row)} value={row.value ? row.value : 'Unassigned'} />;
+        cellData = (
+          <EvalTableCell
+            styleProps={this.getStyles(row)}
+            value={row.value ? row.value : this.getAssignedValue(row)}
+          />
+        );
         break;
       case 'HISTORY':
         cellData = (row.original.sourceLabel !== 'REMEDY') && (

@@ -17,11 +17,12 @@ class DispositionComment extends Component {
   }
 
   componentDidMount() {
-    const { allTaskScenario, triggerValidationDisplay } = this.props;
-    if (!allTaskScenario) {
-      triggerValidationDisplay(false);
-    } else {
+    const { allTaskScenario, triggerValidationDisplay, dispositionComment } = this.props;
+    const displayValidate = dispositionComment ? dispositionComment.comment : null;
+    if (allTaskScenario || displayValidate !== null) {
       triggerValidationDisplay(true);
+    } else {
+      triggerValidationDisplay(false);
     }
   }
 

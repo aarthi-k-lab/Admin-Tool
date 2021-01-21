@@ -23,7 +23,7 @@ class MilestonePage extends React.PureComponent {
     const groupTaskData = groupTask && R.sort(R.descend(R.prop('maxCurrStsDttm')), groupTask);
     const processStatus = () => {
       if (groupTaskData && groupTaskData.length) {
-        return groupTaskData[0].currSts === 'Closed' ? 'CLOSED' : R.toUpper(groupTaskData[0].mlstnNm);
+        return R.propOr('', 'currSts', R.last(groupTaskData)) === 'Closed' ? 'CLOSED' : R.toUpper(R.propOr('', 'mlstnNm', R.last(groupTaskData)));
       }
       return '';
     };
