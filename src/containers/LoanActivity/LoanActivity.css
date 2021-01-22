@@ -53,3 +53,22 @@
   flex-direction: column;
   height: 99%;
 }
+
+.widgetTitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0rem 0rem 0rem 0.8rem;
+}
+
+.bookingWidget {
+  background-color: white;
+  padding: 0.8rem;
+}
+
+.addInfo{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-self: stretch;
+  height: 45rem;
+}

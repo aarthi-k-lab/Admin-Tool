@@ -88,8 +88,8 @@ class EvaluationPage extends React.PureComponent {
             : ''
           }
         </div>
-        {isHistoryOpen ? this.renderDashboard() : (
-          <FullHeightColumn styleName="columns-container">
+        {(isHistoryOpen && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
+          <FullHeightColumn styleName={isHistoryOpen ? '' : 'columns-container'}>
             {this.renderDashboard()}
           </FullHeightColumn>
         )}

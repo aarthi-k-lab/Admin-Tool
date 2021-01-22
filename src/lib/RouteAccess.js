@@ -122,7 +122,7 @@ const milestoneActivity = {
   path: '/milestone-activity',
   name: 'milestone-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
 };
 
 const links = [
