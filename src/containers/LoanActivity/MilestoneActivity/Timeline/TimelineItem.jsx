@@ -29,7 +29,7 @@ class TimelineItem extends React.PureComponent {
     } = this.props;
     handleTimelineClick(taskData.taskId);
     getTaskDetails(mlstnNm);
-    if (R.contains('STAGER', R.toUpper(mlstnNm))) {
+    if (R.contains('STAGER', R.toUpper(mlstnNm)) || (R.equals('Post Mod', mlstnNm))) {
       getStagerTasks({
         mlstnNm: taskData.mlstnNm,
         minCreDttm: taskData.creDttm,
@@ -107,8 +107,6 @@ class TimelineItem extends React.PureComponent {
         </div>
 
         {isOpen && !R.isEmpty(stagerTasks)
-        && stagerTasks[0].stsDttm >= taskData.creDttm
-        && stagerTasks[0].stsDttm <= taskData.currStsDttm
           && (
           <div styleName="timeline-container-inner">
             {' '}
