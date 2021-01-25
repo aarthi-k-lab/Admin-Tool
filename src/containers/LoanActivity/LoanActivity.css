@@ -72,3 +72,7 @@
   align-self: stretch;
   height: 45rem;
 }
+
+.loan-act-widget{
+  z-index: 11;
+}

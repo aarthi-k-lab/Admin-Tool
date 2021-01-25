@@ -106,6 +106,7 @@ class LoanActivity extends React.PureComponent {
         <WidgetBuilder
           isAdditionalInfoOpen={isAdditionalInfoOpen}
           isHistoryOpen={isHistoryOpen}
+          styleName="loan-act-widget"
           triggerAI={this.handleAIChange}
         />
       </>
