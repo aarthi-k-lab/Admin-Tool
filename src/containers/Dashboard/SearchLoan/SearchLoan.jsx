@@ -227,7 +227,12 @@ class SearchLoan extends React.PureComponent {
         if (assigned) {
           data.push(...assigned);
         }
-        data = R.sort(R.descend(R.prop('evalId')), data);
+        data = R.sort(R.descend(
+          R.compose(
+            Number.parseInt,
+            R.prop('evalId'),
+          ),
+        ), data);
         const { inProgress } = this.props;
         if (inProgress) {
           return (
