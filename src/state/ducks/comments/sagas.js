@@ -50,11 +50,11 @@ function* getComments(payload) {
 
 function* getCommentsForEvals(payload) {
   try {
-    const { evalId } = payload.payload;
-    const newPayload = yield call(Api.callGet, `/api/utility/comment/byEval?evalId=${evalId}`);
+    const { loanNumber } = payload.payload;
+    const newPayload = yield call(Api.callGet, `/api/utility/byLoan?loanId=${loanNumber}`);
     if (newPayload) {
       yield put({
-        type: GET_COMMENTS_RESULT,
+        type: GET_EVALCOMMENTS_RESULT,
         payload: {
           comments: newPayload,
         },

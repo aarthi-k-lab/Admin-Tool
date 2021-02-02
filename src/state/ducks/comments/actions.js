@@ -9,9 +9,9 @@ const loadCommentsAction = payload => ({
   payload,
 });
 
-const loadCommentsForEvalsAction = evalId => ({
+const loadCommentsForEvalsAction = loanId => ({
   type: GET_EVALCOMMENTS_SAGA,
-  payload: evalId,
+  payload: loanId,
 });
 
 const postCommentAction = comment => ({

@@ -193,9 +193,9 @@ function* watchAutoSave() {
   yield takeEvery(AUTO_SAVE_OPERATIONS, autoSaveOnClose);
 }
 
-const fetchEvalComments = function* fetchEvalComments(action) {
-  const { evalId } = R.propOr('', 'payload', action);
-  yield put(commentsActions.loadCommentsForEvalsAction({ evalId }));
+const fetchEvalComments = function* fetchEvalComments() {
+  const loanId = yield select(selectors.loanNumber);
+  yield put(commentsActions.loadCommentsForEvalsAction({ loanId }));
 };
 
 const fetchCaseDetails = function* fetchCaseDetails(action) {
@@ -218,7 +218,7 @@ const fetchCaseDetails = function* fetchCaseDetails(action) {
         type: SET_CASE_DETAILS,
         payload: caseHistoryResponse,
       });
-      yield call(fetchEvalComments, action);
+      yield call(fetchEvalComments);
       yield put({
         type: SET_EVAL_INDEX,
         payload: index,
