@@ -61,12 +61,19 @@ class AdditionalInfo extends React.Component {
   })
 
   render() {
-    const { evalCaseDetails, index, type } = this.props;
-    let { caseDetails } = this.props;
+    const {
+      evalCaseDetails, index, type, caseDetails,
+    } = this.props;
+    let sortedcaseDetailsByDesc = R.sort(R.descend(
+      R.compose(
+        Number.parseInt,
+        R.prop('resolutionId'),
+      ),
+    ), caseDetails);
     const { value } = this.state;
     if (!R.isEmpty(evalCaseDetails)) {
       if (evalCaseDetails[index].evalId === '0') {
-        caseDetails = caseDetails.filter(
+        sortedcaseDetailsByDesc = sortedcaseDetailsByDesc.filter(
           detail => detail.resolutionId === evalCaseDetails[index].resolutionId,
         );
       }
@@ -100,7 +107,7 @@ class AdditionalInfo extends React.Component {
               </AppBar>
               <TabPanel index={0} styleName="overFlowStyles" value={value}>
                 {
-                  caseDetails && caseDetails.map(card => (
+                  sortedcaseDetailsByDesc && sortedcaseDetailsByDesc.map(card => (
                     <Cards
                       card={R.head(card.cardDetails)}
                       history={card.cardHistoryDetails}

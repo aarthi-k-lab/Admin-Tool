@@ -92,67 +92,6 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           role="cell"
           scope="row"
         >
-          evalId
-        </th>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-        >
-          resolutionId
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-        >
-          status
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={2}
-        >
-          statusDate
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={1}
-        >
-          subStatus
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={2}
-        >
-          substatusDate
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          onClick={[Function]}
-          style={
-            Object {
-              "color": "lightseagreen",
-              "whiteSpace": "nowrap",
-            }
-          }
-        >
-          Show History 
-        </td>
-      </tr>
-      <tr
-        className="MuiTableRow-root root containers-AdditionalInfo-Row__setBackground"
-        onClick={[Function]}
-        role={null}
-      >
-        <th
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={1}
-          role="cell"
-          scope="row"
-        >
           evalId1
         </th>
         <td
@@ -187,6 +126,67 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           colSpan={2}
         >
           substatusDate1
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "lightseagreen",
+              "whiteSpace": "nowrap",
+            }
+          }
+        >
+          Show History 
+        </td>
+      </tr>
+      <tr
+        className="MuiTableRow-root root containers-AdditionalInfo-Row__setBackground"
+        onClick={[Function]}
+        role={null}
+      >
+        <th
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={1}
+          role="cell"
+          scope="row"
+        >
+          evalId
+        </th>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+        >
+          resolutionId
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+        >
+          status
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={2}
+        >
+          statusDate
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={1}
+        >
+          subStatus
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={2}
+        >
+          substatusDate
         </td>
         <td
           aria-sort={null}
@@ -314,67 +314,6 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           role="cell"
           scope="row"
         >
-          evalId
-        </th>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-        >
-          resolutionId
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-        >
-          status
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={2}
-        >
-          statusDate
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={1}
-        >
-          subStatus
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={2}
-        >
-          substatusDate
-        </td>
-        <td
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          onClick={[Function]}
-          style={
-            Object {
-              "color": "lightseagreen",
-              "whiteSpace": "nowrap",
-            }
-          }
-        >
-          Show History 
-        </td>
-      </tr>
-      <tr
-        className="MuiTableRow-root root containers-AdditionalInfo-Row__setBackground"
-        onClick={[Function]}
-        role={null}
-      >
-        <th
-          aria-sort={null}
-          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
-          colSpan={1}
-          role="cell"
-          scope="row"
-        >
           evalId1
         </th>
         <td
@@ -409,6 +348,67 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           colSpan={2}
         >
           substatusDate1
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "lightseagreen",
+              "whiteSpace": "nowrap",
+            }
+          }
+        >
+          Show History 
+        </td>
+      </tr>
+      <tr
+        className="MuiTableRow-root root containers-AdditionalInfo-Row__setBackground"
+        onClick={[Function]}
+        role={null}
+      >
+        <th
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={1}
+          role="cell"
+          scope="row"
+        >
+          evalId
+        </th>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+        >
+          resolutionId
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+        >
+          status
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={2}
+        >
+          statusDate
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={1}
+        >
+          subStatus
+        </td>
+        <td
+          aria-sort={null}
+          className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
+          colSpan={2}
+        >
+          substatusDate
         </td>
         <td
           aria-sort={null}

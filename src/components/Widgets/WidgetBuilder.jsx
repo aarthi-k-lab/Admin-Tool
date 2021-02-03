@@ -62,8 +62,8 @@ class WidgetBuilder extends Component {
   }
 
   handleAdditionalInfo = (event, id) => {
-    const { isValid } = this.props;
-    if (!isValid && id === 'Additional Info') {
+    const { isValid, inSearchPage, isAdditionalInfoOpen } = this.props;
+    if ((!isValid && id === 'Additional Info') || (inSearchPage && !isAdditionalInfoOpen && id === 'Comments')) {
       event.stopPropagation();
     } else {
       this.changeAppBarState(id);

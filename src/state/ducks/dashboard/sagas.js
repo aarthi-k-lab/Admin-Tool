@@ -235,6 +235,7 @@ const fetchCaseDetails = function* fetchCaseDetails(action) {
 function* fetchEvalCaseDetails(payload) {
   const loanNumber = R.propOr('', 'payload', payload);
   let evalHistoryResponse = [];
+  let sortedcaseDetailsByDesc = [];
   try {
     const evals = yield call(Api.callPost, `/api/tkams/getEvalDetails/${loanNumber}`, {});
     if (evals != null) {
@@ -243,11 +244,17 @@ function* fetchEvalCaseDetails(payload) {
         obj.evalHistory = !R.isNil(item.evalHistory) ? JSON.parse(item.evalHistory) : [];
         return obj;
       });
+      sortedcaseDetailsByDesc = R.sort(R.descend(
+        R.compose(
+          Number.parseInt,
+          R.prop('resolutionId'),
+        ),
+      ), evalHistoryResponse);
       yield put({
         type: EVAL_CASE_DETAILS,
-        payload: evalHistoryResponse,
+        payload: sortedcaseDetailsByDesc,
       });
-      const response = R.head(evalHistoryResponse);
+      const response = R.head(sortedcaseDetailsByDesc);
       const action = {
         payload: {
           evalId: response.evalId,
@@ -259,7 +266,7 @@ function* fetchEvalCaseDetails(payload) {
   } catch (ex) {
     yield put({
       type: EVAL_CASE_DETAILS,
-      payload: evalHistoryResponse,
+      payload: sortedcaseDetailsByDesc,
     });
   }
 }
