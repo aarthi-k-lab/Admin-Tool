@@ -16,10 +16,10 @@
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('type', 'text/css');
       try {
-        http.open('HEAD', "https://unpkg.com/react-table@latest/react-table.css", false);
+        http.open('HEAD', "https://unpkg.com/react-table@6.11.5/react-table.css", false);
         http.send();
         if (http.status === 200) {
-          link.setAttribute('href', 'https://unpkg.com/react-table@latest/react-table.css');
+          link.setAttribute('href', 'https://unpkg.com/react-table@6.11.5/react-table.css');
         }
         else {
           throw Error;
