@@ -8,29 +8,31 @@
   <link rel="stylesheet" href="/static/css/normalize.css" />
   <link rel="stylesheet" href="/static/css/colors.css" />
   <link rel="stylesheet" href="/static/css/DateTimeRange.css" />
+  <link rel="stylesheet" href="/static/css/react-table.css" />
   <title><%= htmlWebpackPlugin.options.title %></title>
   <script>
-    function resourceExists(url) {
-      const http = new XMLHttpRequest();
-      const link = document.createElement('link');
-      link.setAttribute('rel', 'stylesheet');
-      link.setAttribute('type', 'text/css');
-      try {
-        http.open('HEAD', "https://unpkg.com/react-table@6.11.5/react-table.css", false);
-        http.send();
-        if (http.status === 200) {
-          link.setAttribute('href', 'https://unpkg.com/react-table@6.11.5/react-table.css');
-        }
-        else {
-          throw Error;
-        }
-      }
-      catch (err) {
-        link.setAttribute('href', 'https://unpkg.com/react-table@6.10.3/react-table.css');
-      }
-      document.getElementsByTagName('head')[0].appendChild(link);
-    }
-    resourceExists();
+    // ----- Commented for future refernce and added css file to the static folder with stabilized version 6.11.5   -----
+    // function resourceExists(url) {
+    //   const http = new XMLHttpRequest();
+    //   const link = document.createElement('link');
+    //   link.setAttribute('rel', 'stylesheet');
+    //   link.setAttribute('type', 'text/css');
+    //   try {
+    //     http.open('HEAD', "https://unpkg.com/react-table@latest/react-table.css", false);
+    //     http.send();
+    //     if (http.status === 200) {
+    //       link.setAttribute('href', 'https://unpkg.com/react-table@latest/react-table.css');
+    //     }
+    //     else {
+    //       throw Error;
+    //     }
+    //   }
+    //   catch (err) {
+    //     link.setAttribute('href', 'https://unpkg.com/react-table@6.10.3/react-table.css');
+    //   }
+    //   document.getElementsByTagName('head')[0].appendChild(link);
+    // }
+    // resourceExists();
   </script>
 </head>
 

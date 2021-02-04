@@ -176,7 +176,13 @@ class CommentsWidget extends Component {
   }
 
   showCommentsArea() {
-    const { comments, User } = this.props;
+    let {
+      comments,
+    } = this.props;
+    const {
+      User, evalComments, isAdditionalInfoOpen, addInfoEvalId,
+    } = this.props;
+    comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
     return (
       comments.map(comment => (
         <div
@@ -205,8 +211,10 @@ class CommentsWidget extends Component {
 
   renderCommentsActivity() {
     const {
-      comments, LoanNumber, EvalId, isAssigned, searchArea,
+      evalComments, isAdditionalInfoOpen, LoanNumber, EvalId, isAssigned, searchArea, addInfoEvalId,
     } = this.props;
+    let { comments } = this.props;
+    comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
     const { content } = this.state;
     return (
       <>
@@ -261,10 +269,14 @@ const TestHooks = {
 };
 
 CommentsWidget.propTypes = {
+  addInfoEvalId: PropTypes.string.isRequired,
   AppName: PropTypes.string,
   comments: PropTypes.arrayOf(PropTypes.shape({
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
+  })).isRequired,
+  evalComments: PropTypes.arrayOf(PropTypes.shape({
+    content: PropTypes.string.isRequired,
   })).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
@@ -305,6 +317,7 @@ const mapStateToProps = state => ({
   User: loginSelectors.getUser(state),
   isAssigned: dashboardSelectors.isAssigned(state),
   isAdditionalInfoOpen: dashboardSelectors.isAdditionalInfoOpen(state),
+  addInfoEvalId: dashboardSelectors.addInfoEvalId(state),
 });
 
 const mapDispatchToProps = dispatch => ({

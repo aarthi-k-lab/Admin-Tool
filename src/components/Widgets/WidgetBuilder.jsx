@@ -27,9 +27,16 @@ class WidgetBuilder extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { rightAppBarSelected } = state;
-    const { trialHeader, type, milestonePageOpen } = props;
+    const {
+      trialHeader, type, milestonePageOpen, inSearchPage, isAdditionalInfoOpen, isHistoryOpen,
+    } = props;
     const isTrialHeader = trialHeader ? trialHeader.trialName : '';
-
+    if (!isHistoryOpen && !isAdditionalInfoOpen && inSearchPage) {
+      return {
+        rightAppBar: getSearchLoanWidget(),
+        rightAppBarOpen: false,
+      };
+    }
     if (milestonePageOpen && R.isEmpty(rightAppBarSelected)) {
       return {
         rightAppBarSelected: 'History',

@@ -220,12 +220,17 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
     }
     case SEARCH_LOAN_RESULT: {
       let getSearchLoanResponse = {};
+      let loannumber = null;
       if (action.payload) {
         getSearchLoanResponse = action.payload;
+
+        const { loanNumber } = getSearchLoanResponse;
+        loannumber = loanNumber;
       }
       return {
         ...state,
         getSearchLoanResponse,
+        loanNumber: loannumber,
         assignLoanResponse: {},
         unassignLoanResponse: {},
         clearSearch: true,
@@ -800,9 +805,12 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
     }
 
     case SET_EVAL_INDEX: {
+      const { index, evalId } = action.payload;
+
       return {
         ...state,
-        evalIndex: action.payload,
+        evalIndex: index,
+        addInfoEvalId: evalId,
       };
     }
 

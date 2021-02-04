@@ -194,8 +194,8 @@ function* watchAutoSave() {
 }
 
 const fetchEvalComments = function* fetchEvalComments() {
-  const loanId = yield select(selectors.loanNumber);
-  yield put(commentsActions.loadCommentsForEvalsAction({ loanId }));
+  const loanNumber = yield select(selectors.loanNumber);
+  yield put(commentsActions.loadCommentsForEvalsAction({ loanNumber }));
 };
 
 const fetchCaseDetails = function* fetchCaseDetails(action) {
@@ -221,7 +221,7 @@ const fetchCaseDetails = function* fetchCaseDetails(action) {
       yield call(fetchEvalComments);
       yield put({
         type: SET_EVAL_INDEX,
-        payload: index,
+        payload: { index, evalId },
       });
     }
   } catch (ex) {
