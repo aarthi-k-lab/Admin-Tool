@@ -278,23 +278,29 @@ class TabView extends React.Component {
               )}
           </div>
           {(checkButtonState || isFileRemoved) && (
-            <Button
-              color="primary"
-              component="label"
-              id="upload"
-              onChange={this.handleUpload}
-              style={{
-                label: 'uploadLabel',
-              }}
-              styleName="uploadButton"
-              variant="contained"
-            >
-              {buttonState === 'SUBMIT' ? 'UPLOAD' : buttonState}
-              <input
-                style={{ display: 'none' }}
-                type="file"
-              />
-            </Button>
+            <>
+              <form onChange={this.handleUpload} styleName="drap-and-drop-area">
+                <input type="file" />
+                <p>Drag your files here or click in this area.</p>
+              </form>
+              <Button
+                color="primary"
+                component="label"
+                id="upload"
+                onChange={this.handleUpload}
+                style={{
+                  label: 'uploadLabel',
+                }}
+                styleName="uploadButton"
+                variant="contained"
+              >
+                {buttonState === 'SUBMIT' ? 'UPLOAD' : buttonState}
+                <input
+                  style={{ display: 'none' }}
+                  type="file"
+                />
+              </Button>
+            </>
           )}
         </div>
       </Grid>
