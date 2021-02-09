@@ -41,6 +41,7 @@ class TimelineItem extends React.PureComponent {
     }
   }
 
+
   render() {
     const { taskData, stagerTasks, active } = this.props;
     const { isOpen } = this.state;
@@ -106,11 +107,11 @@ class TimelineItem extends React.PureComponent {
           <div />
         </div>
 
-        {isOpen && !R.isEmpty(stagerTasks)
+        {isOpen && !R.isNil(stagerTasks)
           && (
           <div styleName="timeline-container-inner">
             {' '}
-            {stagerTasks && stagerTasks.map(data => (
+            {stagerTasks[`${taskData.creDttm}+${taskData.currStsDttm}`] && stagerTasks[`${taskData.creDttm}+${taskData.currStsDttm}`].map(data => (
               <TimelineSubItem key={data.disName} grpData={data} />
             ))}
           </div>
@@ -136,14 +137,8 @@ TimelineItem.propTypes = {
   getTaskDetails: PropTypes.func.isRequired,
   handleTimelineClick: PropTypes.func.isRequired,
   prcsId: PropTypes.string.isRequired,
-  stagerTasks: PropTypes.arrayOf(
-    PropTypes.shape({
-      disCat: PropTypes.string,
-      disName: PropTypes.string,
-      lastAsgn: PropTypes.string,
-      stsDttm: PropTypes.string,
-    }),
-  ).isRequired,
+  stagerTasks: PropTypes.shape({
+  }).isRequired,
   taskData: PropTypes.shape({
     asgnDttm: PropTypes.string,
     asgnUsrNm: PropTypes.string,

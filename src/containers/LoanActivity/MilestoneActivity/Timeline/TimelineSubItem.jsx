@@ -33,7 +33,7 @@ class TimelineSubItem extends React.PureComponent {
                 {!R.isNil(grpData) && <div styleName={R.contains(R.propOr('N/A', 'disCat', grpData), ['Rejected', 'Failed']) ? 'failedStatus' : 'successStatus'}>{grpData.disCat}</div>}
                 <div>
                   <span styleName="header-style">
-                    { grpData.stsDttm === null ? '-' : moment(grpData.stsDttm).tz('America/Chicago').format('DD/MM/YYYY HH:mm:ss')}
+                    { grpData.stsDttm === null ? '-' : moment(grpData.stsDttm).tz('America/Chicago').format('MM/DD/YYYY HH:mm:ss')}
                   </span>
                 </div>
               </Grid>

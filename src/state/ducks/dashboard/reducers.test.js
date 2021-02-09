@@ -180,6 +180,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       inProgress: false,
       isAdditionalInfoOpen: false,
       isHistoryOpen: false,
+      loanNumber: '1800840108',
       userNotification: {},
       wasSearched: true,
       getSearchLoanResponse: {

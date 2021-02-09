@@ -1239,23 +1239,9 @@ function* unassignWidgetLoan() {
         `/api/workassign/unassignLoan?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&appgroupName=${appgroupName}&taskName=${taskName}&isWidgetLoan=true`, {});
       if (response !== null) {
         yield put({ type: RESET_DATA });
-        yield put({
-          type: UNASSIGN_LOAN_RESULT,
-          payload: response,
-        });
         const selectedChecklistId = yield select(selectors.getSelectedChecklistId);
         yield call(fetchChecklistDetails, selectedChecklistId);
-      } else {
-        yield put({
-          type: UNASSIGN_LOAN_RESULT,
-          payload: { cmodProcess: { taskStatus: 'ERROR' } },
-        });
       }
-    } else {
-      yield put({
-        type: UNASSIGN_LOAN_RESULT,
-        payload: { cmodProcess: { taskStatus: 'ERROR' } },
-      });
     }
   } catch (e) {
     yield put({ type: UNASSIGN_LOAN_RESULT, payload: { cmodProcess: { taskStatus: 'ERROR' } } });

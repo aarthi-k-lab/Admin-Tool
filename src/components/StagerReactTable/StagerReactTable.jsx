@@ -156,7 +156,8 @@ class StagerReactTable extends React.PureComponent {
               value={filter ? filter.value : 'all'}
             >
               <option value="">{}</option>
-              {dropDownValues.map(value => <option value={value}>{value}</option>)}
+              {dropDownValues
+              && dropDownValues.map(value => <option value={value}>{value}</option>)}
             </select>
           );
           return columnObj;

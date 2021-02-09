@@ -84,9 +84,13 @@ const reducer = (state = {}, action) => {
     }
 
     case STORE_STAGER_TASKS: {
+      const { response, key } = action.payload;
+      let { stagerTasks } = state;
+      stagerTasks = stagerTasks || {};
+      stagerTasks[key] = response;
       return {
         ...state,
-        stagerTasks: action.payload,
+        stagerTasks: JSON.parse(JSON.stringify(stagerTasks)),
       };
     }
 

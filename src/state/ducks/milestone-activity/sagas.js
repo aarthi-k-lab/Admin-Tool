@@ -146,20 +146,21 @@ function* getStagerTasks(payload) {
     const {
       mlstnNm, minCreDttm, maxDttm, prcsId,
     } = payload.payload;
+    const key = `${minCreDttm}+${maxDttm}`;
     const response = yield call(Api.callGet, `/api/bpm-audit/loanactivity/stagerTasks/${prcsId}/${minCreDttm}/${maxDttm}/${mlstnNm}`);
     if (response) {
       yield put({
         type: STORE_STAGER_TASKS,
-        payload: response,
+        payload: { response, key },
       });
     } else {
       yield put({
         type: STORE_STAGER_TASKS,
-        payload: [],
+        payload: {},
       });
     }
   } catch (e) {
-    yield put({ type: STORE_STAGER_TASKS, payload: [] });
+    yield put({ type: STORE_STAGER_TASKS, payload: {} });
   }
 }
 
