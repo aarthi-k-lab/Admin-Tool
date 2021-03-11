@@ -57,7 +57,7 @@ class MilestonePage extends React.PureComponent {
                   </Typography>
                 )}
               >
-                <IconButton onClick={() => this.handleClick({ ALL_MILESTONE_HISTORY })}>
+                <IconButton onClick={() => this.handleClick(ALL_MILESTONE_HISTORY)}>
                   <HistoryIcon />
                 </IconButton>
               </Tooltip>

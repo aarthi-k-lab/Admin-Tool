@@ -181,11 +181,12 @@ class CommentsWidget extends Component {
       comments,
     } = this.props;
     const {
-      User, evalComments, isAdditionalInfoOpen, isHistoryOpen, addInfoEvalId, wasSearched,
+      User, evalComments, isAdditionalInfoOpen, isHistoryOpen, addInfoEvalId, wasSearched, EvalId,
     } = this.props;
     comments = wasSearched ? R.flatten(R.map(comm => comm.comments, evalComments.comments))
       : comments;
-    comments = isAdditionalInfoOpen || isHistoryOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
+    comments = isAdditionalInfoOpen || isHistoryOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
+
     return (
       comments.map(comment => (
         <div
