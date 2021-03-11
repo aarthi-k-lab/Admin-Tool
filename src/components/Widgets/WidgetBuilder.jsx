@@ -28,15 +28,10 @@ class WidgetBuilder extends Component {
   static getDerivedStateFromProps(props, state) {
     const { rightAppBarSelected } = state;
     const {
-      trialHeader, type, milestonePageOpen, inSearchPage, isAdditionalInfoOpen, isHistoryOpen,
+      trialHeader, type, milestonePageOpen,
     } = props;
     const isTrialHeader = trialHeader ? trialHeader.trialName : '';
-    if (!isHistoryOpen && !isAdditionalInfoOpen && inSearchPage) {
-      return {
-        rightAppBar: getSearchLoanWidget(),
-        rightAppBarOpen: false,
-      };
-    }
+
     if (milestonePageOpen && R.isEmpty(rightAppBarSelected)) {
       return {
         rightAppBarSelected: 'History',
@@ -69,8 +64,8 @@ class WidgetBuilder extends Component {
   }
 
   handleAdditionalInfo = (event, id) => {
-    const { isValid, inSearchPage, isAdditionalInfoOpen } = this.props;
-    if ((!isValid && id === 'Additional Info') || (inSearchPage && !isAdditionalInfoOpen && id === 'Comments')) {
+    const { isValid } = this.props;
+    if ((!isValid && id === 'Additional Info')) {
       event.stopPropagation();
     } else {
       this.changeAppBarState(id);

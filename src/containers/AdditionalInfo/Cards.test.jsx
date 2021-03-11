@@ -79,6 +79,5 @@ describe('<Cards>', () => {
   it('should display table data on SHOW HISTORY Click', () => {
     wrapper.find('WithStyles(ForwardRef(Grid))').at(17).simulate('click');
     expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(65);
-    console.log(wrapper.debug());
   });
 });

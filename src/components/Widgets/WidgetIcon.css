@@ -12,11 +12,6 @@
   background:  rgb(242, 242, 242);
 }
 
-.icon-component {
-  position: relative;
-  top: 50%;
-  height: 2.5rem;
-  width: 2.5rem;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.history {
+  margin-right: 0.2rem !important;
 }

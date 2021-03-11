@@ -15,7 +15,7 @@ describe('<WidgetIcon />', () => {
     const wrapper = shallow(
       <TestExports.WidgetIcon data={data} />,
     );
-    expect(wrapper.find('div')).toHaveLength(2);
+    expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(2);
   });
 
   it('triggers onClick handler', () => {

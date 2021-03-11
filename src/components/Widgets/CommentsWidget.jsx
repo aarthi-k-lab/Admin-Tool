@@ -175,14 +175,17 @@ class CommentsWidget extends Component {
     this.setState({ content: '' });
   }
 
+
   showCommentsArea() {
     let {
       comments,
     } = this.props;
     const {
-      User, evalComments, isAdditionalInfoOpen, addInfoEvalId,
+      User, evalComments, isAdditionalInfoOpen, isHistoryOpen, addInfoEvalId, wasSearched,
     } = this.props;
-    comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
+    comments = wasSearched ? R.flatten(R.map(comm => comm.comments, evalComments.comments))
+      : comments;
+    comments = isAdditionalInfoOpen || isHistoryOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
     return (
       comments.map(comment => (
         <div
@@ -192,6 +195,7 @@ class CommentsWidget extends Component {
         >
           <div id="row_header" styleName="row-header">
             <div styleName={comment.userName === User.userDetails.name ? 'messagee-body-current-user' : 'message-body-other-user'}>
+              { wasSearched && !isAdditionalInfoOpen && !isHistoryOpen && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div> }
               {comment.comment}
               <div styleName="message-body-bottom" />
               <div>
@@ -211,9 +215,11 @@ class CommentsWidget extends Component {
 
   renderCommentsActivity() {
     const {
-      evalComments, isAdditionalInfoOpen, LoanNumber, EvalId, isAssigned, searchArea, addInfoEvalId,
+      evalComments, isAdditionalInfoOpen, LoanNumber, EvalId,
+      isAssigned, searchArea, addInfoEvalId, wasSearched,
     } = this.props;
     let { comments } = this.props;
+    comments = wasSearched ? evalComments.comments : comments;
     comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
     const { content } = this.state;
     return (
@@ -282,6 +288,7 @@ CommentsWidget.propTypes = {
   groupName: PropTypes.string,
   isAdditionalInfoOpen: PropTypes.bool.isRequired,
   isAssigned: PropTypes.bool.isRequired,
+  isHistoryOpen: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
@@ -295,9 +302,11 @@ CommentsWidget.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
+  wasSearched: PropTypes.bool,
 };
 
 CommentsWidget.defaultProps = {
+  wasSearched: false,
   AppName: 'CMOD',
   ProcIdType: 'WF_PRCS_ID',
   groupName: '',
@@ -317,7 +326,9 @@ const mapStateToProps = state => ({
   User: loginSelectors.getUser(state),
   isAssigned: dashboardSelectors.isAssigned(state),
   isAdditionalInfoOpen: dashboardSelectors.isAdditionalInfoOpen(state),
+  isHistoryOpen: dashboardSelectors.isHistoryOpen(state),
   addInfoEvalId: dashboardSelectors.addInfoEvalId(state),
+  wasSearched: dashboardSelectors.wasSearched(state),
 });
 
 const mapDispatchToProps = dispatch => ({

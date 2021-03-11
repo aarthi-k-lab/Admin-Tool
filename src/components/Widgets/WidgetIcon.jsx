@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
 import './WidgetIcon.css';
 
 const WidgetIcon = (props) => {
@@ -8,25 +9,22 @@ const WidgetIcon = (props) => {
     isAdditionalInfoOpen, isHistoryOpen, toggleWidget,
   } = props;
   const isSelected = (rightAppBarOpen && rightAppBarSelected === data.id)
-  || (isHistoryOpen && data.id === 'History')
-  || (isAdditionalInfoOpen && data.id === 'Additional Info')
-   || (toggleWidget && data.id === 'BookingAutomation');
+    || (isHistoryOpen && data.id === 'History')
+    || (isAdditionalInfoOpen && data.id === 'Additional Info')
+    || (toggleWidget && data.id === 'BookingAutomation');
   return (
-    <div
-      key={data.id}
+    <Grid
+      alignItems="center"
+      container
+      justify="center"
       onClick={onWidgetClick}
-      role="presentation"
       styleName={isSelected
         ? 'component-selected' : 'component-not-selected'}
     >
-      <div
-        id={data.id}
-        styleName="icon-component"
-        title={data.id}
-      >
+      <Grid item styleName={data.id === 'History' ? 'history' : ''}>
         {data.icon}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 
