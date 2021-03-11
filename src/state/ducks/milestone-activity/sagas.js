@@ -9,6 +9,7 @@ import {
 import * as Api from 'lib/Api';
 import * as R from 'ramda';
 import { selectors as dashboardSelectors } from 'ducks/dashboard/index';
+import { ALL_MILESTONE_HISTORY } from '../../../constants/auditView';
 import {
   LOAD_MLSTN_SAGA,
   LOAD_MLSTN_RESULT,
@@ -42,12 +43,19 @@ function* getTaskDetails(payload) {
   try {
     const mlstnNm = payload.payload;
     const processId = yield select(dashboardSelectors.processId);
-    const response = yield call(Api.callGet, `/api/bpm-audit/loanactivity/taskDetails/${processId}/${mlstnNm}`);
+    const response = yield call(Api.callGet, `/api/bpm-audit/loanactivity/taskDetails/${processId}`);
     if (response) {
-      yield put({
-        type: STORE_TASKS_DETAILS,
-        payload: response,
-      });
+      if (R.equals(mlstnNm, ALL_MILESTONE_HISTORY)) {
+        yield put({
+          type: STORE_TASKS_DETAILS,
+          payload: response,
+        });
+      } else {
+        yield put({
+          type: STORE_TASKS_DETAILS,
+          payload: R.filter(obj => obj.mlstNm === mlstnNm, response),
+        });
+      }
     } else {
       yield put({
         type: STORE_TASKS_DETAILS,

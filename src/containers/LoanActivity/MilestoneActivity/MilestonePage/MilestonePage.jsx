@@ -4,12 +4,25 @@ import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import ContentHeader from 'components/ContentHeader';
-import Timeline from '../Timeline';
-import CenterPane from '../CenterPane';
+import HistoryIcon from '@material-ui/icons/History';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 import './MilestonePage.css';
+import { connect } from 'react-redux';
+import { operations as milestoneOperations } from 'ducks/milestone-activity';
+import Typography from '@material-ui/core/Typography';
+import CenterPane from '../CenterPane';
+import Timeline from '../Timeline';
 import WidgetBuilder from '../../../../components/Widgets/WidgetBuilder';
+import { ALL_MILESTONE_HISTORY, CLOSED } from '../../../../constants/auditView';
+
 
 class MilestonePage extends React.PureComponent {
+  handleClick(mlstnNm) {
+    const { getTaskDetails } = this.props;
+    getTaskDetails(mlstnNm);
+  }
+
   render() {
     const {
       groupTask,
@@ -23,7 +36,7 @@ class MilestonePage extends React.PureComponent {
     const groupTaskData = groupTask && R.sort(R.descend(R.prop('maxCurrStsDttm')), groupTask);
     const processStatus = () => {
       if (groupTaskData && groupTaskData.length) {
-        return R.propOr('', 'currSts', R.head(groupTaskData)) === 'Closed' ? 'CLOSED' : R.toUpper(R.propOr('', 'mlstnNm', R.head(groupTaskData)));
+        return R.propOr('', 'currSts', R.head(groupTaskData)) === CLOSED ? 'CLOSED' : R.toUpper(R.propOr('', 'mlstnNm', R.head(groupTaskData)));
       }
       return '';
     };
@@ -36,6 +49,18 @@ class MilestonePage extends React.PureComponent {
             <div styleName="page-header">
               <span>Current Status: </span>
               <span styleName="process-status">{processStatus()}</span>
+              <Tooltip
+                placement="right-end"
+                title={(
+                  <Typography>
+                    {ALL_MILESTONE_HISTORY}
+                  </Typography>
+                )}
+              >
+                <IconButton onClick={() => this.handleClick({ ALL_MILESTONE_HISTORY })}>
+                  <HistoryIcon />
+                </IconButton>
+              </Tooltip>
             </div>
             <div styleName="status-details">
               <Timeline
@@ -75,7 +100,13 @@ MilestonePage.defaultProps = {
   inSearchPage: false,
 };
 
+const mapDispatchToProps = dispatch => ({
+  getTaskDetails: milestoneOperations.getTaskDetailsByTaskNm(dispatch),
+  getStagerTasks: milestoneOperations.getStagerTasksByDttm(dispatch),
+});
+
 MilestonePage.propTypes = {
+  getTaskDetails: PropTypes.func.isRequired,
   groupTask: PropTypes.arrayOf(
     PropTypes.shape({
       asgnDttm: PropTypes.string,
@@ -96,5 +127,6 @@ MilestonePage.propTypes = {
   prcsId: PropTypes.string.isRequired,
 };
 
-export default MilestonePage;
+export default connect(null, mapDispatchToProps)(MilestonePage);
+
 export { TestExports };

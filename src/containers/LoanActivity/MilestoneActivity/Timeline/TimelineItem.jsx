@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { operations as milestoneOperations, selectors as milestoneSelector } from 'ducks/milestone-activity';
 import TimelineSubItem from './TimelineSubItem';
+import { ALL_MILESTONE_HISTORY, CLOSED } from '../../../../constants/auditView';
 
 
 const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm A'));
@@ -43,14 +44,16 @@ class TimelineItem extends React.PureComponent {
 
 
   render() {
-    const { taskData, stagerTasks, active } = this.props;
+    const {
+      taskData, stagerTasks, active, mlstnName,
+    } = this.props;
     const { isOpen } = this.state;
     const assignUserName = taskData.asgnUsrNm.lastIndexOf('@') !== -1
       ? taskData.asgnUsrNm.substring(0, taskData.asgnUsrNm.lastIndexOf('@')) : taskData.asgnUsrNm;
     return (
       <>
         <div onClick={() => this.handleClick(taskData.mlstnNm)} styleName="timeline-item">
-          <div styleName={active ? 'timeline-item-content selected-item' : 'timeline-item-content'}>
+          <div styleName={active && mlstnName !== ALL_MILESTONE_HISTORY ? 'timeline-item-content selected-item' : 'timeline-item-content'}>
             <Grid container styleName="main-container">
               <Grid item xs={2}>
                 <AccountCircleIcon />
@@ -65,7 +68,7 @@ class TimelineItem extends React.PureComponent {
                 <div>
                   <span>
                     {
-                      taskData.currSts === 'Closed'
+                      taskData.currSts === CLOSED
                         ? `IN ${moment(taskData.currStsDttm).diff(moment(taskData.creDttm), 'days')} DAYS`
                         : `IN ${moment().diff(moment(taskData.creDttm), 'days')} DAYS`
                     }
@@ -85,7 +88,7 @@ class TimelineItem extends React.PureComponent {
                   <br />
                   <span styleName="header-style">
                     {
-                      taskData.currSts === 'Closed'
+                      taskData.currSts === CLOSED
                         ? getCSTDateTime(taskData.currStsDttm)
                         : '-'
                     }
@@ -136,6 +139,7 @@ TimelineItem.propTypes = {
   getStagerTasks: PropTypes.func.isRequired,
   getTaskDetails: PropTypes.func.isRequired,
   handleTimelineClick: PropTypes.func.isRequired,
+  mlstnName: PropTypes.string.isRequired,
   prcsId: PropTypes.string.isRequired,
   stagerTasks: PropTypes.shape({
   }).isRequired,
@@ -154,6 +158,7 @@ TimelineItem.propTypes = {
 
 const mapStateToProps = state => ({
   stagerTasks: milestoneSelector.getStagerTasksData(state),
+  mlstnName: milestoneSelector.getMlstnName(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimelineItem);

@@ -78,3 +78,8 @@
 .centerpane {
    width: 90%;
 } 
+
+.historyIcon {
+  float: right;
+  font-size: 2rem !important;
+}
