@@ -1714,7 +1714,11 @@ function* onSelectTrialTask(payload) {
 
 function* populateDropdown() {
   try {
-    const response = yield call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Outgoing');
+    const userGroupsList = yield select(loginSelectors.getGroupList());
+    const isManager = userGroupsList.includes('docgenvendor-mgr');
+    const response = yield call(Api.callGet, `/api/dataservice/api/covius/eventCategoriesAndTypes/${isManager}`);
+    // const response = yield call(Api.callGet,
+    // '/api/dataservice/api/covius/eventCategoriesAndTypes/Outgoing');
     yield put({
       type: SAVE_EVENTS_DROPDOWN,
       payload: response,
@@ -1732,27 +1736,27 @@ function* populateDropdown() {
 
 function* onCoviusBulkUpload(payload) {
   const {
-    caseIds, holdAutomation, eventCode, eventCategory,
+    ids, holdAutomation, eventCode, eventCategory, idType,
   } = payload.payload;
   let response;
   try {
-    if (caseIds.length > 500) {
+    if (ids.length > 500) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
           level: LEVEL_ERROR,
-          status: 'Please upload a maximum of 500 case ids.',
+          status: `Please upload a maximum of 500 ${idType}`,
         },
       });
       return;
     }
-    const caseSet = new Set(caseIds);
-    if (caseIds.length !== caseSet.size) {
+    const caseSet = new Set(ids);
+    if (ids.length !== caseSet.size) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
           level: LEVEL_ERROR,
-          status: 'There are duplicate case id(s). Please correct and resubmit',
+          status: `There are duplicate ${idType}. Please correct and resubmit`,
         },
       });
       return;
@@ -1761,7 +1765,8 @@ function* onCoviusBulkUpload(payload) {
     const userEmail = R.path(['userDetails', 'email'], user);
     const requestBody = {
       holdAutomation,
-      caseIds,
+      caseIds: R.includes('Case', idType) ? ids : '',
+      requestIds: R.includes('Request', idType) ? ids : '',
       eventCode: eventCode.trim(),
       eventCategory: eventCategory.trim(),
       user: userEmail,

@@ -34,7 +34,7 @@ class CoviusBulkOrder extends React.PureComponent {
     super(props);
     this.csvLink = React.createRef();
     this.state = {
-      caseIds: '',
+      ids: '',
       isSubmitDisabled: 'disabled',
       selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
@@ -42,6 +42,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isResetDisabled: true,
       response: null,
       holdAutomation: false,
+      idType: '',
     };
     this.handleReset = this.handleReset.bind(this);
     this.renderNotepadArea = this.renderNotepadArea.bind(this);
@@ -57,25 +58,27 @@ class CoviusBulkOrder extends React.PureComponent {
     this.setState({
       selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
-      caseIds: '',
+      ids: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
+      idType: '',
     });
     onResetCoviusData();
   }
 
   onSubmitCases = () => {
     const {
-      caseIds, selectedEvent, selectedEventCategory, holdAutomation,
+      ids, selectedEvent, selectedEventCategory, holdAutomation, idType,
     } = this.state;
     const { onCoviusBulkSubmit } = this.props;
     this.setState({ isSubmitDisabled: 'disabled' });
-    const cases = caseIds.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
+    const cases = ids.trim().replace(/\n/g, ',').split(',').map(s => s.trim());
     const payload = {
-      caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
+      ids: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
       eventCode: selectedEvent.eventCode,
       eventCategory: selectedEventCategory,
       holdAutomation,
+      idType,
     };
     onCoviusBulkSubmit(payload);
   }
@@ -84,26 +87,27 @@ class CoviusBulkOrder extends React.PureComponent {
     this.setState({ holdAutomation: event.target.checked });
   };
 
-  handleCaseChange = (event) => {
-    const { selectedEvent, selectedEventCategory } = this.state;
-    const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/;
+  handleIdsChange = (event) => {
+    const { selectedEvent, selectedEventCategory, idType } = this.state;
+    const re = idType === 'Case id(s)' ? /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/ : /[~`(@!#$%^&*+.)=\-[\]\\';/{}|\\":<>?]/;
     if (event.target.value === '' || !re.test(event.target.value)) {
       this.setState({
-        caseIds: event.target.value,
+        ids: event.target.value,
         isSubmitDisabled: event.target.value.trim() && !R.isEmpty(selectedEvent.eventCode) && !R.isEmpty(selectedEventCategory) ? '' : 'disabled',
         isResetDisabled: R.isEmpty(event.target.value.trim()) && R.isEmpty(selectedEvent.eventCode)
           && R.isEmpty(selectedEventCategory),
+        idType,
       });
     }
   }
 
   handleEventName = (event) => {
-    const { caseIds, selectedEventCategory } = this.state;
+    const { ids, selectedEventCategory } = this.state;
     const { coviusEventOptions } = this.props;
     const eventName = event.target.value;
     const selectedEvent = R.find(item => item.eventCode === eventName, coviusEventOptions);
     let disableSubmit = '';
-    disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(caseIds) ? '' : 'disabled';
+    disableSubmit = !R.isEmpty(eventName) && !R.isEmpty(selectedEventCategory) && !R.isEmpty(ids) ? '' : 'disabled';
     this.setState({ selectedEvent, isSubmitDisabled: disableSubmit });
   }
 
@@ -124,6 +128,14 @@ class CoviusBulkOrder extends React.PureComponent {
       isSubmitDisabled: 'disabled',
       eventNames: eventList,
       isResetDisabled: false,
+    });
+  }
+
+  handleIdsCategory = (event) => {
+    const idType = event.target.value;
+    this.setState({
+      idType,
+      ids: '',
     });
   }
 
@@ -150,6 +162,29 @@ class CoviusBulkOrder extends React.PureComponent {
           value={selectedEventCategory}
         >
           {eventCategories.map(item => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  }
+
+  renderIdsDropDown = () => {
+    const { idType } = this.state;
+    const idsCategories = ['Case id(s)', 'Request id(s)'];
+    return (
+      <FormControl variant="outlined">
+        <Select
+          id="eventIdsDropdown"
+          input={<OutlinedInput name="selectedIds" />}
+          label="idcategory"
+          onChange={this.handleIdsCategory}
+          styleName="drop-down-select"
+          value={idType}
+        >
+          {idsCategories.map(item => (
             <MenuItem key={item} value={item}>
               {item}
             </MenuItem>
@@ -218,10 +253,11 @@ class CoviusBulkOrder extends React.PureComponent {
     this.setState({
       selectedEventCategory: ' ',
       selectedEvent: { eventCode: '', hasMetadata: false },
-      caseIds: '',
+      ids: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
       eventNames: [],
+      idType: '',
     });
   }
 
@@ -262,8 +298,8 @@ class CoviusBulkOrder extends React.PureComponent {
 
   renderNotepadArea() {
     const {
-      caseIds, isSubmitDisabled, eventNames, isResetDisabled,
-      selectedEventCategory,
+      ids, isSubmitDisabled, eventNames, isResetDisabled,
+      selectedEventCategory, idType,
     } = this.state;
     return (
       <div styleName="status-details-parent">
@@ -320,18 +356,36 @@ class CoviusBulkOrder extends React.PureComponent {
         {this.renderNamesDropDown(eventNames)}
         {selectedEventCategory.trim() === DashboardModel.EVENT_CATEGORY_FILTER
         && this.renderHoldAutomationToggle()}
+        <div styleName="loan-numbers">
+          <span>
+            {'ID Type'}
+          </span>
+          <span styleName="errorIcon">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+                  This is the type of Ids case/request?
+                </Typography>
+              )}
+            >
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
+          </span>
+        </div>
+        {this.renderIdsDropDown()}
         <span styleName="loan-numbers">
-          {'Case id(s)'}
+          {idType}
         </span>
         <div styleName="status-details">
           <TextField
-            id="caseIds"
+            id="ids"
             margin="normal"
             multiline
-            onChange={event => this.handleCaseChange(event)}
+            onChange={event => this.handleIdsChange(event)}
             rows={30}
             style={{ width: '95%', resize: 'none' }}
-            value={caseIds}
+            value={ids}
           />
         </div>
         <div styleName="interactive-button">
