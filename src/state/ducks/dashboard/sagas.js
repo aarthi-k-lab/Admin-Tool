@@ -1765,8 +1765,8 @@ function* onCoviusBulkUpload(payload) {
     const userEmail = R.path(['userDetails', 'email'], user);
     const requestBody = {
       holdAutomation,
-      caseIds: R.includes('Case', idType) ? ids : '',
-      requestIds: R.includes('Request', idType) ? ids : '',
+      caseIds: R.indexOf('Case', idType) ? '' : ids,
+      requestIds: R.indexOf('Request', idType) ? '' : ids,
       eventCode: eventCode.trim(),
       eventCategory: eventCategory.trim(),
       user: userEmail,
