@@ -84,6 +84,7 @@ import {
   SET_ADDITIONAL_INFO_SELECTED,
   SET_HISTORY_SELECTED,
   SAVE_EVAL_LOANVIEW,
+  CLEAR_SEARCH,
 } from './types';
 
 const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
@@ -825,6 +826,13 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         isHistoryOpen: action.payload,
+      };
+    }
+
+    case CLEAR_SEARCH: {
+      return {
+        ...state,
+        wasSearched: false,
       };
     }
 

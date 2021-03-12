@@ -63,6 +63,7 @@ import {
   setAdditionalInfoSelected,
   setHistorySelected,
   setTombstoneData,
+  clearSearch,
 } from './actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
@@ -308,6 +309,10 @@ const onHistorySelect = dispatch => (payload) => {
   dispatch(setHistorySelected(payload));
 };
 
+const clearOnSearch = dispatch => payload => dispatch(
+  clearSearch(payload),
+);
+
 const operations = {
   onWidgetToggle,
   setCoviusIndex,
@@ -374,6 +379,7 @@ const operations = {
   onAdditionalInfoSelect,
   onHistorySelect,
   setTombstoneDataForLoanView,
+  clearOnSearch,
 };
 
 export default operations;

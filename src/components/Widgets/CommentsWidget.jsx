@@ -11,7 +11,7 @@ import * as R from 'ramda';
 import DashboardModel from 'models/Dashboard';
 import { selectors, operations } from '../../state/ducks/comments';
 import './CommentsWidget.css';
-import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
+import { selectors as dashboardSelectors, operations as dashboardOperations } from '../../state/ducks/dashboard';
 import { selectors as loginSelectors } from '../../state/ducks/login';
 
 const formatDateWithoutTimeZone = (date) => {
@@ -92,6 +92,11 @@ class CommentsWidget extends Component {
 
   componentDidUpdate() {
     this.commentArea.scrollTop = this.commentArea.scrollHeight;
+  }
+
+  componentWillUnmount() {
+    const { clearOnSearch } = this.props;
+    clearOnSearch(false);
   }
 
   onCommentChange(event) {
@@ -188,7 +193,7 @@ class CommentsWidget extends Component {
     comments = isAdditionalInfoOpen || isHistoryOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
 
     return (
-      comments.map(comment => (
+      comments && comments.map(comment => (
         <div
           key={comment.userName}
           id="row_main_container"
@@ -278,6 +283,7 @@ const TestHooks = {
 CommentsWidget.propTypes = {
   addInfoEvalId: PropTypes.string.isRequired,
   AppName: PropTypes.string,
+  clearOnSearch: PropTypes.bool.isRequired,
   comments: PropTypes.arrayOf(PropTypes.shape({
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
@@ -335,6 +341,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onGetComments: operations.getComments(dispatch),
   onPostComment: operations.postComment(dispatch),
+  clearOnSearch: dashboardOperations.clearOnSearch(dispatch),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentsWidget);
