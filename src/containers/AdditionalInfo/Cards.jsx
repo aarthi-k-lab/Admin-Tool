@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import SubdirectoryArrowRightIcon from '@material-ui/icons/SubdirectoryArrowRight';
 import ChatIcon from '@material-ui/icons/Chat';
 import Grid from '@material-ui/core/Grid';
+import moment from 'moment-timezone';
 import * as R from 'ramda';
 import './Cards.css';
 
-const formatDate = date => (date ? R.replace('T', ' ', date) : '-');
+const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(dateTime).format('MM/DD/YYYY hh:mm:ss A'));
 
+const formatDate = date => (date ? R.replace('T', ' ', getCSTDateTime(date)) : '-');
 
 const getCardSearchDetails = cardDetails => (
   cardDetails && cardDetails.map(data => (

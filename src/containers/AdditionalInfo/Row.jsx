@@ -6,12 +6,16 @@ import Collapse from '@material-ui/core/Collapse';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import moment from 'moment-timezone';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import * as R from 'ramda';
 import './Row.css';
 
-const formatDate = date => (date ? R.replace('T', ' ', date) : '-');
+const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(dateTime).format('MM/DD/YYYY hh:mm:ss A'));
+
+const formatDate = date => (date ? R.replace('T', ' ', getCSTDateTime(date)) : '-');
+
 
 const Row = (props) => {
   const { data, onClick, changeColor } = props;
@@ -24,9 +28,9 @@ const Row = (props) => {
         </TableCell>
         <TableCell align="center">{data.resolutionId}</TableCell>
         <TableCell align="center">{R.propOr('-', 'status', data)}</TableCell>
-        <TableCell align="center" colSpan={2}>{data.statusDate}</TableCell>
+        <TableCell align="center" colSpan={2}>{getCSTDateTime(data.statusDate)}</TableCell>
         <TableCell align="center" colSpan={1}>{R.propOr('-', 'substatus', data)}</TableCell>
-        <TableCell align="center" colSpan={2}>{data.substatusDate}</TableCell>
+        <TableCell align="center" colSpan={2}>{getCSTDateTime(data.substatusDate)}</TableCell>
         {!R.isNil(data.evalHistory) && !R.isEmpty(data.evalHistory)
           ? (
             <TableCell

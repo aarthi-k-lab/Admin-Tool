@@ -48,7 +48,7 @@ class ChecklistHistory extends React.Component {
     });
   }
 
-  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('YYYY-MM-DD HH:mm:ss'))
+  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A'))
 
   openWindowWithPost = (url, data) => {
     const form = document.createElement('form');

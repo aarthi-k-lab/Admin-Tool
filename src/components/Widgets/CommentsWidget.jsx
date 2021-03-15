@@ -16,7 +16,7 @@ import { selectors as loginSelectors } from '../../state/ducks/login';
 
 const formatDateWithoutTimeZone = (date) => {
   if (date) {
-    const newDate = moment(`${date}Z`).tz('America/Chicago').format('MMMM DD YYYY h:mm A');
+    const newDate = moment(`${date}Z`).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A');
     return newDate;
   }
   return null;

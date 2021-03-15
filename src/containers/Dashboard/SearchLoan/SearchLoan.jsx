@@ -13,6 +13,7 @@ import UserNotification from 'components/UserNotification/UserNotification';
 import {
   selectors as loginSelectors,
 } from 'ducks/login';
+import moment from 'moment-timezone';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -24,7 +25,6 @@ import AdditionalInfo from '../../AdditionalInfo/AdditionalInfo';
 import GoBackToSearch from '../../../components/GoBackToSearch/GoBackToSearch';
 import widgets from '../../../constants/widget';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
-
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
@@ -41,6 +41,7 @@ class SearchLoan extends React.PureComponent {
     this.validateLoanNumber = this.validateLoanNumber.bind(this);
     this.getLoanActivityPath = this.getLoanActivityPath.bind(this);
   }
+
 
   componentDidMount() {
     const {
@@ -400,8 +401,10 @@ SearchLoan.COLUMN_DATA = [
     Cell: row => <EvalTableRow row={row} />,
 
   }, {
+    id: 'pstatusDate',
     Header: 'STATUS DATE',
-    accessor: 'pstatusDate',
+    accessor: d => (R.isNil(d.pstatusDate) ? ''
+      : moment(d.pstatusDate).format('MM/DD/YYYY hh:mm:ss A')),
     maxWidth: 110,
     minWidth: 110,
     Cell: row => <EvalTableRow row={row} />,
@@ -436,14 +439,18 @@ SearchLoan.COLUMN_DATA = [
 
   }, {
     Header: 'TASK STATUS DATE',
-    accessor: 'tstatusDate',
+    id: 'tstatusDate',
+    accessor: d => (R.isNil(d.tstatusDate) ? ''
+      : moment(d.tstatusDate).format('MM/DD/YYYY hh:mm:ss A')),
     maxWidth: 110,
     minWidth: 110,
     Cell: row => <EvalTableRow row={row} />,
 
   }, {
     Header: 'ASSIGNED DATE',
-    accessor: 'assignedDate',
+    id: 'assignedDate',
+    accessor: d => (R.isNil(d.assignedDate) ? ''
+      : moment(d.assignedDate).format('MM/DD/YYYY hh:mm:ss A')),
     maxWidth: 110,
     minWidth: 110,
     Cell: row => <EvalTableRow row={row} />,
