@@ -244,12 +244,7 @@ function* fetchEvalCaseDetails(payload) {
         obj.evalHistory = !R.isNil(item.evalHistory) ? JSON.parse(item.evalHistory) : [];
         return obj;
       });
-      sortedcaseDetailsByDesc = R.sort(R.descend(
-        R.compose(
-          Number.parseInt,
-          R.prop('resolutionId'),
-        ),
-      ), evalHistoryResponse);
+      sortedcaseDetailsByDesc = R.sort(R.descend(R.prop('statusDate')), evalHistoryResponse);
       yield put({
         type: EVAL_CASE_DETAILS,
         payload: sortedcaseDetailsByDesc,

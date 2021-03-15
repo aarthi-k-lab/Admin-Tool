@@ -43,7 +43,6 @@ const headers = [
 ];
 
 const EvalTable = ({ rows, selectRow, selectedIndex }) => {
-  const sortedEvalDataByDesc = R.sort(R.descend(R.prop('statusDate')), rows);
   const rowsPerPage = 15;
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length);
   if (!R.isEmpty(rows)) {
@@ -56,7 +55,7 @@ const EvalTable = ({ rows, selectRow, selectedIndex }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedEvalDataByDesc.map((row, idx) => (
+            {rows.map((row, idx) => (
               <Row
                 changeColor={selectedIndex === idx}
                 data={row}
