@@ -126,3 +126,7 @@
     overflow-y: scroll;
     height: 95%;
   }
+
+  .AppBar {
+    width: 95% !important;
+  }

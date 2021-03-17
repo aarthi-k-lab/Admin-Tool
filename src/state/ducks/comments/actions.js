@@ -2,6 +2,7 @@ import {
   GET_COMMENTS_SAGA,
   GET_EVALCOMMENTS_SAGA,
   POST_COMMENT_SAGA,
+  CLEAR_SEARCH,
 } from './types';
 
 const loadCommentsAction = payload => ({
@@ -19,8 +20,14 @@ const postCommentAction = comment => ({
   payload: comment,
 });
 
+const clearSearch = payload => ({
+  type: CLEAR_SEARCH,
+  payload,
+});
+
 export {
   loadCommentsAction,
   loadCommentsForEvalsAction,
   postCommentAction,
+  clearSearch,
 };

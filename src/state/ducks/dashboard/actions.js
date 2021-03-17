@@ -67,7 +67,6 @@ import {
   SET_ADDITIONAL_INFO_SELECTED,
   SET_HISTORY_SELECTED,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
-  CLEAR_SEARCH,
 } from './types';
 
 
@@ -385,10 +384,6 @@ const setHistorySelected = payload => ({
   payload,
 });
 
-const clearSearch = payload => ({
-  type: CLEAR_SEARCH,
-  payload,
-});
 
 export {
   setPaymentDeferral,
@@ -458,5 +453,4 @@ export {
   evalSelectRow,
   setAdditionalInfoSelected,
   setHistorySelected,
-  clearSearch,
 };

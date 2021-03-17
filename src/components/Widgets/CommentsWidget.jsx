@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -11,7 +10,7 @@ import * as R from 'ramda';
 import DashboardModel from 'models/Dashboard';
 import { selectors, operations } from '../../state/ducks/comments';
 import './CommentsWidget.css';
-import { selectors as dashboardSelectors, operations as dashboardOperations } from '../../state/ducks/dashboard';
+import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
 import { selectors as loginSelectors } from '../../state/ducks/login';
 
 const formatDateWithoutTimeZone = (date) => {
@@ -120,6 +119,8 @@ class CommentsWidget extends Component {
       onGetComments,
       groupName,
       isAdditionalInfoOpen,
+      searchArea,
+
     } = this.props;
 
     const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
@@ -132,6 +133,7 @@ class CommentsWidget extends Component {
         processIdType: ProcIdType,
         processId: ProcessId,
         eventName,
+        searchArea,
       };
       onGetComments(payload);
     }
@@ -186,11 +188,13 @@ class CommentsWidget extends Component {
       comments,
     } = this.props;
     const {
-      User, evalComments, isAdditionalInfoOpen, isHistoryOpen, addInfoEvalId, wasSearched, EvalId,
+      User, evalComments, isAdditionalInfoOpen, isHistoryOpen,
+      addInfoEvalId, wasSearched, EvalId, showEvalId,
     } = this.props;
-    comments = wasSearched ? R.flatten(R.map(comm => comm.comments, evalComments.comments))
+    comments = wasSearched ? R.flatten(R.map(comm => comm.comments,
+      evalComments.comments))
       : comments;
-    comments = isAdditionalInfoOpen || isHistoryOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
+    comments = (isAdditionalInfoOpen || isHistoryOpen) ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
 
     return (
       comments && comments.map(comment => (
@@ -201,7 +205,7 @@ class CommentsWidget extends Component {
         >
           <div id="row_header" styleName="row-header">
             <div styleName={comment.userName === User.userDetails.name ? 'messagee-body-current-user' : 'message-body-other-user'}>
-              { wasSearched && !isAdditionalInfoOpen && !isHistoryOpen && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div> }
+              { showEvalId && !isAdditionalInfoOpen && !isHistoryOpen && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div> }
               {comment.comment}
               <div styleName="message-body-bottom" />
               <div>
@@ -302,6 +306,7 @@ CommentsWidget.propTypes = {
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
   searchArea: PropTypes.bool,
+  showEvalId: PropTypes.bool.isRequired,
   TaskId: PropTypes.number.isRequired,
   taskIterationCounter: PropTypes.number.isRequired,
   User: PropTypes.shape({
@@ -323,6 +328,7 @@ CommentsWidget.defaultProps = {
 const mapStateToProps = state => ({
   comments: selectors.getCommentsData(state),
   evalComments: selectors.getEvalComments(state),
+  showEvalId: selectors.showEvalInComments(state),
   // Disposition: dashboardSelectors.getDisposition(state),
   EvalId: dashboardSelectors.evalId(state),
   TaskId: dashboardSelectors.taskId(state),
@@ -341,7 +347,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onGetComments: operations.getComments(dispatch),
   onPostComment: operations.postComment(dispatch),
-  clearOnSearch: dashboardOperations.clearOnSearch(dispatch),
+  clearOnSearch: operations.clearOnSearch(dispatch),
 
 });
 

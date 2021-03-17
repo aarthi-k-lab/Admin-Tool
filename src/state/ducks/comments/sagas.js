@@ -10,6 +10,7 @@ import selectors from '../dashboard/selectors';
 import {
   GET_COMMENTS_SAGA,
   GET_COMMENTS_RESULT,
+  GET_SEARCH_AREA,
   POST_COMMENT_SAGA,
   GET_EVALCOMMENTS_SAGA,
   GET_EVALCOMMENTS_RESULT,
@@ -33,7 +34,19 @@ function* fireSnackBar(snackBarData) {
 function* getComments(payload) {
   try {
     const req = payload.payload;
-    const newPayload = yield call(Api.callGet, `/api/utility/comment?applicationName=${req.applicationName}&loanNumber=${req.loanNumber}&processId=${req.processId}&processIdType=${req.processIdType}`);
+    let newPayload = [];
+    const loanNumber = yield select(selectors.loanNumber);
+    const isAdditionalInfo = yield select(selectors.isAdditionalInfoOpen);
+    const isHistoryOpen = yield select(selectors.isHistoryOpen);
+    const { searchArea } = req;
+    yield put({
+      type: GET_SEARCH_AREA,
+      payload: searchArea,
+    });
+    if (searchArea && (!isAdditionalInfo || !isHistoryOpen)) {
+      newPayload = yield call(Api.callGet, `/api/utility/byLoan?loanId=${loanNumber}`);
+    }
+    newPayload = yield call(Api.callGet, `/api/utility/comment?applicationName=${req.applicationName}&loanNumber=${req.loanNumber}&processId=${req.processId}&processIdType=${req.processIdType}`);
     if (newPayload) {
       yield put({
         type: GET_COMMENTS_RESULT,

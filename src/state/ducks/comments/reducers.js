@@ -2,6 +2,8 @@ import {
   GET_COMMENTS_RESULT,
   POST_COMMENT_RESULT,
   GET_EVALCOMMENTS_RESULT,
+  GET_SEARCH_AREA,
+  CLEAR_SEARCH,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -28,6 +30,21 @@ const reducer = (state = {}, action) => {
         ...state,
         postResult,
         loading: false,
+      };
+    }
+    case GET_SEARCH_AREA: {
+      const searchArea = action.payload;
+      return {
+        ...state,
+        showEvalId: searchArea,
+      };
+    }
+
+
+    case CLEAR_SEARCH: {
+      return {
+        ...state,
+        showEvalId: false,
       };
     }
 

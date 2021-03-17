@@ -72,7 +72,7 @@ class AdditionalInfo extends React.Component {
     ), caseDetails);
     const { value } = this.state;
     if (!R.isEmpty(evalCaseDetails)) {
-      if (evalCaseDetails[index].evalId === '0') {
+      if (evalCaseDetails[index] && evalCaseDetails[index].evalId === '0') {
         sortedcaseDetailsByDesc = sortedcaseDetailsByDesc.filter(
           detail => detail.resolutionId === evalCaseDetails[index].resolutionId,
         );
@@ -96,11 +96,12 @@ class AdditionalInfo extends React.Component {
               />
             </Grid>
             <Grid item styleName="card-background " xs={6}>
-              <AppBar color="#fffff" position="static">
+              <AppBar color="#fffff" position="static" styleName="AppBar">
                 <Tabs
                   onChange={(event, newValue) => this.setState({ value: newValue })}
                   TabIndicatorProps={{ style: { background: '#000' } }}
                   value={value}
+                  variant="standard"
                 >
                   <Tab label="Cases" styleName="cardTab" {...this.a11yProps(0)} />
                 </Tabs>
