@@ -199,7 +199,6 @@ class CommentsWidget extends Component {
     return (
       comments && comments.map(comment => (
         <div
-          key={comment.userName}
           id="row_main_container"
           styleName={comment.userName === User.userDetails.name ? 'row-main-container-right' : 'row-main-container-left'}
         >
