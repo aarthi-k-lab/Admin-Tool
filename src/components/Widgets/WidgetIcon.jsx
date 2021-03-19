@@ -1,7 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
+import { makeStyles } from '@material-ui/core/styles';
 import './WidgetIcon.css';
+
+const useStyles = makeStyles(theme => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+    fontSize: '1rem',
+  },
+}));
 
 const WidgetIcon = (props) => {
   const {
@@ -22,7 +34,7 @@ const WidgetIcon = (props) => {
         ? 'component-selected' : 'component-not-selected'}
     >
       <Grid item styleName={data.id === 'History' ? 'history' : ''}>
-        {data.icon}
+        <Tooltip arrow classes={useStyles()} placement="left" title={data.id}>{data.icon}</Tooltip>
       </Grid>
     </Grid>
   );

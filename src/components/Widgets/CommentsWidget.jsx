@@ -191,7 +191,7 @@ class CommentsWidget extends Component {
       User, evalComments, isAdditionalInfoOpen, isHistoryOpen,
       addInfoEvalId, wasSearched, EvalId, showEvalId,
     } = this.props;
-    comments = wasSearched ? R.flatten(R.map(comm => comm.comments,
+    comments = wasSearched && showEvalId ? R.flatten(R.map(comm => comm.comments,
       evalComments.comments))
       : comments;
     comments = (isAdditionalInfoOpen || isHistoryOpen) ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
@@ -225,10 +225,10 @@ class CommentsWidget extends Component {
   renderCommentsActivity() {
     const {
       evalComments, isAdditionalInfoOpen, LoanNumber, EvalId,
-      isAssigned, searchArea, addInfoEvalId, wasSearched,
+      isAssigned, searchArea, addInfoEvalId, wasSearched, showEvalId,
     } = this.props;
     let { comments } = this.props;
-    comments = wasSearched ? evalComments.comments : comments;
+    comments = wasSearched && showEvalId ? evalComments.comments : comments;
     comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
     const { content } = this.state;
     return (
