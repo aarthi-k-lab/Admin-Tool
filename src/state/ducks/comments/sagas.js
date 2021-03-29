@@ -9,7 +9,6 @@ import * as Api from 'lib/Api';
 import selectors from '../dashboard/selectors';
 import {
   GET_COMMENTS_SAGA,
-  GET_COMMENTS_RESULT,
   GET_SEARCH_AREA,
   POST_COMMENT_SAGA,
   GET_EVALCOMMENTS_SAGA,
@@ -36,26 +35,21 @@ function* getComments(payload) {
     const req = payload.payload;
     let newPayload = [];
     const loanNumber = yield select(selectors.loanNumber);
-    const isAdditionalInfo = yield select(selectors.isAdditionalInfoOpen);
-    const isHistoryOpen = yield select(selectors.isHistoryOpen);
     const { searchArea } = req;
     yield put({
       type: GET_SEARCH_AREA,
       payload: searchArea,
     });
-    if (searchArea && (!isAdditionalInfo || !isHistoryOpen)) {
-      newPayload = yield call(Api.callGet, `/api/utility/byLoan?loanId=${loanNumber}`);
-    }
-    newPayload = yield call(Api.callGet, `/api/utility/comment?applicationName=${req.applicationName}&loanNumber=${req.loanNumber}&processId=${req.processId}&processIdType=${req.processIdType}`);
+    newPayload = yield call(Api.callGet, `/api/utility/byLoan?loanId=${loanNumber}`);
     if (newPayload) {
       yield put({
-        type: GET_COMMENTS_RESULT,
+        type: GET_EVALCOMMENTS_RESULT,
         payload: { comments: newPayload },
       });
     }
   } catch (e) {
     yield put({
-      type: GET_COMMENTS_RESULT,
+      type: GET_EVALCOMMENTS_RESULT,
       payload: {},
     });
   }

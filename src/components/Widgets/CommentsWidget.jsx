@@ -189,11 +189,10 @@ class CommentsWidget extends Component {
     } = this.props;
     const {
       User, evalComments, isAdditionalInfoOpen, isHistoryOpen,
-      addInfoEvalId, wasSearched, EvalId, showEvalId,
+      addInfoEvalId,
+      EvalId, showEvalId,
     } = this.props;
-    comments = wasSearched && showEvalId ? R.flatten(R.map(comm => comm.comments,
-      evalComments.comments))
-      : comments;
+    comments = R.flatten(R.map(comm => comm.comments, evalComments.comments));
     comments = (isAdditionalInfoOpen || isHistoryOpen) ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
 
     return (
@@ -224,12 +223,13 @@ class CommentsWidget extends Component {
 
   renderCommentsActivity() {
     const {
-      evalComments, isAdditionalInfoOpen, LoanNumber, EvalId,
-      isAssigned, searchArea, addInfoEvalId, wasSearched, showEvalId,
+      evalComments,
+      isAdditionalInfoOpen,
+      LoanNumber, EvalId,
+      isAssigned, searchArea, addInfoEvalId,
     } = this.props;
-    let { comments } = this.props;
-    comments = wasSearched && showEvalId ? evalComments.comments : comments;
-    comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, addInfoEvalId), evalComments.comments))) : comments;
+    let { comments } = evalComments;
+    comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
     const { content } = this.state;
     return (
       <>
@@ -291,9 +291,10 @@ CommentsWidget.propTypes = {
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
   })).isRequired,
-  evalComments: PropTypes.arrayOf(PropTypes.shape({
+  evalComments: PropTypes.shape(PropTypes.arrayOf(PropTypes.shape({
     content: PropTypes.string.isRequired,
-  })).isRequired,
+    createdOn: PropTypes.string.isRequired,
+  }))).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
   isAdditionalInfoOpen: PropTypes.bool.isRequired,
@@ -313,11 +314,11 @@ CommentsWidget.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
-  wasSearched: PropTypes.bool,
+  // wasSearched: PropTypes.bool,
 };
 
 CommentsWidget.defaultProps = {
-  wasSearched: false,
+  // wasSearched: false,
   AppName: 'CMOD',
   ProcIdType: 'WF_PRCS_ID',
   groupName: '',
