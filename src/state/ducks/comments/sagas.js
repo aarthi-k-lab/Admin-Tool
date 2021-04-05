@@ -6,6 +6,7 @@ import {
   select,
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
+import { ERROR, SUCCESS } from 'constants/common';
 import selectors from '../dashboard/selectors';
 import {
   GET_COMMENTS_SAGA,
@@ -84,13 +85,13 @@ function* postComment(payload) {
       if (!response) {
         const snackBarData = {};
         snackBarData.message = 'Something went wrong!!';
-        snackBarData.type = 'error';
+        snackBarData.type = ERROR;
         snackBarData.open = true;
         yield call(fireSnackBar, snackBarData);
       } else {
         const snackBarData = {};
         snackBarData.message = 'Created Successfully!';
-        snackBarData.type = 'success';
+        snackBarData.type = SUCCESS;
         snackBarData.open = true;
         yield call(fireSnackBar, snackBarData);
         yield call(getComments, payload);
@@ -99,7 +100,7 @@ function* postComment(payload) {
   } catch (e) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
-    snackBarData.type = 'error';
+    snackBarData.type = ERROR;
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
   }

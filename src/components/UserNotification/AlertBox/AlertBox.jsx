@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import WarningIcon from '@material-ui/icons/Warning';
+import { ERROR, SUCCESS } from 'constants/common';
 import styles from './AlertBox.css';
 
 class AlertBox extends React.PureComponent {
   static getIcon(level) {
     switch (level) {
-      case this.ERROR:
+      case ERROR:
         return <WarningIcon styleName="error-icon" />;
-      case this.SUCCESS:
+      case SUCCESS:
         return <CheckCircleIcon styleName="success-icon" />;
       default:
         return null;
@@ -19,9 +20,9 @@ class AlertBox extends React.PureComponent {
 
   static getBoxStyle(level) {
     switch (level) {
-      case this.ERROR:
+      case ERROR:
         return 'alert-box--error';
-      case this.SUCCESS:
+      case SUCCESS:
         return 'alert-box--success';
       default:
         return 'alert-box';
@@ -40,8 +41,6 @@ class AlertBox extends React.PureComponent {
   }
 }
 
-AlertBox.ERROR = 'error';
-AlertBox.SUCCESS = 'success';
 
 AlertBox.defaultProps = {
   className: '',
@@ -49,7 +48,7 @@ AlertBox.defaultProps = {
 
 AlertBox.propTypes = {
   className: PropTypes.string,
-  level: PropTypes.oneOf([AlertBox.ERROR, AlertBox.SUCCESS]).isRequired,
+  level: PropTypes.oneOf([ERROR, SUCCESS]).isRequired,
   message: PropTypes.node.isRequired,
 };
 

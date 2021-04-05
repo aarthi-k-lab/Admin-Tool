@@ -15,6 +15,7 @@ import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
 import SimpleTabs from './Tabs';
 
+const { SUCCESS } = 'constants/common';
 const EXCEL_FORMATS = ['xlsx', 'xls'];
 const hasPassedProp = R.has('request');
 const hasFailedProp = R.has('invalidCases');
@@ -41,7 +42,7 @@ class TabView extends React.Component {
     const { refreshHooks, isFirstVist } = prevState;
     let newState = {};
     if (fileSubmitResponse
-      && R.equals(fileSubmitResponse.level, DashboardModel.Messages.LEVEL_SUCCESS)) {
+      && R.equals(fileSubmitResponse.level, SUCCESS)) {
       newState = {
         isFailed: false,
         buttonState: 'UPLOAD',

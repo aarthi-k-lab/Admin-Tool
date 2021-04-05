@@ -12,6 +12,7 @@ import * as R from 'ramda';
 import {
   selectors as loginSelectors,
 } from 'ducks/login/index';
+import { ERROR, SUCCESS } from 'constants/common';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
   GET_DOWNLOAD_DATA_SAGA,
@@ -240,11 +241,11 @@ function* makeOrderBpmCall(payload) {
         snackBarData.open = true;
       } else if (failedResponse.length > 5) {
         snackBarData.message = 'Order call failed for more than 5 Eval ID(s): Contact Admin!';
-        snackBarData.type = 'error';
+        snackBarData.type = ERROR;
         snackBarData.open = true;
       } else {
         snackBarData.message = 'Order call failed for Eval ID(s): ';
-        snackBarData.type = 'error';
+        snackBarData.type = ERROR;
         snackBarData.open = true;
         const failedEvalIds = failedResponse.map(failedData => failedData.data.evalId);
         snackBarData.message += failedEvalIds.toString();
@@ -253,14 +254,14 @@ function* makeOrderBpmCall(payload) {
     } else {
       const snackBarData = {};
       snackBarData.message = 'Ordered Successfully!';
-      snackBarData.type = 'success';
+      snackBarData.type = SUCCESS;
       snackBarData.open = true;
       yield call(fireSnackBar, snackBarData);
     }
   } catch (e) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
-    snackBarData.type = 'error';
+    snackBarData.type = ERROR;
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
   }
@@ -320,7 +321,7 @@ function* makeDispositionOperationCall(payload) {
   } catch (err) {
     const snackBarData = {};
     snackBarData.message = 'Something went wrong!!';
-    snackBarData.type = 'error';
+    snackBarData.type = ERROR;
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
   }

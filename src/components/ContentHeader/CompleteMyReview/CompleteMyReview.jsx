@@ -6,6 +6,7 @@ import * as R from 'ramda';
 import { selectors, operations } from 'ducks/dashboard';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { ERROR } from 'constants/common';
 import SweetAlertBox from '../../SweetAlertBox';
 import { SOMETHING_WENT_WRONG } from '../../../models/Alert';
 
@@ -31,7 +32,7 @@ class CompleteMyReview extends React.Component {
     const { isOpen } = this.state;
 
     let renderComponent = null;
-    if (completeReviewResponse && R.prop('error', completeReviewResponse)) {
+    if (completeReviewResponse && R.prop(ERROR, completeReviewResponse)) {
       renderComponent = (
         <SweetAlertBox
           message={SOMETHING_WENT_WRONG}

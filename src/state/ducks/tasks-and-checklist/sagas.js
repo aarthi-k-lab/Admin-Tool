@@ -7,6 +7,7 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
+import { ERROR } from 'constants/common';
 import {
   SET_SELECTED_CHECKLIST,
   GET_NEXT_CHECKLIST,
@@ -62,7 +63,6 @@ import {
   SOMETHING_WENT_WRONG,
 } from '../../../models/Alert';
 // import DropDownSelect from 'containers';
-
 const {
   Messages: {
     MSG_SERVICE_DOWN,
@@ -106,7 +106,7 @@ function* getChecklist(action) {
     });
     const snackBar = {
       message: 'Checklist fetch failed.',
-      type: 'error',
+      type: ERROR,
       open: true,
     };
     yield put({
@@ -253,7 +253,7 @@ function* getTasks(action) {
     });
     const snackBar = {};
     snackBar.message = 'Task/s fetch failed.';
-    snackBar.type = 'error';
+    snackBar.type = ERROR;
     snackBar.open = true;
     yield put({
       type: SET_SNACK_BAR_VALUES,
@@ -299,7 +299,7 @@ function* handleSaveChecklistError(e) {
   });
   const snackBar = {};
   snackBar.message = `Task save failed: ${e.message}`;
-  snackBar.type = 'error';
+  snackBar.type = ERROR;
   snackBar.open = true;
   yield put({
     type: SET_SNACK_BAR_VALUES,
@@ -314,7 +314,7 @@ function* handleGetHistoricalChecklistError(e) {
   const snackBar = {
     open: true,
     message: `Get Historical Checklist failed: ${e.message}`,
-    type: 'error',
+    type: ERROR,
   };
   yield put({
     type: SET_SNACK_BAR_VALUES,
@@ -690,7 +690,7 @@ function* makeResolutionIdStatCall(action) {
       try {
         const rootTaskId = yield select(selectors.getRootTaskId);
         const request = R.compose(
-          R.map(R.prop('data')),
+          R.pluck('data'),
           R.path(['modBookingResponse', 'checklist']),
         )(response);
         const isAllRulesPassed = (request.map((obj) => {
@@ -801,7 +801,7 @@ function* setNewChecklist(action) {
     });
     const snackBar = {};
     snackBar.message = 'Task/s fetch failed.';
-    snackBar.type = 'error';
+    snackBar.type = ERROR;
     snackBar.open = true;
     yield put({
       type: SET_SNACK_BAR_VALUES,

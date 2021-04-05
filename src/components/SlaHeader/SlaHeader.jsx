@@ -16,6 +16,7 @@ import Grid from '@material-ui/core/Grid';
 // import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import SweetAlert from 'sweetalert2-react';
 import SweetAlertBox from 'components/SweetAlertBox';
+import { ERROR } from 'constants/common';
 import { ALERT_PROPS } from '../../models/Alert';
 
 class LabelWithIcon extends React.PureComponent {
@@ -58,7 +59,7 @@ class LabelWithIcon extends React.PureComponent {
     const {
       ruleResponse, allRules, passedRules, failedRules,
     } = this.props;
-    if (R.has('error', ruleResponse)) {
+    if (R.has(ERROR, ruleResponse)) {
       return ALERT_PROPS.SOMETHING_WENT_WRONG;
     }
 

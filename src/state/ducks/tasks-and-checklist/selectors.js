@@ -1,5 +1,8 @@
 import * as R from 'ramda';
 import dashboardSelectors from 'ducks/dashboard/selectors';
+import {
+  TRUE, FALSE, ALL, ANY,
+} from 'constants/common';
 
 const getTaskFilter = R.path(['tasksAndChecklist', 'taskFilter']);
 
@@ -190,21 +193,24 @@ const getPath = (obj, field, match) => {
   return [field, subPath];
 };
 
+const getRuleResult = value => R.head(R.values(R.pickBy((val, key) => R.contains('Check', key), value)));
+
+const getMiscRules = (item, result) => {
+  const checkFn = result === TRUE ? ALL : ANY;
+  return (R.is(Array, R.prop('options', item)) && !R.isEmpty(R.prop('options', item)) && R[checkFn](option => getRuleResult(option) === result, R.prop('options', item)));
+};
+
 const getPassedRules = (state) => {
   const passed = R.compose(
-    R.filter(item => R.path(getPath(item, 'options', 'Check'), item) === 'true'),
+    R.filter(item => (R.path(getPath(item, 'options', 'Check'), item) === TRUE) || getMiscRules(item, TRUE)),
     R.map(checklistItem => ({
-      id: R.prop('_id', checklistItem),
       disabled: !dashboardSelectors.isAssigned(state) || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem)),
       isVisible: R.propOr(true, 'visibility', checklistItem),
       options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
-      taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
       title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
       type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
       value: getCurrentChecklistValue(checklistItem, state),
-      source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
       additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
-      state: R.pathOr({}, ['state'], checklistItem),
     })),
     R.pathOr({}, ['tasksAndChecklist', 'checklist', 'subTasks']),
   )(state);
@@ -213,19 +219,15 @@ const getPassedRules = (state) => {
 
 const getFailedRules = (state) => {
   const failed = R.compose(
-    R.filter(item => R.path(getPath(item, 'options', 'Check'), item) === 'false'),
+    R.filter(item => (R.path(getPath(item, 'options', 'Check'), item) === FALSE) || getMiscRules(item, FALSE)),
     R.map(checklistItem => ({
-      id: R.prop('_id', checklistItem),
       disabled: !dashboardSelectors.isAssigned(state) || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem)),
       isVisible: R.propOr(true, 'visibility', checklistItem),
       options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
-      taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
       title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
       type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
       value: getCurrentChecklistValue(checklistItem, state),
-      source: R.pathOr('', ['taskBlueprint', 'source'], checklistItem),
       additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
-      state: R.pathOr({}, ['state'], checklistItem),
     })),
     R.pathOr({}, ['tasksAndChecklist', 'checklist', 'subTasks']),
   )(state);

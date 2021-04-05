@@ -12,6 +12,7 @@ import * as R from 'ramda';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
+import { ERROR, SUCCESS } from 'constants/common';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -289,7 +290,7 @@ class TasksAndChecklist extends Component {
     if (isPostModEndShift) {
       history.push('/stager');
     }
-    if (completeReviewResponse && !R.prop('error', completeReviewResponse)) {
+    if (completeReviewResponse && !R.prop(ERROR, completeReviewResponse)) {
       history.push('/special-loan');
     }
     if (inProgress) {
@@ -502,12 +503,12 @@ TasksAndChecklist.propTypes = {
 };
 
 function getUserNotification(message) {
-  if (message.type === 'success') {
+  if (message.type === SUCCESS) {
     return message;
   }
-  if (message.type === 'error') {
+  if (message.type === ERROR) {
     return {
-      type: 'error',
+      type: ERROR,
       msg: R.has('data', message) ? DispositionModel.getErrorMessages(message.data) : message.msg,
     };
   }

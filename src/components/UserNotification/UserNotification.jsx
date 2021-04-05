@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ERROR, SUCCESS } from 'constants/common';
 import AlertBox from './AlertBox';
 
 class UserNotification extends React.PureComponent {
@@ -37,7 +38,7 @@ UserNotification.defaultProps = {
 
 UserNotification.propTypes = {
   className: PropTypes.string,
-  level: PropTypes.oneOf(['error', 'success']).isRequired,
+  level: PropTypes.oneOf([ERROR, SUCCESS]).isRequired,
   message: PropTypes.node.isRequired,
   type: PropTypes.oneOf([
     UserNotification.ALERT_BOX,

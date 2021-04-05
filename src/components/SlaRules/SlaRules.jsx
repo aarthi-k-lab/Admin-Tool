@@ -9,15 +9,18 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import parse from 'html-react-parser';
+import {
+  ERROR, SUCCESS, TRUE, FALSE,
+} from 'constants/common';
 import './SlaRules.css';
 
 function getIcon(result) {
   let iconName = '';
   switch (result) {
-    case 'true':
+    case TRUE:
       iconName = <CheckCircleOutlineIcon styleName="succesicon" />;
       break;
-    case 'false':
+    case FALSE:
       iconName = <Cancel styleName="failedicon" />;
       break;
     default:
@@ -30,14 +33,32 @@ function getResult(value) {
   return R.head(R.values(R.pickBy((val, key) => R.contains('Check', key), value)));
 }
 
+function getMiscResult(options) {
+  return R.all(item => getResult(item), options) ? TRUE : FALSE;
+}
 
+const getMessage = (data) => {
+  const text = R.propOr('', 'text', data);
+  const result = getResult(data);
+  return !R.isEmpty(text)
+    ? (
+      <div styleName="notificationMsg">
+        <UserNotification
+          level={result === FALSE ? ERROR : SUCCESS}
+          message={parse(text)}
+          type="alert-box"
+        />
+      </div>
+    )
+    : null;
+};
 class SlaRules extends React.Component {
   render() {
     const {
       title, options, value, additionalInfo: { displayName },
     } = this.props;
-    const result = getResult(options);
-    const text = R.propOr('', 'text', options);
+    const isList = R.is(Array, options) && !R.isEmpty(options);
+    const result = isList ? getMiscResult(options) : getResult(options);
     const component = (
       <>
         <div styleName="custommargin">
@@ -50,36 +71,24 @@ class SlaRules extends React.Component {
                 <b>{title}</b>
               </span>
               <span>
-                <FormLabel component="legend" styleName="margin">{displayName}</FormLabel>
-                {!R.isEmpty(text)
-                  ? (
-                    <div styleName="notificationMsg">
-                      <UserNotification
-                        level={result === 'false' ? 'error' : 'success'}
-                        message={parse(text)}
-                        type="alert-box"
-                      />
-                    </div>
-                  )
-                  : null}
+                {!isList && <FormLabel component="legend" styleName="margin">{displayName}</FormLabel>}
+                {isList ? R.map(message => getMessage(message), options) : getMessage(options)}
               </span>
               <span>
-                {result === 'false'
-                  ? (
-                    <TextField
-                      id="standard-multiline-flexible"
-                      label="Enter your comment here*"
-                      margin="dense"
-                      multiline
-                      rows="4"
-                      rowsMax="6"
-                      styleName="multiline"
-                      value={value}
-                      variant="outlined"
-                      {...this.props}
-                    />
-                  ) : null
-                }
+                {result === FALSE && (
+                <TextField
+                  id="standard-multiline-flexible"
+                  label="Enter your comment here*"
+                  margin="dense"
+                  multiline
+                  rows="4"
+                  rowsMax="6"
+                  styleName="multiline"
+                  value={value}
+                  variant="outlined"
+                  {...this.props}
+                />
+                ) }
               </span>
             </Grid>
 

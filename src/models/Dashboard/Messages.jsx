@@ -1,11 +1,10 @@
 import React from 'react';
 import RouteAccess from 'lib/RouteAccess';
 import { arrayToString } from 'lib/ArrayUtils';
+import { ERROR, SUCCESS } from 'constants/common';
 import UserNotification from 'components/UserNotification/UserNotification';
 import * as R from 'ramda';
 
-const LEVEL_ERROR = 'error';
-const LEVEL_SUCCESS = 'success';
 const LEVEL_FAILED = 'Failed';
 const MSG_SENDTOCOVIUS_FAILED = 'Unable to send to Covius at this time. Please try again later.';
 const MSG_SERVICE_DOWN = 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.';
@@ -39,7 +38,7 @@ function getMessage(
   isGetNextError,
   getNextError,
 ) {
-  let level = LEVEL_ERROR;
+  let level = ERROR;
   let message = null;
   if (taskFetchError) {
     message = MSG_TASK_FETCH_ERROR;
@@ -50,14 +49,14 @@ function getMessage(
   } else if (errorMessages
     && !R.is(Array, errorMessages) && SUCCESS_MESSAGES.includes(errorMessages)) {
     message = errorMessages;
-    level = LEVEL_SUCCESS;
+    level = SUCCESS;
   } else if (errorMessages && errorMessages.length > 0) {
     message = R.is(Array, errorMessages)
       ? errorMessages.reduce(reduceMessageListToMessage, []) : errorMessages;
   } else if (enableGetNext) {
     const prettifiedDisposition = arrayToString([disposition]);
     message = `${MSG_DSPN_SUCCESS} ${prettifiedDisposition}`;
-    level = LEVEL_SUCCESS;
+    level = SUCCESS;
   } else if (RouteAccess.hasManagerDashboardAccess(groups) && showAssign) {
     message = MSG_CAN_UNASSIGN;
   } else if (showAssign) {
@@ -97,8 +96,6 @@ function renderErrorNotification(
 const Messages = {
   renderErrorNotification,
   reduceMessageListToMessage,
-  LEVEL_SUCCESS,
-  LEVEL_ERROR,
   MSG_VALIDATION_SUCCESS,
   MSG_UPDATED_REMEDY,
   MSG_SERVICE_DOWN,

@@ -138,10 +138,11 @@ import {
   RESET_DATA,
 } from '../tasks-and-checklist/types';
 
+const { ERROR, SUCCESS } = 'constants/common';
+
 const {
   Messages:
   {
-    LEVEL_ERROR, LEVEL_SUCCESS,
     MSG_VALIDATION_SUCCESS,
     MSG_UPDATED_REMEDY,
     MSG_SERVICE_DOWN,
@@ -310,7 +311,7 @@ function* onSelectReject(payload) {
   if (response === null) {
     rejectResponse = {
       message: 'Service Down. Please try again...',
-      level: 'error',
+      level: ERROR,
     };
     yield put({
       type: SELECT_REJECT,
@@ -319,7 +320,7 @@ function* onSelectReject(payload) {
   } else if (response.isActionSuccess) {
     rejectResponse = {
       message: response.message,
-      level: 'success',
+      level: SUCCESS,
     };
     yield put({
       type: SELECT_REJECT,
@@ -328,7 +329,7 @@ function* onSelectReject(payload) {
   } else {
     rejectResponse = {
       message: response.message,
-      level: 'error',
+      level: ERROR,
     };
     yield put({
       type: SELECT_REJECT,
@@ -716,7 +717,7 @@ function* completeMyReviewResult(action) {
     const response = yield call(Api.callPost, '/api/disposition/cmodDisposition', request);
     yield put({
       type: COMPLETE_MY_REVIEW_RESULT,
-      payload: { error: R.has('error', response) },
+      payload: { error: R.has(ERROR, response) },
     });
   } catch (e) {
     yield put({ type: COMPLETE_MY_REVIEW_RESULT, payload: false });
@@ -764,15 +765,15 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
-          type: LEVEL_ERROR,
+          type: ERROR,
           data: tkamsValidation.discrepancies,
         },
       });
     } else {
       let message = isAuto ? MSG_UPDATED_REMEDY : MSG_VALIDATION_SUCCESS;
-      let type = LEVEL_SUCCESS;
+      let type = SUCCESS;
       if (validateAgent) {
-        type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;
+        type = skillValidation.result ? SUCCESS : ERROR;
         ({ message } = skillValidation);
       }
       yield put({
@@ -899,7 +900,7 @@ function* saveIncentiveAmount(taskObject, taskId, processId, taskCodeValues) {
         yield put({
           type: USER_NOTIF_MSG,
           payload: {
-            type: LEVEL_SUCCESS,
+            type: SUCCESS,
             msg: 'Saved Data Successfully',
           },
         });
@@ -909,7 +910,7 @@ function* saveIncentiveAmount(taskObject, taskId, processId, taskCodeValues) {
     yield put({
       type: USER_NOTIF_MSG,
       payload: {
-        type: LEVEL_ERROR,
+        type: ERROR,
         data: 'Error in Saving data',
       },
     });
@@ -954,7 +955,7 @@ function* savePostModChklistDisposition(payload) {
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
-          type: LEVEL_SUCCESS,
+          type: SUCCESS,
           msg: 'Dispositioned Successfully',
         },
       });
@@ -963,7 +964,7 @@ function* savePostModChklistDisposition(payload) {
     yield put({
       type: USER_NOTIF_MSG,
       payload: {
-        type: LEVEL_ERROR,
+        type: ERROR,
         data: 'Error in disposition',
       },
     });
@@ -1022,16 +1023,16 @@ function* saveGeneralChecklistDisposition(payload) {
       yield put({
         type: USER_NOTIF_MSG,
         payload: {
-          type: LEVEL_ERROR,
+          type: ERROR,
           data: tkamsValidation.discrepancies,
         },
       });
       return false;
     }
     let message = MSG_VALIDATION_SUCCESS;
-    let type = LEVEL_SUCCESS;
+    let type = SUCCESS;
     if (validateAgent) {
-      type = skillValidation.result ? LEVEL_SUCCESS : LEVEL_ERROR;
+      type = skillValidation.result ? SUCCESS : ERROR;
       ({ message } = skillValidation);
     }
     yield put({
@@ -1373,7 +1374,7 @@ function* loadTrials(payload) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: message,
       },
     });
@@ -1381,7 +1382,7 @@ function* loadTrials(payload) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Either the Eval case is not in Approved status or the Resolution case is not in a Closed status in Remedy.'
           + ' If authorized, please click Send to Underwriting button, or update Remedy to appropriate state.',
       },
@@ -1410,7 +1411,7 @@ function* sentToUnderwriting() {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
-              level: LEVEL_SUCCESS,
+              level: SUCCESS,
               status: 'Trial has been Sent to Underwriting',
             },
           });
@@ -1422,7 +1423,7 @@ function* sentToUnderwriting() {
           yield put({
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
-              level: LEVEL_ERROR,
+              level: ERROR,
               status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
             },
           });
@@ -1433,7 +1434,7 @@ function* sentToUnderwriting() {
         yield put({
           type: SET_TASK_UNDERWRITING_RESULT,
           payload: {
-            level: LEVEL_ERROR,
+            level: ERROR,
             status: message,
           },
         });
@@ -1442,14 +1443,14 @@ function* sentToUnderwriting() {
       const message = 'Unable to send back to Underwriting because Trial task is not active.';
       yield put({
         type: SET_TASK_UNDERWRITING_RESULT,
-        payload: { level: LEVEL_ERROR, status: message },
+        payload: { level: ERROR, status: message },
       });
     }
   } catch (e) {
     yield put({
       type: SET_TASK_UNDERWRITING_RESULT,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1479,7 +1480,7 @@ function* sendToDocGen(payload) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
-            level: LEVEL_SUCCESS,
+            level: SUCCESS,
             status: `The loan has been successfully sent back to Doc Gen ${isStager ? 'Stager' : ' queue for rework'}`,
           },
         });
@@ -1491,7 +1492,7 @@ function* sendToDocGen(payload) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
-            level: LEVEL_ERROR,
+            level: ERROR,
             status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
           },
         });
@@ -1501,7 +1502,7 @@ function* sendToDocGen(payload) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: message,
         },
       });
@@ -1510,7 +1511,7 @@ function* sendToDocGen(payload) {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1540,7 +1541,7 @@ function* sendToDocsIn() {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
-            level: LEVEL_SUCCESS,
+            level: SUCCESS,
             status: 'The loan has been successfully sent back to Docs In',
           },
         });
@@ -1556,7 +1557,7 @@ function* sendToDocsIn() {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
-            level: LEVEL_ERROR,
+            level: ERROR,
             status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
           },
         });
@@ -1566,7 +1567,7 @@ function* sendToDocsIn() {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: message,
         },
       });
@@ -1575,7 +1576,7 @@ function* sendToDocsIn() {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1602,7 +1603,7 @@ function* sendToBooking() {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_SUCCESS,
+          level: SUCCESS,
           status: 'The loan is moved to booking.  Please manually code the account for booking',
         },
       });
@@ -1618,7 +1619,7 @@ function* sendToBooking() {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: 'Invalid Event or Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
       });
@@ -1627,7 +1628,7 @@ function* sendToBooking() {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1650,7 +1651,7 @@ function* sendToFEUW(action) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_SUCCESS,
+          level: SUCCESS,
           status: message,
         },
       });
@@ -1670,7 +1671,7 @@ function* sendToFEUW(action) {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: MSG_SERVICE_DOWN,
       },
     });
@@ -1712,8 +1713,6 @@ function* populateDropdown() {
     const userGroupsList = yield select(loginSelectors.getGroupList());
     const isManager = userGroupsList.includes('docgenvendor-mgr');
     const response = yield call(Api.callGet, `/api/dataservice/api/covius/eventCategoriesAndTypes/${isManager}`);
-    // const response = yield call(Api.callGet,
-    // '/api/dataservice/api/covius/eventCategoriesAndTypes/Outgoing');
     yield put({
       type: SAVE_EVENTS_DROPDOWN,
       payload: response,
@@ -1722,7 +1721,7 @@ function* populateDropdown() {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1739,7 +1738,7 @@ function* onCoviusBulkUpload(payload) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: `Please upload a maximum of 500 ${idType}`,
         },
       });
@@ -1750,7 +1749,7 @@ function* onCoviusBulkUpload(payload) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: `There are duplicate ${idType}. Please correct and resubmit`,
         },
       });
@@ -1782,7 +1781,7 @@ function* onCoviusBulkUpload(payload) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: 'This loan do not exist or currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
       });
@@ -1791,7 +1790,7 @@ function* onCoviusBulkUpload(payload) {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1826,7 +1825,7 @@ function* AddDocsInReceived(payload) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
-          level: LEVEL_ERROR,
+          level: ERROR,
           status: 'This loan do not exist or currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
         },
       });
@@ -1835,7 +1834,7 @@ function* AddDocsInReceived(payload) {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1885,7 +1884,7 @@ function* manualInsertion(payload) {
     yield put({
       type: STORE_EVALID_RESPONSE_ERROR,
       payload: {
-        level: LEVEL_ERROR,
+        level: ERROR,
         status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
       },
     });
@@ -1934,7 +1933,7 @@ const sendToCovius = function* sendToCovius(eventCode, payload) {
   const requestEndpoint = eventCode ? '/covius/statusChangeRequest' : '/covius/manualDocumentFulfillmentRequest';
   const response = yield call(Api.callPost, `/api/docfulfillment/api${requestEndpoint}`, body);
   let level = '';
-  level = R.equals(response.status, 200) ? LEVEL_SUCCESS : LEVEL_FAILED;
+  level = R.equals(response.status, 200) ? SUCCESS : LEVEL_FAILED;
   const result = {
     uploadFailed: response.invalidCases,
     message: response && R.equals(response.status, 200)
@@ -2019,7 +2018,7 @@ const onDownloadFile = function* onDownloadFile(action) {
       type: SET_RESULT_OPERATION,
       payload: {
         status: 'Excel File Downloaded Successfully',
-        level: LEVEL_SUCCESS,
+        level: SUCCESS,
       },
     });
   } catch (e) {

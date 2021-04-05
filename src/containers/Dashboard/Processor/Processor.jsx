@@ -15,6 +15,7 @@ import { selectors, operations } from 'ducks/dashboard';
 import { selectors as LoginSelectors } from 'ducks/login';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import PropTypes from 'prop-types';
+import { ERROR } from 'constants/common';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import '../DocsIn/DocsIn.css';
 
@@ -79,7 +80,7 @@ class Processor extends React.PureComponent {
       onSubmitEval(evalIdList);
     } else {
       const payload = {
-        level: 'error',
+        level: ERROR,
         status: 'Please enter loan number(s) in correct format. Only comma and newline separated loan numbers are accepted',
       };
       onFailedLoanValidation(payload);

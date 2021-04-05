@@ -15,6 +15,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
 import { selectors as LoginSelectors } from 'ducks/login';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import { ERROR } from 'constants/common';
 import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import UserNotification from '../../../components/UserNotification/UserNotification';
@@ -448,7 +449,7 @@ class DocsIn extends React.PureComponent {
       const loanNumbersList = new Set(loanNumbers);
       if (loanNumbersList.size > 75) {
         const payload = {
-          level: 'error',
+          level: ERROR,
           status: 'Please enter a maximum of 75 loan numbers.',
         };
         onFailedLoanValidation(payload);
@@ -461,7 +462,7 @@ class DocsIn extends React.PureComponent {
       }
     } else {
       const payload = {
-        level: 'error',
+        level: ERROR,
         status: 'Please enter loan number(s) in correct format. Only comma and newline separated loan numbers are accepted',
       };
       onFailedLoanValidation(payload);
@@ -496,7 +497,7 @@ class DocsIn extends React.PureComponent {
       onLoansSubmit(payload);
     } else {
       const payload = {
-        level: 'error',
+        level: ERROR,
         status: 'Please enter loan number(s) in correct format. Only comma and newline separated loan numbers are accepted',
       };
       onFailedLoanValidation(payload);
