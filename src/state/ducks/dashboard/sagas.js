@@ -21,6 +21,9 @@ import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import {
+  ERROR, SUCCESS,
+} from 'constants/common';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -137,8 +140,6 @@ import {
   ERROR_LOADING_TASKS,
   RESET_DATA,
 } from '../tasks-and-checklist/types';
-
-const { ERROR, SUCCESS } = 'constants/common';
 
 const {
   Messages:
