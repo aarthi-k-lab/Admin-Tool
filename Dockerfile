@@ -5,7 +5,7 @@ COPY . /cmod
 WORKDIR /cmod
 
 RUN npm install 
-RUN npm test || echo "Unit Tests Failed"
+RUN npm test || exit 1
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged
