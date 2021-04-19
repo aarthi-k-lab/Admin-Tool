@@ -6,6 +6,7 @@ import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
+import { ERROR, SUCCESS } from 'constants/common';
 import * as actionTypes from './types';
 import {
   onExpandView, dispositionSave, clearDisposition, clearFirstVisit,
@@ -24,8 +25,6 @@ const {
   {
     MSG_SERVICE_DOWN,
     LEVEL_FAILED,
-    LEVEL_SUCCESS,
-    LEVEL_ERROR,
   },
 } = DashboardModel;
 
@@ -955,7 +954,7 @@ describe('send to FEUW : success', () => {
 
   it('should dispatch action SET_RESULT_OPERATION', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { level: LEVEL_SUCCESS, status: 'Sent to FEUW successfully' } }));
+      .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { level: SUCCESS, status: 'Sent to FEUW successfully' } }));
   });
 
   it('should dispatch action DISABLE_SEND_TO_FEUW', () => {
@@ -1055,7 +1054,7 @@ describe('send to FEUW : error', () => {
     expect(saga.next(null).value)
       .toEqual(put({
         type: actionTypes.SET_RESULT_OPERATION,
-        payload: { level: LEVEL_ERROR, status: MSG_SERVICE_DOWN },
+        payload: { level: ERROR, status: MSG_SERVICE_DOWN },
       }));
   });
 });
@@ -1225,7 +1224,7 @@ describe('submit file to covius : Success', () => {
   ];
   const mockResponse = {
     message: 'File submitted to Covius successfully',
-    level: LEVEL_SUCCESS,
+    level: SUCCESS,
   };
   const saga = cloneableGenerator(TestExports.onFileSubmit)();
   it('should call select uploaded file from store', () => {
@@ -1244,7 +1243,7 @@ describe('submit file to covius : Success', () => {
   });
   it('should call SET_RESULT_OPERATION', () => {
     expect(saga.next().value)
-      .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { status: 'File submitted to Covius successfully', level: LEVEL_SUCCESS } }));
+      .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { status: 'File submitted to Covius successfully', level: SUCCESS } }));
   });
 });
 
@@ -1354,7 +1353,7 @@ describe('onDownloadFile Success case', () => {
   };
   const mockPayload = {
     status: 'Excel File Downloaded Successfully',
-    level: LEVEL_SUCCESS,
+    level: SUCCESS,
   };
   const saga = cloneableGenerator(TestExports.onDownloadFile)(action);
   it('should call SET_RESULT_OPERATION', () => {
@@ -1423,7 +1422,7 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
 
   const mockResponse = {
     message: 'File submitted to Covius successfully',
-    level: LEVEL_SUCCESS,
+    level: SUCCESS,
   };
 
   const mockFileUploadResponse = {};
@@ -1446,7 +1445,7 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
   });
   it('should call SET_RESULT_OPERATION', () => {
     expect(saga.next().value)
-      .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { status: 'File submitted to Covius successfully', level: LEVEL_SUCCESS } }));
+      .toEqual(put({ type: actionTypes.SET_RESULT_OPERATION, payload: { status: 'File submitted to Covius successfully', level: SUCCESS } }));
   });
 });
 
@@ -1466,9 +1465,13 @@ describe('populateDropdown saga ', () => {
       eventCategor: 'def',
     },
   ];
-  it('should call populate event service', () => {
+  it('should call select user from store', () => {
     expect(saga.next().value)
-      .toEqual(call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/Outgoing'));
+      .toEqual(select(loginSelectors.getGroupList));
+  });
+  it('should call populate event service', () => {
+    expect(saga.next(['docgenvendor-mgr']).value)
+      .toEqual(call(Api.callGet, '/api/dataservice/api/covius/eventCategoriesAndTypes/true'));
   });
   it('should call SAVE_EVENTS_DROPDOWN', () => {
     expect(saga.next(mockResponse).value)
@@ -1487,7 +1490,7 @@ describe('watch onCoviusBulkUpload', () => {
 describe('onCoviusBulkUpload saga ', () => {
   const payload = {
     payload: {
-      caseIds: ['12', '52', '32'],
+      ids: ['12', '52', '32'],
     },
   };
   const saga = cloneableGenerator(TestExports.onCoviusBulkUpload)(payload);
@@ -2089,13 +2092,6 @@ describe('unassignWidgetLoan : unassignLoan successful', () => {
       }));
   });
 
-  it('should call UNASSIGN_LOAN_RESULT', () => {
-    expect(saga.next().value)
-      .toEqual(put({
-        type: actionTypes.UNASSIGN_LOAN_RESULT,
-        payload: mockResponse,
-      }));
-  });
   it('should call select selectedChecklistId from store', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getSelectedChecklistId));
@@ -2152,12 +2148,21 @@ describe('unassignWidgetLoan : unassignLoan unsuccessful', () => {
       .toEqual(call(Api.callPost, '/api/workassign/unassignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&appgroupName=BOOKING&taskName=Pending Booking&isWidgetLoan=true', {}));
   });
 
-  it('should call UNASSIGN_LOAN_RESULT', () => {
-    expect(saga.next(mockResponse).value)
+  it('should call RESET_DATA', () => {
+    expect(saga.next().value)
       .toEqual(put({
-        type: actionTypes.UNASSIGN_LOAN_RESULT,
-        payload: { cmodProcess: { taskStatus: 'ERROR' } },
+        type: 'app/tasks-and-checklist/RESET_DATA',
       }));
+  });
+
+  it('should call select selectedChecklistId from store', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getSelectedChecklistId));
+  });
+
+  it('should call fetchChecklistDetails ', () => {
+    expect(saga.next(123).value)
+      .toEqual(call(TestExports.fetchChecklistDetails, 123));
   });
 
   it('should call hide loader', () => {
@@ -2186,16 +2191,8 @@ describe('unassignWidgetLoan : Failed', () => {
       .toEqual(select(selectors.getWidgetLoan));
   });
 
-  it('should call UNASSIGN_LOAN_RESULT', () => {
-    expect(saga.next(mockWidgetLoan).value)
-      .toEqual(put({
-        type: actionTypes.UNASSIGN_LOAN_RESULT,
-        payload: { cmodProcess: { taskStatus: 'ERROR' } },
-      }));
-  });
-
   it('should call hide loader', () => {
-    expect(saga.next().value)
+    expect(saga.next(mockWidgetLoan).value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
   });
 });

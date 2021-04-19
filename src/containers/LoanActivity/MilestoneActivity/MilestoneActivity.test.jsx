@@ -46,7 +46,7 @@ describe('<MilestoneActivity />', () => {
     <TestHooks.MilestoneActivity {...props} />,
   );
   it('render MilestoneActivity Component', () => {
-    expect(wrapper.find('MilestonePage')).toHaveLength(1);
+    expect(wrapper.find('Connect(MilestonePage)')).toHaveLength(1);
   });
   it('call clearTasks on milestone click', () => {
     wrapper.instance().onClickMilestone();

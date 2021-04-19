@@ -32,7 +32,7 @@ exports[`renders <Row /> when changeColor is false snapshot test 1`] = `
     className="MuiTableCell-root MuiTableCell-alignCenter"
     colSpan={2}
   >
-    statusDate
+    Invalid date
   </td>
   <td
     aria-sort={null}
@@ -46,7 +46,7 @@ exports[`renders <Row /> when changeColor is false snapshot test 1`] = `
     className="MuiTableCell-root MuiTableCell-alignCenter"
     colSpan={2}
   >
-    substatusDate
+    Invalid date
   </td>
   <td
     aria-sort={null}
@@ -96,7 +96,7 @@ exports[`renders <Row /> when changeColor is true snapshot test 1`] = `
     className="MuiTableCell-root MuiTableCell-alignCenter"
     colSpan={2}
   >
-    statusDate
+    Invalid date
   </td>
   <td
     aria-sort={null}
@@ -110,7 +110,7 @@ exports[`renders <Row /> when changeColor is true snapshot test 1`] = `
     className="MuiTableCell-root MuiTableCell-alignCenter"
     colSpan={2}
   >
-    substatusDate
+    Invalid date
   </td>
   <td
     aria-sort={null}

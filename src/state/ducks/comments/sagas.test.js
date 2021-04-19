@@ -9,8 +9,9 @@ import selectors from '../dashboard/selectors';
 
 import {
   GET_COMMENTS_SAGA,
-  GET_COMMENTS_RESULT,
   POST_COMMENT_SAGA,
+  GET_SEARCH_AREA,
+  GET_EVALCOMMENTS_RESULT,
 } from './types';
 
 describe('watch getComments ', () => {
@@ -43,6 +44,7 @@ describe('get Comments', () => {
       processId: 47898,
       eventName: 'UW',
       loanNumber: 34473856,
+      searchArea: false,
     },
   };
   const response = {
@@ -53,15 +55,29 @@ describe('get Comments', () => {
     ],
   };
   const saga = cloneableGenerator(TestExports.getComments)(payload);
+  const loanNumber = '34473856';
+  it('should get loannumber', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.loanNumber));
+  });
+
+  it('should trigger get comments result action', () => {
+    expect(saga.next(loanNumber).value)
+      .toEqual(put({
+        type: GET_SEARCH_AREA,
+        payload: false,
+      }));
+  });
+
   it('call comments Api', () => {
     expect(saga.next(payload).value)
-      .toEqual(call(Api.callGet, '/api/utility/comment?applicationName=CMOD&loanNumber=34473856&processId=47898&processIdType=WF_PRCS_ID'));
+      .toEqual(call(Api.callGet, '/api/utility/byLoan?loanId=34473856'));
   });
 
   it('should trigger get comments result action', () => {
     expect(saga.next(response).value)
       .toEqual(put({
-        type: GET_COMMENTS_RESULT,
+        type: GET_EVALCOMMENTS_RESULT,
         payload: { comments: response },
       }));
   });

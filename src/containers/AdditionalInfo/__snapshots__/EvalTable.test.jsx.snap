@@ -92,40 +92,40 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           role="cell"
           scope="row"
         >
-          evalId1
+          evalId
         </th>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          resolutionId1
+          resolutionId
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          status1
+          status
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          statusDate1
+          Invalid date
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={1}
         >
-          subStatus1
+          subStatus
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          substatusDate1
+          Invalid date
         </td>
         <td
           aria-sort={null}
@@ -153,40 +153,40 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
           role="cell"
           scope="row"
         >
-          evalId
+          evalId1
         </th>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          resolutionId
+          resolutionId1
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          status
+          status1
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          statusDate
+          Invalid date
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={1}
         >
-          subStatus
+          subStatus1
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          substatusDate
+          Invalid date
         </td>
         <td
           aria-sort={null}
@@ -314,40 +314,40 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           role="cell"
           scope="row"
         >
-          evalId1
+          evalId
         </th>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          resolutionId1
+          resolutionId
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          status1
+          status
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          statusDate1
+          Invalid date
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={1}
         >
-          subStatus1
+          subStatus
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          substatusDate1
+          Invalid date
         </td>
         <td
           aria-sort={null}
@@ -375,40 +375,40 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
           role="cell"
           scope="row"
         >
-          evalId
+          evalId1
         </th>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          resolutionId
+          resolutionId1
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
         >
-          status
+          status1
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          statusDate
+          Invalid date
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={1}
         >
-          subStatus
+          subStatus1
         </td>
         <td
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeSmall"
           colSpan={2}
         >
-          substatusDate
+          Invalid date
         </td>
         <td
           aria-sort={null}

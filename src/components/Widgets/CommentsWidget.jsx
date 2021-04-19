@@ -228,7 +228,7 @@ class CommentsWidget extends Component {
       LoanNumber, EvalId,
       isAssigned, searchArea, addInfoEvalId,
     } = this.props;
-    let { comments } = evalComments;
+    let comments = R.propOr(null, 'comments', evalComments);
     comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
     const { content } = this.state;
     return (

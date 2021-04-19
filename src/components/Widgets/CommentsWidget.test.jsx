@@ -32,9 +32,17 @@ describe('<CommentsWidget />', () => {
         name: 'commentsWidget',
       },
     };
+    const evalComments = {
+      comments: [{ comments: 'Test Comment' }],
+    };
     const handleGetComments = jest.fn();
     const wrapper = mount(
-      <TestHooks.CommentsWidget comments={data} onGetComments={handleGetComments} User={data1} />,
+      <TestHooks.CommentsWidget
+        comments={data}
+        evalComments={evalComments}
+        onGetComments={handleGetComments}
+        User={data1}
+      />,
     );
     const active = wrapper.instance().commentArea;
     expect(wrapper.find('#row_main_container')).toHaveLength(data.length);

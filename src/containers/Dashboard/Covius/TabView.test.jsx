@@ -43,6 +43,7 @@ describe('renders <TabView />', () => {
     const wrapper = shallow(
       <TestHooks.TabView isFileRemoved={isFileRemoved} />,
     );
+    wrapper.update();
     wrapper.setState({ buttonState: 'SUBMIT', value: 2 });
     expect(wrapper.find('#reupload')).toHaveLength(1);
   });

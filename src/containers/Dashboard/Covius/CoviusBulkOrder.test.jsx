@@ -59,7 +59,7 @@ describe('renders <CoviusBulkOrder />', () => {
   });
   it('should call handleCaseChange on TextField Change', () => {
     wrapper.find('ForwardRef(TextareaAutosize)').at(0).simulate('change', { target: { value: '123' } });
-    expect(wrapper.instance().state.caseIds).toBe('123');
+    expect(wrapper.instance().state.ids).toBe('123');
   });
 });
 
