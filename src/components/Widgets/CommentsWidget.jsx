@@ -193,7 +193,7 @@ class CommentsWidget extends Component {
       EvalId, showEvalId,
     } = this.props;
     comments = R.flatten(R.map(comm => comm.comments, evalComments.comments));
-    comments = (isAdditionalInfoOpen || isHistoryOpen) ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
+    comments = (isAdditionalInfoOpen || isHistoryOpen) || !showEvalId ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
 
     return (
       comments && comments.map(comment => (
