@@ -55,15 +55,23 @@ import {
   openSweetAlertAction,
   closeSweetAlertAction,
   setCoviusIndexAction,
-  widgetClickAction,
-  unassignWidgetLoan,
-  widgetToggle,
+  setSelectedWidgets,
+  onLockCalc,
+  onClearPopupDataAction,
+  toggleIncomeVerification,
   additionalInfo,
+  assignBookingLoan,
   evalSelectRow,
-  setAdditionalInfoSelected,
-  setHistorySelected,
   setTombstoneData,
+  unassignBookingLoan,
 } from './actions';
+
+import {
+  resetChecklistData,
+  processValidations,
+} from '../income-calculator/actions';
+
+const lockCalculation = dispatch => () => dispatch(onLockCalc());
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -90,7 +98,8 @@ const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf()
 const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
 
 const onAutoSave = dispatch => (taskStatus) => {
-  dispatch(unassignWidgetLoan());
+  dispatch(resetChecklistData());
+  dispatch(unassignBookingLoan());
   dispatch(autoSave(taskStatus));
 };
 
@@ -139,10 +148,6 @@ const onUnassignLoan = dispatch => () => {
   dispatch(unassignLoan());
 };
 
-const onUnassignBookingLoan = dispatch => () => {
-  dispatch(unassignWidgetLoan());
-};
-
 const onAssignLoan = dispatch => () => {
   dispatch(assignLoan());
 };
@@ -173,7 +178,7 @@ const onGetGroupName = dispatch => (payload) => {
 };
 
 const onWidgetClick = dispatch => (payload) => {
-  dispatch(widgetClickAction(payload));
+  dispatch(assignBookingLoan(payload));
 };
 
 const loadTrials = dispatch => evalId => dispatch(loadTrialsAction(evalId));
@@ -288,8 +293,28 @@ const setCoviusIndex = dispatch => (payload) => {
   dispatch(setCoviusIndexAction(payload));
 };
 
-const onWidgetToggle = dispatch => (payload) => {
-  dispatch(widgetToggle(payload));
+const handleSelectedWidgets = dispatch => payload => (
+  dispatch(setSelectedWidgets(payload))
+);
+
+const onErrorValidation = dispatch => () => {
+  dispatch(processValidations());
+};
+
+const dispatchAction = dispatch => (type, payload) => {
+  dispatch(onClearPopupDataAction());
+  dispatch({
+    type,
+    payload,
+  });
+};
+
+const clearPopupData = dispatch => () => {
+  dispatch(onClearPopupDataAction());
+};
+
+const toggleIncvrfn = dispatch => (visibility) => {
+  dispatch(toggleIncomeVerification(visibility));
 };
 
 const onAdditionalInfoClick = dispatch => (loanNumber) => {
@@ -300,16 +325,14 @@ const onEvalRowSelect = dispatch => (evalId, index) => {
   dispatch(evalSelectRow({ evalId, index }));
 };
 
-const onAdditionalInfoSelect = dispatch => (payload) => {
-  dispatch(setAdditionalInfoSelected(payload));
-};
-
-const onHistorySelect = dispatch => (payload) => {
-  dispatch(setHistorySelected(payload));
+const onUnassignBookingLoan = dispatch => () => {
+  dispatch(unassignBookingLoan());
 };
 
 const operations = {
-  onWidgetToggle,
+  toggleIncvrfn,
+  clearPopupData,
+  dispatchAction,
   setCoviusIndex,
   openSweetAlertAction,
   closeSweetAlert,
@@ -369,10 +392,11 @@ const operations = {
   populateEvents,
   onSendToFEUW,
   onWidgetClick,
+  handleSelectedWidgets,
+  onErrorValidation,
+  lockCalculation,
   onAdditionalInfoClick,
   onEvalRowSelect,
-  onAdditionalInfoSelect,
-  onHistorySelect,
   setTombstoneDataForLoanView,
 };
 

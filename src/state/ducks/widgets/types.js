@@ -1,0 +1,7 @@
+const WIDGET_TOGGLE = 'app/widgets/WIDGET_TOGGLE';
+const TOGGLE_WIDGET_SAGA = 'app/widgets/TOGGLE_WIDGET_SAGA';
+
+export {
+  TOGGLE_WIDGET_SAGA,
+  WIDGET_TOGGLE,
+};

@@ -74,7 +74,7 @@ class MilestonePage extends React.PureComponent {
             </div>
             {inSearchPage && (
             <div styleName="postion">
-              <WidgetBuilder milestonePageOpen />
+              <WidgetBuilder page="MLSTN_PAGE" />
             </div>
             )}
           </Grid>

@@ -1,90 +1,82 @@
-/* eslint-disable react/jsx-closing-tag-location */
 import React from 'react';
 import ChatIcon from '@material-ui/icons/Chat';
 import HistoryIcon from '@material-ui/icons/History';
 import TrailButton from '@material-ui/icons/Email';
+import * as R from 'ramda';
+import {
+  COMMENTS,
+  ADDITIONAL_INFO,
+  HISTORY,
+  CUSTOM_COMM_LETTER,
+  BOOKING,
+} from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
 
-
 const widgets = [
   {
-    id: 'Comments',
+    id: COMMENTS,
     icon: <ChatIcon />,
     component: <CommentsWidget />,
-    show: true,
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'TRIAL',
+      'BOOKING', 'SEARCH_LOAN', 'DOCGEN_GOBACK', 'MLSTN_PAGE'],
+    overlay: true,
   },
   {
-    id: 'Additional Info',
+    id: ADDITIONAL_INFO,
     icon: <img alt="Additional Info" src="/static/img/information.png" />,
-    show: true,
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'TRIAL',
+      'BOOKING', 'SEARCH_LOAN'],
+    children: [COMMENTS],
   },
   {
-    id: 'History',
+    id: HISTORY,
     icon: <HistoryIcon />,
-    show: true,
-  }];
-
-let loanActivityWidgets = {
-  id: 'customCommunicationLetter',
-  icon: <TrailButton />,
-  component: <TrialLetter />,
-  show: true,
-};
-let bookingAutomationWidget = {
-  id: 'BookingAutomation',
-  icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
-  show: true,
-};
-
-const searchLoanWidgets = [{
-  id: 'Comments',
-  icon: <ChatIcon />,
-  component: <CommentsWidget searchArea />,
-  show: true,
-},
-{
-  id: 'Additional Info',
-  icon: <img alt="Additional Info" src="/static/img/information.png" />,
-  show: true,
-}];
-
-const milestoneActivityWidgets = [{
-  id: 'Comments',
-  icon: <ChatIcon />,
-  component: <CommentsWidget />,
-  show: true,
-}];
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'TRIAL', 'BOOKING'],
+    children: [COMMENTS],
+  },
+  {
+    id: CUSTOM_COMM_LETTER,
+    icon: <TrailButton />,
+    component: <TrialLetter />,
+    visibility: [],
+  },
+  {
+    id: BOOKING,
+    icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
+    visibility: ['DOCSIN', 'BOOKING'],
+    children: [COMMENTS],
+  },
+];
 
 
-loanActivityWidgets = [loanActivityWidgets, ...widgets];
-
-function getWidgets() {
-  return widgets;
+function getWidgets(page) {
+  return widgets.filter(widget => R.contains(page, widget.visibility));
 }
 
-function getLoanActivityWidgets() {
-  return loanActivityWidgets;
+function getSelectedWidget(widgetId, page) {
+  return R.find(R.propEq('id', widgetId))(getWidgets(page));
 }
 
-bookingAutomationWidget = [...widgets, bookingAutomationWidget];
-
-function getBookingAutomationWidget() {
-  return bookingAutomationWidget;
+function getBookingWidget(page) {
+  return R.find(R.propEq('id', BOOKING))(getWidgets(page));
 }
 
-function getSearchLoanWidget() {
-  return searchLoanWidgets;
-}
-
-function getMilestoneActivityWidgets() {
-  return milestoneActivityWidgets;
+function closeWidgets(request) {
+  const {
+    openWidgetList, page, closingWidgets,
+  } = request;
+  const widgetList = R.clone(closingWidgets);
+  closingWidgets.forEach((widget) => {
+    const selectedWidgetData = getSelectedWidget(widget, page);
+    if (selectedWidgetData) { widgetList.push(selectedWidgetData.children); }
+  });
+  return R.without(widgetList, openWidgetList);
 }
 
 export {
   getWidgets,
-  getLoanActivityWidgets,
-  getBookingAutomationWidget,
-  getSearchLoanWidget,
-  getMilestoneActivityWidgets,
+  getSelectedWidget,
+  getBookingWidget,
+  closeWidgets,
 };

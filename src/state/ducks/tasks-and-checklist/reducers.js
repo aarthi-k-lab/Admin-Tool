@@ -36,6 +36,7 @@ import {
   SET_SLA_VALUES,
   CHECK_RULES_PASSED,
   COMPUTE_RULES_PASSED,
+  SAVE_DROPDOWN_DATA,
 } from './types';
 
 const FAILED = 'failed';
@@ -107,6 +108,10 @@ function removeDirtyChecklistItem(state) {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
+    case SAVE_DROPDOWN_DATA: {
+      const { selector, formattedOptions } = action.payload;
+      return R.assocPath(selector, formattedOptions, state);
+    }
     case ERROR_LOADING_CHECKLIST:
       return {
         ...state,

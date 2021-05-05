@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -6,6 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
+import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
 import RadioButtons from './RadioButtons';
 import SlaRules from '../SlaRules';
 import CheckBox from './Checkbox';
@@ -212,24 +213,26 @@ class Checklist extends React.PureComponent {
     additionalInfo,
   }) {
     const {
-      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, LABEL_WITH_ICON, SLA_RULES,
-      CHECKBOX, READ_ONLY_TEXT, CURRENCY,
+      RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, SLA_RULES,
+      CHECKBOX, READ_ONLY_TEXT, CURRENCY, INCOME_CALCULATOR,
     } = HTMLElements;
+    let element = {};
     switch (type) {
+      case INCOME_CALCULATOR: {
+        return (<IncomeCalcWidget />);
+      }
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode);
-        return (
-          <Fragment key={id}>
-            <RadioButtons
-              disabled={disabled}
-              onChange={onChange}
-              options={options}
-              selectedValue={value}
-              title={title}
-            />
-          </Fragment>
+        element = (
+          <RadioButtons
+            disabled={disabled}
+            onChange={onChange}
+            options={options}
+            selectedValue={value}
+            title={title}
+          />
         );
-      }
+      } break;
       case CURRENCY: {
         const refCallback = this.handleBlur(id, taskCode, type);
         const onChange = this.handleTextChange(id, type);
@@ -252,9 +255,9 @@ class Checklist extends React.PureComponent {
         );
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          element = textField;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -267,21 +270,19 @@ class Checklist extends React.PureComponent {
             {textField}
           </Tooltip>
         );
-      }
+      } break;
       case CHECKBOX: {
         const onChange = this.handleCheckboxChange(id, taskCode, value);
-        return (
-          <Fragment key={id}>
-            <CheckBox
-              disabled={disabled}
-              onChange={onChange}
-              options={options}
-              selectedValue={value || []}
-              title={title}
-            />
-          </Fragment>
+        element = (
+          <CheckBox
+            disabled={disabled}
+            onChange={onChange}
+            options={options}
+            selectedValue={value || []}
+            title={title}
+          />
         );
-      }
+      } break;
       case MULTILINE_TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
         const onChange = this.handleTextChange(id);
@@ -297,9 +298,9 @@ class Checklist extends React.PureComponent {
         const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          element = textField;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -312,7 +313,7 @@ class Checklist extends React.PureComponent {
             {textField}
           </Tooltip>
         );
-      }
+      } break;
       case NUMBER: {
         const refCallback = this.handleBlur(id, taskCode);
         const onChange = this.handleTextChange(id);
@@ -328,9 +329,9 @@ class Checklist extends React.PureComponent {
         const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          element = textField;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -343,7 +344,7 @@ class Checklist extends React.PureComponent {
             {textField}
           </Tooltip>
         );
-      }
+      } break;
       case DATE: {
         const refCallback = this.handleDateChange(id, taskCode);
         const hint = R.prop('hint', options);
@@ -356,9 +357,9 @@ class Checklist extends React.PureComponent {
         };
         const datePicker = (<BasicDatePicker {...prop} />);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return datePicker;
+          element = datePicker;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -371,7 +372,7 @@ class Checklist extends React.PureComponent {
             <div>{datePicker}</div>
           </Tooltip>
         );
-      }
+      } break;
       case TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
         const onChange = this.handleTextChange(id);
@@ -387,9 +388,9 @@ class Checklist extends React.PureComponent {
         const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          element = textField;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -402,7 +403,7 @@ class Checklist extends React.PureComponent {
             {textField}
           </Tooltip>
         );
-      }
+      } break;
       case READ_ONLY_TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
         const getValue = this.getMultilineTextValue(id, value);
@@ -422,9 +423,9 @@ class Checklist extends React.PureComponent {
         );
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          element = textField;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -437,7 +438,7 @@ class Checklist extends React.PureComponent {
             {textField}
           </Tooltip>
         );
-      }
+      } break;
       case DROPDOWN: {
         // const refCallback = this.handleBlur(id, taskCode);
         const onChange = this.handleChange(id, taskCode);
@@ -454,9 +455,9 @@ class Checklist extends React.PureComponent {
         const textField = (<TextFields {...prop} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
-          return textField;
+          element = textField;
         }
-        return (
+        element = (
           <Tooltip
             classes={{
               tooltip: styles.tooltip,
@@ -469,10 +470,7 @@ class Checklist extends React.PureComponent {
             {textField}
           </Tooltip>
         );
-      }
-      case LABEL_WITH_ICON: {
-        return null;
-      }
+      } break;
       case SLA_RULES: {
         const refCallback = this.handleBlur(id, taskCode);
         const onChange = this.handleTextChange(id);
@@ -487,16 +485,17 @@ class Checklist extends React.PureComponent {
           type: TEXT,
           value: getValue,
         };
-        return <SlaRules {...props} />;
-      }
+        element = <SlaRules {...props} />;
+      } break;
       default:
-        return (
+        element = (
           <div>
             Unknown checklist item type:
             {type}
           </div>
         );
     }
+    return element;
   }
 
   render() {
@@ -507,14 +506,16 @@ class Checklist extends React.PureComponent {
     const {
       isDialogOpen, dialogContent, dialogTitle,
     } = this.state;
-    const addClearButton = !R.equals(checklistItems[0].type, 'sla-rules') ? (
+    const { INCOME_CALCULATOR } = HTMLElements;
+    const checklistElements = checklistItems.filter(({ isVisible }) => isVisible)
+      .map(this.renderChecklistItem);
+    const addClearButton = (!R.equals(checklistItems[0].type, 'sla-rules') && !R.equals(checklistItems[0].type, 'income-calculator')) && (
       <>
         <div styleName="subTaskDescParent">
           <div styleName="subTaskDescription">
             <Typography styleName="checklist-title">{title}</Typography>
           </div>
         </div>
-
         {!(location.pathname === '/special-loan' || triggerHeader) && (
           <div styleName="clearButton">
             <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
@@ -523,7 +524,7 @@ class Checklist extends React.PureComponent {
           </div>
         )}
       </>
-    ) : null;
+    );
     return (
       <section className={className}>
         {children}
@@ -541,13 +542,13 @@ class Checklist extends React.PureComponent {
           )}
         {addClearButton}
         <div styleName="scrollable-checklist">
-          <Paper elevation={1} styleName="checklist-form-controls">
-            {
-              checklistItems
-                .filter(({ isVisible }) => isVisible)
-                .map(this.renderChecklistItem)
-            }
-          </Paper>
+          {R.equals(R.prop('type', R.head(checklistItems)), INCOME_CALCULATOR)
+            ? checklistElements : (
+              <Paper elevation={1} styleName="checklist-form-controls">
+                {checklistElements}
+              </Paper>
+            ) }
+
         </div>
         <ConfirmationDialogBox
           isOpen={isDialogOpen}
@@ -579,6 +580,7 @@ Checklist.propTypes = {
       isVisible: PropTypes.bool,
       options: PropTypes.arrayOf(PropTypes.shape({
         displayName: PropTypes.string.isRequired,
+        hint: PropTypes.string,
         value: PropTypes.string.isRequired,
       })),
       showPushData: PropTypes.bool.isRequired,

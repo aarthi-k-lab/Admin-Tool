@@ -58,17 +58,32 @@ import {
   SEND_TO_COVIUS,
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
-  WIDGET_CLICK,
-  UNASSIGN_WIDGET_LOAN,
-  TOGGLE_WIDGET,
+  ASSIGN_BOOKING_LOAN,
+  UNASSIGN_BOOKING_LOAN,
   SET_PAYMENT_DEFERRAL,
-  ADDITIONAL_INFO_CLICK,
+  SET_SELECTED_WIDGET,
+  LOCK_INCOME_CALCULATION,
+  CLEAR_POPUP_DATA,
+  TOGGLE_INCVRFN,
+  FETCH_EVAL_CASE,
   EVAL_ROW_CLICK,
-  SET_ADDITIONAL_INFO_SELECTED,
-  SET_HISTORY_SELECTED,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
 } from './types';
 
+
+const toggleIncomeVerification = visibility => ({
+  type: TOGGLE_INCVRFN,
+  payload: visibility,
+});
+
+
+const onClearPopupDataAction = () => ({
+  type: CLEAR_POPUP_DATA,
+});
+
+const onLockCalc = () => ({
+  type: LOCK_INCOME_CALCULATION,
+});
 
 const onExpandView = userPayload => ({
   type: SET_EXPAND_VIEW_SAGA,
@@ -126,8 +141,8 @@ const getGroupName = payload => ({
   payload,
 });
 
-const widgetClickAction = payload => ({
-  type: WIDGET_CLICK,
+const assignBookingLoan = payload => ({
+  type: ASSIGN_BOOKING_LOAN,
   payload,
 });
 
@@ -142,8 +157,8 @@ const unassignLoan = () => ({
   type: UNASSIGN_LOAN,
 });
 
-const unassignWidgetLoan = () => ({
-  type: UNASSIGN_WIDGET_LOAN,
+const unassignBookingLoan = () => ({
+  type: UNASSIGN_BOOKING_LOAN,
 });
 
 const postComment = payload => ({
@@ -353,11 +368,10 @@ const setCoviusIndexAction = payload => ({
   payload,
 });
 
-const widgetToggle = payload => ({
-  type: TOGGLE_WIDGET,
+const setSelectedWidgets = payload => ({
+  type: SET_SELECTED_WIDGET,
   payload,
 });
-
 
 const setPaymentDeferral = payload => ({
   type: SET_PAYMENT_DEFERRAL,
@@ -365,7 +379,7 @@ const setPaymentDeferral = payload => ({
 });
 
 const additionalInfo = loanNumber => ({
-  type: ADDITIONAL_INFO_CLICK,
+  type: FETCH_EVAL_CASE,
   payload: loanNumber,
 });
 
@@ -374,21 +388,10 @@ const evalSelectRow = payload => ({
   payload,
 });
 
-const setAdditionalInfoSelected = payload => ({
-  type: SET_ADDITIONAL_INFO_SELECTED,
-  payload,
-});
-
-const setHistorySelected = payload => ({
-  type: SET_HISTORY_SELECTED,
-  payload,
-});
-
 
 export {
   setPaymentDeferral,
-  widgetToggle,
-  unassignWidgetLoan,
+  unassignBookingLoan,
   setCoviusIndexAction,
   openSweetAlertAction,
   closeSweetAlertAction,
@@ -448,9 +451,11 @@ export {
   downloadFileAction,
   populateEventsDropdown,
   sendToFEUW,
-  widgetClickAction,
+  setSelectedWidgets,
+  onLockCalc,
+  onClearPopupDataAction,
+  toggleIncomeVerification,
+  assignBookingLoan,
   additionalInfo,
   evalSelectRow,
-  setAdditionalInfoSelected,
-  setHistorySelected,
 };

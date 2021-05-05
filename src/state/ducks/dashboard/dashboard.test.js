@@ -18,6 +18,7 @@ import {
 } from '../tasks-and-checklist/actions';
 import { POST_COMMENT_SAGA } from '../comments/types';
 import { GET_HISTORICAL_CHECKLIST_DATA } from '../tasks-and-checklist/types';
+import { SET_INCOMECALC_DATA } from '../income-calculator/types';
 import DashboardModel from '../../../models/Dashboard';
 
 const {
@@ -137,6 +138,7 @@ describe('getnext Success', () => {
         loanNumber: '12345',
       },
     },
+    incomeCalcData: {},
   };
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
@@ -190,6 +192,13 @@ describe('getnext Success', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
   });
+
+  it('should call SET_INCOMECALC_DATA', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: {} }));
+  });
+
+
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
       taskId: '1234',
@@ -337,6 +346,12 @@ describe('getnext Failure -  no tasks found', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
   });
+
+  it('should call SET_INCOMECALC_DATA', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: null }));
+  });
+
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
       taskId: null,
@@ -450,6 +465,12 @@ describe('getnext Failure -  task fetch failure', () => {
     expect(saga.next(userDetails).value)
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
   });
+
+  it('should call SET_INCOMECALC_DATA', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: null }));
+  });
+
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
       taskId: null,
@@ -1124,6 +1145,7 @@ describe('assign Loan', () => {
       evalId: 3565247,
       taskId: 74365847,
     },
+    incomeCalcData: {},
     status: 'Loan Assignment Successful',
   };
 
@@ -1167,6 +1189,12 @@ describe('assign Loan', () => {
     expect(saga.next(18008401081).value)
       .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta&taskName=', {}));
   });
+
+  it('should call SET_INCOMECALC_DATA', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: {} }));
+  });
+
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
       taskId: 74365847,
@@ -1177,6 +1205,7 @@ describe('assign Loan', () => {
         payload: taskid,
       }));
   });
+
   it('should call ASSIGN_LOAN_RESULT', () => {
     expect(saga.next(mockResponse).value)
       .toEqual(put({ type: actionTypes.ASSIGN_LOAN_RESULT, payload: { ...mockResponse } }));
@@ -1531,7 +1560,7 @@ describe('handle widget : Loan Assignment Successful', () => {
     appgroupName: 'BOOKING',
   };
 
-  const saga = cloneableGenerator(TestExports.handleWidget)();
+  const saga = cloneableGenerator(TestExports.assignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -1659,7 +1688,7 @@ describe('handle widget : Loan Assignment unSuccessful', () => {
     appgroupName: 'BOOKING',
   };
 
-  const saga = cloneableGenerator(TestExports.handleWidget)();
+  const saga = cloneableGenerator(TestExports.assignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -1794,7 +1823,7 @@ describe('handle widget not assigned : checklist not found', () => {
     assignee: 'bren@mrcooper.com',
   };
 
-  const saga = cloneableGenerator(TestExports.handleWidget)();
+  const saga = cloneableGenerator(TestExports.assignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -1937,7 +1966,7 @@ describe('handle widget not assigned : checklist found', () => {
     assignee: 'bren@mrcooper.com',
   };
 
-  const saga = cloneableGenerator(TestExports.handleWidget)();
+  const saga = cloneableGenerator(TestExports.assignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -2035,7 +2064,7 @@ describe('handle widget not assigned : checklist found', () => {
   });
 });
 
-describe('unassignWidgetLoan : unassignLoan successful', () => {
+describe('unassignBookingLoan : unassignLoan successful', () => {
   const mockUser = {
     userDetails: {
       email: 'bren@mrcooper.com',
@@ -2065,7 +2094,7 @@ describe('unassignWidgetLoan : unassignLoan successful', () => {
     appgroupName: 'BOOKING',
   };
 
-  const saga = cloneableGenerator(TestExports.unassignWidgetLoan)();
+  const saga = cloneableGenerator(TestExports.unassignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -2108,7 +2137,7 @@ describe('unassignWidgetLoan : unassignLoan successful', () => {
   });
 });
 
-describe('unassignWidgetLoan : unassignLoan unsuccessful', () => {
+describe('unassignBookingLoan : unassignLoan unsuccessful', () => {
   const mockUser = {
     userDetails: {
       email: 'bren@mrcooper.com',
@@ -2127,7 +2156,7 @@ describe('unassignWidgetLoan : unassignLoan unsuccessful', () => {
     appgroupName: 'BOOKING',
   };
 
-  const saga = cloneableGenerator(TestExports.unassignWidgetLoan)();
+  const saga = cloneableGenerator(TestExports.unassignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -2171,7 +2200,7 @@ describe('unassignWidgetLoan : unassignLoan unsuccessful', () => {
   });
 });
 
-describe('unassignWidgetLoan : Failed', () => {
+describe('unassignBookingLoan : Failed', () => {
   const mockWidgetLoan = {
     loanNumber: 18008401081,
     taskId: 74365847,
@@ -2180,7 +2209,7 @@ describe('unassignWidgetLoan : Failed', () => {
     appgroupName: 'BOOKING',
   };
 
-  const saga = cloneableGenerator(TestExports.unassignWidgetLoan)();
+  const saga = cloneableGenerator(TestExports.unassignBookingLoan)();
   it('should call show loader', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));

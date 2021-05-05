@@ -119,8 +119,6 @@ class ChecklistHistory extends React.Component {
           {
             (!R.isEmpty(historicalData))
               ? historicalData.map(option => (
-                // eslint-disable-next-line react/jsx-no-target-blank
-
                 groupName === DashboardModel.BOOKING || toggleWidget
                   ? (
                     <MenuItem key={option} className="menuItem" onClick={() => this.downloadChecklist(option)}>
@@ -150,14 +148,12 @@ class ChecklistHistory extends React.Component {
                   )
               ))
               : (
-                <>
-                  <MenuItem className="menuItem">
-                    <div>
+                <MenuItem className="menuItem">
+                  <div>
                 No historical checklists are available
 
-                    </div>
-                  </MenuItem>
-                </>
+                  </div>
+                </MenuItem>
               )}
         </Menu>
       </>

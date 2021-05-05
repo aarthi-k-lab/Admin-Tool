@@ -13,6 +13,7 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as incomeSelectors } from 'ducks/income-calculator/index';
 import {
   actions as checklistActions,
   selectors as checklistSelectors,
@@ -21,16 +22,14 @@ import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
-import {
-  ERROR, SUCCESS,
-} from 'constants/common';
+import { ERROR, SUCCESS } from 'constants/common';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
 }
   from '../comments/types';
 import selectors from './selectors';
-// import { mockData } from '../../../containers/LoanActivity/LoanActivity';
+
 import {
   SET_COVIUS_TABINDEX,
   STORE_EVALID_RESPONSE,
@@ -112,20 +111,21 @@ import {
   SEND_TO_FEUW_SAGA,
   SEND_TO_COVIUS,
   DISABLE_SEND_TO_FEUW,
-  WIDGET_CLICK,
+  ASSIGN_BOOKING_LOAN,
   SAVE_EVAL_FOR_WIDGET,
-  UNASSIGN_WIDGET_LOAN,
+  UNASSIGN_BOOKING_LOAN,
   SAVE_MAIN_CHECKLIST,
-  TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
+  LOCK_INCOME_CALCULATION,
+  SET_POPUP_DATA,
   EVAL_CASE_DETAILS,
-  ADDITIONAL_INFO_CLICK,
   EVAL_ROW_CLICK,
   SET_CASE_DETAILS,
   SET_EVAL_INDEX,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
   SAVE_EVAL_LOANVIEW,
+  FETCH_EVAL_CASE,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -141,6 +141,12 @@ import {
   RESET_DATA,
 } from '../tasks-and-checklist/types';
 
+import { incTypeMap } from '../../../constants/incomeCalc';
+
+import {
+  SET_INCOMECALC_DATA,
+} from '../income-calculator/types';
+
 const {
   Messages:
   {
@@ -153,6 +159,7 @@ const {
     MSG_SENDTOCOVIUS_FAILED,
   },
 } = DashboardModel;
+
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -582,7 +589,7 @@ function* setTombstoneDataForLoanview(searchItem) {
   }
 }
 
-function* handleWidget() {
+function* assignBookingLoan() {
   try {
     yield put({ type: SHOW_LOADER });
     const evalId = yield select(selectors.evalId);
@@ -1084,6 +1091,8 @@ function* getNext(action) {
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
+      const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
+      yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
@@ -1221,7 +1230,7 @@ function* unassignLoan() {
   }
 }
 
-function* unassignWidgetLoan() {
+function* unassignBookingLoan() {
   try {
     yield put({ type: SHOW_LOADER });
     const widgetLoan = yield select(selectors.getWidgetLoan);
@@ -1271,6 +1280,8 @@ function* assignLoan() {
     }
     const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
     const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
+    const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
+    yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({
@@ -1278,11 +1289,11 @@ function* assignLoan() {
         payload: response,
       });
       yield call(fetchChecklistDetailsForAssign, groupName, response);
-      if (R.equals(groupName, DashboardModel.BOOKING)) {
-        yield put({ type: TOGGLE_WIDGET, payload: true });
-      } else {
-        yield put({ type: TOGGLE_WIDGET, payload: false });
-      }
+      // if (R.equals(groupName, DashboardModel.BOOKING)) {
+      //   yield put({ type: BOOKING_WIDGET_VISIBILITY, payload: true });
+      // } else {
+      //   yield put({ type: BOOKING_WIDGET_VISIBILITY, payload: false });
+      // }
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
@@ -2007,7 +2018,6 @@ const submitToCovius = function* submitToCovius(action) {
   }
 };
 
-
 const onDownloadFile = function* onDownloadFile(action) {
   const fileData = action.payload;
   try {
@@ -2028,6 +2038,66 @@ const onDownloadFile = function* onDownloadFile(action) {
       payload: {
         status: MSG_FILE_DOWNLOAD_FAILURE,
         level: LEVEL_FAILED,
+      },
+    });
+  }
+};
+
+
+const lockCalculation = function* lockCalculation() {
+  try {
+    const consolidatedData = yield select(incomeSelectors.getConsolidatedIncome);
+    const borrowerInfo = yield select(incomeSelectors.getBorrowers);
+    const borrowerList = yield select(incomeSelectors.getBorrowersList);
+    const consolidation = [];
+    R.forEach((item) => {
+      const cnsdtIncome = {};
+      R.forEach((incomeType) => {
+        const incomeData = R.reject(R.isNil, R.flatten(R.pluck(incomeType,
+          R.pluck(item, R.flatten(consolidatedData)))));
+        if (incomeData.length) {
+          cnsdtIncome[incomeType] = incomeData;
+        }
+      }, R.keys(incTypeMap));
+      if (cnsdtIncome) {
+        borrowerInfo.forEach((borr) => {
+          if (R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, item)) {
+            consolidation.push({ borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome });
+          }
+        });
+      }
+    }, borrowerList);
+    const loanId = yield select(selectors.loanNumber);
+    const response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanId}`, consolidation);
+    if (response) {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Income is Locked successfully in REMEDY',
+          level: 'Success',
+          title: 'Lock Calculation',
+        },
+      });
+    } else {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Income is not Locked in REMEDY, please select "YES" to manually update Remedy and "Retry" to try again',
+          level: 'Failed',
+          title: 'Lock Calculation',
+          showCancelButton: true,
+          confirmButtonText: 'Retry',
+          cancelButtonText: 'Yes',
+          onConfirm: LOCK_INCOME_CALCULATION,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: e.message,
+        level: 'Failed',
       },
     });
   }
@@ -2109,15 +2179,19 @@ function* watchOnDownloadFile() {
 }
 
 function* watchOnWidgetClick() {
-  yield takeEvery(WIDGET_CLICK, handleWidget);
+  yield takeEvery(ASSIGN_BOOKING_LOAN, assignBookingLoan);
 }
 
-function* watchUnassignWidgetLoan() {
-  yield takeEvery(UNASSIGN_WIDGET_LOAN, unassignWidgetLoan);
+function* watchUnassignBookingLoan() {
+  yield takeEvery(UNASSIGN_BOOKING_LOAN, unassignBookingLoan);
+}
+
+function* watchLockCalc() {
+  yield takeEvery(LOCK_INCOME_CALCULATION, lockCalculation);
 }
 
 function* watchAdditionalInfo() {
-  yield takeEvery(ADDITIONAL_INFO_CLICK, fetchEvalCaseDetails);
+  yield takeEvery(FETCH_EVAL_CASE, fetchEvalCaseDetails);
 }
 
 function* watchEvalRowSelect() {
@@ -2128,7 +2202,7 @@ export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
   resetChecklistData,
-  unassignWidgetLoan,
+  unassignBookingLoan,
   getResolutionDataForEval,
   fetchChecklistDetailsForAssign,
   endShift,
@@ -2178,7 +2252,8 @@ export const TestExports = {
   watchOnSubmitFile,
   watchPopulateEventsDropDown,
   watchOnDownloadFile,
-  handleWidget,
+  watchLockCalc,
+  assignBookingLoan,
   watchLoanviewTombstoneData,
 };
 
@@ -2189,7 +2264,7 @@ export const combinedSaga = function* combinedSaga() {
     watchDispositionSave(),
     watchGetNext(),
     watchSetExpandView(),
-    watchUnassignWidgetLoan(),
+    watchUnassignBookingLoan(),
     watchEndShift(),
     watchSearchLoan(),
     watchTombstoneLoan(),
@@ -2216,6 +2291,7 @@ export const combinedSaga = function* combinedSaga() {
     watchOnDownloadFile(),
     watchPopulateEventsDropDown(),
     watchOnWidgetClick(),
+    watchLockCalc(),
     watchAdditionalInfo(),
     watchEvalRowSelect(),
     watchLoanviewTombstoneData(),

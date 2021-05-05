@@ -10,6 +10,7 @@ const isGetNextError = state => R.pathOr(false, ['dashboard', 'isGetNextError'],
 
 const getNextError = state => R.pathOr(null, ['dashboard', 'getNextError'], state);
 
+const getSelectedWidget = state => R.pathOr([], ['dashboard', 'selectedWidget'], state);
 
 const taskFetchError = state => R.pathOr(false, ['dashboard', 'taskFetchError'], state);
 
@@ -65,8 +66,6 @@ const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeRe
 const disableSendToFEUW = state => R.pathOr(false, ['dashboard', 'disableSendToFEUW'], state);
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 
-const isAdditionalInfoOpen = state => R.pathOr(false, ['dashboard', 'isAdditionalInfoOpen'], state);
-const isHistoryOpen = state => R.pathOr(false, ['dashboard', 'isHistoryOpen'], state);
 
 const enableGetNext = state => (
   ((isFirstVisit(state)
@@ -104,6 +103,9 @@ const getRejectResponse = state => R.pathOr({}, ['dashboard', 'rejectResponse'],
 
 const incentiveTaskCodes = state => R.pathOr({}, ['dashboard', 'incentiveTaskCodes'], state);
 
+const errorBanner = state => R.pathOr({}, ['dashboard', 'banner'], state);
+const showBanner = state => R.pathOr(false, ['dashboard', 'showBanner'], state);
+const enableLockButton = state => R.pathOr(false, ['dashboard', 'enableLockButton'], state);
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
 
@@ -139,22 +141,25 @@ const getRootTaskId = R.pathOr('', ['dashboard', 'rootTaskId']);
 const getSelectedChecklistId = state => R.pathOr('', ['dashboard', 'selectedChecklistId'], state);
 const getProcessId = R.pathOr(null, ['dashboard', 'processId']);
 
-const getToggleWidget = R.pathOr(false, ['dashboard', 'toggleWidget']);
 
 const getAssigntomeBtnStats = R.pathOr(false, ['dashboard', 'disableAssigntomeBtn']);
 
 
 const getIsPaymentDeferral = R.pathOr(false, ['dashboard', 'isPaymentDeferral']);
 
+const getPopupData = R.pathOr(false, ['dashboard', 'popupData']);
+
+const isIncomeVerification = R.pathOr(false, ['dashboard', 'isIncomeVerification']);
 const getCaseDetails = R.pathOr([], ['dashboard', 'caseDetails']);
 
 const getEvalIndex = state => R.pathOr(0, ['dashboard', 'evalIndex'], state);
 
 
 const selectors = {
+  isIncomeVerification,
+  getPopupData,
   getIsPaymentDeferral,
   getBookingTaskId,
-  getToggleWidget,
   getProcessId,
   userNotification,
   getRootTaskId,
@@ -229,11 +234,13 @@ const selectors = {
   disableSendToFEUW,
   getDisablePushData,
   getAssigntomeBtnStats,
+  getSelectedWidget,
+  errorBanner,
+  enableLockButton,
+  showBanner,
   getEvalCaseDetails,
   getCaseDetails,
   getEvalIndex,
-  isAdditionalInfoOpen,
-  isHistoryOpen,
   addInfoEvalId,
 };
 

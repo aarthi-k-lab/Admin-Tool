@@ -73,21 +73,32 @@ import {
   SAVE_EVAL_FOR_WIDGET,
   SAVE_MAIN_CHECKLIST,
   SET_USER_NOTIF_MESSAGE,
-  TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
   ASSIGN_TO_ME_CLICK,
   SET_PAYMENT_DEFERRAL,
+  SET_SELECTED_WIDGET,
+  TOGGLE_LOCK_BUTTON,
+  SET_POPUP_DATA,
+  CLEAR_POPUP_DATA,
+  TOGGLE_INCVRFN,
   EVAL_CASE_DETAILS,
   SET_CASE_DETAILS,
   SET_EVAL_INDEX,
-  SET_ADDITIONAL_INFO_SELECTED,
-  SET_HISTORY_SELECTED,
   SAVE_EVAL_LOANVIEW,
 } from './types';
 
-const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
+const reducer = (state = {
+  firstVisit: true,
+  coviusTabIndex: 0,
+}, action) => {
   switch (action.type) {
+    case TOGGLE_INCVRFN: {
+      return {
+        ...state,
+        isIncomeVerification: action.payload,
+      };
+    }
     case SET_PAYMENT_DEFERRAL: {
       const data = action.payload;
       return {
@@ -238,8 +249,6 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         inProgress: false,
         wasSearched: true,
         userNotification: {},
-        isAdditionalInfoOpen: false,
-        isHistoryOpen: false,
       };
     }
 
@@ -567,6 +576,24 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       };
     }
 
+    case SET_POPUP_DATA: {
+      const popupData = {
+        ...action.payload,
+        isOpen: true,
+      };
+      return {
+        ...state,
+        popupData,
+      };
+    }
+
+    case CLEAR_POPUP_DATA: {
+      return {
+        ...state,
+        popupData: {},
+      };
+    }
+
     case CLEAR_BULKUPLOAD_TABLEDATA: {
       return {
         ...state,
@@ -601,6 +628,7 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         enableSendToDocsIn,
         enableSendToBooking,
         loading: false,
+        incCalcLockVisibility: true,
       };
     }
 
@@ -773,11 +801,10 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         coviusEventOptions: payload,
       };
     }
-    case TOGGLE_WIDGET: {
-      const toggleWidget = action.payload;
+    case SET_SELECTED_WIDGET: {
       return {
         ...state,
-        toggleWidget,
+        selectedWidget: action.payload,
       };
     }
     case SAVE_TASKID: {
@@ -785,6 +812,14 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
       return {
         ...state,
         bookingTaskId,
+      };
+    }
+    case TOGGLE_LOCK_BUTTON: {
+      const enableLockButton = action.payload;
+      return {
+        ...state,
+        enableLockButton,
+        showBanner: true,
       };
     }
 
@@ -811,20 +846,6 @@ const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
         ...state,
         evalIndex: index,
         addInfoEvalId: evalId,
-      };
-    }
-
-    case SET_ADDITIONAL_INFO_SELECTED: {
-      return {
-        ...state,
-        isAdditionalInfoOpen: action.payload,
-      };
-    }
-
-    case SET_HISTORY_SELECTED: {
-      return {
-        ...state,
-        isHistoryOpen: action.payload,
       };
     }
 

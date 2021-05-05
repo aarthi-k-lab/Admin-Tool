@@ -254,8 +254,13 @@ const getPrevDocsInChecklistId = state => R.pathOr('', ['tasksAndChecklist', 'pr
 const getPrevDocsInRootTaskId = state => R.pathOr('', ['tasksAndChecklist', 'prevRootTaskId'], state);
 const getRuleResultFromTaskTree = state => R.path(['value', 'ruleResult'], R.head(R.pathOr([], ['subTasks'], R.find(R.propEq('taskBlueprintCode', 'SLAPREM'))(R.pathOr([], ['tasksAndChecklist', 'taskTree', 'subTasks'], state)))));
 
+const getChecklist = state => R.pathOr(null, ['tasksAndChecklist', 'checklist'], state);
+
+const getTasksAndChecklist = state => R.propOr({}, 'tasksAndChecklist', state);
 
 const selectors = {
+  getTasksAndChecklist,
+  getChecklist,
   getRuleResultFromTaskTree,
   getChecklistItems,
   getChecklistLoadStatus,

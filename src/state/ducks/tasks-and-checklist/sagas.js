@@ -33,13 +33,14 @@ import {
   GET_HISTORICAL_CHECKLIST_DATA,
   ERROR_LOADING_HISTORICAL_CHECKLIST,
   FETCH_DROPDOWN_OPTIONS_SAGA,
-  SAVE_DROPDOWN_OPTIONS,
+  SAVE_DROPDOWN_DATA,
   GET_RESOLUTION_ID_STATS,
   SLA_RULES_PROCESSED,
   SAVE_RULE_RESPONSE,
   SET_NEW_CHECKLIST,
   PUSH_DATA,
   CHECK_RULES_PASSED,
+  PUT_DROPDOWN_DATA,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -62,6 +63,7 @@ import DashboardModel from '../../../models/Dashboard/index';
 import {
   SOMETHING_WENT_WRONG,
 } from '../../../models/Alert';
+
 // import DropDownSelect from 'containers';
 const {
   Messages: {
@@ -544,8 +546,11 @@ function* subTaskClearance(action) {
 function* sortUniqueUsers(usersList) {
   const currentUser = yield select(loginSelectors.getUser);
   const currentUserMail = R.path(['userDetails', 'email'], currentUser);
-  return R.sortBy(a => a.displayName,
-    R.filter(user => user.userPrincipalName !== currentUserMail, R.uniq(usersList)));
+  return R.concat([{
+    displayName: '',
+    id: '',
+  }], R.sortBy(a => a.displayName,
+    R.filter(user => user.userPrincipalName !== currentUserMail, R.uniq(usersList))));
 }
 
 function* getUsersForGroup(additionalInfo) {
@@ -567,8 +572,19 @@ function* getUsersForGroup(additionalInfo) {
   return requestData;
 }
 
+function getDataFromColValMap(additionalInfo) {
+  const { value, columnName } = additionalInfo;
+  const requestData = {
+    url: `/api/dataservice/api/colValMap/${columnName}?actvInd=Y&searchTerm=${value}`,
+    method: Api.callGet,
+    formatResponse: R.pluck('val'),
+  };
+  return requestData;
+}
+
 const sourceToMethodMapping = {
   adgroup: getUsersForGroup,
+  OLTP: getDataFromColValMap,
 };
 
 
@@ -577,6 +593,7 @@ function* getdropDownOptions(action) {
     source,
     additionalInfo,
   } = action.payload;
+  const selector = R.propOr(null, 'selector', additionalInfo);
   const dataFetchMethod = sourceToMethodMapping[source];
   const requestData = yield dataFetchMethod(additionalInfo);
   const {
@@ -586,12 +603,38 @@ function* getdropDownOptions(action) {
     formatResponse,
   } = requestData;
   const options = yield call(method, url, body);
-  const formattedOptions = yield formatResponse(options);
+  if (options) {
+    const formattedOptions = yield formatResponse(options);
+    const data = {
+      formattedOptions,
+      selector: selector || ['dropDownOptions'],
+    };
+    try {
+      yield put({
+        type: SAVE_DROPDOWN_DATA,
+        payload: data,
+      });
+    } catch (e) {
+      yield call(handleSaveChecklistError, e);
+    }
+  }
+}
+
+function* putDropDownOptions(action) {
   try {
-    yield put({
-      type: SAVE_DROPDOWN_OPTIONS,
-      payload: formattedOptions,
-    });
+    const {
+      columnName, value,
+    } = action.payload;
+    const payload = {
+      actvInd: 'Y',
+      audCreByNm: 'CMODUI',
+      audCreDttm: new Date(),
+      cmnt: '',
+      colNm: columnName,
+      val: value,
+
+    };
+    yield call(Api.callPost, '/api/dataservice/api/colValMap/', payload);
   } catch (e) {
     yield call(handleSaveChecklistError, e);
   }
@@ -850,6 +893,10 @@ function* watchDropDownOption() {
   yield takeEvery(FETCH_DROPDOWN_OPTIONS_SAGA, getdropDownOptions);
 }
 
+function* watchPutDropDownOption() {
+  yield takeEvery(PUT_DROPDOWN_DATA, putDropDownOptions);
+}
+
 function* watchResolutionIdStatCall() {
   yield takeEvery(GET_RESOLUTION_ID_STATS, makeResolutionIdStatCall);
 }
@@ -874,6 +921,7 @@ export const TestExports = {
 
 export function* combinedSaga() {
   yield all([
+    watchPutDropDownOption(),
     watchChecklistItemChange(),
     watchGetChecklist(),
     watchGetNextChecklist(),

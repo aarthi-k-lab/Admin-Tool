@@ -5,7 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import styles from './RadioButtonGroup.css';
 
 const FormControlLabelWithTooltip = ({
-  classes, control, disabled, disableTooltip, label, styleName, tooltip, value,
+  classes, control, disabled, disableTooltip, label, styleName, tooltip, value, style,
 }) => {
   if (disableTooltip) {
     return (
@@ -14,6 +14,7 @@ const FormControlLabelWithTooltip = ({
         control={control}
         disabled={disabled}
         label={label}
+        style={style}
         styleName={styleName}
         value={value}
       />
@@ -53,9 +54,10 @@ FormControlLabelWithTooltip.defaultProps = {
 FormControlLabelWithTooltip.propTypes = {
   classes: PropTypes.object, // eslint-disable-line
   control: PropTypes.object.isRequired, // eslint-disable-line
-  disabled: PropTypes.bool,
+  disabled: PropTypes.bool, // eslint-disable-line
   disableTooltip: PropTypes.bool,
   label: PropTypes.string.isRequired,
+  style: PropTypes.object, // eslint-disable-line
   styleName: PropTypes.string,
   tooltip: PropTypes.string,
   value: PropTypes.string,

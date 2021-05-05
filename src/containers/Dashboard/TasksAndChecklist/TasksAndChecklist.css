@@ -8,6 +8,14 @@
   margin: 0 auto;
 }
 
+.incomeCalc {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+  margin: 0rem 0rem 0rem 20rem;
+}
+
 .pushData {
   align-self: stretch;
   align-items: center;
@@ -64,6 +72,10 @@
 .error-indicator {
   color: var(--red-a700);
   margin: auto;
+}
+
+.banner {
+  z-index: 100;
 }
 
 .tasks-and-checklist {

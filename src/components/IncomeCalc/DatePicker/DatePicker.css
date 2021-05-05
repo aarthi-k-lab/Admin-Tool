@@ -1,0 +1,22 @@
+.text-label.text-label {
+  color: #000;
+  margin: 0;
+}
+
+.datepicker {
+  width: 15rem !important;
+}
+
+.date-flex-div {
+  display: flex;
+  margin-left: 2.5rem;
+  margin-top: 1rem;
+}
+
+.date-flex-title {
+  width: 15rem;
+}
+
+.date-flex-picker {
+  width: 16.5rem;
+}

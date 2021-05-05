@@ -112,7 +112,13 @@ const triggerPushData = dispatch => () => dispatch(pushDataAction());
 
 const putComputeRulesPassed = dispatch => payload => dispatch(computeRulesPassed(payload));
 
+
+const preProcessChecklistItems = dispatch => (type, payload) => {
+  dispatch({ type, payload });
+};
+
 const operations = {
+  preProcessChecklistItems,
   putComputeRulesPassed,
   fetchChecklist,
   fetchNextChecklist,

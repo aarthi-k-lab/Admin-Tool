@@ -15,14 +15,13 @@ describe('<WidgetBuilder />', () => {
       },
     ];
     const wrapper = shallow(
-      <TestHooks.WidgetBuilder />,
+      <TestHooks.WidgetBuilder currentWidget="Comments" openWidgetList={data} />,
     );
-    wrapper.setState({ rightAppBarSelected: 'Comments', rightAppBarOpen: true, rightAppBar: data });
     expect(wrapper.find('WidgetComponent')).toHaveLength(1);
   });
   it('renders WidgetIcon', () => {
     const wrapper = shallow(
-      <TestHooks.WidgetBuilder />,
+      <TestHooks.WidgetBuilder page="FEUW" />,
     );
     expect(wrapper.find('WidgetIcon')).toHaveLength(3);
   });
@@ -32,7 +31,7 @@ describe('<WidgetBuilder />', () => {
       <TestHooks.WidgetBuilder />,
     );
     wrapper.setProps({
-      groupName: 'DOCSIN',
+      page: 'DOCSIN',
     });
     expect(wrapper.find('WidgetIcon')).toHaveLength(4);
   });
@@ -42,30 +41,18 @@ describe('<WidgetBuilder />', () => {
       <TestHooks.WidgetBuilder />,
     );
     wrapper.setProps({
-      groupName: 'DOCGEN',
+      page: 'DOCGEN',
     });
     expect(wrapper.find('WidgetIcon')).toHaveLength(3);
   });
 
-  it('should call the triggerHeader function', () => {
-    const triggerHeader = jest.fn();
+  it('should call the onWidgetToggle function', () => {
+    const onWidgetToggle = jest.fn();
     const wrapper = shallow(
-      <TestHooks.WidgetBuilder triggerHeader={triggerHeader} />,
+      <TestHooks.WidgetBuilder onWidgetToggle={onWidgetToggle} page="FEUW" />,
     );
-    wrapper.setProps({
-      groupName: 'DOCSIN',
-    });
-    expect(wrapper.find('WidgetIcon')).toHaveLength(4);
+    expect(wrapper.find('WidgetIcon')).toHaveLength(3);
     wrapper.find('WidgetIcon').at(1).simulate('WidgetClick');
-    expect(triggerHeader).toBeCalled();
-  });
-  it('should call the triggerAI function', () => {
-    const triggerAI = jest.fn();
-    const wrapper = shallow(
-      <TestHooks.WidgetBuilder triggerAI={triggerAI} type="search" />,
-    );
-    expect(wrapper.find('WidgetIcon')).toHaveLength(2);
-    wrapper.find('WidgetIcon').at(1).simulate('WidgetClick');
-    expect(triggerAI).toBeCalled();
+    expect(onWidgetToggle).toBeCalled();
   });
 });

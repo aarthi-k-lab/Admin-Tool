@@ -1,4 +1,5 @@
 import React from 'react';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -17,13 +18,9 @@ const useStyles = makeStyles(theme => ({
 
 const WidgetIcon = (props) => {
   const {
-    rightAppBarOpen, rightAppBarSelected, data, onWidgetClick,
-    isAdditionalInfoOpen, isHistoryOpen, toggleWidget,
+    openWidgetList, data, onWidgetClick,
   } = props;
-  const isSelected = (rightAppBarOpen && rightAppBarSelected === data.id)
-    || (isHistoryOpen && data.id === 'History')
-    || (isAdditionalInfoOpen && data.id === 'Additional Info')
-    || (toggleWidget && data.id === 'BookingAutomation');
+  const isSelected = (R.contains(data.id, openWidgetList));
   return (
     <Grid
       alignItems="center"
@@ -41,12 +38,8 @@ const WidgetIcon = (props) => {
 };
 
 WidgetIcon.defaultProps = {
-  rightAppBarOpen: true,
-  rightAppBarSelected: '',
+  openWidgetList: [],
   data: [],
-  isAdditionalInfoOpen: false,
-  isHistoryOpen: false,
-  toggleWidget: false,
 };
 
 WidgetIcon.propTypes = {
@@ -54,13 +47,8 @@ WidgetIcon.propTypes = {
     icon: PropTypes.string,
     id: PropTypes.string,
   }),
-  isAdditionalInfoOpen: PropTypes.bool,
-  isHistoryOpen: PropTypes.bool,
   onWidgetClick: PropTypes.func.isRequired,
-
-  rightAppBarOpen: PropTypes.bool,
-  rightAppBarSelected: PropTypes.string,
-  toggleWidget: PropTypes.bool,
+  openWidgetList: PropTypes.string,
 };
 
 const TestExports = {
