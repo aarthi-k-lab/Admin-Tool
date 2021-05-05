@@ -4,7 +4,7 @@ import {
   STORE_PROCESS_DETAILS, STORE_CHECKLIST_NAVIGATION, SET_SELECTED_CHECKLIST,
   STORE_TASKS, RESET_DATA, HANDLE_CHECKLIST_ITEM_CHANGE, STORE_BORROWER,
   SET_ADD_TASKID, SET_REMOVE_TASKID, DELETE_CHECKLIST,
-  POST_DROPDOWN_OPTIONS_SAGA, FETCH_DROPDOWN_OPTIONS_SAGA, SET_INCOMECALC_TOGGLE,
+  SET_INCOMECALC_TOGGLE,
   PROCESS_VALIDATIONS, FETCH_INCOMECALC_HISTORY, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
 } from './types';
 
@@ -103,20 +103,6 @@ const triggerRemoveClick = taskIds => ({
   },
 });
 
-const createOption = payload => ({
-  type: POST_DROPDOWN_OPTIONS_SAGA,
-  payload,
-});
-
-const getDropDownOptions = (source, additionalInfo) => ({
-  type: FETCH_DROPDOWN_OPTIONS_SAGA,
-  payload: {
-    source,
-    additionalInfo,
-  },
-});
-
-
 const incomeCalcToggleAction = payload => ({
   type: SET_INCOMECALC_TOGGLE,
   payload,
@@ -131,7 +117,6 @@ const processValidations = payload => ({
 export {
   processValidations,
   incomeCalcToggleAction,
-  createOption,
   getIncomeCalcData,
   getSelectedIncomeType,
   fetchChecklist,
@@ -145,7 +130,6 @@ export {
   triggerAddTask,
   triggerRemoveClick,
   onDeleteAction,
-  getDropDownOptions,
   getIncomeCalcHistory,
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,

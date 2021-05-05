@@ -4,7 +4,6 @@ import {
   handleChecklistItemChange, setSelectedBorrower, triggerAddTask,
   triggerRemoveClick,
   onDeleteAction,
-  createOption, getDropDownOptions,
   resetChecklistData,
   incomeCalcToggleAction,
   getIncomeCalcHistory,
@@ -56,10 +55,6 @@ const onRemoveTask = dispatch => request => dispatch(
   triggerRemoveClick(request),
 );
 
-const onCreateOption = dispatch => request => dispatch(
-  createOption(request),
-);
-
 const duplicateHistoryChecklist = dispatch => (checklistId) => {
   dispatch(duplicateIncomeChecklist(checklistId));
 };
@@ -85,7 +80,6 @@ const operations = {
   onAddTask,
   onRemoveTask,
   onDelete,
-  onCreateOption,
   duplicateHistoryChecklist,
   incomeCalcChecklist,
   closeHistoryView,
