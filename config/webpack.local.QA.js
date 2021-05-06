@@ -90,7 +90,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          target: 'https://qa.cmod.mrcooper.io/cmodworkassignment',
+          target: 'https://dev.cmod.mrcooper.io/cmodworkassignment',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

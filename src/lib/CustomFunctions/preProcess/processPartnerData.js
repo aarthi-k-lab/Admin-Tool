@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 const process = (item) => {
   const { incomeCalcData, value } = item;
-  const borrowers = R.propOr([], 'borrowers', incomeCalcData);
+  const borrowers = R.propOr([], 'borrowerData', incomeCalcData);
   const borrower = R.find(borr => R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, value), borrowers);
   return {
     ...item,

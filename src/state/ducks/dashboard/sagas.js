@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   select,
   take,
@@ -2067,28 +2068,51 @@ const lockCalculation = function* lockCalculation() {
         });
       }
     }, borrowerList);
-    const loanId = yield select(selectors.loanNumber);
-    const response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanId}`, consolidation);
-    if (response) {
-      yield put({
-        type: SET_POPUP_DATA,
-        payload: {
-          message: 'Income is Locked successfully in REMEDY',
-          level: 'Success',
-          title: 'Lock Calculation',
-        },
-      });
+    const loanNumber = yield select(selectors.loanNumber);
+    const taskId = yield select(selectors.loanNumber);
+    const taskCheckListId = yield select(selectors.getProcessId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const request = {
+      taskId,
+      loanNumber,
+      userPrincipalName,
+      taskCheckListId,
+      calcDateTime: new Date(),
+    };
+    const dbResult = yield call(Api.callPost, '/api/workassign/IncomeCalc/lock/', request);
+    if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+      const response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`, consolidation);
+      if (response) {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Income is Locked successfully in REMEDY',
+            level: 'Success',
+            title: 'Lock Calculation',
+          },
+        });
+      } else {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Income is not Locked in REMEDY, please select "YES" to manually update Remedy and "Retry" to try again',
+            level: 'Failed',
+            title: 'Lock Calculation',
+            showCancelButton: true,
+            confirmButtonText: 'Retry',
+            cancelButtonText: 'Yes',
+            onConfirm: LOCK_INCOME_CALCULATION,
+          },
+        });
+      }
     } else {
       yield put({
         type: SET_POPUP_DATA,
         payload: {
-          message: 'Income is not Locked in REMEDY, please select "YES" to manually update Remedy and "Retry" to try again',
+          message: 'Income is Locked failed due to Borrower data discrepency',
           level: 'Failed',
           title: 'Lock Calculation',
-          showCancelButton: true,
-          confirmButtonText: 'Retry',
-          cancelButtonText: 'Yes',
-          onConfirm: LOCK_INCOME_CALCULATION,
         },
       });
     }

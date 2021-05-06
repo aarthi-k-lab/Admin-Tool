@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 const processBorrowerData = (item) => {
   const { incomeCalcData, failureReason } = item;
-  const borrowers = R.propOr([], 'borrowers', incomeCalcData);
+  const borrowers = R.propOr([], 'borrowerData', incomeCalcData);
   const failures = [];
   const checklistBorrowers = R.pathOr(null, ['checklist', 'value', 'inc', 'borrowers'], incomeCalcData);
   const data = checklistBorrowers && checklistBorrowers.map((_, index) => {

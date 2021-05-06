@@ -18,8 +18,9 @@ const toggleHistoryView = payload => ({
   payload,
 });
 
-const getIncomeCalcChecklist = () => ({
+const getIncomeCalcChecklist = payload => ({
   type: FETCH_INCOMECALC_CHECKLIST,
+  payload,
 });
 
 const getSelectedIncomeType = payload => ({

@@ -12,8 +12,8 @@ import {
   toggleHistoryView,
 } from './actions';
 
-const fetchIncomeCalcData = dispatch => () => {
-  dispatch(getIncomeCalcData());
+const fetchIncomeCalcData = dispatch => (payload) => {
+  dispatch(getIncomeCalcData(payload));
   dispatch(getIncomeCalcHistory());
 };
 

@@ -182,7 +182,7 @@ class TaskSection extends React.PureComponent {
           </div>
         ));
         return (
-          <Accordion styleName={styleName}>
+          <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
             >

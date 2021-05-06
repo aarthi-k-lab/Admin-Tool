@@ -13,13 +13,13 @@ import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import logger from 'redux-logger';
 import {
-  FETCH_INCOMECALC_DATA, FETCH_INCOMECALC_HISTORY, SET_BORROWERS_DATA,
+  FETCH_INCOMECALC_HISTORY, SET_BORROWERS_DATA,
   SHOW_LOADER, HIDE_LOADER,
   FETCH_CHECKLIST,
   LOADING_TASKS, LOADING_CHECKLIST, STORE_CHECKLIST, ERROR_LOADING_CHECKLIST,
   ERROR_LOADING_TASKS, HANDLE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_ITEM_CHANGE, GET_COMPANY_LIST, SET_AUTOCOMPLETE_OPTIONS,
-  REMOVE_DIRTY_CHECKLIST,
+  REMOVE_DIRTY_CHECKLIST, SET_INCOMECALC_DATA,
   SET_PROCESS_ID, ADD_CONTRIBUTOR, FETCH_INCOMECALC_CHECKLIST,
   PROCESS_VALIDATIONS, SET_BANNER_DATA, DUPLICATE_INCOME, STORE_INCOMECALC_HISTORY,
 } from './types';
@@ -95,130 +95,34 @@ const getTaskFromProcess = (taskObj, prop, value) => {
   return null;
 };
 
-function* fetchIncomeCalcChecklist() {
-  const process = yield select(taskSelectors.getChecklist);
-  const incomeCalcProcess = getTaskFromProcess(process, 'taskBlueprintCode', 'INC_EXP');
-  yield call(fetchChecklistDetails, { payload: R.propOr('', 'processInstance', R.head(incomeCalcProcess)) });
-  // const processId = yield select(selectors.getTaskCheckListId);
-  // const action = {
-  //   payload: processId,
-  // };
-  // yield call(fetchChecklistDetails, action);
-}
-
-function* fetchIncomeCalcData() {
+function* fetchIncomeCalcChecklist(action) {
   try {
-    yield put({ type: SHOW_LOADER });
-    const process = yield select(taskSelectors.getChecklist);
-    const incomeCalcProcess = getTaskFromProcess(process, 'taskBlueprintCode', 'INC_EXP');
-    const response = [
-      {
-        borrowerPstnNumber: 1,
-        borrowerAffilCd: '01',
-        firstName: 'ALFA',
-        middleName: '',
-        lastName: 'LIMA1285',
-        description: 'Borrower 1',
-      },
-      {
-        borrowerPstnNumber: 2,
-        borrowerAffilCd: '01',
-        firstName: 'ZULU',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 2',
-      },
-      {
-        borrowerPstnNumber: 3,
-        borrowerAffilCd: '01',
-        firstName: 'PAPA',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 3',
-      },
-      {
-        borrowerPstnNumber: 4,
-        borrowerAffilCd: '98',
-        firstName: 'GAMA',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 4',
-      },
-      {
-        borrowerPstnNumber: 5,
-        borrowerAffilCd: '98',
-        firstName: 'PAMA',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 4',
-      },
-      {
-        borrowerPstnNumber: 6,
-        borrowerAffilCd: '98',
-        firstName: 'WAMA',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 4',
-      },
-      {
-        borrowerPstnNumber: 7,
-        borrowerAffilCd: '98',
-        firstName: 'ZAMA',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 4',
-      },
-      {
-        borrowerPstnNumber: 8,
-        borrowerAffilCd: '98',
-        firstName: 'RAMA',
-        middleName: '',
-        lastName: 'RIMA1285',
-        description: 'Borrower 4',
-      },
-      {
-        borrowerPstnNumber: 9,
-        borrowerAffilCd: '98',
-        firstName: 'JAMA',
-        middleName: '',
-        lastName: 'JIMA1285',
-        description: 'Contributor 4',
-      },
-      {
-        borrowerPstnNumber: 10,
-        borrowerAffilCd: '98',
-        firstName: 'DAMA',
-        middleName: '',
-        lastName: 'DIMA1285',
-        description: 'Contributor 4',
-      },
-    ];
-    yield call(fetchChecklistDetails, { payload: R.propOr('', 'processInstance', R.head(incomeCalcProcess)) });
-    if (response != null) {
-      yield put({
-        type: SET_BORROWERS_DATA,
-        payload: response,
-      });
+    const isWidgetOpen = action.payload;
+    let taskChecklistId;
+    if (isWidgetOpen) {
+      const taskId = yield select(dashboardSelectors.taskId);
+      const incomeCalcData = yield call(Api.callGet, `/api/workassign/incomeCalc/getChecklist/${taskId}`);
+      if (incomeCalcData) {
+        yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+      }
+      taskChecklistId = R.prop('taskCheckListId', incomeCalcData);
     } else {
-      yield put({
-        type: SET_BORROWERS_DATA,
-        payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' },
-      });
+      const process = yield select(taskSelectors.getChecklist);
+      const incomeCalcProcess = getTaskFromProcess(process, 'taskBlueprintCode', 'INC_EXP');
+      taskChecklistId = R.propOr('', 'processInstance', R.head(incomeCalcProcess));
+    }
+    if (taskChecklistId) {
+      yield call(fetchChecklistDetails, { payload: taskChecklistId });
     }
   } catch (e) {
-    yield put({
-      type: SET_BORROWERS_DATA,
-      payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' },
-    });
+    logger.info(e);
   }
-  yield put({ type: HIDE_LOADER });
 }
 
 function* fetchIncomeCalcHistory() {
-  // const feuwTaskID = yield select(dashboardSelectors.taskId);
-  const feuwTaskID = '1806566';
+  const taskId = yield select(dashboardSelectors.taskId);
   try {
-    const response = yield call(Api.callGet, `/api/dataservice/incomeCalc/history/${feuwTaskID}`);
+    const response = yield call(Api.callGet, `/api/dataservice/incomeCalc/history/${taskId}`);
     yield put({
       type: STORE_INCOMECALC_HISTORY,
       payload: response,
@@ -321,12 +225,17 @@ function* duplicateIncome(action) {
   try {
     const feuwChecklistId = yield select(dashboardSelectors.processId);
     const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const taskId = yield select(dashboardSelectors.taskId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
     const request = {
       feuwChecklistId,
       loanNumber,
       incomeChecklistId,
+      taskId,
+      userPrincipalName,
     };
-    const response = yield call(Api.callPost, '/api/workassign/incomeCalc/duplicateChecklist', request, {});
+    const response = yield call(Api.callPost, '/api/workassign/incomeCalc/duplicateChecklist', request);
     const { _id: processId } = response;
     yield put({ type: SET_PROCESS_ID, payload: processId });
     yield call(fetchChecklistDetails, { payload: processId });
@@ -397,10 +306,6 @@ function* processValidations() {
   yield put({ type: HIDE_LOADER });
 }
 
-function* watchFetchIncomeCalcData() {
-  yield takeEvery(FETCH_INCOMECALC_DATA, fetchIncomeCalcData);
-}
-
 function* watchFetchIncomeCalcHistory() {
   yield takeEvery(FETCH_INCOMECALC_HISTORY, fetchIncomeCalcHistory);
 }
@@ -439,7 +344,6 @@ export const combinedSaga = function* combinedSaga() {
     watchFetchIncomeCalcChecklist(),
     watchProcessValidations(),
     watchAddContributor(),
-    watchFetchIncomeCalcData(),
     watchFetchIncomeCalcHistory(),
     watchfetchChecklist(),
     watchChecklistItemChange(),

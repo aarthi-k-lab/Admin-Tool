@@ -617,7 +617,6 @@ function mapStateToProps(state) {
     resolutionData: dashboardSelectors.getResolutionData(state),
     prevDocsInChecklistId: selectors.getPrevDocsInChecklistId(state),
     prevDocsInRootTaskId: selectors.getPrevDocsInRootTaskId(state),
-    toggleWidget: dashboardSelectors.getToggleWidget(state),
     errorBanner: incomeSelectors.getErrorBanner(state),
     showBanner: dashboardSelectors.showBanner(state),
     ruleResultFromTaskTree: selectors.getRuleResultFromTaskTree(state),

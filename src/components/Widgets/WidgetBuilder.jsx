@@ -16,7 +16,24 @@ class WidgetBuilder extends Component {
     this.renderIcon = this.renderIcon.bind(this);
   }
 
-  handleAdditionalInfo = (event, widgetId) => {
+  componentDidMount() {
+    const { page, onWidgetToggle } = this.props;
+    const widgets = getWidgets(page);
+    const openWidgetList = R.compose(
+      R.map(widget => widget.id),
+      R.filter(widget => R.prop('defaultOpen', widget)),
+    )(widgets);
+    if (!R.isEmpty(openWidgetList)) {
+      const payload = {
+        currentWidget: R.last(openWidgetList),
+        openWidgetList,
+        page,
+      };
+      onWidgetToggle(payload);
+    }
+  }
+
+  handleWidgetClick = (event, widgetId) => {
     const {
       onWidgetToggle, page, openWidgetList,
     } = this.props;
@@ -79,7 +96,7 @@ class WidgetBuilder extends Component {
         <WidgetIcon
           key={data.id}
           data={data}
-          onWidgetClick={event => this.handleAdditionalInfo(event, data.id)}
+          onWidgetClick={event => this.handleWidgetClick(event, data.id)}
           openWidgetList={openWidgetList}
         />
       ))

@@ -41,25 +41,7 @@ class IncomeCalcHistory extends React.PureComponent {
 
   render() {
     const { anchorEl } = this.state;
-    let { historyData } = this.props;
-    const { historyView } = this.props;
-    historyData = [
-      {
-        latestCalcDateTime: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
-        latestCalcByUserName: 'Hello@mrcooper.com',
-        taskCheckListId: '603426e3e2d78d15a8233a9a',
-      },
-      {
-        latestCalcDateTime: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        latestCalcByUserName: 'world@mrcooper.com',
-        taskCheckListId: '601ba793412d1112976abee5',
-      },
-      {
-        latestCalcDateTime: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-        latestCalcByUserName: 'mrcooper@mrcooper.com',
-        taskCheckListId: '601ba793412d1112976abee5',
-      },
-    ];
+    const { historyView, historyData } = this.props;
     return (
       <div style={{ display: 'flex' }}>
         {historyView

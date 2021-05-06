@@ -3,13 +3,10 @@ import {
   select, takeEvery, all, call, put,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
+import { assignBookingLoan, unassignBookingLoan, additionalInfo } from 'ducks/dashboard/actions';
+import { getIncomeCalcChecklist } from 'ducks/income-calculator/actions';
 import {
-  assignBookingLoan,
-  unassignBookingLoan,
-  additionalInfo,
-} from 'ducks/dashboard/actions';
-import {
-  BOOKING, HISTORY, ADDITIONAL_INFO,
+  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR,
 } from 'constants/widgets';
 import dashboardSelectors from 'ducks/dashboard/selectors';
 import { DOCS_IN } from 'constants/appGroupName';
@@ -36,21 +33,15 @@ function* toggleAdditionalInfoWidget(rightAppBarOpen) {
   }
 }
 
-// function* toggleHistoryWidget(rightAppBarOpen) {
-//   const groupName = yield select(dashboardSelectors.groupName);
-//   if (rightAppBarOpen && R.equals(groupName, DOCS_IN)) {
-//     yield put(assignBookingLoan());
-//   } else {
-//     yield put(unassignBookingLoan());
-//   }
-// }
-
 function* getRightAppBarAction(request) {
   const {
     isOpen,
     currentWidget,
   } = request;
   switch (currentWidget) {
+    case INCOME_CALCULATOR:
+      yield put(getIncomeCalcChecklist(isOpen));
+      break;
     case BOOKING:
       yield call(toggleBookingWidget, isOpen);
       break;

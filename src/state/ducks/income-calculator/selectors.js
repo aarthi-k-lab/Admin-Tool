@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import dashboardSelectors from 'ducks/dashboard/selectors';
 
 const getBorrowersInfo = state => (
-  state.incomeCalculator.borrowers ? state.incomeCalculator.borrowers : []);
+  state.incomeCalculator.borrowerData ? state.incomeCalculator.borrowerData : []);
 
 const getDirtyChecklistValueById = (id, state) => (
   R.compose(
@@ -78,7 +78,7 @@ const getIncomeToggle = state => R.pathOr(false, ['incomeCalculator', 'incomeCal
 const getIncomeCalcData = state => R.pathOr({}, ['incomeCalculator'], state);
 const getProcessId = state => R.pathOr(null, ['incomeCalculator', 'processId'], state);
 
-const getBorrowers = state => R.pathOr([], ['incomeCalculator', 'borrowers'], state);
+const getBorrowers = state => R.pathOr([], ['incomeCalculator', 'borrowerData'], state);
 
 const getBorrowersList = state => R.pathOr([], ['incomeCalculator', 'checklist', 'value', 'inc', 'borrowers'], state);
 
