@@ -55,6 +55,7 @@ exports[`renders <Row /> when changeColor is false snapshot test 1`] = `
     style={
       Object {
         "color": "lightseagreen",
+        "cursor": "pointer",
         "whiteSpace": "nowrap",
       }
     }
@@ -119,6 +120,7 @@ exports[`renders <Row /> when changeColor is true snapshot test 1`] = `
     style={
       Object {
         "color": "lightseagreen",
+        "cursor": "pointer",
         "whiteSpace": "nowrap",
       }
     }

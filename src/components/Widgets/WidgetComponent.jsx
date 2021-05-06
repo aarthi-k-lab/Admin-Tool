@@ -14,13 +14,13 @@ const getSytles = (selectedApp) => {
 class WidgetComponent extends React.PureComponent {
   render() {
     const {
-      currentWidget, rightAppBar, inSearchPage,
+      currentWidget, rightAppBar, page,
     } = this.props;
     const selectedWidget = R.find(R.propEq('id', currentWidget))(rightAppBar);
     const component = R.propOr(null, 'component', selectedWidget);
     return component
         && (
-        <div styleName={(inSearchPage && currentWidget === 'Comments') ? 'right-app-bar-search' : getSytles(currentWidget)}>
+        <div styleName={(R.equals(page, 'SEARCH_LOAN') && currentWidget === 'Comments') ? 'right-app-bar-search' : getSytles(currentWidget)}>
           <div style={{ width: '100%' }}>
             <div styleName="comment-area-bottom">
               {component}
@@ -32,14 +32,14 @@ class WidgetComponent extends React.PureComponent {
 }
 
 WidgetComponent.defaultProps = {
-  inSearchPage: false,
+  page: '',
   rightAppBar: [],
   currentWidget: '',
 };
 
 WidgetComponent.propTypes = {
   currentWidget: PropTypes.string,
-  inSearchPage: PropTypes.bool,
+  page: PropTypes.string,
   rightAppBar: PropTypes.arrayOf(PropTypes.shape({
     component: PropTypes.element,
   })),

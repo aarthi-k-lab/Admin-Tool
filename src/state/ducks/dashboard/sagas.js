@@ -2047,6 +2047,7 @@ const onDownloadFile = function* onDownloadFile(action) {
 
 const lockCalculation = function* lockCalculation() {
   try {
+    yield put({ type: SHOW_LOADER });
     const consolidatedData = yield select(incomeSelectors.getConsolidatedIncome);
     const borrowerInfo = yield select(incomeSelectors.getBorrowers);
     const borrowerList = yield select(incomeSelectors.getBorrowersList);
@@ -2070,7 +2071,7 @@ const lockCalculation = function* lockCalculation() {
     }, borrowerList);
     const loanNumber = yield select(selectors.loanNumber);
     const taskId = yield select(selectors.loanNumber);
-    const taskCheckListId = yield select(selectors.getProcessId);
+    const taskCheckListId = yield select(incomeSelectors.getProcessId);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const request = {
@@ -2092,6 +2093,7 @@ const lockCalculation = function* lockCalculation() {
             title: 'Lock Calculation',
           },
         });
+        yield put(getTasks());
       } else {
         yield put({
           type: SET_POPUP_DATA,
@@ -2125,6 +2127,7 @@ const lockCalculation = function* lockCalculation() {
       },
     });
   }
+  yield put({ type: HIDE_LOADER });
 };
 
 function* watchSubmitToCovius() {

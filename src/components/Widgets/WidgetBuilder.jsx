@@ -73,7 +73,7 @@ class WidgetBuilder extends Component {
     onWidgetToggle(payload);
   }
 
-  renderComponent(rightAppBar) {
+  renderComponent(rightAppBar, page) {
     const { currentWidget } = this.props;
     return (
       currentWidget !== ''
@@ -81,6 +81,7 @@ class WidgetBuilder extends Component {
         <WidgetComponent
           currentWidget={currentWidget}
           id="widget-component"
+          page={page}
           rightAppBar={rightAppBar}
         />
       )
@@ -115,7 +116,7 @@ class WidgetBuilder extends Component {
             id="widget_main_center"
             styleName={currentWidget !== '' ? 'widget-main-center-open' : 'widget-main-center-close'}
           />
-          {this.renderComponent(rightAppBar)}
+          {this.renderComponent(rightAppBar, page)}
           {
             <div
               id="show"

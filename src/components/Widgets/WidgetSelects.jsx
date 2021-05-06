@@ -26,7 +26,7 @@ const widgets = [
   {
     id: COMMENTS,
     icon: <ChatIcon />,
-    component: <CommentsWidget />,
+    component: <CommentsWidget searchArea />,
     visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
       'BOOKING', 'SEARCH_LOAN', 'DOCGEN_GOBACK', 'MLSTN_PAGE'],
     overlay: true,
