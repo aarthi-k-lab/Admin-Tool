@@ -99,7 +99,7 @@ const ErrorBanner = ({ errorBanner }) => {
                 {`${errors.length} Errors & ${warnings.length} Warnings found. Please do fix all the errors to proceed`}
               </p>
             </Grid>
-            <Grid item xs={2}><p style={{ color: 'white' }}>{expanded === 'panel1' ? 'HIDE DETAILS' : 'VIEW DETAILS'}</p></Grid>
+            <Grid item style={{ display: 'flex', justifyContent: 'center' }} xs={2}><p style={{ color: 'white' }}>{expanded === 'panel1' ? 'HIDE DETAILS' : 'VIEW DETAILS'}</p></Grid>
           </Grid>
         </AccordionSummary>
         <AccordionDetails style={{

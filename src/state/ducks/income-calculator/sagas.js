@@ -23,7 +23,9 @@ import {
   SET_PROCESS_ID, ADD_CONTRIBUTOR, FETCH_INCOMECALC_CHECKLIST,
   PROCESS_VALIDATIONS, SET_BANNER_DATA, DUPLICATE_INCOME, STORE_INCOMECALC_HISTORY,
 } from './types';
-import { USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON } from '../dashboard/types';
+import {
+  USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER,
+} from '../dashboard/types';
 import { SET_SNACK_BAR_VALUES } from '../notifications/types';
 
 import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCodes';
@@ -295,6 +297,10 @@ function* processValidations() {
     yield put({
       type: TOGGLE_LOCK_BUTTON,
       payload: R.isEmpty(R.propOr([], 1, banner)),
+    });
+    yield put({
+      type: TOGGLE_BANNER,
+      payload: !R.isEmpty(R.propOr([], 1, banner)) || !R.isEmpty(R.propOr([], 2, banner)),
     });
     yield put({
       type: SET_BANNER_DATA,

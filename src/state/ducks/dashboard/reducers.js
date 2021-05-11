@@ -86,6 +86,7 @@ import {
   SET_CASE_DETAILS,
   SET_EVAL_INDEX,
   SAVE_EVAL_LOANVIEW,
+  TOGGLE_BANNER,
 } from './types';
 
 const reducer = (state = {
@@ -819,7 +820,14 @@ const reducer = (state = {
       return {
         ...state,
         enableLockButton,
-        showBanner: true,
+      };
+    }
+
+    case TOGGLE_BANNER: {
+      const showBanner = action.payload;
+      return {
+        ...state,
+        showBanner,
       };
     }
 

@@ -24,6 +24,7 @@ import { selectors as widgetsSelectors, operations as widgetsOperations } from '
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as loginSelectors } from 'ducks/login';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
+import ErrorBanner from 'components/ErrorBanner';
 import Popup from '../../../components/Popup';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -289,6 +290,8 @@ class TasksAndChecklist extends Component {
       incomeCalcDataLoadStatus,
       incomeCalcDataLastUpdated,
       openWidgetList,
+      errorBanner,
+      showBanner,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
     const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
@@ -319,6 +322,7 @@ class TasksAndChecklist extends Component {
       );
     return (
       <div styleName="scroll-wrapper">
+        { showBanner && <ErrorBanner errorBanner={errorBanner} /> }
         { R.contains(BOOKING, openWidgetList) && (
           <div styleName="bookingWidget">
             <span styleName="widgetTitle">
@@ -382,6 +386,7 @@ class TasksAndChecklist extends Component {
 }
 
 TasksAndChecklist.defaultProps = {
+  showBanner: false,
   enableGetNext: false,
   inProgress: false,
   message: null,
@@ -504,6 +509,7 @@ TasksAndChecklist.propTypes = {
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
   showAssign: PropTypes.bool,
+  showBanner: PropTypes.bool,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
   snackBarData: PropTypes.node,

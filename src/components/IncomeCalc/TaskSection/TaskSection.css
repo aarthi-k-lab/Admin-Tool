@@ -355,3 +355,8 @@
 .no-income-sect {
     min-height: 10rem;
 }
+
+.chevron-left {
+    float: right;
+    padding-right: 1.5rem !important;
+}

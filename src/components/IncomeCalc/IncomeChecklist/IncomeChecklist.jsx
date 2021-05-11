@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import * as R from 'ramda';
 import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { selectors as incomeSelectors } from 'ducks/income-calculator';
 import { operations as taskOperations } from 'ducks/tasks-and-checklist';
@@ -21,6 +22,15 @@ import DatePicker from '../DatePicker';
 import CheckBox from '../Checkbox';
 import GridView from '../GridView';
 
+const StyledTooltip = withStyles({
+  arrow: {
+    color: 'rgb(231, 61, 91)',
+  },
+  tooltip: {
+    color: 'white',
+    backgroundColor: 'rgb(231, 61, 91)',
+  },
+})(Tooltip);
 
 const NumberFormatCustom = (props) => {
   const { inputRef, ...other } = props;
@@ -94,21 +104,23 @@ class IncomeChecklist extends React.PureComponent {
       item => errorLevels[item.level], R.reject(R.isNil, failureReason),
     );
     return !(R.isEmpty(errors) || R.isNil(errors))
-    || !(R.isEmpty(warnings) || R.isNil(warnings)) ? (
-      <Tooltip
-        disableFocusListener
-        disableTouchListener
-        title={(
-          <>
-            {errors && errors.map(error => <p style={{ fontSize: '1.5rem' }}>{error.message}</p>)}
-            {warnings && warnings.map(warning => <p style={{ fontSize: '1.5rem' }}>{warning.message}</p>)}
-          </>
-    )}
-      >
-        <div>
-          {element}
-        </div>
-      </Tooltip>
+      || !(R.isEmpty(warnings) || R.isNil(warnings)) ? (
+        <StyledTooltip
+          arrow
+          disableFocusListener
+          disableTouchListener
+          placement="top"
+          title={(
+            <>
+              {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
+              {warnings && warnings.map(warning => <p style={{ fontSize: '1rem' }}>{warning.message}</p>)}
+            </>
+          )}
+        >
+          <div>
+            {element}
+          </div>
+        </StyledTooltip>
       ) : element;
   }
 
