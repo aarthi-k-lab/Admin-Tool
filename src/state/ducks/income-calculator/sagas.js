@@ -12,6 +12,7 @@ import { selectors as taskSelectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import logger from 'redux-logger';
+import { showLoader, hideLoader } from 'ducks/dashboard/actions';
 import {
   SET_BORROWERS_DATA,
   SHOW_LOADER, HIDE_LOADER,
@@ -27,7 +28,6 @@ import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER,
 } from '../dashboard/types';
 import { SET_SNACK_BAR_VALUES } from '../notifications/types';
-
 import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCodes';
 import consolidateValidations from '../../../lib/consolidateValidation';
 
@@ -115,26 +115,35 @@ function* fetchIncomeCalcHistory() {
 function* fetchIncomeCalcChecklist(action) {
   try {
     const isWidgetOpen = action.payload;
-    let taskChecklistId;
     if (isWidgetOpen) {
+      yield put(showLoader());
       const taskId = yield select(dashboardSelectors.taskId);
       const incomeCalcData = yield call(Api.callGet, `/api/workassign/incomeCalc/getChecklist/${taskId}`);
       if (incomeCalcData) {
-        yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+        const data = {
+          ...incomeCalcData,
+          disableChecklist: true,
+        };
+        yield put({ type: SET_INCOMECALC_DATA, payload: data });
       }
-      taskChecklistId = R.prop('taskCheckListId', incomeCalcData);
-    } else {
-      const process = yield select(taskSelectors.getChecklist);
-      const incomeCalcProcess = getTaskFromProcess(process, 'taskBlueprintCode', 'INC_EXP');
-      taskChecklistId = R.propOr('', 'processInstance', R.head(incomeCalcProcess));
-    }
-    if (taskChecklistId) {
+      const taskChecklistId = R.prop('taskCheckListId', incomeCalcData);
       yield call(fetchChecklistDetails, { payload: taskChecklistId });
       yield call(fetchIncomeCalcHistory);
+      yield put(hideLoader());
+    } else {
+      yield put({ type: SHOW_LOADER });
+      const process = yield select(taskSelectors.getChecklist);
+      const incomeCalcProcess = getTaskFromProcess(process, 'taskBlueprintCode', 'INC_EXP');
+      const taskChecklistId = R.propOr('', 'processInstance', R.head(incomeCalcProcess));
+      yield put({ type: SET_INCOMECALC_DATA, payload: { disableChecklist: false } });
+      yield call(fetchChecklistDetails, { payload: taskChecklistId });
+      yield call(fetchIncomeCalcHistory);
+      yield put({ type: HIDE_LOADER });
     }
   } catch (e) {
     logger.info(e);
   }
+  // yield put({ type: HIDE_LOADER });
 }
 
 function* getTasks() {

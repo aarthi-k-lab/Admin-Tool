@@ -100,13 +100,10 @@ class TaskSection extends React.PureComponent {
       paddingBottom: '2rem',
       marginBottorm: '2rem',
     };
-    const disabledStyle = disabled && {
-      backgroundColor: '#eee',
-    };
     switch (customType) {
       case 'paper': {
         return (
-          <Paper elevation={2} square style={{ ...minHeightStyle, ...disabledStyle }} styleName={styleName || ''}>
+          <Paper elevation={2} square style={{ ...minHeightStyle }} styleName={styleName || ''}>
             {item}
           </Paper>
         );
@@ -121,7 +118,6 @@ class TaskSection extends React.PureComponent {
             <Grid
               container
               direction="row"
-              style={{ ...disabledStyle }}
               styleName={getStyleName('taskSection', styleName, 'grid')}
             >
               {
@@ -200,7 +196,6 @@ class TaskSection extends React.PureComponent {
         return (
           <div
             id={id}
-            style={{ ...disabledStyle }}
             styleName={styleName || ''}
           >
             {item}

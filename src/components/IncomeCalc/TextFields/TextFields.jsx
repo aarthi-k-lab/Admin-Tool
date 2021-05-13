@@ -36,7 +36,12 @@ class TextFields extends React.Component {
 
   getProps(type, props) {
     const { additionalInfo, value } = this.props;
-    const { placeholder } = additionalInfo;
+    const { placeholder, regex } = additionalInfo;
+    let textFieldValue = value;
+    if (regex && value) {
+      const { expression, replaceWith, flag } = regex;
+      textFieldValue = R.replace(new RegExp(expression, flag), replaceWith, value.toString());
+    }
     switch (type) {
       case 'currency': {
         return {
@@ -44,7 +49,7 @@ class TextFields extends React.Component {
           inputProps: {
             style: { textAlign: 'right' },
           },
-          value: value && R.replace(/\d(?=(?:\d{3})+$)/g, '$&,', value.toString()),
+          value: textFieldValue && R.replace(/\d(?=(?:\d{3})+$)/g, '$&,', value.toString()),
           onChange: this.onCurrencyChange,
         };
       }
@@ -57,6 +62,7 @@ class TextFields extends React.Component {
           inputProps: {
             cols: columns,
           },
+          value: textFieldValue,
         };
       }
       case 'read-only': {
@@ -66,9 +72,10 @@ class TextFields extends React.Component {
             type: 'number',
             min: '0',
           },
+          value: textFieldValue,
         };
       }
-      default: return { ...props, placeholder };
+      default: return { ...props, placeholder, value: textFieldValue };
     }
   }
 

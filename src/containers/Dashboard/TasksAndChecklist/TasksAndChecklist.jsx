@@ -25,6 +25,8 @@ import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as loginSelectors } from 'ducks/login';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import ErrorBanner from 'components/ErrorBanner';
+import componentTypes from 'constants/componentTypes';
+import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
 import Popup from '../../../components/Popup';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -32,8 +34,9 @@ import BookingHomePage from './BookingHomePage';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
-import componentTypes from '../../../constants/componentTypes';
-import { BOOKING, HISTORY, ADDITIONAL_INFO } from '../../../constants/widgets';
+import {
+  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR,
+} from '../../../constants/widgets';
 
 const LEFT_KEY = 37;
 const RIGHT_KEY = 39;
@@ -159,7 +162,6 @@ class TasksAndChecklist extends Component {
       putComputeRulesPassed,
       ruleResultFromTaskTree,
       getSelectedWidget,
-      // onDelete,
       openWidgetList,
     } = this.props;
 
@@ -192,6 +194,10 @@ class TasksAndChecklist extends Component {
         styleName = 'pushData';
       }
     }
+    if (R.contains(INCOME_CALCULATOR, openWidgetList)) {
+      return <IncomeCalcWidget />;
+    }
+
     return (
       <Checklist
         checklistItems={this.getChecklistItems()}
@@ -313,10 +319,11 @@ class TasksAndChecklist extends Component {
     }
 
     const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
+    const taskPane = R.contains(INCOME_CALCULATOR, openWidgetList) ? null : <TaskPane styleName="tasks" />;
     const currentOverlay = (R.contains(HISTORY, openWidgetList)
     || R.contains(ADDITIONAL_INFO, openWidgetList)) ? null : (
       <>
-        <TaskPane styleName="tasks" />
+        {taskPane}
         {this.renderChecklist()}
       </>
       );

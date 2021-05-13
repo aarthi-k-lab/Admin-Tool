@@ -68,6 +68,8 @@ import {
   FETCH_EVAL_CASE,
   EVAL_ROW_CLICK,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
+  SHOW_LOADER,
+  HIDE_LOADER,
 } from './types';
 
 
@@ -388,8 +390,17 @@ const evalSelectRow = payload => ({
   payload,
 });
 
+const showLoader = () => ({
+  type: SHOW_LOADER,
+});
+
+const hideLoader = () => ({
+  type: HIDE_LOADER,
+});
 
 export {
+  showLoader,
+  hideLoader,
   setPaymentDeferral,
   unassignBookingLoan,
   setCoviusIndexAction,

@@ -35,42 +35,44 @@ class WidgetBuilder extends Component {
 
   handleWidgetClick = (event, widgetId) => {
     const {
-      onWidgetToggle, page, openWidgetList,
+      onWidgetToggle, page, openWidgetList, disabledWidgets,
     } = this.props;
-    const widgets = getWidgets(page);
-    const selectedWidgetData = getSelectedWidget(widgetId, page);
-    let currentAppBarSelected = R.clone(openWidgetList);
-    if (R.contains(widgetId, openWidgetList)) {
-      if (selectedWidgetData.overlay) {
+    if (!R.contains(widgetId, disabledWidgets)) {
+      const widgets = getWidgets(page);
+      const selectedWidgetData = getSelectedWidget(widgetId, page);
+      let currentAppBarSelected = R.clone(openWidgetList);
+      if (R.contains(widgetId, openWidgetList)) {
+        if (selectedWidgetData.overlay) {
         // remove current widget from array.
-        currentAppBarSelected = R.without(widgetId, currentAppBarSelected);
-      } else {
+          currentAppBarSelected = R.without(widgetId, currentAppBarSelected);
+        } else {
         // Close all widgets except overlay widgets
-        currentAppBarSelected = R.filter(widget => R.propOr(false, 'overlay', R.find(R.propEq('id', widget), widgets)), currentAppBarSelected);
-        if (selectedWidgetData.children) {
-          currentAppBarSelected = R.without(selectedWidgetData.children, currentAppBarSelected);
+          currentAppBarSelected = R.filter(widget => R.propOr(false, 'overlay', R.find(R.propEq('id', widget), widgets)), currentAppBarSelected);
+          if (selectedWidgetData.children) {
+            currentAppBarSelected = R.without(selectedWidgetData.children, currentAppBarSelected);
+          }
         }
+      } else if (selectedWidgetData.overlay) {
+        currentAppBarSelected.push(widgetId);
+      } else {
+        currentAppBarSelected = [widgetId];
       }
-    } else if (selectedWidgetData.overlay) {
-      currentAppBarSelected.push(widgetId);
-    } else {
-      currentAppBarSelected = [widgetId];
-    }
 
-    let currentUpdatedWidget = '';
-    if (R.contains(widgetId, openWidgetList)) {
-      if (!R.isEmpty(currentAppBarSelected)) {
-        currentUpdatedWidget = R.last(currentAppBarSelected);
+      let currentUpdatedWidget = '';
+      if (R.contains(widgetId, openWidgetList)) {
+        if (!R.isEmpty(currentAppBarSelected)) {
+          currentUpdatedWidget = R.last(currentAppBarSelected);
+        }
+      } else {
+        currentUpdatedWidget = widgetId;
       }
-    } else {
-      currentUpdatedWidget = widgetId;
+      const payload = {
+        currentWidget: currentUpdatedWidget,
+        openWidgetList: currentAppBarSelected,
+        page,
+      };
+      onWidgetToggle(payload);
     }
-    const payload = {
-      currentWidget: currentUpdatedWidget,
-      openWidgetList: currentAppBarSelected,
-      page,
-    };
-    onWidgetToggle(payload);
   }
 
   renderComponent(rightAppBar, page) {
@@ -89,7 +91,7 @@ class WidgetBuilder extends Component {
   }
 
   renderIcon(rightAppBar) {
-    const { openWidgetList } = this.props;
+    const { openWidgetList, disabledWidgets } = this.props;
     return (
       rightAppBar.length !== 0
       && rightAppBar
@@ -97,6 +99,7 @@ class WidgetBuilder extends Component {
         <WidgetIcon
           key={data.id}
           data={data}
+          disabledWidgets={disabledWidgets}
           onWidgetClick={event => this.handleWidgetClick(event, data.id)}
           openWidgetList={openWidgetList}
         />
@@ -139,12 +142,14 @@ WidgetBuilder.defaultProps = {
   trialHeader: {},
   currentWidget: '',
   openWidgetList: [],
+  disabledWidgets: [],
   page: '',
 };
 
 WidgetBuilder.propTypes = {
   className: PropTypes.string.isRequired,
   currentWidget: PropTypes.string,
+  disabledWidgets: PropTypes.arrayOf(PropTypes.string),
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
@@ -163,6 +168,7 @@ WidgetBuilder.propTypes = {
 const mapStateToProps = state => ({
   currentWidget: selectors.getCurrentWidget(state),
   openWidgetList: selectors.getOpenWidgetList(state),
+  disabledWidgets: selectors.getDisabledWidgets(state),
 });
 
 function mapDispatchToProps(dispatch) {

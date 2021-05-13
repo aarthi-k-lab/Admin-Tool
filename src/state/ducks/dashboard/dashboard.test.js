@@ -7,6 +7,8 @@ import { selectors as loginSelectors } from 'ducks/login/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import { ERROR, SUCCESS } from 'constants/common';
+import { setDisabledWidget } from 'ducks/widgets/actions';
+import { INCOME_CALCULATOR } from 'constants/widgets';
 import * as actionTypes from './types';
 import {
   onExpandView, dispositionSave, clearDisposition, clearFirstVisit,
@@ -195,7 +197,7 @@ describe('getnext Success', () => {
 
   it('should call SET_INCOMECALC_DATA', () => {
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: {} }));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
   });
 
 
@@ -349,7 +351,7 @@ describe('getnext Failure -  no tasks found', () => {
 
   it('should call SET_INCOMECALC_DATA', () => {
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: null }));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
   });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
@@ -468,7 +470,7 @@ describe('getnext Failure -  task fetch failure', () => {
 
   it('should call SET_INCOMECALC_DATA', () => {
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: null }));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
   });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {

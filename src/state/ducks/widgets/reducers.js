@@ -1,6 +1,8 @@
 import {
   WIDGET_TOGGLE,
+  SET_DISABLED_WIDGETS,
 } from './types';
+
 
 const defaultState = {
   currentWidget: '',
@@ -9,6 +11,13 @@ const defaultState = {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
+    case SET_DISABLED_WIDGETS: {
+      const { disabledWidgets } = action.payload;
+      return {
+        ...state,
+        disabledWidgets,
+      };
+    }
     case WIDGET_TOGGLE: {
       const {
         currentWidget,

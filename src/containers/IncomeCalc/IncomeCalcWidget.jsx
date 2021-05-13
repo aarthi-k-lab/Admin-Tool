@@ -6,34 +6,51 @@ import { selectors, operations } from 'ducks/income-calculator';
 import { selectors as selectorDash } from 'ducks/dashboard';
 import ComponentTypes from 'constants/componentTypes';
 import './IncomeCalcWidget.css';
+import * as R from 'ramda';
 import IncomeChecklist from 'components/IncomeCalc/IncomeChecklist';
+import { selectors as widgetsSelectors } from 'ducks/widgets';
+import {
+  INCOME_CALCULATOR,
+} from '../../constants/widgets';
 
 class IncomeCalcWidget extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { };
-  }
-
   componentDidMount() {
-    const { incomeCalcChecklist } = this.props;
-    incomeCalcChecklist();
+    const { incomeCalcChecklist, openWidgetList } = this.props;
+    if (!R.contains(INCOME_CALCULATOR, openWidgetList)) {
+      incomeCalcChecklist();
+    }
   }
 
-  // const newChecklistItems = borrower
-  // sInfo.map((item, i) => Object.assign({}, item, checklistItems[i]));
   render() {
     const {
       inProgress, checklistItems, onChecklistChange, historyView,
+      disabledChecklist, openWidgetList,
     } = this.props;
     if (inProgress) {
       return (
-        <Loader message="Please Wait" />
+        <div styleName="income-loader">
+          <Loader message="Please Wait" />
+        </div>
       );
     }
+    if (R.contains(INCOME_CALCULATOR, openWidgetList)) {
+      return (
+        <div styleName="income-checklist">
+          <IncomeChecklist
+            checklistItems={checklistItems}
+            disabled={disabledChecklist || historyView}
+            onChange={onChecklistChange}
+            onDelete={this.onDeleteItem}
+            styleName="widget"
+          />
+        </div>
+      );
+    }
+
     return (
       <IncomeChecklist
         checklistItems={checklistItems}
-        disabled={historyView}
+        disabled={disabledChecklist || historyView}
         onChange={onChecklistChange}
         onDelete={this.onDeleteItem}
         styleName="checklist"
@@ -47,6 +64,8 @@ IncomeCalcWidget.defaultProps = {
   inProgress: false,
   checklistItems: [],
   historyView: false,
+  disabledChecklist: false,
+  openWidgetList: [],
 };
 
 IncomeCalcWidget.propTypes = {
@@ -64,10 +83,13 @@ IncomeCalcWidget.propTypes = {
       type: PropTypes.oneOf(Object.values(ComponentTypes)).isRequired,
     }),
   ),
+  disabledChecklist: PropTypes.bool,
   historyView: PropTypes.bool,
   incomeCalcChecklist: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
+
 };
 
 const TestHooks = {
@@ -82,6 +104,8 @@ const mapStateToProps = state => ({
   getSelectedBorrower: selectors.getSelectedBorrower(state),
   checklistItems: selectors.getChecklistItems(state),
   historyView: selectors.getHistoryView(state),
+  disabledChecklist: selectors.disabledChecklist(state),
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -24,6 +24,8 @@ import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import { ERROR, SUCCESS } from 'constants/common';
+import { INCOME_CALCULATOR } from 'constants/widgets';
+import { setDisabledWidget } from 'ducks/widgets/actions';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -452,17 +454,6 @@ function* fetchChecklistDetailsForSearchResult(checklistId) {
   yield call(fetchChecklistDetails, checklistId);
 }
 
-// function* fetchLoanActivityDetails(evalDetails) {
-//   const { payload } = evalDetails;
-//   const groupList = yield select(loginSelectors.getGroupList);
-//   const hasLoanActivityAccess = RouteAccess.hasLoanActivityAccess(groupList);
-//   if (hasLoanActivityAccess) {
-//     // Here we need to get data from actual api
-//     const response = mockData(R.equals(payload.taskName,
-//  'Trial Modification') ? 'Trial' : payload.taskName);
-//     yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
-//   }
-// }
 function* getResolutionDataForEval(evalId) {
   try {
     const response = yield call(Api.callGet, `/api/tkams/fetchResolutionIds/${evalId}`);
@@ -1094,7 +1085,11 @@ function* getNext(action) {
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
       const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
-      yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+      if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], taskDetails)) {
+        yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+      } else {
+        yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+      }
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
@@ -1283,7 +1278,11 @@ function* assignLoan() {
     const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
     const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
-    yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+    if (incomeCalcData) {
+      yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+    } else {
+      yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+    }
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({
@@ -1291,11 +1290,6 @@ function* assignLoan() {
         payload: response,
       });
       yield call(fetchChecklistDetailsForAssign, groupName, response);
-      // if (R.equals(groupName, DashboardModel.BOOKING)) {
-      //   yield put({ type: BOOKING_WIDGET_VISIBILITY, payload: true });
-      // } else {
-      //   yield put({ type: BOOKING_WIDGET_VISIBILITY, payload: false });
-      // }
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,

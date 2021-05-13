@@ -28,8 +28,8 @@ const closeHistoryView = dispatch => () => {
   dispatch(toggleHistoryView(false));
 };
 
-const incomeCalcChecklist = dispatch => () => dispatch(
-  getIncomeCalcChecklist(),
+const incomeCalcChecklist = dispatch => payload => dispatch(
+  getIncomeCalcChecklist(payload),
 );
 
 const onDelete = dispatch => (id, taskCode) => {

@@ -88,7 +88,7 @@ class Dropdown extends React.Component {
         options,
         styleName,
       },
-      value, missing, onChange,
+      value, missing, onChange, disabled,
     } = this.props;
     if (regexType) {
       const { string: regexString, helperText } = getRegexData(regexType);
@@ -103,6 +103,7 @@ class Dropdown extends React.Component {
     const defaultValue = options && R.equals(R.prop('disabled', R.head(options)), true) ? R.prop('value', R.head(options)) : null;
     return (
       <Select
+        disabled={disabled}
         displayEmpty
         id="demo-simple-select-outlined"
         input={<BootstrapInput />}
@@ -142,6 +143,7 @@ Dropdown.defaultProps = {
   dropDownOptions: [],
   missing: false,
   value: '',
+  disabled: false,
   additionalInfo: {
     type: 'text',
     mandatory: false,
@@ -151,6 +153,7 @@ Dropdown.defaultProps = {
 
 Dropdown.propTypes = {
   additionalInfo: PropTypes.string,
+  disabled: PropTypes.bool,
   dropDownOptions: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string,
     value: PropTypes.string,
