@@ -1,6 +1,9 @@
 const R = require('ramda');
 
 const textFields = {
+  'inc-text': {
+    value: 'weekly-text',
+  },
   'ri-total-text': {
     title: 'ri-total-text',
     value: '',
@@ -15,10 +18,13 @@ const textFields = {
     inputProps: { style: { width: '17rem' } },
   },
   'pay-periods-text': {
+    div: 'pay-periods-text',
     title: 'pay-periods-title',
+    textField: 'pay-period-textField',
     inputProps: { style: { paddingTop: '8px', paddingBottom: '8px' } },
   },
   'mrla-text': {
+    textField: 'ri-div-label',
     title: 'mrla-title',
     div: 'display-in-row',
   },
@@ -67,6 +73,9 @@ const textFields = {
 };
 
 const taskSection = {
+  'fixed-income-net-value': {
+    'grid-label': 'fixed-income-net-value',
+  },
   'inc-calc-borr': {
     item: 'inc-calc-borr-item',
     header: 'radio-control-label',
@@ -150,6 +159,7 @@ const taskSection = {
     labelValue: '',
     summary: '',
     details: '',
+    'grid-label': 'default-grid-label-spacing',
   },
 };
 
@@ -165,7 +175,7 @@ const datePicker = {
   },
 };
 
-const dropdown = {
+const dropDown = {
   payFreq: {
     dropdown: 'payFreq',
     'dropdown-sect': 'displayInRow',
@@ -202,7 +212,7 @@ const radioButtons = {
 };
 
 const createSelect = {
-  cname: {
+  default: {
     button: 'cname-button',
     buttonIcon: 'cname-icon',
     createSelectWrapper: 'cname-create',
@@ -222,7 +232,7 @@ const styleData = {
   datePicker,
   textFields,
   taskSection,
-  dropdown,
+  dropDown,
   radioButtons,
   createSelect,
 };

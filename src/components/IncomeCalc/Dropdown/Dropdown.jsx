@@ -38,7 +38,7 @@ const BootstrapInput = withStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     border: '1px solid #ced4da',
     fontSize: 12,
-    width: '10rem',
+    minWidth: '7rem',
     padding: '4px 26px 5px 12px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     // Use the system font instead of the default Roboto font.
@@ -103,6 +103,7 @@ class Dropdown extends React.Component {
     const defaultValue = options && R.equals(R.prop('disabled', R.head(options)), true) ? R.prop('value', R.head(options)) : null;
     return (
       <Select
+        displayEmpty
         id="demo-simple-select-outlined"
         input={<BootstrapInput />}
         label="Age"

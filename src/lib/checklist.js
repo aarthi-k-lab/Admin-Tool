@@ -5,8 +5,7 @@ const getChecklistItems = (subTasks, disableSubTasks = false) => R.map(checklist
   id: R.prop('_id', checklistItem),
   isVisible: R.propOr(true, 'visibility', checklistItem),
   failureReason: R.propOr(null, 'failureReason', checklistItem),
-  disabled: disableSubTasks || ((R.pathOr(false, ['taskBlueprint', 'disabled'], checklistItem)
-  || R.propOr(false, 'disabled', checklistItem)))
+  disabled: disableSubTasks || R.propOr(false, 'disabled', checklistItem)
   || (R.pathOr(false, ['taskBlueprint', 'additionalInfo', 'disableDuplicate'], checklistItem) && R.pathOr(false, ['value', 'isDuplicate'], checklistItem)),
   subTasks: R.propOr([], 'subTasks', checklistItem),
   options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),

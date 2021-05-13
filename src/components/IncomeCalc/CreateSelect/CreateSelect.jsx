@@ -189,7 +189,7 @@ class CreateSelect extends React.Component {
     const {
       title, additionalInfo, value, options, styleName,
     } = this.props;
-    const { additionalElements, selector } = additionalInfo;
+    const { additionalElements, selector, placeholder } = additionalInfo;
     const filteredOptions = R.pathOr([], selector, options);
 
     const button = additionalElements.includes('readOnlyField') && isSubmitted && (
@@ -214,6 +214,7 @@ class CreateSelect extends React.Component {
               onChange={this.handleTextChange}
               onClick={this.handleClick}
               onKeyDown={this.onKeyDown}
+              placeholder={placeholder || ''}
               value={newEntry}
             />
             <Popper

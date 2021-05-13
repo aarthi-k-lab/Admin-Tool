@@ -360,3 +360,12 @@
     float: right;
     padding-right: 1.5rem !important;
 }
+
+.default-grid-label-spacing {
+    margin: 0;
+    padding-right: 2rem;
+}
+
+.fixed-income-net-value {
+    margin-right: -34px;
+}

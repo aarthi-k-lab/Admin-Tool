@@ -75,8 +75,8 @@ class IncomeCalcHistory extends React.PureComponent {
             historyData && historyData.map(item => (
               <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
                 <div>
-                  <p style={{ margin: 0 }}>{item.latestCalcDateTime}</p>
-                  <p style={{ margin: 0 }}>{item.latestCalcByUserName}</p>
+                  <p style={{ margin: 0 }}>{item.calcDateTime}</p>
+                  <p style={{ margin: 0 }}>{item.calcByUserName}</p>
                 </div>
                 <Icon color="primary" onClick={() => this.handleDuplicateHistoryItem(item)} style={{ marginLeft: '1rem', cursor: 'pointer' }}>content_copy</Icon>
                 <Icon color="primary" onClick={() => this.handleViewHistoryItem(item)} style={{ margin: '0 0.5rem', cursor: 'pointer' }}>visibility</Icon>

@@ -16,7 +16,6 @@ class CustomButton extends React.PureComponent {
       value,
       disabled,
     } = this.props;
-    const isEnabled = true;
     const {
       customType, size, icon, styleName,
     } = additionalInfo;
@@ -112,7 +111,7 @@ class CustomButton extends React.PureComponent {
             style={disabled ? { color: 'grey' } : {
               cursor: 'pointer',
             }}
-            styleName={styleName || ''}
+            styleName={styleName || 'default'}
           >
             {icon}
           </Icon>
@@ -149,8 +148,7 @@ class CustomButton extends React.PureComponent {
       default: {
         return (
           <Button
-            color={isEnabled ? 'primary' : 'secondary'}
-            disabled={!isEnabled}
+            disabled={disabled}
             onClick={() => onChange(true)}
             styleName={styleName || ''}
           >

@@ -1,17 +1,12 @@
 import {
-  FETCH_INCOMECALC_DATA, TOGGLE_HISTORY_VIEW,
+  TOGGLE_HISTORY_VIEW,
   SELECTED_INCOMETYPE, FETCH_CHECKLIST,
   STORE_PROCESS_DETAILS, STORE_CHECKLIST_NAVIGATION, SET_SELECTED_CHECKLIST,
   STORE_TASKS, RESET_DATA, HANDLE_CHECKLIST_ITEM_CHANGE, STORE_BORROWER,
   SET_ADD_TASKID, SET_REMOVE_TASKID, DELETE_CHECKLIST,
   SET_INCOMECALC_TOGGLE,
-  PROCESS_VALIDATIONS, FETCH_INCOMECALC_HISTORY, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
+  PROCESS_VALIDATIONS, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
 } from './types';
-
-const getIncomeCalcData = loanNumberP => ({
-  type: FETCH_INCOMECALC_DATA,
-  payload: loanNumberP,
-});
 
 const toggleHistoryView = payload => ({
   type: TOGGLE_HISTORY_VIEW,
@@ -41,10 +36,6 @@ const fetchChecklist = payload => ({
 const duplicateIncomeChecklist = payload => ({
   type: DUPLICATE_INCOME,
   payload,
-});
-
-const getIncomeCalcHistory = () => ({
-  type: FETCH_INCOMECALC_HISTORY,
 });
 
 const storeProcessDetails = processDetails => ({
@@ -118,7 +109,6 @@ const processValidations = payload => ({
 export {
   processValidations,
   incomeCalcToggleAction,
-  getIncomeCalcData,
   getSelectedIncomeType,
   fetchChecklist,
   storeProcessDetails,
@@ -131,7 +121,6 @@ export {
   triggerAddTask,
   triggerRemoveClick,
   onDeleteAction,
-  getIncomeCalcHistory,
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,
   toggleHistoryView,

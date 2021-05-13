@@ -84,3 +84,7 @@
 .taxAdd {
   margin-left: 2rem;
 }
+
+.default {
+  margin :0.5rem 0rem 1rem 1rem;
+}

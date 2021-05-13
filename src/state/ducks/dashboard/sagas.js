@@ -127,6 +127,7 @@ import {
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
   SAVE_EVAL_LOANVIEW,
   FETCH_EVAL_CASE,
+  TOGGLE_LOCK_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2070,7 +2071,7 @@ const lockCalculation = function* lockCalculation() {
       }
     }, borrowerList);
     const loanNumber = yield select(selectors.loanNumber);
-    const taskId = yield select(selectors.loanNumber);
+    const taskId = yield select(selectors.taskId);
     const taskCheckListId = yield select(incomeSelectors.getProcessId);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -2092,6 +2093,10 @@ const lockCalculation = function* lockCalculation() {
             level: 'Success',
             title: 'Lock Calculation',
           },
+        });
+        yield put({
+          type: TOGGLE_LOCK_BUTTON,
+          payload: false,
         });
         yield put(getTasks());
       } else {

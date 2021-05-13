@@ -13,7 +13,7 @@ import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import logger from 'redux-logger';
 import {
-  FETCH_INCOMECALC_HISTORY, SET_BORROWERS_DATA,
+  SET_BORROWERS_DATA,
   SHOW_LOADER, HIDE_LOADER,
   FETCH_CHECKLIST,
   LOADING_TASKS, LOADING_CHECKLIST, STORE_CHECKLIST, ERROR_LOADING_CHECKLIST,
@@ -97,6 +97,21 @@ const getTaskFromProcess = (taskObj, prop, value) => {
   return null;
 };
 
+function* fetchIncomeCalcHistory() {
+  const processId = yield select(dashboardSelectors.processId);
+  try {
+    const response = yield call(Api.callGet, `/api/dataservice/incomeCalc/history/${processId}`);
+    yield put({
+      type: STORE_INCOMECALC_HISTORY,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({
+      type: ERROR_LOADING_CHECKLIST,
+    });
+  }
+}
+
 function* fetchIncomeCalcChecklist(action) {
   try {
     const isWidgetOpen = action.payload;
@@ -115,24 +130,10 @@ function* fetchIncomeCalcChecklist(action) {
     }
     if (taskChecklistId) {
       yield call(fetchChecklistDetails, { payload: taskChecklistId });
+      yield call(fetchIncomeCalcHistory);
     }
   } catch (e) {
     logger.info(e);
-  }
-}
-
-function* fetchIncomeCalcHistory() {
-  const taskId = yield select(dashboardSelectors.taskId);
-  try {
-    const response = yield call(Api.callGet, `/api/dataservice/incomeCalc/history/${taskId}`);
-    yield put({
-      type: STORE_INCOMECALC_HISTORY,
-      payload: response,
-    });
-  } catch (e) {
-    yield put({
-      type: ERROR_LOADING_CHECKLIST,
-    });
   }
 }
 
@@ -225,7 +226,7 @@ function* getCompanyList(action) {
 function* duplicateIncome(action) {
   const incomeChecklistId = action.payload;
   try {
-    const feuwChecklistId = yield select(dashboardSelectors.processId);
+    const feuwChecklistId = yield select(taskSelectors.getProcessId);
     const loanNumber = yield select(dashboardSelectors.loanNumber);
     const taskId = yield select(dashboardSelectors.taskId);
     const user = yield select(loginSelectors.getUser);
@@ -312,10 +313,6 @@ function* processValidations() {
   yield put({ type: HIDE_LOADER });
 }
 
-function* watchFetchIncomeCalcHistory() {
-  yield takeEvery(FETCH_INCOMECALC_HISTORY, fetchIncomeCalcHistory);
-}
-
 function* watchfetchChecklist() {
   yield takeEvery(FETCH_CHECKLIST, fetchChecklistDetails);
 }
@@ -350,7 +347,6 @@ export const combinedSaga = function* combinedSaga() {
     watchFetchIncomeCalcChecklist(),
     watchProcessValidations(),
     watchAddContributor(),
-    watchFetchIncomeCalcHistory(),
     watchfetchChecklist(),
     watchChecklistItemChange(),
     watchGetCompanyList(),

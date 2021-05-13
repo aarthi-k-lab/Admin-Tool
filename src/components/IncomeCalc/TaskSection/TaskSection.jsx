@@ -144,7 +144,7 @@ class TaskSection extends React.PureComponent {
                       )}
                     </div>
                     {!R.equals(hasLabelValue, false) && (
-                    <p style={{ margin: '0', paddingRight: '2rem' }}>
+                    <p styleName={getStyleName('taskSection', R.equals(label, 'Net') ? styleName : 'default', 'grid-label')}>
                       {value && `${labelValueAdornment ? R.nth(index, labelValueAdornment) : ''} ${R.propOr('', R.nth(index, labels), value)}`}
                     </p>
                     )}
@@ -177,7 +177,7 @@ class TaskSection extends React.PureComponent {
               {R.toLower(label)}
             </p>
             <p styleName={getStyleName('taskSection', styleName, 'labelValue')}>
-              {R.toLower(R.propOr('', R.nth(index, labels), labelValue))}
+              {R.propOr('', R.nth(index, labels), labelValue)}
             </p>
           </div>
         ));

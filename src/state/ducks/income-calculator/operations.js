@@ -1,21 +1,14 @@
 import {
-  getIncomeCalcData,
   getSelectedIncomeType, fetchChecklist,
   handleChecklistItemChange, setSelectedBorrower, triggerAddTask,
   triggerRemoveClick,
   onDeleteAction,
   resetChecklistData,
   incomeCalcToggleAction,
-  getIncomeCalcHistory,
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,
   toggleHistoryView,
 } from './actions';
-
-const fetchIncomeCalcData = dispatch => (payload) => {
-  dispatch(getIncomeCalcData(payload));
-  dispatch(getIncomeCalcHistory());
-};
 
 const getSelectedIncomeTypeData = dispatch => request => dispatch(
   getSelectedIncomeType(request),
@@ -65,14 +58,12 @@ const resetData = dispatch => () => {
 
 const incomeCalcWidgetToggle = dispatch => (payload) => {
   dispatch(incomeCalcToggleAction(payload));
-  dispatch(getIncomeCalcData());
 };
 
 
 const operations = {
   incomeCalcWidgetToggle,
   resetData,
-  fetchIncomeCalcData,
   getSelectedIncomeTypeData,
   enableHistoryView,
   handleChecklistItemValueChange,

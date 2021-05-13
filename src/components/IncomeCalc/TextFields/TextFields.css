@@ -63,7 +63,6 @@
 
 .pay-periods-text {
     width: 15rem !important;
-    margin-left: 2rem !important; 
     margin-top: 1rem !important;
     text-align: right;
 }
@@ -94,10 +93,15 @@
     width: 17rem !important;
 }
 
+.pay-period-textField {
+    width: 15rem;
+    margin: 1rem 0rem 1rem 2rem !important;
+}
 
 .pay-periods-title {
-     padding-left: 2rem;
-     padding-top: 1rem;
+     width: 20rem;
+     margin-top: 1rem;
+     margin-left: -0.5rem;
 }
 
 .ri-total-text {
@@ -135,7 +139,7 @@
 }
 
 .ri-div-label {
-    margin-left: 1rem;
+    margin-left: 1rem !important;
 }
 
 .weekly-amt {

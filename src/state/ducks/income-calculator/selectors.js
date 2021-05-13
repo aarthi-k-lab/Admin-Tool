@@ -37,7 +37,6 @@ const getChecklistItems = state => R.compose(
   R.map(checklistItem => ({
     id: R.prop('_id', checklistItem),
     disabled: !dashboardSelectors.isAssigned(state)
-    || R.pathOr(false, ['taskBlueprint', 'disabled'], checklistItem)
     || R.propOr(false, 'disabled', checklistItem),
     isVisible: R.propOr(true, 'visibility', checklistItem),
     subTasks: R.propOr([], 'subTasks', checklistItem),
