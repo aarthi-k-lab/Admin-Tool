@@ -60,9 +60,11 @@ const textFields = {
   'reason-for': {
     div: 'reason-for',
     value: 'reason-for-value',
+    textField: 'reason-for-textbox',
   },
   commentBox: {
     div: 'commentBox',
+    textField: 'reason-for-textbox',
   },
   'cnsdt-income-title': {
     div: 'cnsdt-income-div',

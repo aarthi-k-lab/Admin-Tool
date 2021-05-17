@@ -36,7 +36,7 @@
 }
 
 .inc-text {
-    width: 15rem !important;
+    width: 12rem !important;
     text-align: right;
 }
 
@@ -45,11 +45,15 @@
 }
 
 .ga-text {
-    width: 15rem !important;
+    width: 12rem !important;
 }
 
 .reason-for {
     margin: 1rem 0rem 0rem 2rem;
+}
+
+.reason-for-textbox {
+    width: 30rem !important;
 }
 
 .reason-for-value {
@@ -62,19 +66,19 @@
 }
 
 .pay-periods-text {
-    width: 15rem !important;
+    width: 12rem !important;
     margin-top: 1rem !important;
     text-align: right;
 }
 
 .we-bs-gross {
-    width: 15rem !important;
+    width: 12rem !important;
     text-align: right;
     background-color: #eee;
 }
 
 .disabled {
-    width: 15rem !important;
+    width: 12rem !important;
     text-align: right;
     background-color: #eee;
 }
@@ -86,7 +90,7 @@
 
 
 .pitia-amt-title {
-    width: 10rem;
+    width: 12rem;
 }
 
 .pitia-amt{
@@ -94,7 +98,7 @@
 }
 
 .pay-period-textField {
-    width: 15rem;
+    width: 12rem;
     margin: 1rem 0rem 1rem 2rem !important;
 }
 
@@ -120,7 +124,7 @@
 
 
 .mrla-text {
-    width: 15rem !important;
+    width: 12rem !important;
     margin-left: 1rem !important;
 }
 
@@ -186,7 +190,7 @@
 }
 
 .se-nom-title {
-    width: 15rem !important;
+    width: 12rem !important;
     margin-top: 1rem !important;
 }
 
@@ -197,7 +201,7 @@
 }
 
 .se-amount-title {
-    width: 15rem !important;
+    width: 12rem !important;
     margin-top: 1rem !important;
 }
 

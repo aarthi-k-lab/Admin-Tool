@@ -17,7 +17,7 @@ const getSubTask = (task, index = 0, level = 1) => {
   return getSubTask(task[index].subTasks, level - 1);
 };
 
-const DISPLAY_LENGTH = 5;
+const DISPLAY_LENGTH = 4;
 class TabView extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -147,7 +147,7 @@ class TabView extends React.PureComponent {
                   transition
                 >
                   <ClickAwayListener onClickAway={this.handleClickAway}>
-                    <Paper>
+                    <Paper style={{ width: '15rem', marginLeft: '-3.5rem' }}>
                       {dropDownList && dropDownList.map((item, index) => (
                         <MenuItem
                           key={item.name}

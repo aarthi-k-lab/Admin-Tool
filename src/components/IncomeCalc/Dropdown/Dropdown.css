@@ -87,12 +87,11 @@
 }
 
 .small {
-    width: 10rem;
-    height: 3rem;
+    height: 4rem !important;
+    width: 11.5rem !important;
 }
     
 .selectType {
-    margin-left: -1rem;
-    width: 10rem;
-    height: 3rem;
+  margin-left: -2rem;
+    height: 3rem ;
 }

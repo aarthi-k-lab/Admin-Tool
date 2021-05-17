@@ -363,9 +363,9 @@
 
 .default-grid-label-spacing {
     margin: 0;
-    padding-right: 2rem;
+    padding-right: 5rem;
 }
 
 .fixed-income-net-value {
-    margin-right: -34px;
+    margin-right: -4px;
 }
