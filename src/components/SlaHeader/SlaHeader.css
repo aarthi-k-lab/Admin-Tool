@@ -53,7 +53,15 @@
     margin-right: 0.5rem;
   }
   
-  .get-next.get-next:hover {
+.get-next.get-next:hover {
     background-color: var(--blue-900);
+  }
+
+.resIdLbl {
+    top: 0 !important;
+    left: 0 !important;
+    position: absolute !important;
+    font-size: 13px !important;
+    transform: none !important;
   }
   
