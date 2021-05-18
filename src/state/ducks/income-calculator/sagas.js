@@ -276,7 +276,7 @@ function* addContributor(action) {
     const borrowerlist = R.pathOr(null, ['value', 'inc', 'borrowers'], data);
     const payload = {
       contributorData: {
-        ...contributorData, loanNumber, dbRecCreatedByUser, activeIndicator: 'Y',
+        ...contributorData, loanNumber, dbRecCreatedByUser,
       },
       borrowerData,
       borrowerlist,

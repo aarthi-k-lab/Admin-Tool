@@ -1,4 +1,6 @@
 import React from 'react';
+import * as R from 'ramda';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Icon from '@material-ui/core/Icon';
@@ -39,6 +41,24 @@ class IncomeCalcHistory extends React.PureComponent {
     closeHistoryView();
   }
 
+  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A'))
+
+  renderDropDownItems = historyData => (historyData ? historyData.map(item => (
+    <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
+      <div>
+        <p style={{ margin: 0 }}>{item.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}</p>
+        <p style={{ margin: 0 }}>{this.getCSTDateTime(item.calcDateTime)}</p>
+      </div>
+      <Icon color="primary" onClick={() => this.handleDuplicateHistoryItem(item)} style={{ marginLeft: '1rem', cursor: 'pointer' }}>content_copy</Icon>
+      <Icon color="primary" onClick={() => this.handleViewHistoryItem(item)} style={{ margin: '0 0.5rem', cursor: 'pointer' }}>visibility</Icon>
+    </div>
+  ))
+    : (
+      <div>
+  No historical checklists are available
+      </div>
+    ))
+
   render() {
     const { anchorEl } = this.state;
     const { historyView, historyData } = this.props;
@@ -71,17 +91,7 @@ class IncomeCalcHistory extends React.PureComponent {
                   horizontal: 'right',
                 }}
               >
-                {
-            historyData && historyData.map(item => (
-              <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
-                <div>
-                  <p style={{ margin: 0 }}>{item.calcDateTime}</p>
-                  <p style={{ margin: 0 }}>{item.calcByUserName}</p>
-                </div>
-                <Icon color="primary" onClick={() => this.handleDuplicateHistoryItem(item)} style={{ marginLeft: '1rem', cursor: 'pointer' }}>content_copy</Icon>
-                <Icon color="primary" onClick={() => this.handleViewHistoryItem(item)} style={{ margin: '0 0.5rem', cursor: 'pointer' }}>visibility</Icon>
-              </div>
-            ))}
+                {this.renderDropDownItems(historyData)}
               </Popover>
             </>
           )

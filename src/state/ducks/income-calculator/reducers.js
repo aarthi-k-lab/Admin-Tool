@@ -117,7 +117,6 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         processId: action.payload,
-        rootTaskId: '5fae843b18b2456ee02d7ae2',
       };
     }
     case SET_INCOMECALC_TOGGLE: {

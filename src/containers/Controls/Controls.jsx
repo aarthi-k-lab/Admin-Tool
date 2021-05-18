@@ -19,6 +19,7 @@ import EndShiftModel from 'models/EndShift';
 import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
+import { selectors as incomeSelectors } from 'ducks/income-calculator';
 import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
 import hotkeys from 'hotkeys-js';
@@ -205,6 +206,8 @@ class Controls extends React.PureComponent {
       disableTrialTaskButton,
       enableLockButton,
       isIncomeVerification,
+      historyView,
+      disabledChecklist,
     } = this.props;
     let assign = null;
     const groups = user && user.groupList;
@@ -222,7 +225,7 @@ class Controls extends React.PureComponent {
         label={showValidate ? 'Validate' : 'Update Remedy'}
       />
     ) : null;
-    const showCheckButton = isIncomeVerification ? (
+    const showCheckButton = isIncomeVerification && !historyView && !disabledChecklist ? (
       <Button
         className="material-ui-button"
         color="primary"
@@ -233,7 +236,7 @@ class Controls extends React.PureComponent {
         CHECK
       </Button>
     ) : null;
-    const showLock = isIncomeVerification ? (
+    const showLock = isIncomeVerification && !historyView && !disabledChecklist ? (
       <LockCalculation
         disabled={!enableLockButton}
         onClick={this.onClickLockCalc}
@@ -351,9 +354,12 @@ Controls.defaultProps = {
   showValidate: false,
   enableLockButton: false,
   groupName: null,
+  historyView: false,
+  disabledChecklist: false,
 };
 
 Controls.propTypes = {
+  disabledChecklist: PropTypes.bool,
   disableTrialTaskButton: PropTypes.bool.isRequired,
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
@@ -371,6 +377,7 @@ Controls.propTypes = {
   }).isRequired,
   evalId: PropTypes.string.isRequired,
   groupName: PropTypes.string,
+  historyView: PropTypes.bool,
   isFirstVisit: PropTypes.bool,
   isIncomeVerification: PropTypes.bool,
   lockCalculation: PropTypes.func.isRequired,
@@ -425,6 +432,9 @@ const mapStateToProps = (state) => {
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
   return {
+
+    historyView: incomeSelectors.getHistoryView(state),
+    disabledChecklist: incomeSelectors.disabledChecklist(state),
     disableValidation,
     enableValidate,
     enableEndShift: selectors.enableEndShift(state) || shouldSkipValidation,
