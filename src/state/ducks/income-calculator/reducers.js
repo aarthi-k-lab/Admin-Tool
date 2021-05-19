@@ -26,6 +26,7 @@ import {
   STORE_INCOMECALC_HISTORY,
   SET_INCOMECALC_DATA,
   TOGGLE_HISTORY_VIEW,
+  SET_HISTORY_ITEM,
 } from './types';
 
 const FAILED = 'failed';
@@ -98,6 +99,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         isHistoryView,
+      };
+    }
+
+    case SET_HISTORY_ITEM: {
+      return {
+        ...state,
+        historyItem: action.payload,
       };
     }
     case SET_INCOMECALC_DATA: {

@@ -60,6 +60,13 @@
   margin-left: 3rem !important;
 }
 
+.done:disabled {
+  color: black !important;
+  cursor: 'pointer';
+  background-color: #c6c6c6 !important;
+  margin-left: 3rem !important;
+}
+
 .monthly-inc {
   font-size: 0.9rem;
   color: dimgrey;

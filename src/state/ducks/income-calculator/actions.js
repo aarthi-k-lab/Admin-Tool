@@ -6,6 +6,7 @@ import {
   SET_ADD_TASKID, SET_REMOVE_TASKID, DELETE_CHECKLIST,
   SET_INCOMECALC_TOGGLE,
   PROCESS_VALIDATIONS, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
+  SET_HISTORY_ITEM,
 } from './types';
 
 const toggleHistoryView = payload => ({
@@ -30,6 +31,11 @@ const setSelectedBorrower = payload => ({
 
 const fetchChecklist = payload => ({
   type: FETCH_CHECKLIST,
+  payload,
+});
+
+const setHistoryItem = payload => ({
+  type: SET_HISTORY_ITEM,
   payload,
 });
 
@@ -124,4 +130,5 @@ export {
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,
   toggleHistoryView,
+  setHistoryItem,
 };

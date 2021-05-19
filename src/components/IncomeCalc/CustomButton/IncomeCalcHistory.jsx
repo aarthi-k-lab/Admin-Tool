@@ -31,9 +31,8 @@ class IncomeCalcHistory extends React.PureComponent {
   }
 
   handleViewHistoryItem = (item) => {
-    const { taskCheckListId } = item;
-    const { getHistoryItem } = this.props;
-    getHistoryItem(taskCheckListId);
+    const { getHistoryChecklist } = this.props;
+    getHistoryChecklist(item);
   }
 
   handleCloseHistoryView = () => {
@@ -61,12 +60,13 @@ class IncomeCalcHistory extends React.PureComponent {
 
   render() {
     const { anchorEl } = this.state;
-    const { historyView, historyData } = this.props;
+    const { historyView, historyData, historyItem } = this.props;
     return (
       <div style={{ display: 'flex' }}>
         {historyView
           ? (
             <div style={{ display: 'flex', alignItems: 'center' }}>
+              {historyItem && <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${this.getCSTDateTime(historyItem.calcDateTime)} by ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}</span>}
               <p style={{ margin: 0 }}>Close</p>
               <Icon onClick={this.handleCloseHistoryView} style={{ cursor: 'pointer' }}>close</Icon>
             </div>
@@ -110,18 +110,23 @@ IncomeCalcHistory.defaultProps = {
 IncomeCalcHistory.propTypes = {
   closeHistoryView: PropTypes.func.isRequired,
   duplicateHistoryItem: PropTypes.func.isRequired,
-  getHistoryItem: PropTypes.func.isRequired,
+  getHistoryChecklist: PropTypes.func.isRequired,
   historyData: PropTypes.arrayOf().isRequired,
+  historyItem: PropTypes.shape({
+    calcByUserName: PropTypes.string,
+    calcDateTime: PropTypes.string,
+  }).isRequired,
   historyView: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
   historyData: selectors.getHistory(state),
   historyView: selectors.getHistoryView(state),
+  historyItem: selectors.getHistoryItem(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  getHistoryItem: operations.enableHistoryView(dispatch),
+  getHistoryChecklist: operations.enableHistoryView(dispatch),
   closeHistoryView: operations.closeHistoryView(dispatch),
   duplicateHistoryItem: operations.duplicateHistoryChecklist(dispatch),
 });

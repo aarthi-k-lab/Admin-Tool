@@ -92,6 +92,7 @@ const getHistory = state => R.pathOr([], ['incomeCalculator', 'history'], state)
 const getTaskCheckListId = state => R.pathOr(null, ['incomeCalculator', 'taskCheckListId'], state);
 
 const getHistoryView = state => R.pathOr(false, ['incomeCalculator', 'isHistoryView'], state);
+const getHistoryItem = state => R.pathOr(null, ['incomeCalculator', 'historyItem'], state);
 
 const disabledChecklist = state => R.pathOr(false, ['incomeCalculator', 'disableChecklist'], state);
 
@@ -120,6 +121,7 @@ const selectors = {
   getChecklist,
   getLastChecklistTs,
   getHistory,
+  getHistoryItem,
 };
 
 export default selectors;

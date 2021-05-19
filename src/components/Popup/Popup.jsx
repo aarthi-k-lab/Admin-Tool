@@ -51,7 +51,7 @@ Popup.defaultProps = {
   onCancel() {},
   showCancelButton: false,
   cancelButtonText: 'Cancel',
-  confirmButtonText: 'Confirm',
+  confirmButtonText: 'Ok',
   title: '',
 };
 

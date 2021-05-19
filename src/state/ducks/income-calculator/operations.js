@@ -8,6 +8,7 @@ import {
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,
   toggleHistoryView,
+  setHistoryItem,
 } from './actions';
 
 const getSelectedIncomeTypeData = dispatch => request => dispatch(
@@ -18,13 +19,15 @@ const saveSelectedBorrower = dispatch => request => dispatch(
   setSelectedBorrower(request),
 );
 
-const enableHistoryView = dispatch => (processId) => {
-  dispatch(fetchChecklist(processId));
+const enableHistoryView = dispatch => (item) => {
+  dispatch(fetchChecklist(item.taskCheckListId));
+  dispatch(setHistoryItem(item));
   dispatch(toggleHistoryView(true));
 };
 
 const closeHistoryView = dispatch => () => {
   dispatch(getIncomeCalcChecklist());
+  dispatch(setHistoryItem(null));
   dispatch(toggleHistoryView(false));
 };
 
