@@ -118,8 +118,8 @@ function* fetchIncomeCalcChecklist(action) {
     if (isWidgetOpen) {
       // Income Calculator widget
       yield put(showLoader());
-      const taskId = yield select(dashboardSelectors.taskId);
-      const incomeCalcData = yield call(Api.callGet, `/api/workassign/incomeCalc/getChecklist/${taskId}`);
+      const processId = yield select(dashboardSelectors.processId);
+      const incomeCalcData = yield call(Api.callGet, `/api/workassign/incomeCalc/getChecklist/${processId}`);
       if (incomeCalcData) {
         const data = {
           ...incomeCalcData,
