@@ -83,10 +83,10 @@ const getBorrowersList = state => R.pathOr([], ['incomeCalculator', 'checklist',
 
 const getConsolidatedIncome = state => R.pathOr([], ['incomeCalculator', 'checklist', 'value', 'cnsdtIncome'], state);
 
-const getLastChecklistTs = state => R.pathOr(null, ['incomeCalculator', 'lastUpdated'], state);
+const getIncomeChecklistRefresh = state => R.pathOr(null, ['incomeCalculator', 'lastUpdated'], state);
 
 
-const getErrorBanner = state => R.pathOr({}, ['incomeCalculator', 'banner'], state);
+const getErrorBanner = state => R.pathOr(null, ['incomeCalculator', 'banner'], state);
 const getHistory = state => R.pathOr([], ['incomeCalculator', 'history'], state);
 
 const getTaskCheckListId = state => R.pathOr(null, ['incomeCalculator', 'taskCheckListId'], state);
@@ -119,7 +119,7 @@ const selectors = {
   getTaskLoadStatus,
   getChecklistTemplate,
   getChecklist,
-  getLastChecklistTs,
+  getIncomeChecklistRefresh,
   getHistory,
   getHistoryItem,
 };

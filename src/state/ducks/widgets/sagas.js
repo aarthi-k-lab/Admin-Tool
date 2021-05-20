@@ -40,7 +40,7 @@ function* getRightAppBarAction(request) {
   } = request;
   switch (currentWidget) {
     case INCOME_CALCULATOR:
-      yield put(getIncomeCalcChecklist(isOpen));
+      yield put(getIncomeCalcChecklist({ isOpen }));
       break;
     case BOOKING:
       yield call(toggleBookingWidget, isOpen);

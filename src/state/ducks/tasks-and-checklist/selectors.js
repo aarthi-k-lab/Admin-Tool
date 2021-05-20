@@ -68,6 +68,7 @@ const getChecklistItems = state => R.compose(
     || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem))
     || R.path(['tasksAndChecklist', 'checklistLoadingStatus'], state) === 'loading',
     isVisible: R.propOr(true, 'visibility', checklistItem),
+    processInstance: R.propOr(null, 'processInstance', checklistItem),
     options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
     taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
@@ -258,7 +259,11 @@ const getChecklist = state => R.pathOr(null, ['tasksAndChecklist', 'checklist'],
 
 const getTasksAndChecklist = state => R.propOr({}, 'tasksAndChecklist', state);
 
+const getLastMainChecklistRefresh = state => R.pathOr(null, ['tasksAndChecklist', 'lastUpdated'], state);
+
+
 const selectors = {
+  getLastMainChecklistRefresh,
   getTasksAndChecklist,
   getChecklist,
   getRuleResultFromTaskTree,

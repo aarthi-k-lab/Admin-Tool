@@ -114,8 +114,9 @@ function* fetchIncomeCalcHistory() {
 
 function* fetchIncomeCalcChecklist(action) {
   try {
-    const isWidgetOpen = action.payload;
+    const { isOpen: isWidgetOpen, processInstance } = action.payload;
     if (isWidgetOpen) {
+      // Income Calculator widget
       yield put(showLoader());
       const taskId = yield select(dashboardSelectors.taskId);
       const incomeCalcData = yield call(Api.callGet, `/api/workassign/incomeCalc/getChecklist/${taskId}`);
@@ -130,13 +131,11 @@ function* fetchIncomeCalcChecklist(action) {
       yield call(fetchChecklistDetails, { payload: taskChecklistId });
       yield call(fetchIncomeCalcHistory);
       yield put(hideLoader());
-    } else {
+    } else if (processInstance) {
+      // Income Calculator checklist isWidgetOpen shouldn't exist
       yield put({ type: SHOW_LOADER });
-      const process = yield select(taskSelectors.getChecklist);
-      const incomeCalcProcess = getTaskFromProcess(process, 'taskBlueprintCode', 'INC_EXP');
-      const taskChecklistId = R.propOr('', 'processInstance', R.head(incomeCalcProcess));
       yield put({ type: SET_INCOMECALC_DATA, payload: { disableChecklist: false } });
-      yield call(fetchChecklistDetails, { payload: taskChecklistId });
+      yield call(fetchChecklistDetails, { payload: processInstance });
       yield call(fetchIncomeCalcHistory);
       yield put({ type: HIDE_LOADER });
     }

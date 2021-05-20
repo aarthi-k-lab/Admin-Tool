@@ -54,7 +54,7 @@ const storeChecklistNavigation = navDataStructure => ({
   payload: navDataStructure,
 });
 
-const resetChecklistData = () => ({
+const resetIncomeChecklistData = () => ({
   type: RESET_DATA,
 });
 
@@ -121,7 +121,7 @@ export {
   storeChecklistNavigation,
   setSelectedChecklist,
   storeTasks,
-  resetChecklistData,
+  resetIncomeChecklistData,
   handleChecklistItemChange,
   setSelectedBorrower,
   triggerAddTask,

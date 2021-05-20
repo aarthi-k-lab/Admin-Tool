@@ -3,7 +3,6 @@ import {
   handleChecklistItemChange, setSelectedBorrower, triggerAddTask,
   triggerRemoveClick,
   onDeleteAction,
-  resetChecklistData,
   incomeCalcToggleAction,
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,
@@ -25,8 +24,8 @@ const enableHistoryView = dispatch => (item) => {
   dispatch(toggleHistoryView(true));
 };
 
-const closeHistoryView = dispatch => () => {
-  dispatch(getIncomeCalcChecklist());
+const closeHistoryView = dispatch => (payload) => {
+  dispatch(getIncomeCalcChecklist(payload));
   dispatch(setHistoryItem(null));
   dispatch(toggleHistoryView(false));
 };
@@ -55,10 +54,6 @@ const duplicateHistoryChecklist = dispatch => (checklistId) => {
   dispatch(duplicateIncomeChecklist(checklistId));
 };
 
-const resetData = dispatch => () => {
-  dispatch(resetChecklistData());
-};
-
 const incomeCalcWidgetToggle = dispatch => (payload) => {
   dispatch(incomeCalcToggleAction(payload));
 };
@@ -66,7 +61,6 @@ const incomeCalcWidgetToggle = dispatch => (payload) => {
 
 const operations = {
   incomeCalcWidgetToggle,
-  resetData,
   getSelectedIncomeTypeData,
   enableHistoryView,
   handleChecklistItemValueChange,

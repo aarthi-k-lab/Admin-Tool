@@ -1,12 +1,19 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable no-unused-vars */
 import React from 'react';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import './Navigation.css';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment-timezone';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { connect } from 'react-redux';
+import { selectors as incomeSelectors } from 'ducks/income-calculator';
+import { selectors as taskSelectors } from 'ducks/tasks-and-checklist';
+import TimeAgo from './TimeAgo';
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     position: 'relative',
   },
@@ -22,96 +29,100 @@ const useStyles = makeStyles(theme => ({
   circle: {
     strokeLinecap: 'round',
   },
-}));
+});
 
-function Progress({ status, lastUpdated }) {
-  // const [lastUpdated, ] = useState
-  if (status === 'loading') {
-    const classes = useStyles();
+class Navigation extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      lastUpdated: null,
+    };
+  }
+
+  static getDerivedStateFromProps(props) {
+    const {
+      checklistRefresh,
+      incomeChecklistRefresh,
+    } = props;
+    if (checklistRefresh || incomeChecklistRefresh) {
+      return {
+        lastUpdated: moment.max(moment(new Date(checklistRefresh)),
+          moment(new Date(incomeChecklistRefresh))),
+      };
+    }
+    return null;
+  }
+
+  render() {
+    const {
+      disableNext,
+      disablePrev,
+      onNext,
+      onPrev,
+      checklistLoadStatus,
+      incomeCalcDataLoadStatus,
+      classes,
+    } = this.props;
+
+    const { lastUpdated } = this.state;
+    const isLoading = R.contains('loading', [incomeCalcDataLoadStatus, checklistLoadStatus]);
     return (
-      <div className={classes.root}>
-        <CircularProgress
-          className={classes.bottom}
-          size={22}
-          thickness={5}
-          value={100}
-          variant="determinate"
-        />
-        <CircularProgress
-          classes={{
-            circle: classes.circle,
-          }}
-          className={classes.top}
-          disableShrink
-          size={22}
-          thickness={5}
-          variant="indeterminate"
-        />
+      <div styleName="navigation">
+        <div />
+        <div>
+          <Button
+            color="primary"
+            disabled={disablePrev}
+            onClick={onPrev}
+            styleName="nav-button"
+          >
+          Prev
+          </Button>
+          <Button
+            color="primary"
+            disabled={disableNext}
+            onClick={onNext}
+            styleName="nav-button"
+          >
+          Next
+          </Button>
+        </div>
+        <div styleName="lastUpdated">
+          <p styleName="status">Last refreshed: </p>
+          <TimeAgo classes={classes} isLoading={isLoading} lastUpdated={lastUpdated} />
+        </div>
       </div>
     );
-  } if (lastUpdated === 'Never') {
-    return <p>Never</p>;
   }
-  return <p>{moment(new Date(lastUpdated)).fromNow()}</p>;
 }
-function Navigation({
-  disableNext,
-  disablePrev,
-  onNext,
-  onPrev,
-  lastUpdated,
-  status,
-}) {
-  return (
-    <div styleName="navigation">
-      <div />
-      <div>
-        <Button
-          color="primary"
-          disabled={disablePrev}
-          onClick={onPrev}
-          styleName="nav-button"
-        >
-        Prev
-        </Button>
-        <Button
-          color="primary"
-          disabled={disableNext}
-          onClick={onNext}
-          styleName="nav-button"
-        >
-        Next
-        </Button>
-      </div>
-      <div styleName="lastUpdated">
-        { status && (
-        <>
-          <p styleName="status">Last Updated: </p>
-          <Progress lastUpdated={lastUpdated} status={status} styleName="spinner" />
-        </>
-        )}
-      </div>
-    </div>
-  );
-}
-
 Navigation.defaultProps = {
   disableNext: false,
   disablePrev: false,
-  status: null,
-  lastUpdated: 'Never',
+  checklistRefresh: null,
+  incomeChecklistRefresh: null,
+  incomeCalcDataLoadStatus: null,
+  checklistLoadStatus: null,
 };
 
 Navigation.propTypes = {
+  checklistLoadStatus: PropTypes.string,
+  checklistRefresh: PropTypes.string,
+  classes: PropTypes.shape().isRequired,
   disableNext: PropTypes.bool,
   disablePrev: PropTypes.bool,
-  lastUpdated: PropTypes.string,
+  incomeCalcDataLoadStatus: PropTypes.string,
+  incomeChecklistRefresh: PropTypes.string,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
-  status: PropTypes.string,
 };
-Progress.propTypes = {
-  lastUpdated: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-};
-export default Navigation;
+
+const mapStateToProps = state => ({
+  checklistLoadStatus: taskSelectors.getChecklistLoadStatus(state),
+  checklistRefresh: taskSelectors.getLastMainChecklistRefresh(state),
+  incomeChecklistRefresh: incomeSelectors.getIncomeChecklistRefresh(state),
+  incomeCalcDataLoadStatus: incomeSelectors.getIncomeChecklistLoadStatus(state),
+});
+
+const navigationContainer = connect(mapStateToProps, null)(Navigation);
+
+export default withStyles(styles)(navigationContainer);

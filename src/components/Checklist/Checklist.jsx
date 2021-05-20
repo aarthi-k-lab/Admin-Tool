@@ -211,6 +211,7 @@ class Checklist extends React.PureComponent {
     value,
     source,
     additionalInfo,
+    processInstance,
   }) {
     const {
       RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, SLA_RULES,
@@ -219,7 +220,7 @@ class Checklist extends React.PureComponent {
     let element = {};
     switch (type) {
       case INCOME_CALCULATOR: {
-        return (<IncomeCalcWidget />);
+        return (<IncomeCalcWidget processInstance={processInstance} />);
       }
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode);

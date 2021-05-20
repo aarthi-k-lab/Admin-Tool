@@ -14,7 +14,14 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
-import { selectors as incomeSelectors } from 'ducks/income-calculator/index';
+import {
+  actions as widgetActions,
+  selectors as widgetSelectors,
+} from 'ducks/widgets/index';
+import {
+  actions as incomeActions,
+  selectors as incomeSelectors,
+} from 'ducks/income-calculator/index';
 import {
   actions as checklistActions,
   selectors as checklistSelectors,
@@ -23,6 +30,7 @@ import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import { ERROR, SUCCESS } from 'constants/common';
 import { INCOME_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
@@ -305,6 +313,18 @@ const searchLoan = function* searchLoan(loanNumber) {
           payload: { statusCode: 404 },
         });
       }
+      yield put(incomeActions.resetIncomeChecklistData());
+      const openWidgetList = yield select(widgetSelectors.getOpenWidgetList);
+      const widgetsToBeClosed = {
+        openWidgetList,
+        page: 'SEARCH',
+        closingWidgets: openWidgetList,
+      };
+      const payload = {
+        currentWidget: '',
+        openWidgetList: closeWidgets(widgetsToBeClosed),
+      };
+      yield put(widgetActions.widgetToggle(payload));
     } catch (e) {
       yield put({
         type: SEARCH_LOAN_RESULT,

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import * as R from 'ramda';
 import moment from 'moment-timezone';
@@ -6,7 +7,8 @@ import { connect } from 'react-redux';
 import Icon from '@material-ui/core/Icon';
 import Popover from '@material-ui/core/Popover';
 import { selectors, operations } from 'ducks/income-calculator';
-
+import { selectors as widgetsSelectors } from 'ducks/widgets';
+import { INCOME_CALCULATOR } from 'constants/widgets';
 
 class IncomeCalcHistory extends React.PureComponent {
   constructor(props) {
@@ -22,8 +24,10 @@ class IncomeCalcHistory extends React.PureComponent {
 
   handleDuplicateHistoryItem = (item) => {
     const { taskCheckListId } = item;
-    const { duplicateHistoryItem } = this.props;
-    duplicateHistoryItem(taskCheckListId);
+    const { duplicateHistoryItem, openWidgetList } = this.props;
+    if (!R.contains(INCOME_CALCULATOR, openWidgetList)) {
+      duplicateHistoryItem(taskCheckListId);
+    }
   }
 
   handleClose = () => {
@@ -36,27 +40,45 @@ class IncomeCalcHistory extends React.PureComponent {
   }
 
   handleCloseHistoryView = () => {
-    const { closeHistoryView } = this.props;
-    closeHistoryView();
+    const { closeHistoryView, openWidgetList } = this.props;
+    closeHistoryView(R.contains(INCOME_CALCULATOR, openWidgetList));
   }
 
   getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A'))
 
-  renderDropDownItems = historyData => (historyData ? historyData.map(item => (
-    <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
-      <div>
-        <p style={{ margin: 0 }}>{item.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}</p>
-        <p style={{ margin: 0 }}>{this.getCSTDateTime(item.calcDateTime)}</p>
-      </div>
-      <Icon color="primary" onClick={() => this.handleDuplicateHistoryItem(item)} style={{ marginLeft: '1rem', cursor: 'pointer' }}>content_copy</Icon>
-      <Icon color="primary" onClick={() => this.handleViewHistoryItem(item)} style={{ margin: '0 0.5rem', cursor: 'pointer' }}>visibility</Icon>
-    </div>
-  ))
-    : (
-      <div>
-  No historical checklists are available
+  renderDropDownItems = () => {
+    const { openWidgetList, historyData } = this.props;
+    const isWidgetOpen = R.contains(INCOME_CALCULATOR, openWidgetList);
+    return (!R.isEmpty(historyData) ? historyData.map(item => (
+      <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
+        <div>
+          <p style={{ margin: 0 }}>{item.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}</p>
+          <p style={{ margin: 0 }}>{this.getCSTDateTime(item.calcDateTime)}</p>
+        </div>
+        <Icon
+          color="primary"
+          onClick={() => this.handleDuplicateHistoryItem(item)}
+          style={{ marginLeft: '1rem', cursor: isWidgetOpen ? 'not-allowed' : 'pointer' }}
+        >
+        content_copy
+        </Icon>
+        <Icon
+          color="primary"
+
+          onClick={() => this.handleViewHistoryItem(item)}
+          style={{ margin: '0 0.5rem', cursor: 'pointer' }}
+        >
+visibility
+
+        </Icon>
       </div>
     ))
+      : (
+        <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
+        No historical checklists are available
+        </div>
+      ));
+  }
 
   render() {
     const { anchorEl } = this.state;
@@ -91,7 +113,7 @@ class IncomeCalcHistory extends React.PureComponent {
                   horizontal: 'right',
                 }}
               >
-                {this.renderDropDownItems(historyData)}
+                {this.renderDropDownItems()}
               </Popover>
             </>
           )
@@ -104,6 +126,9 @@ class IncomeCalcHistory extends React.PureComponent {
 
 IncomeCalcHistory.defaultProps = {
   historyView: false,
+  openWidgetList: [],
+  historyData: null,
+  historyItem: null,
 };
 
 
@@ -111,18 +136,20 @@ IncomeCalcHistory.propTypes = {
   closeHistoryView: PropTypes.func.isRequired,
   duplicateHistoryItem: PropTypes.func.isRequired,
   getHistoryChecklist: PropTypes.func.isRequired,
-  historyData: PropTypes.arrayOf().isRequired,
+  historyData: PropTypes.arrayOf(),
   historyItem: PropTypes.shape({
     calcByUserName: PropTypes.string,
     calcDateTime: PropTypes.string,
-  }).isRequired,
+  }),
   historyView: PropTypes.bool,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
 };
 
 const mapStateToProps = state => ({
   historyData: selectors.getHistory(state),
   historyView: selectors.getHistoryView(state),
   historyItem: selectors.getHistoryItem(state),
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -37,6 +37,7 @@ import {
   CHECK_RULES_PASSED,
   COMPUTE_RULES_PASSED,
   SAVE_DROPDOWN_DATA,
+  SET_LAST_UPDATED,
 } from './types';
 
 const FAILED = 'failed';
@@ -108,6 +109,13 @@ function removeDirtyChecklistItem(state) {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
+    case SET_LAST_UPDATED: {
+      const { lastUpdated } = action.payload;
+      return {
+        ...state,
+        lastUpdated,
+      };
+    }
     case SAVE_DROPDOWN_DATA: {
       const { selector, formattedOptions } = action.payload;
       return R.assocPath(selector, formattedOptions, state);

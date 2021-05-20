@@ -15,9 +15,9 @@ import {
 
 class IncomeCalcWidget extends React.Component {
   componentDidMount() {
-    const { incomeCalcChecklist, openWidgetList } = this.props;
+    const { incomeCalcChecklist, openWidgetList, processInstance } = this.props;
     if (!R.contains(INCOME_CALCULATOR, openWidgetList)) {
-      incomeCalcChecklist();
+      incomeCalcChecklist({ processInstance });
     }
   }
 
@@ -89,6 +89,7 @@ IncomeCalcWidget.propTypes = {
   inProgress: PropTypes.bool,
   onChecklistChange: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
+  processInstance: PropTypes.string.isRequired,
 
 };
 

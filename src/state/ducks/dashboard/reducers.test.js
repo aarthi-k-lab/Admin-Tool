@@ -181,6 +181,7 @@ describe('Ducks :: dashboard -> reducer', () => {
       loanNumber: '1800840108',
       userNotification: {},
       wasSearched: true,
+      isIncomeVerification: false,
       getSearchLoanResponse: {
         loanNumber: '1800840108',
         unAssigned: null,

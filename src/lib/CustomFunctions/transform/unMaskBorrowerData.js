@@ -3,7 +3,8 @@ const R = require('ramda');
 const unMaskBorrowerName = (taskObj, additionalData) => {
   const { value } = taskObj;
   const borrowers = R.propOr([], 'borrowers', additionalData);
-  const borrower = R.find(borr => R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, value), borrowers);
+  const borrowerName = R.propOr('', 'borrowerName', value);
+  const borrower = R.find(borr => R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, borrowerName), borrowers);
   return {
     ...taskObj,
     value: {

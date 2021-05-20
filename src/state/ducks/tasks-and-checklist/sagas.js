@@ -9,6 +9,7 @@ import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { ERROR } from 'constants/common';
 import {
+  SET_LAST_UPDATED,
   SET_SELECTED_CHECKLIST,
   GET_NEXT_CHECKLIST,
   GET_PREV_CHECKLIST,
@@ -102,6 +103,8 @@ function* getChecklist(action) {
       type: STORE_CHECKLIST,
       payload: response,
     });
+    const lastUpdated = `${new Date()}`;
+    yield put({ type: SET_LAST_UPDATED, payload: { lastUpdated } });
   } catch (e) {
     yield put({
       type: ERROR_LOADING_CHECKLIST,
@@ -249,6 +252,8 @@ function* getTasks(action) {
       const showDisposition = yield select(selectors.shouldShowDisposition);
       yield put(actions.validationDisplayAction(showDisposition));
     } else yield put(actions.validationDisplayAction(false));
+    const lastUpdated = `${new Date()}`;
+    yield put({ type: SET_LAST_UPDATED, payload: { lastUpdated } });
   } catch (e) {
     yield put({
       type: ERROR_LOADING_TASKS,

@@ -250,6 +250,7 @@ const reducer = (state = {
         inProgress: false,
         wasSearched: true,
         userNotification: {},
+        isIncomeVerification: false,
       };
     }
 

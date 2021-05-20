@@ -49,9 +49,11 @@ const CHECK_RULES_PASSED = 'app/tasks-and-checklist/CHECK_RULES_PASSED';
 const COMPUTE_RULES_PASSED = 'app/tasks-and-checklist/COMPUTE_RULES_PASSED';
 const SAVE_DROPDOWN_DATA = 'app/tasks-and-checklist/SAVE_DROPDOWN_DATA';
 const PUT_DROPDOWN_DATA = 'app/tasks-and-checklist/PUT_DROPDOWN_DATA';
+const SET_LAST_UPDATED = 'app/tasks-and-checklist/SET_LAST_UPDATED';
 
 
 export {
+  SET_LAST_UPDATED,
   PUT_DROPDOWN_DATA,
   SAVE_DROPDOWN_DATA,
   COMPUTE_RULES_PASSED,

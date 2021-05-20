@@ -431,6 +431,7 @@ const mapStateToProps = (state) => {
     && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER);
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
+  const isIncomeVerification = isAssigned && selectors.isIncomeVerification(state);
   return {
 
     historyView: incomeSelectors.getHistoryView(state),
@@ -458,8 +459,7 @@ const mapStateToProps = (state) => {
     disableTrialTaskButton: selectors.disableTrialTaskButton(state),
     errorBanner: selectors.errorBanner(state),
     enableLockButton: selectors.enableLockButton(state),
-    isIncomeVerification: selectors.isIncomeVerification(state),
-
+    isIncomeVerification,
   };
 };
 

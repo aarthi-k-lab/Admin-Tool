@@ -53,6 +53,7 @@ const AccordionDetails = withStyles(theme => ({
 }))(MuiAccordionDetails);
 
 const ErrorBanner = ({ errorBanner }) => {
+  if (R.isNil(errorBanner)) return null;
   const [expanded, setExpanded] = React.useState();
   const errors = R.pathOr([], [1], errorBanner);
   const warnings = R.pathOr([], [2], errorBanner);
@@ -122,11 +123,15 @@ const ErrorBanner = ({ errorBanner }) => {
   );
 };
 
+ErrorBanner.defaultProps = {
+  errorBanner: null,
+};
+
 ErrorBanner.propTypes = {
   errorBanner: PropTypes.shape({
     errors: PropTypes.array,
     warnings: PropTypes.array,
-  }).isRequired,
+  }),
 };
 
 export default ErrorBanner;
