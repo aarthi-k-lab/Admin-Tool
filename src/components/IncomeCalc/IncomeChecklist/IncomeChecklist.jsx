@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { selectors as incomeSelectors } from 'ducks/income-calculator';
 import { operations as taskOperations } from 'ducks/tasks-and-checklist';
-import { operations as dashboardOperations } from 'ducks/dashboard';
+import { operations as dashboardOperations, selectors as dashboardSelector } from 'ducks/dashboard';
 import processItem from 'lib/CustomFunctions';
 import { getChecklistItems } from 'lib/checklist';
 import TextFields from '../TextFields';
@@ -228,7 +228,7 @@ class IncomeChecklist extends React.PureComponent {
     const {
       BUTTON, TASK_SECTION, TABS, DROPDOWN, RADIO_BUTTONS, TEXT, DATE, CHECKBOX,
     } = ComponentTypes;
-    const { disabled: disableIncomeCalc } = this.props;
+    const { disabled: disableIncomeCalc, isAssigned } = this.props;
     const skipSubTask = [TASK_SECTION];
     const { location, incomeCalcData } = this.props;
     const children = [];
@@ -248,7 +248,7 @@ class IncomeChecklist extends React.PureComponent {
         state,
         failureReason,
       } = processedItem;
-      const disabled = disableIncomeCalc || disabledChecklistItem;
+      const disabled = !isAssigned || disableIncomeCalc || disabledChecklistItem;
       let element = {};
       if (subTasks && !skipSubTask.includes(type)) children.push(subTasks);
       switch (type) {
@@ -436,9 +436,9 @@ IncomeChecklist.defaultProps = {
   rootTaskId: '',
   displayInRow: false,
   children: null,
-  triggerHeader: false,
   ruleResultFromTaskTree: [],
   disabled: false,
+  isAssigned: false,
 };
 
 NumberFormatCustom.propTypes = {
@@ -470,6 +470,7 @@ IncomeChecklist.propTypes = {
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   incomeCalcData: PropTypes.shape().isRequired,
+  isAssigned: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
@@ -486,7 +487,6 @@ IncomeChecklist.propTypes = {
   selectedWidget: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   toggleIncvrfn: PropTypes.func.isRequired,
-  triggerHeader: PropTypes.bool,
 };
 
 
@@ -500,6 +500,7 @@ export { TestHooks };
 
 const mapStateToProps = state => ({
   incomeCalcData: incomeSelectors.getIncomeCalcData(state),
+  isAssigned: dashboardSelector.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({

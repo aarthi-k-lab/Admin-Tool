@@ -156,6 +156,7 @@ import {
 import { incTypeMap } from '../../../constants/incomeCalc';
 
 import {
+  SET_BORROWERS_DATA,
   SET_INCOMECALC_DATA,
 } from '../income-calculator/types';
 
@@ -313,7 +314,6 @@ const searchLoan = function* searchLoan(loanNumber) {
           payload: { statusCode: 404 },
         });
       }
-      yield put(incomeActions.resetIncomeChecklistData());
       const openWidgetList = yield select(widgetSelectors.getOpenWidgetList);
       const widgetsToBeClosed = {
         openWidgetList,
@@ -504,6 +504,14 @@ function* selectEval(searchItem) {
   const { taskId: bookingTaskId } = evalDetails;
   yield put({ type: SAVE_TASKID, payload: bookingTaskId });
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+  const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
+  yield put(incomeActions.resetIncomeChecklistData());
+  if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
+    yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+    yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
+  } else {
+    yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+  }
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;

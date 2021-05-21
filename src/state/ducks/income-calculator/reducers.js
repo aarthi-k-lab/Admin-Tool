@@ -148,7 +148,7 @@ const reducer = (state = {}, action) => {
     case SET_BORROWERS_DATA: {
       return {
         ...state,
-        borrowers: action.payload,
+        processedBorrowerData: action.payload,
         loading: false,
       };
     }
