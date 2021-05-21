@@ -69,6 +69,12 @@ const textFields = {
   'cnsdt-income-title': {
     div: 'cnsdt-income-div',
   },
+  'pp-text': {
+    value: 'pp-value',
+  },
+  addr: {
+    inputProps: { autoComplete: 'new-password' },
+  },
   default: {
 
   },

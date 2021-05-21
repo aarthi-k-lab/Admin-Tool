@@ -30,7 +30,7 @@ function BasicDatePicker(props) {
           inputVariant="outlined"
           KeyboardButtonProps={{
             'aria-label': 'change date',
-            style: { padding: '0.5rem' },
+            style: { padding: '0.2rem' },
           }}
           onChange={event => onChange(moment(event).format(DATE_FORMAT))}
           size="small"

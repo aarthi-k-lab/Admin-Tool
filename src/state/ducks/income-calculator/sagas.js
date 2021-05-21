@@ -273,9 +273,17 @@ function* addContributor(action) {
     });
     const borrowerData = yield select(selectors.getBorrowers);
     const borrowerlist = R.pathOr(null, ['value', 'inc', 'borrowers'], data);
+    const maxPositionNum = R.compose(
+      R.prop('borrowerPstnNumber'),
+      R.last,
+      R.sortBy(R.prop('borrowerPstnNumber')),
+    )(borrowerData);
     const payload = {
       contributorData: {
-        ...contributorData, loanNumber, dbRecCreatedByUser,
+        ...contributorData,
+        loanNumber,
+        dbRecCreatedByUser,
+        borrowerPstnNumber: maxPositionNum + 1,
       },
       borrowerData,
       borrowerlist,

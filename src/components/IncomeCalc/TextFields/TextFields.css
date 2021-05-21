@@ -158,6 +158,10 @@
     margin-left: 2rem !important;
 }
 
+.pp-value {
+    padding: 0 0.5rem;
+}
+
 .monthly-text {
     margin-left: 1rem;
     font-size: 9px;

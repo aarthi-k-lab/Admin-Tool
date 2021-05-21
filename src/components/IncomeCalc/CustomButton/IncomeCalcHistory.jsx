@@ -9,6 +9,7 @@ import Popover from '@material-ui/core/Popover';
 import { selectors, operations } from 'ducks/income-calculator';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import { INCOME_CALCULATOR } from 'constants/widgets';
+import Tooltip from '@material-ui/core/Tooltip';
 
 class IncomeCalcHistory extends React.PureComponent {
   constructor(props) {
@@ -94,12 +95,15 @@ visibility
             </div>
           ) : (
             <>
-              <Icon
-                onClick={this.handleViewHistory}
-                style={{ cursor: 'pointer' }}
-              >
+              <Tooltip placement="left" title="Calculation History">
+                <Icon
+                  onClick={this.handleViewHistory}
+                  style={{ cursor: 'pointer' }}
+                >
             history
-              </Icon>
+                </Icon>
+              </Tooltip>
+
               <Popover
                 anchorEl={anchorEl}
                 anchorOrigin={{
