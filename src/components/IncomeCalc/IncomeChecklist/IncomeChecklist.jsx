@@ -380,6 +380,7 @@ class IncomeChecklist extends React.PureComponent {
           const onChange = this.handleDateChange(id, taskCode);
           const text = title || additionalInfo.placeholder;
           const props = {
+            disabled,
             id,
             taskCode,
             title: text,

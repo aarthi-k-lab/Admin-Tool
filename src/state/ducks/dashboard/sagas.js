@@ -2139,7 +2139,7 @@ const lockCalculation = function* lockCalculation() {
       yield put({
         type: SET_POPUP_DATA,
         payload: {
-          message: 'Income is Locked failed due to Borrower data discrepency',
+          message: 'Income Lock failed due to Borrower data discrepency',
           level: 'Failed',
           title: 'Lock Calculation',
         },

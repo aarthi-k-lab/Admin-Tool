@@ -571,6 +571,7 @@ function mapStateToProps(state) {
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
   const isGetNextError = dashboardSelectors.isGetNextError(state);
   const getNextError = dashboardSelectors.getNextError(state);
+  const isDisabledChecklist = incomeSelectors.disabledChecklist(state);
 
   return {
     openWidgetList: widgetsSelectors.getOpenWidgetList(state),
@@ -589,8 +590,8 @@ function mapStateToProps(state) {
     snackBarData: notificationSelectors.getSnackBarState(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
-    disableNext: selectors.shouldDisableNext(state),
-    disablePrev: selectors.shouldDisablePrev(state),
+    disableNext: selectors.shouldDisableNext(state) || isDisabledChecklist,
+    disablePrev: selectors.shouldDisablePrev(state) || isDisabledChecklist,
     enableGetNext: dashboardSelectors.enableGetNext(state),
     isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
