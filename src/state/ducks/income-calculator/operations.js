@@ -8,6 +8,7 @@ import {
   getIncomeCalcChecklist,
   toggleHistoryView,
   setHistoryItem,
+  closeIncomeHistory,
 } from './actions';
 
 const getSelectedIncomeTypeData = dispatch => request => dispatch(
@@ -25,7 +26,7 @@ const enableHistoryView = dispatch => (item) => {
 };
 
 const closeHistoryView = dispatch => (payload) => {
-  dispatch(getIncomeCalcChecklist(payload));
+  dispatch(closeIncomeHistory(payload));
   dispatch(setHistoryItem(null));
   dispatch(toggleHistoryView(false));
 };

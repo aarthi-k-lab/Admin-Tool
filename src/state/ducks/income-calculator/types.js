@@ -31,6 +31,8 @@ const SET_HISTORY_ITEM = 'app/incomecal/SET_HISTORY_ITEM';
 
 const PROCESS_VALIDATIONS = 'app/dashboard/PROCESS_VALIDATIONS';
 const SET_BANNER_DATA = 'app/dashboard/SET_BANNER_DATA';
+const CLOSE_INC_HISTORY = 'app/dashboard/CLOSE_INC_HISTORY';
+const SET_MAIN_CHECKLISTID = 'app/dashboard/SET_MAIN_CHECKLISTID';
 
 
 // Pre process actions
@@ -47,6 +49,8 @@ const SHOW_LOADER = 'app/incomecal/SHOW_LOADER';
 const HIDE_LOADER = 'app/incomecal/HIDE_LOADER';
 
 export {
+  SET_MAIN_CHECKLISTID,
+  CLOSE_INC_HISTORY,
   SHOW_LOADER,
   HIDE_LOADER,
   TOGGLE_HISTORY_VIEW,

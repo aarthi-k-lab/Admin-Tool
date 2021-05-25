@@ -1,6 +1,7 @@
 import {
   WIDGET_TOGGLE,
   SET_DISABLED_WIDGETS,
+  RESET_WIDGET_DATA,
 } from './types';
 
 
@@ -31,6 +32,8 @@ const reducer = (state = defaultState, action) => {
         page,
       };
     }
+    case RESET_WIDGET_DATA:
+      return defaultState;
     default:
       return state;
   }

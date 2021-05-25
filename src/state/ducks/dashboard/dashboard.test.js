@@ -1192,9 +1192,9 @@ describe('assign Loan', () => {
       .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta&taskName=', {}));
   });
 
-  it('should call SET_INCOMECALC_DATA', () => {
+  it('should call SET_DISABLED_WIDGETS', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put({ type: SET_INCOMECALC_DATA, payload: {} }));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
   });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {

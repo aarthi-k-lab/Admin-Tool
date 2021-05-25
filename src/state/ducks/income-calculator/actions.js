@@ -7,7 +7,13 @@ import {
   SET_INCOMECALC_TOGGLE,
   PROCESS_VALIDATIONS, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
   SET_HISTORY_ITEM,
+  CLOSE_INC_HISTORY,
 } from './types';
+
+const closeIncomeHistory = payload => ({
+  type: CLOSE_INC_HISTORY,
+  payload,
+});
 
 const toggleHistoryView = payload => ({
   type: TOGGLE_HISTORY_VIEW,
@@ -113,6 +119,7 @@ const processValidations = payload => ({
 });
 
 export {
+  closeIncomeHistory,
   processValidations,
   incomeCalcToggleAction,
   getSelectedIncomeType,

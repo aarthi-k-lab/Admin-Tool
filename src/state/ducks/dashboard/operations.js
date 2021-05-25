@@ -67,6 +67,9 @@ import {
 } from './actions';
 
 import {
+  resetWidgetData,
+} from '../widgets/actions';
+import {
   resetIncomeChecklistData,
   processValidations,
 } from '../income-calculator/actions';
@@ -98,6 +101,7 @@ const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf()
 const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
 
 const onAutoSave = dispatch => (taskStatus) => {
+  dispatch(resetWidgetData());
   dispatch(resetIncomeChecklistData());
   dispatch(unassignBookingLoan());
   dispatch(autoSave(taskStatus));

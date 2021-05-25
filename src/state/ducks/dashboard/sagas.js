@@ -506,10 +506,12 @@ function* selectEval(searchItem) {
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
   yield put(incomeActions.resetIncomeChecklistData());
+  yield put(widgetActions.resetWidgetData());
   if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
     yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
-  } else {
+  }
+  if (!R.propOr(false, 'hasIncomeCalcForProcess', evalDetails)) {
     yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
   }
   yield put(resetChecklistData());
@@ -1115,7 +1117,8 @@ function* getNext(action) {
       const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
       if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], taskDetails)) {
         yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
-      } else {
+      }
+      if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], taskDetails)) {
         yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
       }
       yield put(getHistoricalCheckListData(taskId));
@@ -1306,11 +1309,13 @@ function* assignLoan() {
     const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
     const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
-    if (incomeCalcData) {
+    if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
-    } else {
+    }
+    if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], response)) {
       yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
     }
+
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({

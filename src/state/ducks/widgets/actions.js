@@ -1,6 +1,7 @@
 import {
   TOGGLE_WIDGET_SAGA,
   SET_DISABLED_WIDGETS,
+  RESET_WIDGET_DATA,
 } from './types';
 
 const widgetToggle = payload => ({
@@ -13,7 +14,12 @@ const setDisabledWidget = payload => ({
   payload,
 });
 
+const resetWidgetData = () => ({
+  type: RESET_WIDGET_DATA,
+});
+
 export {
   widgetToggle,
   setDisabledWidget,
+  resetWidgetData,
 };

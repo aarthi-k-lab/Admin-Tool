@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   select,
   takeEvery,
@@ -7,12 +8,14 @@ import {
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
 import * as R from 'ramda';
-import { selectors } from 'ducks/income-calculator/index';
 import { selectors as taskSelectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import logger from 'redux-logger';
 import { showLoader, hideLoader } from 'ducks/dashboard/actions';
+import { SUCCESS, FAILED } from 'constants/common';
+import { selectors, actions } from './index';
+
 import {
   SET_BORROWERS_DATA,
   SHOW_LOADER, HIDE_LOADER,
@@ -23,9 +26,12 @@ import {
   REMOVE_DIRTY_CHECKLIST, SET_INCOMECALC_DATA,
   SET_PROCESS_ID, ADD_CONTRIBUTOR, FETCH_INCOMECALC_CHECKLIST,
   PROCESS_VALIDATIONS, SET_BANNER_DATA, DUPLICATE_INCOME, STORE_INCOMECALC_HISTORY,
+  CLOSE_INC_HISTORY,
+  SET_MAIN_CHECKLISTID,
+  TOGGLE_HISTORY_VIEW,
 } from './types';
 import {
-  USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER,
+  USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
 } from '../dashboard/types';
 import { SET_SNACK_BAR_VALUES } from '../notifications/types';
 import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCodes';
@@ -130,19 +136,30 @@ function* fetchIncomeCalcChecklist(action) {
       const taskChecklistId = R.prop('taskCheckListId', incomeCalcData);
       yield call(fetchChecklistDetails, { payload: taskChecklistId });
       yield call(fetchIncomeCalcHistory);
+      yield put({ type: SET_MAIN_CHECKLISTID, payload: taskChecklistId });
       yield put(hideLoader());
     } else if (processInstance) {
-      // Income Calculator checklist isWidgetOpen shouldn't exist
+      // Income Calculator checklist via checklist
       yield put({ type: SHOW_LOADER });
       yield put({ type: SET_INCOMECALC_DATA, payload: { disableChecklist: false } });
       yield call(fetchChecklistDetails, { payload: processInstance });
+      yield put({ type: SET_MAIN_CHECKLISTID, payload: processInstance });
       yield call(fetchIncomeCalcHistory);
       yield put({ type: HIDE_LOADER });
     }
+    yield put({ type: TOGGLE_HISTORY_VIEW, payload: false });
   } catch (e) {
     logger.info(e);
   }
-  // yield put({ type: HIDE_LOADER });
+}
+
+
+function* closeIncomeHistory() {
+  const processInstance = yield select(selectors.getMainChecklist);
+  const payload = {
+    processInstance,
+  };
+  yield put(actions.getIncomeCalcChecklist(payload));
 }
 
 function* getTasks() {
@@ -246,10 +263,29 @@ function* duplicateIncome(action) {
       taskId,
       userPrincipalName,
     };
-    const response = yield call(Api.callPost, '/api/workassign/incomeCalc/duplicateChecklist', request);
-    const { _id: processId } = response;
-    yield put({ type: SET_PROCESS_ID, payload: processId });
-    yield call(fetchChecklistDetails, { payload: processId });
+
+    const duplicationResponse = yield call(Api.callPost, '/api/workassign/incomeCalc/duplicateChecklist', request);
+    if (duplicationResponse.status === 200) {
+      const { response } = duplicationResponse;
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          status: 'Checklist duplication successful',
+          level: SUCCESS,
+        },
+      });
+      const { _id: processId } = response;
+      yield put({ type: SET_PROCESS_ID, payload: processId });
+      yield call(fetchChecklistDetails, { payload: processId });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          status: 'Failed to duplicate checklist',
+          level: FAILED,
+        },
+      });
+    }
   } catch (e) {
     yield put({
       type: ERROR_LOADING_CHECKLIST,
@@ -357,6 +393,11 @@ function* watchFetchIncomeCalcChecklist() {
   yield takeEvery(FETCH_INCOMECALC_CHECKLIST, fetchIncomeCalcChecklist);
 }
 
+
+function* watchCloseIncomeHistory() {
+  yield takeEvery(CLOSE_INC_HISTORY, closeIncomeHistory);
+}
+
 // eslint-disable-next-line
 export const combinedSaga = function* combinedSaga() {
   yield all([
@@ -367,5 +408,6 @@ export const combinedSaga = function* combinedSaga() {
     watchChecklistItemChange(),
     watchGetCompanyList(),
     watchDuplicateIncome(),
+    watchCloseIncomeHistory(),
   ]);
 };

@@ -41,8 +41,8 @@ class IncomeCalcHistory extends React.PureComponent {
   }
 
   handleCloseHistoryView = () => {
-    const { closeHistoryView, openWidgetList } = this.props;
-    closeHistoryView(R.contains(INCOME_CALCULATOR, openWidgetList));
+    const { closeHistoryView } = this.props;
+    closeHistoryView();
   }
 
   getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A'))

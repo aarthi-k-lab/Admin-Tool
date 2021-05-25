@@ -27,6 +27,7 @@ import {
   SET_INCOMECALC_DATA,
   TOGGLE_HISTORY_VIEW,
   SET_HISTORY_ITEM,
+  SET_MAIN_CHECKLISTID,
 } from './types';
 
 const FAILED = 'failed';
@@ -94,6 +95,13 @@ function removeDirtyChecklistItem(state) {
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
+    case SET_MAIN_CHECKLISTID: {
+      const mainChecklistId = action.payload;
+      return {
+        ...state,
+        mainChecklistId,
+      };
+    }
     case TOGGLE_HISTORY_VIEW: {
       const isHistoryView = action.payload;
       return {
