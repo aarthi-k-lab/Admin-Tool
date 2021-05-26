@@ -3,20 +3,16 @@ import {
   SET_BORROWERS_DATA,
   SHOW_LOADER,
   HIDE_LOADER,
-  SELECTED_INCOMETYPE,
   STORE_PROCESS_DETAILS,
   LOADING_TASKS,
-  STORE_CHECKLIST_NAVIGATION,
   SET_SELECTED_CHECKLIST,
   LOADING_CHECKLIST,
   STORE_CHECKLIST,
   ERROR_LOADING_CHECKLIST,
-  STORE_TASKS,
   ERROR_LOADING_TASKS,
   RESET_DATA,
   STORE_CHECKLIST_ITEM_CHANGE,
   REMOVE_DIRTY_CHECKLIST,
-  STORE_BORROWER,
   SET_CHECKLIST_ID,
   SAVE_DROPDOWN_OPTIONS,
   SET_INCOMECALC_TOGGLE,
@@ -28,6 +24,7 @@ import {
   TOGGLE_HISTORY_VIEW,
   SET_HISTORY_ITEM,
   SET_MAIN_CHECKLISTID,
+  SET_HISTORICAL_BORROWERS,
 } from './types';
 
 const FAILED = 'failed';
@@ -95,6 +92,13 @@ function removeDirtyChecklistItem(state) {
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
+    case SET_HISTORICAL_BORROWERS: {
+      const historicalBorrowers = action.payload;
+      return {
+        ...state,
+        historicalBorrowers,
+      };
+    }
     case SET_MAIN_CHECKLISTID: {
       const mainChecklistId = action.payload;
       return {
@@ -187,13 +191,7 @@ const reducer = (state = {}, action) => {
         ...state,
         taskLoadingStatus: FAILED,
       };
-    case STORE_TASKS: {
-      return {
-        ...state,
-        taskTree: action.payload,
-        taskLoadingStatus: SUCCEEDED,
-      };
-    }
+
     case STORE_CHECKLIST: {
       const { response, lastUpdated } = action.payload;
       return {
@@ -211,27 +209,12 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SELECTED_INCOMETYPE: {
-      const incomeType = action.payload;
-      return {
-        ...state,
-        incomeType,
-      };
-    }
-
     case STORE_CHECKLIST_ITEM_CHANGE: {
       return storeChecklistItemChange(state, action.payload.id, action.payload.value);
     }
 
     case REMOVE_DIRTY_CHECKLIST:
       return removeDirtyChecklistItem(state);
-
-    case STORE_CHECKLIST_NAVIGATION: {
-      return {
-        ...state,
-        checklistNavigation: action.payload,
-      };
-    }
     case RESET_DATA:
       return defaultState;
     case SET_SELECTED_CHECKLIST:
@@ -245,13 +228,6 @@ const reducer = (state = {}, action) => {
         ...state,
         taskLoadingStatus: LOADING,
       };
-    case STORE_BORROWER: {
-      const { payload } = action;
-      return {
-        ...state,
-        selectedBorrower: payload,
-      };
-    }
     case STORE_PROCESS_DETAILS: {
       const { payload: processDetails } = action;
       return {

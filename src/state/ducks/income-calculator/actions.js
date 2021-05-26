@@ -1,14 +1,18 @@
 import {
-  TOGGLE_HISTORY_VIEW,
-  SELECTED_INCOMETYPE, FETCH_CHECKLIST,
-  STORE_PROCESS_DETAILS, STORE_CHECKLIST_NAVIGATION, SET_SELECTED_CHECKLIST,
-  STORE_TASKS, RESET_DATA, HANDLE_CHECKLIST_ITEM_CHANGE, STORE_BORROWER,
-  SET_ADD_TASKID, SET_REMOVE_TASKID, DELETE_CHECKLIST,
-  SET_INCOMECALC_TOGGLE,
+  TOGGLE_HISTORY_VIEW, FETCH_CHECKLIST,
+  STORE_PROCESS_DETAILS, SET_SELECTED_CHECKLIST,
+  STORE_TASKS, RESET_DATA, HANDLE_CHECKLIST_ITEM_CHANGE,
+  SET_INCOMECALC_TOGGLE, FETCH_HISTORY_INFO,
   PROCESS_VALIDATIONS, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
   SET_HISTORY_ITEM,
   CLOSE_INC_HISTORY,
 } from './types';
+
+
+const fetchHistoryChecklist = payload => ({
+  type: FETCH_HISTORY_INFO,
+  payload,
+});
 
 const closeIncomeHistory = payload => ({
   type: CLOSE_INC_HISTORY,
@@ -22,16 +26,6 @@ const toggleHistoryView = payload => ({
 
 const getIncomeCalcChecklist = payload => ({
   type: FETCH_INCOMECALC_CHECKLIST,
-  payload,
-});
-
-const getSelectedIncomeType = payload => ({
-  type: SELECTED_INCOMETYPE,
-  payload,
-});
-
-const setSelectedBorrower = payload => ({
-  type: STORE_BORROWER,
   payload,
 });
 
@@ -55,10 +49,6 @@ const storeProcessDetails = processDetails => ({
   payload: processDetails,
 });
 
-const storeChecklistNavigation = navDataStructure => ({
-  type: STORE_CHECKLIST_NAVIGATION,
-  payload: navDataStructure,
-});
 
 const resetIncomeChecklistData = () => ({
   type: RESET_DATA,
@@ -85,28 +75,6 @@ const handleChecklistItemChange = (id, value, taskCode) => ({
   },
 });
 
-const onDeleteAction = (id, taskCode) => ({
-  type: DELETE_CHECKLIST,
-  payload: {
-    id,
-    taskCode,
-  },
-});
-
-const triggerAddTask = taskId => ({
-  type: SET_ADD_TASKID,
-  payload: {
-    taskId,
-  },
-});
-
-const triggerRemoveClick = taskIds => ({
-  type: SET_REMOVE_TASKID,
-  payload: {
-    taskIds,
-  },
-});
-
 const incomeCalcToggleAction = payload => ({
   type: SET_INCOMECALC_TOGGLE,
   payload,
@@ -122,20 +90,15 @@ export {
   closeIncomeHistory,
   processValidations,
   incomeCalcToggleAction,
-  getSelectedIncomeType,
   fetchChecklist,
   storeProcessDetails,
-  storeChecklistNavigation,
   setSelectedChecklist,
   storeTasks,
   resetIncomeChecklistData,
   handleChecklistItemChange,
-  setSelectedBorrower,
-  triggerAddTask,
-  triggerRemoveClick,
-  onDeleteAction,
   duplicateIncomeChecklist,
   getIncomeCalcChecklist,
   toggleHistoryView,
   setHistoryItem,
+  fetchHistoryChecklist,
 };

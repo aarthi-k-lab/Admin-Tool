@@ -31,20 +31,13 @@ const AccordionDetails = withStyles(() => ({
 }))(MuiAccordionDetails);
 
 class TaskSection extends React.PureComponent {
-  onIconClick = (actionValue) => {
-    const { onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange(actionValue);
-    }
-  }
-
   getCustomType= (children) => {
     const {
       value, additionalInfo: {
         styleName, customType, labels, tooltip, hasTitle, horizontalRule, heightMultiplier,
         columnSize, labelSize, actionIcon, columns, valuePath, hasLabelValue,
         iconPosition, id, labelValuePath, showErrorCount, labelValueAdornment,
-      }, title, disabled, failureReason,
+      }, title, disabled, failureReason, onChange,
     } = this.props;
     const actionValue = valuePath ? R.assocPath(valuePath, true, {}) : true;
     const headerStyle = getStyleName('taskSection', styleName, 'header');
@@ -62,7 +55,7 @@ class TaskSection extends React.PureComponent {
     const deleteIcon = actionIcon && (
       <Icon
         disabled={disabled}
-        onClick={() => this.onIconClick(actionValue)}
+        onClick={() => (!disabled && onChange(actionValue))}
         style={{ paddingRight: '3rem', cursor: disabled ? 'not-allowed' : 'pointer', paddingLeft: '0.5rem' }}
         styleName={getStyleName('taskSection', styleName, 'icon')}
       >

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from '@material-ui/core/Checkbox';
 import Box from '@material-ui/core/Box';
@@ -15,8 +15,10 @@ function CheckBox({
   onChangeMultipleBox,
   disabled,
 }) {
+  const [checkboxValue, setCheckboxValue] = useState(value);
   const { styleName, hasTitle, customType } = additionalInfo;
-  const onChangeCheck = (e) => {
+  const onChangeCheckboxHandler = (e) => {
+    setCheckboxValue(e.target.checked);
     onChangeMultipleBox({ target: { value: e.target.checked } });
   };
 
@@ -31,7 +33,7 @@ function CheckBox({
   if (R.equals(source, 'value') || R.equals(customType, 'single')) {
     return (
       <Box style={{ display: 'flex', alignItems: 'center' }} styleName={styleName || ''}>
-        <Checkbox checked={R.equals(value, true)} disabled={disabled} onChange={onChangeCheck} styleName="radio-control-bubble" />
+        <Checkbox checked={R.equals(checkboxValue, true)} disabled={disabled} onChange={onChangeCheckboxHandler} styleName="radio-control-bubble" />
         {hasTitle && <Typography style={{ paddingLeft: '0.5rem' }}>{title}</Typography>}
       </Box>
     );

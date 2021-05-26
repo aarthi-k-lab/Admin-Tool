@@ -12,9 +12,21 @@ import './TextFields.css';
 class TextFields extends React.Component {
   constructor(props) {
     super(props);
-    this.state = '';
+    this.state = {
+      textFieldValue: null,
+    };
     this.hasError = false;
     this.helperText = '';
+  }
+
+  static getDerivedStateFromProps(props) {
+    const { value, checklistLoadStatus } = props;
+    if (!R.equals(checklistLoadStatus, 'loading')) {
+      return {
+        textFieldValue: value,
+      };
+    }
+    return null;
   }
 
   onCurrencyChange = (event) => {
@@ -35,12 +47,13 @@ class TextFields extends React.Component {
   };
 
   getProps(type, props) {
-    const { additionalInfo, value } = this.props;
+    const { additionalInfo } = this.props;
     const { placeholder, regex } = additionalInfo;
-    let textFieldValue = value;
+    const { textFieldValue } = this.state;
+    let value = textFieldValue;
     if (regex && value) {
       const { expression, replaceWith, flag } = regex;
-      textFieldValue = R.replace(new RegExp(expression, flag), replaceWith, value.toString());
+      value = R.replace(new RegExp(expression, flag), replaceWith, value.toString());
     }
     switch (type) {
       case 'currency': {
@@ -49,7 +62,7 @@ class TextFields extends React.Component {
           inputProps: {
             style: { textAlign: 'right' },
           },
-          value: textFieldValue && R.replace(/\d(?=(?:\d{3})+$)/g, '$&,', value.toString()),
+          value: value && R.replace(/\d(?=(?:\d{3})+$)/g, '$&,', value.toString()),
           onChange: this.onCurrencyChange,
         };
       }
@@ -62,7 +75,7 @@ class TextFields extends React.Component {
           inputProps: {
             cols: columns,
           },
-          value: textFieldValue,
+          value,
         };
       }
       case 'read-only': {
@@ -72,24 +85,25 @@ class TextFields extends React.Component {
             type: 'number',
             min: '0',
           },
-          value: textFieldValue,
+          value,
         };
       }
-      default: return { ...props, placeholder, value: textFieldValue };
+      default: return { ...props, placeholder, value };
     }
   }
 
   getControl(customType) {
     const {
       additionalInfo, disabled, failureReason,
-      value, componentTitle, onChange, onBlur,
+      value, componentTitle, onBlur,
     } = this.props;
     const properties = this.getProps(customType, { value: value || '' });
     const {
       hasTitle, valuePosition, styleName, additionalElements, adornment,
       defaultValue,
     } = additionalInfo;
-    const val = R.isNil(value) ? defaultValue : value;
+    const { textFieldValue } = this.state;
+    const val = R.isNil(textFieldValue) ? defaultValue : textFieldValue;
     if (customType === 'read-only') {
       const readOnlyValue = additionalElements && additionalElements.includes('adornment')
         ? `${adornment} ${val}` : val;
@@ -122,15 +136,21 @@ class TextFields extends React.Component {
           inputProps={inputProps}
           // eslint-disable-next-line react/jsx-no-duplicate-props
           InputProps={adornmentElement}
-          onBlur={e => onBlur(e)}
-          onChange={onChange}
           size="small"
           {...properties}
+          onBlur={e => onBlur(e)}
+          onChange={this.handleTextChange}
           styleName={disabled ? 'disabled' : getStyleName('textFields', styleName, 'textField') || 'inc-text'}
           variant="outlined"
         />
       </div>
     );
+  }
+
+  handleTextChange = (event) => {
+    const { onChange } = this.props;
+    this.setState({ textFieldValue: event.target.value });
+    onChange(event);
   }
 
   render() {
@@ -155,10 +175,12 @@ TextFields.defaultProps = {
   title: '',
   failureReason: [],
   disabled: false,
+  checklistLoadStatus: null,
 };
 
 TextFields.propTypes = {
   additionalInfo: PropTypes.string,
+  checklistLoadStatus: PropTypes.string,
   componentTitle: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   error: PropTypes.string,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
@@ -13,8 +13,13 @@ function BasicDatePicker(props) {
   const {
     disabled, title, onChange, value, additionalInfo,
   } = props;
-
+  const [datePicker, setDatePicker] = useState(value);
   const { hasTitle, styleName } = additionalInfo;
+  const onChangeDatePickerHandler = (event) => {
+    const date = moment(event).format(DATE_FORMAT);
+    setDatePicker(date);
+    onChange(date);
+  };
   return (
     <Box styleName={getStyleName('datePicker', styleName, 'div')}>
       {hasTitle && (
@@ -32,10 +37,10 @@ function BasicDatePicker(props) {
             'aria-label': 'change date',
             style: { padding: '0.2rem' },
           }}
-          onChange={event => onChange(moment(event).format(DATE_FORMAT))}
+          onChange={onChangeDatePickerHandler}
           size="small"
           styleName={getStyleName('datePicker', styleName, 'picker')}
-          value={value}
+          value={datePicker}
         />
       </MuiPickersUtilsProvider>
     </Box>

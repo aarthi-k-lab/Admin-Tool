@@ -66,9 +66,27 @@ const BootstrapInput = withStyles(theme => ({
 class Dropdown extends React.Component {
   constructor(props) {
     super(props);
-    this.state = '';
+    this.state = {
+      dropDownValue: null,
+    };
     this.hasError = false;
     this.helperText = '';
+  }
+
+  static getDerivedStateFromProps(props) {
+    const { value, checklistLoadStatus } = props;
+    if (!R.equals(checklistLoadStatus, 'loading')) {
+      return {
+        dropDownValue: value,
+      };
+    }
+    return null;
+  }
+
+  onDropDownChangeHandler = (event) => {
+    const { onChange } = this.props;
+    this.setState({ dropDownValue: event.target.value });
+    onChange(event);
   }
 
   getDropDownOptions() {
@@ -88,8 +106,10 @@ class Dropdown extends React.Component {
         options,
         styleName,
       },
-      value, missing, onChange, disabled,
+      missing, disabled,
     } = this.props;
+    const { dropDownValue } = this.state;
+    const value = dropDownValue;
     if (regexType) {
       const { string: regexString, helperText } = getRegexData(regexType);
       if (missing || (regexString && value && !new RegExp(regexString).test(value))) {
@@ -109,7 +129,7 @@ class Dropdown extends React.Component {
         input={<BootstrapInput />}
         label="Age"
         labelId="demo-simple-select-outlined-label"
-        onChange={onChange}
+        onChange={this.onDropDownChangeHandler}
         styleName={getStyleName('dropDown', styleName, 'select')}
         value={value || defaultValue}
       >
@@ -149,10 +169,12 @@ Dropdown.defaultProps = {
     mandatory: false,
     hasTitle: true,
   },
+  checklistLoadStatus: null,
 };
 
 Dropdown.propTypes = {
   additionalInfo: PropTypes.string,
+  checklistLoadStatus: PropTypes.string,
   disabled: PropTypes.bool,
   dropDownOptions: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string,

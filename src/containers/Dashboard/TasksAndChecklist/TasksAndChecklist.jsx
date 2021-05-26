@@ -18,7 +18,7 @@ import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
-import { operations as incomeCalcOperations, selectors as incomeSelectors } from 'ducks/income-calculator';
+import { selectors as incomeSelectors } from 'ducks/income-calculator';
 import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
 import { selectors as widgetsSelectors, operations as widgetsOperations } from 'ducks/widgets';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
@@ -78,6 +78,13 @@ class TasksAndChecklist extends Component {
       return checklistItems;
     }
     return filter ? passedRules : failedRules;
+  }
+
+  shouldRenderWidgetView = () => {
+    const { openWidgetList } = this.props;
+    return R.any(widget => R.contains(
+      widget, [HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR],
+    ))(openWidgetList);
   }
 
   handleHotKeyPress = () => {
@@ -194,9 +201,6 @@ class TasksAndChecklist extends Component {
         styleName = 'pushData';
       }
     }
-    if (R.contains(INCOME_CALCULATOR, openWidgetList)) {
-      return <IncomeCalcWidget />;
-    }
 
     return (
       <Checklist
@@ -212,7 +216,6 @@ class TasksAndChecklist extends Component {
         location={location}
         onChange={onChecklistChange}
         onCompleteMyReviewClick={this.handleClose}
-        onDelete={this.onDeleteItem}
         passedRules={passedRules}
         putComputeRulesPassed={putComputeRulesPassed}
         resolutionData={resolutionData}
@@ -242,8 +245,22 @@ class TasksAndChecklist extends Component {
 
   renderWidgetComponents() {
     const { openWidgetList } = this.props;
-    return R.equals(R.head(openWidgetList), ADDITIONAL_INFO)
-      ? <AdditionalInfo /> : <MilestoneActivity />;
+    const mainWidget = R.head(openWidgetList);
+    let widgetToRender = null;
+    switch (mainWidget) {
+      case ADDITIONAL_INFO:
+        widgetToRender = <AdditionalInfo />;
+        break;
+      case HISTORY:
+        widgetToRender = <MilestoneActivity />;
+        break;
+      case INCOME_CALCULATOR:
+        widgetToRender = <IncomeCalcWidget />;
+        break;
+      default:
+        widgetToRender = null;
+    }
+    return widgetToRender;
   }
 
   renderSweetAlert() {
@@ -318,13 +335,12 @@ class TasksAndChecklist extends Component {
 
     const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
     const taskPane = R.contains(INCOME_CALCULATOR, openWidgetList) ? null : <TaskPane styleName="tasks" />;
-    const currentOverlay = (R.contains(HISTORY, openWidgetList)
-    || R.contains(ADDITIONAL_INFO, openWidgetList)) ? null : (
+    const currentOverlay = this.shouldRenderWidgetView() ? null : (
       <>
         {taskPane}
         {this.renderChecklist()}
       </>
-      );
+    );
     return (
       <div styleName="scroll-wrapper">
         { showBanner && <ErrorBanner errorBanner={errorBanner} /> }
@@ -353,7 +369,7 @@ class TasksAndChecklist extends Component {
             ? <BookingHomePage message={bookingHomepageMsg} />
             : currentOverlay }
           {this.renderSnackBar()}
-          {!(R.contains(HISTORY, openWidgetList) || R.contains(ADDITIONAL_INFO, openWidgetList)) ? (
+          {!this.shouldRenderWidgetView() ? (
             <>
               <DialogCard
                 commentsRequired={commentsRequired}
@@ -571,7 +587,6 @@ function mapStateToProps(state) {
   const checklistErrorCode = dashboardSelectors.getChecklistErrorCode(state);
   const isGetNextError = dashboardSelectors.isGetNextError(state);
   const getNextError = dashboardSelectors.getNextError(state);
-  const isDisabledChecklist = incomeSelectors.disabledChecklist(state);
 
   return {
     openWidgetList: widgetsSelectors.getOpenWidgetList(state),
@@ -590,8 +605,8 @@ function mapStateToProps(state) {
     snackBarData: notificationSelectors.getSnackBarState(state),
     checklistItems: selectors.getChecklistItems(state),
     checklistTitle: selectors.getChecklistTitle(state),
-    disableNext: selectors.shouldDisableNext(state) || isDisabledChecklist,
-    disablePrev: selectors.shouldDisablePrev(state) || isDisabledChecklist,
+    disableNext: selectors.shouldDisableNext(state),
+    disablePrev: selectors.shouldDisablePrev(state),
     enableGetNext: dashboardSelectors.enableGetNext(state),
     isAssigned: dashboardSelectors.isAssigned(state),
     groupName: dashboardSelectors.groupName(state),
@@ -644,7 +659,6 @@ function mapDispatchToProps(dispatch) {
     closeSweetAlert: dashboardOperations.closeSweetAlert(dispatch),
     clearPopupData: dashboardOperations.clearPopupData(dispatch),
     putComputeRulesPassed: operations.putComputeRulesPassed(dispatch),
-    onDelete: incomeCalcOperations.onDelete(dispatch),
     dispatchAction: dashboardOperations.dispatchAction(dispatch),
   };
 }

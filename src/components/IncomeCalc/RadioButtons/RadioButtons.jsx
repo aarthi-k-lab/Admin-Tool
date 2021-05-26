@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -35,6 +35,7 @@ function RadioButtons({
   selectedValue,
   additionalInfo,
 }) {
+  const [radioButtonValue, setRadioButtonValue] = useState(selectedValue);
   const { labels, styleName, labelValueAdornment } = additionalInfo;
   const isOptionDisabled = (isEnabled) => {
     if (disabled || (isEnabled === false)) {
@@ -42,15 +43,19 @@ function RadioButtons({
     }
     return false;
   };
+  const onChangeRadioGroupHandler = (event) => {
+    setRadioButtonValue(event.target.value);
+    onChange(event);
+  };
   return (
     <div style={{ padding: '1rem 2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Typography component="legend">{title}</Typography>
         <RadioGroup
-          onChange={onChange}
+          onChange={onChangeRadioGroupHandler}
           row
           style={{ paddingLeft: '3rem' }}
-          value={selectedValue}
+          value={radioButtonValue}
         >
           {
           options.map(({

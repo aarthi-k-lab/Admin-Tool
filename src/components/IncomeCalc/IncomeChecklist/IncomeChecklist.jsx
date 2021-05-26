@@ -228,9 +228,11 @@ class IncomeChecklist extends React.PureComponent {
     const {
       BUTTON, TASK_SECTION, TABS, DROPDOWN, RADIO_BUTTONS, TEXT, DATE, CHECKBOX,
     } = ComponentTypes;
-    const { disabled: disableIncomeCalc, isAssigned } = this.props;
+    const {
+      disabled: disableIncomeCalc, checklistLoadStatus, location, incomeCalcData,
+      isAssigned,
+    } = this.props;
     const skipSubTask = [TASK_SECTION];
-    const { location, incomeCalcData } = this.props;
     const children = [];
     return checklistItems.map((item) => {
       const processedItem = processItem({ ...item, incomeCalcData }, 'preProcess');
@@ -335,6 +337,7 @@ class IncomeChecklist extends React.PureComponent {
             subTasks,
             renderChildren: this.renderChildren(),
             failureReason,
+            checklistLoadStatus,
           };
           element = (<Dropdown key={id} {...prop} />);
         } break;
@@ -355,6 +358,7 @@ class IncomeChecklist extends React.PureComponent {
             subTasks,
             renderChecklistItems: this.renderChecklistItem,
             failureReason,
+            checklistLoadStatus,
           };
           element = <TextFields key={id} {...prop} />;
         } break;
@@ -439,6 +443,7 @@ IncomeChecklist.defaultProps = {
   children: null,
   ruleResultFromTaskTree: [],
   disabled: false,
+  checklistLoadStatus: null,
   isAssigned: false,
 };
 
@@ -463,6 +468,7 @@ IncomeChecklist.propTypes = {
       value: PropTypes.any,
     }),
   ).isRequired,
+  checklistLoadStatus: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string,
   disabled: PropTypes.bool,
@@ -501,6 +507,7 @@ export { TestHooks };
 
 const mapStateToProps = state => ({
   incomeCalcData: incomeSelectors.getIncomeCalcData(state),
+  checklistLoadStatus: incomeSelectors.getIncomeChecklistLoadStatus(state),
   isAssigned: dashboardSelector.isAssigned(state),
 });
 

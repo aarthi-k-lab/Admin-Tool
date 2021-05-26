@@ -19,7 +19,7 @@ import { selectors, actions } from './index';
 import {
   SET_BORROWERS_DATA,
   SHOW_LOADER, HIDE_LOADER,
-  FETCH_CHECKLIST,
+  FETCH_CHECKLIST, SET_HISTORICAL_BORROWERS,
   LOADING_TASKS, LOADING_CHECKLIST, STORE_CHECKLIST, ERROR_LOADING_CHECKLIST,
   ERROR_LOADING_TASKS, HANDLE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_ITEM_CHANGE, GET_COMPANY_LIST, SET_AUTOCOMPLETE_OPTIONS,
@@ -29,6 +29,7 @@ import {
   CLOSE_INC_HISTORY,
   SET_MAIN_CHECKLISTID,
   TOGGLE_HISTORY_VIEW,
+  FETCH_HISTORY_INFO,
 } from './types';
 import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
@@ -86,6 +87,21 @@ function* fetchChecklistDetails(action) {
       },
     });
   }
+}
+
+function* fetchHistoryChecklist(action) {
+  yield put({ type: SHOW_LOADER });
+  yield call(fetchChecklistDetails, action);
+  const borrowerList = yield select(selectors.getBorrowersList);
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const borrowerRequest = R.map(borrower => ({
+    loanNumber,
+    borrowerPstnNumber: R.nth(1, R.split('_', borrower)),
+    firstName: R.nth(0, R.split('_', borrower)),
+  }), borrowerList);
+  const borrowerData = yield call(Api.callPost, '/api/dataservice/incomeCalc/historicalBorrowers', borrowerRequest);
+  yield put({ type: SET_HISTORICAL_BORROWERS, payload: borrowerData });
+  yield put({ type: HIDE_LOADER });
 }
 
 
@@ -398,9 +414,14 @@ function* watchCloseIncomeHistory() {
   yield takeEvery(CLOSE_INC_HISTORY, closeIncomeHistory);
 }
 
+function* watchHistoryChecklist() {
+  yield takeEvery(FETCH_HISTORY_INFO, fetchHistoryChecklist);
+}
+
 // eslint-disable-next-line
 export const combinedSaga = function* combinedSaga() {
   yield all([
+    watchHistoryChecklist(),
     watchFetchIncomeCalcChecklist(),
     watchProcessValidations(),
     watchAddContributor(),
