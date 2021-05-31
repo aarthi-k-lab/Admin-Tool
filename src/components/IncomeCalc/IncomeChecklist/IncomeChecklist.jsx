@@ -109,7 +109,7 @@ class IncomeChecklist extends React.PureComponent {
           arrow
           disableFocusListener
           disableTouchListener
-          placement="top"
+          placement="right"
           title={(
             <>
               {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
@@ -117,7 +117,7 @@ class IncomeChecklist extends React.PureComponent {
             </>
           )}
         >
-          <div>
+          <div style={{ width: 'fit-content' }}>
             {element}
           </div>
         </StyledTooltip>

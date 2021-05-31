@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { direction, getStyleName } from 'constants/incomeCalc/styleName';
+import regexMap from 'constants/incomeCalc/regex';
 import './TextFields.css';
 
 
@@ -48,11 +49,12 @@ class TextFields extends React.Component {
 
   getProps(type, props) {
     const { additionalInfo } = this.props;
-    const { placeholder, regex } = additionalInfo;
+    const { placeholder } = additionalInfo;
     const { textFieldValue } = this.state;
     let value = textFieldValue;
+    const regex = R.propOr(false, 'regex', additionalInfo);
     if (regex && value) {
-      const { expression, replaceWith, flag } = regex;
+      const { expression, replaceWith, flag } = regexMap[regex];
       value = R.replace(new RegExp(expression, flag), replaceWith, value.toString());
     }
     switch (type) {

@@ -6,12 +6,13 @@ import './DatePicker.css';
 import Box from '@material-ui/core/Box';
 import moment from 'moment-timezone';
 import { getStyleName } from 'constants/incomeCalc/styleName';
+import * as R from 'ramda';
 
 const DATE_FORMAT = 'MM-DD-YYYY';
 
 function BasicDatePicker(props) {
   const {
-    disabled, title, onChange, value, additionalInfo,
+    disabled, title, onChange, value, additionalInfo, failureReason,
   } = props;
   const [datePicker, setDatePicker] = useState(value);
   const { hasTitle, styleName } = additionalInfo;
@@ -31,6 +32,7 @@ function BasicDatePicker(props) {
         <KeyboardDatePicker
           disabled={disabled}
           disableFuture
+          error={!R.isEmpty(failureReason)}
           format={DATE_FORMAT}
           inputVariant="outlined"
           KeyboardButtonProps={{
@@ -51,6 +53,7 @@ BasicDatePicker.defaultProps = {
   disabled: false,
   title: '',
   additionalInfo: { hasTitle: false, styleName: '' },
+  failureReason: [],
 };
 
 BasicDatePicker.propTypes = {
@@ -59,6 +62,7 @@ BasicDatePicker.propTypes = {
     styleName: PropTypes.string,
   }),
   disabled: PropTypes.bool,
+  failureReason: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func.isRequired,
   title: PropTypes.string,
   value: PropTypes.string.isRequired,

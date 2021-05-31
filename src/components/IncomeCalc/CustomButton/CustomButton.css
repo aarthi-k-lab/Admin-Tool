@@ -79,6 +79,15 @@
   padding: 1rem 1.5rem;
 }
 
+.no-inc {
+  color: #c6c6c6;
+  font-size: 1.3rem;
+  padding: 1rem 1.5rem;
+  align-self: center;
+  text-align: center;
+  margin-right: 38%;
+}
+
 .taxRem {
 	margin-left: 4.3rem;
 }

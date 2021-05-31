@@ -118,6 +118,14 @@
    text-align: center;
 }
 
+.no-inc {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    min-height: 38.5rem;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 .ri-total-income {
     display: flex;
     margin: 1rem 1.5rem;
