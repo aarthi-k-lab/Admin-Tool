@@ -74,7 +74,7 @@ class CreateSelect extends React.Component {
         value: e.target.value,
       },
     };
-    if (type) processAction(type, payload);
+    if (type && e.target.value !== '') processAction(type, payload);
     if (e.target.value !== '') {
       this.setState({ selectedIndex: 0, anchorEl: e.currentTarget });
     } else {
@@ -151,7 +151,10 @@ class CreateSelect extends React.Component {
   }
 
   handleEdit = () => {
-    this.setState({ isSubmitted: false });
+    const { disabled } = this.props;
+    if (!disabled) {
+      this.setState({ isSubmitted: false });
+    }
   }
 
   handleOnClick = (event) => {
@@ -187,7 +190,7 @@ class CreateSelect extends React.Component {
       anchorEl, newEntry, selectedIndex, isSubmitted,
     } = this.state;
     const {
-      title, additionalInfo, value, options, styleName,
+      title, additionalInfo, value, options, styleName, disabled,
     } = this.props;
     const { additionalElements, selector, placeholder } = additionalInfo;
     const filteredOptions = R.pathOr([], selector, options);
@@ -196,7 +199,7 @@ class CreateSelect extends React.Component {
       <div styleName={getStyleName('createSelect', styleName, 'button')}>
         <p>{value}</p>
         <div styleName={getStyleName('createSelect', styleName, 'buttonIcon')}>
-          <Icon onClick={this.handleEdit}>
+          <Icon onClick={this.handleEdit} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
           edit
           </Icon>
         </div>
@@ -266,10 +269,12 @@ class CreateSelect extends React.Component {
 CreateSelect.defaultProps = {
   options: [],
   source: [],
+  disabled: false,
 };
 
 CreateSelect.propTypes = {
   additionalInfo: PropTypes.string.isRequired,
+  disabled: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.string),
   processAction: PropTypes.func.isRequired,

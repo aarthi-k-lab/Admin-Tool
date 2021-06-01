@@ -143,7 +143,7 @@ class CustomButton extends React.PureComponent {
         );
       }
       case 'incomecalc-history': {
-        return <IncomeCalcHistory itemList={value} />;
+        return <IncomeCalcHistory disabled={disabled} itemList={value} />;
       }
       default: {
         return (

@@ -4,6 +4,7 @@ import {
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import { selectors as widgetSelectors } from 'ducks/widgets/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import { ERROR, SUCCESS } from 'constants/common';
@@ -1190,6 +1191,11 @@ describe('assign Loan', () => {
   it('should call assign Api', () => {
     expect(saga.next(18008401081).value)
       .toEqual(call(Api.callPost, '/api/workassign/assignLoan?evalId=3565247&assignedTo=bren@mrcooper.com&loanNumber=18008401081&taskId=74365847&processId=23456&processStatus=Active&groupName=FEUW&userGroups=feuw,beta&taskName=', {}));
+  });
+
+  it('should select exisiting widgets. ', () => {
+    expect(saga.next(mockResponse).value)
+      .toEqual(select(widgetSelectors.getDisabledWidgets));
   });
 
   it('should call SET_DISABLED_WIDGETS', () => {

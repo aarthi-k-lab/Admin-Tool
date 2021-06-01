@@ -25,8 +25,8 @@ class IncomeCalcHistory extends React.PureComponent {
 
   handleDuplicateHistoryItem = (item) => {
     const { taskCheckListId } = item;
-    const { duplicateHistoryItem, openWidgetList } = this.props;
-    if (!R.contains(INCOME_CALCULATOR, openWidgetList)) {
+    const { duplicateHistoryItem, openWidgetList, disabled } = this.props;
+    if (disabled || !R.contains(INCOME_CALCULATOR, openWidgetList)) {
       duplicateHistoryItem(taskCheckListId);
     }
   }
@@ -48,8 +48,9 @@ class IncomeCalcHistory extends React.PureComponent {
   getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A'))
 
   renderDropDownItems = () => {
-    const { openWidgetList, historyData } = this.props;
+    const { openWidgetList, historyData, disabled } = this.props;
     const isWidgetOpen = R.contains(INCOME_CALCULATOR, openWidgetList);
+    const disableCopy = disabled || isWidgetOpen;
     return (!R.isEmpty(historyData) ? historyData.map(item => (
       <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
         <div>
@@ -59,7 +60,7 @@ class IncomeCalcHistory extends React.PureComponent {
         <Icon
           color="primary"
           onClick={() => this.handleDuplicateHistoryItem(item)}
-          style={{ marginLeft: '1rem', cursor: isWidgetOpen ? 'not-allowed' : 'pointer' }}
+          style={{ marginLeft: '1rem', cursor: disableCopy ? 'not-allowed' : 'pointer' }}
         >
         content_copy
         </Icon>
@@ -83,7 +84,7 @@ visibility
 
   render() {
     const { anchorEl } = this.state;
-    const { historyView, historyData, historyItem } = this.props;
+    const { historyView, historyItem } = this.props;
     return (
       <div style={{ display: 'flex' }}>
         {historyView
@@ -133,11 +134,13 @@ IncomeCalcHistory.defaultProps = {
   openWidgetList: [],
   historyData: null,
   historyItem: null,
+  disabled: false,
 };
 
 
 IncomeCalcHistory.propTypes = {
   closeHistoryView: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   duplicateHistoryItem: PropTypes.func.isRequired,
   getHistoryChecklist: PropTypes.func.isRequired,
   historyData: PropTypes.arrayOf(),
