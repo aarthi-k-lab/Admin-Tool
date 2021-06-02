@@ -213,6 +213,7 @@ class CreateSelect extends React.Component {
           <p>{title}</p>
           <div styleName={getStyleName('createSelect', styleName, 'dropDown')}>
             <BootstrapInput
+              disabled={disabled}
               onBlur={this.handleClick}
               onChange={this.handleTextChange}
               onClick={this.handleClick}

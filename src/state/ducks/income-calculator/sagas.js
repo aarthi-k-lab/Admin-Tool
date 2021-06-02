@@ -11,9 +11,11 @@ import * as R from 'ramda';
 import { selectors as taskSelectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as widgetSelectors } from 'ducks/widgets';
 import logger from 'redux-logger';
 import { showLoader, hideLoader } from 'ducks/dashboard/actions';
 import { SUCCESS, FAILED } from 'constants/common';
+import { INCOME_CALCULATOR } from 'constants/widgets';
 import { selectors, actions } from './index';
 
 import {
@@ -172,8 +174,10 @@ function* fetchIncomeCalcChecklist(action) {
 
 function* closeIncomeHistory() {
   const processInstance = yield select(selectors.getMainChecklist);
+  const widgetList = yield select(widgetSelectors.getOpenWidgetList);
   const payload = {
     processInstance,
+    isOpen: R.contains(INCOME_CALCULATOR, widgetList),
   };
   yield put(actions.getIncomeCalcChecklist(payload));
 }
