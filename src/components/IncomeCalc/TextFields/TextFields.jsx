@@ -94,6 +94,8 @@ class TextFields extends React.Component {
     }
   }
 
+  getDisabledFieldStyles = (disabled, styleName) => (disabled ? `disabled ${getStyleName('textFields', styleName, 'textField') || 'inc-text'}` : getStyleName('textFields', styleName, 'textField') || 'inc-text')
+
   getControl(customType) {
     const {
       additionalInfo, disabled, failureReason,
@@ -142,7 +144,7 @@ class TextFields extends React.Component {
           {...properties}
           onBlur={e => onBlur(e)}
           onChange={this.handleTextChange}
-          styleName={disabled ? 'disabled' : getStyleName('textFields', styleName, 'textField') || 'inc-text'}
+          styleName={this.getDisabledFieldStyles(disabled, styleName)}
           variant="outlined"
         />
       </div>

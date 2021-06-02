@@ -502,7 +502,7 @@ class Checklist extends React.PureComponent {
   render() {
     const {
       checklistItems, children, title,
-      className, location, resolutionId, resolutionData, triggerHeader,
+      className, location, resolutionId, resolutionData, triggerHeader, incomeCalcInProgress,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
@@ -542,7 +542,7 @@ class Checklist extends React.PureComponent {
             />
           )}
         {addClearButton}
-        <div styleName="scrollable-checklist">
+        <div styleName={incomeCalcInProgress ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
           {R.equals(R.prop('type', R.head(checklistItems)), INCOME_CALCULATOR)
             ? checklistElements : (
               <Paper elevation={1} styleName="checklist-form-controls">
@@ -566,6 +566,7 @@ Checklist.defaultProps = {
   className: '',
   children: null,
   triggerHeader: false,
+  incomeCalcInProgress: false,
   ruleResultFromTaskTree: [],
 };
 
@@ -596,6 +597,7 @@ Checklist.propTypes = {
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  incomeCalcInProgress: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,

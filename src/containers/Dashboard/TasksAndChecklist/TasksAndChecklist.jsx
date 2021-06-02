@@ -170,6 +170,7 @@ class TasksAndChecklist extends Component {
       ruleResultFromTaskTree,
       getSelectedWidget,
       openWidgetList,
+      incomeCalcInProgress,
     } = this.props;
 
     if (dataLoadStatus === 'failed') {
@@ -212,6 +213,7 @@ class TasksAndChecklist extends Component {
         handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
         handleDeleteTask={handleDeleteTask}
         handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
+        incomeCalcInProgress={incomeCalcInProgress}
         isDialogOpen={isDialogOpen}
         location={location}
         onChange={onChecklistChange}
@@ -408,6 +410,7 @@ TasksAndChecklist.defaultProps = {
   showBanner: false,
   enableGetNext: false,
   inProgress: false,
+  incomeCalcInProgress: false,
   message: null,
   noTasksFound: false,
   isGetNextError: false,
@@ -482,6 +485,7 @@ TasksAndChecklist.propTypes = {
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  incomeCalcInProgress: PropTypes.bool,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
   isAssigned: PropTypes.bool.isRequired,
@@ -589,6 +593,7 @@ function mapStateToProps(state) {
   const getNextError = dashboardSelectors.getNextError(state);
 
   return {
+    incomeCalcInProgress: incomeSelectors.inProgress(state),
     openWidgetList: widgetsSelectors.getOpenWidgetList(state),
     disposition: selectors.getDisposition(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),

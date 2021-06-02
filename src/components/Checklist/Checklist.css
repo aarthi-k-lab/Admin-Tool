@@ -12,6 +12,10 @@
   overflow: auto;
 }
 
+.incomeCalc-inprogress {
+  margin: auto
+}
+
 .checklist-form-controls {
   padding: 1.5rem;
 }
