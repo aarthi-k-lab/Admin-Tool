@@ -6,7 +6,7 @@ import {
   endShift,
   onExpandView,
   clearDisposition,
-  clearCoviusData,
+  clearData,
   clearFirstVisit,
   getNext,
   searchLoan,
@@ -63,6 +63,10 @@ import {
   assignBookingLoan,
   evalSelectRow,
   setTombstoneData,
+  onFhlmcCasesBulkSubmit,
+  populateInvestorEventsDropdown,
+  onSubmitToFhlmcAction,
+  dismissUserNotification,
   unassignBookingLoan,
 } from './actions';
 
@@ -98,7 +102,7 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf());
 
-const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
+const onResetData = dispatch => () => dispatch(clearData());
 
 const onAutoSave = dispatch => (taskStatus) => {
   dispatch(resetWidgetData());
@@ -223,8 +227,22 @@ const onCoviusCasesSubmit = dispatch => (payload) => {
   dispatch(onCoviusBulkSubmit(payload));
 };
 
+const onFhlmcCasesSubmit = dispatch => (payload) => {
+  dispatch(onFhlmcCasesBulkSubmit(payload));
+};
+
+const onSubmitToFhlmcRequest = dispatch => (selectedRequestType,
+  portfolioCode, sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
+  dispatch(onSubmitToFhlmcAction(selectedRequestType, portfolioCode));
+};
+
 const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
+};
+
+const openSweetAlert = dispatch => (sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
 };
 
 const setPageType = dispatch => (payload) => {
@@ -284,6 +302,10 @@ const populateEvents = dispatch => () => {
   dispatch(populateEventsDropdown());
 };
 
+const populateInvestorEvents = dispatch => () => {
+  dispatch(populateInvestorEventsDropdown());
+};
+
 const submitToCovius = dispatch => (eventCode, sweetAlertPayload) => {
   dispatch(openSweetAlertAction(sweetAlertPayload));
   dispatch(submitToCoviusAction(eventCode));
@@ -333,7 +355,16 @@ const onUnassignBookingLoan = dispatch => () => {
   dispatch(unassignBookingLoan());
 };
 
+
+const onDismissUserNotification = dispatch => () => {
+  dispatch(dismissUserNotification());
+};
+
 const operations = {
+  openSweetAlert,
+  onDismissUserNotification,
+  onSubmitToFhlmcRequest,
+  populateInvestorEvents,
   toggleIncvrfn,
   clearPopupData,
   dispatchAction,
@@ -344,7 +375,7 @@ const operations = {
   clearEvalResponse,
   onAutoSave,
   onClearDisposition,
-  onResetCoviusData,
+  onResetData,
   onExpand,
   onEndShift,
   onDispositionSave,
@@ -402,6 +433,7 @@ const operations = {
   onAdditionalInfoClick,
   onEvalRowSelect,
   setTombstoneDataForLoanView,
+  onFhlmcCasesSubmit,
 };
 
 export default operations;

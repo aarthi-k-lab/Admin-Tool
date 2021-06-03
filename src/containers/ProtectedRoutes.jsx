@@ -32,6 +32,7 @@ import DocGenGoBack from './Dashboard/DocGenGoBack';
 import DocsInGoBack from './Dashboard/DocsInGoBack';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
 import CoviusBulkOrder from './Dashboard/Covius/CoviusBulkOrder';
+import FhlmcResolve from './Dashboard/FhlmcResolve/FhlmcResolve';
 import Processor from './Dashboard/Processor/Processor';
 import MilestoneActivity from './LoanActivity/MilestoneActivity';
 
@@ -60,6 +61,8 @@ class ProtectedRoutes extends React.Component {
     this.rendercoviusBulkOrderPageRoute = this.rendercoviusBulkOrderPageRoute.bind(this);
     this.renderBulkEvalInsertionPageRoute = this.renderBulkEvalInsertionPageRoute.bind(this);
     this.renderMilestoneActivity = this.renderMilestoneActivity.bind(this);
+    this.renderfhlmcPageRoute = this.renderfhlmcPageRoute.bind(this);
+    this.renderfhlmcBulkOrderPageRoute = this.renderfhlmcBulkOrderPageRoute.bind(this);
   }
 
   componentDidMount() {
@@ -235,6 +238,24 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderfhlmcPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasFhlmcResolveAccess(groups)
+        ? <Dashboard group={DashboardModel.FHLMCRESOLVE} />
+        : <Redirect to="/unauthorized?error=FHHLMC_RESOLVE_ACCESS_NEEDED" />
+    );
+  }
+
+  renderfhlmcBulkOrderPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasFhlmcResolveAccess(groups)
+        ? <FhlmcResolve />
+        : <Redirect to="/unauthorized?error=FHHLMC_RESOLVE_ACCESS_NEEDED" />
+    );
+  }
+
   renderStagerRoute = () => {
     const groups = this.getGroups();
     return (
@@ -275,7 +296,9 @@ class ProtectedRoutes extends React.Component {
           <Route path="/bulkEvalInsertion" render={this.renderBulkEvalInsertionPageRoute} />
           <Route path="/special-loan" render={this.renderSlaPageRoute} />
           <Route path="/dg-vendor" render={this.renderCoviusPageRoute} />
+          <Route path="/fhlmc-resolve" render={this.renderfhlmcPageRoute} />
           <Route path="/coviusBulkOrder" render={this.rendercoviusBulkOrderPageRoute} />
+          <Route path="/fhlmcBulkOrder" render={this.renderfhlmcBulkOrderPageRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

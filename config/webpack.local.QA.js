@@ -185,6 +185,14 @@ const config = merge(
             '^/api/booking': '',
           },
         },
+        '/api/cmodinvestor': {
+          target: 'https://qa.cmod.mrcooper.io/cmodinvestorservice',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/cmodinvestor': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

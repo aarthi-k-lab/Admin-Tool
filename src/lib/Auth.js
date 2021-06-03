@@ -8,6 +8,8 @@ import {
   BOOKING,
   COVIUS,
   COVIUS_MGR,
+  FHLMCRESOLVE,
+  FHLMCRESOLVE_MGR,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -330,6 +332,14 @@ Auth.homePage = [
   {
     groupName: COVIUS_MGR,
     path: '/dg-vendor',
+  },
+  {
+    groupName: FHLMCRESOLVE,
+    path: '/fhlmc-resolve',
+  },
+  {
+    groupName: FHLMCRESOLVE_MGR,
+    path: '/fhlmc-resolve',
   },
 ];
 

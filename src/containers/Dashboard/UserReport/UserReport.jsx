@@ -51,6 +51,8 @@ class UserReport extends React.PureComponent {
       history.push('/bulkEvalInsertion');
     } else if (el.group === 'docgenvendor') {
       history.push('/coviusBulkOrder');
+    } else if (el.group === 'fhlmcresolve') {
+      history.push('/fhlmcBulkOrder');
     }
   }
 
@@ -95,7 +97,7 @@ class UserReport extends React.PureComponent {
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     this.showAddDocsIn = el.group === 'DOCSIN'
     || (userGroupList.find(element => element === 'proc-mgr') && el.group === 'PROC')
-    || el.group === 'docgenvendor';
+    || el.group === 'docgenvendor' || el.group === 'fhlmcresolve';
     return (
       <>
         <ContentHeader
@@ -103,7 +105,7 @@ class UserReport extends React.PureComponent {
           showAddButton={this.showAddDocsIn}
           title={el.task}
         >
-          {el.group === 'docgenvendor' ? <Expand onClick={onExpand} />
+          {el.group === 'docgenvendor' || el.group === 'fhlmcresolve' ? <Expand onClick={onExpand} />
             : (
               <Controls
                 showGetNext

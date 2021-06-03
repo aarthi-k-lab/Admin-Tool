@@ -11,6 +11,7 @@ const POSTMODSTAGER = 'POSTMODSTAGER';
 const POSTMOD = 'POSTMOD';
 const BOOKING = 'BOOKING';
 const DOCGENVENDOR = 'DOCGENVENDOR';
+const FHLMCRESOLVE = 'FHLMCRESOLVE';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -35,6 +36,7 @@ const userGroupList = [
   POSTMODSTAGER,
   BOOKING,
   DOCGENVENDOR,
+  FHLMCRESOLVE,
 ];
 
 

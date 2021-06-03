@@ -40,7 +40,7 @@ import {
   SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
-  SET_COVIUS_BULK_UPLOAD_RESULT,
+  SET_BULK_UPLOAD_RESULT,
   SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
   SET_ENABLE_SEND_TO_BOOKING,
@@ -54,7 +54,7 @@ import {
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
-  CLEAR_COVIUS_DATA,
+  CLEAR_DATA,
   SET_INCENTIVE_TASKCODES,
   STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
@@ -67,6 +67,7 @@ import {
   CLEAR_COVIUS_SUBMIT_DATA,
   SET_DOWNLOAD_RESPONSE,
   SAVE_EVENTS_DROPDOWN,
+  SAVE_INVESTOR_EVENTS_DROPDOWN,
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
   DISABLE_SEND_TO_FEUW,
@@ -86,6 +87,9 @@ import {
   SET_CASE_DETAILS,
   SET_EVAL_INDEX,
   SAVE_EVAL_LOANVIEW,
+  SET_USER_NOTIFICATION,
+  DISMISS_USER_NOTIFICATION,
+  SET_FHLMC_UPLOAD_RESULT,
   TOGGLE_BANNER,
 } from './types';
 
@@ -215,6 +219,17 @@ const reducer = (state = {
       return {
         ...state,
         getNextResponse,
+      };
+    }
+
+    case DISMISS_USER_NOTIFICATION: {
+      return {
+        ...state,
+        userNotification: {
+          isOpen: false,
+          level: null,
+          message: null,
+        },
       };
     }
 
@@ -577,6 +592,18 @@ const reducer = (state = {
         loading: false,
       };
     }
+    case SET_USER_NOTIFICATION: {
+      const { message, level } = action.payload;
+      const userNotification = {
+        message,
+        level,
+        isOpen: true,
+      };
+      return {
+        ...state,
+        userNotification,
+      };
+    }
 
     case SET_POPUP_DATA: {
       const popupData = {
@@ -603,7 +630,7 @@ const reducer = (state = {
       };
     }
 
-    case CLEAR_COVIUS_DATA: {
+    case CLEAR_DATA: {
       const resultOperation = {};
       const resultData = {};
       const eventNames = [];
@@ -643,7 +670,7 @@ const reducer = (state = {
       };
     }
 
-    case SET_COVIUS_BULK_UPLOAD_RESULT: {
+    case SET_BULK_UPLOAD_RESULT: {
       let resultData = {};
       resultData = action.payload;
       const resultOperation = {};
@@ -651,6 +678,15 @@ const reducer = (state = {
         ...state,
         resultData,
         resultOperation,
+        loading: false,
+      };
+    }
+
+    case SET_FHLMC_UPLOAD_RESULT: {
+      const resultData = action.payload;
+      return {
+        ...state,
+        resultData,
         loading: false,
       };
     }
@@ -801,6 +837,13 @@ const reducer = (state = {
       return {
         ...state,
         coviusEventOptions: payload,
+      };
+    }
+    case SAVE_INVESTOR_EVENTS_DROPDOWN: {
+      const { payload } = action;
+      return {
+        ...state,
+        investorEventOptions: payload,
       };
     }
     case SET_SELECTED_WIDGET: {

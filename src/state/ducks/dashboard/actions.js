@@ -43,7 +43,7 @@ import {
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
-  CLEAR_COVIUS_DATA,
+  CLEAR_DATA,
   CLEAR_BULKUPLOAD_TABLEDATA,
   TRIAL_TASK,
   INSERT_EVALID,
@@ -68,6 +68,10 @@ import {
   FETCH_EVAL_CASE,
   EVAL_ROW_CLICK,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
+  PROCESS_FHLMC_RESOSLVE_BULK,
+  POPULATE_INVESTOR_EVENTS_DROPDOWN,
+  SUBMIT_TO_FHLMC,
+  DISMISS_USER_NOTIFICATION,
   SHOW_LOADER,
   HIDE_LOADER,
 } from './types';
@@ -219,6 +223,19 @@ const clearBulkUploadDataAction = () => ({
   type: CLEAR_BULKUPLOAD_TABLEDATA,
 });
 
+const onFhlmcCasesBulkSubmit = payload => ({
+  type: PROCESS_FHLMC_RESOSLVE_BULK,
+  payload,
+});
+
+const onSubmitToFhlmcAction = (selectedRequestType, portfolioCode) => ({
+  type: SUBMIT_TO_FHLMC,
+  payload: {
+    selectedRequestType,
+    portfolioCode,
+  },
+});
+
 const saveStagerTaskName = stagerTaskName => ({
   type: SET_STAGER_TASK_NAME,
   payload: stagerTaskName,
@@ -306,8 +323,8 @@ const clearPostModEndShitf = () => ({
   type: CLEAR_POSTMOD_END_SHIFT,
 });
 
-const clearCoviusData = () => ({
-  type: CLEAR_COVIUS_DATA,
+const clearData = () => ({
+  type: CLEAR_DATA,
 });
 
 const onTrialTaskAction = payload => ({
@@ -344,6 +361,10 @@ const downloadFileAction = payload => ({
 
 const populateEventsDropdown = () => ({
   type: POPULATE_EVENTS_DROPDOWN,
+});
+
+const populateInvestorEventsDropdown = () => ({
+  type: POPULATE_INVESTOR_EVENTS_DROPDOWN,
 });
 
 const submitToCoviusAction = payload => ({
@@ -398,7 +419,14 @@ const hideLoader = () => ({
   type: HIDE_LOADER,
 });
 
+const dismissUserNotification = () => ({
+  type: DISMISS_USER_NOTIFICATION,
+});
+
+
 export {
+  dismissUserNotification,
+  onSubmitToFhlmcAction,
   showLoader,
   hideLoader,
   setPaymentDeferral,
@@ -428,11 +456,12 @@ export {
   hideAssignUnassign,
   postComment,
   clearBEDisposition,
-  clearCoviusData,
+  clearData,
   getGroupName,
   validateDisposition,
   loadTrialsAction,
   onSentToUnderwritingAction,
+  populateInvestorEventsDropdown,
   onSendToDocGenAction,
   onSendToDocsInAction,
   onSendToBookingAction,
@@ -469,4 +498,5 @@ export {
   assignBookingLoan,
   additionalInfo,
   evalSelectRow,
+  onFhlmcCasesBulkSubmit,
 };

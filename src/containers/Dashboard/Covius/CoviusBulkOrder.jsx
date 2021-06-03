@@ -54,7 +54,7 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   onResetClick = () => {
-    const { onResetCoviusData } = this.props;
+    const { onResetData } = this.props;
     this.setState({
       selectedEvent: { eventCode: '', hasMetadata: false },
       selectedEventCategory: '',
@@ -63,7 +63,7 @@ class CoviusBulkOrder extends React.PureComponent {
       isResetDisabled: true,
       idType: '',
     });
-    onResetCoviusData();
+    onResetData();
   }
 
   onSubmitCases = () => {
@@ -112,9 +112,9 @@ class CoviusBulkOrder extends React.PureComponent {
   }
 
   handleEventCategory = (event) => {
-    const { coviusEventOptions, onResetCoviusData } = this.props;
+    const { coviusEventOptions, onResetData } = this.props;
     const eventCategory = event.target.value;
-    onResetCoviusData();
+    onResetData();
     const eventList = R.compose(R.filter(item => item.eventCategory === eventCategory),
       R.flatten)(coviusEventOptions);
     const eventObj = {
@@ -550,7 +550,7 @@ class CoviusBulkOrder extends React.PureComponent {
 CoviusBulkOrder.defaultProps = {
   inProgress: false,
   onCoviusBulkSubmit: () => { },
-  onResetCoviusData: () => { },
+  onResetData: () => { },
   populateDropdown: () => { },
   resultData: {
     request: [],
@@ -571,7 +571,7 @@ CoviusBulkOrder.propTypes = {
   downloadFile: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
   onCoviusBulkSubmit: PropTypes.func,
-  onResetCoviusData: PropTypes.func,
+  onResetData: PropTypes.func,
   populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
     invalidCases: PropTypes.arrayOf({
@@ -612,12 +612,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onCoviusBulkSubmit: operations.onCoviusCasesSubmit(dispatch),
-  onResetCoviusData: operations.onResetCoviusData(dispatch),
+  onResetData: operations.onResetData(dispatch),
   downloadFile: operations.downloadFile(dispatch),
   populateDropdown: operations.populateEvents(dispatch),
   submitToCovius: operations.submitToCovius(dispatch),
   closeSweetAlert: operations.closeSweetAlert(dispatch),
-
 });
 
 const CoviusBulkOrderContainer = connect(mapStateToProps, mapDispatchToProps)(CoviusBulkOrder);

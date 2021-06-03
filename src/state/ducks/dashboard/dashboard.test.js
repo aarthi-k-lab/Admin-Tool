@@ -1390,7 +1390,7 @@ describe('onDownloadFile Success case', () => {
   };
   const mockPayload = {
     status: 'Excel File Downloaded Successfully',
-    level: SUCCESS,
+    level: 'Success',
   };
   const saga = cloneableGenerator(TestExports.onDownloadFile)(action);
   it('should call SET_RESULT_OPERATION', () => {
@@ -1894,7 +1894,7 @@ describe('handle widget not assigned : checklist not found', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.CLEAR_ERROR_MESSAGE,
-        payload: { },
+        payload: {},
       }));
   });
   it('should call fetchChecklistDetails ', () => {
@@ -2041,7 +2041,7 @@ describe('handle widget not assigned : checklist found', () => {
     expect(saga.next().value)
       .toEqual(put({
         type: actionTypes.CLEAR_ERROR_MESSAGE,
-        payload: { },
+        payload: {},
       }));
   });
   it('should call fetchChecklistDetails ', () => {

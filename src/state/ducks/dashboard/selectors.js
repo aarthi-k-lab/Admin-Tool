@@ -132,6 +132,7 @@ const getFileSubmitResponse = state => R.pathOr({}, ['dashboard', 'fileSubmitRes
 const getSendToCoviusResponse = state => R.pathOr({}, ['dashboard', 'sendToCoviusResponse'], state);
 const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
+const getInvestorEvents = state => R.pathOr([], ['dashboard', 'investorEventOptions'], state);
 const getCoviusTabIndex = state => R.pathOr(0, ['dashboard', 'coviusTabIndex'], state);
 const getDisablePushData = state => R.pathOr(false, ['dashboard', 'disablePushData'], state);
 
@@ -154,8 +155,11 @@ const getCaseDetails = R.pathOr([], ['dashboard', 'caseDetails']);
 
 const getEvalIndex = state => R.pathOr(0, ['dashboard', 'evalIndex'], state);
 
+const getUserNotification = state => R.pathOr(0, ['dashboard', 'userNotification'], state);
+
 
 const selectors = {
+  getUserNotification,
   isIncomeVerification,
   getPopupData,
   getIsPaymentDeferral,
@@ -242,6 +246,7 @@ const selectors = {
   getCaseDetails,
   getEvalIndex,
   addInfoEvalId,
+  getInvestorEvents,
 };
 
 export default selectors;

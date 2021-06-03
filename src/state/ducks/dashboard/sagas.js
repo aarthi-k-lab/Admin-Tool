@@ -30,8 +30,10 @@ import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import {
+  ERROR, SUCCESS, FAILED,
+} from 'constants/common';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
-import { ERROR, SUCCESS } from 'constants/common';
 import { INCOME_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
 import processExcel from '../../../lib/excelParser';
@@ -42,6 +44,8 @@ import {
 import selectors from './selectors';
 
 import {
+  SET_FHLMC_UPLOAD_RESULT,
+  SUBMIT_TO_FHLMC,
   SET_COVIUS_TABINDEX,
   STORE_EVALID_RESPONSE,
   INSERT_EVALID,
@@ -75,6 +79,8 @@ import {
   USER_NOTIF_MSG,
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
+  SAVE_INVESTOR_EVENTS_DROPDOWN,
+  POPULATE_INVESTOR_EVENTS_DROPDOWN,
   // GET_LOAN_ACTIVITY_DETAILS,
   LOAD_TRIALS_SAGA,
   LOAD_TRIALHEADER_RESULT,
@@ -92,8 +98,9 @@ import {
   CONTINUE_MY_REVIEW_RESULT,
   COMPLETE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
-  SET_COVIUS_BULK_UPLOAD_RESULT,
+  SET_BULK_UPLOAD_RESULT,
   PROCESS_COVIUS_BULK,
+  PROCESS_FHLMC_RESOSLVE_BULK,
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
@@ -136,6 +143,8 @@ import {
   SET_EVAL_INDEX,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
   SAVE_EVAL_LOANVIEW,
+  SET_USER_NOTIFICATION,
+  DISMISS_USER_NOTIFICATION,
   FETCH_EVAL_CASE,
   TOGGLE_LOCK_BUTTON,
 } from './types';
@@ -1754,6 +1763,24 @@ function* onSelectTrialTask(payload) {
   }
 }
 
+function* populateInvestorDropdown() {
+  try {
+    const response = yield call(Api.callGet, '/api/dataservice/api/InvestorRequestType/FHLMC');
+    yield put({
+      type: SAVE_INVESTOR_EVENTS_DROPDOWN,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
+
 function* populateDropdown() {
   try {
     const userGroupsList = yield select(loginSelectors.getGroupList());
@@ -1772,6 +1799,88 @@ function* populateDropdown() {
       },
     });
   }
+}
+
+function* onFhlmcBulkUpload(payload) {
+  const {
+    caseIds, requestIdType,
+  } = payload.payload;
+  let response;
+  try {
+    if (caseIds.length > 50) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: `Please upload a maximum of 50 ${requestIdType}`,
+        },
+      });
+      return;
+    }
+    const caseSet = new Set(caseIds);
+    if (caseIds.length !== caseSet.size) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: `There are duplicate ${requestIdType}. Please correct and resubmit`,
+        },
+      });
+      return;
+    }
+    yield put({ type: SHOW_LOADER });
+    const idType = R.equals('Case id(s)', requestIdType) ? 'caseId' : 'loanNbr';
+    response = yield call(Api.callPost,
+      `/api/cmodinvestor/loan-data?requestIdType=${idType}`, caseIds);
+    // Clearing resultData before getting eventData
+    yield put({
+      type: SET_BULK_UPLOAD_RESULT,
+      payload: {},
+    });
+    if (!R.isNil(response)) {
+      const hasStatusCode = R.has('status', response);
+      if (hasStatusCode && R.equals(R.path(['status'], response), 404)) {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: ERROR,
+            status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          },
+        });
+      } else {
+        if (R.contains(false, R.pluck('isValid', response))) {
+          yield put({
+            type: SET_USER_NOTIFICATION,
+            payload: {
+              message: `Entered incorrect ${idType === 'caseId' ? 'Case ID' : 'Loan Number'}.Highlighted in Red for your reference`,
+              level: ERROR,
+            },
+          });
+        }
+        yield put({
+          type: SET_BULK_UPLOAD_RESULT,
+          payload: response,
+        });
+      }
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
 }
 
 function* onCoviusBulkUpload(payload) {
@@ -1815,12 +1924,12 @@ function* onCoviusBulkUpload(payload) {
     response = yield call(Api.callPost, '/api/docfulfillment/api/covius/getEventData', requestBody);
     // Clearing resultData before getting eventData
     yield put({
-      type: SET_COVIUS_BULK_UPLOAD_RESULT,
+      type: SET_BULK_UPLOAD_RESULT,
       payload: {},
     });
     if (response !== null && (R.has('invalidCases', response) || R.has('request', response))) {
       yield put({
-        type: SET_COVIUS_BULK_UPLOAD_RESULT,
+        type: SET_BULK_UPLOAD_RESULT,
         payload: response,
       });
     } else {
@@ -1969,6 +2078,130 @@ const onUploadingFile = function* onUploadingFile(action) {
   }
 };
 
+function* sendNotification(userNotification, resultSet, sweetAlert) {
+  if (!R.isNil(userNotification)) {
+    yield put({
+      type: SET_USER_NOTIFICATION,
+      payload: userNotification,
+    });
+  } else {
+    yield put({
+      type: DISMISS_USER_NOTIFICATION,
+    });
+  }
+  if (!R.isNil(resultSet)) {
+    yield put({
+      type: SET_FHLMC_UPLOAD_RESULT,
+      payload: resultSet,
+    });
+  }
+  if (!R.isNil(sweetAlert)) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: sweetAlert,
+    });
+  }
+}
+
+const submitToFhlmc = function* submitToFhlmc(action) {
+  const file = yield select(selectors.getUploadedFile);
+  const resultData = yield select(selectors.resultData);
+  const user = yield select(loginSelectors.getUser);
+  const userName = R.path(['userDetails', 'email'], user);
+  const { selectedRequestType, portfolioCode } = action.payload;
+  try {
+    const investor = 'freddiemac';
+    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?investor=${investor}&requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}`, JSON.parse(file));
+    // Clearing resultData before getting eventData
+    yield put({
+      type: SET_FHLMC_UPLOAD_RESULT,
+      payload: {},
+    });
+    yield put({
+      type: SET_USER_NOTIFICATION,
+      payload: {},
+    });
+    const parsedData = JSON.parse(file);
+    const statusCode = R.has('status', response) ? R.path(['status'], response) : R.path(['statusCode'], response);
+    let userNotification = null;
+    let resultSet = null;
+    let sweetAlert = null;
+    if (statusCode === '200') {
+      const responseArray = R.pathOr([], ['responseContent', 'message', 'responseData', 'responseWorkoutList'], response);
+      const nonValidResponseObjects = R.pluck('isValid', responseArray);
+      const data = R.map((cases) => {
+        const filteredData = R.filter(datae => R.equals(datae.loanIdentifier.toString(),
+          cases.loanIdentifier), parsedData);
+        const caseData = {};
+        caseData.loanNumber = R.head(filteredData).servicerLoanIdentifier;
+        caseData.evalId = R.head(filteredData).evalId;
+        caseData.resolutionId = R.head(filteredData).resolutionId;
+        caseData.isValid = cases.isValid;
+        caseData.RequestType = cases.workoutReportingStatusType;
+        caseData.message = JSON.stringify(cases);
+        return caseData;
+      }, responseArray);
+      if (!R.isEmpty(nonValidResponseObjects)) {
+        userNotification = {
+          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+          level: ERROR,
+        };
+      }
+      resultSet = data;
+      sweetAlert = {
+        level: 'Success',
+        status: 'Your request has been successfully sent to Freddie, please download the excel to view more details.',
+      };
+    } else if (statusCode === 422) {
+      const { invalidLoans } = response;
+      const caseIds = Object.keys(invalidLoans);
+      const data = R.map((cases) => {
+        const caseData = {};
+        caseData.resolutionId = cases.resolutionId;
+        caseData.loanNumber = cases.loanNumber;
+        caseData.isValid = !R.contains(cases.resolutionId.toString(), caseIds);
+        return caseData;
+      }, parsedData);
+      userNotification = {
+        message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+        level: ERROR,
+      };
+      resultSet = data;
+      sweetAlert = {
+        status: 'Incorrect Data present in the excel. Please update and try again',
+        level: FAILED,
+      };
+    } else if (statusCode === 400) {
+      sweetAlert = {
+        level: FAILED,
+        status: 'FHLMC is currently down. Please try after again, If the issue continues to persist please reach to IT team.',
+      };
+    } else {
+      resultSet = resultData;
+      const nonValidResponseObjects = R.pluck('isValid', resultData);
+      if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
+        userNotification = {
+          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+          level: ERROR,
+        };
+      }
+      sweetAlert = {
+        level: FAILED,
+        status: 'One of the data source is currently down. Please try after again, If the issue continues to persist please reach to IT team',
+      };
+    }
+    yield call(sendNotification, userNotification, resultSet, sweetAlert);
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        level: LEVEL_FAILED,
+      },
+    });
+  }
+};
+
 const sendToCovius = function* sendToCovius(eventCode, payload) {
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -2063,7 +2296,7 @@ const onDownloadFile = function* onDownloadFile(action) {
       type: SET_RESULT_OPERATION,
       payload: {
         status: 'Excel File Downloaded Successfully',
-        level: SUCCESS,
+        level: 'Success',
       },
     });
   } catch (e) {
@@ -2077,6 +2310,9 @@ const onDownloadFile = function* onDownloadFile(action) {
   }
 };
 
+function* watchSubmitToFhlmc() {
+  yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
+}
 
 const lockCalculation = function* lockCalculation() {
   try {
@@ -2175,10 +2411,16 @@ function* watchPopulateEventsDropDown() {
   yield takeEvery(POPULATE_EVENTS_DROPDOWN, populateDropdown);
 }
 
+function* watchInvestorPopulateEventsDropDown() {
+  yield takeEvery(POPULATE_INVESTOR_EVENTS_DROPDOWN, populateInvestorDropdown);
+}
+
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
 }
-
+function* watchFhlmcBulkOrder() {
+  yield takeEvery(PROCESS_FHLMC_RESOSLVE_BULK, onFhlmcBulkUpload);
+}
 function* watchManualInsertion() {
   yield takeEvery(INSERT_EVALID, manualInsertion);
 }
@@ -2323,9 +2565,12 @@ export const TestExports = {
 
 export const combinedSaga = function* combinedSaga() {
   yield all([
+    watchSubmitToFhlmc(),
+    watchInvestorPopulateEventsDropDown(),
     watchSubmitToCovius(),
     watchAutoSave(),
     watchDispositionSave(),
+    watchFhlmcBulkOrder(),
     watchGetNext(),
     watchSetExpandView(),
     watchUnassignBookingLoan(),

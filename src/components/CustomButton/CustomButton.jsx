@@ -15,7 +15,13 @@ const CustomButton = (props) => {
   const isEnabled = state === 'completed';
   return (
     <div styleName={variant === 'addTaskSection' ? 'customVariant' : 'custom'}>
-      <Button color={isEnabled ? 'primary' : 'secondary'} disabled={!isEnabled} onClick={() => onChange(true)} styleName={variant === 'addTaskSection' ? 'containedVariant' : 'contained'} variant="contained">
+      <Button
+        color={isEnabled ? 'primary' : 'secondary'}
+        disabled={!isEnabled}
+        onClick={() => onChange(true)}
+        styleName={variant === 'addTaskSection' ? 'containedVariant' : 'contained'}
+        variant="contained"
+      >
         {title}
         {variant === 'addTaskSection' ? null : <AddCircleOutlineIcon />}
       </Button>
