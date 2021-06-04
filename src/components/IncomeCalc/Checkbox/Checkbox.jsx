@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from '@material-ui/core/Checkbox';
 import Box from '@material-ui/core/Box';
@@ -14,6 +14,8 @@ function CheckBox({
   source,
   onChangeMultipleBox,
   disabled,
+  failureReason,
+  checklistLoadStatus,
 }) {
   const [checkboxValue, setCheckboxValue] = useState(value);
   const { styleName, hasTitle, customType } = additionalInfo;
@@ -30,9 +32,15 @@ function CheckBox({
     });
   };
 
+  useEffect(() => {
+    if (!R.equals(checklistLoadStatus, 'loading')) {
+      setCheckboxValue(value);
+    }
+  });
+
   if (R.equals(source, 'value') || R.equals(customType, 'single')) {
     return (
-      <Box style={{ display: 'flex', alignItems: 'center' }} styleName={styleName || ''}>
+      <Box style={{ display: 'flex', alignItems: 'center', cursor: disabled ? 'not-allowed' : 'pointer' }} styleName={styleName || ''}>
         <Checkbox checked={R.equals(checkboxValue, true)} disabled={disabled} onChange={onChangeCheckboxHandler} styleName="radio-control-bubble" />
         {hasTitle && <Typography style={{ paddingLeft: '0.5rem' }}>{title}</Typography>}
       </Box>
@@ -45,9 +53,13 @@ function CheckBox({
           options.map(({
             displayName, value: checkValue,
           }) => (
-            <div key={displayName} style={{ display: 'flex', alignItems: 'center', marginLeft: '1.5rem' }}>
+            <div
+              key={displayName}
+              style={{ display: 'flex', alignItems: 'center', marginLeft: '1.5rem' }}
+            >
               <Checkbox
                 checked={R.contains(checkValue, value || [])}
+                error={!R.isNil(failureReason) && !R.isEmpty(failureReason)}
                 name={checkValue}
                 onChange={onChangeMultipleCheck}
                 styleName="radio-control-bubble"
@@ -65,6 +77,8 @@ CheckBox.defaultProps = {
   value: '',
   source: '',
   disabled: false,
+  checklistLoadStatus: null,
+  failureReason: [],
 };
 
 CheckBox.propTypes = {
@@ -73,7 +87,12 @@ CheckBox.propTypes = {
     hasTitle: PropTypes.bool,
     styleName: PropTypes.string,
   }),
+  checklistLoadStatus: PropTypes.string,
   disabled: PropTypes.bool,
+  failureReason: PropTypes.arrayOf({
+    level: PropTypes.number,
+    message: PropTypes.string,
+  }),
   onChangeMultipleBox: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string.isRequired,

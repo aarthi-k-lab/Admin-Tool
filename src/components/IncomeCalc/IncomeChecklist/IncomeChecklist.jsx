@@ -96,32 +96,35 @@ class IncomeChecklist extends React.PureComponent {
   }
 
   getToolTipElement = (element, failureReason) => {
-    const errorLevels = {
-      1: 'errors',
-      2: 'warnings',
-    };
-    const { errors, warnings } = R.groupBy(
-      item => errorLevels[item.level], R.reject(R.isNil, failureReason),
-    );
-    return !(R.isEmpty(errors) || R.isNil(errors))
-      || !(R.isEmpty(warnings) || R.isNil(warnings)) ? (
-        <StyledTooltip
-          arrow
-          disableFocusListener
-          disableTouchListener
-          placement="right"
-          title={(
-            <>
-              {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
-              {warnings && warnings.map(warning => <p style={{ fontSize: '1rem' }}>{warning.message}</p>)}
-            </>
-          )}
-        >
-          <div style={{ width: 'fit-content' }}>
-            {element}
-          </div>
-        </StyledTooltip>
-      ) : element;
+    if (failureReason) {
+      const errorLevels = {
+        1: 'errors',
+        2: 'warnings',
+      };
+      const { errors, warnings } = R.groupBy(
+        item => errorLevels[item.level], R.reject(R.isNil, failureReason),
+      );
+      return !(R.isEmpty(errors) || R.isNil(errors))
+        || !(R.isEmpty(warnings) || R.isNil(warnings)) ? (
+          <StyledTooltip
+            arrow
+            disableFocusListener
+            disableTouchListener
+            placement="right"
+            title={(
+              <>
+                {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
+                {warnings && warnings.map(warning => <p style={{ fontSize: '1rem' }}>{warning.message}</p>)}
+              </>
+            )}
+          >
+            <div style={{ width: 'fit-content' }}>
+              {element}
+            </div>
+          </StyledTooltip>
+        ) : element;
+    }
+    return element;
   }
 
   handleDateChange(id, taskCode, additionalInfo) {
@@ -415,6 +418,7 @@ class IncomeChecklist extends React.PureComponent {
             disabled,
             onChangeMultipleBox,
             failureReason,
+            checklistLoadStatus,
           };
           element = (<CheckBox key={id} {...props} />);
         } break;

@@ -14,17 +14,15 @@ class TextFields extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      textFieldValue: null,
+      textFieldValue: '',
     };
-    this.hasError = false;
-    this.helperText = '';
   }
 
   static getDerivedStateFromProps(props) {
     const { value, checklistLoadStatus } = props;
     if (!R.equals(checklistLoadStatus, 'loading')) {
       return {
-        textFieldValue: value,
+        textFieldValue: R.isNil(value) ? '' : value,
       };
     }
     return null;
@@ -107,7 +105,7 @@ class TextFields extends React.Component {
       defaultValue,
     } = additionalInfo;
     const { textFieldValue } = this.state;
-    const val = R.isNil(textFieldValue) ? defaultValue : textFieldValue;
+    const val = R.isEmpty(textFieldValue) ? defaultValue : textFieldValue;
     if (customType === 'read-only') {
       const readOnlyValue = additionalElements && additionalElements.includes('adornment')
         ? `${adornment} ${val}` : val;
@@ -136,7 +134,7 @@ class TextFields extends React.Component {
         )}
         <TextField
           disabled={disabled}
-          error={!R.isEmpty(failureReason)}
+          error={!R.isNil(failureReason) && !R.isEmpty(failureReason)}
           inputProps={inputProps}
           // eslint-disable-next-line react/jsx-no-duplicate-props
           InputProps={adornmentElement}
