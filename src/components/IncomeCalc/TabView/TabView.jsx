@@ -11,13 +11,22 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import Icon from '@material-ui/core/Icon';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import TabScrollButton from '@material-ui/core/TabScrollButton';
+import { withStyles } from '@material-ui/core/styles';
 
-const getSubTask = (task, index = 0, level = 1) => {
-  if (level === 0) return task;
-  return getSubTask(task[index].subTasks, level - 1);
-};
+const tabScrollButton = withStyles(() => ({
+  root: {
+    width: 25,
+    overflow: 'hidden',
+    transition: 'width 0.5s',
+    '&.Mui-disabled': {
+      width: 0,
+    },
+  },
+}))(TabScrollButton);
 
-const DISPLAY_LENGTH = 4;
+
+const DISPLAY_LENGTH = 5;
 class TabView extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -92,13 +101,13 @@ class TabView extends React.PureComponent {
       <div styleName="tabview">
         <Paper elevation={1} square>
           <Tabs
-            aria-label="scrollable auto tabs example"
             indicatorColor="primary"
-            onChange={(e, selectedIndex) => this.onTabSelection(selectedIndex, displayList)}
-            scrollButtons="auto"
-            style={{ backgroundColor: 'white' }}
+            onChange={(_, selectedIndex) => this.onTabSelection(selectedIndex, displayList)}
+            scrollable="true"
+            ScrollButtonComponent={tabScrollButton}
             textColor="primary"
             value={tabIndex === -1 ? null : tabIndex}
+            variant="scrollable"
           >
             {displayList && displayList.map((task, index) => (
               <Tab
@@ -125,20 +134,21 @@ class TabView extends React.PureComponent {
                     </div>
                   </div>
                 )}
-                style={{ width: '13.5rem' }}
+                style={{ width: '12.75rem' }}
               />
             ))}
             {!R.isEmpty(dropDownList) && (
-              <Box>
+              <Box style={{ marginLeft: '0rem' }}>
                 <Tab
                   label={(
-                    <Box style={{ display: 'flex', fontWeight: 500 }}>
+                    <Box style={{ display: 'flex', fontWeight: 500, marginLeft: '6rem' }}>
                     +
                       {dropDownList && dropDownList.length}
                       <Icon>expand_more</Icon>
                     </Box>
                 )}
                   onClick={this.handlePopperClick}
+                  style={{ width: '2rem' }}
                 />
                 <Popper
                   anchorEl={anchorEl}
@@ -147,7 +157,7 @@ class TabView extends React.PureComponent {
                   transition
                 >
                   <ClickAwayListener onClickAway={this.handleClickAway}>
-                    <Paper style={{ width: '15rem', marginLeft: '-3.5rem' }}>
+                    <Paper>
                       {dropDownList && dropDownList.map((item, index) => (
                         <MenuItem
                           key={item.name}
