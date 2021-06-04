@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -34,6 +34,7 @@ function RadioButtons({
   title,
   selectedValue,
   additionalInfo,
+  checklistLoadStatus,
 }) {
   const [radioButtonValue, setRadioButtonValue] = useState(selectedValue);
   const { labels, styleName, labelValueAdornment } = additionalInfo;
@@ -43,6 +44,11 @@ function RadioButtons({
     }
     return false;
   };
+  useEffect(() => {
+    if (!R.equals(checklistLoadStatus, 'loading')) {
+      setRadioButtonValue(selectedValue);
+    }
+  });
   const onChangeRadioGroupHandler = (event) => {
     setRadioButtonValue(event.target.value);
     onChange(event);
@@ -90,6 +96,7 @@ RadioButtons.defaultProps = {
     styleName: 'displayColumn',
     labelValueAdornment: '',
   },
+  checklistLoadStatus: null,
 };
 
 RadioButtons.propTypes = {
@@ -100,6 +107,7 @@ RadioButtons.propTypes = {
     row: PropTypes.bool,
     styleName: PropTypes.string,
   }),
+  checklistLoadStatus: PropTypes.string,
   disabled: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
@@ -111,7 +119,6 @@ RadioButtons.propTypes = {
   })).isRequired,
   selectedValue: PropTypes.string,
   title: PropTypes.string.isRequired,
-
 };
 
 export default RadioButtons;

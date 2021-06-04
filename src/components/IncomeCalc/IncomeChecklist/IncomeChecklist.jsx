@@ -377,6 +377,7 @@ class IncomeChecklist extends React.PureComponent {
             source,
             selectedValue: value,
             failureReason,
+            checklistLoadStatus,
           };
           element = (<RadioButtons key={id} {...props} />);
         } break;
