@@ -1,6 +1,6 @@
 import
 {
-  put, takeEvery, select, call, all,
+  put, takeEvery, select, call,
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
@@ -11,6 +11,8 @@ import selectors from './selectors';
 import dashboardSelectors from '../dashboard/selectors';
 import {
   SET_RESULT_OPERATION,
+  USER_NOTIF_MSG,
+  DISABLE_PUSHDATA,
 } from '../dashboard/types';
 
 import * as actions from './actions';
@@ -22,18 +24,10 @@ import {
   LOADING_TASKS,
   STORE_OPTIONAL_TASKS,
   STORE_CHECKLIST_NAVIGATION,
-  //   SET_SELECTED_CHECKLIST,
   STORE_TASKS,
   VALIDATION_DISPLAY,
   SLA_RULES_PROCESSED,
-  SET_SELECTED_CHECKLIST,
-  GET_CHECKLIST_SAGA,
 } from './types';
-
-import {
-  USER_NOTIF_MSG,
-  DISABLE_PUSHDATA,
-} from '../dashboard/types';
 
 describe('watch submitFile ', () => {
   it('should trigger submit file worker', () => {
@@ -237,8 +231,12 @@ describe('getTask sagas is being called', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getRootTaskId));
   });
-  it('should call task engine service to get Tasks', () => {
+  it('should get the groupName from store', () => {
     expect(saga.next(taskId).value)
+      .toEqual(select(dashboardSelectors.groupName));
+  });
+  it('should call task engine service to get Tasks', () => {
+    expect(saga.next('').value)
       .toEqual(call(Api.callGet, `/api/task-engine/task/${taskId}?depth=${depth}&forceNoCache=0.162387`));
   });
   it('should filter the optional tasks', () => {
@@ -254,14 +252,18 @@ describe('getTask sagas is being called', () => {
       .toEqual(call(TestExports.createChecklistNavigation, response));
   });
   it('store the navigated checklist', () => {
-    expect(saga.next(checklistNavigation).value).toEqual(call(actions.storeChecklistNavigation, checklistNavigation));
+    expect(saga.next(checklistNavigation).value).toEqual(call(
+      actions.storeChecklistNavigation, checklistNavigation,
+    ));
   });
   it('should get the selected checklist id ', () => {
     expect(saga.next(checklistNavAction).value)
       .toEqual(select(selectors.getSelectedChecklistId));
   });
   it('call and put the action the checklist ID', () => {
-    expect(saga.next(checklistId).value).toEqual(put({ type: STORE_CHECKLIST_NAVIGATION, payload: checklistNavigation }));
+    expect(saga.next(checklistId).value).toEqual(put(
+      { type: STORE_CHECKLIST_NAVIGATION, payload: checklistNavigation },
+    ));
     expect(saga.next(response).value).toEqual(put({ type: STORE_TASKS, payload: response }));
   });
   it('get the checklist comments from selectors', () => {
