@@ -84,6 +84,8 @@ const autoDispositions = [{
   dispositionComment: 'approval',
 }];
 
+const BOOKING_DEPTH = 4;
+
 function* getChecklist(action) {
   try {
     const {
@@ -203,7 +205,7 @@ function filterOptionalTasks(allTasks) {
 
 function* getTasks(action) {
   try {
-    const {
+    let {
       payload: {
         depth,
       },
@@ -216,6 +218,8 @@ function* getTasks(action) {
       payload: {},
     });
     const rootTaskId = yield select(selectors.getRootTaskId);
+    const groupName = yield select(dashboardSelectors.groupName);
+    depth = groupName === DashboardModel.BOOKING ? BOOKING_DEPTH : depth;
     const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
@@ -796,7 +800,8 @@ function* makeResolutionIdStatCall(action) {
 
 function* setNewChecklist(action) {
   try {
-    const depth = 3;
+    const groupName = yield select(dashboardSelectors.groupName);
+    const depth = groupName === DashboardModel.BOOKING ? BOOKING_DEPTH : 3;
     yield put({
       type: LOADING_TASKS,
     });

@@ -741,6 +741,36 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
   }
 };
 
+const getCommentPayload = function* buildCommentPayload(comment, disposition) {
+  const loanNumber = yield select(selectors.loanNumber);
+  const user = yield select(loginSelectors.getUser);
+  const groupName = yield select(selectors.groupName);
+  const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
+  const eventName = !R.isNil(page) ? page.taskCode : '';
+  const taskName = !R.isNil(page) ? page.task : '';
+  const taskId = yield select(selectors.taskId);
+  const taskIterationCounter = yield select(selectors.taskIterationCounter);
+  const processId = yield select(selectors.processId);
+  const commentPayload = {
+    applicationName: 'CMOD',
+    loanNumber,
+    processIdType: 'WF_PRCS_ID',
+    processId,
+    eventName,
+    comment,
+    userName: user.userDetails.name,
+    createdDate: new Date().toJSON(),
+    commentContext: JSON.stringify({
+      TASK: taskName,
+      TASK_ID: taskId,
+      TASK_ACTN: disposition,
+      DSPN_IND: 1,
+      TASK_ITRN_CNTR: taskIterationCounter,
+    }),
+  };
+  return commentPayload;
+};
+
 function* completeMyReviewResult(action) {
   try {
     const disposition = R.path(['payload'], action);
@@ -759,6 +789,11 @@ function* completeMyReviewResult(action) {
       type: COMPLETE_MY_REVIEW_RESULT,
       payload: { error: R.has(ERROR, response) },
     });
+    const comments = yield select(checklistSelectors.getSLFailureComments);
+    yield all(comments.map(function* postcomment(comment) {
+      const commentPayload = yield* getCommentPayload(comment, 'Complete My Review');
+      yield put({ type: POST_COMMENT_SAGA, payload: commentPayload });
+    }));
   } catch (e) {
     yield put({ type: COMPLETE_MY_REVIEW_RESULT, payload: false });
   }
@@ -908,7 +943,7 @@ function getEvalPayload(taskDetails) {
   };
 }
 
-function getCommentPayload(taskDetails) {
+function getCommentPayloadFromTaskDetails(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const processId = getProcessId(taskDetails);
   const evalId = getEvalId(taskDetails);
@@ -1142,7 +1177,7 @@ function* getNext(action) {
       if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
         const loanNumber = getLoanNumber(taskDetails);
         const evalPayload = getEvalPayload(taskDetails);
-        const commentsPayLoad = getCommentPayload(taskDetails);
+        const commentsPayLoad = getCommentPayloadFromTaskDetails(taskDetails);
         const { taskName } = taskDetails.taskData.data;
         if (R.equals(group, 'BOOKING')) {
           yield call(getResolutionDataForEval, getEvalId(taskDetails));
