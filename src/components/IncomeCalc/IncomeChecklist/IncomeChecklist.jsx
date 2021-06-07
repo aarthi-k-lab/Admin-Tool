@@ -10,6 +10,7 @@ import { operations as taskOperations } from 'ducks/tasks-and-checklist';
 import { operations as dashboardOperations, selectors as dashboardSelector } from 'ducks/dashboard';
 import processItem from 'lib/CustomFunctions';
 import { getChecklistItems } from 'lib/checklist';
+import { UNFORMAT } from 'lib/Formatters';
 import TextFields from '../TextFields';
 import ComponentTypes from '../../../constants/componentTypes';
 import TaskSection from '../TaskSection';
@@ -45,7 +46,13 @@ const NumberFormatCustom = (props) => {
   );
 };
 
-const removeCharacters = value => value.replace(/[^0-9.]/g, '');
+const unformat = (value, format) => {
+  let unformattedValue = value;
+  if (format && value) {
+    unformattedValue = UNFORMAT[format](value);
+  }
+  return unformattedValue;
+};
 
 class IncomeChecklist extends React.PureComponent {
   constructor(props) {
@@ -188,10 +195,11 @@ class IncomeChecklist extends React.PureComponent {
     };
   }
 
-  handleTextChange(id, type) {
+  handleTextChange(id, format) {
     return (event) => {
       const { multilineTextDirtyValues: oldValues } = this.state;
-      const multilineTextDirtyValues = R.assoc(id, type === 'currency' ? removeCharacters(event.target.value) : event.target.value, oldValues);
+      const { value } = event.target;
+      const multilineTextDirtyValues = R.assoc(id, unformat(value, format), oldValues);
       this.setState({
         multilineTextDirtyValues,
       });
@@ -199,7 +207,7 @@ class IncomeChecklist extends React.PureComponent {
   }
 
 
-  handleBlur(id, taskCode, type) {
+  handleBlur(id, taskCode, format) {
     return (event) => {
       const { onChange } = this.props;
       if (event) {
@@ -209,7 +217,7 @@ class IncomeChecklist extends React.PureComponent {
             ? R.trim(event.target.value)
             : ''
         );
-        value = type === 'currency' ? removeCharacters(value) : value;
+        value = unformat(value, format);
         const dirtyValue = R.isEmpty(value) ? null : value;
         if (R.has(id, oldValues)) {
           onChange(id, dirtyValue, taskCode);
@@ -345,9 +353,9 @@ class IncomeChecklist extends React.PureComponent {
           element = (<Dropdown key={id} {...prop} />);
         } break;
         case TEXT: {
-          const { customType } = additionalInfo;
-          const refCallback = this.handleBlur(id, taskCode, customType);
-          const onChange = this.handleTextChange(id);
+          const { format } = additionalInfo;
+          const refCallback = this.handleBlur(id, taskCode, format);
+          const onChange = this.handleTextChange(id, format);
           const getValue = this.getMultilineTextValue(id, value);
           const prop = {
             onBlur: refCallback,
@@ -505,7 +513,6 @@ IncomeChecklist.propTypes = {
 const TestHooks = {
   IncomeChecklist,
   NumberFormatCustom,
-  removeCharacters,
 };
 
 export { TestHooks };

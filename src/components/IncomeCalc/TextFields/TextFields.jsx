@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { direction, getStyleName } from 'constants/incomeCalc/styleName';
 import regexMap from 'constants/incomeCalc/regex';
+import { FORMAT } from 'lib/Formatters';
 import './TextFields.css';
 
 
@@ -28,11 +29,6 @@ class TextFields extends React.Component {
     return null;
   }
 
-  onCurrencyChange = (event) => {
-    const { onChange } = this.props;
-    const value = event.target.value && R.replace(/\d(?=(?:\d{3})+$)/g, '$&,', R.replace(/[^0-9.]/g, '', event.target.value.toString()));
-    onChange({ target: { value } });
-  }
 
   getAdornment = (additionalElements) => {
     const { additionalInfo } = this.props;
@@ -51,9 +47,13 @@ class TextFields extends React.Component {
     const { textFieldValue } = this.state;
     let value = textFieldValue;
     const regex = R.propOr(false, 'regex', additionalInfo);
+    const format = R.propOr(false, 'format', additionalInfo);
     if (regex && value) {
       const { expression, replaceWith, flag } = regexMap[regex];
       value = R.replace(new RegExp(expression, flag), replaceWith, value.toString());
+    }
+    if (format && value) {
+      value = FORMAT[format](value.toString());
     }
     switch (type) {
       case 'currency': {
@@ -62,8 +62,7 @@ class TextFields extends React.Component {
           inputProps: {
             style: { textAlign: 'right' },
           },
-          value: value && R.replace(/\d(?=(?:\d{3})+$)/g, '$&,', value.toString()),
-          onChange: this.onCurrencyChange,
+          value,
         };
       }
       case 'multi-line': {
