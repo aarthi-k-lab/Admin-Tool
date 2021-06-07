@@ -10,7 +10,6 @@ import regexMap from 'constants/incomeCalc/regex';
 import { FORMAT } from 'lib/Formatters';
 import './TextFields.css';
 
-
 class TextFields extends React.Component {
   constructor(props) {
     super(props);

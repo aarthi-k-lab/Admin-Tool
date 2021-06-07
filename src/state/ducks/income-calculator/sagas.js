@@ -251,6 +251,10 @@ function* handleChecklistItemChange(action) {
     yield call(showLoaderOnSave);
     yield call(Api.put, `/api/task-engine/task/${saveTask.id}`, saveTask.body);
     yield call(getTasks);
+    yield put({
+      type: TOGGLE_LOCK_BUTTON,
+      payload: false,
+    });
     // clear the dirty state
     yield put({
       type: REMOVE_DIRTY_CHECKLIST,
@@ -357,28 +361,50 @@ function* addContributor(action) {
   }
 }
 
+function* gatherDataForValidation() {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const sodsData = yield call(Api.callGet, `/api/ods-gateway/incomeCalc/${loanNumber}`);
+  const externalData = {
+    investorName: R.pathOr(null, ['InvestorHierarchy', 'levelName'], sodsData),
+  };
+  return { ...externalData };
+}
+
 function* processValidations() {
   try {
     yield put({ type: SHOW_LOADER });
     const borrowers = yield select(selectors.getBorrowers);
     const processId = yield select(selectors.getProcessId);
-    const checklist = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&forceNoCache=${Math.random()}`);
-    const additionalData = {
-      borrowers,
-    };
-    const banner = consolidateValidations(checklist, additionalData);
-    yield put({
-      type: TOGGLE_LOCK_BUTTON,
-      payload: R.isEmpty(R.propOr([], 1, banner)),
-    });
-    yield put({
-      type: TOGGLE_BANNER,
-      payload: !R.isEmpty(R.propOr([], 1, banner)) || !R.isEmpty(R.propOr([], 2, banner)),
-    });
-    yield put({
-      type: SET_BANNER_DATA,
-      payload: banner,
-    });
+    const checklistData = yield select(selectors.getChecklist);
+    const externalData = yield call(gatherDataForValidation);
+    const taskObj = R.propOr(null, 'value', checklistData);
+    const rootId = R.prop('_id', checklistData);
+    if (rootId) {
+      yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj, externalData } });
+      const checklist = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&forceNoCache=${Math.random()}`);
+      const additionalData = {
+        borrowers,
+      };
+      const banner = consolidateValidations(checklist, additionalData);
+      const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&forceNoCache=${Math.random()}`);
+      const data = {
+        lastUpdated: `${new Date()}`,
+        response,
+      };
+      yield put({ type: STORE_CHECKLIST, payload: data });
+      yield put({
+        type: TOGGLE_LOCK_BUTTON,
+        payload: R.isEmpty(R.propOr([], 1, banner)),
+      });
+      yield put({
+        type: TOGGLE_BANNER,
+        payload: !R.isEmpty(R.propOr([], 1, banner)) || !R.isEmpty(R.propOr([], 2, banner)),
+      });
+      yield put({
+        type: SET_BANNER_DATA,
+        payload: banner,
+      });
+    }
   } catch (e) {
     logger.info(e);
   }

@@ -37,7 +37,6 @@ const incomeCalcWidgetToggle = dispatch => (payload) => {
   dispatch(incomeCalcToggleAction(payload));
 };
 
-
 const operations = {
   incomeCalcWidgetToggle,
   enableHistoryView,

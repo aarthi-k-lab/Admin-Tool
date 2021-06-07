@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import * as R from 'ramda';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { selectors as incomeSelectors } from 'ducks/income-calculator';
 import { operations as taskOperations } from 'ducks/tasks-and-checklist';
@@ -11,6 +9,7 @@ import { operations as dashboardOperations, selectors as dashboardSelector } fro
 import processItem from 'lib/CustomFunctions';
 import { getChecklistItems } from 'lib/checklist';
 import { UNFORMAT } from 'lib/Formatters';
+import TooltipWrapper from '../TooltipWrapper';
 import TextFields from '../TextFields';
 import ComponentTypes from '../../../constants/componentTypes';
 import TaskSection from '../TaskSection';
@@ -23,15 +22,6 @@ import DatePicker from '../DatePicker';
 import CheckBox from '../Checkbox';
 import GridView from '../GridView';
 
-const StyledTooltip = withStyles({
-  arrow: {
-    color: 'rgb(231, 61, 91)',
-  },
-  tooltip: {
-    color: 'white',
-    backgroundColor: 'rgb(231, 61, 91)',
-  },
-})(Tooltip);
 
 const NumberFormatCustom = (props) => {
   const { inputRef, ...other } = props;
@@ -100,38 +90,6 @@ class IncomeChecklist extends React.PureComponent {
       return initialValue;
     }
     return dirtyValue;
-  }
-
-  getToolTipElement = (element, failureReason) => {
-    if (failureReason) {
-      const errorLevels = {
-        1: 'errors',
-        2: 'warnings',
-      };
-      const { errors, warnings } = R.groupBy(
-        item => errorLevels[item.level], R.reject(R.isNil, failureReason),
-      );
-      return !(R.isEmpty(errors) || R.isNil(errors))
-        || !(R.isEmpty(warnings) || R.isNil(warnings)) ? (
-          <StyledTooltip
-            arrow
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={(
-              <>
-                {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
-                {warnings && warnings.map(warning => <p style={{ fontSize: '1rem' }}>{warning.message}</p>)}
-              </>
-            )}
-          >
-            <div style={{ width: 'fit-content' }}>
-              {element}
-            </div>
-          </StyledTooltip>
-        ) : element;
-    }
-    return element;
   }
 
   handleDateChange(id, taskCode, additionalInfo) {
@@ -435,7 +393,8 @@ class IncomeChecklist extends React.PureComponent {
             <div />
           );
       }
-      return R.prop('errorToolTip', additionalInfo) ? this.getToolTipElement(element, failureReason) : element;
+      return R.prop('errorToolTip', additionalInfo)
+        ? <TooltipWrapper element={element} failureReason={failureReason} /> : element;
     });
   }
 

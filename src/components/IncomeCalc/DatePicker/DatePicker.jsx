@@ -7,20 +7,34 @@ import Box from '@material-ui/core/Box';
 import moment from 'moment-timezone';
 import { getStyleName } from 'constants/incomeCalc/styleName';
 import * as R from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
 
 const DATE_FORMAT = 'MM-DD-YYYY';
-
+const useStyles = makeStyles({
+  root: {},
+  warning: {
+    borderColor: '#ffa400',
+  },
+});
 function BasicDatePicker(props) {
   const {
     disabled, title, onChange, value, additionalInfo, failureReason,
   } = props;
   const [datePicker, setDatePicker] = useState(value);
-  const { hasTitle, styleName } = additionalInfo;
+  const { hasTitle, styleName, disableFuture } = additionalInfo;
   const onChangeDatePickerHandler = (event) => {
-    const date = moment(event).format(DATE_FORMAT);
-    setDatePicker(date);
-    onChange(date);
+    const date = moment(event);
+    setDatePicker(date.format(DATE_FORMAT));
+    if (date.isValid() && (!disableFuture || date.isBefore())) {
+      onChange(date.format(DATE_FORMAT));
+    }
   };
+  const isError = !R.isNil(failureReason) && !R.isEmpty(R.filter(item => R.equals(item.level, 1),
+    failureReason));
+  const isWarning = !R.isNil(failureReason)
+  && !R.isEmpty(R.filter(item => R.equals(item.level, 2), failureReason));
+  const classes = useStyles();
+  const getStyles = () => `${getStyleName('datePicker', styleName, 'picker')}`;
   return (
     <Box styleName={getStyleName('datePicker', styleName, 'div')}>
       {hasTitle && (
@@ -32,8 +46,13 @@ function BasicDatePicker(props) {
         <KeyboardDatePicker
           disabled={disabled}
           disableFuture
-          error={!R.isEmpty(failureReason)}
+          error={isError}
           format={DATE_FORMAT}
+          InputProps={{
+            classes: {
+              notchedOutline: isWarning ? classes.warning : classes.root,
+            },
+          }}
           inputVariant="outlined"
           KeyboardButtonProps={{
             'aria-label': 'change date',
@@ -41,7 +60,7 @@ function BasicDatePicker(props) {
           }}
           onChange={onChangeDatePickerHandler}
           size="small"
-          styleName={getStyleName('datePicker', styleName, 'picker')}
+          styleName={getStyles()}
           value={datePicker}
         />
       </MuiPickersUtilsProvider>
@@ -52,12 +71,13 @@ function BasicDatePicker(props) {
 BasicDatePicker.defaultProps = {
   disabled: false,
   title: '',
-  additionalInfo: { hasTitle: false, styleName: '' },
+  additionalInfo: { hasTitle: false, styleName: '', disableFuture: false },
   failureReason: [],
 };
 
 BasicDatePicker.propTypes = {
   additionalInfo: PropTypes.shape({
+    disableFuture: PropTypes.bool,
     hasTitle: PropTypes.bool,
     styleName: PropTypes.string,
   }),
