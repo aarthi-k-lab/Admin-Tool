@@ -119,8 +119,7 @@ const fHLMCBulkOrderPage = {
   path: '/fhlmc-resolve',
   name: 'FHLMC RESOLVE Page',
   img: '/static/img/Freddie.svg',
-  groups: ['allaccess', 'docgenvendor', 'docgenvendor-mgr'],
-  // groups: ['allaccess', 'fhlmcresolve', 'fhlmcresolve-mgr'],
+  groups: ['allaccess', 'fhlmcresolve', 'fhlmcresolve-mgr'],
 };
 
 const trial = {

@@ -2207,6 +2207,14 @@ const submitToFhlmc = function* submitToFhlmc(action) {
         level: FAILED,
       };
     } else if (statusCode === 400) {
+      resultSet = resultData;
+      const nonValidResponseObjects = R.pluck('isValid', resultData);
+      if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
+        userNotification = {
+          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+          level: ERROR,
+        };
+      }
       sweetAlert = {
         level: FAILED,
         status: 'FHLMC is currently down. Please try after again, If the issue continues to persist please reach to IT team.',

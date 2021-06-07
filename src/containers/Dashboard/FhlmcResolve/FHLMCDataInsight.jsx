@@ -96,6 +96,11 @@ class FHLMCDataInsight extends React.PureComponent {
     this.setState({ showSubmitFhlmc: false, showMessageProp: true });
   }
 
+  handleClick = (event) => {
+    // eslint-disable-next-line no-param-reassign
+    event.target.value = '';
+  }
+
   handleUpload = (event) => {
     const { onProcessFile, openSweetAlert } = this.props;
     const { files } = event.target;
@@ -214,6 +219,7 @@ class FHLMCDataInsight extends React.PureComponent {
                   id="contained-button-file"
                   multiple
                   onChange={this.handleUpload}
+                  onClick={this.handleClick}
                   type="file"
                 />
               </label>
