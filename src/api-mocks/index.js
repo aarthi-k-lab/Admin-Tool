@@ -16,10 +16,10 @@ function mock() {
     groupName: 'docgenvendor-mgr'
   },
   {
-    groupName: 'fhlmcresolve'
+    groupName: 'FHLMCResolve'
   },
   {
-    groupName: 'fhlmcresolve-mgr'
+    groupName: 'FHLMCResolve-mgr'
   },
   {
     groupName: 'util'

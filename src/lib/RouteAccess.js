@@ -8,7 +8,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'fhlmcresolve-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'FHLMCResolve-mgr'],
 };
 
 const stager = {
@@ -119,7 +119,7 @@ const fHLMCBulkOrderPage = {
   path: '/fhlmc-resolve',
   name: 'FHLMC RESOLVE Page',
   img: '/static/img/Freddie.svg',
-  groups: ['allaccess', 'fhlmcresolve', 'fhlmcresolve-mgr'],
+  groups: ['allaccess', 'FHLMCResolve', 'FHLMCResolve-mgr'],
 };
 
 const trial = {
@@ -131,7 +131,7 @@ const milestoneActivity = {
   path: '/milestone-activity',
   name: 'milestone-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'fhlmcresolve', 'fhlmcresolve-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'FHLMCResolve', 'FHLMCResolve-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
 };
 
 const links = [

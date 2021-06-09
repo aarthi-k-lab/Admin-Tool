@@ -136,7 +136,7 @@ class FhlmcResolve extends React.PureComponent {
 
   renderIdsDropDown = () => {
     const { idType } = this.state;
-    const idsCategories = ['Case id(s)', 'Loan Number(s)'];
+    const idsCategories = ['Case id(s)'];
     return (
       <FormControl variant="outlined">
         <Select
@@ -147,7 +147,7 @@ class FhlmcResolve extends React.PureComponent {
           styleName="drop-down-select"
           value={idType}
         >
-          {idsCategories.map(item => (
+          {idsCategories && idsCategories.map(item => (
             <MenuItem key={item} value={item}>
               {item}
             </MenuItem>
@@ -212,10 +212,10 @@ class FhlmcResolve extends React.PureComponent {
           </span>
           <span styleName="errorIcon">
             <Tooltip
-              placement="left-end"
+              placement="right-end"
               title={(
                 <Typography>
-                  This is the type of Ids case/Loan Number?
+                  This is the type of case Ids?
                 </Typography>
               )}
             >
