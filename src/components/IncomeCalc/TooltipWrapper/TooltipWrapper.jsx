@@ -21,6 +21,8 @@ const useStyles = makeStyles(() => ({
 
 const TooltipWrapper = ({ element, failureReason }) => {
   const classes = useStyles();
+
+  if (R.isNil(failureReason) || R.isEmpty(failureReason)) return element;
   const errorLevels = {
     1: 'errors',
     2: 'warnings',
@@ -29,31 +31,30 @@ const TooltipWrapper = ({ element, failureReason }) => {
     item => errorLevels[item.level], R.reject(R.isNil, failureReason),
   );
   const isErrors = !(R.isEmpty(errors) || R.isNil(errors));
-  return (R.isEmpty(failureReason) || R.isEmpty(failureReason) ? element
-    : (
-      <>
-        <Tooltip
-          arrow
-          classes={{
-            tooltip: isErrors ? classes.errorTooltip : classes.warningTooltip,
-            arrow: isErrors ? classes.errorArrow : classes.warningArrow,
-          }}
-          disableFocusListener
-          disableTouchListener
-          placement="right"
-          title={(
-            <>
-              {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
-              {warnings && warnings.map(warning => <p style={{ fontSize: '1rem' }}>{warning.message}</p>)}
-            </>
+  return (
+    <>
+      <Tooltip
+        arrow
+        classes={{
+          tooltip: isErrors ? classes.errorTooltip : classes.warningTooltip,
+          arrow: isErrors ? classes.errorArrow : classes.warningArrow,
+        }}
+        disableFocusListener
+        disableTouchListener
+        placement="right"
+        title={(
+          <>
+            {errors && errors.map(error => <p style={{ fontSize: '1rem' }}>{error.message}</p>)}
+            {warnings && warnings.map(warning => <p style={{ fontSize: '1rem' }}>{warning.message}</p>)}
+          </>
           )}
-        >
-          <div style={{ width: 'fit-content' }}>
-            {element}
-          </div>
-        </Tooltip>
-      </>
-    ));
+      >
+        <div style={{ width: 'fit-content' }}>
+          {element}
+        </div>
+      </Tooltip>
+    </>
+  );
 };
 
 TooltipWrapper.defaultProps = {
