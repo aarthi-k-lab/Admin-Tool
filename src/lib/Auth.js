@@ -9,7 +9,6 @@ import {
   COVIUS,
   COVIUS_MGR,
   FHLMCRESOLVE,
-  FHLMCRESOLVE_MGR,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -335,10 +334,6 @@ Auth.homePage = [
   },
   {
     groupName: FHLMCRESOLVE,
-    path: '/fhlmc-resolve',
-  },
-  {
-    groupName: FHLMCRESOLVE_MGR,
     path: '/fhlmc-resolve',
   },
 ];
