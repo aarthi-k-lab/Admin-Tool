@@ -22,12 +22,22 @@ function BasicDatePicker(props) {
   } = props;
   const [datePicker, setDatePicker] = useState(value);
   const { hasTitle, styleName, disableFuture } = additionalInfo;
-  const onChangeDatePickerHandler = (event) => {
-    const date = moment(event);
-    setDatePicker(date.format(DATE_FORMAT));
-    if (date.isValid() && (!disableFuture || date.isBefore())) {
-      onChange(date.format(DATE_FORMAT));
+  const onChangeDatePickerHandler = (selectedDate) => {
+    let date = selectedDate;
+    if (selectedDate.isValid()) {
+      date = selectedDate.format(DATE_FORMAT);
+    } else {
+      date = R.propOr('', '_i', selectedDate);
     }
+    setDatePicker(date);
+  };
+  const onAccept = (date) => {
+    const formattedDate = moment(date).format(DATE_FORMAT);
+    setDatePicker(formattedDate);
+    onChange(formattedDate);
+  };
+  const onBlur = () => {
+    onChange(datePicker);
   };
   const isError = !R.isNil(failureReason) && !R.isEmpty(R.filter(item => R.equals(item.level, 1),
     failureReason));
@@ -45,9 +55,10 @@ function BasicDatePicker(props) {
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <KeyboardDatePicker
           disabled={disabled}
-          disableFuture
+          disableFuture={disableFuture}
           error={isError}
           format={DATE_FORMAT}
+          helperText=""
           InputProps={{
             classes: {
               notchedOutline: isWarning ? classes.warning : classes.root,
@@ -58,6 +69,8 @@ function BasicDatePicker(props) {
             'aria-label': 'change date',
             style: { padding: '0.2rem' },
           }}
+          onAccept={onAccept}
+          onBlur={onBlur}
           onChange={onChangeDatePickerHandler}
           size="small"
           styleName={getStyles()}

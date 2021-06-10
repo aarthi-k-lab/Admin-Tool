@@ -69,7 +69,7 @@ const ErrorBanner = ({ errorBanner }) => {
               <Grid item style={{ marginBottom: '0.7rem' }}>
                 {err.path.join('>>')}
               </Grid>
-              <Grid item>
+              <Grid item style={{ whiteSpace: 'pre-line' }}>
                 {err.messages.join('\n')}
               </Grid>
             </Grid>
