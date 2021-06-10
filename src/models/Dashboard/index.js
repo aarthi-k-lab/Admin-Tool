@@ -13,7 +13,7 @@ const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
 const BOOKING = 'BOOKING';
 const COVIUS = 'docgenvendor';
-const FHLMCRESOLVE = 'FHLMCResolve';
+const FHLMCRESOLVE = 'fhlmcresolve';
 
 const EVENT_CATEGORY_FILTER = 'SubmitFullmentRequest';
 const STAGER = 'STAGER';
