@@ -7,7 +7,7 @@ const FORMAT = {
 
   phone: value => value
     .replace(/[^0-9]/g, '')
-    .replace(/^(.{9})(.*)$/, '$1')
+    .replace(/^(.{10})(.*)$/, '$1')
     .replace(/(\d{3})(\d{1,})/, '($1) $2')
     .replace(/(\(\d{3}\)\s\d{3})(\d{1,})/, '$1 $2'),
 
