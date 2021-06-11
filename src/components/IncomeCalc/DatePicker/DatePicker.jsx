@@ -20,25 +20,31 @@ function BasicDatePicker(props) {
   const {
     disabled, title, onChange, value, additionalInfo, failureReason,
   } = props;
-  const [datePicker, setDatePicker] = useState(value);
+  let date = null;
+  if (!R.isNil(value)) {
+    date = moment(value).isValid() ? moment(value).format(DATE_FORMAT) : null;
+  }
+  const [datePicker, setDatePicker] = useState(date);
   const { hasTitle, styleName, disableFuture } = additionalInfo;
   const onChangeDatePickerHandler = (selectedDate) => {
-    let date = selectedDate;
-    if (selectedDate.isValid()) {
-      date = selectedDate.format(DATE_FORMAT);
+    if (selectedDate && selectedDate.isValid()) {
+      setDatePicker(selectedDate.format(DATE_FORMAT));
     } else {
       date = R.propOr('', '_i', selectedDate);
+      setDatePicker(date);
     }
-    setDatePicker(date);
   };
-  const onAccept = (date) => {
-    const formattedDate = moment(date).format(DATE_FORMAT);
-    setDatePicker(formattedDate);
-    onChange(formattedDate);
-  };
+
   const onBlur = () => {
     onChange(datePicker);
   };
+
+  const onAccept = (newDate) => {
+    const formattedDate = moment(newDate).format(DATE_FORMAT);
+    setDatePicker(formattedDate);
+    onChange(formattedDate);
+  };
+
   const isError = !R.isNil(failureReason) && !R.isEmpty(R.filter(item => R.equals(item.level, 1),
     failureReason));
   const isWarning = !R.isNil(failureReason)
