@@ -2360,6 +2360,7 @@ function* watchSubmitToFhlmc() {
 const lockCalculation = function* lockCalculation() {
   try {
     yield put({ type: SHOW_LOADER });
+    const feuwChecklistId = yield select(checklistSelectors.getProcessId);
     const consolidatedData = yield select(incomeSelectors.getConsolidatedIncome);
     const borrowerInfo = yield select(incomeSelectors.getBorrowers);
     const borrowerList = yield select(incomeSelectors.getBorrowersList);
@@ -2392,6 +2393,7 @@ const lockCalculation = function* lockCalculation() {
       userPrincipalName,
       taskCheckListId,
       calcDateTime: new Date(),
+      feuwChecklistId,
     };
     const dbResult = yield call(Api.callPost, '/api/workassign/IncomeCalc/lock/', request);
     if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
