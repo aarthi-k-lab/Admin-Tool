@@ -43,10 +43,10 @@ class WidgetBuilder extends Component {
       let currentAppBarSelected = R.clone(openWidgetList);
       if (R.contains(widgetId, openWidgetList)) {
         if (selectedWidgetData.overlay) {
-        // remove current widget from array.
+          // remove current widget from array.
           currentAppBarSelected = R.without(widgetId, currentAppBarSelected);
         } else {
-        // Close all widgets except overlay widgets
+          // Close all widgets except overlay widgets
           currentAppBarSelected = R.filter(widget => R.propOr(false, 'overlay', R.find(R.propEq('id', widget), widgets)), currentAppBarSelected);
           if (selectedWidgetData.children) {
             currentAppBarSelected = R.without(selectedWidgetData.children, currentAppBarSelected);

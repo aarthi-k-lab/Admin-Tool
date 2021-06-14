@@ -17,9 +17,10 @@ class WidgetComponent extends React.PureComponent {
       currentWidget, rightAppBar, page,
     } = this.props;
     const selectedWidget = R.find(R.propEq('id', currentWidget))(rightAppBar);
-    const component = R.propOr(null, 'component', selectedWidget);
+    let component = R.propOr(null, 'component', selectedWidget);
+    component = component && R.assocPath(['props', 'page'], page, component);
     return component
-        && (
+      && (
         <div styleName={(R.equals(page, 'SEARCH_LOAN') && currentWidget === 'Comments') ? 'right-app-bar-search' : getSytles(currentWidget)}>
           <div style={{ width: '100%' }}>
             <div styleName="comment-area-bottom">
@@ -27,7 +28,7 @@ class WidgetComponent extends React.PureComponent {
             </div>
           </div>
         </div>
-        );
+      );
   }
 }
 

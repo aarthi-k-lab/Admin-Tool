@@ -121,12 +121,14 @@ class CommentsWidget extends Component {
       ProcIdType,
       onGetComments,
       groupName,
-      searchArea,
+      page,
       openWidgetList,
     } = this.props;
 
-    const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
-    const eventName = !R.isNil(page) ? page.taskCode : '';
+    const pageIns = DashboardModel.GROUP_INFO
+      .find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(pageIns) ? pageIns.taskCode : '';
+    const searchArea = R.equals(page, 'SEARCH_LOAN');
 
     if (!R.contains(ADDITIONAL_INFO, openWidgetList)) {
       const payload = {
@@ -196,7 +198,7 @@ class CommentsWidget extends Component {
     } = this.props;
     comments = R.flatten(R.map(comm => comm.comments, evalComments.comments));
     comments = (R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList))
-    || !showEvalId ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, R.contains(ADDITIONAL_INFO, openWidgetList)
+      || !showEvalId ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, R.contains(ADDITIONAL_INFO, openWidgetList)
         ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
 
     return (
@@ -207,7 +209,7 @@ class CommentsWidget extends Component {
         >
           <div id="row_header" styleName="row-header">
             <div styleName={comment.userName === User.userDetails.name ? 'messagee-body-current-user' : 'message-body-other-user'}>
-              { showEvalId && !R.contains(ADDITIONAL_INFO, openWidgetList) && !R.contains(ADDITIONAL_INFO, openWidgetList) && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div> }
+              {showEvalId && !R.contains(ADDITIONAL_INFO, openWidgetList) && !R.contains(HISTORY, openWidgetList) && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div>}
               {comment.comment}
               <div styleName="message-body-bottom" />
               <div>
@@ -229,8 +231,9 @@ class CommentsWidget extends Component {
     const {
       evalComments,
       LoanNumber, EvalId,
-      isAssigned, searchArea, addInfoEvalId, openWidgetList,
+      isAssigned, addInfoEvalId, openWidgetList, page,
     } = this.props;
+    const searchArea = R.equals(page, 'SEARCH_LOAN');
     let comments = R.propOr(null, 'comments', evalComments);
     comments = R.contains(ADDITIONAL_INFO, openWidgetList) ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, R.contains(ADDITIONAL_INFO, openWidgetList)
       ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
@@ -306,9 +309,9 @@ CommentsWidget.propTypes = {
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
   openWidgetList: PropTypes.string,
+  page: PropTypes.string,
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
-  searchArea: PropTypes.bool,
   showEvalId: PropTypes.bool.isRequired,
   TaskId: PropTypes.number.isRequired,
   taskIterationCounter: PropTypes.number.isRequired,
@@ -323,7 +326,7 @@ CommentsWidget.defaultProps = {
   AppName: 'CMOD',
   ProcIdType: 'WF_PRCS_ID',
   groupName: '',
-  searchArea: false,
+  page: null,
   openWidgetList: [],
 };
 
