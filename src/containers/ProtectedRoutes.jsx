@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Route, Switch, Redirect,
 } from 'react-router-dom';
+import * as R from 'ramda';
 import Auth from 'lib/Auth';
 import SignInLoader from 'components/SignInLoader';
 import HomePage from 'components/HomePage';
@@ -63,10 +64,13 @@ class ProtectedRoutes extends React.Component {
     this.renderMilestoneActivity = this.renderMilestoneActivity.bind(this);
     this.renderfhlmcPageRoute = this.renderfhlmcPageRoute.bind(this);
     this.renderfhlmcBulkOrderPageRoute = this.renderfhlmcBulkOrderPageRoute.bind(this);
+    this.getHiddenRoutes = this.getHiddenRoutes.bind(this);
   }
 
   componentDidMount() {
-    const { location, setUserSchemaTrigger, getFeaturesTrigger } = this.props;
+    const {
+      location, setUserSchemaTrigger, getFeaturesTrigger, fetchHiddenRoutes,
+    } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
         this.auth = auth;
@@ -74,8 +78,10 @@ class ProtectedRoutes extends React.Component {
           setUserSchemaTrigger(auth.user);
           this.setState({ loading: false });
           if (auth.groups) {
-            const redirectPath = Auth.getGroupHomePage(auth.groups);
-            this.shouldRedirect = location.pathname === '/' && redirectPath !== location.pathname;
+            let redirectPath = '';
+            fetchHiddenRoutes();
+            redirectPath = this.getHiddenRoutes() || Auth.getGroupHomePage(auth.groups);
+            this.shouldRedirect = !R.isNil(this.getHiddenRoutes()) || (location.pathname === '/' && redirectPath !== location.pathname);
             this.setState({
               loading: false,
               redirectPath,
@@ -84,6 +90,14 @@ class ProtectedRoutes extends React.Component {
         }
       });
     getFeaturesTrigger();
+  }
+
+  getHiddenRoutes() {
+    const { hiddenRoutes, location } = this.props;
+    if (!R.isEmpty(hiddenRoutes) && hiddenRoutes.includes(location.pathname)) {
+      return '/unauthorized?error=LOCATION_ACCESS_FAILED';
+    }
+    return null;
   }
 
   getGroups() {
@@ -313,21 +327,26 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   items: TombstoneSelectors.getTombstoneData(state),
   loanNumber: dashboardSelectors.loanNumber(state),
+  hiddenRoutes: config.selectors.hiddenRoutes(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onExpandTrigger: dashboardOperations.onExpand(dispatch),
   setUserSchemaTrigger: loginOperations.setUserSchemaTrigger(dispatch),
   getFeaturesTrigger: config.operations.getFeaturesTrigger(dispatch),
+  fetchHiddenRoutes: config.operations.fetchHiddenRoutes(dispatch),
 });
 
 ProtectedRoutes.defaultProps = {
   items: [],
   loanNumber: '',
+  hiddenRoutes: [],
 };
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
+  fetchHiddenRoutes: PropTypes.func.isRequired,
   getFeaturesTrigger: PropTypes.func.isRequired,
+  hiddenRoutes: PropTypes.objectOf(PropTypes.array),
   items: PropTypes.arrayOf(
     PropTypes.shape({
       content: PropTypes.any.isRequired,

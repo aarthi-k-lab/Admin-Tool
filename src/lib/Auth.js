@@ -293,6 +293,7 @@ Auth.failureMessages = {
   USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
   COVIUS_ACCESS_NEEDED: 'COVIUS Group Access is needed to view the Covius Bulk order page.',
+  LOCATION_ACCESS_FAILED: 'CURRENTLY THIS FEATURE IS NOT AVAILBLE',
 };
 
 Auth.homePage = [

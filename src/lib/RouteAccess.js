@@ -119,7 +119,7 @@ const fHLMCBulkOrderPage = {
   path: '/fhlmc-resolve',
   name: 'FHLMC RESOLVE Page',
   img: '/static/img/Freddie.svg',
-  groups: ['fhlmcresolve'],
+  groups: ['allaccess', 'fhlmcresolve'],
 };
 
 const trial = {
@@ -168,8 +168,12 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
     && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
-function shouldShowIcon(link, userGroups) {
-  return !noIcons.includes(link.path) && hasGroup(link.groups, userGroups, link.notInGroup);
+function shouldShowIcon(link, userGroups, hiddenRoutes) {
+  if (!R.isEmpty(hiddenRoutes) && hiddenRoutes.includes(link.path)) {
+    noIcons.push(link.path);
+  }
+  return !noIcons.includes(link.path)
+    && hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
