@@ -9,4 +9,9 @@ module.exports = {
     replaceWith: '',
     flag: 'g',
   },
+  alphanumeric: {
+    expression: '[^a-zA-Z0-9]',
+    replaceWith: '',
+    flag: 'g',
+  },
 };

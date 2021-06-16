@@ -42,7 +42,7 @@ class TextFields extends React.Component {
 
   getProps(type, props) {
     const { additionalInfo } = this.props;
-    const { placeholder } = additionalInfo;
+    const { placeholder, roundOff } = additionalInfo;
     const { textFieldValue } = this.state;
     let value = textFieldValue;
     const regex = R.propOr(false, 'regex', additionalInfo);
@@ -52,7 +52,7 @@ class TextFields extends React.Component {
       value = R.replace(new RegExp(expression, flag), replaceWith, value.toString());
     }
     if (format && value) {
-      value = FORMAT[format](value.toString());
+      value = FORMAT[format](value.toString(), roundOff);
     }
     switch (type) {
       case 'currency': {

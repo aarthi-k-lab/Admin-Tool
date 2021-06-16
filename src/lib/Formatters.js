@@ -11,11 +11,17 @@ const FORMAT = {
     .replace(/(\d{3})(\d{1,})/, '($1) $2')
     .replace(/(\(\d{3}\)\s\d{3})(\d{1,})/, '$1 $2'),
 
-  currency: value => value
-    .replace(/(?<=.*\..*)\./g, '')
-    .replace(/[^0-9.]/g, '')
-    .replace(/(\d*\.?\d{0,2})(.*)/, '$1')
-    .replace(/(\d)(?=(\d{3})+(\.\d*)?$)/g, '$1,'),
+  currency: (value, roundOff) => {
+    let valueToFormat = value;
+    if (roundOff) {
+      valueToFormat = (Math.round((parseFloat(value) + Number.EPSILON) * 100) / 100).toString();
+    }
+    return valueToFormat
+      .replace(/(?<=.*\..*)\./g, '')
+      .replace(/[^0-9.]/g, '')
+      .replace(/(\d*\.?\d{0,2})(.*)/, '$1')
+      .replace(/(\d)(?=(\d{3})+(\.\d*)?$)/g, '$1,');
+  },
 };
 
 const UNFORMAT = {
