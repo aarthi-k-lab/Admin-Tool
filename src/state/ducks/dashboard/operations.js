@@ -56,7 +56,6 @@ import {
   closeSweetAlertAction,
   setCoviusIndexAction,
   setSelectedWidgets,
-  onLockCalc,
   onClearPopupDataAction,
   toggleIncomeVerification,
   additionalInfo,
@@ -77,8 +76,6 @@ import {
   resetIncomeChecklistData,
   processValidations,
 } from '../income-calculator/actions';
-
-const lockCalculation = dispatch => () => dispatch(onLockCalc());
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -429,7 +426,6 @@ const operations = {
   onWidgetClick,
   handleSelectedWidgets,
   onErrorValidation,
-  lockCalculation,
   onAdditionalInfoClick,
   onEvalRowSelect,
   setTombstoneDataForLoanView,

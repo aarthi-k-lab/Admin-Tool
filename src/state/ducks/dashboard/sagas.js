@@ -20,7 +20,6 @@ import {
 } from 'ducks/widgets/index';
 import {
   actions as incomeActions,
-  selectors as incomeSelectors,
 } from 'ducks/income-calculator/index';
 import {
   actions as checklistActions,
@@ -135,8 +134,6 @@ import {
   SAVE_MAIN_CHECKLIST,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
-  LOCK_INCOME_CALCULATION,
-  SET_POPUP_DATA,
   EVAL_CASE_DETAILS,
   EVAL_ROW_CLICK,
   SET_CASE_DETAILS,
@@ -146,7 +143,6 @@ import {
   SET_USER_NOTIFICATION,
   DISMISS_USER_NOTIFICATION,
   FETCH_EVAL_CASE,
-  TOGGLE_LOCK_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -161,8 +157,6 @@ import {
   ERROR_LOADING_TASKS,
   RESET_DATA,
 } from '../tasks-and-checklist/types';
-
-import { incTypeMap } from '../../../constants/incomeCalc';
 
 import {
   SET_BORROWERS_DATA,
@@ -2357,97 +2351,6 @@ function* watchSubmitToFhlmc() {
   yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
 }
 
-const lockCalculation = function* lockCalculation() {
-  try {
-    yield put({ type: SHOW_LOADER });
-    const feuwChecklistId = yield select(checklistSelectors.getProcessId);
-    const consolidatedData = yield select(incomeSelectors.getConsolidatedIncome);
-    const borrowerInfo = yield select(incomeSelectors.getBorrowers);
-    const borrowerList = yield select(incomeSelectors.getBorrowersList);
-    const consolidation = [];
-    R.forEach((item) => {
-      const cnsdtIncome = {};
-      R.forEach((incomeType) => {
-        const incomeData = R.reject(R.isNil, R.flatten(R.pluck(incomeType,
-          R.pluck(item, R.flatten(consolidatedData)))));
-        if (incomeData.length) {
-          cnsdtIncome[incomeType] = incomeData;
-        }
-      }, R.keys(incTypeMap));
-      if (cnsdtIncome) {
-        borrowerInfo.forEach((borr) => {
-          if (R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, item)) {
-            consolidation.push({ borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome });
-          }
-        });
-      }
-    }, borrowerList);
-    const loanNumber = yield select(selectors.loanNumber);
-    const taskId = yield select(selectors.taskId);
-    const taskCheckListId = yield select(incomeSelectors.getProcessId);
-    const user = yield select(loginSelectors.getUser);
-    const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const request = {
-      taskId,
-      loanNumber,
-      userPrincipalName,
-      taskCheckListId,
-      calcDateTime: new Date(),
-      feuwChecklistId,
-    };
-    const dbResult = yield call(Api.callPost, '/api/workassign/IncomeCalc/lock/', request);
-    if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
-      const response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`, consolidation);
-      if (response) {
-        yield put({
-          type: SET_POPUP_DATA,
-          payload: {
-            message: 'Income is Locked successfully in REMEDY',
-            level: 'Success',
-            title: 'Lock Calculation',
-          },
-        });
-        yield put({
-          type: TOGGLE_LOCK_BUTTON,
-          payload: false,
-        });
-        yield put(getTasks());
-      } else {
-        yield put({
-          type: SET_POPUP_DATA,
-          payload: {
-            message: 'Income is not Locked in REMEDY, please select "YES" to manually update Remedy and "Retry" to try again',
-            level: 'Failed',
-            title: 'Lock Calculation',
-            showCancelButton: true,
-            confirmButtonText: 'Retry',
-            cancelButtonText: 'Yes',
-            onConfirm: LOCK_INCOME_CALCULATION,
-          },
-        });
-      }
-    } else {
-      yield put({
-        type: SET_POPUP_DATA,
-        payload: {
-          message: 'Income Lock failed due to Borrower data discrepency',
-          level: 'Failed',
-          title: 'Lock Calculation',
-        },
-      });
-    }
-  } catch (e) {
-    yield put({
-      type: SET_RESULT_OPERATION,
-      payload: {
-        status: e.message,
-        level: 'Failed',
-      },
-    });
-  }
-  yield put({ type: HIDE_LOADER });
-};
-
 function* watchSubmitToCovius() {
   yield takeEvery(SEND_TO_COVIUS, submitToCovius);
 }
@@ -2537,10 +2440,6 @@ function* watchUnassignBookingLoan() {
   yield takeEvery(UNASSIGN_BOOKING_LOAN, unassignBookingLoan);
 }
 
-function* watchLockCalc() {
-  yield takeEvery(LOCK_INCOME_CALCULATION, lockCalculation);
-}
-
 function* watchAdditionalInfo() {
   yield takeEvery(FETCH_EVAL_CASE, fetchEvalCaseDetails);
 }
@@ -2603,7 +2502,6 @@ export const TestExports = {
   watchOnSubmitFile,
   watchPopulateEventsDropDown,
   watchOnDownloadFile,
-  watchLockCalc,
   assignBookingLoan,
   watchLoanviewTombstoneData,
 };
@@ -2645,7 +2543,6 @@ export const combinedSaga = function* combinedSaga() {
     watchOnDownloadFile(),
     watchPopulateEventsDropDown(),
     watchOnWidgetClick(),
-    watchLockCalc(),
     watchAdditionalInfo(),
     watchEvalRowSelect(),
     watchLoanviewTombstoneData(),

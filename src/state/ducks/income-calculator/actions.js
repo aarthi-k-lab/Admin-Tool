@@ -6,6 +6,7 @@ import {
   PROCESS_VALIDATIONS, DUPLICATE_INCOME, FETCH_INCOMECALC_CHECKLIST,
   SET_HISTORY_ITEM,
   CLOSE_INC_HISTORY,
+  LOCK_INCOME_CALCULATION,
 } from './types';
 
 
@@ -32,6 +33,10 @@ const getIncomeCalcChecklist = payload => ({
 const fetchChecklist = payload => ({
   type: FETCH_CHECKLIST,
   payload,
+});
+
+const onLockCalc = () => ({
+  type: LOCK_INCOME_CALCULATION,
 });
 
 const setHistoryItem = payload => ({
@@ -87,6 +92,7 @@ const processValidations = payload => ({
 });
 
 export {
+  onLockCalc,
   closeIncomeHistory,
   processValidations,
   incomeCalcToggleAction,

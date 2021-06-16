@@ -62,7 +62,6 @@ import {
   UNASSIGN_BOOKING_LOAN,
   SET_PAYMENT_DEFERRAL,
   SET_SELECTED_WIDGET,
-  LOCK_INCOME_CALCULATION,
   CLEAR_POPUP_DATA,
   TOGGLE_INCVRFN,
   FETCH_EVAL_CASE,
@@ -85,10 +84,6 @@ const toggleIncomeVerification = visibility => ({
 
 const onClearPopupDataAction = () => ({
   type: CLEAR_POPUP_DATA,
-});
-
-const onLockCalc = () => ({
-  type: LOCK_INCOME_CALCULATION,
 });
 
 const onExpandView = userPayload => ({
@@ -492,7 +487,6 @@ export {
   populateEventsDropdown,
   sendToFEUW,
   setSelectedWidgets,
-  onLockCalc,
   onClearPopupDataAction,
   toggleIncomeVerification,
   assignBookingLoan,

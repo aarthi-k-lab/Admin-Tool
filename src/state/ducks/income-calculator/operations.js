@@ -7,6 +7,7 @@ import {
   setHistoryItem,
   closeIncomeHistory,
   fetchHistoryChecklist,
+  onLockCalc,
 } from './actions';
 
 const enableHistoryView = dispatch => (item) => {
@@ -37,7 +38,10 @@ const incomeCalcWidgetToggle = dispatch => (payload) => {
   dispatch(incomeCalcToggleAction(payload));
 };
 
+const lockCalculation = dispatch => () => dispatch(onLockCalc());
+
 const operations = {
+  lockCalculation,
   incomeCalcWidgetToggle,
   enableHistoryView,
   handleChecklistItemValueChange,

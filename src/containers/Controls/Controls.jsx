@@ -19,7 +19,7 @@ import EndShiftModel from 'models/EndShift';
 import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
-import { selectors as incomeSelectors } from 'ducks/income-calculator';
+import { selectors as incomeSelectors, operations as incomeOperations } from 'ducks/income-calculator';
 import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
 import hotkeys from 'hotkeys-js';
@@ -478,7 +478,7 @@ const mapDispatchToProps = dispatch => ({
   onTrialTask: operations.onTrialTask(dispatch),
   onAssignToMeClick: operations.onAssignToMeClick(dispatch),
   onErrorValidation: operations.onErrorValidation(dispatch),
-  lockCalculation: operations.lockCalculation(dispatch),
+  lockCalculation: incomeOperations.lockCalculation(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

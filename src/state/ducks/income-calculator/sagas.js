@@ -8,7 +8,7 @@ import {
 } from 'redux-saga/effects';
 import * as Api from 'lib/Api';
 import * as R from 'ramda';
-import { selectors as taskSelectors } from 'ducks/tasks-and-checklist';
+import { selectors as taskSelectors, actions as taskActions } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as widgetSelectors } from 'ducks/widgets';
@@ -32,13 +32,16 @@ import {
   SET_MAIN_CHECKLISTID,
   TOGGLE_HISTORY_VIEW,
   FETCH_HISTORY_INFO,
+  LOCK_INCOME_CALCULATION,
 } from './types';
 import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
+  SET_POPUP_DATA,
 } from '../dashboard/types';
 import { SET_SNACK_BAR_VALUES } from '../notifications/types';
 import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCodes';
 import consolidateValidations from '../../../lib/consolidateValidation';
+import { incTypeMap } from '../../../constants/incomeCalc';
 
 function* handleSaveChecklistError(e) {
   yield put({
@@ -411,6 +414,113 @@ function* processValidations() {
   yield put({ type: HIDE_LOADER });
 }
 
+const lockCalculation = function* lockCalculation() {
+  try {
+    const checklistSelectionIsPresent = yield select(taskSelectors.getSelectedChecklistId);
+    yield put({ type: SHOW_LOADER });
+    const feuwChecklistId = yield select(taskSelectors.getProcessId);
+    const consolidatedData = yield select(selectors.getConsolidatedIncome);
+    const borrowerInfo = yield select(selectors.getBorrowers);
+    const borrowerList = yield select(selectors.getBorrowersList);
+    const consolidation = [];
+    R.forEach((item) => {
+      const cnsdtIncome = {};
+      R.forEach((incomeType) => {
+        const incomeData = R.reject(R.isNil, R.flatten(R.pluck(incomeType,
+          R.pluck(item, R.flatten(consolidatedData)))));
+        if (incomeData.length) {
+          cnsdtIncome[incomeType] = incomeData;
+        }
+      }, R.keys(incTypeMap));
+      if (cnsdtIncome) {
+        borrowerInfo.forEach((borr) => {
+          if (R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, item)) {
+            consolidation.push({ borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome });
+          }
+        });
+      }
+    }, borrowerList);
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const taskId = yield select(dashboardSelectors.taskId);
+    const taskCheckListId = yield select(selectors.getProcessId);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const request = {
+      taskId,
+      loanNumber,
+      userPrincipalName,
+      taskCheckListId,
+      calcDateTime: new Date(),
+      feuwChecklistId,
+    };
+    const dbResult = yield call(Api.callPost, '/api/workassign/IncomeCalc/lock/', request);
+    if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+      const response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`, consolidation);
+      if (response) {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Income is Locked successfully in REMEDY',
+            level: 'Success',
+            title: 'Lock Calculation',
+          },
+        });
+        yield put({
+          type: TOGGLE_LOCK_BUTTON,
+          payload: false,
+        });
+
+        const processId = R.path(['response', '_id'], dbResult);
+        yield all([
+          put(taskActions.getTasks()),
+          put(taskActions.getChecklist(checklistSelectionIsPresent)),
+        ]);
+        const payload = {
+          processInstance: processId,
+          isOpen: false,
+        };
+        yield put(actions.getIncomeCalcChecklist(payload));
+      } else {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Income is not Locked in REMEDY, please select "YES" to manually update Remedy and "Retry" to try again',
+            level: 'Failed',
+            title: 'Lock Calculation',
+            showCancelButton: true,
+            confirmButtonText: 'Retry',
+            cancelButtonText: 'Yes',
+            onConfirm: LOCK_INCOME_CALCULATION,
+          },
+        });
+      }
+    } else {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Income Lock failed due to Borrower data discrepency',
+          level: 'Failed',
+          title: 'Lock Calculation',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: e.message,
+        level: 'Failed',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+};
+
+function* watchLockCalc() {
+  yield takeEvery(LOCK_INCOME_CALCULATION, lockCalculation);
+}
+
+
 function* watchfetchChecklist() {
   yield takeEvery(FETCH_CHECKLIST, fetchChecklistDetails);
 }
@@ -460,5 +570,6 @@ export const combinedSaga = function* combinedSaga() {
     watchGetCompanyList(),
     watchDuplicateIncome(),
     watchCloseIncomeHistory(),
+    watchLockCalc(),
   ]);
 };
