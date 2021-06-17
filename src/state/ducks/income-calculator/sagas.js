@@ -73,7 +73,7 @@ function* fetchChecklistDetails(action) {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&aggregation=true&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -197,7 +197,7 @@ function* getTasks() {
       });
       return;
     }
-    const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&forceNoCache=${Math.random()}`);
+    const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&aggregation=true&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
       throw new Error('Api call failed');
@@ -384,12 +384,12 @@ function* processValidations() {
     const rootId = R.prop('_id', checklistData);
     if (rootId) {
       yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj, externalData } });
-      const checklist = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&forceNoCache=${Math.random()}`);
+      const checklist = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&aggregation=true&forceNoCache=${Math.random()}`);
       const additionalData = {
         borrowers,
       };
       const banner = consolidateValidations(checklist, additionalData);
-      const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&forceNoCache=${Math.random()}`);
+      const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&aggregation=true&forceNoCache=${Math.random()}`);
       const data = {
         lastUpdated: `${new Date()}`,
         response,
