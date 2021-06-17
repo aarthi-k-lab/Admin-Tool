@@ -25,6 +25,8 @@ import {
   SET_HISTORY_ITEM,
   SET_MAIN_CHECKLISTID,
   SET_HISTORICAL_BORROWERS,
+  STORE_TASK_VALUE,
+  CLEAR_TASK_VALUE,
 } from './types';
 
 const FAILED = 'failed';
@@ -241,6 +243,26 @@ const reducer = (state = {}, action) => {
         banner: action.payload,
       };
     }
+
+    case STORE_TASK_VALUE: {
+      const { key, value } = action.payload;
+      const { taskValues } = state;
+      return {
+        ...state,
+        taskValues: {
+          ...taskValues,
+          [key]: value,
+        },
+      };
+    }
+
+    case CLEAR_TASK_VALUE: {
+      return {
+        ...state,
+        taskValues: null,
+      };
+    }
+
     default:
       return state;
   }

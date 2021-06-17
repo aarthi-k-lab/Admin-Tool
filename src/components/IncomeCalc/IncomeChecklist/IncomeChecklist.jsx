@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-import { selectors as incomeSelectors } from 'ducks/income-calculator';
+import { selectors as incomeSelectors, operations as incomeOperations } from 'ducks/income-calculator';
 import { operations as taskOperations } from 'ducks/tasks-and-checklist';
 import { operations as dashboardOperations, selectors as dashboardSelector } from 'ducks/dashboard';
 import processItem from 'lib/CustomFunctions';
@@ -83,10 +83,10 @@ class IncomeChecklist extends React.PureComponent {
     return null;
   }
 
-  getMultilineTextValue(id, initialValue) {
+  getMultilineTextValue(id, initialValue, getValueFromStore) {
     const { multilineTextDirtyValues } = this.state;
     const dirtyValue = multilineTextDirtyValues[id];
-    if (dirtyValue === undefined) {
+    if (dirtyValue === undefined && !getValueFromStore) {
       return initialValue;
     }
     return dirtyValue;
@@ -153,11 +153,11 @@ class IncomeChecklist extends React.PureComponent {
     };
   }
 
-  handleTextChange(id, format) {
+  handleTextChange(id) {
     return (event) => {
       const { multilineTextDirtyValues: oldValues } = this.state;
       const { value } = event.target;
-      const multilineTextDirtyValues = R.assoc(id, unformat(value, format), oldValues);
+      const multilineTextDirtyValues = R.assoc(id, value, oldValues);
       this.setState({
         multilineTextDirtyValues,
       });
@@ -165,9 +165,10 @@ class IncomeChecklist extends React.PureComponent {
   }
 
 
-  handleBlur(id, taskCode, format) {
+  handleBlur(id, taskCode, additionalInfo) {
     return (event) => {
-      const { onChange } = this.props;
+      const { format, skipDBSave } = additionalInfo;
+      const { onChange, storeTaskValue } = this.props;
       if (event) {
         const { multilineTextDirtyValues: oldValues } = this.state;
         let value = (
@@ -178,7 +179,11 @@ class IncomeChecklist extends React.PureComponent {
         value = unformat(value, format);
         const dirtyValue = R.isEmpty(value) ? null : value;
         if (R.has(id, oldValues)) {
-          onChange(id, dirtyValue, taskCode);
+          if (!skipDBSave) {
+            onChange(id, dirtyValue, taskCode);
+          } else {
+            storeTaskValue(taskCode, dirtyValue);
+          }
           this.setState({
             multilineTextDirtyValues: R.dissoc(id, oldValues),
           });
@@ -199,7 +204,7 @@ class IncomeChecklist extends React.PureComponent {
     } = ComponentTypes;
     const {
       disabled: disableIncomeCalc, checklistLoadStatus, location, incomeCalcData,
-      isAssigned,
+      isAssigned, taskValues,
     } = this.props;
     const skipSubTask = [TASK_SECTION];
     const children = [];
@@ -242,7 +247,7 @@ class IncomeChecklist extends React.PureComponent {
           element = <TabView key={id} {...props} />;
         } break;
         case TASK_SECTION: {
-          const onChange = this.handleDateChange(id, taskCode);
+          const onChange = this.handleDateChange(id, taskCode, additionalInfo);
           const onDelete = this.handleRemoveTask(id, taskCode);
           const props = {
             title,
@@ -311,17 +316,17 @@ class IncomeChecklist extends React.PureComponent {
           element = (<Dropdown key={id} {...prop} />);
         } break;
         case TEXT: {
-          const { format } = additionalInfo;
-          const refCallback = this.handleBlur(id, taskCode, format);
+          const { format, skipDBSave } = additionalInfo;
+          const refCallback = this.handleBlur(id, taskCode, additionalInfo);
           const onChange = this.handleTextChange(id, format);
-          const getValue = this.getMultilineTextValue(id, value);
+          const getValue = this.getMultilineTextValue(id, value, skipDBSave);
           const prop = {
             onBlur: refCallback,
             disabled,
             onChange,
             componentTitle: title,
             type: TEXT,
-            value: getValue,
+            value: skipDBSave && getValue === undefined ? R.propOr('', taskCode, taskValues) : getValue,
             source,
             additionalInfo,
             subTasks,
@@ -417,6 +422,7 @@ IncomeChecklist.defaultProps = {
   disabled: false,
   checklistLoadStatus: null,
   isAssigned: false,
+  taskValues: {},
 };
 
 NumberFormatCustom.propTypes = {
@@ -464,6 +470,8 @@ IncomeChecklist.propTypes = {
   rootTaskId: PropTypes.string,
   ruleResultFromTaskTree: PropTypes.arrayOf(PropTypes.shape),
   selectedWidget: PropTypes.string.isRequired,
+  storeTaskValue: PropTypes.func.isRequired,
+  taskValues: PropTypes.shape(),
   title: PropTypes.string.isRequired,
   toggleIncvrfn: PropTypes.func.isRequired,
 };
@@ -480,11 +488,13 @@ const mapStateToProps = state => ({
   incomeCalcData: incomeSelectors.getIncomeCalcData(state),
   checklistLoadStatus: incomeSelectors.getIncomeChecklistLoadStatus(state),
   isAssigned: dashboardSelector.isAssigned(state),
+  taskValues: incomeSelectors.getTaskValues(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   processAction: taskOperations.preProcessChecklistItems(dispatch),
   toggleIncvrfn: dashboardOperations.toggleIncvrfn(dispatch),
+  storeTaskValue: incomeOperations.storeTaskValue(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(IncomeChecklist);

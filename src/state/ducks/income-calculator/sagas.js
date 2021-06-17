@@ -33,6 +33,7 @@ import {
   TOGGLE_HISTORY_VIEW,
   FETCH_HISTORY_INFO,
   LOCK_INCOME_CALCULATION,
+  CLEAR_TASK_VALUE,
 } from './types';
 import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
@@ -330,6 +331,7 @@ function* addContributor(action) {
     const rootIdFEUW = yield select(taskSelectors.getRootTaskId);
     const dbRecCreatedByUser = R.path(['userDetails', 'email'], user);
     const taskData = R.flatten(dataToFetch.map(taskCode => getTaskFromProcess(data, 'taskBlueprintCode', taskCode)));
+    const taskValues = yield select(selectors.getTaskValues);
     let contributorData = {};
     taskData.forEach((task) => {
       contributorData = { ...contributorData, [R.path(['taskBlueprint', 'additionalInfo', 'fieldName'], task)]: task.value };
@@ -344,6 +346,7 @@ function* addContributor(action) {
     const payload = {
       contributorData: {
         ...contributorData,
+        taxpyrIdVal: R.propOr('', 'INC_ADD_CHK3', taskValues),
         loanNumber,
         dbRecCreatedByUser,
         borrowerPstnNumber: maxPositionNum + 1,
@@ -358,6 +361,7 @@ function* addContributor(action) {
       yield call(fetchChecklistDetails, { payload: processId });
       yield put({ type: SET_BORROWERS_DATA, payload: borrowersResponse });
     }
+    yield put({ type: CLEAR_TASK_VALUE });
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({});
@@ -370,7 +374,7 @@ function* gatherDataForValidation() {
   const externalData = {
     investorName: R.pathOr(null, ['InvestorHierarchy', 'levelName'], sodsData),
   };
-  return { ...externalData };
+  return externalData;
 }
 
 function* processValidations() {

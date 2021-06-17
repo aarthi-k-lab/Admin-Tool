@@ -7,6 +7,7 @@ import {
   SET_HISTORY_ITEM,
   CLOSE_INC_HISTORY,
   LOCK_INCOME_CALCULATION,
+  STORE_TASK_VALUE,
 } from './types';
 
 
@@ -91,6 +92,11 @@ const processValidations = payload => ({
   payload,
 });
 
+const storeTaskValueAction = payload => ({
+  type: STORE_TASK_VALUE,
+  payload,
+});
+
 export {
   onLockCalc,
   closeIncomeHistory,
@@ -107,4 +113,5 @@ export {
   toggleHistoryView,
   setHistoryItem,
   fetchHistoryChecklist,
+  storeTaskValueAction,
 };
