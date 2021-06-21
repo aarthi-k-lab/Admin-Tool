@@ -32,7 +32,7 @@ function CustomButton(props) {
       >
         {title}
       </Button>
-      { hasTooltip && (
+      {hasTooltip && (
         <Tooltip
           placement="top"
           title={(
@@ -93,7 +93,7 @@ class FHLMCDataInsight extends React.PureComponent {
       showConfirmButton,
     };
     onSubmitToFhlmcRequest(selectedRequestType, portfolioCode, sweetAlertPayload);
-    this.setState({ showSubmitFhlmc: false, showMessageProp: true });
+    this.setState({ showMessageProp: true });
   }
 
   handleClick = (event) => {

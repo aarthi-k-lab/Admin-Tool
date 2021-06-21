@@ -2170,7 +2170,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
         caseData.message = JSON.stringify(cases);
         return caseData;
       }, responseArray);
-      if (!R.isEmpty(nonValidResponseObjects)) {
+      if (!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false)) {
         userNotification = {
           message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
           level: ERROR,
