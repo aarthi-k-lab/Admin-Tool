@@ -83,7 +83,7 @@ class FhlmcResolve extends React.PureComponent {
 
   handleInputChange = (event) => {
     const { selectedRequestType, idType } = this.state;
-    const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]/;
+    const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]|^[,]/;
     if (event.target.value === '' || !re.test(event.target.value)) {
       this.setState({
         ids: event.target.value,
