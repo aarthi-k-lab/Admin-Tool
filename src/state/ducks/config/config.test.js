@@ -10,6 +10,7 @@ import {
   POWER_BI_CONSTANTS,
   GET_FEATURES_SAGA,
   SET_FEATURES,
+  TOGGLE_HIDDEN_ROUTE,
 } from './types';
 
 
@@ -102,6 +103,8 @@ describe('Config actions', () => {
       features: {
         taskPane: true,
       },
+      hiddenRoutes: [
+      ],
     };
     const saga = cloneableGenerator(TestExports.fetchFeatureConfig)(payload);
     it('should call config service', () => {
@@ -110,6 +113,12 @@ describe('Config actions', () => {
     it('toggle azure search', () => {
       expect(saga.next(payload).value).toEqual(put({
         type: TOGGLE_AZURE_SEARCH,
+      }));
+    });
+    it('should update hideIcons state', () => {
+      expect(saga.next(payload).value).toEqual(put({
+        type: actionTypes.TOGGLE_HIDDEN_ROUTE,
+        payload: payload.hiddenRoutes,
       }));
     });
     it('should update features state', () => {

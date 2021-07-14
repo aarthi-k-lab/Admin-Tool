@@ -68,6 +68,7 @@ const getChecklistItems = state => R.compose(
     || !(R.pathOr(true, ['taskBlueprint', 'additionalInfo', 'isEnabled'], checklistItem))
     || R.path(['tasksAndChecklist', 'checklistLoadingStatus'], state) === 'loading',
     isVisible: R.propOr(true, 'visibility', checklistItem),
+    processInstance: R.propOr(null, 'processInstance', checklistItem),
     options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
     taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
     title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
@@ -200,6 +201,16 @@ const getMiscRules = (item, result) => {
   return (R.is(Array, R.prop('options', item)) && !R.isEmpty(R.prop('options', item)) && R[checkFn](option => getRuleResult(option) === result, R.prop('options', item)));
 };
 
+const getFailureComment = (ruleTask) => {
+  if (!R.isNil(R.prop('value', ruleTask))) {
+    const ruleTitle = R.pathOr('', ['taskBlueprint', 'description'], ruleTask);
+    const comment = R.propOr('', 'value', ruleTask);
+    const ruleType = R.pathOr('', ['taskBlueprint', 'taskCode'], ruleTask).includes('PRE') ? 'Pre Check' : 'Post Check';
+    return `${ruleType} - ${ruleTitle} - ${comment}`;
+  }
+  return null;
+};
+
 const getPassedRules = (state) => {
   const passed = R.compose(
     R.filter(item => (R.path(getPath(item, 'options', 'Check'), item) === TRUE) || getMiscRules(item, TRUE)),
@@ -254,8 +265,27 @@ const getPrevDocsInChecklistId = state => R.pathOr('', ['tasksAndChecklist', 'pr
 const getPrevDocsInRootTaskId = state => R.pathOr('', ['tasksAndChecklist', 'prevRootTaskId'], state);
 const getRuleResultFromTaskTree = state => R.path(['value', 'ruleResult'], R.head(R.pathOr([], ['subTasks'], R.find(R.propEq('taskBlueprintCode', 'SLAPREM'))(R.pathOr([], ['tasksAndChecklist', 'taskTree', 'subTasks'], state)))));
 
+const getSLFailureComments = state => R.compose(
+  R.reject(R.isNil),
+  R.map(item => getFailureComment(item)),
+  R.flatten,
+  R.pluck('subTasks'),
+  R.flatten,
+  R.pluck('subTasks'),
+  R.pathOr({}, ['tasksAndChecklist', 'taskTree', 'subTasks']),
+)(state);
+
+const getChecklist = state => R.pathOr(null, ['tasksAndChecklist', 'checklist'], state);
+
+const getTasksAndChecklist = state => R.propOr({}, 'tasksAndChecklist', state);
+
+const getLastMainChecklistRefresh = state => R.pathOr(null, ['tasksAndChecklist', 'lastUpdated'], state);
+
 
 const selectors = {
+  getLastMainChecklistRefresh,
+  getTasksAndChecklist,
+  getChecklist,
   getRuleResultFromTaskTree,
   getChecklistItems,
   getChecklistLoadStatus,
@@ -304,6 +334,7 @@ const selectors = {
   getPrevDocsInChecklistId,
   getPrevDocsInRootTaskId,
   getRulesResponse,
+  getSLFailureComments,
 };
 
 export default selectors;

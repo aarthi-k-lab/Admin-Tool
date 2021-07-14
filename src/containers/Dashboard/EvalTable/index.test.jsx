@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { TestHooks } from './EvalTableCell';
 
 
-describe.only('Eval Table Cell ', () => {
+describe('Eval Table Cell ', () => {
   it('shows Action button when passed a valid value ', () => {
     const { EvalTableCell } = TestHooks;
     const user = {

@@ -11,3 +11,4 @@ export const DOCS_IN = 'docsin';
 export const BOOKING = 'booking';
 export const COVIUS = 'docgenvendor';
 export const COVIUS_MGR = 'docgenvendor-mgr';
+export const FHLMCRESOLVE = 'fhlmcresolve';

@@ -1,0 +1,15 @@
+.table-container {
+    display: flex;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+  
+  .height-limiter {
+    flex-basis: 100%;
+    width: 100%;
+  }
+  
+  .table {
+    flex-basis: 80%;
+    text-align: left !important;
+  }

@@ -1,16 +1,10 @@
-.component-selected {
+.component {
   width: 4.8rem;
   height: 4rem;
   cursor: pointer;
-  background: #d7d8d9;
+  
 }
 
-.component-not-selected {
-  width: 4.8rem;
-  height: 4rem;
-  cursor: pointer;
-  background:  rgb(242, 242, 242);
-}
 
 .history {
   margin-right: 0.2rem !important;

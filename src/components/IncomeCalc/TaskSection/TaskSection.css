@@ -1,0 +1,379 @@
+.radio-control-label.radio-control-label {
+    color: #000;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 1rem 1rem;
+}
+
+.we-heading {
+    color: #000;
+    font-weight: 510 !important;
+    font-size: 1.2rem !important;
+    margin-left: 0.5rem !important;
+}
+
+.header-placeholder {
+    color: #c6c6c6;
+    font-size: 15px;
+    padding: 1rem 1.5rem;
+}
+
+.displayInRow {
+    display: flex;
+}
+
+.inRowPadding {
+    display: flex;
+    padding: 0rem 1.5rem 1.5rem 1.5rem,
+}
+
+.payFreq {
+    display: flex;
+    align-items: baseline;
+}
+
+.cnsdtIncome{
+ width: 27rem;
+ height: 51rem;
+ margin-left: 2rem;
+ align-items: center;
+}
+
+.parentDiv {
+    border-radius: 0.5rem;
+    box-shadow: 0rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.wageEarnings {
+    margin: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+.rental-income-sect {
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+    margin: 1.5rem;
+}
+
+.rental-income-sect-icon {
+    float: right;
+}
+
+.we-title {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.bankStatement {
+    margin: 1rem 1.5rem;
+}
+
+.grossAvg {
+    margin: 1rem 1.5rem;
+}
+
+.UnEmploymentAmt {
+    background: rgb(242, 242, 242) !important;
+    margin: 1rem 1.5rem;
+}
+
+
+.grossYtd {
+    margin: 1rem 1.5rem;
+}
+
+.grossBase {
+    margin: 1rem 1.5rem;
+}
+
+.inc-calc-borr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+.inc-calc-borr-item{
+    padding: 1rem 0 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    float: right;
+}
+
+.sect-title-delete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+
+.inc-calc-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   margin-top: 1.5rem;
+   min-height: 38.5rem;
+   text-align: center;
+}
+
+.no-inc {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    min-height: 38.5rem;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.ri-total-income {
+    display: flex;
+    margin: 1rem 1.5rem;
+    background-color: #eee !important;
+    justify-content: space-between;
+    padding: 0rem 1.5rem;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.add-contrib-grid {
+    margin: 0rem 15rem;
+}
+
+.default-grid {
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.inc-add-action{
+    margin-top: 1rem;
+}
+
+.add-contrib-header {
+    color: #000 !important;
+    font-size: 1.2rem !important;
+    font-weight: 510 !important;
+}
+
+.rental-address {
+
+}
+
+.pitia-sect {
+    display: flex;
+    align-items: center;
+    margin: 1rem 4rem;
+}
+
+
+.ri-pitia-sect {
+    padding-bottom: 1rem;
+    margin: 1rem 1.5rem;
+}
+
+.add-contrib-item {
+    display: flex;
+    align-items: center;
+    margin-left: 11.5rem;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+}
+
+.add-contrib-sect {
+    min-height: 44.1rem;
+}
+
+.rental-address-wrapper{
+    margin: 1rem 2rem;
+    padding: 1rem;
+    border-radius: 0.125rem;
+    box-shadow: 0rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    background-color: #eee;
+    width: 40rem !important;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.rental-address-icon {
+    float: right;
+    padding-right: 1.5rem !important;
+}
+
+.rental-text-sect {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    margin-left: 2rem;
+}
+
+.mrla-sect {
+    display: flex;
+    align-items: center;
+    margin: 2rem 0rem 2rem 2rem;
+}   
+
+.displayInFlex {
+    display: flex;
+}
+
+.ri-title {
+    padding-bottom: 1rem;
+}
+
+.ri-title-item {
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: 1.5rem;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.rental-share-grid {
+    padding: 1rem;
+}
+
+.rental-share-grid-item {
+    display: flex;
+    align-items: center;
+}
+
+.ri-share-sect-title { 
+
+}
+
+.ri-share-sect-header {
+    color: #000;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    padding-left: 1.5rem;
+}
+
+
+.ic-ri-sect {
+    padding-top:1rem;
+}
+
+.self-income-sect {
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+    margin: 1.5rem;
+}
+
+.ic-se-sect {
+    padding-top:1rem;
+}
+
+.self-text-sect {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 2rem;
+}
+
+.self-address-wrapper {
+    margin: 1rem 2rem 1.5rem;
+    padding: 1rem;
+    border-radius: 0.125rem;
+    box-shadow: 0rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    background-color: #eee;
+    width: 40rem !important;
+    display: flex;
+    flex-direction: row-reverse;    
+}
+
+.se-total-income {
+    display: flex;
+    margin: 1rem 1.5rem;
+    background-color: #eee !important;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.ri-title-heading {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+
+}
+
+.cnsdt-income {
+ background-color: #014260;   
+ color: #ffffff;
+ padding: 1rem 0rem 2rem 0rem;
+}
+
+.cnsdt-accordian-details {
+    background-color: #eee;
+}
+
+.cnsdt-accordian-label {
+    text-transform: capitalize ;
+    font-size: 0.75rem ;
+    margin:0;
+}
+
+
+.cnsdt-accordian-summary {
+    display: flex !important; 
+    justify-content: space-around !important;
+    width: 100%;
+    min-height: 2rem;
+
+}
+
+.cnsdt-accordian-labelValue {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 450;
+}
+
+.box{
+    height: 1rem;
+    width: 1.2rem;
+    font-size: 0.75rem;
+    color: white;
+    background-color:#F03858;
+    display: inline-block;
+    margin-left: 0.5rem;
+    text-align: center;
+    border-radius: 1px;
+}
+
+.box1{
+    height: 1rem;
+    width: 1.2rem;
+    font-size: 0.75rem;
+    color: white;
+    background-color: #ffa400;
+    display: inline-block;
+    margin-left: 0.5rem;
+    text-align: center;
+    border-radius: 1px;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 2rem;
+}
+
+.no-income-sect {
+    min-height: 10rem;
+}
+
+.chevron-left {
+    float: right;
+    padding-right: 1.5rem !important;
+}
+
+.default-grid-label-spacing {
+    margin: 0;
+    padding-right: 5rem;
+}
+
+.fixed-income-net-value {
+    margin-right: -4px;
+}

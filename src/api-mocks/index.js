@@ -14,7 +14,11 @@ function mock() {
     groupName: 'docgenvendor'
   }, {
     groupName: 'docgenvendor-mgr'
-  },{
+  },
+  {
+    groupName: 'fhlmcresolve'
+  },
+  {
     groupName: 'util'
   }, {
     groupName: 'booking'

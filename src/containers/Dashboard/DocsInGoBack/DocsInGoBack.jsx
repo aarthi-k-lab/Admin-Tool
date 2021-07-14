@@ -11,16 +11,17 @@ import { selectors as loginSelectors } from 'ducks/login';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
 import AdditionalInfo from 'containers/AdditionalInfo';
+import { selectors as widgetsSelectors } from 'ducks/widgets';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
-import widgets from '../../../constants/widget';
+import { HISTORY, ADDITIONAL_INFO } from '../../../constants/widgets';
+
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import './DocsInGoBack.css';
 
 class DocsInGoBack extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.handleAIChange = this.handleAIChange.bind(this);
     const { onCleanResult } = props;
     onCleanResult();
   }
@@ -55,24 +56,9 @@ class DocsInGoBack extends React.PureComponent {
     }
   }
 
-  handleAIChange = (value, widgetId) => {
-    const {
-      onAdditionalInfoSelect, isAdditionalInfoOpen, isHistoryOpen,
-      onHistorySelect, onAdditionalInfo, LoanNumber,
-    } = this.props;
-    if (R.equals(widgetId, widgets.additionalInfo)) {
-      onAdditionalInfoSelect(!isAdditionalInfoOpen);
-      onHistorySelect(false);
-      if (!isAdditionalInfoOpen) onAdditionalInfo(LoanNumber);
-    } else if (R.equals(widgetId, widgets.history)) {
-      onHistorySelect(!isHistoryOpen);
-      onAdditionalInfoSelect(false);
-    }
-  }
-
   render() {
     const {
-      inProgress, user, isAdditionalInfoOpen, isHistoryOpen,
+      inProgress, user, openWidgetList,
     } = this.props;
     const showButton = user.groupList.includes('docsin-mgr');
     const title = 'Send Back Docs In';
@@ -91,7 +77,7 @@ class DocsInGoBack extends React.PureComponent {
           />
         </ContentHeader>
         <Tombstone />
-        {isAdditionalInfoOpen && (
+        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
           <div styleName="bookingWidget">
             <span styleName="widgetTitle">
               ADDITIONAL INFO
@@ -99,9 +85,9 @@ class DocsInGoBack extends React.PureComponent {
           </div>
         )
         }
-        <WidgetBuilder triggerAI={this.handleAIChange} />
-        { isAdditionalInfoOpen && <AdditionalInfo />}
-        { isHistoryOpen && <MilestoneActivity />}
+        <WidgetBuilder page="DOCSIN_GOBACK" />
+        { R.contains(ADDITIONAL_INFO, openWidgetList) && <AdditionalInfo />}
+        { R.contains(HISTORY, openWidgetList) && <MilestoneActivity />}
         <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
           {(resultOperation && resultOperation.status)
             ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
@@ -115,16 +101,15 @@ class DocsInGoBack extends React.PureComponent {
 
 DocsInGoBack.defaultProps = {
   inProgress: false,
-  isAdditionalInfoOpen: false,
   resultOperation: { level: '', status: '' },
   AppName: 'CMOD',
   ProcIdType: 'ProcessId',
   groupName: 'DOCS_IN_BACK',
   onCleanResult: () => {},
-  isHistoryOpen: false,
   // location: {
   //   pathname: '',
   // },
+  openWidgetList: [],
 };
 
 DocsInGoBack.propTypes = {
@@ -133,17 +118,10 @@ DocsInGoBack.propTypes = {
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
-  isAdditionalInfoOpen: PropTypes.bool,
-  // location: PropTypes.shape({
-  //   pathname: PropTypes.string,
-  // }),
-  isHistoryOpen: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
-  onAdditionalInfo: PropTypes.func.isRequired,
-  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onCleanResult: PropTypes.func,
-  onHistorySelect: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   ProcIdType: PropTypes.string,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
@@ -163,6 +141,7 @@ DocsInGoBack.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   inProgress: selectors.inProgress(state),
   user: loginSelectors.getUser(state),
   EvalId: selectors.evalId(state),
@@ -170,15 +149,10 @@ const mapStateToProps = state => ({
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
   resultOperation: selectors.resultOperation(state),
-  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
-  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
-  onAdditionalInfo: operations.onAdditionalInfoClick(dispatch),
-  onAdditionalInfoSelect: operations.onAdditionalInfoSelect(dispatch),
-  onHistorySelect: operations.onHistorySelect(dispatch),
 });
 
 const DocsInGoBackContainer = connect(mapStateToProps, mapDispatchToProps)(DocsInGoBack);

@@ -36,7 +36,7 @@ const Row = (props) => {
             <TableCell
               align="center"
               onClick={() => setOpen(!open)}
-              style={{ color: 'lightseagreen', whiteSpace: 'nowrap' }}
+              style={{ color: 'lightseagreen', whiteSpace: 'nowrap', cursor: 'pointer' }}
             >
               {open ? 'Hide History' : 'Show History '}
             </TableCell>

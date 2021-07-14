@@ -6,7 +6,7 @@ import {
   endShift,
   onExpandView,
   clearDisposition,
-  clearCoviusData,
+  clearData,
   clearFirstVisit,
   getNext,
   searchLoan,
@@ -55,15 +55,27 @@ import {
   openSweetAlertAction,
   closeSweetAlertAction,
   setCoviusIndexAction,
-  widgetClickAction,
-  unassignWidgetLoan,
-  widgetToggle,
+  setSelectedWidgets,
+  onClearPopupDataAction,
+  toggleIncomeVerification,
   additionalInfo,
+  assignBookingLoan,
   evalSelectRow,
-  setAdditionalInfoSelected,
-  setHistorySelected,
   setTombstoneData,
+  onFhlmcCasesBulkSubmit,
+  populateInvestorEventsDropdown,
+  onSubmitToFhlmcAction,
+  dismissUserNotification,
+  unassignBookingLoan,
 } from './actions';
+
+import {
+  resetWidgetData,
+} from '../widgets/actions';
+import {
+  resetIncomeChecklistData,
+  processValidations,
+} from '../income-calculator/actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -87,10 +99,12 @@ const onClearDisposition = dispatch => () => dispatch(clearDisposition());
 
 const onClearPostModEndShitf = dispatch => () => dispatch(clearPostModEndShitf());
 
-const onResetCoviusData = dispatch => () => dispatch(clearCoviusData());
+const onResetData = dispatch => () => dispatch(clearData());
 
 const onAutoSave = dispatch => (taskStatus) => {
-  dispatch(unassignWidgetLoan());
+  dispatch(resetWidgetData());
+  dispatch(resetIncomeChecklistData());
+  dispatch(unassignBookingLoan());
   dispatch(autoSave(taskStatus));
 };
 
@@ -139,10 +153,6 @@ const onUnassignLoan = dispatch => () => {
   dispatch(unassignLoan());
 };
 
-const onUnassignBookingLoan = dispatch => () => {
-  dispatch(unassignWidgetLoan());
-};
-
 const onAssignLoan = dispatch => () => {
   dispatch(assignLoan());
 };
@@ -173,7 +183,7 @@ const onGetGroupName = dispatch => (payload) => {
 };
 
 const onWidgetClick = dispatch => (payload) => {
-  dispatch(widgetClickAction(payload));
+  dispatch(assignBookingLoan(payload));
 };
 
 const loadTrials = dispatch => evalId => dispatch(loadTrialsAction(evalId));
@@ -214,8 +224,22 @@ const onCoviusCasesSubmit = dispatch => (payload) => {
   dispatch(onCoviusBulkSubmit(payload));
 };
 
+const onFhlmcCasesSubmit = dispatch => (payload) => {
+  dispatch(onFhlmcCasesBulkSubmit(payload));
+};
+
+const onSubmitToFhlmcRequest = dispatch => (selectedRequestType,
+  portfolioCode, sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
+  dispatch(onSubmitToFhlmcAction(selectedRequestType, portfolioCode));
+};
+
 const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
+};
+
+const openSweetAlert = dispatch => (sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
 };
 
 const setPageType = dispatch => (payload) => {
@@ -275,6 +299,10 @@ const populateEvents = dispatch => () => {
   dispatch(populateEventsDropdown());
 };
 
+const populateInvestorEvents = dispatch => () => {
+  dispatch(populateInvestorEventsDropdown());
+};
+
 const submitToCovius = dispatch => (eventCode, sweetAlertPayload) => {
   dispatch(openSweetAlertAction(sweetAlertPayload));
   dispatch(submitToCoviusAction(eventCode));
@@ -288,8 +316,28 @@ const setCoviusIndex = dispatch => (payload) => {
   dispatch(setCoviusIndexAction(payload));
 };
 
-const onWidgetToggle = dispatch => (payload) => {
-  dispatch(widgetToggle(payload));
+const handleSelectedWidgets = dispatch => payload => (
+  dispatch(setSelectedWidgets(payload))
+);
+
+const onErrorValidation = dispatch => () => {
+  dispatch(processValidations());
+};
+
+const dispatchAction = dispatch => (type, payload) => {
+  dispatch(onClearPopupDataAction());
+  dispatch({
+    type,
+    payload,
+  });
+};
+
+const clearPopupData = dispatch => () => {
+  dispatch(onClearPopupDataAction());
+};
+
+const toggleIncvrfn = dispatch => (visibility) => {
+  dispatch(toggleIncomeVerification(visibility));
 };
 
 const onAdditionalInfoClick = dispatch => (loanNumber) => {
@@ -300,16 +348,23 @@ const onEvalRowSelect = dispatch => (evalId, index) => {
   dispatch(evalSelectRow({ evalId, index }));
 };
 
-const onAdditionalInfoSelect = dispatch => (payload) => {
-  dispatch(setAdditionalInfoSelected(payload));
+const onUnassignBookingLoan = dispatch => () => {
+  dispatch(unassignBookingLoan());
 };
 
-const onHistorySelect = dispatch => (payload) => {
-  dispatch(setHistorySelected(payload));
+
+const onDismissUserNotification = dispatch => () => {
+  dispatch(dismissUserNotification());
 };
 
 const operations = {
-  onWidgetToggle,
+  openSweetAlert,
+  onDismissUserNotification,
+  onSubmitToFhlmcRequest,
+  populateInvestorEvents,
+  toggleIncvrfn,
+  clearPopupData,
+  dispatchAction,
   setCoviusIndex,
   openSweetAlertAction,
   closeSweetAlert,
@@ -317,7 +372,7 @@ const operations = {
   clearEvalResponse,
   onAutoSave,
   onClearDisposition,
-  onResetCoviusData,
+  onResetData,
   onExpand,
   onEndShift,
   onDispositionSave,
@@ -369,11 +424,12 @@ const operations = {
   populateEvents,
   onSendToFEUW,
   onWidgetClick,
+  handleSelectedWidgets,
+  onErrorValidation,
   onAdditionalInfoClick,
   onEvalRowSelect,
-  onAdditionalInfoSelect,
-  onHistorySelect,
   setTombstoneDataForLoanView,
+  onFhlmcCasesSubmit,
 };
 
 export default operations;

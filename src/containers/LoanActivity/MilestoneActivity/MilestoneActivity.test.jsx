@@ -18,7 +18,6 @@ describe('<MilestoneActivity />', () => {
   }];
   const inProgress = false;
   const inSearchPage = false;
-  const isHistoryOpen = true;
   const loadMlstn = jest.fn();
   const history = [];
   const tasks = [{
@@ -38,7 +37,6 @@ describe('<MilestoneActivity />', () => {
     history,
     inProgress,
     inSearchPage,
-    isHistoryOpen,
     loadMlstn,
     tasks,
   };

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   select,
   take,
@@ -14,6 +15,13 @@ import { actions as tombstoneActions } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import {
+  actions as widgetActions,
+  selectors as widgetSelectors,
+} from 'ducks/widgets/index';
+import {
+  actions as incomeActions,
+} from 'ducks/income-calculator/index';
+import {
   actions as checklistActions,
   selectors as checklistSelectors,
 } from 'ducks/tasks-and-checklist/index';
@@ -22,16 +30,21 @@ import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import {
-  ERROR, SUCCESS,
+  ERROR, SUCCESS, FAILED,
 } from 'constants/common';
+import { closeWidgets } from 'components/Widgets/WidgetSelects';
+import { INCOME_CALCULATOR } from 'constants/widgets';
+import { setDisabledWidget } from 'ducks/widgets/actions';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
 }
   from '../comments/types';
 import selectors from './selectors';
-// import { mockData } from '../../../containers/LoanActivity/LoanActivity';
+
 import {
+  SET_FHLMC_UPLOAD_RESULT,
+  SUBMIT_TO_FHLMC,
   SET_COVIUS_TABINDEX,
   STORE_EVALID_RESPONSE,
   INSERT_EVALID,
@@ -65,6 +78,8 @@ import {
   USER_NOTIF_MSG,
   SEARCH_SELECT_EVAL,
   CLEAR_ERROR_MESSAGE,
+  SAVE_INVESTOR_EVENTS_DROPDOWN,
+  POPULATE_INVESTOR_EVENTS_DROPDOWN,
   // GET_LOAN_ACTIVITY_DETAILS,
   LOAD_TRIALS_SAGA,
   LOAD_TRIALHEADER_RESULT,
@@ -82,8 +97,9 @@ import {
   CONTINUE_MY_REVIEW_RESULT,
   COMPLETE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
-  SET_COVIUS_BULK_UPLOAD_RESULT,
+  SET_BULK_UPLOAD_RESULT,
   PROCESS_COVIUS_BULK,
+  PROCESS_FHLMC_RESOSLVE_BULK,
   SET_ADD_DOCS_IN,
   SET_ADD_BULK_ORDER_RESULT,
   SET_ENABLE_SEND_BACK_DOCSIN,
@@ -112,20 +128,21 @@ import {
   SEND_TO_FEUW_SAGA,
   SEND_TO_COVIUS,
   DISABLE_SEND_TO_FEUW,
-  WIDGET_CLICK,
+  ASSIGN_BOOKING_LOAN,
   SAVE_EVAL_FOR_WIDGET,
-  UNASSIGN_WIDGET_LOAN,
+  UNASSIGN_BOOKING_LOAN,
   SAVE_MAIN_CHECKLIST,
-  TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
   EVAL_CASE_DETAILS,
-  ADDITIONAL_INFO_CLICK,
   EVAL_ROW_CLICK,
   SET_CASE_DETAILS,
   SET_EVAL_INDEX,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
   SAVE_EVAL_LOANVIEW,
+  SET_USER_NOTIFICATION,
+  DISMISS_USER_NOTIFICATION,
+  FETCH_EVAL_CASE,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -141,6 +158,11 @@ import {
   RESET_DATA,
 } from '../tasks-and-checklist/types';
 
+import {
+  SET_BORROWERS_DATA,
+  SET_INCOMECALC_DATA,
+} from '../income-calculator/types';
+
 const {
   Messages:
   {
@@ -153,6 +175,7 @@ const {
     MSG_SENDTOCOVIUS_FAILED,
   },
 } = DashboardModel;
+
 
 const setExpandView = function* setExpand() {
   yield put({
@@ -294,6 +317,17 @@ const searchLoan = function* searchLoan(loanNumber) {
           payload: { statusCode: 404 },
         });
       }
+      const openWidgetList = yield select(widgetSelectors.getOpenWidgetList);
+      const widgetsToBeClosed = {
+        openWidgetList,
+        page: 'SEARCH',
+        closingWidgets: openWidgetList,
+      };
+      const payload = {
+        currentWidget: '',
+        openWidgetList: closeWidgets(widgetsToBeClosed),
+      };
+      yield put(widgetActions.widgetToggle(payload));
     } catch (e) {
       yield put({
         type: SEARCH_LOAN_RESULT,
@@ -443,17 +477,6 @@ function* fetchChecklistDetailsForSearchResult(checklistId) {
   yield call(fetchChecklistDetails, checklistId);
 }
 
-// function* fetchLoanActivityDetails(evalDetails) {
-//   const { payload } = evalDetails;
-//   const groupList = yield select(loginSelectors.getGroupList);
-//   const hasLoanActivityAccess = RouteAccess.hasLoanActivityAccess(groupList);
-//   if (hasLoanActivityAccess) {
-//     // Here we need to get data from actual api
-//     const response = mockData(R.equals(payload.taskName,
-//  'Trial Modification') ? 'Trial' : payload.taskName);
-//     yield put({ type: GET_LOAN_ACTIVITY_DETAILS, payload: response });
-//   }
-// }
 function* getResolutionDataForEval(evalId) {
   try {
     const response = yield call(Api.callGet, `/api/tkams/fetchResolutionIds/${evalId}`);
@@ -484,6 +507,16 @@ function* selectEval(searchItem) {
   const { taskId: bookingTaskId } = evalDetails;
   yield put({ type: SAVE_TASKID, payload: bookingTaskId });
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
+  const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
+  yield put(incomeActions.resetIncomeChecklistData());
+  yield put(widgetActions.resetWidgetData());
+  if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
+    yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+    yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
+  }
+  if (!R.propOr(false, 'hasIncomeCalcForProcess', evalDetails)) {
+    yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+  }
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
   const { userDetails } = user;
@@ -582,7 +615,7 @@ function* setTombstoneDataForLoanview(searchItem) {
   }
 }
 
-function* handleWidget() {
+function* assignBookingLoan() {
   try {
     yield put({ type: SHOW_LOADER });
     const evalId = yield select(selectors.evalId);
@@ -702,6 +735,36 @@ const continueMyReviewResult = function* continueMyReviewResult(taskStatus) {
   }
 };
 
+const getCommentPayload = function* buildCommentPayload(comment, disposition) {
+  const loanNumber = yield select(selectors.loanNumber);
+  const user = yield select(loginSelectors.getUser);
+  const groupName = yield select(selectors.groupName);
+  const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
+  const eventName = !R.isNil(page) ? page.taskCode : '';
+  const taskName = !R.isNil(page) ? page.task : '';
+  const taskId = yield select(selectors.taskId);
+  const taskIterationCounter = yield select(selectors.taskIterationCounter);
+  const processId = yield select(selectors.processId);
+  const commentPayload = {
+    applicationName: 'CMOD',
+    loanNumber,
+    processIdType: 'WF_PRCS_ID',
+    processId,
+    eventName,
+    comment,
+    userName: user.userDetails.name,
+    createdDate: new Date().toJSON(),
+    commentContext: JSON.stringify({
+      TASK: taskName,
+      TASK_ID: taskId,
+      TASK_ACTN: disposition,
+      DSPN_IND: 1,
+      TASK_ITRN_CNTR: taskIterationCounter,
+    }),
+  };
+  return commentPayload;
+};
+
 function* completeMyReviewResult(action) {
   try {
     const disposition = R.path(['payload'], action);
@@ -720,6 +783,11 @@ function* completeMyReviewResult(action) {
       type: COMPLETE_MY_REVIEW_RESULT,
       payload: { error: R.has(ERROR, response) },
     });
+    const comments = yield select(checklistSelectors.getSLFailureComments);
+    yield all(comments.map(function* postcomment(comment) {
+      const commentPayload = yield* getCommentPayload(comment, 'Complete My Review');
+      yield put({ type: POST_COMMENT_SAGA, payload: commentPayload });
+    }));
   } catch (e) {
     yield put({ type: COMPLETE_MY_REVIEW_RESULT, payload: false });
   }
@@ -869,7 +937,7 @@ function getEvalPayload(taskDetails) {
   };
 }
 
-function getCommentPayload(taskDetails) {
+function getCommentPayloadFromTaskDetails(taskDetails) {
   const loanNumber = getLoanNumber(taskDetails);
   const processId = getProcessId(taskDetails);
   const evalId = getEvalId(taskDetails);
@@ -1084,6 +1152,13 @@ function* getNext(action) {
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
+      const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
+      if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], taskDetails)) {
+        yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+      }
+      if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], taskDetails)) {
+        yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+      }
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
@@ -1096,7 +1171,7 @@ function* getNext(action) {
       if (!R.isNil(R.path(['taskData', 'data'], taskDetails))) {
         const loanNumber = getLoanNumber(taskDetails);
         const evalPayload = getEvalPayload(taskDetails);
-        const commentsPayLoad = getCommentPayload(taskDetails);
+        const commentsPayLoad = getCommentPayloadFromTaskDetails(taskDetails);
         const { taskName } = taskDetails.taskData.data;
         if (R.equals(group, 'BOOKING')) {
           yield call(getResolutionDataForEval, getEvalId(taskDetails));
@@ -1221,7 +1296,7 @@ function* unassignLoan() {
   }
 }
 
-function* unassignWidgetLoan() {
+function* unassignBookingLoan() {
   try {
     yield put({ type: SHOW_LOADER });
     const widgetLoan = yield select(selectors.getWidgetLoan);
@@ -1271,6 +1346,19 @@ function* assignLoan() {
     }
     const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
     const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
+    const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
+    if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
+      yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+    }
+    const disabledWidgets = yield select(widgetSelectors.getDisabledWidgets);
+    if (R.equals(true, R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], response))) {
+      yield put(setDisabledWidget({
+        disabledWidgets: R.without(INCOME_CALCULATOR, disabledWidgets),
+      }));
+    } else {
+      yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+    }
+
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({
@@ -1278,11 +1366,6 @@ function* assignLoan() {
         payload: response,
       });
       yield call(fetchChecklistDetailsForAssign, groupName, response);
-      if (R.equals(groupName, DashboardModel.BOOKING)) {
-        yield put({ type: TOGGLE_WIDGET, payload: true });
-      } else {
-        yield put({ type: TOGGLE_WIDGET, payload: false });
-      }
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
@@ -1709,6 +1792,24 @@ function* onSelectTrialTask(payload) {
   }
 }
 
+function* populateInvestorDropdown() {
+  try {
+    const response = yield call(Api.callGet, '/api/dataservice/api/InvestorRequestType/FHLMC');
+    yield put({
+      type: SAVE_INVESTOR_EVENTS_DROPDOWN,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+      },
+    });
+  }
+}
+
 function* populateDropdown() {
   try {
     const userGroupsList = yield select(loginSelectors.getGroupList());
@@ -1727,6 +1828,88 @@ function* populateDropdown() {
       },
     });
   }
+}
+
+function* onFhlmcBulkUpload(payload) {
+  const {
+    caseIds, requestIdType,
+  } = payload.payload;
+  let response;
+  try {
+    if (caseIds.length > 50) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: `Please upload a maximum of 50 ${requestIdType}`,
+        },
+      });
+      return;
+    }
+    const caseSet = new Set(caseIds);
+    if (caseIds.length !== caseSet.size) {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: `There are duplicate ${requestIdType}. Please correct and resubmit`,
+        },
+      });
+      return;
+    }
+    yield put({ type: SHOW_LOADER });
+    const idType = R.equals('Case id(s)', requestIdType) ? 'caseId' : 'loanNbr';
+    response = yield call(Api.callPost,
+      `/api/cmodinvestor/loan-data?requestIdType=${idType}`, caseIds);
+    // Clearing resultData before getting eventData
+    yield put({
+      type: SET_BULK_UPLOAD_RESULT,
+      payload: {},
+    });
+    if (!R.isNil(response)) {
+      const hasStatusCode = R.has('status', response);
+      if (hasStatusCode && R.equals(R.path(['status'], response), 404)) {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: ERROR,
+            status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          },
+        });
+      } else {
+        if (R.contains(false, R.pluck('isValid', response))) {
+          yield put({
+            type: SET_USER_NOTIFICATION,
+            payload: {
+              message: `Entered incorrect ${idType === 'caseId' ? 'Case ID' : 'Loan Number'}.Highlighted in Red for your reference`,
+              level: ERROR,
+            },
+          });
+        }
+        yield put({
+          type: SET_BULK_UPLOAD_RESULT,
+          payload: response,
+        });
+      }
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
 }
 
 function* onCoviusBulkUpload(payload) {
@@ -1770,12 +1953,12 @@ function* onCoviusBulkUpload(payload) {
     response = yield call(Api.callPost, '/api/docfulfillment/api/covius/getEventData', requestBody);
     // Clearing resultData before getting eventData
     yield put({
-      type: SET_COVIUS_BULK_UPLOAD_RESULT,
+      type: SET_BULK_UPLOAD_RESULT,
       payload: {},
     });
     if (response !== null && (R.has('invalidCases', response) || R.has('request', response))) {
       yield put({
-        type: SET_COVIUS_BULK_UPLOAD_RESULT,
+        type: SET_BULK_UPLOAD_RESULT,
         payload: response,
       });
     } else {
@@ -1924,6 +2107,138 @@ const onUploadingFile = function* onUploadingFile(action) {
   }
 };
 
+function* sendNotification(userNotification, resultSet, sweetAlert) {
+  if (!R.isNil(userNotification)) {
+    yield put({
+      type: SET_USER_NOTIFICATION,
+      payload: userNotification,
+    });
+  } else {
+    yield put({
+      type: DISMISS_USER_NOTIFICATION,
+    });
+  }
+  if (!R.isNil(resultSet)) {
+    yield put({
+      type: SET_FHLMC_UPLOAD_RESULT,
+      payload: resultSet,
+    });
+  }
+  if (!R.isNil(sweetAlert)) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: sweetAlert,
+    });
+  }
+}
+
+const submitToFhlmc = function* submitToFhlmc(action) {
+  const file = yield select(selectors.getUploadedFile);
+  const resultData = yield select(selectors.resultData);
+  const user = yield select(loginSelectors.getUser);
+  const userName = R.path(['userDetails', 'email'], user);
+  const { selectedRequestType, portfolioCode } = action.payload;
+  try {
+    const investor = 'freddiemac';
+    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?investor=${investor}&requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}`, JSON.parse(file));
+    // Clearing resultData before getting eventData
+    yield put({
+      type: SET_FHLMC_UPLOAD_RESULT,
+      payload: {},
+    });
+    yield put({
+      type: SET_USER_NOTIFICATION,
+      payload: {},
+    });
+    const parsedData = JSON.parse(file);
+    const statusCode = R.has('status', response) ? R.path(['status'], response) : R.path(['statusCode'], response);
+    let userNotification = null;
+    let resultSet = null;
+    let sweetAlert = null;
+    if (statusCode === '200') {
+      const responseArray = R.pathOr([], ['responseContent', 'message', 'responseData', 'responseWorkoutList'], response);
+      const nonValidResponseObjects = R.pluck('isValid', responseArray);
+      const data = R.map((cases) => {
+        const filteredData = R.filter(datae => R.equals(datae.loanIdentifier.toString(),
+          cases.loanIdentifier), parsedData);
+        const caseData = {};
+        caseData.loanNumber = R.head(filteredData).servicerLoanIdentifier;
+        caseData.evalId = R.head(filteredData).evalId;
+        caseData.resolutionId = R.head(filteredData).resolutionId;
+        caseData.isValid = cases.isValid;
+        caseData.RequestType = cases.workoutReportingStatusType;
+        caseData.message = JSON.stringify(cases);
+        return caseData;
+      }, responseArray);
+      if (!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false)) {
+        userNotification = {
+          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+          level: ERROR,
+        };
+      }
+      resultSet = data;
+      sweetAlert = {
+        level: 'Success',
+        status: 'Your request has been successfully sent to Freddie, please download the excel to view more details.',
+      };
+    } else if (statusCode === 422) {
+      const { invalidLoans } = response;
+      const caseIds = Object.keys(invalidLoans);
+      const data = R.map((cases) => {
+        const caseData = {};
+        caseData.resolutionId = cases.resolutionId;
+        caseData.loanNumber = cases.loanNumber;
+        caseData.isValid = !R.contains(cases.resolutionId.toString(), caseIds);
+        return caseData;
+      }, parsedData);
+      userNotification = {
+        message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+        level: ERROR,
+      };
+      resultSet = data;
+      sweetAlert = {
+        status: 'Incorrect Data present in the excel. Please update and try again',
+        level: FAILED,
+      };
+    } else if (statusCode === 400) {
+      resultSet = resultData;
+      const nonValidResponseObjects = R.pluck('isValid', resultData);
+      if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
+        userNotification = {
+          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+          level: ERROR,
+        };
+      }
+      sweetAlert = {
+        level: FAILED,
+        status: 'FHLMC is currently down. Please try after again, If the issue continues to persist please reach to IT team.',
+      };
+    } else {
+      resultSet = resultData;
+      const nonValidResponseObjects = R.pluck('isValid', resultData);
+      if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
+        userNotification = {
+          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
+          level: ERROR,
+        };
+      }
+      sweetAlert = {
+        level: FAILED,
+        status: 'One of the data source is currently down. Please try after again, If the issue continues to persist please reach to IT team',
+      };
+    }
+    yield call(sendNotification, userNotification, resultSet, sweetAlert);
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        level: LEVEL_FAILED,
+      },
+    });
+  }
+};
+
 const sendToCovius = function* sendToCovius(eventCode, payload) {
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -2007,7 +2322,6 @@ const submitToCovius = function* submitToCovius(action) {
   }
 };
 
-
 const onDownloadFile = function* onDownloadFile(action) {
   const fileData = action.payload;
   try {
@@ -2019,7 +2333,7 @@ const onDownloadFile = function* onDownloadFile(action) {
       type: SET_RESULT_OPERATION,
       payload: {
         status: 'Excel File Downloaded Successfully',
-        level: SUCCESS,
+        level: 'Success',
       },
     });
   } catch (e) {
@@ -2033,6 +2347,10 @@ const onDownloadFile = function* onDownloadFile(action) {
   }
 };
 
+function* watchSubmitToFhlmc() {
+  yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
+}
+
 function* watchSubmitToCovius() {
   yield takeEvery(SEND_TO_COVIUS, submitToCovius);
 }
@@ -2041,10 +2359,16 @@ function* watchPopulateEventsDropDown() {
   yield takeEvery(POPULATE_EVENTS_DROPDOWN, populateDropdown);
 }
 
+function* watchInvestorPopulateEventsDropDown() {
+  yield takeEvery(POPULATE_INVESTOR_EVENTS_DROPDOWN, populateInvestorDropdown);
+}
+
 function* watchCoviusBulkOrder() {
   yield takeEvery(PROCESS_COVIUS_BULK, onCoviusBulkUpload);
 }
-
+function* watchFhlmcBulkOrder() {
+  yield takeEvery(PROCESS_FHLMC_RESOSLVE_BULK, onFhlmcBulkUpload);
+}
 function* watchManualInsertion() {
   yield takeEvery(INSERT_EVALID, manualInsertion);
 }
@@ -2109,15 +2433,15 @@ function* watchOnDownloadFile() {
 }
 
 function* watchOnWidgetClick() {
-  yield takeEvery(WIDGET_CLICK, handleWidget);
+  yield takeEvery(ASSIGN_BOOKING_LOAN, assignBookingLoan);
 }
 
-function* watchUnassignWidgetLoan() {
-  yield takeEvery(UNASSIGN_WIDGET_LOAN, unassignWidgetLoan);
+function* watchUnassignBookingLoan() {
+  yield takeEvery(UNASSIGN_BOOKING_LOAN, unassignBookingLoan);
 }
 
 function* watchAdditionalInfo() {
-  yield takeEvery(ADDITIONAL_INFO_CLICK, fetchEvalCaseDetails);
+  yield takeEvery(FETCH_EVAL_CASE, fetchEvalCaseDetails);
 }
 
 function* watchEvalRowSelect() {
@@ -2128,7 +2452,7 @@ export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
   resetChecklistData,
-  unassignWidgetLoan,
+  unassignBookingLoan,
   getResolutionDataForEval,
   fetchChecklistDetailsForAssign,
   endShift,
@@ -2178,18 +2502,21 @@ export const TestExports = {
   watchOnSubmitFile,
   watchPopulateEventsDropDown,
   watchOnDownloadFile,
-  handleWidget,
+  assignBookingLoan,
   watchLoanviewTombstoneData,
 };
 
 export const combinedSaga = function* combinedSaga() {
   yield all([
+    watchSubmitToFhlmc(),
+    watchInvestorPopulateEventsDropDown(),
     watchSubmitToCovius(),
     watchAutoSave(),
     watchDispositionSave(),
+    watchFhlmcBulkOrder(),
     watchGetNext(),
     watchSetExpandView(),
-    watchUnassignWidgetLoan(),
+    watchUnassignBookingLoan(),
     watchEndShift(),
     watchSearchLoan(),
     watchTombstoneLoan(),

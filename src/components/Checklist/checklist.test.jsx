@@ -200,8 +200,6 @@ describe('<Checklist />', () => {
     expect(TestHooks.removeCharaters('ABCD123')).toBe('123');
     wrapper.find(BasicDatePicker).at(0).prop('refCallback')({ target: { value: 'Yes' } });
     expect(onChange).toBeCalledWith('5f16e73287d90ee4b6fda318', { target: { value: 'Yes' } }, 'GOV_LNHR_CHK28');
-    wrapper.setProps({ checklistItems: checklistWithoutHint });
-    expect(wrapper.find(Tooltip)).toHaveLength(0);
     wrapper.setProps({ checklistItems: unknownChecklistType });
     expect(wrapper.find('WithStyles(ForwardRef(Paper))').text()).toBe('Unknown checklist item type:drop-down-menu');
     wrapper.setProps({ checklistItems: dropdownChecklist });

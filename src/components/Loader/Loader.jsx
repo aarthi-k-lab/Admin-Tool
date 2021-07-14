@@ -4,10 +4,10 @@ import Center from 'components/Center';
 import PropTypes from 'prop-types';
 import './Loader.css';
 
-const Loader = ({ message }) => (
+const Loader = ({ message, size }) => (
   <Center>
     <span styleName="message">
-      <CircularProgress size={50} />
+      <CircularProgress size={size} />
       {message}
     </span>
   </Center>
@@ -15,8 +15,10 @@ const Loader = ({ message }) => (
 
 Loader.defaultProps = {
   message: '',
+  size: 50,
 };
 Loader.propTypes = {
   message: PropTypes.string,
+  size: PropTypes.number,
 };
 export default Loader;

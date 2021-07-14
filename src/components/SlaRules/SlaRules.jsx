@@ -77,10 +77,10 @@ class SlaRules extends React.Component {
               <span>
                 {result === FALSE && (
                 <TextField
-                  id="standard-multiline-flexible"
                   label="Enter your comment here*"
                   margin="dense"
                   multiline
+                  placeholder="Comment"
                   rows="4"
                   rowsMax="6"
                   styleName="multiline"

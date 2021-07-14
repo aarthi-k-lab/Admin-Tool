@@ -11,9 +11,12 @@ import { selectors, operations } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
+import { selectors as widgetsSelectors } from 'ducks/widgets';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
-import widgets from '../../../constants/widget';
+import {
+  ADDITIONAL_INFO, HISTORY,
+} from '../../../constants/widgets';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import './DocGenGoBack.css';
 
@@ -54,24 +57,9 @@ class DocGenGoBack extends React.PureComponent {
     }
   }
 
-  handleAIChange = (value, widgetId) => {
-    const {
-      onAdditionalInfoSelect, isAdditionalInfoOpen, isHistoryOpen,
-      onHistorySelect, onAdditionalInfo, LoanNumber,
-    } = this.props;
-    if (R.equals(widgetId, widgets.additionalInfo)) {
-      onAdditionalInfoSelect(!isAdditionalInfoOpen);
-      onHistorySelect(false);
-      if (!isAdditionalInfoOpen) onAdditionalInfo(LoanNumber);
-    } else if (R.equals(widgetId, widgets.history)) {
-      onHistorySelect(!isHistoryOpen);
-      onAdditionalInfoSelect(false);
-    }
-  }
-
   render() {
     const {
-      inProgress, user, isHistoryOpen, isAdditionalInfoOpen,
+      inProgress, user, openWidgetList,
     } = this.props;
     const showButton = user.groupList.includes('docgen-mgr') || user.groupList.includes('docgen');
     const title = 'Send Back Doc Gen';
@@ -90,7 +78,7 @@ class DocGenGoBack extends React.PureComponent {
           />
         </ContentHeader>
         <Tombstone />
-        {isAdditionalInfoOpen && (
+        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
           <div styleName="bookingWidget">
             <span styleName="widgetTitle">
               ADDITIONAL INFO
@@ -98,9 +86,9 @@ class DocGenGoBack extends React.PureComponent {
           </div>
         )
         }
-        <WidgetBuilder triggerAI={this.handleAIChange} />
-        { isAdditionalInfoOpen && <AdditionalInfo />}
-        { isHistoryOpen && <MilestoneActivity />}
+        <WidgetBuilder page="DOCGEN_GOBACK" />
+        { R.contains(ADDITIONAL_INFO, openWidgetList) && <AdditionalInfo />}
+        { R.contains(HISTORY, openWidgetList) && <MilestoneActivity />}
         <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
           {(resultOperation && resultOperation.status)
             ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
@@ -116,14 +104,10 @@ DocGenGoBack.defaultProps = {
   inProgress: false,
   resultOperation: { level: '', status: '' },
   AppName: 'CMOD',
-  isAdditionalInfoOpen: false,
   ProcIdType: 'ProcessId',
   groupName: 'DOC_GEN_BACK',
-  isHistoryOpen: false,
+  openWidgetList: [],
   onCleanResult: () => {},
-  // location: {
-  //   pathname: '',
-  // },
 };
 
 DocGenGoBack.propTypes = {
@@ -132,17 +116,10 @@ DocGenGoBack.propTypes = {
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
-  isAdditionalInfoOpen: PropTypes.bool,
-  isHistoryOpen: PropTypes.bool,
   LoanNumber: PropTypes.number.isRequired,
-  onAdditionalInfo: PropTypes.func.isRequired,
-  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onCleanResult: PropTypes.func,
-  // location: PropTypes.shape({
-  //   pathname: PropTypes.string,
-  // }),
-  onHistorySelect: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   ProcIdType: PropTypes.string,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
@@ -162,22 +139,18 @@ DocGenGoBack.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   inProgress: selectors.inProgress(state),
   user: loginSelectors.getUser(state),
   EvalId: selectors.evalId(state),
   TaskId: selectors.taskId(state),
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
-  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
   resultOperation: selectors.resultOperation(state),
-  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
-  onAdditionalInfo: operations.onAdditionalInfoClick(dispatch),
-  onAdditionalInfoSelect: operations.onAdditionalInfoSelect(dispatch),
-  onHistorySelect: operations.onHistorySelect(dispatch),
 });
 
 const DocGenGoBackContainer = connect(mapStateToProps, mapDispatchToProps)(DocGenGoBack);

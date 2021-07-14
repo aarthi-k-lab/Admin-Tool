@@ -1,0 +1,41 @@
+.accordian {
+    width: 100%;
+    height: 3rem;
+}
+
+.error {
+    color: rgb(231, 61, 91);
+    font-size: 1rem !important;
+    margin-right: 1.3rem;
+}
+
+.success {
+    color: rgb(52, 189, 47);
+    font-size: 1rem !important;
+    margin-right: 1.3rem;
+}
+
+.warning {
+    color: rgb(235, 143, 51);
+    font-size: 1rem !important;
+    margin-right: 1.3rem;
+}
+
+.message.message {
+    margin-right: 72rem;
+    font-size: 1.2rem;
+    color: var(--grey-50);
+    padding-top: 1rem;
+}
+
+.errMsg {
+    margin: 1.5rem 0rem 1rem 0rem!important;
+    flex-direction: row;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.err {
+    color: white;
+    font-size: 1.3rem;
+}

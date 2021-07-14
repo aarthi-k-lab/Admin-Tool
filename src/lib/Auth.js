@@ -8,6 +8,7 @@ import {
   BOOKING,
   COVIUS,
   COVIUS_MGR,
+  FHLMCRESOLVE,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -292,6 +293,7 @@ Auth.failureMessages = {
   USER_OBJECT_GRAPHAPI_FETCH_FAILED: GENERAL_ERROR_MESSAGE,
   USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
   COVIUS_ACCESS_NEEDED: 'COVIUS Group Access is needed to view the Covius Bulk order page.',
+  LOCATION_ACCESS_FAILED: 'CURRENTLY THIS FEATURE IS NOT AVAILBLE',
 };
 
 Auth.homePage = [
@@ -330,6 +332,10 @@ Auth.homePage = [
   {
     groupName: COVIUS_MGR,
     path: '/dg-vendor',
+  },
+  {
+    groupName: FHLMCRESOLVE,
+    path: '/fhlmc-resolve',
   },
 ];
 

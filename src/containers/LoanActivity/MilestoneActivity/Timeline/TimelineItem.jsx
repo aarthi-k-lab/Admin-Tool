@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { operations as milestoneOperations, selectors as milestoneSelector } from 'ducks/milestone-activity';
 import TimelineSubItem from './TimelineSubItem';
-import { ALL_MILESTONE_HISTORY, CLOSED, INTERRUPTED } from '../../../../constants/auditView';
+import { ALL_MILESTONE_HISTORY, CLOSED } from '../../../../constants/auditView';
 
 
 const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm A'));
@@ -68,7 +68,7 @@ class TimelineItem extends React.PureComponent {
                 <div>
                   <span>
                     {
-                      taskData.currSts === CLOSED || taskData.currSts === INTERRUPTED
+                      taskData.currSts === CLOSED
                         ? `IN ${moment(taskData.currStsDttm).diff(moment(taskData.creDttm), 'days')} DAYS`
                         : `IN ${moment().diff(moment(taskData.creDttm), 'days')} DAYS`
                     }

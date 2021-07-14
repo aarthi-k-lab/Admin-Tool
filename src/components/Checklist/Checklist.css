@@ -2,10 +2,18 @@
   margin: 0 auto;
 }
 
+.incomeCalc {
+  margin: 0 auto;
+}
+
 .scrollable-checklist {
   flex-basis: 0;
   flex-grow: 1;
   overflow: auto;
+}
+
+.incomeCalc-inprogress {
+  margin: auto
 }
 
 .checklist-form-controls {

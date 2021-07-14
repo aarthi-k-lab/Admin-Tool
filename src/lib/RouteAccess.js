@@ -113,6 +113,15 @@ const coviusBulkOrderPage = {
   groups: ['allaccess', 'docgenvendor', 'docgenvendor-mgr'],
 };
 
+// FHLMC Resolve
+
+const fHLMCBulkOrderPage = {
+  path: '/fhlmc-resolve',
+  name: 'FHLMC RESOLVE Page',
+  img: '/static/img/Freddie.svg',
+  groups: ['allaccess', 'fhlmcresolve'],
+};
+
 const trial = {
   groups: ['trial-mgr', 'feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'stager-mgr', 'postmodstager-mgr', 'booking-mgr'],
 };
@@ -122,7 +131,7 @@ const milestoneActivity = {
   path: '/milestone-activity',
   name: 'milestone-activity',
   img: '/static/img/loan-activity.svg',
-  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
+  groups: ['allaccess', 'trial', 'trial-mgr', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'fhlmcresolve', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
 };
 
 const links = [
@@ -141,6 +150,7 @@ const links = [
   coviusBulkOrderPage,
   BOOKING,
   COVIUS,
+  fHLMCBulkOrderPage,
   milestoneActivity,
 ];
 
@@ -158,8 +168,12 @@ function hasGroup(requiredGroups, userGroups, notInGroup) {
     && !(notInGroup.some(group => userGroups.includes(group)));
 }
 
-function shouldShowIcon(link, userGroups) {
-  return !noIcons.includes(link.path) && hasGroup(link.groups, userGroups, link.notInGroup);
+function shouldShowIcon(link, userGroups, hiddenRoutes) {
+  if (!R.isEmpty(hiddenRoutes) && hiddenRoutes.includes(link.path)) {
+    noIcons.push(link.path);
+  }
+  return !noIcons.includes(link.path)
+    && hasGroup(link.groups, userGroups, link.notInGroup);
 }
 
 function hasFrontendChecklistAccess(groups) {
@@ -229,6 +243,11 @@ function hasSlaAccess(groups) {
 function hasCoviusAccess(groups) {
   return hasGroup(COVIUS.groups, groups);
 }
+
+function hasFhlmcResolveAccess(groups) {
+  return hasGroup(fHLMCBulkOrderPage.groups, groups);
+}
+
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager'];
@@ -262,6 +281,7 @@ module.exports = {
   hasDocInsAccess,
   hasSlaAccess,
   hasCoviusAccess,
+  hasFhlmcResolveAccess,
   getStagerGroup,
   hasFrontEndManagerAccess,
   hasMilestoneActivityAccess,
