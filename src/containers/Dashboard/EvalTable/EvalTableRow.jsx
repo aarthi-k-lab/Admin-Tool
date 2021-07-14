@@ -8,13 +8,11 @@ import {
   selectors as loginSelectors,
 } from 'ducks/login';
 import { withRouter } from 'react-router-dom';
-import { operations as widgetsOperations } from 'ducks/widgets';
 import EvalTableCell from './EvalTableCell';
 import RouteAccess from '../../../lib/RouteAccess';
 import DashboardModel from '../../../models/Dashboard';
 import { operations, selectors } from '../../../state/ducks/dashboard';
 import './EvalTableCell.css';
-import { HISTORY } from '../../../constants/widgets';
 
 const showReject = row => ((row.original.pstatus === 'Active' && (row.original.pstatusReason === 'Rejection Pending' || row.original.pstatusReason === 'Trial Rejected')) || (row.original.pstatusReason === 'Reject Suspend State' && row.original.pstatus === 'Suspended'));
 
@@ -35,20 +33,15 @@ class EvalTableRow extends React.PureComponent {
   handleLinkClick = (value) => {
     const {
       row, searchLoanResult, onSelectReject, user, history,
-      onWidgetToggle, setTombstoneDataForLoanView,
+      onHistorySelect, setTombstoneDataForLoanView,
     } = this.props;
-
     const { loanNumber } = searchLoanResult;
     const payLoad = { loanNumber, ...row.original };
     if (value === 'Loan Activity') {
       const { onGetGroupName } = this.props;
       onGetGroupName('MA');
       setTombstoneDataForLoanView({ ...payLoad, isSearch: true });
-      const payload = {
-        currentWidget: HISTORY,
-        openWidgetList: [HISTORY],
-      };
-      onWidgetToggle(payload);
+      onHistorySelect(true);
     } else if (value === 'Booking') {
       const { onSelectEval, onGetGroupName } = this.props;
       this.redirectPath = '/special-loan';
@@ -178,10 +171,10 @@ class EvalTableRow extends React.PureComponent {
 EvalTableRow.propTypes = {
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   onGetGroupName: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   onSelectReject: PropTypes.func.isRequired,
   onSendToFEUW: PropTypes.func.isRequired,
-  onWidgetToggle: PropTypes.func.isRequired,
   row: PropTypes.shape({
     column: PropTypes.shape({
       Header: PropTypes.string,
@@ -217,8 +210,8 @@ const mapDispatchToProps = dispatch => ({
   setTombstoneDataForLoanView: operations.setTombstoneDataForLoanView(dispatch),
   onSelectReject: operations.onSelectReject(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
+  onHistorySelect: operations.onHistorySelect(dispatch),
   onSendToFEUW: operations.onSendToFEUW(dispatch),
-  onWidgetToggle: widgetsOperations.onWidgetToggle(dispatch),
 });
 
 const mapStateToProps = state => ({

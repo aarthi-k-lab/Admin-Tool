@@ -14,7 +14,7 @@ describe('renders <CoviusBulkOrder />', () => {
   };
   const clearSubmitDataResponse = jest.fn();
   const onCoviusBulkSubmit = jest.fn();
-  const onResetData = jest.fn();
+  const onResetCoviusData = jest.fn();
   const coviusEventOptions = [{
     eventCategory: 'mock',
     eventCode: 123,
@@ -25,7 +25,7 @@ describe('renders <CoviusBulkOrder />', () => {
       coviusEventOptions={coviusEventOptions}
       getDownloadResponse={getDownloadResponse}
       onCoviusBulkSubmit={onCoviusBulkSubmit}
-      onResetData={onResetData}
+      onResetCoviusData={onResetCoviusData}
     />,
   );
   const wrapperState = wrapper.instance().state;
@@ -53,9 +53,9 @@ describe('renders <CoviusBulkOrder />', () => {
     expect(onCoviusBulkSubmit).toBeCalled();
   });
 
-  it('should call onResetData on eventCategoryChange', () => {
+  it('should call onResetCoviusData on eventCategoryChange', () => {
     wrapper.find('WithStyles(ForwardRef(Select))').at(0).simulate('change', { target: { value: 'mock' } });
-    expect(onResetData).toBeCalled();
+    expect(onResetCoviusData).toBeCalled();
   });
   it('should call handleCaseChange on TextField Change', () => {
     wrapper.find('ForwardRef(TextareaAutosize)').at(0).simulate('change', { target: { value: '123' } });
@@ -190,14 +190,14 @@ describe('SweetAlert functionality', () => {
   };
   const clearSubmitDataResponse = jest.fn();
   const closeSweetAlert = jest.fn();
-  const onResetData = jest.fn();
+  const onResetCoviusData = jest.fn();
   const resultOperation = {
     clearData: 'mock',
   };
   const props = {
     resultOperation,
     closeSweetAlert,
-    onResetData,
+    onResetCoviusData,
     clearSubmitDataResponse,
     getDownloadResponse,
   };
@@ -210,7 +210,7 @@ describe('SweetAlert functionality', () => {
   it('should close the sweet alert', () => {
     expect(wrapper.find('SweetAlertBox')).toHaveLength(1);
     wrapper.find('SweetAlertBox').simulate('confirm');
-    expect(onResetData).toBeCalled();
+    expect(onResetCoviusData).toBeCalled();
     expect(closeSweetAlert).toBeCalled();
   });
 });

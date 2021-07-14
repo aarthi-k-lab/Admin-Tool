@@ -12,11 +12,9 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
-import { selectors as widgetsSelectors } from 'ducks/widgets';
 import UserNotification from 'components/UserNotification/UserNotification';
 import { selectors, operations } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
-import { HISTORY } from '../../../constants/widgets';
 
 function isNotLoanActivity(group) {
   return group !== DashboardModel.LOAN_ACTIVITY;
@@ -66,7 +64,7 @@ class EvaluationPage extends React.PureComponent {
   render() {
     const {
       location, group, taskName, checklisttTemplateName, stagerTaskName,
-      userNotification, isAutoDisposition, openWidgetList,
+      userNotification, isAutoDisposition, isHistoryOpen,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -90,12 +88,11 @@ class EvaluationPage extends React.PureComponent {
             : ''
           }
         </div>
-        {(R.contains(HISTORY, openWidgetList)
-        && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
-          <FullHeightColumn styleName={R.contains(HISTORY, openWidgetList) ? '' : 'columns-container'}>
+        {(isHistoryOpen && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
+          <FullHeightColumn styleName={isHistoryOpen ? '' : 'columns-container'}>
             {this.renderDashboard()}
           </FullHeightColumn>
-          )}
+        )}
       </>
     );
   }
@@ -108,7 +105,6 @@ EvaluationPage.defaultProps = {
   stagerTaskName: '',
   userNotification: { level: '', status: '' },
   onCleanResult: () => {},
-  openWidgetList: [],
 };
 
 EvaluationPage.propTypes = {
@@ -116,11 +112,11 @@ EvaluationPage.propTypes = {
   group: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   isAutoDisposition: PropTypes.bool.isRequired,
+  isHistoryOpen: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
   onCleanResult: PropTypes.func,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   processName: PropTypes.string.isRequired,
   stagerTaskName: PropTypes.string,
   taskName: PropTypes.string,
@@ -141,7 +137,6 @@ EvaluationPage.propTypes = {
   }),
 };
 const mapStateToProps = state => ({
-  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   taskName: selectors.processName(state),
   isAssigned: selectors.showAssign(state),
   stagerTaskName: selectors.stagerTaskName(state),
@@ -151,6 +146,7 @@ const mapStateToProps = state => ({
   userNotification: selectors.userNotification(state),
   processName: selectors.processName(state),
   taskStatus: selectors.taskStatus(state),
+  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({

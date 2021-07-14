@@ -2,7 +2,6 @@ export { default } from './ContentHeader';
 export { default as EndShift } from './EndShift';
 export { default as Expand } from './Expand';
 export { default as GetNext } from './GetNext';
-export { default as LockCalculation } from './LockCalculation';
 export { default as Assign } from './Assign';
 export { default as Unassign } from './Unassign';
 export { default as SendToUnderwriting } from './SendToUnderwriting';

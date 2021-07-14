@@ -193,20 +193,6 @@ exports[`<Profile /> snapshot test 1`] = `
           docgenvendor-mgr
         </p>
       </li>
-      <li>
-        <p
-          className="MuiTypography-root MuiTypography-body2"
-        >
-          fhlmcresolve
-        </p>
-      </li>
-      <li>
-        <p
-          className="MuiTypography-root MuiTypography-body2"
-        >
-          fhlmcresolve-mgr
-        </p>
-      </li>
     </ol>
   </div>
   <div

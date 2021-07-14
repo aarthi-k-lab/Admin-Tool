@@ -3,129 +3,144 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import { getWidgets, getSelectedWidget } from './WidgetSelects';
+import {
+  getWidgets, getLoanActivityWidgets, getBookingAutomationWidget,
+  getSearchLoanWidget, getMilestoneActivityWidgets,
+} from './WidgetSelects';
 import WidgetIcon from './WidgetIcon';
 import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
-import { selectors, operations } from '../../state/ducks/widgets';
+import { selectors } from '../../state/ducks/dashboard';
 
 class WidgetBuilder extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      rightAppBarSelected: '',
+      rightAppBarOpen: false,
+      rightAppBar: getWidgets(),
+    };
+    this.changeAppBarState = this.changeAppBarState.bind(this);
     this.renderComponent = this.renderComponent.bind(this);
     this.renderIcon = this.renderIcon.bind(this);
   }
 
-  componentDidMount() {
-    const { page, onWidgetToggle } = this.props;
-    const widgets = getWidgets(page);
-    const openWidgetList = R.compose(
-      R.map(widget => widget.id),
-      R.filter(widget => R.prop('defaultOpen', widget)),
-    )(widgets);
-    if (!R.isEmpty(openWidgetList)) {
-      const payload = {
-        currentWidget: R.last(openWidgetList),
-        openWidgetList,
-        page,
-      };
-      onWidgetToggle(payload);
-    }
-  }
-
-  handleWidgetClick = (event, widgetId) => {
+  static getDerivedStateFromProps(props, state) {
+    const { rightAppBarSelected } = state;
     const {
-      onWidgetToggle, page, openWidgetList, disabledWidgets,
-    } = this.props;
-    if (!R.contains(widgetId, disabledWidgets)) {
-      const widgets = getWidgets(page);
-      const selectedWidgetData = getSelectedWidget(widgetId, page);
-      let currentAppBarSelected = R.clone(openWidgetList);
-      if (R.contains(widgetId, openWidgetList)) {
-        if (selectedWidgetData.overlay) {
-          // remove current widget from array.
-          currentAppBarSelected = R.without(widgetId, currentAppBarSelected);
-        } else {
-          // Close all widgets except overlay widgets
-          currentAppBarSelected = R.filter(widget => R.propOr(false, 'overlay', R.find(R.propEq('id', widget), widgets)), currentAppBarSelected);
-          if (selectedWidgetData.children) {
-            currentAppBarSelected = R.without(selectedWidgetData.children, currentAppBarSelected);
-          }
-        }
-      } else if (selectedWidgetData.overlay) {
-        currentAppBarSelected.push(widgetId);
-      } else {
-        currentAppBarSelected = [widgetId];
-      }
+      trialHeader, type, milestonePageOpen,
+    } = props;
+    const isTrialHeader = trialHeader ? trialHeader.trialName : '';
 
-      let currentUpdatedWidget = '';
-      if (R.contains(widgetId, openWidgetList)) {
-        if (!R.isEmpty(currentAppBarSelected)) {
-          currentUpdatedWidget = R.last(currentAppBarSelected);
-        }
-      } else {
-        currentUpdatedWidget = widgetId;
-      }
-      const payload = {
-        currentWidget: currentUpdatedWidget,
-        openWidgetList: currentAppBarSelected,
-        page,
+    if (milestonePageOpen && R.isEmpty(rightAppBarSelected)) {
+      return {
+        rightAppBarSelected: 'History',
+        rightAppBar: getMilestoneActivityWidgets(),
+        rightAppBarOpen: false,
       };
-      onWidgetToggle(payload);
+    }
+    if (type === 'search' && R.isEmpty(rightAppBarSelected)) {
+      return {
+        rightAppBarSelected: 'Additional Info',
+        rightAppBar: getSearchLoanWidget(),
+        rightAppBarOpen: false,
+      };
+    }
+    if (props.groupName === 'LA' && R.isEmpty(rightAppBarSelected) && isTrialHeader) {
+      return {
+        rightAppBarSelected: 'customCommunicationLetter',
+        rightAppBarOpen: true,
+        rightAppBar: getLoanActivityWidgets(),
+      };
+    }
+    if ((props.groupName === 'DOCSIN' || props.groupName === 'BOOKING') && R.isEmpty(rightAppBarSelected)) {
+      return {
+        rightAppBarSelected: 'BookingAutomation',
+        rightAppBar: getBookingAutomationWidget(),
+        rightAppBarOpen: false,
+      };
+    }
+    return null;
+  }
+
+  handleAdditionalInfo = (event, id) => {
+    const { isValid } = this.props;
+    if ((!isValid && id === 'Additional Info')) {
+      event.stopPropagation();
+    } else {
+      this.changeAppBarState(id);
     }
   }
 
-  renderComponent(rightAppBar, page) {
-    const { currentWidget } = this.props;
+  changeAppBarState(widgetId) {
+    const { triggerHeader, triggerAI } = this.props;
+    const { rightAppBarSelected, rightAppBarOpen } = this.state;
+    const oldWidgetId = rightAppBarSelected;
+    if (widgetId === oldWidgetId) {
+      this.setState({ rightAppBarSelected: null });
+      this.setState({ rightAppBarOpen: (widgetId === 'BookingAutomation' || widgetId === 'Additional Info') ? false : !rightAppBarOpen });
+      triggerHeader(!rightAppBarOpen, widgetId);
+      triggerAI(!rightAppBarOpen, widgetId);
+    } else {
+      const setrightAppBarOpen = (widgetId === 'BookingAutomation' || widgetId === 'Additional Info');
+      this.setState({ rightAppBarOpen: !setrightAppBarOpen, rightAppBarSelected: widgetId });
+      triggerHeader(rightAppBarOpen, widgetId);
+      triggerAI(rightAppBarOpen, widgetId);
+    }
+  }
+
+  renderComponent() {
+    const { rightAppBarSelected, rightAppBarOpen, rightAppBar } = this.state;
+    const { inSearchPage } = this.props;
+    const rightAppBarOpened = rightAppBar && rightAppBarSelected
+      && rightAppBar.length && rightAppBarOpen;
     return (
-      currentWidget !== ''
+      rightAppBarOpened
       && (
-        <WidgetComponent
-          currentWidget={currentWidget}
-          id="widget-component"
-          page={page}
-          rightAppBar={rightAppBar}
-        />
+        <WidgetComponent id="widget-component" inSearchPage={inSearchPage} rightAppBar={rightAppBar} rightAppBarSelected={rightAppBarSelected} />
       )
     );
   }
 
-  renderIcon(rightAppBar) {
-    const { openWidgetList, disabledWidgets } = this.props;
+  renderIcon() {
+    const { rightAppBarSelected, rightAppBarOpen, rightAppBar } = this.state;
+    const { isAdditionalInfoOpen, isHistoryOpen, toggleWidget } = this.props;
+
     return (
       rightAppBar.length !== 0
       && rightAppBar
-      && rightAppBar.map(data => (
+      && rightAppBar.filter(datas => datas.show).map(data => (
         <WidgetIcon
           key={data.id}
           data={data}
-          disabledWidgets={disabledWidgets}
-          onWidgetClick={event => this.handleWidgetClick(event, data.id)}
-          openWidgetList={openWidgetList}
+          isAdditionalInfoOpen={isAdditionalInfoOpen}
+          isHistoryOpen={isHistoryOpen}
+          onWidgetClick={event => this.handleAdditionalInfo(event, data.id)}
+          rightAppBarOpen={rightAppBarOpen}
+          rightAppBarSelected={rightAppBarSelected}
+          toggleWidget={toggleWidget}
         />
       ))
     );
   }
 
   render() {
-    const {
-      className, page, currentWidget,
-    } = this.props;
-    const rightAppBar = getWidgets(page);
+    const { rightAppBarOpen } = this.state;
+    const { className, type } = this.props;
     return (
       <div className={classNames(className, styles['widget-builder'])} id="widget_builder">
         <div id="widget_builder_container">
           <div
             id="widget_main_center"
-            styleName={currentWidget !== '' ? 'widget-main-center-open' : 'widget-main-center-close'}
+            styleName={rightAppBarOpen ? 'widget-main-center-open' : 'widget-main-center-close'}
           />
-          {this.renderComponent(rightAppBar, page)}
+          {this.renderComponent()}
           {
             <div
               id="show"
-              styleName={page === 'SEARCH_LOAN' ? 'showAV' : 'show'}
+              styleName={type === 'search' ? 'showAV' : 'show'}
             >
-              {this.renderIcon(rightAppBar)}
+              {this.renderIcon()}
             </div>
           }
         </div>
@@ -139,20 +154,23 @@ const TestHooks = {
 };
 
 WidgetBuilder.defaultProps = {
+  inSearchPage: false,
   trialHeader: {},
-  currentWidget: '',
-  openWidgetList: [],
-  disabledWidgets: [],
-  page: '',
+  isValid: true,
+  triggerHeader: () => { },
+  triggerAI: () => { },
+  isAdditionalInfoOpen: false,
+  isHistoryOpen: false,
+  toggleWidget: false,
 };
 
 WidgetBuilder.propTypes = {
   className: PropTypes.string.isRequired,
-  currentWidget: PropTypes.string,
-  disabledWidgets: PropTypes.arrayOf(PropTypes.string),
-  onWidgetToggle: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
-  page: PropTypes.string,
+  inSearchPage: PropTypes.bool,
+  isAdditionalInfoOpen: PropTypes.bool,
+  isHistoryOpen: PropTypes.bool,
+  isValid: PropTypes.bool,
+  toggleWidget: PropTypes.bool,
   trialHeader: PropTypes.shape({
     downPayment: PropTypes.number,
     evalId: PropTypes.number,
@@ -163,20 +181,17 @@ WidgetBuilder.propTypes = {
     trialAcceptanceDate: PropTypes.string,
     trialName: PropTypes.string,
   }),
+  triggerAI: PropTypes.func,
+  triggerHeader: PropTypes.func,
+  type: PropTypes.string.isRequired,
 };
-
 const mapStateToProps = state => ({
-  currentWidget: selectors.getCurrentWidget(state),
-  openWidgetList: selectors.getOpenWidgetList(state),
-  disabledWidgets: selectors.getDisabledWidgets(state),
+  groupName: selectors.groupName(state),
+  trialHeader: selectors.getTrialHeader(state),
+  isValid: selectors.searchLoanResult(state).valid,
+  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onWidgetToggle: operations.onWidgetToggle(dispatch),
-  };
-}
-
-const WidgetBuilderContainer = connect(mapStateToProps, mapDispatchToProps)(WidgetBuilder);
+const WidgetBuilderContainer = connect(mapStateToProps, null)(WidgetBuilder);
 export default WidgetBuilderContainer;
 export { TestHooks };

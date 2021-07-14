@@ -96,7 +96,6 @@ const isChecked = {
   POSTMODSTAGER: true,
   BOOKING: true,
   DOCGENVENDOR: true,
-  FHLMCRESOLVE: true,
 };
 
 const isCheckedFalse = {
@@ -112,7 +111,6 @@ const isCheckedFalse = {
   POSTMODSTAGER: false,
   BOOKING: false,
   DOCGENVENDOR: false,
-  FHLMCRESOLVE: true,
 };
 const skills = { FEUW: ['Skill14::InVESTOR', 'Skill19::MRC Onshore', 'Skill1::something', 'Skill2::nothing'] };
 

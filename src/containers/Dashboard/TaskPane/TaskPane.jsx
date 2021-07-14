@@ -1,5 +1,4 @@
 import React from 'react';
-import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { operations as configOperations, selectors } from 'ducks/config';
@@ -8,9 +7,7 @@ import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import LeftTaskPane from 'components/LeftTaskPane';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
-import { selectors as widgetsSelectors } from 'ducks/widgets';
 import DashboardModel from '../../../models/Dashboard';
-import { BOOKING } from '../../../constants/widgets';
 
 class TaskPane extends React.PureComponent {
   componentDidMount() {
@@ -38,7 +35,7 @@ class TaskPane extends React.PureComponent {
       pdfGeneratorConstant,
       pdfExportPayload,
       group,
-      openWidgetList,
+      toggleWidget,
     } = this.props;
     return (
       (
@@ -61,7 +58,7 @@ class TaskPane extends React.PureComponent {
           showOptionalTasks={showOptionalTasks}
           storeTaskFilter={storeTaskFilter}
           tasks={tasks}
-          toggleWidget={R.contains(BOOKING, openWidgetList)}
+          toggleWidget={toggleWidget}
           updateChecklist={updateChecklist}
         />
       )
@@ -77,7 +74,7 @@ TaskPane.defaultProps = {
   className: '',
   tasks: [],
   optionalTasks: [],
-  openWidgetList: [],
+  toggleWidget: false,
 };
 
 TaskPane.propTypes = {
@@ -93,7 +90,6 @@ TaskPane.propTypes = {
   })).isRequired,
   isAssigned: PropTypes.bool.isRequired,
   onSubTaskClick: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   optionalTasks: PropTypes.arrayOf(PropTypes.shape(OptionalTaskModel)),
   pdfExportPayload: PropTypes.shape.isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
@@ -103,12 +99,12 @@ TaskPane.propTypes = {
   showOptionalTasks: PropTypes.bool.isRequired,
   storeTaskFilter: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape(TaskModel)),
+  toggleWidget: PropTypes.bool,
   updateChecklist: PropTypes.func.isRequired,
 
 };
 
 const mapStateToProps = state => ({
-  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   dataLoadStatus: taskSelectors.getTaskLoadStatus(state),
   isAccessible: selectors.isTaskPaneAccessible(state),
   selectedTaskId: taskSelectors.getSelectedChecklistId(state),
@@ -121,6 +117,7 @@ const mapStateToProps = state => ({
   pdfGeneratorConstant: selectors.pdfUrlConstants(state),
   pdfExportPayload: taskSelectors.getPDFExportPayload(state),
   group: dashboardSelectors.groupName(state),
+  toggleWidget: dashboardSelectors.getToggleWidget(state),
 });
 
 const mapDispatchToProps = dispatch => ({

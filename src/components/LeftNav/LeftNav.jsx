@@ -7,7 +7,6 @@ import * as R from 'ramda';
 import classNames from 'classnames';
 import EndShift from 'models/EndShift';
 import { operations, selectors } from '../../state/ducks/dashboard';
-import { selectors as configSelectors } from '../../state/ducks/config';
 import { operations as stagerOperations } from '../../state/ducks/stager';
 
 import styles from './LeftNav.css';
@@ -46,26 +45,26 @@ class LeftNav extends React.PureComponent {
   }
 
   render() {
-    const { path, user, hiddenRoutes } = this.props;
+    const { path, user } = this.props;
     const groupList = user && user.groupList;
     return (
       <div styleName="stretch-column">
         <nav id="cmod_leftnav" styleName="left-nav-bar">
           {
-            links.map(link => (
-              shouldShowIcon(link, groupList, hiddenRoutes)
-                ? (
-                  <Link
-                    key={link.name}
-                    className={this.constructor.getIconStyle(path, link.path)}
-                    onClick={() => this.handleLandingpage(link.path)}
-                    to={link.path}
-                  >
-                    <img alt={link.name} src={link.img} />
-                  </Link>
-                ) : null
-            ))
-          }
+        links.map(link => (
+          shouldShowIcon(link, groupList)
+            ? (
+              <Link
+                key={link.name}
+                className={this.constructor.getIconStyle(path, link.path)}
+                onClick={() => this.handleLandingpage(link.path)}
+                to={link.path}
+              >
+                <img alt={link.name} src={link.img} />
+              </Link>
+            ) : null
+        ))
+      }
         </nav>
       </div>
     );
@@ -74,13 +73,11 @@ class LeftNav extends React.PureComponent {
 LeftNav.defaultProps = {
   enableGetNext: false,
   evalId: '',
-  hiddenRoutes: [],
 };
 
 LeftNav.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
-  hiddenRoutes: PropTypes.objectOf(PropTypes.array),
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
@@ -102,7 +99,6 @@ const mapStateToProps = state => ({
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
-  hiddenRoutes: configSelectors.hiddenRoutes(state),
 });
 
 const mapDispatchToProps = dispatch => ({

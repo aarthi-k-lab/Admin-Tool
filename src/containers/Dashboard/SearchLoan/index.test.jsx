@@ -2,7 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import SweetAlertBox from 'components/SweetAlertBox';
 import { TestHooks } from './SearchLoan';
-import { ADDITIONAL_INFO } from '../../../constants/widgets';
 
 
 describe('Search Loan ', () => {
@@ -147,7 +146,7 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
   const onSearchLoan = jest.fn();
   const onSelectEval = jest.fn();
   const onClearStagerTaskName = jest.fn();
-  const onWidgetToggle = jest.fn();
+  const onAdditionalInfoSelect = jest.fn();
   const onHistorySelect = jest.fn();
   const stopPropagation = jest.fn();
   const history = [];
@@ -165,7 +164,7 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
     searchLoanResult,
     onSearchLoan,
     history,
-    onWidgetToggle,
+    onAdditionalInfoSelect,
     onHistorySelect,
     location,
   };
@@ -173,7 +172,7 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
     {...props}
   />);
   it('should render Go back to search results when in additional info page', () => {
-    wrapper.setProps({ openWidgetList: [ADDITIONAL_INFO] });
+    wrapper.setProps({ isAdditionalInfoOpen: true });
     expect(wrapper.find('Connect(WidgetBuilder)')).toHaveLength(1);
     expect(wrapper.find('withRouter(GoBackToSearch)')).toHaveLength(1);
     expect(wrapper.find('Connect(AdditionalInfo)')).toHaveLength(1);
@@ -181,24 +180,24 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
     expect(wrapper.find('ReactTable')).toHaveLength(0);
   });
   it('should render back button when in search loan page', () => {
-    wrapper.setProps({ openWidgetList: [''], searchLoanResult });
+    wrapper.setProps({ isAdditionalInfoOpen: false, searchLoanResult });
     expect(wrapper.find('Connect(WidgetBuilder)')).toHaveLength(1);
     expect(wrapper.find('withRouter(GoBackToSearch)')).toHaveLength(0);
     expect(wrapper.find('Connect(AdditionalInfo)')).toHaveLength(0);
     expect(wrapper.find('Link')).toHaveLength(1);
     expect(wrapper.find('ReactTable')).toHaveLength(1);
   });
-  it('  should call onWidgetToggle on go back to search results button click', () => {
-    wrapper.setProps({ openWidgetList: [ADDITIONAL_INFO], searchLoanResult });
+  it('  should call onAdditionalInfoSelect on go back to search results button click', () => {
+    wrapper.setProps({ isAdditionalInfoOpen: true, searchLoanResult });
     wrapper.find('withRouter(GoBackToSearch)').props().onClick();
-    expect(onWidgetToggle).toBeCalledTimes(1);
+    expect(onAdditionalInfoSelect).toBeCalledTimes(1);
   });
-  it('should call onWidgetToggle on additional Info widget click', () => {
+  it('should call onAdditionalInfoSelect on additional Info widget click', () => {
     wrapper.find('Connect(WidgetBuilder)').simulate('click', 'xyz', 'Additional Info');
-    expect(onWidgetToggle).toBeCalledTimes(1);
+    expect(onAdditionalInfoSelect).toBeCalledTimes(1);
   });
   it('should call stop propogation in event when the source Label is remedy', () => {
-    wrapper.setProps({ openWidgetList: [''], searchLoanResult });
+    wrapper.setProps({ isAdditionalInfoOpen: false, searchLoanResult });
     wrapper.find('ReactTable').props().getTdProps({}, { original: { sourceLabel: 'REMEDY' } }, { Header: 'mock' }).onClick({ stopPropagation });
     expect(onSelectEval).toBeCalledTimes(0);
     expect(stopPropagation).toBeCalled();

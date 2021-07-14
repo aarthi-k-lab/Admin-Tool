@@ -8,8 +8,6 @@ const GET_FEATURES_SAGA = 'app/config/GET_FEATURES_SAGA';
 const SET_FEATURES = 'app/config/SET_FEATURES';
 const GET_PDFGENRATOR_URL = 'app/task-and-checklist/GET_PDFGENRATOR_URL';
 const SET_PDFGENRATOR_URL = 'app/task-and-checklist/SET_PDFGENRATOR_URL';
-const TOGGLE_ICON = 'app/task-and-checklist/TOGGLE_ICON';
-const TOGGLE_HIDDEN_ROUTE = 'app/task-and-checklist/TOGGLE_HIDDEN_ROUTE';
 
 export {
   FETCHCONFIG,
@@ -22,6 +20,4 @@ export {
   SET_FEATURES,
   GET_PDFGENRATOR_URL,
   SET_PDFGENRATOR_URL,
-  TOGGLE_ICON,
-  TOGGLE_HIDDEN_ROUTE,
 };

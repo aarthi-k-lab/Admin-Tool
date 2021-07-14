@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+// import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import * as R from 'ramda';
+// import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -11,6 +13,7 @@ import { selectors as dashboardSelectors, operations as dashboardOperations } fr
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
+// import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import SweetAlert from 'sweetalert2-react';
 import SweetAlertBox from 'components/SweetAlertBox';
 import { ERROR } from 'constants/common';
@@ -160,7 +163,7 @@ class LabelWithIcon extends React.PureComponent {
         <Grid container styleName="customresolutiongrid">
           <Grid xs={9}>
             <FormControl style={{ width: 180 }}>
-              <InputLabel styleName="resIdLbl">Select ResolutionId</InputLabel>
+              <InputLabel style={{ fontSize: 13 }}>Select ResolutionId</InputLabel>
               <Select
                 onChange={event => this.handleValueChange(event)}
                 value={selectedValue}

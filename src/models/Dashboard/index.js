@@ -13,7 +13,6 @@ const DOCS_IN_BACK = 'DIB';
 const DOCS_IN = 'DOCSIN';
 const BOOKING = 'BOOKING';
 const COVIUS = 'docgenvendor';
-const FHLMCRESOLVE = 'fhlmcresolve';
 
 const EVENT_CATEGORY_FILTER = 'SubmitFullmentRequest';
 const STAGER = 'STAGER';
@@ -103,13 +102,6 @@ const GROUP_INFO = [
     showAssignUnassign: false,
   },
   {
-    group: FHLMCRESOLVE,
-    task: 'FHLMC RESOLVE',
-    taskCode: 'FHLMCRESOLVE',
-    path: '/fhlmc-resolve',
-    showAssignUnassign: false,
-  },
-  {
     group: POSTMODSTAGER,
     task: 'POST MOD STAGER',
     taskCode: 'POST MOD STAGER',
@@ -133,7 +125,6 @@ const GROUPS = {
   '/docs-in': DOCS_IN,
   '/special-loan': BOOKING,
   '/dg-vendor': COVIUS,
-  '/fhlmcBulkOrder': FHLMCRESOLVE,
 };
 
 function getTitle(location) {
@@ -154,8 +145,6 @@ function getTitle(location) {
       return 'Special Loan Automation';
     case '/dg-vendor':
       return 'COVIUS EVENTS';
-    case '/fhlmcBulkOrder':
-      return 'FHHLMC RESOLVE';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -182,7 +171,6 @@ const DashboardModel = {
   DOCS_IN,
   BOOKING,
   COVIUS,
-  FHLMCRESOLVE,
   LOAN_ACTIVITY,
   GROUPS,
   GROUP_INFO,

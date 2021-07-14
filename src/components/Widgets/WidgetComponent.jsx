@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './WidgetComponent.css';
-import * as R from 'ramda';
 
 const getSytles = (selectedApp) => {
   switch (selectedApp) {
@@ -14,36 +13,36 @@ const getSytles = (selectedApp) => {
 class WidgetComponent extends React.PureComponent {
   render() {
     const {
-      currentWidget, rightAppBar, page,
+      rightAppBarSelected, rightAppBar, inSearchPage,
     } = this.props;
-    const selectedWidget = R.find(R.propEq('id', currentWidget))(rightAppBar);
-    let component = R.propOr(null, 'component', selectedWidget);
-    component = component && R.assocPath(['props', 'page'], page, component);
-    return component
-      && (
-        <div styleName={(R.equals(page, 'SEARCH_LOAN') && currentWidget === 'Comments') ? 'right-app-bar-search' : getSytles(currentWidget)}>
-          <div style={{ width: '100%' }}>
-            <div styleName="comment-area-bottom">
-              {component}
-            </div>
+    return (
+      <div styleName={(inSearchPage && rightAppBarSelected === 'Comments') ? 'right-app-bar-search' : getSytles(rightAppBarSelected)}>
+        <div style={{ width: '100%' }}>
+          <div styleName="comment-area-bottom">
+            {
+                rightAppBar.find(data => (
+                  data.id === rightAppBarSelected
+                )).component
+              }
           </div>
         </div>
-      );
+      </div>
+    );
   }
 }
 
 WidgetComponent.defaultProps = {
-  page: '',
+  inSearchPage: false,
   rightAppBar: [],
-  currentWidget: '',
+  rightAppBarSelected: '',
 };
 
 WidgetComponent.propTypes = {
-  currentWidget: PropTypes.string,
-  page: PropTypes.string,
+  inSearchPage: PropTypes.bool,
   rightAppBar: PropTypes.arrayOf(PropTypes.shape({
     component: PropTypes.element,
   })),
+  rightAppBarSelected: PropTypes.string,
 };
 
 

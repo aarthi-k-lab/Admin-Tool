@@ -1,92 +1,90 @@
+/* eslint-disable react/jsx-closing-tag-location */
 import React from 'react';
 import ChatIcon from '@material-ui/icons/Chat';
 import HistoryIcon from '@material-ui/icons/History';
 import TrailButton from '@material-ui/icons/Email';
-import Exposure from '@material-ui/icons/Exposure';
-import * as R from 'ramda';
-import {
-  COMMENTS,
-  ADDITIONAL_INFO,
-  HISTORY,
-  CUSTOM_COMM_LETTER,
-  BOOKING,
-  INCOME_CALCULATOR,
-} from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
 
+
 const widgets = [
   {
-    id: CUSTOM_COMM_LETTER,
-    icon: <TrailButton />,
-    component: <TrialLetter />,
-    visibility: ['LA'],
-    defaultOpen: true,
-  },
-  {
-    id: COMMENTS,
+    id: 'Comments',
     icon: <ChatIcon />,
     component: <CommentsWidget />,
-    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
-      'BOOKING', 'SEARCH_LOAN', 'DOCGEN_GOBACK', 'MLSTN_PAGE'],
-    overlay: true,
+    show: true,
   },
   {
-    id: ADDITIONAL_INFO,
+    id: 'Additional Info',
     icon: <img alt="Additional Info" src="/static/img/information.png" />,
-    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
-      'BOOKING', 'SEARCH_LOAN'],
-    children: [COMMENTS],
+    show: true,
   },
   {
-    id: HISTORY,
+    id: 'History',
     icon: <HistoryIcon />,
-    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA', 'BOOKING'],
-    children: [COMMENTS],
-  },
-  {
-    id: BOOKING,
-    icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
-    visibility: ['DOCSIN', 'BOOKING'],
-    children: [COMMENTS],
-  },
-  {
-    id: INCOME_CALCULATOR,
-    icon: <Exposure />,
-    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN',
-      'BOOKING'],
-    children: [COMMENTS],
-  },
-];
+    show: true,
+  }];
+
+let loanActivityWidgets = {
+  id: 'customCommunicationLetter',
+  icon: <TrailButton />,
+  component: <TrialLetter />,
+  show: true,
+};
+let bookingAutomationWidget = {
+  id: 'BookingAutomation',
+  icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
+  show: true,
+};
+
+const searchLoanWidgets = [{
+  id: 'Comments',
+  icon: <ChatIcon />,
+  component: <CommentsWidget searchArea />,
+  show: true,
+},
+{
+  id: 'Additional Info',
+  icon: <img alt="Additional Info" src="/static/img/information.png" />,
+  show: true,
+}];
+
+const milestoneActivityWidgets = [{
+  id: 'Comments',
+  icon: <ChatIcon />,
+  component: <CommentsWidget />,
+  show: true,
+}];
 
 
-function getWidgets(page) {
-  return widgets.filter(widget => R.contains(page, widget.visibility));
+loanActivityWidgets = [loanActivityWidgets, ...widgets];
+
+function getWidgets() {
+  return widgets;
 }
 
-function getSelectedWidget(widgetId, page) {
-  return R.find(R.propEq('id', widgetId))(getWidgets(page));
+function getLoanActivityWidgets() {
+  return loanActivityWidgets;
 }
 
-function getBookingWidget(page) {
-  return R.find(R.propEq('id', BOOKING))(getWidgets(page));
+bookingAutomationWidget = [...widgets, bookingAutomationWidget];
+
+function getBookingAutomationWidget() {
+  return bookingAutomationWidget;
 }
 
-function closeWidgets(request) {
-  const {
-    openWidgetList, page, closingWidgets,
-  } = request;
-  const widgetList = R.clone(closingWidgets);
-  closingWidgets.forEach((widget) => {
-    const selectedWidgetData = getSelectedWidget(widget, page);
-    if (selectedWidgetData) { widgetList.push(selectedWidgetData.children); }
-  });
-  return R.without(widgetList, openWidgetList);
+function getSearchLoanWidget() {
+  return searchLoanWidgets;
+}
+
+function getMilestoneActivityWidgets() {
+  return milestoneActivityWidgets;
 }
 
 export {
   getWidgets,
-  getSelectedWidget,
-  getBookingWidget,
-  closeWidgets,
+  getLoanActivityWidgets,
+  getBookingAutomationWidget,
+  getSearchLoanWidget,
+  getMilestoneActivityWidgets,
 };

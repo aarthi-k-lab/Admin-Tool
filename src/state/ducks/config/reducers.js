@@ -3,7 +3,6 @@ import {
   POWER_BI_CONSTANTS_FAILURE,
   SET_FEATURES,
   GET_PDFGENRATOR_URL,
-  TOGGLE_HIDDEN_ROUTE,
 } from './types';
 
 
@@ -30,13 +29,6 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         pdfGeneratorUrl,
-      };
-    }
-    case TOGGLE_HIDDEN_ROUTE: {
-      const hiddenRoutes = action.payload ? action.payload : {};
-      return {
-        ...state,
-        hiddenRoutes,
       };
     }
     default:

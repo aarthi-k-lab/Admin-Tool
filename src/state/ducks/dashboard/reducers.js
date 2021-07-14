@@ -40,7 +40,7 @@ import {
   SET_ADD_BULK_ORDER_RESULT,
   SET_BEGIN_SEARCH,
   SET_ENABLE_SEND_BACK_GEN,
-  SET_BULK_UPLOAD_RESULT,
+  SET_COVIUS_BULK_UPLOAD_RESULT,
   SET_BULK_UPLOAD_PAGE_TYPE,
   SET_ENABLE_SEND_BACK_DOCSIN,
   SET_ENABLE_SEND_TO_BOOKING,
@@ -54,7 +54,7 @@ import {
   POSTMOD_END_SHIFT,
   CLEAR_POSTMOD_END_SHIFT,
   CLEAR_BULKUPLOAD_TABLEDATA,
-  CLEAR_DATA,
+  CLEAR_COVIUS_DATA,
   SET_INCENTIVE_TASKCODES,
   STORE_EVALID_RESPONSE,
   RESOLUTION_DROP_DOWN_VALUES,
@@ -67,43 +67,27 @@ import {
   CLEAR_COVIUS_SUBMIT_DATA,
   SET_DOWNLOAD_RESPONSE,
   SAVE_EVENTS_DROPDOWN,
-  SAVE_INVESTOR_EVENTS_DROPDOWN,
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
   DISABLE_SEND_TO_FEUW,
   SAVE_EVAL_FOR_WIDGET,
   SAVE_MAIN_CHECKLIST,
   SET_USER_NOTIF_MESSAGE,
+  TOGGLE_WIDGET,
   SAVE_TASKID,
   DISABLE_PUSHDATA,
   ASSIGN_TO_ME_CLICK,
   SET_PAYMENT_DEFERRAL,
-  SET_SELECTED_WIDGET,
-  TOGGLE_LOCK_BUTTON,
-  SET_POPUP_DATA,
-  CLEAR_POPUP_DATA,
-  TOGGLE_INCVRFN,
   EVAL_CASE_DETAILS,
   SET_CASE_DETAILS,
   SET_EVAL_INDEX,
+  SET_ADDITIONAL_INFO_SELECTED,
+  SET_HISTORY_SELECTED,
   SAVE_EVAL_LOANVIEW,
-  SET_USER_NOTIFICATION,
-  DISMISS_USER_NOTIFICATION,
-  SET_FHLMC_UPLOAD_RESULT,
-  TOGGLE_BANNER,
 } from './types';
 
-const reducer = (state = {
-  firstVisit: true,
-  coviusTabIndex: 0,
-}, action) => {
+const reducer = (state = { firstVisit: true, coviusTabIndex: 0 }, action) => {
   switch (action.type) {
-    case TOGGLE_INCVRFN: {
-      return {
-        ...state,
-        isIncomeVerification: action.payload,
-      };
-    }
     case SET_PAYMENT_DEFERRAL: {
       const data = action.payload;
       return {
@@ -222,17 +206,6 @@ const reducer = (state = {
       };
     }
 
-    case DISMISS_USER_NOTIFICATION: {
-      return {
-        ...state,
-        userNotification: {
-          isOpen: false,
-          level: null,
-          message: null,
-        },
-      };
-    }
-
     case POSTMOD_END_SHIFT: {
       return {
         ...state,
@@ -265,7 +238,8 @@ const reducer = (state = {
         inProgress: false,
         wasSearched: true,
         userNotification: {},
-        isIncomeVerification: false,
+        isAdditionalInfoOpen: false,
+        isHistoryOpen: false,
       };
     }
 
@@ -592,36 +566,6 @@ const reducer = (state = {
         loading: false,
       };
     }
-    case SET_USER_NOTIFICATION: {
-      const { message, level } = action.payload;
-      const userNotification = {
-        message,
-        level,
-        isOpen: true,
-      };
-      return {
-        ...state,
-        userNotification,
-      };
-    }
-
-    case SET_POPUP_DATA: {
-      const popupData = {
-        ...action.payload,
-        isOpen: true,
-      };
-      return {
-        ...state,
-        popupData,
-      };
-    }
-
-    case CLEAR_POPUP_DATA: {
-      return {
-        ...state,
-        popupData: {},
-      };
-    }
 
     case CLEAR_BULKUPLOAD_TABLEDATA: {
       return {
@@ -630,7 +574,7 @@ const reducer = (state = {
       };
     }
 
-    case CLEAR_DATA: {
+    case CLEAR_COVIUS_DATA: {
       const resultOperation = {};
       const resultData = {};
       const eventNames = [];
@@ -657,7 +601,6 @@ const reducer = (state = {
         enableSendToDocsIn,
         enableSendToBooking,
         loading: false,
-        incCalcLockVisibility: true,
       };
     }
 
@@ -670,7 +613,7 @@ const reducer = (state = {
       };
     }
 
-    case SET_BULK_UPLOAD_RESULT: {
+    case SET_COVIUS_BULK_UPLOAD_RESULT: {
       let resultData = {};
       resultData = action.payload;
       const resultOperation = {};
@@ -678,15 +621,6 @@ const reducer = (state = {
         ...state,
         resultData,
         resultOperation,
-        loading: false,
-      };
-    }
-
-    case SET_FHLMC_UPLOAD_RESULT: {
-      const resultData = action.payload;
-      return {
-        ...state,
-        resultData,
         loading: false,
       };
     }
@@ -839,17 +773,11 @@ const reducer = (state = {
         coviusEventOptions: payload,
       };
     }
-    case SAVE_INVESTOR_EVENTS_DROPDOWN: {
-      const { payload } = action;
+    case TOGGLE_WIDGET: {
+      const toggleWidget = action.payload;
       return {
         ...state,
-        investorEventOptions: payload,
-      };
-    }
-    case SET_SELECTED_WIDGET: {
-      return {
-        ...state,
-        selectedWidget: action.payload,
+        toggleWidget,
       };
     }
     case SAVE_TASKID: {
@@ -857,21 +785,6 @@ const reducer = (state = {
       return {
         ...state,
         bookingTaskId,
-      };
-    }
-    case TOGGLE_LOCK_BUTTON: {
-      const enableLockButton = action.payload;
-      return {
-        ...state,
-        enableLockButton,
-      };
-    }
-
-    case TOGGLE_BANNER: {
-      const showBanner = action.payload;
-      return {
-        ...state,
-        showBanner,
       };
     }
 
@@ -898,6 +811,20 @@ const reducer = (state = {
         ...state,
         evalIndex: index,
         addInfoEvalId: evalId,
+      };
+    }
+
+    case SET_ADDITIONAL_INFO_SELECTED: {
+      return {
+        ...state,
+        isAdditionalInfoOpen: action.payload,
+      };
+    }
+
+    case SET_HISTORY_SELECTED: {
+      return {
+        ...state,
+        isHistoryOpen: action.payload,
       };
     }
 

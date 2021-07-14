@@ -177,14 +177,6 @@ const config = merge(
             '^/api/docfulfillment': '',
           },
         },
-        '/api/cmodinvestor': {
-          target: 'https://uat.cmod.mrcooper.io/cmodinvestorservice',
-          secure: false,
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api/cmodinvestor': '',
-          },
-        },
       },
       publicPath: '/',
       noInfo: false,

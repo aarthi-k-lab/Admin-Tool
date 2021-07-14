@@ -12,5 +12,5 @@
       "models": ["src/models/*"],
     }
   },
-  "exclude": ["node_modules", "dist", "automation", "stories"]
+  "exclude": ["node_modules", "dist"]
 }

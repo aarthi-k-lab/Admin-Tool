@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import hotkeys from 'hotkeys-js';
-import * as R from 'ramda';
-import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -9,63 +6,58 @@ import classNames from 'classnames';
 import TaskPane from 'containers/Dashboard/TaskPane';
 import Checklist from 'components/Checklist';
 import Loader from 'components/Loader/Loader';
-import CustomSnackBar from 'components/CustomSnackBar';
-import AdditionalInfo from 'containers/AdditionalInfo';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
+import * as R from 'ramda';
+import { operations, selectors } from 'ducks/tasks-and-checklist';
+import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
+import { selectors as loginSelectors } from 'ducks/login';
 import { ERROR, SUCCESS } from 'constants/common';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import CustomSnackBar from 'components/CustomSnackBar';
+import AdditionalInfo from 'containers/AdditionalInfo';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
-import { selectors as incomeSelectors } from 'ducks/income-calculator';
-import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
-import { selectors as widgetsSelectors, operations as widgetsOperations } from 'ducks/widgets';
-import { operations, selectors } from 'ducks/tasks-and-checklist';
-import { selectors as loginSelectors } from 'ducks/login';
-import { closeWidgets } from 'components/Widgets/WidgetSelects';
-import ErrorBanner from 'components/ErrorBanner';
-import componentTypes from 'constants/componentTypes';
-import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
-import Popup from '../../../components/Popup';
+import hotkeys from 'hotkeys-js';
+import CloseIcon from '@material-ui/icons/Close';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
-import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
+import widgets from '../../../constants/widget';
 import BookingHomePage from './BookingHomePage';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
+import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import styles from './TasksAndChecklist.css';
-import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR,
-} from '../../../constants/widgets';
+import componentTypes from '../../../constants/componentTypes';
 
 const LEFT_KEY = 37;
 const RIGHT_KEY = 39;
 class TasksAndChecklist extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
   componentDidMount() {
     const {
-      onWidgetToggle, groupName, openWidgetList,
+      onWidgetToggle, groupName, isAdditionalInfoOpen, isHistoryOpen,
     } = this.props;
     hotkeys('right,left', (event) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress();
       }
     });
-    if (R.equals(groupName, DashboardModel.BOOKING)
-    && !(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList))) {
-      const payload = {
-        currentWidget: BOOKING,
-        openWidgetList: [BOOKING],
-      };
-      onWidgetToggle(payload);
+    if (R.equals(groupName, DashboardModel.BOOKING) && !(isAdditionalInfoOpen || isHistoryOpen)) {
+      onWidgetToggle(true);
     }
   }
 
   componentWillUnmount() {
     hotkeys.unbind('right,left');
     const {
-      openWidgetList,
+      toggleWidget,
     } = this.props;
-    if (R.contains(BOOKING, openWidgetList)) {
+    if (toggleWidget) {
       this.handleClose();
     }
   }
@@ -78,13 +70,6 @@ class TasksAndChecklist extends Component {
       return checklistItems;
     }
     return filter ? passedRules : failedRules;
-  }
-
-  shouldRenderWidgetView = () => {
-    const { openWidgetList } = this.props;
-    return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR],
-    ))(openWidgetList);
   }
 
   handleHotKeyPress = () => {
@@ -102,18 +87,31 @@ class TasksAndChecklist extends Component {
   }
 
   handleClose = () => {
-    const { onWidgetToggle, openWidgetList, groupName } = this.props;
-    const widgetsToBeClosed = {
-      openWidgetList,
-      page: groupName,
-      closingWidgets: [BOOKING],
-    };
-    const payload = {
-      currentWidget: '',
-      openWidgetList: closeWidgets(widgetsToBeClosed),
-    };
-    onWidgetToggle(payload);
+    const { onUnassignBookingLoan, onWidgetToggle, groupName } = this.props;
+    if (groupName !== DashboardModel.BOOKING) {
+      onUnassignBookingLoan();
+    }
+    onWidgetToggle(false);
   }
+
+
+  handleAIChange = (value, widgetId) => {
+    const {
+      onAdditionalInfoSelect, isAdditionalInfoOpen, isHistoryOpen,
+      onHistorySelect, onAdditionalInfo, loanNumber, toggleWidget,
+    } = this.props;
+    if (R.equals(widgetId, widgets.additionalInfo)) {
+      onAdditionalInfoSelect(!isAdditionalInfoOpen);
+      onHistorySelect(false);
+      if (!isAdditionalInfoOpen) onAdditionalInfo(loanNumber);
+      if (toggleWidget) this.handleClose();
+    } else if (R.equals(widgetId, widgets.history)) {
+      onHistorySelect(!isHistoryOpen);
+      onAdditionalInfoSelect(false);
+      if (toggleWidget) this.handleClose();
+    }
+  }
+
 
   handleSubTaskClearance(isConfirmed) {
     if (isConfirmed) {
@@ -123,6 +121,27 @@ class TasksAndChecklist extends Component {
         selectedTaskBlueprintCode,
       } = this.props;
       handleClearSubTask(selectedTaskId, rootTaskId, selectedTaskBlueprintCode);
+    }
+  }
+
+  handleChange(value, widgetId) {
+    const {
+      groupName, onWidgetToggle, toggleWidget, onHistorySelect, onAdditionalInfoSelect,
+    } = this.props;
+    if (R.equals(widgetId, widgets.booking)) {
+      onHistorySelect(false);
+      onAdditionalInfoSelect(false);
+      onWidgetToggle(!toggleWidget);
+      if (groupName !== DashboardModel.BOOKING) {
+        const {
+          onWidgetClick, onUnassignBookingLoan,
+        } = this.props;
+        if (toggleWidget) {
+          onUnassignBookingLoan();
+        } else {
+          onWidgetClick();
+        }
+      }
     }
   }
 
@@ -168,9 +187,6 @@ class TasksAndChecklist extends Component {
       closeSweetAlert,
       putComputeRulesPassed,
       ruleResultFromTaskTree,
-      getSelectedWidget,
-      openWidgetList,
-      incomeCalcInProgress,
     } = this.props;
 
     if (dataLoadStatus === 'failed') {
@@ -192,17 +208,13 @@ class TasksAndChecklist extends Component {
       );
     }
     let styleName = 'checklist';
-    if (checklistItems && R.equals(R.prop('type', R.head(checklistItems)), 'income-calculator')) {
-      styleName = 'incomeCalc';
-    }
-    const isBookingWidgetOpen = R.contains(BOOKING, openWidgetList);
-    if (groupName === DashboardModel.BOOKING || isBookingWidgetOpen) {
+    const { toggleWidget } = this.props;
+    if (groupName === DashboardModel.BOOKING || toggleWidget) {
       styleName = 'sla-rules';
       if (checklistItems && checklistItems[0].showPushData) {
         styleName = 'pushData';
       }
     }
-
     return (
       <Checklist
         checklistItems={this.getChecklistItems()}
@@ -213,7 +225,6 @@ class TasksAndChecklist extends Component {
         handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
         handleDeleteTask={handleDeleteTask}
         handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
-        incomeCalcInProgress={incomeCalcInProgress}
         isDialogOpen={isDialogOpen}
         location={location}
         onChange={onChecklistChange}
@@ -223,10 +234,9 @@ class TasksAndChecklist extends Component {
         resolutionData={resolutionData}
         resolutionId={resolutionId}
         ruleResultFromTaskTree={ruleResultFromTaskTree}
-        selectedWidget={getSelectedWidget}
         styleName={styleName}
         title={checklistTitle}
-        triggerHeader={isBookingWidgetOpen}
+        triggerHeader={toggleWidget}
       >
         {notification}
       </Checklist>
@@ -246,49 +256,8 @@ class TasksAndChecklist extends Component {
   }
 
   renderWidgetComponents() {
-    const { openWidgetList } = this.props;
-    const mainWidget = R.head(openWidgetList);
-    let widgetToRender = null;
-    switch (mainWidget) {
-      case ADDITIONAL_INFO:
-        widgetToRender = <AdditionalInfo />;
-        break;
-      case HISTORY:
-        widgetToRender = <MilestoneActivity />;
-        break;
-      case INCOME_CALCULATOR:
-        widgetToRender = <IncomeCalcWidget />;
-        break;
-      default:
-        widgetToRender = null;
-    }
-    return widgetToRender;
-  }
-
-  renderSweetAlert() {
-    const { clearPopupData, popupData, dispatchAction } = this.props;
-    if (popupData) {
-      const {
-        isOpen, message, title, level, showCancelButton,
-        cancelButtonText, confirmButtonText, onConfirm,
-      } = popupData;
-      const confirmAction = onConfirm ? dispatchAction : clearPopupData;
-      return (
-        <Popup
-          cancelButtonText={cancelButtonText}
-          confirmButtonText={confirmButtonText}
-          level={level}
-          message={message}
-          onCancel={clearPopupData}
-          onConfirm={() => confirmAction(onConfirm)}
-          show={isOpen}
-          showCancelButton={showCancelButton}
-          showConfirmButton
-          title={title}
-        />
-      );
-    }
-    return null;
+    const { isAdditionalInfoOpen } = this.props;
+    return isAdditionalInfoOpen ? <AdditionalInfo /> : <MilestoneActivity />;
   }
 
   render() {
@@ -312,9 +281,9 @@ class TasksAndChecklist extends Component {
       completeReviewResponse,
       history,
       isAssigned,
-      openWidgetList,
-      errorBanner,
-      showBanner,
+      toggleWidget,
+      isAdditionalInfoOpen,
+      isHistoryOpen,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
     const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
@@ -335,18 +304,17 @@ class TasksAndChecklist extends Component {
       );
     }
 
+    const isHeaderVisible = toggleWidget && !R.equals(groupName, DashboardModel.BOOKING);
     const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
-    const taskPane = R.contains(INCOME_CALCULATOR, openWidgetList) ? null : <TaskPane styleName="tasks" />;
-    const currentOverlay = this.shouldRenderWidgetView() ? null : (
+    const currentOverlay = (isAdditionalInfoOpen || isHistoryOpen) ? null : (
       <>
-        {taskPane}
+        <TaskPane styleName="tasks" />
         {this.renderChecklist()}
       </>
     );
     return (
       <div styleName="scroll-wrapper">
-        { showBanner && <ErrorBanner errorBanner={errorBanner} /> }
-        { R.contains(BOOKING, openWidgetList) && (
+        {isHeaderVisible && (
           <div styleName="bookingWidget">
             <span styleName="widgetTitle">
               BOOKING AUTOMATION
@@ -357,7 +325,7 @@ class TasksAndChecklist extends Component {
           </div>
         )
         }
-        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
+        {isAdditionalInfoOpen && (
           <div styleName="bookingWidget">
             <span styleName="widgetTitle">
               ADDITIONAL INFO
@@ -365,13 +333,13 @@ class TasksAndChecklist extends Component {
           </div>
         )
         }
-        <section styleName={R.contains(HISTORY, openWidgetList) ? 'tasks-and-checklist-loan-audit' : 'tasks-and-checklist'}>
+        <section styleName={isHistoryOpen ? 'tasks-and-checklist-loan-audit' : 'tasks-and-checklist'}>
           {groupName === DashboardModel.BOOKING
-          && !(R.contains(R.head(openWidgetList), [ADDITIONAL_INFO, HISTORY, BOOKING]))
+          && !(toggleWidget || isAdditionalInfoOpen || isHistoryOpen)
             ? <BookingHomePage message={bookingHomepageMsg} />
             : currentOverlay }
           {this.renderSnackBar()}
-          {!this.shouldRenderWidgetView() ? (
+          {!(isAdditionalInfoOpen || isHistoryOpen) ? (
             <>
               <DialogCard
                 commentsRequired={commentsRequired}
@@ -394,12 +362,13 @@ class TasksAndChecklist extends Component {
             </>
           ) : this.renderWidgetComponents()}
           <WidgetBuilder
-            page={groupName}
-            styleName={groupName === DashboardModel.DOCS_IN
-              && R.contains(BOOKING, openWidgetList)
-              ? 'task-checklist-bw' : 'task-checklist'}
+            isAdditionalInfoOpen={isAdditionalInfoOpen}
+            isHistoryOpen={isHistoryOpen}
+            styleName={groupName === DashboardModel.DOCS_IN && toggleWidget ? 'task-checklist-bw' : 'task-checklist'}
+            toggleWidget={toggleWidget}
+            triggerAI={this.handleAIChange}
+            triggerHeader={this.handleChange}
           />
-          {this.renderSweetAlert()}
         </section>
       </div>
     );
@@ -407,10 +376,8 @@ class TasksAndChecklist extends Component {
 }
 
 TasksAndChecklist.defaultProps = {
-  showBanner: false,
   enableGetNext: false,
   inProgress: false,
-  incomeCalcInProgress: false,
   message: null,
   noTasksFound: false,
   isGetNextError: false,
@@ -422,8 +389,11 @@ TasksAndChecklist.defaultProps = {
   showAssign: false,
   isPostModEndShift: false,
   resolutionData: [],
+  toggleWidget: false,
   ruleResultFromTaskTree: [],
-  openWidgetList: '',
+  isAdditionalInfoOpen: false,
+  isHistoryOpen: false,
+  loanNumber: null,
 };
 
 TasksAndChecklist.propTypes = {
@@ -460,7 +430,6 @@ TasksAndChecklist.propTypes = {
     }),
   ).isRequired,
   checklistTitle: PropTypes.string.isRequired,
-  clearPopupData: PropTypes.func.isRequired,
   closeSnackBar: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
   commentsRequired: PropTypes.bool.isRequired,
@@ -469,29 +438,25 @@ TasksAndChecklist.propTypes = {
   dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
-  dispatchAction: PropTypes.func.isRequired,
   disposition: PropTypes.string.isRequired,
   enableGetNext: PropTypes.bool,
-  errorBanner: PropTypes.shape({
-    errors: PropTypes.array,
-    warnings: PropTypes.array,
-  }).isRequired,
   failedRules: PropTypes.shape.isRequired,
   filter: PropTypes.bool.isRequired,
   getDialogContent: PropTypes.string,
-  getSelectedWidget: PropTypes.string.isRequired,
   groupName: PropTypes.string.isRequired,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
-  incomeCalcInProgress: PropTypes.bool,
   inProgress: PropTypes.bool,
   instructions: PropTypes.string.isRequired,
+  isAdditionalInfoOpen: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
   isDialogOpen: PropTypes.bool,
   isGetNextError: PropTypes.bool,
+  isHistoryOpen: PropTypes.bool,
   isPostModEndShift: PropTypes.bool,
+  loanNumber: PropTypes.number,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
@@ -501,25 +466,17 @@ TasksAndChecklist.propTypes = {
     type: PropTypes.string,
   }),
   noTasksFound: PropTypes.bool,
+  onAdditionalInfo: PropTypes.func.isRequired,
+  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onChecklistChange: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   onInstuctionDialogToggle: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
+  onUnassignBookingLoan: PropTypes.func.isRequired,
+  onWidgetClick: PropTypes.func.isRequired,
   onWidgetToggle: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   passedRules: PropTypes.shape.isRequired,
-  popupData: PropTypes.shape({
-    cancelButtonText: PropTypes.string,
-    clearData: PropTypes.string,
-    confirmButtonText: PropTypes.string,
-    isOpen: PropTypes.bool,
-    level: PropTypes.string,
-    message: PropTypes.string,
-    onConfirm: PropTypes.func,
-    showCancelButton: PropTypes.bool,
-    showConfirmButton: PropTypes.bool,
-    title: PropTypes.string,
-  }).isRequired,
   putComputeRulesPassed: PropTypes.func.isRequired,
   resolutionData: PropTypes.arrayOf(PropTypes.string),
   resolutionId: PropTypes.string.isRequired,
@@ -528,11 +485,11 @@ TasksAndChecklist.propTypes = {
   selectedTaskBlueprintCode: PropTypes.string.isRequired,
   selectedTaskId: PropTypes.string.isRequired,
   showAssign: PropTypes.bool,
-  showBanner: PropTypes.bool,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
   snackBarData: PropTypes.node,
   taskFetchError: PropTypes.bool,
+  toggleWidget: PropTypes.bool,
   user: PropTypes.shape({
 
     skills: PropTypes.objectOf(PropTypes.array).isRequired,
@@ -593,8 +550,6 @@ function mapStateToProps(state) {
   const getNextError = dashboardSelectors.getNextError(state);
 
   return {
-    incomeCalcInProgress: incomeSelectors.inProgress(state),
-    openWidgetList: widgetsSelectors.getOpenWidgetList(state),
     disposition: selectors.getDisposition(state),
     dataLoadStatus: selectors.getChecklistLoadStatus(state),
     checklistErrorMessage: getChecklistErrorMessage(
@@ -633,7 +588,6 @@ function mapStateToProps(state) {
     dialogTitle: selectors.getDialogTitle(state),
     selectedTaskId: selectors.selectedTaskId(state),
     selectedTaskBlueprintCode: selectors.selectedTaskBlueprintCode(state),
-    getSelectedWidget: dashboardSelectors.getSelectedWidget(state),
     passedRules: selectors.getPassedRules(state),
     failedRules: selectors.getFailedRules(state),
     filter: selectors.getFilter(state),
@@ -641,17 +595,18 @@ function mapStateToProps(state) {
     resolutionData: dashboardSelectors.getResolutionData(state),
     prevDocsInChecklistId: selectors.getPrevDocsInChecklistId(state),
     prevDocsInRootTaskId: selectors.getPrevDocsInRootTaskId(state),
-    errorBanner: incomeSelectors.getErrorBanner(state),
-    showBanner: dashboardSelectors.showBanner(state),
+    toggleWidget: dashboardSelectors.getToggleWidget(state),
     ruleResultFromTaskTree: selectors.getRuleResultFromTaskTree(state),
-    popupData: dashboardSelectors.getPopupData(state),
+    isAdditionalInfoOpen: dashboardSelectors.isAdditionalInfoOpen(state),
+    isHistoryOpen: dashboardSelectors.isHistoryOpen(state),
     loanNumber: dashboardSelectors.loanNumber(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onWidgetToggle: widgetsOperations.onWidgetToggle(dispatch),
+    onWidgetToggle: dashboardOperations.onWidgetToggle(dispatch),
+    onUnassignBookingLoan: dashboardOperations.onUnassignBookingLoan(dispatch),
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
     closeSnackBar: notificationOperations.closeSnackBar(dispatch),
     handleDeleteTask: operations.handleDeleteTask(dispatch),
@@ -662,9 +617,10 @@ function mapDispatchToProps(dispatch) {
     handleClearSubTask: operations.handleSubTaskClearance(dispatch),
     onWidgetClick: dashboardOperations.onWidgetClick(dispatch),
     closeSweetAlert: dashboardOperations.closeSweetAlert(dispatch),
-    clearPopupData: dashboardOperations.clearPopupData(dispatch),
     putComputeRulesPassed: operations.putComputeRulesPassed(dispatch),
-    dispatchAction: dashboardOperations.dispatchAction(dispatch),
+    onAdditionalInfo: dashboardOperations.onAdditionalInfoClick(dispatch),
+    onAdditionalInfoSelect: dashboardOperations.onAdditionalInfoSelect(dispatch),
+    onHistorySelect: dashboardOperations.onHistorySelect(dispatch),
   };
 }
 

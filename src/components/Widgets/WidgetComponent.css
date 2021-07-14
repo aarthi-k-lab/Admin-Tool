@@ -30,7 +30,6 @@
   display: inline-flex;
   right: 4.9rem;
   width: 32rem;
-  z-index: 100;
   height: calc(100% - 4.688rem);
   position: fixed !important;
 }
@@ -45,7 +44,6 @@
   display: inline-flex;
   right: 4.9rem;
   width: 32rem;
-  z-index: 100;
   margin-top: 6.2rem;
   height: calc(100% - 4.688rem);
   position: fixed !important;

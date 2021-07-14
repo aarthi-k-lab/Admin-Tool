@@ -15,7 +15,7 @@ describe('<WidgetComponent />', () => {
       },
     ];
     const wrapper = shallow(
-      <TestHooks.WidgetComponent currentWidget="Comments" rightAppBar={data} />,
+      <TestHooks.WidgetComponent rightAppBar={data} rightAppBarSelected="Comments" />,
     );
     expect(wrapper.find('Connect(CommentsWidget)')).toHaveLength(1);
     expect(wrapper.find('div')).toHaveLength(3);

@@ -147,7 +147,57 @@ const numberAndReadOnlyText = [{
 const checklistWithoutHint = [{
   id: '5f16e27c0b35fd5200e89376', isVisible: true, options: [], taskCode: 'ALL_INC_INC_CHK2', title: 'Is the expected incentive amount correct?', type: 'read-only-text', source: '', additionalInfo: {},
 }, {
-  id: '5f16e27c0b35fd5200e89343', isVisible: true, options: [], taskCode: 'ALL_INC_INC_CHK2', title: 'Is the expected incentive amount correct?', type: 'read-only-text', source: '', additionalInfo: {},
+  id: '5f16e27c0b35fd5200e89343', isVisible: true, options: { hint: '' }, taskCode: 'ALL_INC_INC_CHK2', title: 'Is the expected incentive amount correct?', type: 'read-only-text', source: '', additionalInfo: {},
+}, {
+  id: '5f16e27c0b35fdd6a0e89379', isVisible: true, options: [], taskCode: 'ALL_INC_INC_CHK4', title: 'Is the actual incentive amount received correct?', type: 'multiline-text', source: '', additionalInfo: {},
+}, {
+  id: '1f16e27c0b35fdd6a0e89312', isVisible: true, options: { hint: '' }, taskCode: 'ALL_INC_INC_CHK14', title: 'Is the actual incentive amount received correct?', type: 'multiline-text', source: '', additionalInfo: {},
+}, {
+  id: '5f16e27c0b35fd2085e89378', isVisible: true, options: [], taskCode: 'ALL_INC_INC_CHK5', title: 'What is the actual incentive amount received?', type: 'number', source: '', additionalInfo: {},
+}, {
+  id: '5f16e27c0b35fd2085e83vf3', isVisible: true, options: { hint: '' }, taskCode: 'ALL_INC_INC_CHK5', title: 'What is the actual incentive amount received?', type: 'number', source: '', additionalInfo: {},
+}, {
+  id: '5f16e27cs34b35fd5242e891', isVisible: true, options: [], taskCode: 'ALL_INC_INC_CHK2', title: 'Is the expected incentive amount correct?', type: 'currency', source: '', additionalInfo: {},
+}, {
+  id: '5f16e27cs34b323d5242e823',
+  isVisible: true,
+  options: { hint: '' },
+  taskCode: 'ALL_INC_INC_CHK2',
+  title: 'Is the expected incentive amount correct?',
+  type: 'currency',
+  source: '',
+  value: '123',
+  additionalInfo: {},
+}, {
+  id: '0f16227c0b35fdd6x0e8939g', isVisible: true, options: [], taskCode: 'ALL_INC_INC_CHK24', title: 'Is the actual incentive amount received correct?', type: 'text', source: '', additionalInfo: {},
+}, {
+  id: '6f16227c0b35fdd6a0e89136', isVisible: true, options: { hint: '' }, taskCode: 'ALL_INC_INC_CHK24', title: 'Is the actual incentive amount received correct?', type: 'text', source: '', additionalInfo: {},
+}, {
+  id: 'ff16e73287s902e4b6fd4d14',
+  disabled: false,
+  isVisible: true,
+  options: { },
+  taskCode: 'GOV_LNHR_CHK28',
+  title: 'What is the date of the last modification completed? ',
+  type: 'date',
+  value: '07-21-2020',
+  source: '',
+  additionalInfo: {},
+  showPushData: false,
+  state: 'in-progress',
+}, {
+  id: 'ff16e73287s902e4b6fd4d1234',
+  disabled: false,
+  isVisible: true,
+  options: { hint: '' },
+  taskCode: 'GOV_LNHR_CHK28',
+  title: 'What is the date of the last modification completed? ',
+  type: 'date',
+  value: '07-21-2020',
+  source: '',
+  additionalInfo: {},
+  showPushData: false,
+  state: 'in-progress',
 }];
 
 const datePickerChecklistItems = [{
@@ -201,6 +251,18 @@ const unknownChecklistType = [{
   taskCode: 'GOV_LNHR_CHK32',
   title: 'Did the loan have a modification within the prior 36 months?',
   type: 'drop-down-menu',
+  source: '',
+  additionalInfo: {},
+  showPushData: false,
+  state: 'in-progress',
+
+}, {
+  id: '5f16e73287d90ed64dfda31b',
+  disabled: false,
+  isVisible: true,
+  taskCode: 'GOV_LNHR_CHK32',
+  title: 'Did the loan have a modification within the prior 36 months?',
+  type: 'label-with-icon',
   source: '',
   additionalInfo: {},
   showPushData: false,

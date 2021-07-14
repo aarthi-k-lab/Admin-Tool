@@ -14,8 +14,6 @@ import {
   selectors as loginSelectors,
 } from 'ducks/login';
 import moment from 'moment-timezone';
-import { selectors as widgetsSelectors, operations as widgetsOperations } from 'ducks/widgets';
-import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -25,7 +23,7 @@ import './SearchLoan.css';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import AdditionalInfo from '../../AdditionalInfo/AdditionalInfo';
 import GoBackToSearch from '../../../components/GoBackToSearch/GoBackToSearch';
-import { ADDITIONAL_INFO, HISTORY } from '../../../constants/widgets';
+import widgets from '../../../constants/widget';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 
 class SearchLoan extends React.PureComponent {
@@ -92,18 +90,20 @@ class SearchLoan extends React.PureComponent {
   }
 
   goToSearchResults = () => {
-    const { onWidgetToggle, openWidgetList } = this.props;
-    const widgetsToBeClosed = {
-      openWidgetList,
-      page: 'SEARCH_LOAN',
-      closingWidgets: [HISTORY, ADDITIONAL_INFO],
-    };
-    const widgetList = closeWidgets(widgetsToBeClosed);
-    const payload = {
-      currentWidget: '',
-      openWidgetList: widgetList,
-    };
-    onWidgetToggle(payload);
+    const { onAdditionalInfoSelect, onHistorySelect } = this.props;
+    onAdditionalInfoSelect(false);
+    onHistorySelect(false);
+  }
+
+  handleAIChange = (value, widgetId) => {
+    const {
+      onAdditionalInfoSelect, isAdditionalInfoOpen, onAdditionalInfo, searchLoanResult,
+    } = this.props;
+    const { loanNumber } = searchLoanResult;
+    if (R.equals(widgetId, widgets.additionalInfo)) {
+      onAdditionalInfoSelect(!isAdditionalInfoOpen);
+      if (!isAdditionalInfoOpen) onAdditionalInfo(loanNumber);
+    }
   }
 
   handleRowClick(payload, rowInfo) {
@@ -302,7 +302,7 @@ class SearchLoan extends React.PureComponent {
 
   render() {
     const {
-      searchLoanResult, history, location, openWidgetList,
+      searchLoanResult, history, location, isAdditionalInfoOpen, isHistoryOpen,
     } = this.props;
     const data = [];
     const {
@@ -319,35 +319,24 @@ class SearchLoan extends React.PureComponent {
 
     return (
       <>
-        {!R.isEmpty(searchLoanResult) && !R.contains(HISTORY, openWidgetList) && (
-        <WidgetBuilder page="SEARCH_LOAN" />
-        )}
-        {((R.contains(ADDITIONAL_INFO, openWidgetList) && valid)
-        || R.contains(HISTORY, openWidgetList)) ? (
+        {!R.isEmpty(searchLoanResult) && !isHistoryOpen && <WidgetBuilder inSearchPage triggerAI={this.handleAIChange} type="search" />}
+        {((isAdditionalInfoOpen && valid) || isHistoryOpen) ? (
           <GoBackToSearch
             history={history}
             loanNumber={loanNumber}
             location={location}
             onClick={this.goToSearchResults}
           />
-          )
+        )
           : (
             <span styleName="backButton">
               <Link onClick={this.handleBackButton} to="/">&lt; BACK</Link>
             </span>
           )
         }
-        {R.contains(ADDITIONAL_INFO, openWidgetList) && valid
-        && (
-        <AdditionalInfo
-          data={data}
-          loanNumber={loanNumber}
-          styleName="evalTable"
-          type="searchPage"
-        />
-        )}
-        {R.contains(HISTORY, openWidgetList) && <MilestoneActivity inSearchPage />}
-        {!(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList)) && (
+        {isAdditionalInfoOpen && valid && <AdditionalInfo data={data} loanNumber={loanNumber} styleName="evalTable" type="searchPage" />}
+        {isHistoryOpen && <MilestoneActivity inSearchPage />}
+        {!(isAdditionalInfoOpen || isHistoryOpen) && (
         <>
           {this.renderRejectResults()}
           {this.renderSearchResults()}
@@ -484,7 +473,8 @@ SearchLoan.defaultProps = {
   enableGetNext: false,
   inProgress: false,
   resultOperation: {},
-  openWidgetList: [],
+  isHistoryOpen: false,
+  isAdditionalInfoOpen: false,
 };
 
 SearchLoan.propTypes = {
@@ -496,18 +486,21 @@ SearchLoan.propTypes = {
   })).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
+  isAdditionalInfoOpen: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
+  isHistoryOpen: PropTypes.bool,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired,
   }).isRequired,
+  onAdditionalInfo: PropTypes.func.isRequired,
+  onAdditionalInfoSelect: PropTypes.func.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
-  onWidgetToggle: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   resultOperation: PropTypes.shape(
     {
       isOpen: PropTypes.bool,
@@ -531,7 +524,6 @@ SearchLoan.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   enableGetNext: selectors.enableGetNext(state),
   evalId: selectors.evalId(state),
   isAssigned: selectors.isAssigned(state),
@@ -540,6 +532,8 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   inProgress: selectors.inProgress(state),
   resultOperation: selectors.resultOperation(state),
+  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
+  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -551,7 +545,9 @@ const mapDispatchToProps = dispatch => ({
   onGetGroupName: operations.onGetGroupName(dispatch),
   onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
-  onWidgetToggle: widgetsOperations.onWidgetToggle(dispatch),
+  onAdditionalInfo: operations.onAdditionalInfoClick(dispatch),
+  onAdditionalInfoSelect: operations.onAdditionalInfoSelect(dispatch),
+  onHistorySelect: operations.onHistorySelect(dispatch),
 });
 
 const SearchLoanContainer = connect(

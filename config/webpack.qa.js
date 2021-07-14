@@ -1,5 +1,6 @@
-const merge = require('webpack-merge');
-const baseConfig = require('./webpack.common');
+// eslint-disable-next-line import/no-extraneous-dependencies
+import merge from 'webpack-merge';
+import baseConfig from './webpack.common';
 
 const port = 8080;
 const AUTH_REGEX = /^\/api\/auth/;
@@ -49,14 +50,6 @@ const config = merge(
           target: 'http://127.0.0.1:7600',
           pathRewrite: authPathRewrite,
         },
-        '/api/docfulfillment': {
-          target: 'https://qa.cmod.mrcooper.io/cmoddocfulfillment',
-          secure: false,
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api/docfulfillment': '',
-          },
-        },
         '/api/ods-gateway': {
           target: 'https://qa.cmod.mrcooper.io/cmodgateway',
           secure: false,
@@ -90,6 +83,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
+          // target: 'http://127.0.0.1:7800',
           target: 'https://qa.cmod.mrcooper.io/cmodworkassignment',
           secure: false,
           changeOrigin: true,
@@ -177,14 +171,6 @@ const config = merge(
             '^/api/dataservice': '',
           },
         },
-        '/api/booking': {
-          target: 'https://qa.cmod.mrcooper.io/cmodbooking',
-          secure: false,
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api/booking': '',
-          },
-        },
       },
       publicPath: '/',
       noInfo: false,
@@ -196,4 +182,4 @@ const config = merge(
   },
 );
 
-module.exports = config;
+export default config;

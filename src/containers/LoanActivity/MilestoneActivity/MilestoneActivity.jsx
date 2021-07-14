@@ -62,6 +62,7 @@ class MilestoneActivity extends React.Component {
       groupTask,
       tasks,
       processId,
+      isHistoryOpen,
       inSearchPage,
     } = this.props;
     return (
@@ -72,6 +73,7 @@ class MilestoneActivity extends React.Component {
           inProgress={inProgress}
           inProgressTask={inProgressTask}
           inSearchPage={inSearchPage}
+          isHistoryOpen={isHistoryOpen}
           onClickMilestone={() => this.onClickMilestone()}
           onStagerTaskClick={
             (taskCategory, creDttm1, creDttm2) => this.onStagerTaskClick(
@@ -89,6 +91,24 @@ class MilestoneActivity extends React.Component {
 const TestHooks = {
   MilestoneActivity,
 };
+
+const mapStateToProps = state => ({
+  inProgress: milestoneSelector.inProgress(state),
+  inProgressTask: milestoneSelector.inProgressTask(state),
+  groupTask: milestoneSelector.getMlstnData(state),
+  tasks: milestoneSelector.getTasksData(state),
+  processId: dashSelectors.processId(state),
+  evalId: dashSelectors.evalId(state),
+  processStatus: dashSelectors.processStatus(state),
+  isHistoryOpen: dashSelectors.isHistoryOpen(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  loadMlstn: milestoneOperations.loadMlstn(dispatch),
+  getTasksByTaskCategory: milestoneOperations.getTasksByTaskCategory(dispatch),
+  clearTasks: milestoneOperations.clearTasks(dispatch),
+  clearData: milestoneOperations.clearMlstnDatas(dispatch),
+});
 
 MilestoneActivity.propTypes = {
   clearData: PropTypes.func.isRequired,
@@ -108,6 +128,7 @@ MilestoneActivity.propTypes = {
   ).isRequired,
   inProgress: PropTypes.bool,
   inSearchPage: PropTypes.bool,
+  isHistoryOpen: PropTypes.bool,
   loadMlstn: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(
     PropTypes.shape({
@@ -123,25 +144,9 @@ MilestoneActivity.propTypes = {
 
 MilestoneActivity.defaultProps = {
   inProgress: false,
+  isHistoryOpen: false,
   inSearchPage: false,
 };
-
-const mapStateToProps = state => ({
-  inProgress: milestoneSelector.inProgress(state),
-  inProgressTask: milestoneSelector.inProgressTask(state),
-  groupTask: milestoneSelector.getMlstnData(state),
-  tasks: milestoneSelector.getTasksData(state),
-  processId: dashSelectors.processId(state),
-  evalId: dashSelectors.evalId(state),
-  processStatus: dashSelectors.processStatus(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  loadMlstn: milestoneOperations.loadMlstn(dispatch),
-  getTasksByTaskCategory: milestoneOperations.getTasksByTaskCategory(dispatch),
-  clearTasks: milestoneOperations.clearTasks(dispatch),
-  clearData: milestoneOperations.clearMlstnDatas(dispatch),
-});
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MilestoneActivity));
 export { TestHooks };

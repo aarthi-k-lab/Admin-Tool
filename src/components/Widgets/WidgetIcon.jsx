@@ -1,5 +1,4 @@
 import React from 'react';
-import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -18,21 +17,21 @@ const useStyles = makeStyles(theme => ({
 
 const WidgetIcon = (props) => {
   const {
-    openWidgetList, data, onWidgetClick, disabledWidgets,
+    rightAppBarOpen, rightAppBarSelected, data, onWidgetClick,
+    isAdditionalInfoOpen, isHistoryOpen, toggleWidget,
   } = props;
-  const isSelected = (R.contains(data.id, openWidgetList));
-  const style = {
-    background: isSelected ? '#d7d8d9' : 'rgb(242, 242, 242)',
-    cursor: R.contains(data.id, disabledWidgets) ? 'not-allowed' : 'pointer',
-  };
+  const isSelected = (rightAppBarOpen && rightAppBarSelected === data.id)
+    || (isHistoryOpen && data.id === 'History')
+    || (isAdditionalInfoOpen && data.id === 'Additional Info')
+    || (toggleWidget && data.id === 'BookingAutomation');
   return (
     <Grid
       alignItems="center"
       container
       justify="center"
       onClick={onWidgetClick}
-      style={style}
-      styleName="component"
+      styleName={isSelected
+        ? 'component-selected' : 'component-not-selected'}
     >
       <Grid item styleName={data.id === 'History' ? 'history' : ''}>
         <Tooltip arrow classes={useStyles()} placement="left" title={data.id}>{data.icon}</Tooltip>
@@ -42,9 +41,12 @@ const WidgetIcon = (props) => {
 };
 
 WidgetIcon.defaultProps = {
-  openWidgetList: [],
+  rightAppBarOpen: true,
+  rightAppBarSelected: '',
   data: [],
-  disabledWidgets: [],
+  isAdditionalInfoOpen: false,
+  isHistoryOpen: false,
+  toggleWidget: false,
 };
 
 WidgetIcon.propTypes = {
@@ -52,9 +54,13 @@ WidgetIcon.propTypes = {
     icon: PropTypes.string,
     id: PropTypes.string,
   }),
-  disabledWidgets: PropTypes.arrayOf(PropTypes.string),
+  isAdditionalInfoOpen: PropTypes.bool,
+  isHistoryOpen: PropTypes.bool,
   onWidgetClick: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.string,
+
+  rightAppBarOpen: PropTypes.bool,
+  rightAppBarSelected: PropTypes.string,
+  toggleWidget: PropTypes.bool,
 };
 
 const TestExports = {

@@ -8,7 +8,7 @@ import MilestoneActivity from './MilestoneActivity';
 import TrialHeaderAndDetails from './TrialHeaderAndDetails';
 import { selectors, operations } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
-import { ADDITIONAL_INFO, HISTORY } from '../../constants/widgets';
+import widgets from '../../constants/widget';
 import WidgetBuilder from '../../components/Widgets/WidgetBuilder';
 import SweetAlertBox from '../../components/SweetAlertBox/SweetAlertBox';
 
@@ -30,13 +30,32 @@ class LoanActivity extends React.PureComponent {
     }
   }
 
+  handleAIChange = (value, widgetId) => {
+    const {
+      onAdditionalInfoSelect, isAdditionalInfoOpen, isHistoryOpen,
+      onHistorySelect, onAdditionalInfo, LoanNumber,
+    } = this.props;
+    if (R.equals(widgetId, widgets.additionalInfo)) {
+      onAdditionalInfoSelect(!isAdditionalInfoOpen);
+      onHistorySelect(false);
+      if (!isAdditionalInfoOpen) onAdditionalInfo(LoanNumber);
+    } else if (R.equals(widgetId, widgets.history)) {
+      onHistorySelect(!isHistoryOpen);
+      onAdditionalInfoSelect(false);
+    }
+  }
+
   handleClose() {
     this.setState({ isOpen: false });
   }
 
   render() {
+    const { trialHeader } = this.props;
+    const { trialsDetail } = this.props;
+    const { inProgress } = this.props;
     const {
-      trialHeader, openWidgetList, trialsDetail, inProgress, resultUnderwriting, getTrialResponse,
+      resultUnderwriting, getTrialResponse,
+      isAdditionalInfoOpen, isHistoryOpen,
     } = this.props;
     const { isOpen } = this.state;
     let renderComponent = null;
@@ -54,7 +73,7 @@ class LoanActivity extends React.PureComponent {
     }
     return (
       <>
-        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
+        {isAdditionalInfoOpen && (
           <div styleName="addInfo">
             <div styleName="bookingWidget">
               <span styleName="widgetTitle">
@@ -65,11 +84,11 @@ class LoanActivity extends React.PureComponent {
           </div>
         )
         }
-        { R.contains(HISTORY, openWidgetList) && (
+        { isHistoryOpen && (
         <MilestoneActivity />
         )
           }
-        {!(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList)) && (
+        {!(isAdditionalInfoOpen || isHistoryOpen) && (
         <Grid alignItems="stretch" container styleName="loan-activity">
           <Grid item styleName="status-details-parent" xs={9}>
             {renderComponent}
@@ -84,7 +103,12 @@ class LoanActivity extends React.PureComponent {
           </Grid>
         </Grid>
         )}
-        <WidgetBuilder page="LA" styleName="loan-act-widget" />
+        <WidgetBuilder
+          isAdditionalInfoOpen={isAdditionalInfoOpen}
+          isHistoryOpen={isHistoryOpen}
+          styleName="loan-act-widget"
+          triggerAI={this.handleAIChange}
+        />
       </>
     );
   }
@@ -92,17 +116,21 @@ class LoanActivity extends React.PureComponent {
 
 const mapDispatchToProps = dispatch => ({
   loadTrials: operations.loadTrials(dispatch),
+  onAdditionalInfoSelect: operations.onAdditionalInfoSelect(dispatch),
+  onHistorySelect: operations.onHistorySelect(dispatch),
+  onAdditionalInfo: operations.onAdditionalInfoClick(dispatch),
 });
-
 const mapStateToProps = state => ({
   evalId: selectors.evalId(state),
   LoanNumber: selectors.loanNumber(state),
   inProgress: selectors.inProgress(state),
+  isAdditionalInfoOpen: selectors.isAdditionalInfoOpen(state),
   trialHeader: selectors.getTrialHeader(state),
   trialsDetail: selectors.getTrialsDetail(state),
   trialsLetter: selectors.getTrialLetter(state),
   resultUnderwriting: selectors.resultUnderwriting(state),
   getTrialResponse: selectors.getTrialResponse(state),
+  isHistoryOpen: selectors.isHistoryOpen(state),
 });
 
 LoanActivity.defaultProps = {
@@ -110,9 +138,10 @@ LoanActivity.defaultProps = {
   inProgress: false,
   resultUnderwriting: { level: '', status: '' },
   trialHeader: {},
+  isAdditionalInfoOpen: false,
   trialsDetail: [],
   getTrialResponse: {},
-  openWidgetList: [],
+  isHistoryOpen: false,
 };
 
 LoanActivity.propTypes = {
@@ -122,8 +151,13 @@ LoanActivity.propTypes = {
     status: PropTypes.string,
   }),
   inProgress: PropTypes.bool,
+  isAdditionalInfoOpen: PropTypes.bool,
+  isHistoryOpen: PropTypes.bool,
   loadTrials: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
+  LoanNumber: PropTypes.number.isRequired,
+  onAdditionalInfo: PropTypes.func.isRequired,
+  onAdditionalInfoSelect: PropTypes.func.isRequired,
+  onHistorySelect: PropTypes.func.isRequired,
   resultUnderwriting: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,

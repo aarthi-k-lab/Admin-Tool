@@ -50,7 +50,6 @@ module.exports = {
         test: /\.(js|jsx)$/,
         enforce: 'pre',
         include: srcPath,
-        exclude: /node_modules/,
         loader: 'eslint-loader',
       },
       {

@@ -1,6 +1,5 @@
 import * as R from 'ramda';
 
-const postResponseCodes = [400, 404, 422, 500];
 const callGet = function callGet(endpoint, params = {}) {
   let headers = {};
   if (!R.isEmpty(params)) {
@@ -52,7 +51,8 @@ const callPost = function callPost(endpoint, body, params = {}) {
     })
     .then((response) => {
       if (R.prop('ok', response)
-        || R.contains(R.prop('status', response), postResponseCodes)) {
+      || R.equals(R.prop('status', response), 422)
+      || R.equals(R.prop('status', response), 500)) {
         if (R.equals(R.prop('status', response), 204)) {
           return {
             statusCode: 204,

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import { shallow } from 'enzyme';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -5,6 +6,7 @@ import Checklist from 'components/Checklist';
 import UserNotification from 'components/UserNotification/UserNotification';
 import Loader from 'components/Loader/Loader';
 import R from 'ramda';
+import WidgetBuilder from 'components/Widgets/WidgetBuilder';
 import CloseIcon from '@material-ui/icons/Close';
 import CustomSnackBar from 'components/CustomSnackBar';
 import { TestHooks } from './TasksAndChecklist';
@@ -14,21 +16,21 @@ import {
 } from '../../../models/Testmock/taskAndChecklist';
 import BookingHomePage from './BookingHomePage';
 import DialogCard from './DialogCard';
-import { BOOKING } from '../../../constants/widgets';
-
 
 describe('<TasksAndChecklist />', () => {
-  const openWidgetList = [BOOKING];
   const onWidgetClick = jest.fn();
   const onWidgetToggle = jest.fn();
+  const onUnassignBookingLoan = jest.fn();
   const putComputeRulesPassed = jest.fn();
   const setHomepageVisible = jest.fn();
   const onHistorySelect = jest.fn();
+  const onAdditionalInfoSelect = jest.fn();
   const onNext = jest.fn();
   const noTasksFoundMessage = 'No tasks assigned.Please contact your manager';
   const getNextErrorMessage = 'Get Next error';
   const taskFetchErrorMessage = 'Task Fetch Failed.Please try again Later';
   const props = {
+    onUnassignBookingLoan,
     putComputeRulesPassed,
     location,
     selectedTaskId,
@@ -42,19 +44,17 @@ describe('<TasksAndChecklist />', () => {
     onHistorySelect,
     onWidgetClick,
     onWidgetToggle,
+    onAdditionalInfoSelect,
     setHomepageVisible,
     onNext,
     toggleWidget: false,
   };
 
   it('renderChecklist', () => {
-    const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
         dataLoadStatus="loading"
         groupName="DOCSIN"
-        onNext={onNext}
-        onPrev={onPrev}
       />,
     );
     let userNotificationMessage = {
@@ -84,15 +84,14 @@ describe('<TasksAndChecklist />', () => {
     wrapper.setProps({
       checklistItems: R.set(headLens, true, bookingChecklistItems),
       message: userNotificationMessage,
-      currentWidget: BOOKING,
-      openWidgetList,
+      toggleWidget: true,
     });
     expect(R.head(R.match(/pushData/g, wrapper.find(Checklist).prop('className')))).toBe('pushData');
     wrapper.setProps({
       checklistItems: bookingChecklistItems,
       message: userNotificationMessage,
       groupName: 'BOOKING',
-      openWidgetList,
+      toggleWidget: true,
     });
     expect(R.head(R.match(/sla-rules/g, wrapper.find(Checklist).prop('className')))).toBe('sla-rules');
     wrapper.setProps({ disposition: ['wait', 'hold'] });
@@ -111,16 +110,15 @@ describe('<TasksAndChecklist />', () => {
       msg: null,
     };
     const handleClearSubTask = jest.fn();
-    const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
         checklistItems={checklistItems}
         groupName="DOCSIN"
         handleClearSubTask={handleClearSubTask}
         message={userNotificationMessage}
+        onAdditionalInfoSelect={onAdditionalInfoSelect}
         onHistorySelect={onHistorySelect}
-        onNext={onNext}
-        onPrev={onPrev}
+        onUnassignBookingLoan={onUnassignBookingLoan}
         onWidgetClick={onWidgetClick}
         onWidgetToggle={onWidgetToggle}
         toggleWidget
@@ -135,26 +133,53 @@ describe('<TasksAndChecklist />', () => {
     wrapper.find(Checklist).prop('handleClearSubTask')(false);
     expect(handleClearSubTask).not.toBeCalled();
 
+    wrapper.find(WidgetBuilder).prop('triggerHeader')(true, 'BookingAutomation');
+    expect(onWidgetToggle).toBeCalledWith(false);
+    expect(onUnassignBookingLoan).toBeCalled();
+    expect(onWidgetClick).not.toBeCalled();
+
+    jest.clearAllMocks();
+    wrapper.setProps({ toggleWidget: false });
+    wrapper.find(WidgetBuilder).prop('triggerHeader')(true, 'BookingAutomation');
+    expect(onWidgetToggle).toBeCalledWith(true);
+    expect(onUnassignBookingLoan).not.toBeCalled();
+    expect(onWidgetClick).toBeCalled();
+
+    jest.clearAllMocks();
     wrapper.setProps({ groupName: 'BOOKING' });
+    wrapper.find(WidgetBuilder).prop('triggerHeader')(true, 'BookingAutomation');
+    expect(onWidgetToggle).toHaveBeenLastCalledWith(true);
+    expect(onUnassignBookingLoan).not.toBeCalled();
+    expect(onWidgetClick).not.toBeCalled();
+
+    jest.clearAllMocks();
+    wrapper.find(WidgetBuilder).prop('triggerHeader')(true, 'Comments');
+    expect(onWidgetToggle).not.toBeCalled();
+    expect(onUnassignBookingLoan).not.toBeCalled();
+    expect(onWidgetClick).not.toBeCalled();
+
     jest.clearAllMocks();
     wrapper.instance().componentDidMount();
-    expect(onWidgetToggle).toBeCalledWith({ currentWidget: BOOKING, openWidgetList: [BOOKING] });
+    expect(onWidgetToggle).toBeCalledWith(true);
 
     jest.clearAllMocks();
     wrapper.setProps({ groupName: 'DOCSIN' });
-    wrapper.setProps({ openWidgetList: [BOOKING] });
+    wrapper.setProps({ toggleWidget: true });
     wrapper.find(Checklist).prop('onCompleteMyReviewClick')();
-    expect(onWidgetToggle).toBeCalledWith({ currentWidget: '', openWidgetList: [] });
+    expect(onWidgetToggle).toBeCalledWith(false);
+    expect(onUnassignBookingLoan).toBeCalled();
 
     jest.clearAllMocks();
     wrapper.setProps({ groupName: 'DOCSIN' });
     wrapper.find(CloseIcon).prop('onClick')();
-    expect(onWidgetToggle).toBeCalledWith({ currentWidget: '', openWidgetList: [] });
+    expect(onWidgetToggle).toBeCalledWith(false);
+    expect(onUnassignBookingLoan).toBeCalled();
 
 
     jest.clearAllMocks();
     wrapper.instance().componentWillUnmount();
-    expect(onWidgetToggle).toBeCalledWith({ currentWidget: '', openWidgetList: [] });
+    expect(onWidgetToggle).toBeCalledWith(false);
+    expect(onUnassignBookingLoan).toBeCalled();
   });
 
   it('getUserNotification', () => {
@@ -243,7 +268,7 @@ describe('<TasksAndChecklist />', () => {
         message={userNotificationMessage}
         onNext={onNext}
         onPrev={onPrev}
-        openWidgetList={[BOOKING]}
+        toggleWidget
       />,
     );
     document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }));
@@ -268,13 +293,10 @@ describe('<TasksAndChecklist />', () => {
       open: true,
       type: 'error',
     };
-    const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
         dataLoadStatus="loading"
         groupName="DOCSIN"
-        onNext={onNext}
-        onPrev={onPrev}
         snackBarData={snackBar}
       />,
     );
@@ -284,7 +306,6 @@ describe('<TasksAndChecklist />', () => {
   it('show TasksAndChecklist', () => {
     const push = jest.fn();
     const historyMock = { push };
-    const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
         checklistItems={checklistItems}
@@ -292,8 +313,6 @@ describe('<TasksAndChecklist />', () => {
         groupName="BOOKING"
         history={historyMock}
         isAssigned
-        onNext={onNext}
-        onPrev={onPrev}
       />,
     );
     expect(wrapper.find(BookingHomePage).prop('message')).toBe('Booking Widget');

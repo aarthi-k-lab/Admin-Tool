@@ -9,7 +9,6 @@ import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import { ERROR } from 'constants/common';
 import {
-  SET_LAST_UPDATED,
   SET_SELECTED_CHECKLIST,
   GET_NEXT_CHECKLIST,
   GET_PREV_CHECKLIST,
@@ -34,14 +33,13 @@ import {
   GET_HISTORICAL_CHECKLIST_DATA,
   ERROR_LOADING_HISTORICAL_CHECKLIST,
   FETCH_DROPDOWN_OPTIONS_SAGA,
-  SAVE_DROPDOWN_DATA,
+  SAVE_DROPDOWN_OPTIONS,
   GET_RESOLUTION_ID_STATS,
   SLA_RULES_PROCESSED,
   SAVE_RULE_RESPONSE,
   SET_NEW_CHECKLIST,
   PUSH_DATA,
   CHECK_RULES_PASSED,
-  PUT_DROPDOWN_DATA,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -64,7 +62,6 @@ import DashboardModel from '../../../models/Dashboard/index';
 import {
   SOMETHING_WENT_WRONG,
 } from '../../../models/Alert';
-
 // import DropDownSelect from 'containers';
 const {
   Messages: {
@@ -83,8 +80,6 @@ const autoDispositions = [{
   dispositionCode: 'approval',
   dispositionComment: 'approval',
 }];
-
-const BOOKING_DEPTH = 4;
 
 function* getChecklist(action) {
   try {
@@ -105,8 +100,6 @@ function* getChecklist(action) {
       type: STORE_CHECKLIST,
       payload: response,
     });
-    const lastUpdated = `${new Date()}`;
-    yield put({ type: SET_LAST_UPDATED, payload: { lastUpdated } });
   } catch (e) {
     yield put({
       type: ERROR_LOADING_CHECKLIST,
@@ -205,7 +198,7 @@ function filterOptionalTasks(allTasks) {
 
 function* getTasks(action) {
   try {
-    let {
+    const {
       payload: {
         depth,
       },
@@ -218,8 +211,6 @@ function* getTasks(action) {
       payload: {},
     });
     const rootTaskId = yield select(selectors.getRootTaskId);
-    const groupName = yield select(dashboardSelectors.groupName);
-    depth = groupName === DashboardModel.BOOKING ? BOOKING_DEPTH : depth;
     const response = yield call(Api.callGet, `/api/task-engine/task/${rootTaskId}?depth=${depth}&forceNoCache=${Math.random()}`);
     const didErrorOccur = response === null;
     if (didErrorOccur) {
@@ -256,8 +247,6 @@ function* getTasks(action) {
       const showDisposition = yield select(selectors.shouldShowDisposition);
       yield put(actions.validationDisplayAction(showDisposition));
     } else yield put(actions.validationDisplayAction(false));
-    const lastUpdated = `${new Date()}`;
-    yield put({ type: SET_LAST_UPDATED, payload: { lastUpdated } });
   } catch (e) {
     yield put({
       type: ERROR_LOADING_TASKS,
@@ -555,11 +544,8 @@ function* subTaskClearance(action) {
 function* sortUniqueUsers(usersList) {
   const currentUser = yield select(loginSelectors.getUser);
   const currentUserMail = R.path(['userDetails', 'email'], currentUser);
-  return R.concat([{
-    displayName: '',
-    id: '',
-  }], R.sortBy(a => a.displayName,
-    R.filter(user => user.userPrincipalName !== currentUserMail, R.uniq(usersList))));
+  return R.sortBy(a => a.displayName,
+    R.filter(user => user.userPrincipalName !== currentUserMail, R.uniq(usersList)));
 }
 
 function* getUsersForGroup(additionalInfo) {
@@ -581,19 +567,8 @@ function* getUsersForGroup(additionalInfo) {
   return requestData;
 }
 
-function getDataFromColValMap(additionalInfo) {
-  const { value, columnName } = additionalInfo;
-  const requestData = {
-    url: `/api/dataservice/api/colValMap/${columnName}?actvInd=Y&searchTerm=${value}`,
-    method: Api.callGet,
-    formatResponse: R.pluck('val'),
-  };
-  return requestData;
-}
-
 const sourceToMethodMapping = {
   adgroup: getUsersForGroup,
-  OLTP: getDataFromColValMap,
 };
 
 
@@ -602,7 +577,6 @@ function* getdropDownOptions(action) {
     source,
     additionalInfo,
   } = action.payload;
-  const selector = R.propOr(null, 'selector', additionalInfo);
   const dataFetchMethod = sourceToMethodMapping[source];
   const requestData = yield dataFetchMethod(additionalInfo);
   const {
@@ -612,38 +586,12 @@ function* getdropDownOptions(action) {
     formatResponse,
   } = requestData;
   const options = yield call(method, url, body);
-  if (options) {
-    const formattedOptions = yield formatResponse(options);
-    const data = {
-      formattedOptions,
-      selector: selector || ['dropDownOptions'],
-    };
-    try {
-      yield put({
-        type: SAVE_DROPDOWN_DATA,
-        payload: data,
-      });
-    } catch (e) {
-      yield call(handleSaveChecklistError, e);
-    }
-  }
-}
-
-function* putDropDownOptions(action) {
+  const formattedOptions = yield formatResponse(options);
   try {
-    const {
-      columnName, value,
-    } = action.payload;
-    const payload = {
-      actvInd: 'Y',
-      audCreByNm: 'CMODUI',
-      audCreDttm: new Date(),
-      cmnt: '',
-      colNm: columnName,
-      val: value,
-
-    };
-    yield call(Api.callPost, '/api/dataservice/api/colValMap/', payload);
+    yield put({
+      type: SAVE_DROPDOWN_OPTIONS,
+      payload: formattedOptions,
+    });
   } catch (e) {
     yield call(handleSaveChecklistError, e);
   }
@@ -800,8 +748,7 @@ function* makeResolutionIdStatCall(action) {
 
 function* setNewChecklist(action) {
   try {
-    const groupName = yield select(dashboardSelectors.groupName);
-    const depth = groupName === DashboardModel.BOOKING ? BOOKING_DEPTH : 3;
+    const depth = 3;
     yield put({
       type: LOADING_TASKS,
     });
@@ -903,10 +850,6 @@ function* watchDropDownOption() {
   yield takeEvery(FETCH_DROPDOWN_OPTIONS_SAGA, getdropDownOptions);
 }
 
-function* watchPutDropDownOption() {
-  yield takeEvery(PUT_DROPDOWN_DATA, putDropDownOptions);
-}
-
 function* watchResolutionIdStatCall() {
   yield takeEvery(GET_RESOLUTION_ID_STATS, makeResolutionIdStatCall);
 }
@@ -931,7 +874,6 @@ export const TestExports = {
 
 export function* combinedSaga() {
   yield all([
-    watchPutDropDownOption(),
     watchChecklistItemChange(),
     watchGetChecklist(),
     watchGetNextChecklist(),

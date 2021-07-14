@@ -43,7 +43,7 @@ import {
   SET_STAGER_TASK_NAME,
   MOD_REVERSAL_REASONS,
   CLEAR_POSTMOD_END_SHIFT,
-  CLEAR_DATA,
+  CLEAR_COVIUS_DATA,
   CLEAR_BULKUPLOAD_TABLEDATA,
   TRIAL_TASK,
   INSERT_EVALID,
@@ -58,33 +58,17 @@ import {
   SEND_TO_COVIUS,
   CLOSE_SWEET_ALERT,
   SET_COVIUS_TABINDEX,
-  ASSIGN_BOOKING_LOAN,
-  UNASSIGN_BOOKING_LOAN,
+  WIDGET_CLICK,
+  UNASSIGN_WIDGET_LOAN,
+  TOGGLE_WIDGET,
   SET_PAYMENT_DEFERRAL,
-  SET_SELECTED_WIDGET,
-  CLEAR_POPUP_DATA,
-  TOGGLE_INCVRFN,
-  FETCH_EVAL_CASE,
+  ADDITIONAL_INFO_CLICK,
   EVAL_ROW_CLICK,
+  SET_ADDITIONAL_INFO_SELECTED,
+  SET_HISTORY_SELECTED,
   SET_TOMBSTONE_DATA_FOR_LOANVIEW,
-  PROCESS_FHLMC_RESOSLVE_BULK,
-  POPULATE_INVESTOR_EVENTS_DROPDOWN,
-  SUBMIT_TO_FHLMC,
-  DISMISS_USER_NOTIFICATION,
-  SHOW_LOADER,
-  HIDE_LOADER,
 } from './types';
 
-
-const toggleIncomeVerification = visibility => ({
-  type: TOGGLE_INCVRFN,
-  payload: visibility,
-});
-
-
-const onClearPopupDataAction = () => ({
-  type: CLEAR_POPUP_DATA,
-});
 
 const onExpandView = userPayload => ({
   type: SET_EXPAND_VIEW_SAGA,
@@ -142,8 +126,8 @@ const getGroupName = payload => ({
   payload,
 });
 
-const assignBookingLoan = payload => ({
-  type: ASSIGN_BOOKING_LOAN,
+const widgetClickAction = payload => ({
+  type: WIDGET_CLICK,
   payload,
 });
 
@@ -158,8 +142,8 @@ const unassignLoan = () => ({
   type: UNASSIGN_LOAN,
 });
 
-const unassignBookingLoan = () => ({
-  type: UNASSIGN_BOOKING_LOAN,
+const unassignWidgetLoan = () => ({
+  type: UNASSIGN_WIDGET_LOAN,
 });
 
 const postComment = payload => ({
@@ -216,19 +200,6 @@ const onSentToUnderwritingAction = () => ({
 
 const clearBulkUploadDataAction = () => ({
   type: CLEAR_BULKUPLOAD_TABLEDATA,
-});
-
-const onFhlmcCasesBulkSubmit = payload => ({
-  type: PROCESS_FHLMC_RESOSLVE_BULK,
-  payload,
-});
-
-const onSubmitToFhlmcAction = (selectedRequestType, portfolioCode) => ({
-  type: SUBMIT_TO_FHLMC,
-  payload: {
-    selectedRequestType,
-    portfolioCode,
-  },
 });
 
 const saveStagerTaskName = stagerTaskName => ({
@@ -318,8 +289,8 @@ const clearPostModEndShitf = () => ({
   type: CLEAR_POSTMOD_END_SHIFT,
 });
 
-const clearData = () => ({
-  type: CLEAR_DATA,
+const clearCoviusData = () => ({
+  type: CLEAR_COVIUS_DATA,
 });
 
 const onTrialTaskAction = payload => ({
@@ -358,10 +329,6 @@ const populateEventsDropdown = () => ({
   type: POPULATE_EVENTS_DROPDOWN,
 });
 
-const populateInvestorEventsDropdown = () => ({
-  type: POPULATE_INVESTOR_EVENTS_DROPDOWN,
-});
-
 const submitToCoviusAction = payload => ({
   type: SEND_TO_COVIUS,
   payload,
@@ -386,10 +353,11 @@ const setCoviusIndexAction = payload => ({
   payload,
 });
 
-const setSelectedWidgets = payload => ({
-  type: SET_SELECTED_WIDGET,
+const widgetToggle = payload => ({
+  type: TOGGLE_WIDGET,
   payload,
 });
+
 
 const setPaymentDeferral = payload => ({
   type: SET_PAYMENT_DEFERRAL,
@@ -397,7 +365,7 @@ const setPaymentDeferral = payload => ({
 });
 
 const additionalInfo = loanNumber => ({
-  type: FETCH_EVAL_CASE,
+  type: ADDITIONAL_INFO_CLICK,
   payload: loanNumber,
 });
 
@@ -406,26 +374,21 @@ const evalSelectRow = payload => ({
   payload,
 });
 
-const showLoader = () => ({
-  type: SHOW_LOADER,
+const setAdditionalInfoSelected = payload => ({
+  type: SET_ADDITIONAL_INFO_SELECTED,
+  payload,
 });
 
-const hideLoader = () => ({
-  type: HIDE_LOADER,
-});
-
-const dismissUserNotification = () => ({
-  type: DISMISS_USER_NOTIFICATION,
+const setHistorySelected = payload => ({
+  type: SET_HISTORY_SELECTED,
+  payload,
 });
 
 
 export {
-  dismissUserNotification,
-  onSubmitToFhlmcAction,
-  showLoader,
-  hideLoader,
   setPaymentDeferral,
-  unassignBookingLoan,
+  widgetToggle,
+  unassignWidgetLoan,
   setCoviusIndexAction,
   openSweetAlertAction,
   closeSweetAlertAction,
@@ -451,12 +414,11 @@ export {
   hideAssignUnassign,
   postComment,
   clearBEDisposition,
-  clearData,
+  clearCoviusData,
   getGroupName,
   validateDisposition,
   loadTrialsAction,
   onSentToUnderwritingAction,
-  populateInvestorEventsDropdown,
   onSendToDocGenAction,
   onSendToDocsInAction,
   onSendToBookingAction,
@@ -486,11 +448,9 @@ export {
   downloadFileAction,
   populateEventsDropdown,
   sendToFEUW,
-  setSelectedWidgets,
-  onClearPopupDataAction,
-  toggleIncomeVerification,
-  assignBookingLoan,
+  widgetClickAction,
   additionalInfo,
   evalSelectRow,
-  onFhlmcCasesBulkSubmit,
+  setAdditionalInfoSelected,
+  setHistorySelected,
 };

@@ -13,18 +13,13 @@ function BasicDatePicker(props) {
     disabled, title, format, refCallback, value,
   } = props;
   const StartDate = R.isNil(value) ? moment().format('MM-DD-YYYY') : moment(value).format('MM-DD-YYYY');
-  const [selectedDate, setSelectedDate] = useState(StartDate);
+  const [selectedDate] = useState(StartDate);
 
   useEffect(() => {
     if (!value) {
       refCallback(selectedDate);
     }
   }, [selectedDate]);
-
-  const onDateChange = (date) => {
-    setSelectedDate(date);
-    refCallback(date);
-  };
 
   return (
     <FormControl component="fieldset">
@@ -37,7 +32,7 @@ function BasicDatePicker(props) {
             disabled={disabled}
             disableFuture
             format={format}
-            onChange={onDateChange}
+            onChange={refCallback}
             value={selectedDate}
             views={['year', 'month', 'date']}
           />

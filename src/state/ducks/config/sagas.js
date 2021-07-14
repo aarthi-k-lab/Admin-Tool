@@ -3,7 +3,6 @@ import {
   all,
   call,
   put,
-  takeEvery,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
@@ -14,8 +13,6 @@ import {
   SET_FEATURES,
   GET_PDFGENRATOR_URL,
   SET_PDFGENRATOR_URL,
-  TOGGLE_HIDDEN_ROUTE,
-  TOGGLE_ICON,
 } from './types';
 
 import {
@@ -65,15 +62,9 @@ function* fetchFeatureConfig() {
     if (newPayload != null) {
       const getFeatures = R.propOr({}, 'features');
       const features = getFeatures(newPayload);
-      const getIconsList = R.propOr([], 'hiddenRoutes');
-      const hiddenRoutes = getIconsList(newPayload);
       yield put({
         type: TOGGLE_AZURE_SEARCH,
         payload: R.prop('azureSearchToggle', features),
-      });
-      yield put({
-        type: TOGGLE_HIDDEN_ROUTE,
-        payload: hiddenRoutes,
       });
       yield put({
         type: SET_FEATURES,
@@ -108,27 +99,11 @@ function* watchGetPdfGeneratorUrl() {
     yield getPdfGeneratorUrl();
   }
 }
-
-function* fetchHiddenRoute() {
-  const newPayload = yield call(Api.callGet, 'api/config');
-  const getIconsList = R.propOr([], 'hiddenRoutes');
-  const hiddenRoutes = getIconsList(newPayload);
-  yield put({
-    type: TOGGLE_HIDDEN_ROUTE,
-    payload: hiddenRoutes,
-  });
-}
-
-function* watchHiddenRoute() {
-  yield takeEvery(TOGGLE_ICON, fetchHiddenRoute);
-}
-
 export const TestExports = {
   watchFetchPowerBIConfig,
   fetchPowerBIConfig,
   watchGetFeatures,
   fetchFeatureConfig,
-  watchHiddenRoute,
 };
 
 export function* combinedSaga() {

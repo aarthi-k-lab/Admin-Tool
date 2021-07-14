@@ -79,12 +79,12 @@ describe('<Profile />', () => {
     const handleResetGroups = jest.spyOn(instance, 'handleResetGroups');
     expect(renderRoleAndGroups).toBeCalled();
     expect(button).toHaveLength(2);
-    Auth.updateUserGroups.mockImplementation(() => { });
+    Auth.updateUserGroups.mockImplementation(() => {});
     button.first().simulate('click');
     expect(handleSetGroups).toBeCalled();
     button.at(1).simulate('click');
     expect(handleResetGroups).toBeCalled();
-    Auth.updateUserGroups.mockImplementation(() => { });
+    Auth.updateUserGroups.mockImplementation(() => {});
     expect(instance.state.isChecked).toEqual(mock.isChecked);
     expect(instance.state.isChecked).toEqual(mock.isChecked);
     button.first().simulate('click');

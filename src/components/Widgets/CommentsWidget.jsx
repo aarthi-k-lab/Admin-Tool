@@ -8,13 +8,10 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import moment from 'moment-timezone';
 import * as R from 'ramda';
 import DashboardModel from 'models/Dashboard';
+import { selectors, operations } from '../../state/ducks/comments';
 import './CommentsWidget.css';
-import { selectors as dashboardSelectors } from 'ducks/dashboard';
-import { selectors as loginSelectors } from 'ducks/login';
-import { selectors as widgetsSelectors } from 'ducks/widgets';
-import { selectors, operations } from 'ducks/comments';
-import { HISTORY, ADDITIONAL_INFO } from 'constants/widgets';
-
+import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
+import { selectors as loginSelectors } from '../../state/ducks/login';
 
 const formatDateWithoutTimeZone = (date) => {
   if (date) {
@@ -121,16 +118,15 @@ class CommentsWidget extends Component {
       ProcIdType,
       onGetComments,
       groupName,
-      page,
-      openWidgetList,
+      isAdditionalInfoOpen,
+      searchArea,
+
     } = this.props;
 
-    const pageIns = DashboardModel.GROUP_INFO
-      .find(pageInstance => pageInstance.group === groupName);
-    const eventName = !R.isNil(pageIns) ? pageIns.taskCode : '';
-    const searchArea = R.equals(page, 'SEARCH_LOAN');
+    const page = DashboardModel.GROUP_INFO.find(pageInstance => pageInstance.group === groupName);
+    const eventName = !R.isNil(page) ? page.taskCode : '';
 
-    if (!R.contains(ADDITIONAL_INFO, openWidgetList)) {
+    if (!isAdditionalInfoOpen) {
       const payload = {
         applicationName: AppName,
         loanNumber: LoanNumber,
@@ -192,14 +188,12 @@ class CommentsWidget extends Component {
       comments,
     } = this.props;
     const {
-      User, evalComments, openWidgetList,
+      User, evalComments, isAdditionalInfoOpen, isHistoryOpen,
       addInfoEvalId,
       EvalId, showEvalId,
     } = this.props;
     comments = R.flatten(R.map(comm => comm.comments, evalComments.comments));
-    comments = (R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList))
-      || !showEvalId ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, R.contains(ADDITIONAL_INFO, openWidgetList)
-        ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
+    comments = (isAdditionalInfoOpen || isHistoryOpen) || !showEvalId ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
 
     return (
       comments && comments.map(comment => (
@@ -209,7 +203,7 @@ class CommentsWidget extends Component {
         >
           <div id="row_header" styleName="row-header">
             <div styleName={comment.userName === User.userDetails.name ? 'messagee-body-current-user' : 'message-body-other-user'}>
-              {showEvalId && !R.contains(ADDITIONAL_INFO, openWidgetList) && !R.contains(HISTORY, openWidgetList) && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div>}
+              { showEvalId && !isAdditionalInfoOpen && !isHistoryOpen && <div style={{ fontWeight: 'bold' }}>{comment.evalId}</div> }
               {comment.comment}
               <div styleName="message-body-bottom" />
               <div>
@@ -230,13 +224,12 @@ class CommentsWidget extends Component {
   renderCommentsActivity() {
     const {
       evalComments,
+      isAdditionalInfoOpen,
       LoanNumber, EvalId,
-      isAssigned, addInfoEvalId, openWidgetList, page,
+      isAssigned, searchArea, addInfoEvalId,
     } = this.props;
-    const searchArea = R.equals(page, 'SEARCH_LOAN');
     let comments = R.propOr(null, 'comments', evalComments);
-    comments = R.contains(ADDITIONAL_INFO, openWidgetList) ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, R.contains(ADDITIONAL_INFO, openWidgetList)
-      ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
+    comments = isAdditionalInfoOpen ? R.prop('comments', R.head(R.filter(data => R.equals(data.evalId, isAdditionalInfoOpen ? addInfoEvalId : EvalId), evalComments.comments))) : comments;
     const { content } = this.state;
     return (
       <>
@@ -304,14 +297,15 @@ CommentsWidget.propTypes = {
   }))).isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
+  isAdditionalInfoOpen: PropTypes.bool.isRequired,
   isAssigned: PropTypes.bool.isRequired,
+  isHistoryOpen: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.string,
-  page: PropTypes.string,
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
+  searchArea: PropTypes.bool,
   showEvalId: PropTypes.bool.isRequired,
   TaskId: PropTypes.number.isRequired,
   taskIterationCounter: PropTypes.number.isRequired,
@@ -320,20 +314,22 @@ CommentsWidget.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
+  // wasSearched: PropTypes.bool,
 };
 
 CommentsWidget.defaultProps = {
+  // wasSearched: false,
   AppName: 'CMOD',
   ProcIdType: 'WF_PRCS_ID',
   groupName: '',
-  page: null,
-  openWidgetList: [],
+  searchArea: false,
 };
 
 const mapStateToProps = state => ({
   comments: selectors.getCommentsData(state),
   evalComments: selectors.getEvalComments(state),
   showEvalId: selectors.showEvalInComments(state),
+  // Disposition: dashboardSelectors.getDisposition(state),
   EvalId: dashboardSelectors.evalId(state),
   TaskId: dashboardSelectors.taskId(state),
   LoanNumber: dashboardSelectors.loanNumber(state),
@@ -342,15 +338,17 @@ const mapStateToProps = state => ({
   taskIterationCounter: dashboardSelectors.taskIterationCounter(state),
   User: loginSelectors.getUser(state),
   isAssigned: dashboardSelectors.isAssigned(state),
+  isAdditionalInfoOpen: dashboardSelectors.isAdditionalInfoOpen(state),
+  isHistoryOpen: dashboardSelectors.isHistoryOpen(state),
   addInfoEvalId: dashboardSelectors.addInfoEvalId(state),
   wasSearched: dashboardSelectors.wasSearched(state),
-  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onGetComments: operations.getComments(dispatch),
   onPostComment: operations.postComment(dispatch),
   clearOnSearch: operations.clearOnSearch(dispatch),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentsWidget);

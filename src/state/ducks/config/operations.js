@@ -3,7 +3,6 @@ import {
   fetchPowerBIConfig,
   getFeaturesTrigger as getFeaturesAction,
   getPdfGeneratorUrl,
-  getHiddenRoutes,
 } from './actions';
 
 const fetchConfig = dispatch => () => dispatch(fetchAppConfig());
@@ -13,15 +12,11 @@ const getFeaturesTrigger = dispatch => () => {
 };
 const fetchPdfGeneratorUrl = dispatch => () => dispatch(getPdfGeneratorUrl());
 
-const fetchHiddenRoutes = dispatch => () => dispatch(getHiddenRoutes());
-
-
 const operations = {
   fetchConfig,
   fetchPowerBIConstants,
   getFeaturesTrigger,
   fetchPdfGeneratorUrl,
-  fetchHiddenRoutes,
 };
 
 export default operations;

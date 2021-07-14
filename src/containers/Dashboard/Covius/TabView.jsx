@@ -9,13 +9,14 @@ import { operations, selectors } from 'ducks/dashboard';
 import extName from 'ext-name';
 import { connect } from 'react-redux';
 import DashboardModel from 'models/Dashboard';
-import { SUCCESS, EXCEL_FORMATS } from 'constants/common';
+import { SUCCESS } from 'constants/common';
 import TabPanel from './TabPanel';
 import ReUploadFile from './ReUploadFile';
 import SubmitFileError from './SubmitFileError';
 import SweetAlertBox from '../../../components/SweetAlertBox/SweetAlertBox';
 import SimpleTabs from './Tabs';
 
+const EXCEL_FORMATS = ['xlsx', 'xls'];
 const hasPassedProp = R.has('request');
 const hasFailedProp = R.has('invalidCases');
 const hasUploadFailedProp = R.has('uploadFailed');
