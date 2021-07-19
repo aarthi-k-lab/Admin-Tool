@@ -2,6 +2,20 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './StagerReactTable';
 
+const defaultProps = {
+  activeSearchTerm: '',
+  getDashboardData: jest.fn(),
+  onGetChecklistHistory: jest.fn(),
+  onGetGroupName: jest.fn(),
+  onSearchLoanWithTask: jest.fn(),
+  onSelectEval: jest.fn(),
+  setBeginSearch: jest.fn(),
+  setStagerTaskName: jest.fn(),
+  user: {},
+  history: [],
+  searchLoanTaskResponse: {},
+  searchResponse: 'mock',
+};
 const data = {
   stagerTaskType: 'Value',
   stagerTaskStatus: 'To Order',
@@ -37,6 +51,7 @@ describe('<StagerReactTable />', () => {
   it('shows StagerReactTable', () => {
     const wrapper = shallow(
       <TestExports.StagerReactTable
+        {...defaultProps}
         data={data}
         onCheckBoxClick={() => {}}
         onSelectAll={() => {}}

@@ -27,16 +27,17 @@
   flex-direction: row !important;
 }
 
-.displayColumn{
+.displayColumn {
   display: flex !important;
   flex-direction: column !important;
 }
+
 .radio-control-option-black.radio-control-option-black {
   color: var(--black) !important;
 }
 
 .radio-control-option-red.radio-control-option-red {
-  color:  #ff8080 !important;
+  color: #ff8080 !important;
 }
 
 .sicm-options {

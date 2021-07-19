@@ -4,9 +4,22 @@ import {
   select,
 } from 'redux-saga/effects';
 import DashboardModel from 'models/Dashboard';
+import SweetAlertBox from 'components/SweetAlertBox';
 import { selectors } from '../../../state/ducks/dashboard';
 import { TestHooks } from './CoviusBulkOrder';
 
+const defaultProps = {
+  closeSweetAlert: jest.fn(),
+  coviusEventOptions: [],
+  downloadFile: jest.fn(),
+  submitToCovius: jest.fn(),
+  message: '',
+  SweetAlertBox,
+  resultOperation: {
+    status: '',
+    level: '',
+  },
+};
 describe('renders <CoviusBulkOrder />', () => {
   const getDownloadResponse = {
     message: 'mock',
@@ -17,10 +30,11 @@ describe('renders <CoviusBulkOrder />', () => {
   const onResetData = jest.fn();
   const coviusEventOptions = [{
     eventCategory: 'mock',
-    eventCode: 123,
+    eventCode: '123',
   }];
   const wrapper = shallow(
     <TestHooks.CoviusBulkOrder
+      {...defaultProps}
       clearSubmitDataResponse={clearSubmitDataResponse}
       coviusEventOptions={coviusEventOptions}
       getDownloadResponse={getDownloadResponse}
@@ -72,7 +86,7 @@ describe('Download Button Enabling', () => {
     request: [],
     invalidCases:
       [{
-        caseId: 32,
+        caseId: '32',
         reason: 'mock1',
       }],
   };
@@ -81,6 +95,7 @@ describe('Download Button Enabling', () => {
 
   const wrapper = shallow(
     <TestHooks.CoviusBulkOrder
+      {...defaultProps}
       clearSubmitDataResponse={clearSubmitDataResponse}
       getDownloadResponse={getDownloadResponse}
       resultData={mockData}
@@ -172,6 +187,7 @@ it('downloads the excel when download button is clicked', () => {
   const clearSubmitDataResponse = jest.fn();
   const wrapper = shallow(
     <TestHooks.CoviusBulkOrder
+      {...defaultProps}
       clearSubmitDataResponse={clearSubmitDataResponse}
       downloadFile={downloadFile}
       getDownloadResponse={getDownloadResponse}
@@ -193,6 +209,8 @@ describe('SweetAlert functionality', () => {
   const onResetData = jest.fn();
   const resultOperation = {
     clearData: 'mock',
+    status: '',
+    level: '',
   };
   const props = {
     resultOperation,
@@ -204,6 +222,7 @@ describe('SweetAlert functionality', () => {
 
   const wrapper = shallow(
     <TestHooks.CoviusBulkOrder
+      {...defaultProps}
       {...props}
     />,
   );

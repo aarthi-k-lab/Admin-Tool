@@ -37,8 +37,10 @@
 
 .leftPanel {
   background-color: white;
+
   /* height: 100%; */
   vertical-align: top;
+
   /* align-self: stretch; */
 }
 
@@ -50,7 +52,7 @@
   overflow: auto;
   height: 100%;
   z-index: 10;
-  background-color: rgb(235,235,236);
+  background-color: rgb(235, 235, 236);
 }
 
 .status-details {
@@ -66,7 +68,7 @@
   height: 100%;
 }
 
-.process-status{
+.process-status {
   font-weight: bold;
   color: rgb(55, 125, 158);
 }
@@ -76,8 +78,8 @@
 }
 
 .centerpane {
-   width: 90%;
-} 
+  width: 90%;
+}
 
 .historyIcon {
   float: right;

@@ -142,7 +142,7 @@ const TestExports = {
 };
 CenterPane.propTypes = {
   mlstnName: PropTypes.string.isRequired,
-  taskDetails: PropTypes.arrayOf({}).isRequired,
+  taskDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 const mapStateToProps = state => ({
   taskDetails: milestoneSelector.getTaskDetails(state),

@@ -6,56 +6,66 @@ describe('<AdditionalInfo>', () => {
   const { AdditionalInfo } = TestHooks;
   const evalCaseDetails = [
     {
+      cardHistoryDetails: [],
+      cardDetails: [{
+        LoanId: '',
+        UserName: '',
+      }],
       status: 'Rejected',
       resolutionId: '2493005',
       evalHistory: [],
-      loanId: '623503778',
+      loanNumber: '623503778',
       evalId: '0',
       statusDate: '2015-03-23 03:30:35.797',
       substatusDate: null,
       substatus: null,
     },
     {
+      cardHistoryDetails: [],
+      cardDetails: [{
+        LoanId: '',
+        UserName: '',
+      }],
       status: 'Rejected',
       resolutionId: '2756082',
       evalHistory: [
         {
-          EvalId: 411405,
+          EvalId: '411405',
           ApprovalType: 'Rejected',
           UpdateDate: '2015-11-10T03:19:42.400',
           UserName: 'Rohan Khot',
           ChangeType: 'Status',
         },
         {
-          EvalId: 411405,
+          EvalId: '411405',
           ApprovalType: 'Sent for Reject',
           UpdateDate: '2015-11-01T13:36:07.950',
           UserName: ' Remedy',
           ChangeType: 'SubStatus',
         },
         {
-          EvalId: 411405,
+          EvalId: '411405',
           ApprovalType: 'Referral KB',
           UpdateDate: '2015-10-07T10:29:38.833',
           UserName: 'Ajinkya Kshirsagar',
           ChangeType: 'SubStatus',
         },
         {
-          EvalId: 411405,
+          EvalId: '411405',
           ApprovalType: 'Sent for Reject',
           UpdateDate: '2015-10-01T03:42:13.603',
           UserName: ' Remedy',
           ChangeType: 'SubStatus',
         },
         {
-          EvalId: 411405,
+          EvalId: '411405',
           ApprovalType: 'Approved',
           UpdateDate: '2015-08-07T11:47:32',
           UserName: ' Remedy',
           ChangeType: 'Status',
         },
       ],
-      loanId: '623503778',
+      loanNumber: '623503778',
       evalId: '411405',
       statusDate: '2015-11-10 03:19:42.4',
       substatusDate: '2015-11-01 13:36:07.95',
@@ -110,6 +120,7 @@ describe('<AdditionalInfo>', () => {
       caseDetails,
       evalRowSelect,
       index: 0,
+      value: 0,
     };
     const wrapper = shallow(
       <AdditionalInfo {...props} />,
@@ -125,6 +136,7 @@ describe('<AdditionalInfo>', () => {
       caseDetails: [],
       evalRowSelect,
       index: 0,
+      value: 0,
     };
     const wrapper = shallow(
       <AdditionalInfo {...props} />,
@@ -136,7 +148,8 @@ describe('<AdditionalInfo>', () => {
       evalCaseDetails,
       caseDetails: [],
       evalRowSelect,
-      index: 1,
+      index: 0,
+      value: 0,
     };
     const wrapper = shallow(
       <AdditionalInfo {...props} />,
@@ -149,7 +162,7 @@ describe('<TabPanel>', () => {
   const { TabPanel } = TestHooks;
   it('should render the AdditionalInfo', () => {
     const props = {
-      children: 'mock',
+      children: [<span key={1} />],
       value: 0,
       index: 0,
       other: {},
@@ -157,6 +170,6 @@ describe('<TabPanel>', () => {
     const wrapper = shallow(
       <TabPanel {...props} />,
     );
-    expect(wrapper.find('WithStyles(ForwardRef(Typography))').at(0).text()).toBe('mock');
+    expect(wrapper.find('span')).toHaveLength(1);
   });
 });

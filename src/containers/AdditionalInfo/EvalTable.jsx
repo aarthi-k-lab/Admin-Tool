@@ -51,12 +51,13 @@ const EvalTable = ({ rows, selectRow, selectedIndex }) => {
         <Table aria-label="collapsible table" fixedHeader={false} size="small" styleName="tableStyle">
           <TableHead styleName="head">
             <TableRow>
-              {headers.map(header => (<TableCell align="center" colSpan={header.colSpan} styleName="headStyle">{header.name}</TableCell>))}
+              {headers.map(header => (<TableCell key={header.name} align="center" colSpan={header.colSpan} styleName="headStyle">{header.name}</TableCell>))}
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row, idx) => (
               <Row
+                key={`${row.resolutionId}-${row.statusDate}`}
                 changeColor={selectedIndex === idx}
                 data={row}
                 onClick={() => selectRow(idx, row.evalId)}

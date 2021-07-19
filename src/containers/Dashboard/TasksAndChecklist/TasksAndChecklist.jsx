@@ -409,6 +409,7 @@ class TasksAndChecklist extends Component {
 TasksAndChecklist.defaultProps = {
   showBanner: false,
   enableGetNext: false,
+  filter: null,
   inProgress: false,
   incomeCalcInProgress: false,
   message: null,
@@ -423,7 +424,7 @@ TasksAndChecklist.defaultProps = {
   isPostModEndShift: false,
   resolutionData: [],
   ruleResultFromTaskTree: [],
-  openWidgetList: '',
+  openWidgetList: [],
 };
 
 TasksAndChecklist.propTypes = {
@@ -464,20 +465,21 @@ TasksAndChecklist.propTypes = {
   closeSnackBar: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
   commentsRequired: PropTypes.bool.isRequired,
-  completeReviewResponse: PropTypes.shape.isRequired,
+  completeReviewResponse: PropTypes.shape().isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
   dispatchAction: PropTypes.func.isRequired,
-  disposition: PropTypes.string.isRequired,
+  disposition: PropTypes.oneOfType([
+    PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired,
   enableGetNext: PropTypes.bool,
   errorBanner: PropTypes.shape({
     errors: PropTypes.array,
     warnings: PropTypes.array,
   }).isRequired,
-  failedRules: PropTypes.shape.isRequired,
-  filter: PropTypes.bool.isRequired,
+  failedRules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  filter: PropTypes.bool,
   getDialogContent: PropTypes.string,
   getSelectedWidget: PropTypes.string.isRequired,
   groupName: PropTypes.string.isRequired,
@@ -507,7 +509,7 @@ TasksAndChecklist.propTypes = {
   onPrev: PropTypes.func.isRequired,
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
-  passedRules: PropTypes.shape.isRequired,
+  passedRules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   popupData: PropTypes.shape({
     cancelButtonText: PropTypes.string,
     clearData: PropTypes.string,
@@ -531,11 +533,10 @@ TasksAndChecklist.propTypes = {
   showBanner: PropTypes.bool,
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
-  snackBarData: PropTypes.node,
+  snackBarData: PropTypes.shape(),
   taskFetchError: PropTypes.bool,
   user: PropTypes.shape({
-
-    skills: PropTypes.objectOf(PropTypes.array).isRequired,
+    skills: PropTypes.array.isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

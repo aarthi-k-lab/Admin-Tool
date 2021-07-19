@@ -1,6 +1,6 @@
 .gridContainer {
   border-top: 1px solid #b8b6b6;
-  margin-top: 0rem;
+  margin-top: 0;
   overflow: hidden;
   height: 100%;
   width: 100%;
@@ -13,120 +13,120 @@
 }
 
 .cardTab {
-  border-right: 1px solid #b8b6b6 ;
+  border-right: 1px solid #b8b6b6;
 }
 
-  .card-background {
-    background: #f7f7f7;
-    height: 100%;
-  }
-  .stepper.stepper {
-    padding: 0;
-    background-color: unset;
-  }
-  
-  .no-border.no-border {
-    border-left: none;
-  }
-    
-  .step-content.step-content {
-    border-left: 0;
-    margin-top: 0;
-    padding-right: 0;
-  }
-  
-  .active {
-    background-color: #d4e7f9;
-  }
-  
-  .image {
-    display: inline-flex;
-    justify-content: center;
-  }
-  
-  .icon {
-    color: grey;
-    position: relative;
-    top: 2px;
-  }
-  
+.card-background {
+  background: #f7f7f7;
+  height: 100%;
+}
 
-  .item.item {
-    margin-top: 0.875rem;
-  }
-  
-  .child-grid {
-    background: var(--grey-200);
-    border: 1px solid #bbbdbf;
-    padding: 0.5rem;
-  }
-  
-  .align {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.25rem;
-  }
-  
-  .value-style {
-    font-weight: bold;
-    color: #333940;
-    margin-top: 0.5rem;
-  }
+.stepper.stepper {
+  padding: 0;
+  background-color: unset;
+}
 
-  .summary {
-    margin: 1rem 0 2rem 7rem;
-  }
+.no-border.no-border {
+  border-left: none;
+}
 
-  .resultText {
-    margin-left: 15px;
-  }
+.step-content.step-content {
+  border-left: 0;
+  margin-top: 0;
+  padding-right: 0;
+}
 
-  .searchResutlText {
-    margin-right: 2px;
-    margin-left: 2px;
-  }
+.active {
+  background-color: #d4e7f9;
+}
 
-  .header {
-    font-size: 1.5rem;
-    font-weight: 400;
-    padding: 0 0 1rem 2rem;
-  }
-  
-  .left-margin {
-    margin-left: 2rem;
-  }
+.image {
+  display: inline-flex;
+  justify-content: center;
+}
 
-  .completedStatus {
-    background-color: var(--light-green-500);
-    color: #fafafa;
-    font-weight: bold;
-    padding: 1px 5px 1px 5px;
-    border-radius: 0.25rem;
-  }
+.icon {
+  color: grey;
+  position: relative;
+  top: 2px;
+}
 
-  .root {
-    min-width: 275;
-  }
+.item.item {
+  margin-top: 0.875rem;
+}
 
-  .bullet {
-    display: inline-block;
-    margin: 0 2px;
-    transform: scale(0.8);
-  }
+.child-grid {
+  background: var(--grey-200);
+  border: 1px solid #bbbdbf;
+  padding: 0.5rem;
+}
 
-  title {
-    font-size: 14;
-  }
+.align {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
 
-  .pos {
-    margin-bottom: 12;
-  }
+.value-style {
+  font-weight: bold;
+  color: #333940;
+  margin-top: 0.5rem;
+}
 
-  .overFlowStyles {
-    overflow-y: scroll;
-    height: 95%;
-  }
+.summary {
+  margin: 1rem 0 2rem 7rem;
+}
 
-  .AppBar {
-    width: 95% !important;
-  }
+.resultText {
+  margin-left: 15px;
+}
+
+.searchResutlText {
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
+.header {
+  font-size: 1.5rem;
+  font-weight: 400;
+  padding: 0 0 1rem 2rem;
+}
+
+.left-margin {
+  margin-left: 2rem;
+}
+
+.completedStatus {
+  background-color: var(--light-green-500);
+  color: #fafafa;
+  font-weight: bold;
+  padding: 1px 5px 1px 5px;
+  border-radius: 0.25rem;
+}
+
+.root {
+  min-width: 275;
+}
+
+.bullet {
+  display: inline-block;
+  margin: 0 2px;
+  transform: scale(0.8);
+}
+
+title {
+  font-size: 14;
+}
+
+.pos {
+  margin-bottom: 12;
+}
+
+.overFlowStyles {
+  overflow-y: scroll;
+  height: 95%;
+}
+
+.AppBar {
+  width: 95% !important;
+}

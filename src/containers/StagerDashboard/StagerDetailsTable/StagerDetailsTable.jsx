@@ -1,4 +1,3 @@
-/* eslint-disable no-dupe-keys */
 import React from 'react';
 import './StagerDetailsTable.css';
 import { connect } from 'react-redux';
@@ -130,7 +129,6 @@ class StagerDetailsTable extends React.PureComponent {
               <Grid
                 alignItems="flex-end"
                 container
-                item
                 justify="space-between"
                 styleName="stager-details-table-top-div"
               >
@@ -217,12 +215,12 @@ StagerDetailsTable.defaultProps = {
 
 StagerDetailsTable.propTypes = {
   azureSearchToggle: PropTypes.bool.isRequired,
-  data: PropTypes.node.isRequired,
+  data: PropTypes.shape().isRequired,
   docGenAction: PropTypes.func.isRequired,
-  downloadedData: PropTypes.node.isRequired,
+  downloadedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getActiveSearchTerm: PropTypes.string.isRequired,
-  getSearchStagerLoanNumber: PropTypes.node.isRequired,
-  getStagerSearchResponse: PropTypes.node.isRequired,
+  getSearchStagerLoanNumber: PropTypes.string.isRequired,
+  getStagerSearchResponse: PropTypes.string.isRequired,
   getStagerValue: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
@@ -235,7 +233,7 @@ StagerDetailsTable.propTypes = {
       error: PropTypes.bool,
     }),
   ),
-  selectedData: PropTypes.node.isRequired,
+  selectedData: PropTypes.shape().isRequired,
   triggerDispositionOperationCall: PropTypes.func.isRequired,
   triggerStagerGroup: PropTypes.func.isRequired,
 };

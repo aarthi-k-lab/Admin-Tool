@@ -5,7 +5,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import * as R from 'ramda';
-import { FormControlLabelWithTooltip } from 'components/RadioButtonGroup';
+import FormControlLabelWithTooltip from 'components/RadioButtonGroup';
 import styles from './RadioButtons.css';
 
 function RadioButtons({

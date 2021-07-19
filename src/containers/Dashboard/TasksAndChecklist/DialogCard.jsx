@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandIcon from '@material-ui/icons/ExpandLess';
-// import Dialog from '@material-ui/core/Dialog';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import CollapseIcon from '@material-ui/icons/ExpandMore';
 import InfoIcon from '@material-ui/icons/Info';
-// import { select } from 'node_modules/redux-saga/effects';
 import styles from './DialogCard.css';
 import DispositionComment from './DispositionComment';
 

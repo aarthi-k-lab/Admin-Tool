@@ -1,20 +1,20 @@
-.root>* {
-    border-bottom: unset;
+.root > * {
+  border-bottom: unset;
 }
 
 .rowStyle {
-    font-size: 9.5px;
+  font-size: 9.5px;
 }
 
 .statusDateStyle {
-    font-size: 8px;
+  font-size: 8px;
 }
 
 .setBackground {
-    background: rgb(229, 248, 251);
+  background: rgb(229, 248, 251);
 }
 
 .historyTable {
-    padding-bottom: 0;
-    padding-top: 0;
+  padding-bottom: 0;
+  padding-top: 0;
 }

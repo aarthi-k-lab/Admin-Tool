@@ -13,6 +13,7 @@
   float: right !important;
   font-weight: bold !important;
 }
+
 .reset-button-style-blue {
   position: relative;
   margin-right: 2rem;
@@ -87,7 +88,7 @@
 }
 
 .newBulkUpload {
-  margin: 1rem 1rem 2rem 0rem;
+  margin: 1rem 1rem 2rem 0;
   font-weight: bold;
   font-size: 1.2rem;
   padding-left: 1rem;
@@ -134,7 +135,7 @@
 
 .drop-down-select {
   width: 90%;
-  margin: 0rem 2rem 2rem 0.75rem;
+  margin: 0 2rem 2rem 0.75rem;
   background-color: white !important;
   height: 3rem !important;
 }

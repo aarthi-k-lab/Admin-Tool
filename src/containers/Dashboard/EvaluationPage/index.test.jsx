@@ -2,12 +2,21 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestHooks } from './EvaluationPage';
 
-
+const defaultProps = {
+  isAssigned: false,
+  isAutoDisposition: false,
+  isHistoryOpen: false,
+  processName: '',
+  taskStatus: '',
+  user: {
+    skills: [],
+  },
+};
 describe('<EvaluationPage />', () => {
   const location = {
     pathname: '/backend-checklist',
   };
-  const wrapper = shallow(<TestHooks.EvaluationPage location={location} />);
+  const wrapper = shallow(<TestHooks.EvaluationPage {...defaultProps} location={location} />);
   it('<ContentHeader /> shows title', () => {
     const contentHeader = wrapper.find('ContentHeader');
     expect(contentHeader).toHaveLength(0);

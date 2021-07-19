@@ -43,8 +43,8 @@
 
 .uploadImage {
   font-size: 6rem !important;
-  margin: 6rem 8rem 0rem 49rem;
-  padding: 0rem;
+  margin: 6rem 8rem 0 49rem;
+  padding: 0;
 }
 
 .countStyle {
@@ -59,7 +59,7 @@
 .uploadMsg {
   font-size: 1.3rem;
   align-items: center;
-  margin: 1rem 8rem 0rem 42rem;
+  margin: 1rem 8rem 0 42rem;
   flex-direction: column;
   justify-content: center;
 }
@@ -77,12 +77,12 @@
   flex-direction: row !important;
 }
 
-.tabViewDiv{
+.tabViewDiv {
   width: 100%;
 }
 
-.tabPanelStyle > div  {
-  padding: 0rem !important;
+.tabPanelStyle > div {
+  padding: 0 !important;
 }
 
 .drap-and-drop-area {
@@ -97,7 +97,7 @@
   height: 100%;
   text-align: center;
   line-height: 11rem;
-  color: #000000;
+  color: #000;
   font-family: Arial;
 }
 

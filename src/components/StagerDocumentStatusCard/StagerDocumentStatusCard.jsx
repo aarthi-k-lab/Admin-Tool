@@ -15,8 +15,8 @@ const StagerDocumentStatusCard = ({
   const { slaDays, slaDaysCategory } = data;
   return (
     <Paper elevation={2} onClick={() => onStatusCardClick(data.displayName, tabName, data.total)} styleName={active ? 'document-type-card-main-div-active' : 'document-type-card-main-div'}>
-      <Grid container direction="column" spacing={0} xs={12}>
-        <Grid item>
+      <Grid container direction="column" spacing={0}>
+        <Grid item xs={12}>
           <span styleName={active ? 'document-type-name-selected' : 'document-type-name'}>
             {data.displayName.toUpperCase()}
           </span>
@@ -73,9 +73,9 @@ StagerDocumentStatusCard.defaultProps = {
 };
 StagerDocumentStatusCard.propTypes = {
   active: PropTypes.bool,
-  data: PropTypes.node,
+  data: PropTypes.shape(),
   onStatusCardClick: PropTypes.func.isRequired,
-  tabName: PropTypes.func.isRequired,
+  tabName: PropTypes.string.isRequired,
 };
 
 export default StagerDocumentStatusCard;

@@ -78,7 +78,7 @@ class MilestonePage extends React.PureComponent {
             </div>
             )}
           </Grid>
-          <Grid container xs={9}>
+          <Grid container>
             <Grid item xs={12}>
               <div styleName="centerpane">
                 <CenterPane />

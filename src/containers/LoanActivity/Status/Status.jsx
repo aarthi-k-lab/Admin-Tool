@@ -158,17 +158,17 @@ class Status extends React.Component {
 }
 
 Status.propTypes = {
-  classes: PropTypes.shape.isRequired,
+  classes: PropTypes.shape().isRequired,
   clickedCard: PropTypes.string.isRequired,
   onCardClick: PropTypes.func.isRequired,
-  statusList: PropTypes.shape({
+  statusList: PropTypes.arrayOf(PropTypes.shape({
     assignee: PropTypes.string.isRequired,
     endDate: PropTypes.string.isRequired,
     expectedCompletionDate: PropTypes.string.isRequired,
     header: PropTypes.string.isRequired,
     startDate: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
-  }).isRequired,
+  })).isRequired,
 };
 
 const TestHooks = {

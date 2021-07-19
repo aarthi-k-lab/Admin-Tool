@@ -44,6 +44,7 @@ const getMessage = (data) => {
     ? (
       <div styleName="notificationMsg">
         <UserNotification
+          key={text}
           level={result === FALSE ? ERROR : SUCCESS}
           message={parse(text)}
           type="alert-box"
@@ -103,19 +104,23 @@ class SlaRules extends React.Component {
   }
 }
 
+SlaRules.defaultProps = {
+  value: null,
+};
+
 SlaRules.propTypes = {
   additionalInfo: PropTypes.shape({
     displayName: PropTypes.string.isRequired,
   }).isRequired,
-  options: PropTypes.arrayOf(PropTypes.shape({
+  options: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape()), PropTypes.shape({
     displayName: PropTypes.string.isRequired,
     hint: PropTypes.string,
     isEnabled: PropTypes.bool,
     textColor: PropTypes.string,
     value: PropTypes.string.isRequired,
-  })).isRequired,
+  })]).isRequired,
   title: PropTypes.string.isRequired,
-  value: PropTypes.shape.isRequired,
+  value: PropTypes.string,
 };
 
 export default SlaRules;

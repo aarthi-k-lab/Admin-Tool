@@ -20,7 +20,7 @@ describe('<SweetAlertBox />', () => {
   it('should render the warning gif', () => {
     const props = {
       message: 'mock',
-      type: null,
+      type: '',
       title: 'mock',
     };
     const wrapper = shallow(

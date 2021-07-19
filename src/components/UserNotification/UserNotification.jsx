@@ -53,7 +53,7 @@ UserNotification.propTypes = {
   className: PropTypes.string,
   dismissUserNotification: PropTypes.func,
   level: PropTypes.oneOf([ERROR, SUCCESS]).isRequired,
-  message: PropTypes.node.isRequired,
+  message: PropTypes.string.isRequired,
   open: PropTypes.bool,
   type: PropTypes.oneOf([
     UserNotification.ALERT_BOX,

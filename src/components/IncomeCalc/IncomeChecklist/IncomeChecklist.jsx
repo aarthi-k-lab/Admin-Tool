@@ -447,7 +447,7 @@ IncomeChecklist.propTypes = {
     }),
   ).isRequired,
   checklistLoadStatus: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.arrayOf(PropTypes.shape()),
   className: PropTypes.string,
   disabled: PropTypes.bool,
   displayInRow: PropTypes.bool,

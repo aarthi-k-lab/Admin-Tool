@@ -313,7 +313,7 @@ StagerDashboard.propTypes = {
   ),
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
-  getStagerSearchResponse: PropTypes.node.isRequired,
+  getStagerSearchResponse: PropTypes.shape().isRequired,
   group: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onCheckBoxClick: PropTypes.func.isRequired,
@@ -323,15 +323,15 @@ StagerDashboard.propTypes = {
   onClearStagerResponse: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
-  selectedData: PropTypes.node.isRequired,
-  snackBarData: PropTypes.node,
+  selectedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  snackBarData: PropTypes.shape(),
   stagerTaskName: PropTypes.string,
-  tableData: PropTypes.node,
+  tableData: PropTypes.arrayOf(PropTypes.shape()),
   triggerOrderCall: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    skills: PropTypes.objectOf(PropTypes.array).isRequired,
+    skills: PropTypes.arrayOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,
@@ -347,7 +347,7 @@ StagerDashboard.defaultProps = {
   stagerTaskName: '',
   loading: false,
   closeSnackBar: () => { },
-  docGenResponse: {},
+  docGenResponse: [],
 };
 
 const TestExports = {

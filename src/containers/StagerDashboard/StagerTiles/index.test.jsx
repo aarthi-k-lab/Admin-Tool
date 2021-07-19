@@ -2,6 +2,14 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './StagerTiles';
 
+const defaultProps = {
+  onStatusCardClick: jest.fn(),
+  searchResponse: {
+    loanNumber: '',
+    titleType: '',
+    titleValue: '',
+  },
+};
 describe('<StagerTiles />', () => {
   const counts = [{
     displayName: 'COMPLETED',
@@ -45,7 +53,13 @@ describe('<StagerTiles />', () => {
   const tabName = 'Order';
   it('shows StagerTiles', () => {
     const wrapper = shallow(
-      <TestExports.StagerTiles activeTab={tabName} activeTile={tileName} counts={[]} />,
+      <TestExports.StagerTiles
+        {...defaultProps}
+        activeTab={tabName}
+        activeTile={tileName}
+        counts={[]}
+        stagerTaskName={{ activeTile: tileName, activeTab: tabName }}
+      />,
     );
     expect(wrapper.find('Loader')).toHaveLength(1);
     expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(1);
@@ -54,7 +68,12 @@ describe('<StagerTiles />', () => {
   });
   it('shows StagerDashboard', () => {
     const wrapper = shallow(
-      <TestExports.StagerTiles activeTab={tabName} activeTile={tileName} counts={counts} />,
+      <TestExports.StagerTiles
+        {...defaultProps}
+        activeTab={tabName}
+        activeTile={tileName}
+        counts={counts}
+      />,
     );
     expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(7);
     expect(wrapper.find('StagerDocumentStatusCard')).toHaveLength(3);

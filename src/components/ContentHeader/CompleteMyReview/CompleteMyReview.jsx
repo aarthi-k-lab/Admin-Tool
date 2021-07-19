@@ -61,10 +61,11 @@ class CompleteMyReview extends React.Component {
 
 CompleteMyReview.defaultProps = {
   onClick: () => {},
+  completeReviewResponse: null,
 };
 
 CompleteMyReview.propTypes = {
-  completeReviewResponse: PropTypes.shape.isRequired,
+  completeReviewResponse: PropTypes.shape(),
   onClick: PropTypes.func,
   onDialogClose: PropTypes.func.isRequired,
 };

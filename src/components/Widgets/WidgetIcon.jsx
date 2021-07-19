@@ -43,18 +43,18 @@ const WidgetIcon = (props) => {
 
 WidgetIcon.defaultProps = {
   openWidgetList: [],
-  data: [],
+  data: {},
   disabledWidgets: [],
 };
 
 WidgetIcon.propTypes = {
   data: PropTypes.shape({
-    icon: PropTypes.string,
+    icon: PropTypes.node,
     id: PropTypes.string,
   }),
   disabledWidgets: PropTypes.arrayOf(PropTypes.string),
   onWidgetClick: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.string,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
 };
 
 const TestExports = {

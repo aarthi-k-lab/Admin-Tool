@@ -1,9 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-// import ChatIcon from '@material-ui/icons/Chat';
-// import CommentsWidget from './CommentsWidget';
 import { TestExports } from './WidgetIcon';
 
+const defaultProps = {
+  onWidgetClick: jest.fn(),
+};
 describe('<WidgetIcon />', () => {
   it('shows WidgetIcons', () => {
     const data = {
@@ -13,14 +14,14 @@ describe('<WidgetIcon />', () => {
       show: true,
     };
     const wrapper = shallow(
-      <TestExports.WidgetIcon data={data} />,
+      <TestExports.WidgetIcon {...defaultProps} data={data} />,
     );
     expect(wrapper.find('WithStyles(ForwardRef(Grid))')).toHaveLength(2);
   });
 
   it('triggers onClick handler', () => {
     const handleClick = jest.fn();
-    const wrapper = shallow(<TestExports.WidgetIcon onWidgetClick={handleClick} />);
+    const wrapper = shallow(<TestExports.WidgetIcon {...defaultProps} onWidgetClick={handleClick} />);
     wrapper.simulate('click');
     expect(handleClick.mock.calls.length).toBe(1);
   });

@@ -515,7 +515,7 @@ class DocsIn extends React.PureComponent {
               value={selectedStagerTaskOptions}
             >
               {stagerTaskOptions.map(item => (
-                <MenuItem value={item.value}>{item.displayName}</MenuItem>
+                <MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>
               ))}
             </Select>
           </Grid>
@@ -539,7 +539,7 @@ class DocsIn extends React.PureComponent {
             value={value}
           >
             {taskName.map(item => (
-              <MenuItem value={item.value}>{item.displayName}</MenuItem>
+              <MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>
             ))}
           </Select>
         </Grid>
@@ -551,7 +551,7 @@ class DocsIn extends React.PureComponent {
               value={selectedState}
             >
               {LoanStates.map(item => (
-                <MenuItem value={item.value}>{item.displayName}</MenuItem>
+                <MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>
               ))}
             </Select>
           </Grid>
@@ -566,7 +566,7 @@ class DocsIn extends React.PureComponent {
                 value={modReversalReason}
               >
                 {Array.isArray(modReversalReasons) && modReversalReasons.map(item => (
-                  <MenuItem value={item}>{item}</MenuItem>
+                  <MenuItem key={item} value={item}>{item}</MenuItem>
                 ))}
               </Select>
             </Grid>
@@ -582,6 +582,7 @@ class DocsIn extends React.PureComponent {
     const { tableData } = this.props;
     return (
       <Grid
+        item
         style={{
           right: '0', position: 'absolute', paddingRight: '64px', paddingTop: '4px',
         }}
@@ -659,7 +660,7 @@ class DocsIn extends React.PureComponent {
   renderTableData() {
     const { tableData } = this.props;
     return (
-      <Grid container direction="column" style={{ paddingLeft: '1rem' }} xs={10}>
+      <Grid container direction="column" style={{ paddingLeft: '1rem' }}>
         <div styleName="table-container">
           <div styleName="height-limiter">
             <ReactTable
@@ -728,7 +729,7 @@ class DocsIn extends React.PureComponent {
     return (
       <>
         <ContentHeader title={title}>
-          <Grid container style={{ height: '3rem' }} xs={12}>
+          <Grid container style={{ height: '3rem' }}>
             <Grid item xs={1}>
               <div styleName="backButton">
                 <Link onClick={this.handleBackButton} to={renderBackButtonPage}>
@@ -765,7 +766,7 @@ class DocsIn extends React.PureComponent {
             </span>
           </Grid>
         </Grid>
-        <Grid container styleName="loan-activity" xs={12}>
+        <Grid container styleName="loan-activity">
           <Grid item xs={2}>{this.renderNotepadArea()}</Grid>
           {this.renderTableData()}
         </Grid>
@@ -782,7 +783,7 @@ DocsIn.defaultProps = {
   onFailedLoanValidation: () => { },
   tableData: [
     {
-      loanNumber: '', pid: 0, evalId: 0, statusMessage: '',
+      loanNumber: '', pid: '', evalId: '', statusMessage: '',
     },
   ],
   onSelectModReversal: () => { },

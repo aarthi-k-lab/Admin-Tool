@@ -106,7 +106,7 @@ const mapStateToProps = state => ({
 });
 
 LoanActivity.defaultProps = {
-  evalId: 0,
+  evalId: '',
   inProgress: false,
   resultUnderwriting: { level: '', status: '' },
   trialHeader: {},

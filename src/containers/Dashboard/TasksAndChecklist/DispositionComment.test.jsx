@@ -2,6 +2,13 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestHooks } from './DispositionComment';
 
+let defaultProps ={
+  allTaskScenario : false,
+  commentsRequired : false,
+  dispositionCommentTrigger : jest.fn(),
+  message : '',
+  onClearUserNotifyMsg : jest.fn(),
+}
 describe('<DispositionComment />', () => {
   const { DispositionComment } = TestHooks;
   const renderInstructions = jest.fn();
@@ -13,7 +20,7 @@ describe('<DispositionComment />', () => {
     comment: 'abc',
   };
   it('should render instructions when the active tile is instruction', () => {
-    const wrapper = shallow(<DispositionComment activeIcon="instructions" content="abc" header="title" triggerValidationDisplay={triggerValidationDisplay} />);
+    const wrapper = shallow(<DispositionComment {...defaultProps} activeIcon="instructions" content="abc" header="title" triggerValidationDisplay={triggerValidationDisplay} />);
     expect(renderCommentBox).not.toHaveBeenCalled();
     expect(wrapper.find('section')).toHaveLength(1);
     expect(wrapper.find('header')).toHaveLength(1);
@@ -21,6 +28,7 @@ describe('<DispositionComment />', () => {
   });
   it('should render disposition comment box when the active tile is comment', () => {
     const wrapper = shallow(<DispositionComment
+       {...defaultProps}
       activeIcon="comment"
       allTaskScenario
       commentsRequired={false}
@@ -38,6 +46,7 @@ describe('<DispositionComment />', () => {
   });
   it('should render disposition comment box when the active tile is comment => onblur action', () => {
     const wrapper = shallow(<DispositionComment
+    {...defaultProps}
       activeIcon="comment"
       allTaskScenario
       commentsRequired={false}
@@ -55,6 +64,7 @@ describe('<DispositionComment />', () => {
   it('should render comments required text when there is no comments and is not an alltaskscenario', () => {
     const comments = { comment: null };
     const wrapper = shallow(<DispositionComment
+    {...defaultProps}
       activeIcon="comment"
       allTaskScenario={false}
       commentsRequired
@@ -70,6 +80,7 @@ describe('<DispositionComment />', () => {
   it('should not render comments required text when there is no comments and is an alltaskscenario', () => {
     const comments = { comment: null };
     const wrapper = shallow(<DispositionComment
+    {...defaultProps}
       activeIcon="comment"
       allTaskScenario
       commentsRequired

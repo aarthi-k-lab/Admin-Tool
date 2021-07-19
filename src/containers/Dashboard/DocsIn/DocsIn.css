@@ -3,7 +3,7 @@
   background-color: var(--grey-200);
   flex-direction: column;
   justify-content: center;
-} 
+}
 
 .landing-page span {
   color: var(--grey-500);
@@ -133,11 +133,10 @@
 }
 
 .drop-down {
-  margin: 0rem 0rem 0rem 1rem;
+  margin: 0 0 0 1rem;
 }
 
 .drop-down-select {
   margin-right: 4rem;
   max-width: 27rem !important;
 }
-

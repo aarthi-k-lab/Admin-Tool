@@ -1,9 +1,8 @@
 .lock.lock {
-    background-color: var(--light-blue-900);
-    margin-right: 0.5rem;
-  }
-  
-  .lock.lock:hover {
-    background-color: var(--blue-900);
-  }
-  
+  background-color: var(--light-blue-900);
+  margin-right: 0.5rem;
+}
+
+.lock.lock:hover {
+  background-color: var(--blue-900);
+}

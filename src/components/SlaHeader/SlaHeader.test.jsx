@@ -6,7 +6,7 @@ describe('renders <SlaHeader />', () => {
   const props = {
     passedRules: [],
     failedRules: [],
-    resolutionData: { resolutionId: [] },
+    resolutionData: [{ resolutionId: '' }],
     allRules: [],
     clearRuleResponse: jest.fn(),
     closeSweetAlert: jest.fn(),
@@ -27,12 +27,17 @@ describe('renders <SlaHeader />', () => {
       status: 'mock',
       title: 'mock',
     },
+    showContinueMyReview: false,
+    slaRulesProcessed: false,
+    showPushDataButton: false,
+    ruleResponse: {},
     triggerPushData: jest.fn(),
     triggerSetSLAvalues: jest.fn(),
     triggerResolutionIdStats: jest.fn(),
     triggerFilterRules: jest.fn(),
     title: 'mock',
-
+    taskCode: '',
+    text: '',
   };
   const wrapper = shallow(
     <TestHooks.LabelWithIcon {...props} />,
@@ -72,7 +77,7 @@ describe('renders <SlaHeader /> sweetalert functionalites and push data', () => 
   const props = {
     passedRules: [],
     failedRules: [],
-    resolutionData: { resolutionId: [] },
+    resolutionData: [{ resolutionId: '' }],
     allRules: [],
     clearRuleResponse: jest.fn(),
     closeSweetAlert: jest.fn(),
@@ -94,7 +99,10 @@ describe('renders <SlaHeader /> sweetalert functionalites and push data', () => 
     triggerResolutionIdStats: jest.fn(),
     triggerFilterRules: jest.fn(),
     title: 'mock',
-
+    showContinueMyReview: false,
+    slaRulesProcessed: false,
+    taskCode: '',
+    text: 'mock',
   };
   const wrapper = shallow(
     <TestHooks.LabelWithIcon {...props} />,
@@ -113,7 +121,7 @@ describe('renders <SlaHeader /> no sweetalert', () => {
   const props = {
     passedRules: [],
     failedRules: [],
-    resolutionData: { resolutionId: [] },
+    resolutionData: [{ resolutionId: '' }],
     allRules: [],
     clearRuleResponse: jest.fn(),
     closeSweetAlert: jest.fn(),
@@ -127,15 +135,18 @@ describe('renders <SlaHeader /> no sweetalert', () => {
     resolutionId: '123',
     resolutionText: 'mock',
     resultData: {},
+    ruleResponse: {},
     triggerHeader: true,
-    text: 'mock',
     showPushDataButton: true,
     triggerPushData: jest.fn(),
     triggerSetSLAvalues: jest.fn(),
     triggerResolutionIdStats: jest.fn(),
     triggerFilterRules: jest.fn(),
     title: 'Post mock',
-
+    showContinueMyReview: false,
+    slaRulesProcessed: false,
+    taskCode: '',
+    text: 'mock',
   };
   const wrapper = shallow(
     <TestHooks.LabelWithIcon {...props} />,

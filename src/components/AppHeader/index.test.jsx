@@ -15,6 +15,22 @@ const setWindowLocation = (url) => {
   };
 };
 
+const defaultProps = {
+  evalId: '',
+  isAssigned: false,
+  user: {},
+  onAutoSave: jest.fn(),
+  OnAdditionalInfo: jest.fn(),
+  OnAdditionalInfoSelect: jest.fn(),
+  onClearStagerTaskName: jest.fn(),
+  onEndShift: jest.fn(),
+  clearSearch: false,
+  getUserRole: '',
+  onClearSelectReject: jest.fn(),
+  setBeginSearch: jest.fn(),
+  history: [],
+
+};
 describe('<Header />', () => {
   const MountOptions = {
     context: {
@@ -30,8 +46,7 @@ describe('<Header />', () => {
       },
     },
     childContextTypes: {
-      // eslint-disable-next-line react/forbid-prop-types
-      router: PropTypes.object,
+      router: PropTypes.shape(),
     },
   };
   const user = {
@@ -47,13 +62,12 @@ describe('<Header />', () => {
   };
   const onClearSelectReject = jest.fn();
   const setBeginSearch = jest.fn();
-  const historyMock = { push: jest.fn() };
   const onClearStagerTaskName = jest.fn();
   const onEndShift = jest.fn();
   const onAutoSave = jest.fn();
+  const historyMock = [];
   const props = {
     features,
-    historyMock,
     onAutoSave,
     onClearSelectReject,
     onClearStagerTaskName,
@@ -63,28 +77,10 @@ describe('<Header />', () => {
     user,
   };
   it('Hotkey \'s\' pressed ', () => {
-    const MountOptions = {
-      context: {
-        router: {
-          history: {
-            createHref: () => {
-            },
-            push: () => {
-            },
-            replace: () => {
-            },
-          },
-        },
-      },
-      childContextTypes: {
-        // eslint-disable-next-line react/forbid-prop-types
-        router: PropTypes.object,
-      },
-    };
     const wrapper = mount(
       <TestExports.Header
+        {...defaultProps}
         features={features}
-        history={historyMock}
         onClearSelectReject={onClearSelectReject}
         setBeginSearch={setBeginSearch}
         setUserRole={setUserRole}
@@ -98,28 +94,10 @@ describe('<Header />', () => {
     expect(spy).toHaveBeenCalled();
   });
   it('Hotkey \'s\' pressed after unmount ', () => {
-    const MountOptions = {
-      context: {
-        router: {
-          history: {
-            createHref: () => {
-            },
-            push: () => {
-            },
-            replace: () => {
-            },
-          },
-        },
-      },
-      childContextTypes: {
-        // eslint-disable-next-line react/forbid-prop-types
-        router: PropTypes.object,
-      },
-    };
     const wrapper = mount(
       <TestExports.Header
+        {...defaultProps}
         features={features}
-        history={historyMock}
         onClearSelectReject={onClearSelectReject}
         setBeginSearch={setBeginSearch}
         setUserRole={setUserRole}
@@ -134,7 +112,12 @@ describe('<Header />', () => {
   });
   it('shows Header', () => {
     const wrapper = shallow(
-      <TestExports.Header features={features} setUserRole={setUserRole} user={user} />,
+      <TestExports.Header
+        {...defaultProps}
+        features={features}
+        setUserRole={setUserRole}
+        user={user}
+      />,
     );
     expect(wrapper.find('Link')).toHaveLength(1);
     expect(wrapper.find('WithStyles(ForwardRef(IconButton))')).toHaveLength(1);
@@ -146,15 +129,17 @@ describe('<Header />', () => {
   it('Click on loan search icon without text entered', () => {
     const wrapper = mount(
       <TestExports.Header
+        {...defaultProps}
         {...props}
       />, MountOptions,
     );
     wrapper.find('img').at(1).simulate('click');
-    expect(historyMock.push).not.toBeCalled();
+    expect(historyMock.length).toBe(0);
   });
   it('enter loan number in loan search and search loan', () => {
     const wrapper = shallow(
       <TestExports.Header
+        {...defaultProps}
         features={features}
         history={historyMock}
         onClearSelectReject={onClearSelectReject}
@@ -167,17 +152,18 @@ describe('<Header />', () => {
     expect(wrapper.instance().state.searchText).toBe('');
     wrapper.find('WithStyles(ForwardRef(TextField))').simulate('change', { target: { value: 1234 } });
     wrapper.find('WithStyles(ForwardRef(TextField))').simulate('keypress', { keyCode: '88' });
-    expect(historyMock.push).not.toBeCalled();
+    expect(historyMock.length).toBe(0);
     wrapper.find('WithStyles(ForwardRef(TextField))').simulate('change', { target: { value: 1234 } });
     wrapper.find('WithStyles(ForwardRef(TextField))').simulate('keypress', { key: 'Enter' });
     expect(wrapper.instance().state.searchText).toBe(1234);
-    expect(historyMock.push).toHaveBeenCalled();
+    expect(historyMock.length).toBe(1);
     wrapper.setProps({ clearSearch: true });
     expect(wrapper.instance().state.searchText).toBe('');
   });
   it('landing page click', () => {
     const wrapper = shallow(
       <TestExports.Header
+        {...defaultProps}
         features={features}
         history={historyMock}
         onAutoSave={onAutoSave}
@@ -193,7 +179,7 @@ describe('<Header />', () => {
     expect(onAutoSave).not.toBeCalled();
     expect(onClearStagerTaskName).toHaveBeenCalled();
     expect(onEndShift).toHaveBeenCalled();
-    wrapper.setProps({ evalId: 12345, enableGetNext: false, isAssigned: true });
+    wrapper.setProps({ evalId: '12345', enableGetNext: false, isAssigned: true });
     wrapper.find('Link').simulate('click');
     expect(onAutoSave).toHaveBeenCalled();
     expect(onClearStagerTaskName).toHaveBeenCalled();
@@ -203,6 +189,7 @@ describe('<Header />', () => {
     setWindowLocation('localhost');
     let wrapper = shallow(
       <TestExports.Header
+        {...defaultProps}
         {...props}
       />,
     );
@@ -210,6 +197,7 @@ describe('<Header />', () => {
     setWindowLocation('127.0.0.1');
     wrapper = shallow(
       <TestExports.Header
+        {...defaultProps}
         {...props}
       />,
     );
@@ -217,6 +205,7 @@ describe('<Header />', () => {
     setWindowLocation('dev.cmod.mrcooper.io');
     wrapper = shallow(
       <TestExports.Header
+        {...defaultProps}
         {...props}
       />,
     );
@@ -224,6 +213,7 @@ describe('<Header />', () => {
     setWindowLocation('cmod.mrcooper.io');
     wrapper = shallow(
       <TestExports.Header
+        {...defaultProps}
         {...props}
       />,
     );

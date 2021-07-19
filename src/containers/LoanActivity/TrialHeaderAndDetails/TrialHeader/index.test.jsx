@@ -7,11 +7,11 @@ describe('<TrialHeader />', () => {
     const trialHeader = {
       downPayment: 123,
       evalId: 123,
-      fhaTrialLetterReceivedDate: 'mock',
+      fhaTrialLetterReceivedDate: '2015-11-01 13:36:07.95',
       loanId: 123,
       resolutionChoiceType: 'mock',
       resolutionId: 123,
-      trialAcceptanceDate: 'mock',
+      trialAcceptanceDate: '2015-11-01 13:36:07.95',
       trialName: 'mock',
     };
     const props = {
@@ -37,11 +37,11 @@ describe('<TrialHeader />', () => {
     const trialHeader = {
       downPayment: 123,
       evalId: 123,
-      fhaTrialLetterReceivedDate: new Date(),
+      fhaTrialLetterReceivedDate: '2015-11-01 13:36:07.95',
       loanId: 123,
       resolutionChoiceType: 'mock',
       resolutionId: 123,
-      trialAcceptanceDate: 'mock',
+      trialAcceptanceDate: '2015-11-01 13:36:07.95',
       trialName: 'Trial',
     };
     const props = {

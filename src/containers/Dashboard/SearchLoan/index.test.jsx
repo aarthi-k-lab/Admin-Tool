@@ -4,17 +4,45 @@ import SweetAlertBox from 'components/SweetAlertBox';
 import { TestHooks } from './SearchLoan';
 import { ADDITIONAL_INFO } from '../../../constants/widgets';
 
-
+const defaultProps = {
+  evalId: '',
+  isAssigned: false,
+  onAdditionalInfo: jest.fn(),
+  onAdditionalInfoSelect: jest.fn(),
+  onAutoSave: jest.fn(),
+  user: {},
+  history: [],
+  location: {
+    search: '',
+  },
+  onEndShift: jest.fn(),
+  onGetGroupName: jest.fn(),
+  onSearchLoan: jest.fn(),
+  onSelectEval: jest.fn(),
+  onHistorySelect: jest.fn(),
+  onWidgetToggle: jest.fn(),
+  UserNotification: {
+    level: '',
+    message: '',
+  },
+  getRejectResponse: {
+    level: 'success',
+    message: 'successful',
+  },
+  searchLoanResult: {
+    loanNumber: '123',
+    valid: true,
+    assigned: [{
+      mock: 'mock',
+    }],
+  },
+};
 describe('Search Loan ', () => {
   const { SearchLoan } = TestHooks;
   const resultOperation = {
     status: 'Successful',
     level: 'success',
     isOpen: true,
-  };
-  const getRejectResponse = {
-    level: 'mock',
-    message: 'mock',
   };
   const searchLoanResult = {
     loanNumber: '123',
@@ -36,7 +64,6 @@ describe('Search Loan ', () => {
   };
   const props = {
     closeSweetAlert,
-    getRejectResponse,
     onClearStagerTaskName,
     onEndShift,
     onSelectEval,
@@ -50,6 +77,7 @@ describe('Search Loan ', () => {
   };
   const getLoanActivityPath = jest.spyOn(SearchLoan.prototype, 'getLoanActivityPath');
   const wrapper = shallow(<SearchLoan
+    {...defaultProps}
     {...props}
   />);
   const instance = wrapper.instance();
@@ -130,10 +158,6 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
     level: 'success',
     isOpen: true,
   };
-  const getRejectResponse = {
-    level: 'mock',
-    message: 'mock',
-  };
   const searchLoanResult = {
     loanNumber: '123',
     valid: true,
@@ -156,7 +180,6 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
   };
   const props = {
     closeSweetAlert,
-    getRejectResponse,
     onClearStagerTaskName,
     onEndShift,
     onSelectEval,
@@ -170,6 +193,7 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
     location,
   };
   const wrapper = shallow(<SearchLoan
+    {...defaultProps}
     {...props}
   />);
   it('should render Go back to search results when in additional info page', () => {
@@ -214,18 +238,17 @@ describe('Search Loan sweetalert functionalities', () => {
       level: 'success',
       isOpen: true,
     };
-    const getRejectResponse = {};
-    const searchLoanResult = {};
+    const searchLoanResult = { loanNumber: '' };
     const closeSweetAlert = jest.fn();
     const onClearStagerTaskName = jest.fn();
     const props = {
       closeSweetAlert,
-      getRejectResponse,
       onClearStagerTaskName,
       resultOperation,
       searchLoanResult,
     };
     const wrapper = shallow(<SearchLoan
+      {...defaultProps}
       {...props}
     />);
     expect(wrapper.find(SweetAlertBox)).toHaveLength(1);
@@ -237,7 +260,6 @@ describe('Search Loan sweetalert functionalities', () => {
       level: 'success',
       isOpen: true,
     };
-    const getRejectResponse = {};
     const searchLoanResult = {
       loanNumber: '123',
       valid: true,
@@ -245,8 +267,8 @@ describe('Search Loan sweetalert functionalities', () => {
     const closeSweetAlert = jest.fn();
     const onClearStagerTaskName = jest.fn();
     const wrapper = shallow(<SearchLoan
+      {...defaultProps}
       closeSweetAlert={closeSweetAlert}
-      getRejectResponse={getRejectResponse}
       onClearStagerTaskName={onClearStagerTaskName}
       resultOperation={resultOperation}
       searchLoanResult={searchLoanResult}
@@ -257,7 +279,6 @@ describe('Search Loan sweetalert functionalities', () => {
   it('does not show Sweet Alert when resultOperation is empty and render invalid loan page on invalid loan', () => {
     const { SearchLoan } = TestHooks;
     const resultOperation = {};
-    const getRejectResponse = {};
     const searchLoanResult = {
       loanNumber: '123',
       valid: false,
@@ -265,8 +286,8 @@ describe('Search Loan sweetalert functionalities', () => {
     const closeSweetAlert = jest.fn();
     const onClearStagerTaskName = jest.fn();
     const wrapper = shallow(<SearchLoan
+      {...defaultProps}
       closeSweetAlert={closeSweetAlert}
-      getRejectResponse={getRejectResponse}
       onClearStagerTaskName={onClearStagerTaskName}
       resultOperation={resultOperation}
       searchLoanResult={searchLoanResult}
@@ -277,15 +298,15 @@ describe('Search Loan sweetalert functionalities', () => {
 
   it('does not show Sweet Alert when resultOperation is undefined and invalid loanpage when status code is not null', () => {
     const { SearchLoan } = TestHooks;
-    const getRejectResponse = {};
     const searchLoanResult = {
+      loanNumber: '',
       statusCode: 'mock',
     };
     const closeSweetAlert = jest.fn();
     const onClearStagerTaskName = jest.fn();
     const wrapper = shallow(<SearchLoan
+      {... defaultProps}
       closeSweetAlert={closeSweetAlert}
-      getRejectResponse={getRejectResponse}
       onClearStagerTaskName={onClearStagerTaskName}
       searchLoanResult={searchLoanResult}
     />);
@@ -298,10 +319,6 @@ describe('Search Loan sweetalert functionalities', () => {
       status: 'Successful',
       level: 'success',
       isOpen: true,
-    };
-    const getRejectResponse = {
-      level: 'mock',
-      message: 'mock',
     };
     const searchLoanResult = {
       loanNumber: '123',
@@ -323,7 +340,6 @@ describe('Search Loan sweetalert functionalities', () => {
     const inProgress = true;
     const props = {
       closeSweetAlert,
-      getRejectResponse,
       onClearStagerTaskName,
       onEndShift,
       onSelectEval,
@@ -336,6 +352,7 @@ describe('Search Loan sweetalert functionalities', () => {
       location,
     };
     const wrapper = shallow(<SearchLoan
+      {...defaultProps}
       {...props}
     />);
     expect(wrapper.find('Loader')).toHaveLength(1);

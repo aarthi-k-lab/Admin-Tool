@@ -1,41 +1,41 @@
 .largeIcon {
-    max-width: 2rem;
-    height: 16px;
-    padding: 0rem;
+  max-width: 2rem;
+  height: 16px;
+  padding: 0;
 }
 
 .reuploadmsg {
-    font-size: 1.3rem;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 6px;
+  font-size: 1.3rem;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 6px;
 }
 
 .fileTextBox {
-    padding: 7.5px!important;
-    padding-bottom: 20px !important;
+  padding: 7.5px !important;
+  padding-bottom: 20px !important;
 }
 
 .deletebtn {
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    background-color: white !important;
-    color: #00B4D2 !important;
-    margin-left: 10px !important;
-    border: 1px solid #00B4D2 !important;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white !important;
+  color: #00b4d2 !important;
+  margin-left: 10px !important;
+  border: 1px solid #00b4d2 !important;
 }
 
-.submitToCovius{
-    margin-left: 15px !important;
+.submitToCovius {
+  margin-left: 15px !important;
 }
 
-.msgblock{
-    margin-top: 14rem !important;
+.msgblock {
+  margin-top: 14rem !important;
 }
 
-.msgblock1{
-    margin-left: 44rem !important;
-    margin-top: 3px !important;
+.msgblock1 {
+  margin-left: 44rem !important;
+  margin-top: 3px !important;
 }

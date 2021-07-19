@@ -43,4 +43,5 @@ TaskStatusIcon.propTypes = {
   }).isRequired,
 };
 
+export { TaskStatusIcon };
 export default TaskStatusIcon;

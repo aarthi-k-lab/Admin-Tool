@@ -53,7 +53,7 @@
 
 .details-table-download-icon.details-table-download-icon {
   width: 1.2rem;
-  margin: 0.3rem 0.3rem 0.3rem 0rem !important; /* stylelint-disable-line length-zero-no-unit */
+  margin: 0.3rem 0.3rem 0.3rem 0 !important;
 }
 
 .center-grid {

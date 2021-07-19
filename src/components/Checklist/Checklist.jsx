@@ -226,6 +226,7 @@ class Checklist extends React.PureComponent {
         const onChange = this.handleChange(id, taskCode);
         element = (
           <RadioButtons
+            key={id}
             disabled={disabled}
             onChange={onChange}
             options={options}
@@ -249,6 +250,7 @@ class Checklist extends React.PureComponent {
         const textField = (
           <TextFields
             {...prop}
+            key={id}
             InputProps={{
               inputComponent: NumberFormatCustom,
             }}
@@ -257,25 +259,28 @@ class Checklist extends React.PureComponent {
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = textField;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              {textField}
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            {textField}
-          </Tooltip>
-        );
       } break;
       case CHECKBOX: {
         const onChange = this.handleCheckboxChange(id, taskCode, value);
         element = (
           <CheckBox
+            key={id}
             disabled={disabled}
             onChange={onChange}
             options={options}
@@ -296,24 +301,26 @@ class Checklist extends React.PureComponent {
           type: MULTILINE_TEXT,
           value: getValue,
         };
-        const textField = (<TextFields {...prop} />);
+        const textField = (<TextFields {...prop} key={id} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = textField;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              {textField}
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            {textField}
-          </Tooltip>
-        );
       } break;
       case NUMBER: {
         const refCallback = this.handleBlur(id, taskCode);
@@ -327,24 +334,26 @@ class Checklist extends React.PureComponent {
           type: NUMBER,
           value: getValue,
         };
-        const textField = (<TextFields {...prop} />);
+        const textField = (<TextFields {...prop} key={id} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = textField;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              {textField}
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            {textField}
-          </Tooltip>
-        );
       } break;
       case DATE: {
         const refCallback = this.handleDateChange(id, taskCode);
@@ -356,23 +365,25 @@ class Checklist extends React.PureComponent {
           refCallback,
           value,
         };
-        const datePicker = (<BasicDatePicker {...prop} />);
+        const datePicker = (<BasicDatePicker {...prop} key={id} />);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = datePicker;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              <div>{datePicker}</div>
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            <div>{datePicker}</div>
-          </Tooltip>
-        );
       } break;
       case TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
@@ -386,24 +397,26 @@ class Checklist extends React.PureComponent {
           type: TEXT,
           value: getValue,
         };
-        const textField = (<TextFields {...prop} />);
+        const textField = (<TextFields {...prop} key={id} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = textField;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              {textField}
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            {textField}
-          </Tooltip>
-        );
       } break;
       case READ_ONLY_TEXT: {
         const refCallback = this.handleBlur(id, taskCode);
@@ -417,6 +430,7 @@ class Checklist extends React.PureComponent {
         const textField = (
           <TextFields
             {...prop}
+            key={id}
             InputProps={{
               readOnly: true,
             }}
@@ -425,20 +439,22 @@ class Checklist extends React.PureComponent {
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = textField;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              {textField}
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            {textField}
-          </Tooltip>
-        );
       } break;
       case DROPDOWN: {
         // const refCallback = this.handleBlur(id, taskCode);
@@ -453,24 +469,26 @@ class Checklist extends React.PureComponent {
           source,
           additionalInfo,
         };
-        const textField = (<TextFields {...prop} />);
+        const textField = (<TextFields {...prop} key={id} />);
         const hint = R.prop('hint', options);
         if (R.isNil(hint) || R.isEmpty(hint)) {
           element = textField;
+        } else {
+          element = (
+            <Tooltip
+              key={id}
+              classes={{
+                tooltip: styles.tooltip,
+              }}
+              disableFocusListener
+              disableTouchListener
+              placement="right"
+              title={hint}
+            >
+              {textField}
+            </Tooltip>
+          );
         }
-        element = (
-          <Tooltip
-            classes={{
-              tooltip: styles.tooltip,
-            }}
-            disableFocusListener
-            disableTouchListener
-            placement="right"
-            title={hint}
-          >
-            {textField}
-          </Tooltip>
-        );
       } break;
       case SLA_RULES: {
         const refCallback = this.handleBlur(id, taskCode);
@@ -486,11 +504,11 @@ class Checklist extends React.PureComponent {
           type: TEXT,
           value: getValue,
         };
-        element = <SlaRules {...props} />;
+        element = <SlaRules {...props} key={id} />;
       } break;
       default:
         element = (
-          <div>
+          <div key={id}>
             Unknown checklist item type:
             {type}
           </div>
@@ -577,18 +595,20 @@ NumberFormatCustom.propTypes = {
 Checklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
-      disabled: PropTypes.bool.isRequired,
-      id: PropTypes.string.isRequired,
+      disabled: PropTypes.bool,
+      id: PropTypes.string,
       isVisible: PropTypes.bool,
-      options: PropTypes.arrayOf(PropTypes.shape({
-        displayName: PropTypes.string.isRequired,
-        hint: PropTypes.string,
-        value: PropTypes.string.isRequired,
-      })),
-      showPushData: PropTypes.bool.isRequired,
-      taskCode: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      type: PropTypes.oneOf(Object.values(HTMLElements)).isRequired,
+      options: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.shape({
+          displayName: PropTypes.string.isRequired,
+          value: PropTypes.string.isRequired,
+        })),
+        PropTypes.shape(),
+      ]),
+      showPushData: PropTypes.bool,
+      taskCode: PropTypes.string,
+      title: PropTypes.string,
+      type: PropTypes.oneOf(Object.values(HTMLElements)),
       value: PropTypes.any,
     }),
   ).isRequired,

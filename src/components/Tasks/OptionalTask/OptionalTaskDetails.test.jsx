@@ -80,6 +80,7 @@ describe('<OptionalTaskDetails />', () => {
       handleShowOptionalTasks: jest.fn(),
       resetDeleteTaskConfirmation: jest.fn(),
       tasks,
+      shouldDeleteTask: false,
       updateChecklist: jest.fn(),
     };
 
@@ -164,6 +165,7 @@ describe('<OptionalTaskDetails />', () => {
       handleShowOptionalTasks: jest.fn(),
       resetDeleteTaskConfirmation: jest.fn(),
       tasks,
+      shouldDeleteTask: false,
       updateChecklist: jest.fn(),
     };
 

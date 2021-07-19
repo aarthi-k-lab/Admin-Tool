@@ -7,7 +7,7 @@ describe('<TimelineSubItem />', () => {
     disCat: 'mockCat',
     disName: 'mockName',
     lastAsgn: 'mock',
-    stsDttm: 3,
+    stsDttm: '2021-05-05',
   };
   const props = {
     grpData,

@@ -48,8 +48,8 @@ AlertBox.defaultProps = {
 
 AlertBox.propTypes = {
   className: PropTypes.string,
-  level: PropTypes.oneOf([ERROR, SUCCESS]).isRequired,
-  message: PropTypes.node.isRequired,
+  level: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
 };
 
 export default AlertBox;

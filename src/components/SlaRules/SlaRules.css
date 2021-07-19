@@ -1,41 +1,40 @@
 .custommargin {
-    margin: 1rem 0rem 1rem 0rem !important;
+  margin: 1rem 0 1rem 0 !important;
 }
 
 .right {
-    margin-right: 1rem !important;
+  margin-right: 1rem !important;
 }
 
 .margin {
-    margin-top: 0.5rem !important;
+  margin-top: 0.5rem !important;
 }
 
 .largeIcon {
-    max-width: 2rem;
-  }
-  
-  .failedicon {
-      color:  red !important;
-  }
+  max-width: 2rem;
+}
 
-  .succesicon {
-    color: green !important;
-  }
+.failedicon {
+  color: red !important;
+}
 
-  .multiline {
-      width: 40rem !important;
-  }
+.succesicon {
+  color: green !important;
+}
 
-  .notificationMsg.notificationMsg {
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 1.25rem;
-  }
+.multiline {
+  width: 40rem !important;
+}
 
-  .container {
-    width: 100%;
-    display: flex;
-    box-sizing: border-box;
+.notificationMsg.notificationMsg {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1.25rem;
+}
 
-  }
+.container {
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+}

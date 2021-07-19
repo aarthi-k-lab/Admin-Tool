@@ -56,7 +56,7 @@ Filters.propTypes = {
   loading: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
-  pids: PropTypes.arrayOf(PropTypes.string).isRequired,
+  pids: PropTypes.string.isRequired,
 };
 
 export default Filters;

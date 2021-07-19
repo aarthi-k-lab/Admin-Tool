@@ -1,6 +1,6 @@
 .drop-down-select {
   width: 90%;
-  margin: 0rem 2rem 2rem 0.75rem;
+  margin: 0 2rem 2rem 0.75rem;
   background-color: white !important;
   height: 3rem !important;
 }
@@ -15,113 +15,100 @@
 }
 
 .interactive-button {
-    position: relative;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    padding-right: 0.625rem;
-  }
-  
-  .reset-button-style {
-    position: relative;
-    margin-right: 2rem;
-    margin-top: 0.25rem;
-    width: 10%;
-    float: right !important;
-    font-weight: bold !important;
-  }
-  .reset-button-style-blue {
-    position: relative;
-    margin-right: 2rem;
-    margin-top: 0.25rem;
-    width: 10%;
-    float: right !important;
-    font-weight: bold !important;
-    color: var(--light-blue-900) !important;
-    cursor: pointer;
-  }
-  
-  .loan-numbers {
-    font-size: 1.1rem;
-    padding-left: 1rem;
-    padding-bottom: 0.5rem;
-  }
-  
-  .errorIcon {
-    float: right !important;
-  }
-  
-  .errorSvg {
-    width: 4rem !important;
-    height: 1rem !important;
-  }
+  position: relative;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-right: 0.625rem;
+}
 
-  .status-details {
-    flex-grow: 1;
-    flex-basis: 0;
-    width: 95%;
-    margin: auto;
-    padding-top: 0.2rem;
-    padding-left: 0.3rem;
-    padding-bottom: 0.5rem;
-  }
+.reset-button-style {
+  position: relative;
+  margin-right: 2rem;
+  margin-top: 0.25rem;
+  width: 10%;
+  float: right !important;
+  font-weight: bold !important;
+}
 
-  .submitButton {
-    margin-right: 1rem !important;
-    float: right;
-    padding-left: 0.5rem;
-  }
+.reset-button-style-blue {
+  position: relative;
+  margin-right: 2rem;
+  margin-top: 0.25rem;
+  width: 10%;
+  float: right !important;
+  font-weight: bold !important;
+  color: var(--light-blue-900) !important;
+  cursor: pointer;
+}
 
-  .nodata {
-    font-size: 1.5rem;
-    margin-top: 2.5rem;
-  }
+.loan-numbers {
+  font-size: 1.1rem;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
+}
 
-  
-  .scroll-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    align-self: stretch;
-  }
-
-    
-  .investorLabel {
-    font-size: 20px;
-  }
-
-  .notepad {
-    border-top: 1px solid gainsboro;
-  }
-
-  .table {
-    flex-basis: 60%;
-    text-align: left !important;
-  }
- 
-  .newBulkUpload {
-    margin: 1rem 1rem 2rem 0rem;
-    font-weight: bold;
-    font-size: 1.2rem;
-    padding-left: 1rem;
-    padding-top: 1rem;
-  }
-  
-  .drop-down-select {
-    width: 90%;
-    margin: 0rem 2rem 2rem 0.75rem;
-    background-color: white !important;
-    height: 3rem !important;
-  }
-
-.uploadBtn {
-    color: wheat;
+.errorIcon {
+  float: right !important;
 }
 
 .errorSvg {
-    width: 4rem !important;
-    height: 1rem !important;
+  width: 4rem !important;
+  height: 1rem !important;
+}
+
+.status-details {
+  flex-grow: 1;
+  flex-basis: 0;
+  width: 95%;
+  margin: auto;
+  padding-top: 0.2rem;
+  padding-left: 0.3rem;
+  padding-bottom: 0.5rem;
+}
+
+.submitButton {
+  margin-right: 1rem !important;
+  float: right;
+  padding-left: 0.5rem;
+}
+
+.nodata {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-self: stretch;
+}
+
+.investorLabel {
+  font-size: 20px;
+}
+
+.notepad {
+  border-top: 1px solid gainsboro;
+}
+
+.table {
+  flex-basis: 60%;
+  text-align: left !important;
+}
+
+.newBulkUpload {
+  margin: 1rem 1rem 2rem 0;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding-left: 1rem;
+  padding-top: 1rem;
+}
+
+.uploadBtn {
+  color: wheat;
 }
 
 .submit {
-    margin-right: 1rem !important;
+  margin-right: 1rem !important;
 }

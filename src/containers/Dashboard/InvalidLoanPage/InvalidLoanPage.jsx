@@ -13,7 +13,7 @@ const InvalidLoanPage = ({ loanNumber }) => (
   </FullHeightColumn>
 );
 InvalidLoanPage.propTypes = {
-  loanNumber: PropTypes.string.isRequired,
+  loanNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 const TestHooks = {

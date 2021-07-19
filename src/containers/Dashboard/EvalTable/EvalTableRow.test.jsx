@@ -5,27 +5,28 @@ import {
 } from 'models/Testmock/evalTableRow';
 import { TestHooks } from './EvalTableRow';
 
+const defaultProps = {
+  onSelectEval: jest.fn(),
+  onSelectReject: jest.fn(),
+  onGetGroupName: jest.fn(),
+  onSendToFEUW: jest.fn(),
+  setTombstoneDataForLoanView: jest.fn(),
+  onWidgetToggle: jest.fn(),
+  onHistorySelect: jest.fn(),
+};
 describe('EvalTableRow ::Action Booking', () => {
   const { EvalTableRow } = TestHooks;
-  const value = 'Booking';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = actionBooking;
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
+  const onHistorySelect = jest.fn();
   const history = [];
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     disableSendToFEUW={disableSendToFEUW}
     history={history}
-    onGetGroupName={onGetGroupName}
-    onSelectEval={onSelectEval}
-    onSelectReject={onSelectReject}
-    onSendToFEUW={onSendToFEUW}
+    onHistorySelect={onHistorySelect}
     row={row}
     searchLoanResult={searchLoanResult}
-    setTombstoneDataForLoanView={setTombstoneDataForLoanView}
     user={user}
     value="Booking"
   />);
@@ -35,8 +36,8 @@ describe('EvalTableRow ::Action Booking', () => {
   it('should call onGetGroupName and onSelectEval on cell click', () => {
     wrapper.find('Connect(EvalTableCell)').props().click();
     wrapper.instance().handleLinkClick(null, 'Booking');
-    expect(onSelectEval).toBeCalledTimes(1);
-    expect(onGetGroupName).toBeCalledTimes(1);
+    expect(defaultProps.onSelectEval).toBeCalledTimes(1);
+    expect(defaultProps.onGetGroupName).toBeCalledTimes(1);
   });
 });
 
@@ -45,26 +46,17 @@ describe('EvalTableRow :: Action Un-reject', () => {
   const value = 'Booking';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = actionUnreject;
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
   const history = [];
   const props = {
     value,
     history,
     disableSendToFEUW,
-    onSelectReject,
-    onGetGroupName,
-    onSendToFEUW,
-    onSelectEval,
     row,
     user,
-    setTombstoneDataForLoanView,
     searchLoanResult,
   };
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     {...props}
   />);
   it('should render EvaltableRow component with value un-reject', () => {
@@ -73,7 +65,7 @@ describe('EvalTableRow :: Action Un-reject', () => {
   });
   it('should callonSelectReject on cell click', () => {
     wrapper.find('Connect(EvalTableCell)').props().click();
-    expect(onSelectReject).toBeCalledTimes(1);
+    expect(defaultProps.onSelectReject).toBeCalledTimes(1);
   });
 });
 
@@ -82,28 +74,17 @@ describe('EvalTableRow :: Action SendToFEUW', () => {
   const value = 'SendToFEUW';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = sendToFEUW;
-
-
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
   const history = [];
   const props = {
     value,
     history,
     disableSendToFEUW,
-    setTombstoneDataForLoanView,
-    onSelectReject,
-    onGetGroupName,
-    onSendToFEUW,
-    onSelectEval,
     row,
     user,
     searchLoanResult,
   };
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     {...props}
   />);
   it('should render EvaltableRow component with value SendToFEUW', () => {
@@ -113,7 +94,7 @@ describe('EvalTableRow :: Action SendToFEUW', () => {
   it('should onSendToFEUW on cell click', () => {
     wrapper.find('Connect(EvalTableCell)').props().click();
     wrapper.instance().handleLinkClick(null, value);
-    expect(onSendToFEUW).toBeCalledTimes(1);
+    expect(defaultProps.onSendToFEUW).toBeCalledTimes(1);
   });
 });
 
@@ -122,26 +103,17 @@ describe('EvalTableRow :: Action Default', () => {
   const value = 'Booking';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = actionDefault;
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
   const history = [];
   const props = {
     value,
     history,
     disableSendToFEUW,
-    onSelectReject,
-    onGetGroupName,
-    onSendToFEUW,
-    setTombstoneDataForLoanView,
-    onSelectEval,
     row,
     user,
     searchLoanResult,
   };
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     {...props}
   />);
   it('should render EvaltableRow component with value default', () => {
@@ -155,27 +127,17 @@ describe('EvalTableRow :: Assigned To', () => {
   const value = 'Booking';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = assignedTo;
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
   const history = [];
   const props = {
     value,
     history,
     disableSendToFEUW,
-    onSelectReject,
-    onGetGroupName,
-    onSendToFEUW,
-
-    setTombstoneDataForLoanView,
-    onSelectEval,
     row,
     user,
     searchLoanResult,
   };
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     {...props}
   />);
   it('should render EvaltableRow component with value assigned', () => {
@@ -189,29 +151,17 @@ describe('EvalTableRow :: History', () => {
   const value = 'Loan Activity';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = historyMock;
-
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
-  const onWidgetToggle = jest.fn();
   const history = [];
   const props = {
     value,
     history,
     disableSendToFEUW,
-    onWidgetToggle,
-    onSelectReject,
-    onGetGroupName,
-    onSendToFEUW,
-    setTombstoneDataForLoanView,
-    onSelectEval,
     row,
     user,
     searchLoanResult,
   };
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     {...props}
   />);
   it('should render EvaltableRow component with value Loan Activity', () => {
@@ -220,8 +170,8 @@ describe('EvalTableRow :: History', () => {
   it('should call setTombstoneDataForLoanView and onHistorySelect on cell click', () => {
     const stopPropagation = jest.fn();
     wrapper.find('WithStyles(ForwardRef(IconButton))').simulate('click', { stopPropagation }, 'LoanHistory');
-    expect(setTombstoneDataForLoanView).toBeCalled();
-    expect(onWidgetToggle).toBeCalled();
+    expect(defaultProps.setTombstoneDataForLoanView).toBeCalled();
+    expect(defaultProps.onWidgetToggle).toBeCalled();
   });
 });
 
@@ -230,26 +180,17 @@ describe('EvalTableRow :: Default', () => {
   const value = 'Booking';
   const disableSendToFEUW = false;
   const { row, user, searchLoanResult } = defaultMock;
-  const onSelectEval = jest.fn();
-  const onSelectReject = jest.fn();
-  const onGetGroupName = jest.fn();
-  const onSendToFEUW = jest.fn();
-  const setTombstoneDataForLoanView = jest.fn();
   const history = [];
   const props = {
     value,
     history,
     disableSendToFEUW,
-    onSelectReject,
-    onGetGroupName,
-    onSendToFEUW,
-    setTombstoneDataForLoanView,
-    onSelectEval,
     row,
     user,
     searchLoanResult,
   };
   const wrapper = shallow(<EvalTableRow
+    {...defaultProps}
     {...props}
   />);
   it('should render EvaltableRow component with value default', () => {

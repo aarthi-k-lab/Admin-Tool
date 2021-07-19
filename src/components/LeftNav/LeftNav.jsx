@@ -80,7 +80,7 @@ LeftNav.defaultProps = {
 LeftNav.propTypes = {
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
-  hiddenRoutes: PropTypes.objectOf(PropTypes.array),
+  hiddenRoutes: PropTypes.arrayOf(PropTypes.string),
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,

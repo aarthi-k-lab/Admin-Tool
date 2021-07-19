@@ -389,28 +389,28 @@ TabView.propTypes = {
   fileSubmitResponse: PropTypes.shape({
     level: PropTypes.string,
   }),
-  isFileRemoved: PropTypes.string.isRequired,
+  isFileRemoved: PropTypes.bool.isRequired,
   onDeleteFile: PropTypes.func.isRequired,
   onProcessFile: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
   setCoviusIndex: PropTypes.func.isRequired,
   tableData: PropTypes.shape({
-    invalidCases: PropTypes.arrayOf({
+    invalidCases: PropTypes.arrayOf(PropTypes.shape({
       caseId: PropTypes.string,
       message: PropTypes.string,
-    }),
-    request: PropTypes.arrayOf({
+    })),
+    request: PropTypes.arrayOf(PropTypes.shape({
+      RequestId: PropTypes.string,
       UserDetails: PropTypes.shape({
         CASEID: PropTypes.string,
         EVAL_ID: PropTypes.string,
         LOAN_NUMBER: PropTypes.string,
       }),
-      RequestId: PropTypes.string,
-    }),
-    uploadFailed: PropTypes.arrayOf({
+    })),
+    uploadFailed: PropTypes.arrayOf(PropTypes.shape({
       caseId: PropTypes.string,
       message: PropTypes.string,
-    }),
+    })),
   }),
 };
 

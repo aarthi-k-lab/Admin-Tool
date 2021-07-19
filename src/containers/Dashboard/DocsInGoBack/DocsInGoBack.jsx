@@ -130,7 +130,7 @@ DocsInGoBack.propTypes = {
   TaskId: PropTypes.number.isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
-    skills: PropTypes.objectOf(PropTypes.array).isRequired,
+    skills: PropTypes.arrayOf(PropTypes.string).isRequired,
     userDetails: PropTypes.shape({
       email: PropTypes.string,
       jobTitle: PropTypes.string,

@@ -4,7 +4,7 @@ import UnauthorizedPage from '.';
 
 describe('<UnauthorizedPage />', () => {
   test('snapshot test', () => {
-    const location = { search: {} };
+    const location = { search: '' };
     const tree = renderer
       .create(<UnauthorizedPage location={location} />)
       .toJSON();

@@ -189,11 +189,7 @@ Header.propTypes = {
     userGroupsToggle: PropTypes.bool,
   }).isRequired,
   getUserRole: PropTypes.string.isRequired,
-  history: PropTypes.shape({
-    length: PropTypes.number.isRequired,
-    location: PropTypes.object.isRequired,
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   isAssigned: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func.isRequired,
   onClearSelectReject: PropTypes.func.isRequired,

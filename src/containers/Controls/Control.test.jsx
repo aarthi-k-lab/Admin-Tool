@@ -7,13 +7,33 @@ import {
   CompleteForbearance, CompleteMyReview,
 } from 'components/ContentHeader';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
-import { userdts } from '../../models/Testmock/controls';
+import userdts from '../../models/Testmock/controls';
 import { TestHooks } from './Controls';
 
+const defaultProps = {
+  onAssignToMeClick: jest.fn(),
+  showCompleteMyReview: false,
+  taskName: '',
+  taskStatus: '',
+  user: userdts,
+  disableTrialTaskButton: false,
+  disableValidation: false,
+  dispositionCode: '',
+  evalId: '',
+  processId: '',
+  showUpdateRemedy: false,
+  validateDispositionTrigger: jest.fn(),
+  errorBanner: {
+    errors: [],
+    warnings: [],
+  },
+  lockCalculation: jest.fn(),
+};
 
 describe('<Controls />', () => {
   it('does not show Any button', () => {
     const wrapper = shallow(<TestHooks.Controls
+      {...defaultProps}
       disableTrialTaskButton
       disableValidation
       dispositionCode="0"
@@ -49,7 +69,7 @@ describe('<Controls />', () => {
       user: { userdts },
       validateDispositionTrigger: jest.fn(),
     };
-    const wrapper = shallow(<TestHooks.Controls {...props} groupName="ABCD" />);
+    const wrapper = shallow(<TestHooks.Controls {...defaultProps} {...props} groupName="ABCD" />);
     expect(wrapper.find(Unassign)).toHaveLength(0);
     expect(wrapper.find(Assign)).toHaveLength(0);
     props = { ...props, groupName: 'FEUW' };
@@ -75,7 +95,7 @@ describe('<Controls />', () => {
       groupName: 'FEUW',
       onAssignToMeClick: jest.fn(),
     };
-    const wrapper = mount(<TestHooks.Controls {...props} />);
+    const wrapper = mount(<TestHooks.Controls {...defaultProps} {...props} />);
     expect(wrapper.find(Control)).toHaveLength(0);
     wrapper.setProps({ ...props, showValidate: true });
     expect(wrapper.find(Control)).toHaveLength(1);
@@ -95,6 +115,7 @@ describe('<Controls />', () => {
     const onGetNext = jest.fn();
     const spy = jest.spyOn(TestHooks.Controls.prototype, 'handlegetNext');
     const props = {
+      ...defaultProps,
       disableTrialTaskButton: true,
       dispositionCode: '0',
       evalId: '0',
@@ -111,7 +132,7 @@ describe('<Controls />', () => {
       user: { ...userdts },
       validateDispositionTrigger: jest.fn(),
     };
-    const wrapper = mount(<TestHooks.Controls {...props} />);
+    const wrapper = mount(<TestHooks.Controls {...defaultProps} {...props} />);
     expect(wrapper.find(GetNext)).toHaveLength(0);
     wrapper.setProps({ showGetNext: true });
     expect(wrapper.find(GetNext)).toHaveLength(1);
@@ -135,7 +156,7 @@ describe('<Controls />', () => {
   it('simulate  \'EndShift\'', () => {
     const onEndShift = jest.fn();
     const wrapper = mount(<TestHooks.Controls
-
+      {...defaultProps}
       onEndShift={onEndShift}
     />);
     expect(wrapper.find(EndShift)).toHaveLength(0);
@@ -161,6 +182,7 @@ describe('<Controls />', () => {
     const sendToDocGenStagerSpy = jest.spyOn(TestHooks.Controls.prototype, 'handleSendToDocGenStager');
     const handleTrialSpy = jest.spyOn(TestHooks.Controls.prototype, 'handleTrial');
     const wrapper = mount(<TestHooks.Controls
+      {...defaultProps}
       disableTrialTaskButton
       enableSendToDocGen={false}
       onSendToDocGen={onSendToDocGen}
@@ -209,6 +231,7 @@ describe('<Controls />', () => {
     const onSentToUnderwriting = jest.fn();
     const spy = jest.spyOn(TestHooks.Controls.prototype, 'handleSentToUnderwriting');
     const wrapper = mount(<TestHooks.Controls
+      {...defaultProps}
       onSentToUnderwriting={onSentToUnderwriting}
     />);
     expect(wrapper.find(SendToUnderwriting)).toHaveLength(0);
@@ -227,6 +250,7 @@ describe('<Controls />', () => {
     const onSendToDocGen = jest.fn();
     const spy = jest.spyOn(TestHooks.Controls.prototype, 'handleSendToDocGen');
     const wrapper = mount(<TestHooks.Controls
+      {...defaultProps}
       onSendToDocGen={onSendToDocGen}
     />);
     expect(wrapper.find(SendToDocGen)).toHaveLength(0);
@@ -245,6 +269,7 @@ describe('<Controls />', () => {
     const onSendToDocsIn = jest.fn();
     const spy = jest.spyOn(TestHooks.Controls.prototype, 'handleSendToDocsIn');
     const wrapper = mount(<TestHooks.Controls
+      {...defaultProps}
       onSendToDocsIn={onSendToDocsIn}
     />);
     expect(wrapper.find(SendToDocsIn)).toHaveLength(0);
@@ -263,6 +288,7 @@ describe('<Controls />', () => {
     const onContinueMyReview = jest.fn();
     const spy = jest.spyOn(TestHooks.Controls.prototype, 'handleContinueMyReview');
     const wrapper = shallow(<TestHooks.Controls
+      {...defaultProps}
       onContinueMyReview={onContinueMyReview}
     />);
     expect(wrapper.find(ContinueMyReview)).toHaveLength(0);
@@ -276,6 +302,7 @@ describe('<Controls />', () => {
   it('simulate  \'CompleteMyReview Click\'', () => {
     const onCompleteMyReview = jest.fn();
     const wrapper = shallow(<TestHooks.Controls
+      {...defaultProps}
       groupName="FEUW"
       onCompleteMyReview={onCompleteMyReview}
     />);
@@ -292,6 +319,7 @@ describe('<Controls />', () => {
     const onAssignToMeClick = jest.fn();
     const onExpand = jest.fn();
     const wrapper = shallow(<TestHooks.Controls
+      {...defaultProps}
       groupName="FEUW"
       onAssignToMeClick={onAssignToMeClick}
       onExpand={onExpand}

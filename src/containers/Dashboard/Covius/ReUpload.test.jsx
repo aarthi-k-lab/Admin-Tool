@@ -12,6 +12,8 @@ describe('renders <ReUploadFile />', () => {
     message: 'mock msg',
     level: 'success',
   };
+  const onSubmitFile = jest.fn();
+
   it('renders textField successfully', () => {
     const wrapper = shallow(
       <TestHooks.ReUploadFile
@@ -19,6 +21,7 @@ describe('renders <ReUploadFile />', () => {
         getSubmitFileResponse={getSubmitFileResponse}
         onChange={onChange}
         onDeleteFile={onDeleteFile}
+        onSubmitFile={onSubmitFile}
         refreshPage={refreshPage}
         switchToUploadFailedTab={switchToUploadFailedTab}
       />,
@@ -32,6 +35,7 @@ describe('renders <ReUploadFile />', () => {
         getSubmitFileResponse={getSubmitFileResponse}
         onChange={onChange}
         onDeleteFile={onDeleteFile}
+        onSubmitFile={onSubmitFile}
         refreshPage={refreshPage}
         switchToUploadFailedTab={switchToUploadFailedTab}
       />,
@@ -39,7 +43,6 @@ describe('renders <ReUploadFile />', () => {
     expect(wrapper.find('WithStyles(ForwardRef(TextField))')).toHaveLength(1);
   });
   it('doesnt renders notification when the no file been uploded', () => {
-    const onSubmitFile = jest.fn();
     const response = {};
     const wrapper = shallow(
       <TestHooks.ReUploadFile
@@ -55,7 +58,6 @@ describe('renders <ReUploadFile />', () => {
     expect(wrapper.find('WithStyles(ForwardRef(SweetAlert))')).toHaveLength(0);
   });
   it('renders notification after submit button action', () => {
-    const onSubmitFile = jest.fn();
     const response = {
       message: '',
       level: '',
@@ -72,7 +74,7 @@ describe('renders <ReUploadFile />', () => {
       />,
     );
     wrapper.find('#submit').at(0).simulate('click');
-    expect(onSubmitFile.mock.calls).toHaveLength(1);
+    expect(onSubmitFile).toBeCalled();
     expect(wrapper.find('WithStyles(ForwardRef(SweetAlert))')).toHaveLength(0);
   });
   it('redirects to upload page when delete button is clicked', () => {
@@ -82,6 +84,7 @@ describe('renders <ReUploadFile />', () => {
         getSubmitFileResponse={getSubmitFileResponse}
         onChange={onChange}
         onDeleteFile={onDeleteFile}
+        onSubmitFile={onSubmitFile}
         refreshPage={refreshPage}
         switchToUploadFailedTab={switchToUploadFailedTab}
       />,

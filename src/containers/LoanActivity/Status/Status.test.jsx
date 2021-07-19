@@ -2,6 +2,10 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestHooks } from './Status';
 
+const defaultProps = {
+  onCardClick: jest.fn(),
+  clickedCard: '',
+};
 describe('<Navigation />', () => {
   const navigationList = [
     {
@@ -37,7 +41,7 @@ describe('<Navigation />', () => {
   it('shows Navigation with data', () => {
     const { Status } = TestHooks;
     const wrapper = shallow(
-      <Status classes={classes} statusList={navigationList} />,
+      <Status {...defaultProps} classes={classes} statusList={navigationList} />,
     );
     expect(wrapper.find('div')).toHaveLength(navigationList.length * 2);
   });
@@ -45,7 +49,7 @@ describe('<Navigation />', () => {
   it('shows Navigation with no data', () => {
     const { Status } = TestHooks;
     const wrapper = shallow(
-      <Status classes={classes} statusList={navigationListWithNoData} />,
+      <Status {...defaultProps} classes={classes} statusList={navigationListWithNoData} />,
     );
     expect(wrapper.find('div')).toHaveLength(0);
   });

@@ -1,24 +1,42 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
-import { TestHooks } from './CommentsWidget';
+import { mount } from 'enzyme';
+import { CommentsWidget } from './CommentsWidget';
 
+const defaultProps = {
+  addInfoEvalId: '',
+  clearOnSearch: false,
+  comments: [],
+  evalComments: {},
+  EvalId: 0,
+  isAdditionalInfoOpen: false,
+  isAssigned: false,
+  isHistoryOpen: false,
+  LoanNumber: '',
+  onPostComment: jest.fn(),
+  ProcessId: 0,
+  showEvalId: false,
+  TaskId: 0,
+  taskIterationCounter: 0,
+  User: {
+    userDetails: {},
+    name: '',
+  },
+};
 describe('<CommentsWidget />', () => {
   it('shows the Loader', () => {
     const handleGetComments = jest.fn();
     const wrapper = mount(
-      <TestHooks.CommentsWidget onGetComments={handleGetComments} />,
+      <CommentsWidget {...defaultProps} onGetComments={handleGetComments} />,
     );
     expect(wrapper.instance().state.Loader).toBe(false);
-    const active = wrapper.instance().commentArea;
   });
 
   it('renders comments activity', () => {
     const handleGetComments = jest.fn();
     const wrapper = mount(
-      <TestHooks.CommentsWidget onGetComments={handleGetComments} />,
+      <CommentsWidget {...defaultProps} onGetComments={handleGetComments} />,
     );
     expect(wrapper.instance().state.Loader).toBe(false);
-    const active = wrapper.instance().commentArea;
     wrapper.instance().renderCommentsActivity();
   });
 
@@ -34,9 +52,13 @@ describe('<CommentsWidget />', () => {
     };
     const handleGetComments = jest.fn();
     const wrapper = mount(
-      <TestHooks.CommentsWidget comments={data} onGetComments={handleGetComments} User={data1} />,
+      <CommentsWidget
+        {...defaultProps}
+        comments={data}
+        onGetComments={handleGetComments}
+        User={data1}
+      />,
     );
-    const active = wrapper.instance().commentArea;
     expect(wrapper.find('#row_main_container')).toHaveLength(0);
   });
 
@@ -52,10 +74,13 @@ describe('<CommentsWidget />', () => {
     };
     const handleGetComments = jest.fn();
     const wrapper = mount(
-      <TestHooks.CommentsWidget comments={data} onGetComments={handleGetComments} User={data1} />,
+      <CommentsWidget
+        {...defaultProps}
+        comments={data}
+        onGetComments={handleGetComments}
+        User={data1}
+      />,
     );
-
-    const active = wrapper.instance().commentArea;
     wrapper.find('#post_button').at(0).simulate('click');
     expect(wrapper.instance().state.content).toEqual('');
   });

@@ -381,23 +381,18 @@ const mapStateToProps = state => ({
 
 StagerReactTable.propTypes = {
   activeSearchTerm: PropTypes.string.isRequired,
-  data: PropTypes.node,
-  // history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  data: PropTypes.shape(),
   getDashboardData: PropTypes.func.isRequired,
-  history: PropTypes.shape({
-    length: PropTypes.number.isRequired,
-    location: PropTypes.object.isRequired,
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
   onGetChecklistHistory: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   onSearchLoanWithTask: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
-  searchLoanTaskResponse: PropTypes.node.isRequired,
-  searchResponse: PropTypes.node.isRequired,
-  selectedData: PropTypes.node.isRequired,
+  searchLoanTaskResponse: PropTypes.shape().isRequired,
+  searchResponse: PropTypes.string.isRequired,
+  selectedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setBeginSearch: PropTypes.func.isRequired,
   setStagerTaskName: PropTypes.func.isRequired,
   user: PropTypes.shape({

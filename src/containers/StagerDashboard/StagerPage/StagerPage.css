@@ -1,10 +1,10 @@
-.ContentHeader{
+.ContentHeader {
   margin-top: 0.9rem !important;
 }
 
-.getNextStyle{
+.getNextStyle {
   position: absolute;
-  right:0;
+  right: 0;
   padding-right: 4.5rem;
 }
 
@@ -63,7 +63,7 @@
 
 .order-button.order-button {
   background-color: var(--light-blue-900);
-  margin: 0.5rem 0rem 0rem 2rem;
+  margin: 0.5rem 0 0 2rem;
   color: aliceblue;
   height: 2.5rem;
   width: 2.5rem;
@@ -76,8 +76,8 @@
 
 .getNext-button.getNext-button {
   background-color: var(--light-blue-900);
-  margin: 0.5rem 0rem 0rem 17rem;
-  height: 3rem;    
+  margin: 0.5rem 0 0 17rem;
+  height: 3rem;
   color: aliceblue;
 }
 

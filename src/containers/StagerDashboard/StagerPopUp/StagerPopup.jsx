@@ -128,7 +128,7 @@ class StagerPopup extends React.PureComponent {
           </ExpansionPanelSummary>
 
           {Object.keys(popupData).sort().map(loanStatus => (
-            <>
+            <div key={loanStatus}>
               <ExpansionPanelDetails styleName={this.isSucceededLoan(loanStatus) ? 'expansion-succeededLoan-title' : 'expansion-failedLoan-title'}>
                 <Grid
                   container
@@ -161,7 +161,7 @@ class StagerPopup extends React.PureComponent {
               <div styleName={!this.isSucceededLoan(loanStatus) ? 'failed' : `success${showSuccess ? 'View' : 'Hide'}`}>
                 {
                   popupData[loanStatus].map(details => (
-                    <ExpansionPanelDetails styleName="expansion-failedLoan-title">
+                    <ExpansionPanelDetails key={details.evalId} styleName="expansion-failedLoan-title">
                       <Grid
                         container
                       >
@@ -198,7 +198,7 @@ class StagerPopup extends React.PureComponent {
                   ))}
               </div>
 
-            </>
+            </div>
           ))
           }
           <Divider />

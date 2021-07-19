@@ -35,10 +35,14 @@ function TabPanel(props) {
   );
 }
 
+TabPanel.defaultProps = {
+  value: null,
+};
+
 TabPanel.propTypes = {
-  children: PropTypes.node.isRequired,
-  index: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  children: PropTypes.arrayOf(PropTypes.node).isRequired,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number,
 };
 
 class AdditionalInfo extends React.Component {
@@ -110,6 +114,7 @@ class AdditionalInfo extends React.Component {
                 {
                   sortedcaseDetailsByDesc && sortedcaseDetailsByDesc.map(card => (
                     <Cards
+                      key={card.resolutionId}
                       card={R.head(card.cardDetails)}
                       history={card.cardHistoryDetails}
                       resolutionId={card.resolutionId}
@@ -162,7 +167,7 @@ AdditionalInfo.propTypes = {
     resolutionId: PropTypes.string,
   })).isRequired,
   evalRowSelect: PropTypes.func.isRequired,
-  index: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   type: PropTypes.string,
 };
 

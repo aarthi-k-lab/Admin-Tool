@@ -60,7 +60,7 @@ TrialHeaderAndDetails.defaultProps = {
   inProgress: false,
   resultUnderwriting: { level: '', status: '' },
   trialHeader: {},
-  trialsDetail: {},
+  trialsDetail: [],
 };
 
 TrialHeaderAndDetails.propTypes = {

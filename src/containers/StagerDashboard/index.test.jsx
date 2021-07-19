@@ -2,6 +2,21 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './StagerDashboard';
 
+const defaultProps = {
+  selectedData: [],
+  onClearDocGenAction: jest.fn(),
+  onClearStagerTaskName: jest.fn(),
+  getDashboardData: jest.fn(),
+  onClearPostModEndShitf: jest.fn(),
+  getStagerSearchResponse: {},
+  user: {
+    userDetails: {
+      email: 'test@mrc.com',
+    },
+    skills: [],
+  },
+  group: '',
+};
 describe('<StagerDashboard />', () => {
   it('shows StagerPage', () => {
     const getDashboardCounts = jest.fn();
@@ -19,21 +34,17 @@ describe('<StagerDashboard />', () => {
       groups,
       snackBarData: {
         message: 'mock',
-        open: 'mock',
+        open: true,
         type: 'mock',
       },
       onClearStagerResponse: jest.fn(),
       onClearSearchResponse: jest.fn(),
       onCheckBoxClick: jest.fn(),
       triggerOrderCall: jest.fn(),
-      user: {
-        userDetails: {
-          email: 'test@mrc.com',
-        },
-      },
     };
     const wrapper = shallow(
       <TestExports.StagerDashboard
+        {...defaultProps}
         {...props}
       />,
     );
@@ -57,7 +68,7 @@ describe('<StagerDashboard /> simulate functionalities', () => {
     groups,
     snackBarData: {
       message: 'mock',
-      open: 'mock',
+      open: true,
       type: 'mock',
     },
     onClearStagerResponse: jest.fn(),
@@ -69,14 +80,10 @@ describe('<StagerDashboard /> simulate functionalities', () => {
     getDashboardData: jest.fn(),
     onClearPostModEndShitf: jest.fn(),
     selectedData: [],
-    user: {
-      userDetails: {
-        email: 'test@mrc.com',
-      },
-    },
   };
   const wrapper = shallow(
     <TestExports.StagerDashboard
+      {...defaultProps}
       {...props}
     />,
   );

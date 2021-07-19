@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import TaskStatusIcon from './TaskStatusIcon';
+import { TaskStatusIcon } from './TaskStatusIcon';
 
 describe('<TaskStatusIcon />', () => {
   const task = {

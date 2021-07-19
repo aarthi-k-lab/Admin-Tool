@@ -22,21 +22,21 @@
 }
 
 .reject-icon.reject-icon {
-  height: 1rem; 
+  height: 1rem;
   width: 3.5rem;
-  padding: 0px 0px 0px 0px;
+  padding: 0 0 0 0;
 }
 
 .history-icon {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
 .remedy {
-  margin-right: 0rem;
+  margin-right: 0;
 }
 
 .cmod {
-  margin-right: 0rem;
+  margin-right: 0;
 }
 
 .type {

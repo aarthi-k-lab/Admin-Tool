@@ -13,7 +13,7 @@
 }
 
 .incomeCalc-inprogress {
-  margin: auto
+  margin: auto;
 }
 
 .checklist-form-controls {
@@ -58,9 +58,8 @@
   flex-grow: 0;
   flex-basis: 0;
   align-self: flex-end;
-  margin: 0rem 37rem 0rem 0rem;
+  margin: 0 37rem 0 0;
 }
-
 
 .subTaskDescParent.subTaskDescParent {
   display: flex;

@@ -104,14 +104,14 @@ class DatePicker extends React.PureComponent {
 }
 
 DatePicker.defaultProps = {
-  getStagerStartEndDate: [],
+  getStagerStartEndDate: {},
 };
 
 DatePicker.propTypes = {
   getActiveSearchTerm: PropTypes.string.isRequired,
   getDashboardCounts: PropTypes.func.isRequired,
   getDashboardData: PropTypes.func.isRequired,
-  getStagerStartEndDate: PropTypes.node,
+  getStagerStartEndDate: PropTypes.shape(),
   getStagerValue: PropTypes.string.isRequired,
   onClearSearchResponse: PropTypes.func.isRequired,
   triggerStartEndDate: PropTypes.func.isRequired,

@@ -1,100 +1,97 @@
 .tableData {
-    font-weight: bold;
-    color: #333940;
-    margin-top: 0.5rem;
-    text-align: center;
-  }
+  font-weight: bold;
+  color: #333940;
+  margin-top: 0.5rem;
+  text-align: center;
+}
 
 .search-container {
-    padding: 10px 8px 10px 8px;
-    border-bottom: 1px solid #b0b4b9;
-  } 
+  padding: 10px 8px 10px 8px;
+  border-bottom: 1px solid #b0b4b9;
+}
 
 .cards {
-    background:#ffffff;
-    border: 1px solid #bbbdbf;
-    border-radius: 5px;
-    margin-left: -3rem;
-    /* for mock */
-    margin-bottom: 16px;
-  }
+  background: #fff;
+  border: 1px solid #bbbdbf;
+  border-radius: 5px;
+  margin-left: -3rem;
+
+  /* for mock */
+  margin-bottom: 16px;
+}
 
 .main-container {
-    padding: 18px 8px 18px 8px;
-    border-bottom: 1px solid #b0b4b9;
-  }
-
-.user-detail {
-    padding-left: 0.5rem;
-  }
+  padding: 18px 8px 18px 8px;
+  border-bottom: 1px solid #b0b4b9;
+}
 
 .value-style {
-    font-weight: bold;
-    color: #333940;
-    margin-top: 0.5rem;
-  }
+  font-weight: bold;
+  color: #333940;
+  margin-top: 0.5rem;
+}
 
 .resolutionChoiceType {
-    font-size: 0.9rem;
-    color: var(--grey-590);
-  }    
-  
+  font-size: 0.9rem;
+  color: var(--grey-590);
+}
+
 .right-item {
-    text-align: right;
-    padding-right: 1rem;
-  }
+  text-align: right;
+  padding-right: 1rem;
+}
 
 .dateStyle {
-    background: #8080802b;
-    text-align: left;
-  } 
+  background: #8080802b;
+  text-align: left;
+}
 
 .header-style {
-    font-size: 0.8rem;
-    color: var(--grey-590);
-  }  
+  font-size: 0.8rem;
+  color: var(--grey-590);
+}
 
 .user-detail {
-    padding-left: 0.5rem;
-  } 
+  padding-left: 0.5rem;
+}
 
 .failedStatus {
-    background-color: var(--red-600);
-    color: #fafafa;
-    font-weight: bold;
-    padding: 1px 5px 1px 5px;
-    border-radius: 0.25rem;
-    text-align: center;
-  }
+  background-color: var(--red-600);
+  color: #fafafa;
+  font-weight: bold;
+  padding: 1px 5px 1px 5px;
+  border-radius: 0.25rem;
+  text-align: center;
+}
 
 .successStatus {
-    background-color: green;
-    color: #fafafa;
-    font-weight: bold;
-    padding: 1px 5px 1px 5px;
-    border-radius: 0.25rem;
-    text-align: center;
-  } 
+  background-color: green;
+  color: #fafafa;
+  font-weight: bold;
+  padding: 1px 5px 1px 5px;
+  border-radius: 0.25rem;
+  text-align: center;
+}
 
 .substatus {
-    font-size: 1.2rem !important;
-  } 
+  font-size: 1.2rem !important;
+}
 
 .sub-container {
-    padding-left: 1.5rem;
-    padding-top: 1rem;
-    padding-bottom: 14px;
-    margin-left: 1rem;
-  }
-    
-.comments{
-    font-size: 1rem !important;
-    margin-right: 1rem;
-  }
+  padding-left: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 14px;
+  margin-left: 1rem;
+}
 
-  .history-style {
-    font-weight: bold;
-    color: lightseagreen;
-    margin-top: 0.5rem;
-    cursor: pointer;
-  }
+.comments {
+  font-size: 1rem !important;
+  margin-right: 1rem;
+}
+
+.history-style {
+  font-weight: bold;
+  color: lightseagreen;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}

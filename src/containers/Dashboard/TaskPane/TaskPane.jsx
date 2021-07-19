@@ -95,7 +95,7 @@ TaskPane.propTypes = {
   onSubTaskClick: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   optionalTasks: PropTypes.arrayOf(PropTypes.shape(OptionalTaskModel)),
-  pdfExportPayload: PropTypes.shape.isRequired,
+  pdfExportPayload: PropTypes.shape().isRequired,
   pdfGeneratorConstant: PropTypes.string.isRequired,
   resetDeleteTaskConfirmation: PropTypes.func.isRequired,
   selectedTaskId: PropTypes.string.isRequired,

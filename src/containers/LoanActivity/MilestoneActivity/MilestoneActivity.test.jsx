@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestHooks } from './MilestoneActivity';
 
+
 describe('<MilestoneActivity />', () => {
   const clearData = jest.fn();
   const getTasksByTaskCategory = jest.fn();

@@ -2,6 +2,14 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './LeftNav';
 
+let defaultProps ={
+  isAssigned : false,
+  onAutoSave : jest.fn(),
+  onClearStagerTaskName : jest.fn(),
+  onClearStagerResponse : jest.fn(),
+  onEndShift : jest.fn(),
+  path : '',
+}
 describe('<LeftNav />', () => {
   it('shows LeftNavButtons', () => {
     const user = {
@@ -12,7 +20,7 @@ describe('<LeftNav />', () => {
       },
     };
     const wrapper = shallow(
-      <TestExports.LeftNav user={user} />,
+      <TestExports.LeftNav {...defaultProps} user={user} />,
     );
     expect(wrapper.find('nav')).toHaveLength(1);
   });
@@ -33,7 +41,7 @@ describe('<LeftNav />', () => {
       onEndShift,
     };
     const wrapper = shallow(
-      <TestExports.LeftNav {...props} />,
+      <TestExports.LeftNav {...defaultProps}{...props} />,
     );
     expect(wrapper.find('nav')).toHaveLength(1);
     wrapper.find('Link').at(0).simulate('click');
@@ -65,7 +73,7 @@ describe('<LeftNav />', () => {
       isAssigned: true,
     };
     const wrapper = shallow(
-      <TestExports.LeftNav {...props} />,
+      <TestExports.LeftNav {...defaultProps} {...props} />,
     );
     expect(wrapper.find('nav')).toHaveLength(1);
     wrapper.find('Link').at(4).simulate('click');

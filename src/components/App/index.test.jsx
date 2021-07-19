@@ -2,6 +2,10 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import App from '.';
 
+let defaultProps ={
+  location : '',
+  user : {},
+}
 describe('<App />', () => {
   it('should render App component in expand view', () => {
     const Something = () => null;
@@ -9,7 +13,7 @@ describe('<App />', () => {
       expandView: true,
     };
     const wrapper = shallow(
-      <App {...props}>
+      <App {...defaultProps} {...props}>
         <Something />
       </App>,
     );
@@ -22,7 +26,7 @@ describe('<App />', () => {
       expandView: false,
     };
     const wrapper = shallow(
-      <App {...props}>
+      <App {...defaultProps}{...props}>
         <Something />
       </App>,
     );

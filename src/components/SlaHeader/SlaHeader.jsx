@@ -158,7 +158,7 @@ class LabelWithIcon extends React.PureComponent {
     return (
       <>
         <Grid container styleName="customresolutiongrid">
-          <Grid xs={9}>
+          <Grid item xs={9}>
             <FormControl style={{ width: 180 }}>
               <InputLabel styleName="resIdLbl">Select ResolutionId</InputLabel>
               <Select
@@ -168,7 +168,7 @@ class LabelWithIcon extends React.PureComponent {
                 {
                   sortedResData.map(
                     items => (
-                      <MenuItem value={items.resolutionId}>
+                      <MenuItem key={`${items.resolutionId}-${items.status}`} value={items.resolutionId}>
                         {items.resolutionId}
                         {' -- '}
                         {items.status}
@@ -211,13 +211,13 @@ class LabelWithIcon extends React.PureComponent {
         </Grid>
         {!showPushDataButton && (
           <Grid container styleName="customgrid">
-            <Grid xs={8}>
+            <Grid item xs={8}>
               <span>
                 RUN CHECK AUDIT
               </span>
             </Grid>
 
-            <Grid styleName="customalign" xs={2}>
+            <Grid item styleName="customalign" xs={2}>
               <Button
                 disabled={passedRules.length === 0}
                 onClick={() => this.handleFilterClick(true)}
@@ -230,7 +230,7 @@ class LabelWithIcon extends React.PureComponent {
               </Button>
 
             </Grid>
-            <Grid styleName="customalign" xs={2}>
+            <Grid item styleName="customalign" xs={2}>
               <Button
                 disabled={failedRules.length === 0}
                 onClick={() => this.handleFilterClick(false)}
@@ -257,19 +257,19 @@ LabelWithIcon.defaultProps = {
 };
 
 LabelWithIcon.propTypes = {
-  allRules: PropTypes.shape.isRequired,
+  allRules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   clearRuleResponse: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
   disablePushData: PropTypes.bool.isRequired,
   enablePushDataButton: PropTypes.bool.isRequired,
-  failedRules: PropTypes.shape.isRequired,
+  failedRules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   filter: PropTypes.bool.isRequired,
   handleValueChange: PropTypes.func.isRequired,
   isAllRulesPassed: PropTypes.bool.isRequired,
   isAssigned: PropTypes.bool.isRequired,
-  passedRules: PropTypes.shape.isRequired,
-  resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
+  passedRules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  resolutionData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   resolutionId: PropTypes.string.isRequired,
   resolutionText: PropTypes.string.isRequired,
   resultData: PropTypes.shape({
@@ -280,14 +280,14 @@ LabelWithIcon.propTypes = {
     status: PropTypes.string,
     title: PropTypes.string,
   }).isRequired,
-  ruleResponse: PropTypes.shape.isRequired,
+  ruleResponse: PropTypes.shape().isRequired,
   showContinueMyReview: PropTypes.bool.isRequired,
   showPushDataButton: PropTypes.bool.isRequired,
   slaRulesProcessed: PropTypes.bool.isRequired,
   taskCode: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  triggerFilterRules: PropTypes.string.isRequired,
+  triggerFilterRules: PropTypes.func.isRequired,
   triggerHeader: PropTypes.bool,
   triggerPushData: PropTypes.func.isRequired,
   triggerResolutionIdStats: PropTypes.func.isRequired,

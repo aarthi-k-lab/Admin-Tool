@@ -54,6 +54,7 @@ DropDownSelect.defaultProps = {
       reportUrl: '',
     },
   ],
+  selectedValue: null,
 };
 
 DropDownSelect.propTypes = {
@@ -66,7 +67,7 @@ DropDownSelect.propTypes = {
     }),
   ),
   onChange: PropTypes.func.isRequired,
-  selectedValue: PropTypes.string.isRequired,
+  selectedValue: PropTypes.string,
 };
 
 export default DropDownSelect;

@@ -1,19 +1,19 @@
 .contained {
-    border-radius: 25px !important;
-    margin-bottom: 10px !important;
-    margin-top: 10px !important;
-    margin-right: 1rem !important;
+  border-radius: 25px !important;
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+  margin-right: 1rem !important;
 }
 
 .parentDiv {
-    border-radius: 0.5rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
-    z-index: 1;
-  }
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
 
-  .custom {
-    float: left !important;
-  }
+.custom {
+  float: left !important;
+}
 
 .containedVariant {
   margin-bottom: 10px !important;
@@ -24,6 +24,7 @@
 
 .customVariant {
   text-align: center !important;
+
   /* position: absolute !important; */
 }
 
@@ -34,12 +35,11 @@
   margin-left: 1.5rem !important;
 }
 
-
 .iconGrey {
-  color:grey;
+  color: grey;
 }
 
-.remove-circle{
+.remove-circle {
   margin-left: 2rem;
 }
 
@@ -89,11 +89,6 @@
 }
 
 .taxRem {
-	margin-left: 4.3rem;
-}
-
-
-.taxAdd {
   margin-left: 4.3rem;
 }
 
@@ -102,5 +97,5 @@
 }
 
 .default {
-  margin :0.5rem 0rem 1rem 1rem;
+  margin: 0.5rem 0 1rem 1rem;
 }

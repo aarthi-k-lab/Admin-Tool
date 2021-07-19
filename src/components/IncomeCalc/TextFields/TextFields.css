@@ -1,240 +1,239 @@
 .text-label.text-label {
-    color: #000;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .componentMargin.componentMargin {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .dropDownMenuStyle {
-    min-width: 25rem !important;
-    border: 0.1rem solid black !important;
+  min-width: 25rem !important;
+  border: 0.1rem solid black !important;
 }
 
 .min-width {
-    width: 80rem !important
+  width: 80rem !important;
 }
 
-.componentMargin.componentMargin div>input {
-    padding: 5.5px 5px;
+.componentMargin.componentMargin div > input {
+  padding: 5.5px 5px;
 }
 
 .dropDownStyle {
-    min-width: 25rem !important;
-    border: 0.13rem solid black !important;
+  min-width: 25rem !important;
+  border: 0.13rem solid black !important;
 }
 
 .marginright {
-    margin-right: 1rem !important;
-    background-color: white !important;
+  margin-right: 1rem !important;
+  background-color: white !important;
 }
 
 .custom {
-    margin-right: 0rem;
+  margin-right: 0;
 }
 
 .inc-text {
-    width: 12rem !important;
-    text-align: right;
+  width: 12rem !important;
+  text-align: right;
 }
 
 .gytd-text {
-    width: 14rem !important;
+  width: 14rem !important;
 }
 
 .ga-text {
-    width: 12rem !important;
+  width: 12rem !important;
 }
 
 .reason-for {
-    margin: 1rem 0rem 0rem 2rem;
+  margin: 1rem 0 0 2rem;
 }
 
 .reason-for-textbox {
-    width: 30rem !important;
+  width: 30rem !important;
 }
 
 .reason-for-value {
-    margin-left: 0.3rem;
-    font-weight: 600;
+  margin-left: 0.3rem;
+  font-weight: 600;
 }
 
 .commentBox {
-    margin: 2rem 2rem 0rem 2rem;
+  margin: 2rem 2rem 0 2rem;
 }
 
 .pay-periods-text {
-    width: 12rem !important;
-    margin-top: 1rem !important;
-    text-align: right;
+  width: 12rem !important;
+  margin-top: 1rem !important;
+  text-align: right;
 }
 
 .we-bs-gross {
-    width: 12rem !important;
-    text-align: right;
-    background-color: #eee;
+  width: 12rem !important;
+  text-align: right;
+  background-color: #eee;
 }
 
 .disabled {
-    width: 12rem !important;
-    text-align: right;
-    background-color: #eee;
+  width: 12rem !important;
+  text-align: right;
+  background-color: #eee;
 }
 
 .text-with-placeholder {
-    width: 17rem !important;
-    background-color: white;
+  width: 17rem !important;
+  background-color: white;
 }
-
 
 .pitia-amt-title {
-    width: 12rem;
+  width: 12rem;
 }
 
-.pitia-amt{
-    width: 17rem !important;
+.pitia-amt {
+  width: 17rem !important;
 }
 
 .pay-period-textField {
-    width: 12rem;
-    margin: 1rem 0rem 1rem 2rem !important;
+  width: 12rem;
+  margin: 1rem 0 1rem 2rem !important;
 }
 
 .pay-periods-title {
-     width: 20rem;
-     margin-top: 1rem;
-     margin-left: -0.5rem;
+  width: 20rem;
+  margin-top: 1rem;
+  margin-left: -0.5rem;
 }
 
 .ri-total-text {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .read-only-value {
-    font-weight: 600;
-    padding-left: 0.5rem;
+  font-weight: 600;
+  padding-left: 0.5rem;
 }
 
 .display-in-row {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
-
 .mrla-text {
-    width: 12rem !important;
-    margin-left: 1rem !important;
+  width: 12rem !important;
+  margin-left: 1rem !important;
 }
 
 .mrla-title {
-    margin: 0;
+  margin: 0;
 }
 
-.ri-title{
-    margin: 0;
-    font-size: 0.75rem;
+.ri-title {
+  margin: 0;
+  font-size: 0.75rem;
 }
 
-.ri-label{
-    margin: 0;
-    font-weight: 510;
+.ri-label {
+  margin: 0;
+  font-weight: 510;
 }
 
 .ri-div-label {
-    margin-left: 1rem !important;
+  margin-left: 1rem !important;
 }
 
 .weekly-amt {
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    margin: 1rem 1.5rem;
-    padding-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin: 1rem 1.5rem;
+  padding-bottom: 1rem;
 }
 
 .weekly-text {
-    margin-left: 2rem !important;
+  margin-left: 2rem !important;
 }
 
 .pp-value {
-    padding: 0 0.5rem;
+  padding: 0 0.5rem;
 }
 
 .monthly-text {
-    margin-left: 1rem;
-    font-size: 9px;
-    /* width: 100%; */
-    margin-right: 2rem;
+  margin-left: 1rem;
+  font-size: 9px;
+
+  /* width: 100%; */
+  margin-right: 2rem;
 }
 
 .monthly-inc {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-left: 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-left: 1rem;
 }
 
 .se-total-text {
-    font-weight: 500;
-} 
-
-.se-nom {  
-    width: 16.5rem !important;
+  font-weight: 500;
 }
 
-.se-pao {  
-    width: 16.5rem !important;
+.se-nom {
+  width: 16.5rem !important;
+}
+
+.se-pao {
+  width: 16.5rem !important;
 }
 
 .se-nom-div {
-    margin-left: 2.5rem !important;
-    display: flex;
-    margin-top: 1rem;
+  margin-left: 2.5rem !important;
+  display: flex;
+  margin-top: 1rem;
 }
 
 .se-nom-title {
-    width: 12rem !important;
-    margin-top: 1rem !important;
+  width: 12rem !important;
+  margin-top: 1rem !important;
 }
 
 .se-amount-div {
-    margin-left: 2.5rem !important;
-    display: flex;
-    margin-top: 1rem;
+  margin-left: 2.5rem !important;
+  display: flex;
+  margin-top: 1rem;
 }
 
 .se-amount-title {
-    width: 12rem !important;
-    margin-top: 1rem !important;
+  width: 12rem !important;
+  margin-top: 1rem !important;
 }
 
 .se-total {
-    margin: 0rem;
+  margin: 0;
 }
 
 .se-total-value {
-    font-weight: 800;
-    font-size: 1.4rem;
-    margin: 0rem;
+  font-weight: 800;
+  font-size: 1.4rem;
+  margin: 0;
 }
 
 .cnsdt-net {
-    align-items: center;
+  align-items: center;
 }
 
 .cnsdt-net-value {
-    margin: 0;
-    font-weight: 500;
-    font-size: 1.6rem;
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.6rem;
 }
 
 .cnsdt-net-title {
-    font-weight: 350;
-    font-size: 1rem;
-    margin: 1rem 0rem 0rem 0rem;
+  font-weight: 350;
+  font-size: 1rem;
+  margin: 1rem 0 0 0;
 }
 
 .cnsdt-income-div {
-    justify-content: center;
+  justify-content: center;
 }

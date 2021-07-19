@@ -1,7 +1,7 @@
 .radio-control.radio-control {
-    margin: 0;
-  }
-  
+  margin: 0;
+}
+
 .radio-control-label.radio-control-label {
   color: #000;
   font-weight: 700;
@@ -27,7 +27,7 @@
 }
 
 .radio-control-option-red.radio-control-option-red {
-  color:  #ff8080 !important;
+  color: #ff8080 !important;
 }
 
 .ri-share-check {
@@ -38,10 +38,6 @@
   padding-left: 3rem;
 }
 
-.ri-share-selection-self {
-  padding-left: 3rem;
-}
-
-.ri-share-selection  {
+.ri-share-selection {
   padding-left: 3rem;
 }

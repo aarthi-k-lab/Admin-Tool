@@ -34,8 +34,8 @@ class ReUploadFile extends React.Component {
     return (
       <>
         <div>
-          <Grid alignItems="center" container direction="column" styleName="msgblock" xs={12}>
-            <Grid alignItems="center" container direction="row" justify="flex-end" xs={12}>
+          <Grid alignItems="center" container direction="column" styleName="msgblock">
+            <Grid alignItems="center" container direction="row" justify="flex-end">
               <Grid alignItems="flex-start" container direction="row" item justify="flex-end" xs={5}>
                 <img alt="submit_error_icon" src="/static/img/default_selected_green_small.svg" styleName="largeIcon" />
               </Grid>
@@ -44,7 +44,7 @@ class ReUploadFile extends React.Component {
                 <span styleName="reuploadmsg">Excel document uploaded Successfully.</span>
               </Grid>
             </Grid>
-            <Grid alignItems="center" container direction="column" justify="center" xs={12}>
+            <Grid alignItems="center" container direction="column" justify="center">
               <Grid item xs={12}>
                 <TextField
                   InputProps={{
@@ -61,8 +61,8 @@ class ReUploadFile extends React.Component {
                 />
               </Grid>
             </Grid>
-            <Grid container direction="row" item xs={12}>
-              <Grid alignItems="center" container direction="row" justify="center" xs={12}>
+            <Grid container direction="row" item>
+              <Grid alignItems="center" container direction="row" justify="center">
                 <Button
                   color="primary"
                   component="label"

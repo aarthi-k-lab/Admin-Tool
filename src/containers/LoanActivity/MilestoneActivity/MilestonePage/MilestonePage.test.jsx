@@ -2,6 +2,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './MilestonePage';
 
+const defaultProps = {
+  getTaskDetails: jest.fn(),
+};
 describe('<MilestoneActivity /> - not in searchPage', () => {
   const clearData = jest.fn();
   const getTasksByTaskCategory = jest.fn();
@@ -41,7 +44,7 @@ describe('<MilestoneActivity /> - not in searchPage', () => {
     prcsId,
   };
   const wrapper = shallow(
-    <TestExports.MilestonePage {...props} />,
+    <TestExports.MilestonePage {...defaultProps} {...props} />,
   );
   it('render Timeline Component', () => {
     expect(wrapper.find('Timeline')).toHaveLength(1);
@@ -82,7 +85,7 @@ describe('<MilestoneActivity /> - in searchPage', () => {
     prcsId,
   };
   const wrapper = shallow(
-    <TestExports.MilestonePage {...props} />,
+    <TestExports.MilestonePage {...defaultProps} {...props} />,
   );
   it('render Timeline Component', () => {
     expect(wrapper.find('Timeline')).toHaveLength(1);

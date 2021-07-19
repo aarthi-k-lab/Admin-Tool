@@ -5,26 +5,28 @@ import { TestExports } from './Timeline';
 describe('<Timeline />', () => {
   const tasksGroupMlstnNm = [];
   const groupTaskData = [{
+    maxCreDttm: '1607482806055',
     mlstnNm: 'Document Sent to Homeowner',
     taskId: '7806488',
     taskName: 'Docs Sent',
-    creDttm: 1607482806055,
+    creDttm: '1607482806055',
     currSts: 'Closed',
-    currStsDttm: 1607491574234,
+    currStsDttm: '1607491574234',
     asgnUsrNm: 'Gajalakshmi.B@mrcooper.com',
     asgnDttm: null,
-    dueDttm: 1607655605000,
+    dueDttm: '1607655605000',
   },
   {
+    maxCreDttm: '1607482806056',
     mlstnNm: 'Document Received',
     taskId: '7806617',
     taskName: 'Docs In',
-    creDttm: 1607491575564,
+    creDttm: '1607491575564',
     currSts: 'Closed',
-    currStsDttm: 1607492052787,
+    currStsDttm: '1607492052787',
     asgnUsrNm: 'Gajalakshmi.B@mrcooper.com',
     asgnDttm: null,
-    dueDttm: 1607664374000,
+    dueDttm: '1607664374000',
   },
   ];
   const prcsId = '123';

@@ -34,7 +34,7 @@ class StagerTiles extends React.PureComponent {
     const countsData = R.sort(R.descend(R.prop('displayName')), counts);
     return (
       <>
-        <Grid container styleName="stager-tiles-main-container" xs={12}>
+        <Grid container styleName="stager-tiles-main-container">
           {!countsData.length ? <Loader /> : null}
           <div>
             {countsData.map(stagerTaskGroupData => (
@@ -100,12 +100,11 @@ StagerTiles.propTypes = {
   ).isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
   searchResponse: PropTypes.shape({
-    loanNumber: PropTypes.array.isRequired,
-    titleType: PropTypes.array.isRequired,
-    titleValue: PropTypes.array.isRequired,
-
+    loanNumber: PropTypes.string.isRequired,
+    titleType: PropTypes.string.isRequired,
+    titleValue: PropTypes.string.isRequired,
   }),
-  stagerTaskName: PropTypes.string,
+  stagerTaskName: PropTypes.shape(),
 };
 export default StagerTiles;
 export { TestExports };

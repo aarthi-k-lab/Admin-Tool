@@ -76,7 +76,7 @@
   color: white;
   font-size: 1.3rem;
   font-weight: 900;
-  padding: 0px 0.3rem 0 0.3rem; /* stylelint-disable-line length-zero-no-unit */
+  padding: 0 0.3rem 0 0.3rem;
   border-radius: 0.25rem;
 }
 
@@ -86,12 +86,12 @@
   color: white;
   font-size: 1.3rem;
   font-weight: 900;
-  padding: 0px 0.3rem 0 0.3rem; /* stylelint-disable-line length-zero-no-unit */
+  padding: 0 0.3rem 0 0.3rem;
   border-radius: 0.25rem;
 }
 
 .alert-font {
-  color: red !important;/* stylelint-disable-line length-zero-no-unit */
+  color: red !important;
 }
 
 .eye-icon {

@@ -4,6 +4,6 @@ exports[`<MainContent /> snapshot test 1`] = `
 <article
   className="components-MainContent-MainContent__main-content"
 >
-  content
+  content 
 </article>
 `;

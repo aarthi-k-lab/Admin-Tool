@@ -9,11 +9,11 @@ describe('renders <Row /> when changeColor is true', () => {
     data: {
       evalId: 'evalId',
       resolutionId: 'resolutionId',
-      statusDate: 'statusDate',
+      statusDate: '2015-11-10 03:19:42.4',
       status: 'status',
       substatus: 'subStatus',
       loanNumber: 'loanNumber',
-      substatusDate: 'substatusDate',
+      substatusDate: '2015-11-10 03:19:42.4',
       evalHistory: [{
         EvalId: 'EvalId',
         ChangeType: 'ChangeType',
@@ -38,11 +38,11 @@ describe('renders <Row /> when changeColor is false', () => {
     data: {
       evalId: 'evalId',
       resolutionId: 'resolutionId',
-      statusDate: 'statusDate',
+      statusDate: '2015-11-10 03:19:42.4',
       status: 'status',
       substatus: 'subStatus',
       loanNumber: 'loanNumber',
-      substatusDate: 'substatusDate',
+      substatusDate: '2015-11-10 03:19:42.4',
       evalHistory: [{
         EvalId: 'EvalId',
         ChangeType: 'ChangeType',

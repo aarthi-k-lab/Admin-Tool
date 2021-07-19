@@ -516,7 +516,7 @@ class CoviusBulkOrder extends React.PureComponent {
     return (
       <>
         <ContentHeader title={title}>
-          <Grid container style={{ height: '3rem' }} xs={12}>
+          <Grid container style={{ height: '3rem' }}>
             <Grid item xs={1}>
               <div styleName="coviusLabel">
                 Covius
@@ -530,7 +530,7 @@ class CoviusBulkOrder extends React.PureComponent {
           </Grid>
           <Controls />
         </ContentHeader>
-        <Grid container styleName="loan-activity" xs={12}>
+        <Grid container styleName="loan-activity">
           <Grid item xs={2}>
             {this.renderNotepadArea()}
           </Grid>
@@ -562,11 +562,11 @@ CoviusBulkOrder.defaultProps = {
 
 CoviusBulkOrder.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
-  coviusEventOptions: PropTypes.arrayOf({
-    eventCode: PropTypes.string,
+  coviusEventOptions: PropTypes.arrayOf(PropTypes.shape({
     eventCategory: PropTypes.string,
+    eventCode: PropTypes.string,
     hasMetadata: PropTypes.bool,
-  }),
+  })),
   coviusTabIndex: PropTypes.number,
   downloadFile: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
@@ -574,18 +574,11 @@ CoviusBulkOrder.propTypes = {
   onResetData: PropTypes.func,
   populateDropdown: PropTypes.func,
   resultData: PropTypes.shape({
-    invalidCases: PropTypes.arrayOf({
+    invalidCases: PropTypes.arrayOf(PropTypes.shape({
       caseId: PropTypes.string,
       message: PropTypes.string,
-    }),
-    request: PropTypes.arrayOf({
-      UserFields: PropTypes.shape({
-        CASEID: PropTypes.string,
-        EVAL_ID: PropTypes.string,
-        LOAN_NUMBER: PropTypes.string,
-      }),
-      RequestId: PropTypes.string,
-    }),
+    })),
+    request: PropTypes.arrayOf(PropTypes.shape()),
     uploadFailed: PropTypes.arrayOf({
       caseId: PropTypes.string,
       message: PropTypes.string,

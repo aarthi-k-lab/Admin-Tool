@@ -4,7 +4,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Typography from '@material-ui/core/Typography';
 import * as R from 'ramda';
-import { FormControlLabelWithTooltip } from 'components/RadioButtonGroup';
+import FormControlLabelWithTooltip from 'components/RadioButtonGroup';
 import Box from '@material-ui/core/Box';
 import styles from './RadioButtons.css';
 

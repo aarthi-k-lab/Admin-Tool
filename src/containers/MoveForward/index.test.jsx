@@ -10,9 +10,9 @@ describe('<MoveForward />', () => {
       <MoveForward />,
     );
     expect(wrapper.find('Fragment')).toHaveLength(1);
-    wrapper.find('Filters').simulate('change', { target: {} });
+    wrapper.find('Filters').simulate('change', { target: { value: '5473' } });
     expect(handleChange).toBeCalled();
-    // wrapper.setState({ pids: '' });
+    wrapper.setState({ pids: '' });
     // wrapper.find('Filters').simulate('click');
     // expect(moveForward).toBeCalled();
   });

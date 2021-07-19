@@ -52,7 +52,7 @@ AddTask.defaultProps = {
 };
 
 AddTask.propTypes = {
-  classes: PropTypes.shape.isRequired,
+  classes: PropTypes.shape().isRequired,
   disabled: PropTypes.bool,
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,

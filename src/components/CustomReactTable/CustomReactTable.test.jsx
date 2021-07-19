@@ -2,6 +2,18 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { TestExports } from './CustomReactTable';
 
+const defaultProps = {
+  onGetChecklistHistory: jest.fn(),
+  onGetGroupName: jest.fn(),
+  onSearchLoanWithTask: jest.fn(),
+  onSelectEval: jest.fn(),
+  searchLoanTaskResponse: {},
+  searchResponse: '',
+  history: [],
+  setBeginSearch: jest.fn(),
+  setStagerTaskName: jest.fn(),
+  user: {},
+};
 const data = {
   stagerTaskType: 'Value',
   stagerTaskStatus: 'To Order',
@@ -25,6 +37,7 @@ describe('<CustomReactTable />', () => {
   it('shows CustomReactTable', () => {
     const wrapper = shallow(
       <TestExports.CustomReactTable
+        {...defaultProps}
         data={data}
         onCheckBoxClick={() => {}}
         onSelectAll={() => {}}

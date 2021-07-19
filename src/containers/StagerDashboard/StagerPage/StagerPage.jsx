@@ -169,7 +169,14 @@ class StagerPage extends React.PureComponent {
         value={stager}
       >
         {
-          stagerGroups.map(datas => <MenuItem value={datas.value}>{datas.name}</MenuItem>)
+          stagerGroups.map(datas => (
+            <MenuItem
+              key={datas.value}
+              value={datas.value}
+            >
+              {datas.name}
+            </MenuItem>
+          ))
 
         }
       </Select>
@@ -306,6 +313,7 @@ StagerPage.defaultProps = {
   onCleanResult: () => { },
   popupData: {},
   activeTab: '',
+  stagerTaskName: null,
 };
 
 StagerPage.propTypes = {
@@ -326,7 +334,7 @@ StagerPage.propTypes = {
     }),
   ).isRequired,
   dispositionCode: PropTypes.string.isRequired,
-  getStagerSearchResponse: PropTypes.node.isRequired,
+  getStagerSearchResponse: PropTypes.shape().isRequired,
   group: PropTypes.string.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   isFirstVisit: PropTypes.bool.isRequired,
@@ -346,19 +354,17 @@ StagerPage.propTypes = {
   onSelectAll: PropTypes.func.isRequired,
   onStagerChange: PropTypes.func.isRequired,
   onStatusCardClick: PropTypes.func.isRequired,
-  popupData: PropTypes.shape(
-    PropTypes.arrayOf({
-      hitLoans: PropTypes.array.isRequired,
-      missedLoans: PropTypes.array.isRequired,
-    }),
-  ),
+  popupData: PropTypes.shape({
+    hitLoans: PropTypes.array.isRequired,
+    missedLoans: PropTypes.array.isRequired,
+  }),
   refreshDashboard: PropTypes.func.isRequired,
-  selectedData: PropTypes.node.isRequired,
+  selectedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setPageType: PropTypes.func.isRequired,
   setStagerTaskName: PropTypes.func.isRequired,
   stager: PropTypes.string.isRequired,
-  stagerTaskName: PropTypes.string.isRequired,
-  tableData: PropTypes.node.isRequired,
+  stagerTaskName: PropTypes.shape(),
+  tableData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   triggerStagerSearchLoan: PropTypes.func.isRequired,
   triggerStagerValue: PropTypes.func.isRequired,
 };

@@ -1,17 +1,17 @@
 .checklist {
-    display: flex;
-    flex-direction: column;
-    grid-column: 1 / 3;
-    grid-row: 1 / 2;
-    margin: 1rem 5rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+  margin: 1rem 5rem 1rem 2rem;
 }
 
 .widget {
-    display: flex;
-    flex-direction: column;
-    grid-column: 1 / 3;
-    grid-row: 1 / 2;
-    margin: 1rem 5rem 1rem 10rem;
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+  margin: 1rem 5rem 1rem 10rem;
 }
 
 .income-checklist {
@@ -20,14 +20,12 @@
   overflow: auto;
 }
 
-.income-loader{
+.income-loader {
   flex-basis: 0;
   flex-grow: 1;
   justify-content: center;
 }
 
-
 .income-checklist::-webkit-scrollbar {
   display: none;
 }
-  

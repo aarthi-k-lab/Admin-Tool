@@ -51,7 +51,7 @@ DeleteTask.defaultProps = {
 };
 
 DeleteTask.propTypes = {
-  classes: PropTypes.shape.isRequired,
+  classes: PropTypes.shape().isRequired,
   disabled: PropTypes.bool.isRequired,
   margin: PropTypes.shape({
     marginLeft: PropTypes.string,

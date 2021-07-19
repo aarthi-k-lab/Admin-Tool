@@ -116,6 +116,7 @@ class Processor extends React.PureComponent {
     return (
       <Grid
         id="download_btn"
+        item
         style={{
           right: '0', position: 'absolute', paddingRight: '64px', paddingTop: '4px',
         }}
@@ -177,7 +178,7 @@ class Processor extends React.PureComponent {
   renderTableData() {
     const { tableData } = this.props;
     return (
-      <Grid container direction="column" style={{ paddingLeft: '1rem' }} xs={10}>
+      <Grid container direction="column" style={{ paddingLeft: '1rem' }}>
         <div styleName="table-container">
           <div styleName="height-limiter">
             <ReactTable
@@ -225,7 +226,7 @@ class Processor extends React.PureComponent {
     return (
       <>
         <ContentHeader title={title}>
-          <Grid container style={{ height: '3rem' }} xs={12}>
+          <Grid container style={{ height: '3rem' }}>
             <Grid item xs={1}>
               <div styleName="backButton">
                 <Link onClick={() => history.push(DOCPROCESSOR)} to={DOCPROCESSOR}>
@@ -260,7 +261,7 @@ class Processor extends React.PureComponent {
             </span>
           </Grid>
         </Grid>
-        <Grid container id="data" styleName="loan-activity" xs={12}>
+        <Grid container id="data" styleName="loan-activity">
           <Grid id="notepad" item xs={2}>{this.renderNotepadArea()}</Grid>
           {this.renderTableData()}
         </Grid>

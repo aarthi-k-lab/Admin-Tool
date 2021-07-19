@@ -5,6 +5,7 @@ import { TestExports } from './CenterPane';
 describe('<CenterPane />', () => {
   const mlstnName = 'mock';
   const taskDetails = [{
+    name: '1',
     taskId: 7806488,
     bpmStatus: 'Closed',
     taskName: 'Docs Sent',
@@ -20,6 +21,7 @@ describe('<CenterPane />', () => {
     iteration: 1,
   },
   {
+    name: '2',
     taskId: 7806488,
     bpmStatus: 'Closed',
     taskName: 'Docs Sent',

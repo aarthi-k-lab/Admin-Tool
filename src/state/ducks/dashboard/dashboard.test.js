@@ -1464,7 +1464,7 @@ describe('submit file to covius (FulfillmentRequest) : Success', () => {
 
   const mockFileUploadResponse = {};
   mockFileUploadResponse.message = 'The request was successfully sent to Covius';
-  mockFileUploadResponse.level = 'Success';
+  mockFileUploadResponse.level = 'success';
   const saga = cloneableGenerator(TestExports.onFileSubmit)();
   it('should call select uploaded file from store', () => {
     expect(saga.next().value)

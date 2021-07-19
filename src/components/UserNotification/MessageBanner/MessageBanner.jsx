@@ -45,7 +45,7 @@ MessageBanner.defaultProps = {
 MessageBanner.propTypes = {
   dismissUserNotification: PropTypes.func.isRequired,
   level: PropTypes.oneOf([ERROR, SUCCESS]).isRequired,
-  message: PropTypes.node.isRequired,
+  message: PropTypes.string.isRequired,
   open: PropTypes.bool,
 
 };

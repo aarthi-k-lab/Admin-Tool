@@ -1,22 +1,79 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ErrorIcon from '@material-ui/icons/Error';
-import Checklist from 'components/Checklist';
 import UserNotification from 'components/UserNotification/UserNotification';
 import Loader from 'components/Loader/Loader';
 import R from 'ramda';
 import CloseIcon from '@material-ui/icons/Close';
 import CustomSnackBar from 'components/CustomSnackBar';
+import Checklist from 'components/Checklist';
 import { TestHooks } from './TasksAndChecklist';
 import {
   checklistItems, selectedTaskId, rootTaskId, selectedTaskBlueprintCode, allRulesPassed,
-  inProgress, instructions, isAssigned, message, location, bookingChecklistItems, allRulesFailed,
+  inProgress, instructions, isAssigned, message, bookingChecklistItems, allRulesFailed,
 } from '../../../models/Testmock/taskAndChecklist';
 import BookingHomePage from './BookingHomePage';
 import DialogCard from './DialogCard';
 import { BOOKING } from '../../../constants/widgets';
 
-
+const defaultProps = {
+  assignResult: {},
+  checklistErrorMessage: '',
+  checklistItems,
+  checklistTitle: '',
+  closeSweetAlert: jest.fn(),
+  commentsRequired: false,
+  disposition: '',
+  filter: false,
+  clearPopupData: jest.fn(),
+  closeSnackBar: jest.fn(),
+  completeReviewResponse: {},
+  dispatchAction: jest.fn(),
+  handleClearSubTask: jest.fn(),
+  handleDeleteTask: jest.fn(),
+  handleShowDeleteTaskConfirmation: jest.fn(),
+  onAdditionalInfo: jest.fn(),
+  onAdditionalInfoSelect: jest.fn(),
+  onChecklistChange: jest.fn(),
+  onHistorySelect: jest.fn(),
+  onInstuctionDialogToggle: jest.fn(),
+  onNext: jest.fn(),
+  onPrev: jest.fn(),
+  onUnassignBookingLoan: jest.fn(),
+  onWidgetClick: jest.fn(),
+  onWidgetToggle: jest.fn(),
+  putComputeRulesPassed: jest.fn(),
+  passedRules: [],
+  failedRules: [],
+  location: {
+    pathname: '',
+    search: '',
+  },
+  getSelectedWidget: '',
+  resolutionId: '',
+  rootTaskId: '',
+  selectedTaskBlueprintCode: '',
+  selectedTaskId: '',
+  showDisposition: false,
+  showInstructionsDialog: false,
+  instructions: '',
+  isAssigned: false,
+  disableNext: false,
+  disablePrev: false,
+  dataLoadStatus: '',
+  errorBanner: {
+    errors: [],
+    warnings: [],
+  },
+  history: [],
+  popupData: {
+    level: '',
+    message: '',
+  },
+  user: {
+    skills: [],
+  },
+};
 describe('<TasksAndChecklist />', () => {
   const openWidgetList = [BOOKING];
   const onWidgetClick = jest.fn();
@@ -30,7 +87,10 @@ describe('<TasksAndChecklist />', () => {
   const taskFetchErrorMessage = 'Task Fetch Failed.Please try again Later';
   const props = {
     putComputeRulesPassed,
-    location,
+    location: {
+      pathname: '',
+      search: '',
+    },
     selectedTaskId,
     rootTaskId,
     selectedTaskBlueprintCode,
@@ -51,6 +111,7 @@ describe('<TasksAndChecklist />', () => {
     const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
+        {...defaultProps}
         dataLoadStatus="loading"
         groupName="DOCSIN"
         onNext={onNext}
@@ -114,6 +175,7 @@ describe('<TasksAndChecklist />', () => {
     const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
+        {...defaultProps}
         checklistItems={checklistItems}
         groupName="DOCSIN"
         handleClearSubTask={handleClearSubTask}
@@ -236,6 +298,7 @@ describe('<TasksAndChecklist />', () => {
     const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
+        {...defaultProps}
         checklistItems={checklistItems}
         disableNext
         disablePrev
@@ -271,6 +334,7 @@ describe('<TasksAndChecklist />', () => {
     const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
+        {...defaultProps}
         dataLoadStatus="loading"
         groupName="DOCSIN"
         onNext={onNext}
@@ -282,11 +346,11 @@ describe('<TasksAndChecklist />', () => {
   });
 
   it('show TasksAndChecklist', () => {
-    const push = jest.fn();
-    const historyMock = { push };
+    const historyMock = [];
     const onPrev = jest.fn();
     const wrapper = shallow(
       <TestHooks.TasksAndChecklist
+        {...defaultProps}
         checklistItems={checklistItems}
         {...props}
         groupName="BOOKING"
@@ -300,10 +364,10 @@ describe('<TasksAndChecklist />', () => {
     wrapper.setProps({ isAssigned: false });
     expect(wrapper.find(BookingHomePage).prop('message')).toBe('Assign to me');
     wrapper.setProps({ isPostModEndShift: true });
-    expect(push).toBeCalledWith('/stager');
+    expect(historyMock).toContain('/stager');
     wrapper.setProps({ isPostModEndShift: false, completeReviewResponse: { message: 'success' } });
-    expect(push).toBeCalledWith('/special-loan');
-    wrapper.setProps({ completeReviewResponse: null, inProgress: true });
+    expect(historyMock).toContain('/special-loan');
+    wrapper.setProps({ completeReviewResponse: {}, inProgress: true });
     expect(wrapper.find(Loader)).toHaveLength(1);
     wrapper.setProps({
       inProgress: false,

@@ -124,7 +124,7 @@ ContentHeader.defaultProps = {
 ContentHeader.propTypes = {
   azureSearchToggle: PropTypes.bool.isRequired,
   checklistTemplateName: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.arrayOf(PropTypes.node),
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
   features: PropTypes.arrayOf(PropTypes.shape).isRequired,
@@ -136,7 +136,7 @@ ContentHeader.propTypes = {
   onAutoSave: PropTypes.func,
   onEndShift: PropTypes.func,
   showAddButton: PropTypes.bool,
-  title: PropTypes.node,
+  title: PropTypes.string,
   toggleButton: PropTypes.bool.isRequired,
 };
 

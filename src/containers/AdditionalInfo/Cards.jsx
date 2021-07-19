@@ -13,7 +13,7 @@ const formatDate = date => (date ? R.replace('T', ' ', getCSTDateTime(date)) : '
 
 const getCardSearchDetails = cardDetails => (
   cardDetails && cardDetails.map(data => (
-    <Grid container direction="column" styleName="search-container">
+    <Grid key={`${data.ApprovalType}-${data.ActionDate}`} container direction="column" styleName="search-container">
       <Grid container direction="row">
         <Grid item styleName="tableData" xs={2}>
           <span>{data.ApprovalType}</span>
@@ -48,7 +48,7 @@ const Cards = (props) => {
         container
         justify="center"
       >
-        <Grid xs={10}>
+        <Grid item xs={10}>
           <div styleName="cards">
             <div>
               <Grid container styleName="main-container">
@@ -146,36 +146,19 @@ const Cards = (props) => {
 };
 
 Cards.propTypes = {
-  card: PropTypes.arrayOf(PropTypes.shape({
-    cardDetails: PropTypes.arrayOf(PropTypes.shape({
-      LoanId: PropTypes.string,
-      UserName: PropTypes.string,
-    })).isRequired,
-    cardHistoryDetails: PropTypes.arrayOf(PropTypes.shape({
-      LoanId: PropTypes.string,
-      UserName: PropTypes.string,
-    })).isRequired,
-    evalHistory: PropTypes.arrayOf(PropTypes.shape({
-      evalId: PropTypes.string,
-      history: PropTypes.arrayOf(PropTypes.shape({
-        evalId: PropTypes.string,
-        loanNumber: PropTypes.string.isRequired,
-      })).isRequired,
-      loanNumber: PropTypes.string.isRequired,
-    })).isRequired,
-    evalId: PropTypes.string,
-    loanId: PropTypes.string,
-    resolutionId: PropTypes.string,
-  })).isRequired,
+  card: PropTypes.shape({
+    CaseOpenDate: PropTypes.string,
+    LockedDate: PropTypes.string,
+    ResolutionChoiceType: PropTypes.string,
+    StatusDate: PropTypes.string,
+  }).isRequired,
   history: PropTypes.arrayOf(PropTypes.shape({
-    evalId: PropTypes.string,
-    loanNumber: PropTypes.string.isRequired,
     Values: PropTypes.arrayOf(PropTypes.shape({
-      evalId: PropTypes.string,
-      loanNumber: PropTypes.string.isRequired,
+      ChangeType: PropTypes.string.isRequired,
+      Comment: PropTypes.string,
     })).isRequired,
   })).isRequired,
-  resolutionId: PropTypes.string.isRequired,
+  resolutionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default Cards;

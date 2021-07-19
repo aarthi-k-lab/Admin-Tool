@@ -603,7 +603,7 @@ const actionBooking = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {
@@ -1233,7 +1233,7 @@ const actionUnreject = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {
@@ -1864,7 +1864,7 @@ const actionDefault = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {
@@ -2494,7 +2494,7 @@ const sendToFEUW = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {
@@ -3124,7 +3124,7 @@ const assignedTo = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {
@@ -3754,7 +3754,7 @@ const historyMock = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {
@@ -4385,7 +4385,7 @@ const defaultMock = {
     },
   },
   searchLoanResult: [{
-    loanNumber: 252613809,
+    loanNumber: '252613809',
     unAssigned: [],
     assigned: [
       {

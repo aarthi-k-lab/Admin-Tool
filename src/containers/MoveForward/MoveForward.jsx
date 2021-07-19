@@ -77,7 +77,7 @@ class MoveForward extends React.PureComponent {
           loading={loading}
           onChange={this.handleChange}
           onClick={this.moveForward}
-          pIds={pids}
+          pids={pids}
         />
         <div styleName="move-forward-table-container">
           <div styleName="move-forward-height-limiter">

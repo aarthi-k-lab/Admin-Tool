@@ -7,7 +7,7 @@ import {
   checklistItems, bookingChecklistItems, checkBox, dropdownChecklist,
   numberAndReadOnlyText, datePickerChecklistItems, radioButtonChecklist,
   modBookingResponse, checkBoxWithOldValues, checkBoxWithMultipleValues,
-  checklistWithoutHint, allRulesPassed, unknownChecklistType,
+  allRulesPassed, unknownChecklistType,
 } from '../../models/Testmock/taskAndChecklist';
 import SlaHeader from '../SlaHeader';
 import CheckBox from './Checkbox';
@@ -20,7 +20,15 @@ describe('<Checklist />', () => {
     checklistItems,
     location: {
       pathname: '/frontend-checklist',
+      search: '',
     },
+    handleClearSubTask: jest.fn(),
+    handleDeleteTask: jest.fn(),
+    handleShowDeleteTaskConfirmation: jest.fn(),
+    onChange: jest.fn(),
+    resolutionData: [],
+    resolutionId: '',
+    title: '',
     putComputeRulesPassed: jest.fn(),
   };
 
@@ -28,6 +36,7 @@ describe('<Checklist />', () => {
     checklistItems: bookingChecklistItems,
     location: {
       pathname: '/special-loan',
+      search: '',
     },
   };
 
@@ -38,31 +47,25 @@ describe('<Checklist />', () => {
     wrapper.find('WithStyles(ForwardRef(Button))').simulate('click');
     expect(spy).toBeCalled();
     expect(wrapper.instance().state.isDialogOpen).toBe(true);
-    wrapper.setProps({ checklistItems: bookingChecklistItems });
+    wrapper.setProps({ ...props, checklistItems: bookingChecklistItems });
     expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(0);
   });
 
   it('Show /hide SLAHeader', () => {
     const wrapper = shallow(<TestHooks.Checklist {...props} />);
     expect(wrapper.find(SlaHeader)).toHaveLength(0);
-    wrapper.setProps({ triggerHeader: true });
+    wrapper.setProps({ ...props, triggerHeader: true });
     expect(wrapper.find(SlaHeader)).toHaveLength(1);
-    wrapper.setProps({ triggerHeader: false, ...bookingChecklist });
+    wrapper.setProps({ ...props, triggerHeader: false, ...bookingChecklist });
     expect(wrapper.find(SlaHeader)).toHaveLength(1);
   });
 
   it('Dialog title - handleClose', async () => {
     const handleCloseSpy = jest.spyOn(TestHooks.Checklist.prototype, 'handleClose');
-    const handleClearSubTask = jest.fn();
-    const handleDeleteTask = jest.fn();
-    const handleShowDeleteTaskConfirmation = jest.fn();
     const wrapper = mount(<TestHooks.Checklist
       {...props}
       dialogContent="Do you want to delete"
       dialogTitle="DELETE TASK"
-      handleClearSubTask={handleClearSubTask}
-      handleDeleteTask={handleDeleteTask}
-      handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
       isDialogOpen
     />);
     let buttonYes = '';
@@ -73,16 +76,10 @@ describe('<Checklist />', () => {
 
   it('Dialog title - handleClear', async () => {
     const handleClearSpy = jest.spyOn(TestHooks.Checklist.prototype, 'handleClear');
-    const handleClearSubTask = jest.fn();
-    const handleDeleteTask = jest.fn();
-    const handleShowDeleteTaskConfirmation = jest.fn();
     const wrapper = mount(<TestHooks.Checklist
       {...props}
       dialogContent="Do you want to clear checklist"
       dialogTitle="CLEAR CHECKLIST"
-      handleClearSubTask={handleClearSubTask}
-      handleDeleteTask={handleDeleteTask}
-      handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
       isDialogOpen
     />);
     let buttonYes = '';
@@ -94,14 +91,8 @@ describe('<Checklist />', () => {
   it('Dialog title - default', async () => {
     const handleCloseDialogSpy = jest.spyOn(TestHooks.Checklist.prototype, 'handleCloseDialog');
     const handleClearSpy = jest.spyOn(TestHooks.Checklist.prototype, 'handleClear');
-    const handleClearSubTask = jest.fn();
-    const handleDeleteTask = jest.fn();
-    const handleShowDeleteTaskConfirmation = jest.fn();
     const wrapper = mount(<TestHooks.Checklist
       {...props}
-      handleClearSubTask={handleClearSubTask}
-      handleDeleteTask={handleDeleteTask}
-      handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
     />);
     let buttonYes = '';
     wrapper.find('WithStyles(ForwardRef(Button))').simulate('click');
@@ -115,13 +106,11 @@ describe('<Checklist />', () => {
   it('Render checklist Checkbox', () => {
     const checkBoxProps = {
       checklistItems: checkBox,
-      location: {
-        pathname: '/frontend-checklist',
-      },
-      putComputeRulesPassed: jest.fn(),
     };
-    const onChange = jest.fn();
-    const wrapper = shallow(<TestHooks.Checklist {...checkBoxProps} onChange={onChange} />);
+    const wrapper = shallow(<TestHooks.Checklist
+      {...props}
+      {...checkBoxProps}
+    />);
     expect(wrapper.find(CheckBox)).toHaveLength(1);
     let id = '';
     let multilineTextDirtyValues = '';
@@ -131,25 +120,25 @@ describe('<Checklist />', () => {
     wrapper.find(CheckBox).prop('onChange')({ target: { value: 'Modification Agreement', checked: true } });
     expect(wrapper.instance().state.multilineTextDirtyValues[id])
       .toStrictEqual(multilineTextDirtyValues[id]);
-    expect(onChange).toBeCalledWith(id, multilineTextDirtyValues[id], 'ALL_RTO_DISP_CHK2');
+    expect(props.onChange).toBeCalledWith(id, multilineTextDirtyValues[id], 'ALL_RTO_DISP_CHK2');
 
     // checklist with old values
-    wrapper.setProps({ checklistItems: checkBoxWithOldValues });
+    wrapper.setProps({ ...props, checklistItems: checkBoxWithOldValues });
     multilineTextDirtyValues = { '5f16de580b35fde7ede8919f': ['Modification Agreement', 'Assumption Agreement'] };
     wrapper.find(CheckBox).prop('onChange')({ target: { value: 'Assumption Agreement', checked: true } });
     expect(wrapper.instance().state.multilineTextDirtyValues[id])
       .toStrictEqual(multilineTextDirtyValues[id]);
-    expect(onChange).toBeCalledWith(id, multilineTextDirtyValues[id], 'ALL_RTO_DISP_CHK2');
+    expect(props.onChange).toBeCalledWith(id, multilineTextDirtyValues[id], 'ALL_RTO_DISP_CHK2');
 
     // unchecking all values
     multilineTextDirtyValues = { '5f16de580b35fde7ede8919f': null };
     wrapper.find(CheckBox).prop('onChange')({ target: { value: 'Modification Agreement', checked: false } });
     expect(wrapper.instance().state.multilineTextDirtyValues[id])
       .toStrictEqual(null);
-    expect(onChange).toBeCalledWith(id, multilineTextDirtyValues[id], 'ALL_RTO_DISP_CHK2');
+    expect(props.onChange).toBeCalledWith(id, multilineTextDirtyValues[id], 'ALL_RTO_DISP_CHK2');
 
     // unchecking one value
-    wrapper.setProps({ checklistItems: checkBoxWithMultipleValues });
+    wrapper.setProps({ ...props, checklistItems: checkBoxWithMultipleValues });
     multilineTextDirtyValues = { '5f16de580b35fde7ede8919f': ['Assumption Agreement'] };
     wrapper.find(CheckBox).prop('onChange')({ target: { value: 'Modification Agreement', checked: false } });
     expect(wrapper.instance().state.multilineTextDirtyValues[id])
@@ -159,27 +148,20 @@ describe('<Checklist />', () => {
   it('Handle change ', () => {
     const checkBoxProps = {
       checklistItems: radioButtonChecklist,
-      location: {
-        pathname: '/frontend-checklist',
-      },
-      putComputeRulesPassed: jest.fn(),
     };
-    const onChange = jest.fn();
-    const wrapper = shallow(<TestHooks.Checklist {...checkBoxProps} onChange={onChange} />);
+    const wrapper = shallow(<TestHooks.Checklist
+      {...props}
+      {...checkBoxProps}
+    />);
     wrapper.find(RadioButtons).prop('onChange')({ target: { value: 'Yes' } });
-    expect(onChange).toBeCalledWith('5f16e27c0b35fd975ae8937a', 'Yes', 'ALL_INC_INC_CHK2A');
+    expect(props.onChange).toBeCalledWith('5f16e27c0b35fd975ae8937a', 'Yes', 'ALL_INC_INC_CHK2A');
   });
 
   it('Render Checklist items ', () => {
     const checklistProps = {
-      checklistItems: numberAndReadOnlyText,
-      location: {
-        pathname: '/frontend-checklist',
-      },
-      putComputeRulesPassed: jest.fn(),
+      checklistItems,
     };
-    const onChange = jest.fn();
-    const wrapper = shallow(<TestHooks.Checklist {...checklistProps} />);
+    const wrapper = shallow(<TestHooks.Checklist {...props} {...checklistProps} />);
     wrapper.setProps({ checklistItems: numberAndReadOnlyText });
     expect(wrapper.find(Tooltip)).toHaveLength(7);
     expect(wrapper.find(TextFields).at(0).prop('type')).toBe('read-only-text');
@@ -195,30 +177,28 @@ describe('<Checklist />', () => {
     id = '5f16e27cs34b35fd5242e891';
     expect(wrapper.instance().state.multilineTextDirtyValues)
       .toStrictEqual(R.assoc(id, '123', multilineTextDirtyValues));
-    wrapper.setProps({ checklistItems: datePickerChecklistItems, onChange });
+    wrapper.setProps({ ...props, checklistItems: datePickerChecklistItems });
     expect(wrapper.find(BasicDatePicker)).toHaveLength(2);
     expect(TestHooks.removeCharaters('ABCD123')).toBe('123');
     wrapper.find(BasicDatePicker).at(0).prop('refCallback')({ target: { value: 'Yes' } });
-    expect(onChange).toBeCalledWith('5f16e73287d90ee4b6fda318', { target: { value: 'Yes' } }, 'GOV_LNHR_CHK28');
-    wrapper.setProps({ checklistItems: unknownChecklistType });
+    expect(props.onChange).toBeCalledWith('5f16e73287d90ee4b6fda318', { target: { value: 'Yes' } }, 'GOV_LNHR_CHK28');
+    wrapper.setProps({ ...props, checklistItems: unknownChecklistType });
     expect(wrapper.find('WithStyles(ForwardRef(Paper))').text()).toBe('Unknown checklist item type:drop-down-menu');
-    wrapper.setProps({ checklistItems: dropdownChecklist });
+    wrapper.setProps({ ...props, checklistItems: dropdownChecklist });
   });
 
   it('Checklist- componentDidMount', () => {
-    const putComputeRulesAllPassed = jest.fn();
     const wrapper = shallow(<TestHooks.Checklist
+      {...props}
       {...bookingChecklist}
-      putComputeRulesPassed={putComputeRulesAllPassed}
       ruleResultFromTaskTree={allRulesPassed}
     />);
-    expect(putComputeRulesAllPassed).toHaveBeenCalledWith(true);
-    const putComputeRulesAnyFalied = jest.fn();
+    expect(props.putComputeRulesPassed).toHaveBeenCalledWith(true);
     wrapper.setProps({
+      ...props,
       ruleResultFromTaskTree: modBookingResponse,
-      putComputeRulesPassed: putComputeRulesAnyFalied,
     });
     wrapper.instance().componentDidMount();
-    expect(putComputeRulesAnyFalied).toHaveBeenCalledWith(false);
+    expect(props.putComputeRulesPassed).toHaveBeenCalledWith(false);
   });
 });

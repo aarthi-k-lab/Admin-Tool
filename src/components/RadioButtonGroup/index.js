@@ -1,2 +1,3 @@
-export { default } from './RadioButtonGroup';
-export { default as FormControlLabelWithTooltip } from './FormControlLabelWithTooltip';
+import FormControlLabelWithTooltip from './FormControlLabelWithTooltip';
+
+export default FormControlLabelWithTooltip;

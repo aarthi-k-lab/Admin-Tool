@@ -10,7 +10,7 @@ describe('<StagerPopUp >', () => {
     const action = '';
     const popupData = {
       hitLoans: [],
-      missedLoans: ['mock1', 'mock2'],
+      missedLoans: [{ evalId: '1' }, { evalId: '2' }],
     };
     const props = {
       getStagerGroup,
@@ -39,7 +39,8 @@ describe('<StagerPopUp >', () => {
   it('should call the handleCheckbox function', () => {
     const action = '';
     const popupData = {
-      missedLoans: ['mock1', 'mock2'],
+      hitLoans: [],
+      missedLoans: [{ evalId: '1' }, { evalId: '2' }],
     };
     const props = {
       getStagerGroup,
@@ -71,6 +72,8 @@ describe('<StagerPopUp >', () => {
   it('should call the handleCheckbox function', () => {
     const action = '';
     const popupData = {
+      hitLoans: [],
+      missedLoans: [],
     };
     const props = {
       getStagerGroup,

@@ -491,9 +491,10 @@ SearchLoan.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
-  getRejectResponse: PropTypes.arrayOf(PropTypes.shape({
+  getRejectResponse: PropTypes.shape({
+    level: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
-  })).isRequired,
+  }).isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   inProgress: PropTypes.bool,
   isAssigned: PropTypes.bool.isRequired,
@@ -515,10 +516,13 @@ SearchLoan.propTypes = {
       status: PropTypes.string,
     },
   ),
-  searchLoanResult: PropTypes.arrayOf(PropTypes.shape({
+  searchLoanResult: PropTypes.shape({
+    assigned: PropTypes.arrayOf(PropTypes.shape()),
     loanNumber: PropTypes.string.isRequired,
+    statusCode: PropTypes.string,
+    unAssigned: PropTypes.arrayOf(PropTypes.shape()),
     valid: PropTypes.bool,
-  })).isRequired,
+  }).isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     userDetails: PropTypes.shape({

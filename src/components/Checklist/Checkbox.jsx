@@ -4,7 +4,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import * as R from 'ramda';
-import { FormControlLabelWithTooltip } from 'components/RadioButtonGroup';
+import FormControlLabelWithTooltip from 'components/RadioButtonGroup';
 import styles from './RadioButtons.css';
 
 function CheckBox({
@@ -72,7 +72,7 @@ CheckBox.propTypes = {
     textColor: PropTypes.string,
     value: PropTypes.string.isRequired,
   })).isRequired,
-  selectedValue: PropTypes.objectOf(PropTypes.array),
+  selectedValue: PropTypes.arrayOf(PropTypes.string),
   title: PropTypes.string.isRequired,
 };
 

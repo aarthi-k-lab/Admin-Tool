@@ -9,7 +9,7 @@ import moment from 'moment-timezone';
 import * as R from 'ramda';
 import DashboardModel from 'models/Dashboard';
 import './CommentsWidget.css';
-import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import dashboardSelectors from 'ducks/dashboard/selectors';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import { selectors, operations } from 'ducks/comments';
@@ -286,10 +286,6 @@ class CommentsWidget extends Component {
   }
 }
 
-const TestHooks = {
-  CommentsWidget,
-};
-
 CommentsWidget.propTypes = {
   addInfoEvalId: PropTypes.string.isRequired,
   AppName: PropTypes.string,
@@ -298,17 +294,14 @@ CommentsWidget.propTypes = {
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
   })).isRequired,
-  evalComments: PropTypes.shape(PropTypes.arrayOf(PropTypes.shape({
-    content: PropTypes.string.isRequired,
-    createdOn: PropTypes.string.isRequired,
-  }))).isRequired,
+  evalComments: PropTypes.shape().isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.string.isRequired,
   onGetComments: PropTypes.func.isRequired,
   onPostComment: PropTypes.func.isRequired,
-  openWidgetList: PropTypes.string,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
   ProcessId: PropTypes.number.isRequired,
   ProcIdType: PropTypes.string,
@@ -353,8 +346,7 @@ const mapDispatchToProps = dispatch => ({
   clearOnSearch: operations.clearOnSearch(dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentsWidget);
-
 export {
-  TestHooks,
+  CommentsWidget,
 };
+export default connect(mapStateToProps, mapDispatchToProps)(CommentsWidget);
