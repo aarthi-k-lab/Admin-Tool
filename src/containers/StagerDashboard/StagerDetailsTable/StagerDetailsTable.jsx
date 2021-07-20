@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import DownloadIcon from '@material-ui/icons/SaveAlt';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
+import moment from 'moment-timezone';
 import ListIcon from '@material-ui/icons/List';
 import { CSVLink } from 'react-csv';
 import CustomReactTable from 'components/CustomReactTable';
@@ -18,6 +19,9 @@ import StagerPopup from '../StagerPopUp';
 const CONTINUE_REVIEW = 'CONTINUE REVIEW';
 const SENT_FOR_REJECT = 'SENT FOR REJECT';
 const REJECT = 'REJECT';
+
+const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm A'));
+
 
 class StagerDetailsTable extends React.PureComponent {
   constructor(props) {
@@ -121,6 +125,7 @@ class StagerDetailsTable extends React.PureComponent {
       downloadedData, getActiveSearchTerm, getStagerValue,
     } = this.props;
     const downloadFileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
+    const displayLastUpdatedDate = ['Completed', 'Ordered'];
     return (
       <>
         {
@@ -136,6 +141,14 @@ class StagerDetailsTable extends React.PureComponent {
                   <span styleName="details-table-document-type">{data.stagerTaskType && data.stagerTaskType.toUpperCase()}</span>
                   <br />
                   <span styleName="details-table-document-status">{data.stagerTaskStatus && data.stagerTaskStatus.toUpperCase()}</span>
+                  <br />
+                  {
+                    (displayLastUpdatedDate.includes(data.stagerTaskStatus)
+                      && !R.isNil(data.lastUpdatedDate))
+                      ? (
+                        <span style={{ color: 'red' }} styleName="details-table-document-status">{`Last Updated: ${getCSTDateTime(data.lastUpdatedDate)}`}</span>
+                      ) : null
+                  }
                 </Grid>
                 <Grid item xs={8}>
                   {

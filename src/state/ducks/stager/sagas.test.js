@@ -238,6 +238,10 @@ describe('fetchDashboardData - success ', () => {
     expect(saga.next(dateUtc).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
+  it('get stager value', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getStagerValue));
+  });
   it('call bpm audit data Api', () => {
     expect(saga.next(false).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
@@ -255,7 +259,9 @@ describe('fetchDashboardData - success ', () => {
         type: SET_STAGER_DATA,
         payload: {
           error: false,
-          data: [],
+          data: {
+            lastUpdatedDate: null
+          },
         },
       }));
   });
@@ -317,6 +323,10 @@ describe('fetchDashboardData - empty response', () => {
   it('should select Stager date ', () => {
     expect(saga.next(dateUtc).value)
       .toEqual(select(selectors.getAzureSearchToggle));
+  });
+  it('get stager value', () => {
+    expect(saga.next().value)
+      .toEqual(select(selectors.getStagerValue));
   });
   it('call bpm audit data Api', () => {
     expect(saga.next(false).value)

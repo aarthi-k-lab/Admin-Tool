@@ -94,11 +94,18 @@ function* fetchDashboardData(data) {
     });
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
     const azureSearchToggle = yield select(selectors.getAzureSearchToggle);
+    const stagerValue = yield select(selectors.getStagerValue);
     const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
     const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
     const fromDate = new Date(fromDateMoment).toISOString();
     const toDate = new Date(toDateMoment).toISOString();
     let requestPayload = {};
+    let stagerSchedulerResponse = {};
+    const stagerFetchCriteria = {
+      stagerTaskStatus: ['Ordered', 'Completed'],
+      stagerTaskType: ['Escrow', 'Legal Fee', 'Value', 'Reclass'],
+      stagerValue: ['UW_STAGER', 'DOCGEN_STAGER', 'ALL'],
+    };
     if (azureSearchToggle) {
       requestPayload = {
         searchTerm,
@@ -123,9 +130,20 @@ function* fetchDashboardData(data) {
       payload: searchTerm,
     });
     if (response != null) {
+      const { stagerTaskType, stagerTaskStatus } = response;
+      const stagerReqBody = {
+        stagerTaskType,
+        stagerTaskStatus,
+        stagerValue,
+      };
+      if (stagerFetchCriteria.stagerTaskType.includes(stagerTaskType)
+      && stagerFetchCriteria.stagerTaskStatus.includes(stagerTaskStatus)
+      && stagerFetchCriteria.stagerValue.includes(stagerValue)) {
+        stagerSchedulerResponse = yield call(Api.callPost, 'api/dataservice/api/getStagerSchedulerTime', stagerReqBody);
+      }
       payload = {
         error: false,
-        data: response,
+        data: { ...response, lastUpdatedDate: R.propOr(null, 'lastUpdatedDate', stagerSchedulerResponse) },
       };
     } else {
       payload = {
