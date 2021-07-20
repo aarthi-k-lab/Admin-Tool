@@ -142,7 +142,8 @@ describe('Search Loan ', () => {
     expect(wrapper.find('UserNotification')).toHaveLength(1);
   });
   it('should call closeSweetAlert on sweetAlert close', () => {
-    wrapper.find('SweetAlertBox').simulate('confirm');
+    expect(wrapper.find('SweetAlertBox')).toHaveLength(2);
+    wrapper.find('SweetAlertBox').at(0).simulate('confirm');
     expect(props.closeSweetAlert).toBeCalledTimes(1);
   });
   it('should call onEndShift on Link click', () => {
@@ -251,7 +252,7 @@ describe('Search Loan sweetalert functionalities', () => {
       {...defaultProps}
       {...props}
     />);
-    expect(wrapper.find(SweetAlertBox)).toHaveLength(1);
+    expect(wrapper.find(SweetAlertBox)).toHaveLength(2);
   });
   it('shows Sweet Alert when resultOperation is not empty', () => {
     const { SearchLoan } = TestHooks;
@@ -273,7 +274,7 @@ describe('Search Loan sweetalert functionalities', () => {
       resultOperation={resultOperation}
       searchLoanResult={searchLoanResult}
     />);
-    expect(wrapper.find(SweetAlertBox)).toHaveLength(1);
+    expect(wrapper.find(SweetAlertBox)).toHaveLength(2);
   });
 
   it('does not show Sweet Alert when resultOperation is empty and render invalid loan page on invalid loan', () => {
@@ -292,7 +293,7 @@ describe('Search Loan sweetalert functionalities', () => {
       resultOperation={resultOperation}
       searchLoanResult={searchLoanResult}
     />);
-    expect(wrapper.find(SweetAlertBox)).toHaveLength(0);
+    expect(wrapper.find(SweetAlertBox)).toHaveLength(1);
     expect(wrapper.find('InvalidLoanPage')).toHaveLength(1);
   });
 
@@ -310,7 +311,7 @@ describe('Search Loan sweetalert functionalities', () => {
       onClearStagerTaskName={onClearStagerTaskName}
       searchLoanResult={searchLoanResult}
     />);
-    expect(wrapper.find(SweetAlertBox)).toHaveLength(0);
+    expect(wrapper.find(SweetAlertBox)).toHaveLength(1);
     expect(wrapper.find('InvalidLoanPage')).toHaveLength(1);
   });
   it('should render Loader on InProgress', () => {

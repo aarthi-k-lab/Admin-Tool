@@ -33,6 +33,7 @@ class SearchLoan extends React.PureComponent {
     super(props);
     this.state = {
       isRedirect: false,
+      isOpen: false,
     };
     this.redirectPath = '';
     this.renderSearchResults = this.renderSearchResults.bind(this);
@@ -110,6 +111,10 @@ class SearchLoan extends React.PureComponent {
     const { user } = this.props;
     const adGroups = user && user.groupList;
     const isPostMod = payload.milestone === 'Post Mod';
+    if (payload.pstatus === 'Completed' || payload.pstatus === 'Terminated') {
+      this.setState({ isOpen: true });
+      return;
+    }
     if (rowInfo.Header !== 'ACTIONS') {
       let group = '';
       if ((payload.assignee !== 'In Queue' || DashboardModel.ALLOW_IN_QUEUE.includes(payload.taskName) || (isPostMod && RouteAccess.hasSlaAccess(adGroups))) && payload.assignee !== 'N/A') {
@@ -304,6 +309,7 @@ class SearchLoan extends React.PureComponent {
     const {
       searchLoanResult, history, location, openWidgetList,
     } = this.props;
+    const { isOpen } = this.state;
     const data = [];
     const {
       loanNumber, unAssigned, assigned, valid,
@@ -354,6 +360,14 @@ class SearchLoan extends React.PureComponent {
           {this.renderAlert()}
         </>
         )}
+        <>
+          <SweetAlertBox
+            message="Unable to proceed with this eval as it is no longer active"
+            onConfirm={() => { this.setState({ isOpen: false }); }}
+            show={isOpen}
+            type="Info"
+          />
+        </>
       </>
     );
   }
