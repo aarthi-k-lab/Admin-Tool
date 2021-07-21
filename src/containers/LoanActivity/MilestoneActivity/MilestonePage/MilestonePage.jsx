@@ -73,17 +73,15 @@ class MilestonePage extends React.PureComponent {
               />
             </div>
             {inSearchPage && (
-            <div styleName="postion">
-              <WidgetBuilder page="MLSTN_PAGE" />
-            </div>
+              <div styleName="postion">
+                <WidgetBuilder page="MLSTN_PAGE" />
+              </div>
             )}
           </Grid>
-          <Grid container>
-            <Grid item xs={12}>
-              <div styleName="centerpane">
-                <CenterPane />
-              </div>
-            </Grid>
+          <Grid item xs={9}>
+            <div styleName="centerpane">
+              <CenterPane />
+            </div>
           </Grid>
         </Grid>
       </>

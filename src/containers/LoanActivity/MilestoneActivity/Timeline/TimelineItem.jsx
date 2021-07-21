@@ -14,6 +14,7 @@ import { ALL_MILESTONE_HISTORY, CLOSED, INTERRUPTED } from '../../../../constant
 
 
 const getCSTDateTime = dateTime => (R.isNil(dateTime) ? '-' : moment(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm A'));
+const getCSTDateTimeObj = dateTime => (R.isNil(dateTime) ? moment().startOf('day') : moment(dateTime).startOf('day'));
 class TimelineItem extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -69,8 +70,8 @@ class TimelineItem extends React.PureComponent {
                   <span>
                     {
                       taskData.currSts === CLOSED || taskData.currSts === INTERRUPTED
-                        ? `IN ${moment(taskData.currStsDttm).diff(moment(taskData.creDttm), 'days')} DAYS`
-                        : `IN ${moment().diff(moment(taskData.creDttm), 'days')} DAYS`
+                        ? `IN ${getCSTDateTimeObj(taskData.currStsDttm).diff(getCSTDateTimeObj(taskData.creDttm), 'days')} DAYS`
+                        : `IN ${getCSTDateTimeObj().diff(getCSTDateTimeObj(taskData.creDttm), 'days')} DAYS`
                     }
                   </span>
                 </div>
@@ -88,7 +89,7 @@ class TimelineItem extends React.PureComponent {
                   <br />
                   <span styleName="header-style">
                     {
-                      taskData.currSts === CLOSED
+                      taskData.currSts === CLOSED || taskData.currSts === INTERRUPTED
                         ? getCSTDateTime(taskData.currStsDttm)
                         : '-'
                     }
@@ -99,7 +100,7 @@ class TimelineItem extends React.PureComponent {
                   <br />
                   <span styleName="header-style">
                     {' '}
-                    {getCSTDateTime(taskData.dueDttm)}
+                    {getCSTDateTime(taskData.asgnDttm)}
                   </span>
                 </Grid>
               </Grid>
