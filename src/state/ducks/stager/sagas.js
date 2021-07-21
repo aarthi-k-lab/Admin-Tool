@@ -130,7 +130,7 @@ function* fetchDashboardData(data) {
       payload: searchTerm,
     });
     if (response != null) {
-      const { stagerTaskType, stagerTaskStatus } = response;
+      const { stagerTaskType, stagerTaskStatus, totalRecords } = response;
       const stagerReqBody = {
         stagerTaskType,
         stagerTaskStatus,
@@ -138,7 +138,8 @@ function* fetchDashboardData(data) {
       };
       if (stagerFetchCriteria.stagerTaskType.includes(stagerTaskType)
       && stagerFetchCriteria.stagerTaskStatus.includes(stagerTaskStatus)
-      && stagerFetchCriteria.stagerValue.includes(stagerValue)) {
+      && stagerFetchCriteria.stagerValue.includes(stagerValue)
+      && totalRecords > 0) {
         stagerSchedulerResponse = yield call(Api.callPost, 'api/dataservice/api/getStagerSchedulerTime', stagerReqBody);
       }
       payload = {
