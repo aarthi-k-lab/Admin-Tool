@@ -202,6 +202,7 @@ const reducer = (state = {
       const newState = {
         ...state,
         firstVisit: false,
+        isAssigned: false,
       };
       return newState;
     }
