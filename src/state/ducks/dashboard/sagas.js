@@ -700,7 +700,7 @@ function* assignBookingLoan() {
     yield put(getHistoricalCheckListData(taskId));
     yield call(getResolutionDataForEval, evalId);
   } catch (e) {
-    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
+    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: MSG_SERVICE_DOWN } });
   }
   yield put({ type: HIDE_LOADER });
 }
@@ -1369,11 +1369,11 @@ function* assignLoan() {
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
-        payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' },
+        payload: { status: MSG_SERVICE_DOWN },
       });
     }
   } catch (e) {
-    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.' } });
+    yield put({ type: ASSIGN_LOAN_RESULT, payload: { status: MSG_SERVICE_DOWN } });
   }
 }
 
@@ -1508,7 +1508,7 @@ function* sentToUnderwriting() {
             type: SET_TASK_UNDERWRITING_RESULT,
             payload: {
               level: ERROR,
-              status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+              status: MSG_SERVICE_DOWN,
             },
           });
         }
@@ -1535,7 +1535,7 @@ function* sentToUnderwriting() {
       type: SET_TASK_UNDERWRITING_RESULT,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1596,7 +1596,7 @@ function* sendToDocGen(payload) {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1661,7 +1661,7 @@ function* sendToDocsIn() {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1713,7 +1713,7 @@ function* sendToBooking() {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1786,7 +1786,7 @@ function* onSelectTrialTask(payload) {
       type: SET_TRIAL_RESPONSE,
       payload: {
         level: 'Warning',
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1804,7 +1804,7 @@ function* populateInvestorDropdown() {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1824,7 +1824,7 @@ function* populateDropdown() {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -1873,7 +1873,7 @@ function* onFhlmcBulkUpload(payload) {
           type: SET_RESULT_OPERATION,
           payload: {
             level: ERROR,
-            status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+            status: MSG_SERVICE_DOWN,
           },
         });
       } else {
@@ -1896,7 +1896,7 @@ function* onFhlmcBulkUpload(payload) {
         type: SET_RESULT_OPERATION,
         payload: {
           level: ERROR,
-          status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+          status: MSG_SERVICE_DOWN,
         },
       });
     }
@@ -1975,7 +1975,7 @@ function* onCoviusBulkUpload(payload) {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -2019,7 +2019,7 @@ function* AddDocsInReceived(payload) {
       type: SET_RESULT_OPERATION,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -2069,7 +2069,7 @@ function* manualInsertion(payload) {
       type: STORE_EVALID_RESPONSE_ERROR,
       payload: {
         level: ERROR,
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
       },
     });
   }
@@ -2232,7 +2232,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
     yield put({
       type: SET_RESULT_OPERATION,
       payload: {
-        status: 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.',
+        status: MSG_SERVICE_DOWN,
         level: LEVEL_FAILED,
       },
     });
