@@ -38,6 +38,8 @@ import {
   BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR,
 } from '../../../constants/widgets';
 
+const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
+
 const LEFT_KEY = 37;
 const RIGHT_KEY = 39;
 class TasksAndChecklist extends Component {
@@ -575,10 +577,10 @@ function getChecklistErrorMessage(checklistErrorCode, taskFetchError,
       break;
   }
   if (taskFetchError) {
-    return 'Task Fetch Failed.Please try again Later';
+    return MSG_TASK_FETCH_ERROR;
   }
   if (noTasksFound) {
-    return 'No tasks assigned.Please contact your manager';
+    return MSG_NO_TASKS_FOUND;
   }
   if (isGetNextError) {
     return getNextError;

@@ -7,6 +7,7 @@ import R from 'ramda';
 import CloseIcon from '@material-ui/icons/Close';
 import CustomSnackBar from 'components/CustomSnackBar';
 import Checklist from 'components/Checklist';
+import DashboardModel from 'models/Dashboard';
 import { TestHooks } from './TasksAndChecklist';
 import {
   checklistItems, selectedTaskId, rootTaskId, selectedTaskBlueprintCode, allRulesPassed,
@@ -15,6 +16,8 @@ import {
 import BookingHomePage from './BookingHomePage';
 import DialogCard from './DialogCard';
 import { BOOKING } from '../../../constants/widgets';
+
+const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
 
 const defaultProps = {
   assignResult: {},
@@ -82,9 +85,9 @@ describe('<TasksAndChecklist />', () => {
   const setHomepageVisible = jest.fn();
   const onHistorySelect = jest.fn();
   const onNext = jest.fn();
-  const noTasksFoundMessage = 'No tasks assigned.Please contact your manager';
+  const noTasksFoundMessage = MSG_NO_TASKS_FOUND;
   const getNextErrorMessage = 'Get Next error';
-  const taskFetchErrorMessage = 'Task Fetch Failed.Please try again Later';
+  const taskFetchErrorMessage = MSG_TASK_FETCH_ERROR;
   const props = {
     putComputeRulesPassed,
     location: {
