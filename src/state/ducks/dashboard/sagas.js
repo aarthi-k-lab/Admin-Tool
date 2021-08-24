@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
 import {
   select,
   take,
   takeEvery,
-  // takeLast,
   all,
   call,
   fork,
@@ -25,6 +23,7 @@ import {
   actions as checklistActions,
   selectors as checklistSelectors,
 } from 'ducks/tasks-and-checklist/index';
+import { storeDelayCheckList } from 'ducks/stager/actions';
 import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
@@ -162,6 +161,8 @@ import {
   SET_BORROWERS_DATA,
   SET_INCOMECALC_DATA,
 } from '../income-calculator/types';
+import { selectors as stagerSelectors } from '../stager/index';
+import { saveDelayChecklistDataToDB } from '../stager/sagas';
 
 const {
   Messages:
@@ -1131,7 +1132,20 @@ function* getNext(action) {
     yield put({ type: GETNEXT_PROCESSED, payload: false });
     const groupName = yield select(selectors.groupName);
     const group = getGroup(groupName);
-    const saveChecklistDisposition = group === DashboardModel.POSTMODSTAGER
+    const stagerTaskName = yield select(selectors.stagerTaskName);
+    if (group === DashboardModel.UWSTAGER && stagerTaskName.activeTile === 'Delay Checklist') {
+      yield put(checklistActions.validationDisplayAction(false));
+      yield call(saveDelayChecklistDataToDB);
+      const data = yield select(stagerSelectors.getDelayCheckList);
+      if (!data) {
+        yield put({ type: HIDE_LOADER });
+        yield put(checklistActions.validationDisplayAction(true));
+        return;
+      }
+      yield put(storeDelayCheckList(null));
+    }
+    const saveChecklistDisposition = (group === DashboardModel.POSTMODSTAGER
+      || group === DashboardModel.UWSTAGER)
       ? savePostModChklistDisposition : saveGeneralChecklistDisposition;
     if (yield call(saveChecklistDisposition, action.payload)) {
       const allTasksComments = yield select(checklistSelectors.getTaskComment);
@@ -1144,10 +1158,10 @@ function* getNext(action) {
       const userPrincipalName = R.path(['userDetails', 'email'], user);
       const groupList = R.pathOr([], ['groupList'], user);
       let postmodtaskName = '';
-      if (group === DashboardModel.POSTMODSTAGER) {
-        const stagerTaskName = yield select(selectors.stagerTaskName);
+      if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER) {
         const taskName = action.payload.activeTile || stagerTaskName.activeTile;
-        postmodtaskName = taskName === 'Recordation' ? `${taskName}-${(action.payload.activeTab || stagerTaskName.activeTab).replace(/ /g, '')}` : taskName;
+        postmodtaskName = (taskName === 'Recordation' || taskName === 'Delay Checklist')
+          ? `${taskName}-${(action.payload.activeTab || stagerTaskName.activeTab).replace(/ /g, '')}` : taskName;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
@@ -1237,7 +1251,20 @@ function* endShift(action) {
     payload.appGroupName = group;
     payload.isFirstVisit = yield select(selectors.isFirstVisit);
     payload.dispositionCode = yield select(checklistSelectors.getDispositionCode);
+    const stagerTaskName = yield select(selectors.stagerTaskName);
+    if (group === DashboardModel.UWSTAGER && stagerTaskName.activeTile === 'Delay Checklist') {
+      yield put(checklistActions.validationDisplayAction(false));
+      yield call(saveDelayChecklistDataToDB);
+      const data = yield select(stagerSelectors.getDelayCheckList);
+      if (!data) {
+        yield put({ type: HIDE_LOADER });
+        yield put(checklistActions.validationDisplayAction(true));
+        return;
+      }
+      yield put(storeDelayCheckList(null));
+    }
     const saveChecklistDisposition = group === DashboardModel.POSTMODSTAGER
+      || group === DashboardModel.UWSTAGER
       ? savePostModChklistDisposition : saveGeneralChecklistDisposition;
     if (yield call(saveChecklistDisposition, payload)) {
       const dispositionComment = yield select(checklistSelectors.getDispositionComment);
@@ -1245,7 +1272,7 @@ function* endShift(action) {
         yield put({ type: POST_COMMENT_SAGA, payload: dispositionComment });
       }
       yield put(resetChecklistData());
-      if (group === DashboardModel.POSTMODSTAGER) {
+      if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER) {
         yield put({ type: POSTMOD_END_SHIFT });
         return;
       }
@@ -1273,9 +1300,10 @@ function* unassignLoan() {
     const appgroupName = yield select(selectors.groupName);
     const group = getGroup(appgroupName);
     let taskName = '';
-    if (group === DashboardModel.POSTMODSTAGER) {
+    if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER) {
       const stagerTaskName = yield select(selectors.stagerTaskName);
-      taskName = stagerTaskName.activeTile === 'Recordation' ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
+      taskName = (stagerTaskName.activeTile === 'Recordation' || stagerTaskName.activeTile === 'Delay Checklist')
+        ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
     } else {
       taskName = appgroupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
     }
@@ -1338,9 +1366,10 @@ function* assignLoan() {
     const userGroups = R.pathOr([], ['groupList'], user);
     const group = getGroup(groupName);
     let taskName = '';
-    if (group === DashboardModel.POSTMODSTAGER) {
+    if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER) {
       const stagerTaskName = yield select(selectors.stagerTaskName);
-      taskName = stagerTaskName.activeTile === 'Recordation' ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
+      taskName = (stagerTaskName.activeTile === 'Recordation' || stagerTaskName.activeTile === 'Delay Checklist')
+        ? `${stagerTaskName.activeTile}-${stagerTaskName.activeTab.replace(/ /g, '')}` : stagerTaskName.activeTile;
     } else {
       taskName = groupName === DashboardModel.BOOKING ? DashboardModel.PENDING_BOOKING : '';
     }

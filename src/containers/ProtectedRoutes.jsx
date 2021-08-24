@@ -314,6 +314,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/coviusBulkOrder" render={this.rendercoviusBulkOrderPageRoute} />
           <Route path="/fhlmcBulkOrder" render={this.renderfhlmcBulkOrderPageRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
+          <Route path="/uwstager" render={() => <Dashboard group={DashboardModel.UWSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

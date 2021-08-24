@@ -16,6 +16,7 @@ import {
   onLoansSubmitAction,
   azureSearchToggle,
   fetchStagerPayload,
+  saveDelayChecklistData,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
@@ -56,6 +57,10 @@ const handleAzureSearchToggle = dispatch => (payload) => {
   dispatch(fetchStagerPayload());
 };
 
+const setDelayChecklistData = dispatch => (payload) => {
+  dispatch(saveDelayChecklistData(payload));
+};
+
 const operations = {
   handleAzureSearchToggle,
   getDashboardCounts,
@@ -72,6 +77,7 @@ const operations = {
   onClearSearchResponse,
   onClearStagerResponse,
   onLoansSubmit,
+  setDelayChecklistData,
 };
 
 export default operations;

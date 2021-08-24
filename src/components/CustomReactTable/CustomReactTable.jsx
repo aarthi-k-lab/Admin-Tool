@@ -39,7 +39,8 @@ class CustomReactTable extends React.PureComponent {
   }
 
   static getCellContent(row, stagerTaskType, stagerTaskStatus) {
-    const pointerStyle = DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType) && stagerTaskStatus !== 'Completed' ? 'pointer' : '';
+    const pointerStyle = (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)
+    || DashboardModel.UWSTAGER_TASKNAMES.includes(stagerTaskType)) && stagerTaskStatus !== 'Completed' ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
@@ -194,7 +195,8 @@ class CustomReactTable extends React.PureComponent {
       onSearchLoanWithTask, data, setStagerTaskName, setBeginSearch,
     } = this.props;
     const { original } = rowInfo;
-    if (DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType) && stagerTaskStatus !== 'Completed') {
+    if ((DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)
+    || DashboardModel.UWSTAGER_TASKNAMES.includes(data.stagerTaskType)) && stagerTaskStatus !== 'Completed') {
       const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
       setStagerTaskName(payload);
       const searchPayload = {
@@ -215,6 +217,9 @@ class CustomReactTable extends React.PureComponent {
       if (DashboardModel.POSTMOD_TASKNAMES.includes(searchLoanTaskResponse.taskName)) {
         group = 'POSTMOD';
         this.redirectPath = '/postmodstager';
+      } else if (DashboardModel.UWSTAGER_TASKNAMES.includes(searchLoanTaskResponse.taskName)) {
+        group = 'UWSTAGER';
+        this.redirectPath = '/uwstager';
       } else {
         this.redirectPath = '/frontend-checklist';
         group = 'FEUW';

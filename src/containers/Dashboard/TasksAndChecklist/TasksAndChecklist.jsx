@@ -23,6 +23,7 @@ import { selectors as dashboardSelectors, operations as dashboardOperations } fr
 import { selectors as widgetsSelectors, operations as widgetsOperations } from 'ducks/widgets';
 import { operations, selectors } from 'ducks/tasks-and-checklist';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as stagerSelectors } from 'ducks/stager';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import ErrorBanner from 'components/ErrorBanner';
 import componentTypes from 'constants/componentTypes';
@@ -173,6 +174,8 @@ class TasksAndChecklist extends Component {
       getSelectedWidget,
       openWidgetList,
       incomeCalcInProgress,
+      taskName,
+      delayChecklistHistory,
     } = this.props;
 
     if (dataLoadStatus === 'failed') {
@@ -209,9 +212,11 @@ class TasksAndChecklist extends Component {
       <Checklist
         checklistItems={this.getChecklistItems()}
         closeSweetAlert={closeSweetAlert}
+        delayChecklistHistory={delayChecklistHistory}
         dialogContent={getDialogContent}
         dialogTitle={dialogTitle}
         failedRules={failedRules}
+        groupName={groupName}
         handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
         handleDeleteTask={handleDeleteTask}
         handleShowDeleteTaskConfirmation={handleShowDeleteTaskConfirmation}
@@ -227,6 +232,7 @@ class TasksAndChecklist extends Component {
         ruleResultFromTaskTree={ruleResultFromTaskTree}
         selectedWidget={getSelectedWidget}
         styleName={styleName}
+        taskName={taskName}
         title={checklistTitle}
         triggerHeader={isBookingWidgetOpen}
       >
@@ -248,12 +254,12 @@ class TasksAndChecklist extends Component {
   }
 
   renderWidgetComponents() {
-    const { openWidgetList } = this.props;
+    const { openWidgetList, groupName } = this.props;
     const mainWidget = R.head(openWidgetList);
     let widgetToRender = null;
     switch (mainWidget) {
       case ADDITIONAL_INFO:
-        widgetToRender = <AdditionalInfo />;
+        widgetToRender = <AdditionalInfo groupName={groupName} />;
         break;
       case HISTORY:
         widgetToRender = <MilestoneActivity />;
@@ -469,6 +475,12 @@ TasksAndChecklist.propTypes = {
   commentsRequired: PropTypes.bool.isRequired,
   completeReviewResponse: PropTypes.shape().isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
+  delayChecklistHistory: PropTypes.arrayOf(PropTypes.shape({
+    completedByName: PropTypes.string,
+    completedDate: PropTypes.string,
+    delayChecklistReason: PropTypes.arrayOf(PropTypes.string),
+    taskId: PropTypes.string,
+  })).isRequired,
   dialogTitle: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
   disablePrev: PropTypes.bool.isRequired,
@@ -537,6 +549,7 @@ TasksAndChecklist.propTypes = {
   showInstructionsDialog: PropTypes.bool.isRequired,
   snackBarData: PropTypes.shape(),
   taskFetchError: PropTypes.bool,
+  taskName: PropTypes.string.isRequired,
   user: PropTypes.shape({
     skills: PropTypes.array.isRequired,
     userDetails: PropTypes.shape({
@@ -649,6 +662,8 @@ function mapStateToProps(state) {
     ruleResultFromTaskTree: selectors.getRuleResultFromTaskTree(state),
     popupData: dashboardSelectors.getPopupData(state),
     loanNumber: dashboardSelectors.loanNumber(state),
+    taskName: stagerSelectors.getTaskName(state),
+    delayChecklistHistory: stagerSelectors.getDelayCheckListHistory(state),
   };
 }
 

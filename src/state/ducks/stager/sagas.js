@@ -12,6 +12,8 @@ import * as R from 'ramda';
 import {
   selectors as loginSelectors,
 } from 'ducks/login/index';
+import { selectors as dashboardSelectors } from 'ducks/dashboard/index';
+import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR, SUCCESS } from 'constants/common';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
@@ -31,6 +33,8 @@ import {
   GET_STAGER_LOAN_NUMBER,
   SET_STAGER_LOAN_NUMBER,
   FETCH_STAGER_PAYLOAD,
+  SAVE_DELAY_CHECKLIST_DATA,
+  FETCH_DELAY_CHECKLIST_HISTORY,
 } from './types';
 
 import selectors from './selectors';
@@ -38,6 +42,8 @@ import Disposition from '../../../models/Disposition';
 import {
   SET_SNACK_BAR_VALUES_SAGA,
 } from '../notifications/types';
+import { storeDelayCheckList, storeDelayCheckListHistory } from './actions';
+import DashboardModel from '../../../models/Dashboard';
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
@@ -137,9 +143,9 @@ function* fetchDashboardData(data) {
         stagerValue,
       };
       if (stagerFetchCriteria.stagerTaskType.includes(stagerTaskType)
-      && stagerFetchCriteria.stagerTaskStatus.includes(stagerTaskStatus)
-      && stagerFetchCriteria.stagerValue.includes(stagerValue)
-      && totalRecords > 0) {
+        && stagerFetchCriteria.stagerTaskStatus.includes(stagerTaskStatus)
+        && stagerFetchCriteria.stagerValue.includes(stagerValue)
+        && totalRecords > 0) {
         stagerSchedulerResponse = yield call(Api.callPost, 'api/dataservice/api/getStagerSchedulerTime', stagerReqBody);
       }
       payload = {
@@ -346,6 +352,75 @@ function* makeDispositionOperationCall(payload) {
   }
 }
 
+export const saveDelayChecklistDataToDB = function* saveDelayChecklistDataToDB() {
+  try {
+    const evalId = yield select(dashboardSelectors.evalId);
+    const user = yield select(loginSelectors.getUser);
+    const disposition = yield select(checklistSelectors.getDisposition);
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const taskId = yield select(dashboardSelectors.taskId);
+    const userEmail = R.pathOr('', ['userDetails', 'email'], user);
+    const reasons = R.pathOr([], [0], disposition);
+    const tkamsPayload = {
+      evalId: R.is(String, evalId) ? Number(evalId) : evalId,
+      completedBy: userEmail,
+      reasons,
+    };
+    const details = R.is(Array, reasons) && R.length(reasons) ? reasons
+      .map((rec, index) => ({ delayCheckListReason: rec, delayLineItemNumber: index + 1 })) : [];
+    const CMODPayload = {
+      taskId,
+      evalId: R.is(String, evalId) ? Number(evalId) : evalId,
+      loanNumber,
+      completedDate: new Date().toISOString(),
+      completedByUserName: userEmail,
+      letterSentDate: null,
+      letterExpiryDate: null,
+      recordCreatedByUser: userEmail,
+      recordCreatedDate: '',
+      details,
+    };
+    yield call(Api.callPost, '/api/cmodnetcoretkams/DelayChecklist/Create', tkamsPayload);
+    // TODO check if saved in TKAMS
+    const cmodRes = yield call(Api.callPost, '/api/dataservice/delayCheckList', CMODPayload);
+    if (cmodRes) {
+      yield put(storeDelayCheckList(cmodRes));
+      yield put({ type: FETCH_DELAY_CHECKLIST_HISTORY });
+    } else {
+      yield call(fireSnackBar, {
+        message: 'Something went wrong!!',
+        type: ERROR,
+        open: true,
+      });
+    }
+  } catch (e) {
+    const snackBarData = {};
+    snackBarData.message = 'Something went wrong!!';
+    snackBarData.type = ERROR;
+    snackBarData.open = true;
+    yield call(fireSnackBar, snackBarData);
+  }
+};
+
+function* fetchDelayCheckListHistory() {
+  try {
+    const groupName = yield select(dashboardSelectors.groupName);
+    if (groupName === DashboardModel.UWSTAGER) {
+      const evalId = yield select(dashboardSelectors.evalId);
+      const checkListHistory = yield call(Api.callGet, `/api/dataservice/delayCheckList/history/${evalId}`);
+      yield put(storeDelayCheckListHistory(checkListHistory));
+    } else {
+      yield put(storeDelayCheckListHistory([]));
+    }
+  } catch (e) {
+    const snackBarData = {};
+    snackBarData.message = 'Unable to fecth delay checklist History';
+    snackBarData.type = ERROR;
+    snackBarData.open = true;
+    yield call(fireSnackBar, snackBarData);
+  }
+}
+
 function* watchDashboardCountsFetch() {
   yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
 }
@@ -379,6 +454,14 @@ function* watchfetchStagerPayload() {
   yield takeEvery(FETCH_STAGER_PAYLOAD, fetchStagerPayload);
 }
 
+function* watchDoneButtonClick() {
+  yield takeEvery(SAVE_DELAY_CHECKLIST_DATA, saveDelayChecklistDataToDB);
+}
+
+function* watchFetchDelayCheckListHistory() {
+  yield takeEvery(FETCH_DELAY_CHECKLIST_HISTORY, fetchDelayCheckListHistory);
+}
+
 export const TestExports = {
   watchDashboardCountsFetch,
   watchDashboardDataFetch,
@@ -396,6 +479,8 @@ export const TestExports = {
   makeStagerSearchLoanCall,
   fireSnackBar,
   setDocGenData,
+  watchDoneButtonClick,
+  watchFetchDelayCheckListHistory,
 };
 
 export function* combinedSaga() {
@@ -408,5 +493,7 @@ export function* combinedSaga() {
     watchDispositionOperationCall(),
     watchStagerSearchLoanCall(),
     watchfetchStagerPayload(),
+    watchDoneButtonClick(),
+    watchFetchDelayCheckListHistory(),
   ]);
 }

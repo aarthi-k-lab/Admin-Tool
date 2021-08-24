@@ -30,8 +30,8 @@ function* fetchTombstoneData(payload) {
   const brand = yield select(dashboardSelectors.brand);
   const tombstoneTaskId = R.equals(groupName, 'BOOKING') ? yield select(dashboardSelectors.getBookingTaskId) : taskId;
   try {
-    const userGroup = R.equals(groupName, 'POSTMOD') ? postModTaskName.activeTile : groupName;
-    const group = userGroup === 'Recordation' || userGroup === 'Countersign' ? taskName : userGroup;
+    const userGroup = R.equals(groupName, 'POSTMOD') || R.equals(groupName, 'UWSTAGER') ? postModTaskName.activeTile : groupName;
+    const group = userGroup === 'Recordation' || userGroup === 'Countersign' || userGroup === 'Delay Checklist' ? taskName : userGroup;
     const data = yield call(LoanTombstone.fetchData,
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand);
     yield put(yield call(setPaymentDeferral, R.contains(DashboardModel.PDD, data)));

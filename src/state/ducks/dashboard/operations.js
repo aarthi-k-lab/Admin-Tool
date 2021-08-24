@@ -76,6 +76,7 @@ import {
   resetIncomeChecklistData,
   processValidations,
 } from '../income-calculator/actions';
+import { storeDelayCheckListHistory } from '../stager/actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -112,6 +113,7 @@ const onGetNext = dispatch => (payload) => {
   dispatch(clearFirstVisit());
   dispatch(clearBEDisposition());
   dispatch(clearDisposition());
+  dispatch(storeDelayCheckListHistory([]));
   dispatch(getNext(payload));
 };
 

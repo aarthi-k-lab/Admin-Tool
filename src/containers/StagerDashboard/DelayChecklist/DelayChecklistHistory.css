@@ -1,0 +1,46 @@
+.historyCard {
+  border-top: 1px solid #b8b6b6;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  max-width: 90%;
+  height: 100%;
+  padding: 0.5rem;
+}
+
+.containerGrid {
+  display: grid;
+  grid-template-columns: 70% 30%;
+}
+
+.completedInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  color: #9e9e9e;
+}
+
+.completedInfo > * {
+  display: flex;
+  justify-content: flex-end;
+  word-wrap: break-word;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: fit-content;
+}
+
+.tags {
+  background: #8080802b;
+  border-radius: 3px;
+  border: 0.1px solid #9e9e9e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 0.5rem;
+  margin: 0.6rem;
+  font-weight: bold;
+}

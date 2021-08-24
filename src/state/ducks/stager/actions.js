@@ -5,6 +5,10 @@ import {
   SET_START_END_DATE, CLEAR_DOC_GEN_RESPONSE, SET_STAGER_GROUP,
   GET_STAGER_LOAN_NUMBER, CLEAR_SEARCH_RESPONE, CLEAR_STAGER_RESPONSE,
   TRIGGER_STAGER_TILE_SAGA, TOGGLE_AZURE_SEARCH, FETCH_STAGER_PAYLOAD,
+  SAVE_DELAY_CHECKLIST_DATA,
+  STORE_DELAY_CHECKLIST,
+  FETCH_DELAY_CHECKLIST_HISTORY,
+  STORE_DELAY_CHECKLIST_HISTORY,
 } from './types';
 
 const triggerDashboardCounts = () => ({
@@ -90,6 +94,25 @@ const fetchStagerPayload = payload => ({
   payload,
 });
 
+const saveDelayChecklistData = payload => ({
+  type: SAVE_DELAY_CHECKLIST_DATA,
+  payload,
+});
+
+const storeDelayCheckList = payload => ({
+  type: STORE_DELAY_CHECKLIST,
+  payload,
+});
+
+const fetchDelayCheckListHistory = () => ({
+  type: FETCH_DELAY_CHECKLIST_HISTORY,
+});
+
+const storeDelayCheckListHistory = payload => ({
+  type: STORE_DELAY_CHECKLIST_HISTORY,
+  payload,
+});
+
 export {
   fetchStagerPayload,
   azureSearchToggle,
@@ -108,4 +131,8 @@ export {
   clearSearchResponse,
   clearStagerResponse,
   onLoansSubmitAction,
+  saveDelayChecklistData,
+  storeDelayCheckList,
+  fetchDelayCheckListHistory,
+  storeDelayCheckListHistory,
 };

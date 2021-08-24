@@ -6,11 +6,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
+import ListIcon from '@material-ui/icons/List';
 import Typography from '@material-ui/core/Typography';
 import * as R from 'ramda';
+import DashboardModel from '../../models/Dashboard';
 import { selectors, operations } from '../../state/ducks/dashboard';
 import EvalTable from './EvalTable';
 import Cards from './Cards';
+import DelayChecklistHistoy from '../StagerDashboard/DelayChecklist/DelayChecklistHistory';
+import { selectors as stagerSelectors } from '../../state/ducks/stager';
 import './AdditionalInfo.css';
 
 function TabPanel(props) {
@@ -64,9 +68,25 @@ class AdditionalInfo extends React.Component {
     'aria-controls': `simple-tabpanel-${index}`,
   })
 
+  renderNoHistory = () => (
+    <div styleName="noHistory">
+      <span>
+        <ListIcon style={{
+          color: '#d6d7d8',
+          width: '10rem',
+          margin: '3rem',
+          height: ' 100%',
+          opacity: '0.5',
+        }}
+        />
+      </span>
+      <span styleName="no-preview-message">No Delay Checklist History Available</span>
+    </div>
+  )
+
   render() {
     const {
-      evalCaseDetails, index, type, caseDetails,
+      evalCaseDetails, index, type, caseDetails, groupName, checklistHistory,
     } = this.props;
     let sortedcaseDetailsByDesc = R.sort(R.descend(
       R.compose(
@@ -108,6 +128,7 @@ class AdditionalInfo extends React.Component {
                   variant="standard"
                 >
                   <Tab label="Cases" styleName="cardTab" {...this.a11yProps(0)} />
+                  {groupName === DashboardModel.UWSTAGER && <Tab label="Delay Checklist History" styleName="cardTab" {...this.a11yProps(0)} />}
                 </Tabs>
               </AppBar>
               <TabPanel index={0} styleName="overFlowStyles" value={value}>
@@ -121,6 +142,15 @@ class AdditionalInfo extends React.Component {
                     />
                   ))}
               </TabPanel>
+              {groupName === DashboardModel.UWSTAGER
+                ? (
+                  <TabPanel index={1} styleName="overFlowStyles" value={value}>
+                    { checklistHistory && R.length(checklistHistory) > 0
+                      ? checklistHistory.map(history => (
+                        <DelayChecklistHistoy history={history} />
+                      )) : this.renderNoHistory()}
+                  </TabPanel>
+                ) : null }
             </Grid>
           </Grid>
         </>
@@ -148,6 +178,12 @@ AdditionalInfo.propTypes = {
     loanId: PropTypes.string,
     resolutionId: PropTypes.string,
   })).isRequired,
+  checklistHistory: PropTypes.arrayOf(PropTypes.shape({
+    completedByName: PropTypes.string,
+    completedDate: PropTypes.string,
+    delayChecklistReason: PropTypes.arrayOf(PropTypes.string),
+    taskId: PropTypes.string,
+  })).isRequired,
   evalCaseDetails: PropTypes.arrayOf(PropTypes.shape({
     cardDetails: PropTypes.arrayOf(PropTypes.shape({
       LoanId: PropTypes.string,
@@ -167,6 +203,7 @@ AdditionalInfo.propTypes = {
     resolutionId: PropTypes.string,
   })).isRequired,
   evalRowSelect: PropTypes.func.isRequired,
+  groupName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   type: PropTypes.string,
 };
@@ -180,6 +217,7 @@ const mapStateToProps = state => ({
   evalCaseDetails: selectors.getEvalCaseDetails(state),
   caseDetails: selectors.getCaseDetails(state),
   index: selectors.getEvalIndex(state),
+  checklistHistory: stagerSelectors.getDelayCheckListHistory(state),
 });
 
 const mapDispatchToProps = dispatch => ({

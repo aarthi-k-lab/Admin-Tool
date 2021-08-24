@@ -79,6 +79,9 @@ class StagerPage extends React.PureComponent {
     } else if (event.target.value === DashboardModel.STAGER_VALUE.POSTMOD_STAGER_ALL) {
       groupName = DashboardModel.POSTMODSTAGER;
       setPageType(BULKUPLOAD_POSTMOD_STAGER);
+    } else if (event.target.value === DashboardModel.STAGER_VALUE.UW_STAGER) {
+      groupName = DashboardModel.UWSTAGER;
+      setPageType(BULKUPLOAD_STAGER);
     } else {
       groupName = DashboardModel.STAGER;
       setPageType(BULKUPLOAD_STAGER);
@@ -93,6 +96,20 @@ class StagerPage extends React.PureComponent {
     if (event.target.value === '' || re.test(event.target.value)) {
       this.setState({ searchText: event.target.value });
     }
+  }
+
+  handleUWGetNextClick = () => {
+    const {
+      history, onGetNext,
+      isFirstVisit, dispositionCode, activeTile, onGetGroupName, setStagerTaskName, activeTab,
+    } = this.props;
+    onGetGroupName('UWSTAGER');
+    onGetNext({
+      appGroupName: 'UWSTAGER', isFirstVisit, dispositionCode, activeTile, activeTab,
+    });
+    const payload = { activeTab, activeTile };
+    setStagerTaskName(payload);
+    history.push('/uwstager');
   }
 
   handleGetNextClick = () => {
@@ -183,6 +200,30 @@ class StagerPage extends React.PureComponent {
     );
   }
 
+  renderGetNextButton(activeTab, activeTile) {
+    if (!R.isNil(activeTile) && activeTab !== 'Completed' && (DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
+    || DashboardModel.UWSTAGER_TASKNAMES.includes(activeTile))) {
+      let onClickhandler = this.handleGetNextClick;
+      if (DashboardModel.UWSTAGER_TASKNAMES.includes(activeTile)) {
+        onClickhandler = this.handleUWGetNextClick;
+      }
+      return (
+        <Grid item styleName="getNextStyle">
+          <Button
+            className="material-ui-button"
+            color="primary"
+            onClick={() => onClickhandler()}
+            styleName="getNext-button"
+            variant="outlined"
+          >
+            GET NEXT
+          </Button>
+        </Grid>
+      );
+    }
+    return null;
+  }
+
   renderStagerPage() {
     const {
       activeTab, activeTile,
@@ -244,21 +285,7 @@ class StagerPage extends React.PureComponent {
                       </Grid>
                     ) : null
                   }
-                  {!R.isNil(activeTile) && activeTab !== 'Completed' && DashboardModel.POSTMOD_TASKNAMES.includes(activeTile)
-                    ? (
-                      <Grid item styleName="getNextStyle">
-                        <Button
-                          className="material-ui-button"
-                          color="primary"
-                          onClick={() => this.handleGetNextClick()}
-                          styleName="getNext-button"
-                          variant="outlined"
-                        >
-                          GET NEXT
-                        </Button>
-                      </Grid>
-                    ) : null
-                  }
+                  {this.renderGetNextButton(activeTab, activeTile)}
                 </Grid>
               </>
             )}

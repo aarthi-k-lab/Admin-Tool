@@ -20,6 +20,7 @@ import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import { selectors as incomeSelectors, operations as incomeOperations } from 'ducks/income-calculator';
+import { selectors as stagerSelectors } from 'ducks/stager';
 import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
 import hotkeys from 'hotkeys-js';
@@ -78,9 +79,11 @@ class Controls extends React.PureComponent {
     } else if (HOTKEY_M.includes(handler.key)) {
       onExpand();
     } else if (HOTKEY_E.includes(handler.key) && !(!enableEndShift || !enableValidate)) {
-      const onEndShiftClick = () => onEndShift(
-        EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
-      );
+      const onEndShiftClick = () => {
+        onEndShift(
+          EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
+        );
+      };
       onEndShiftClick();
     }
   }
@@ -95,6 +98,7 @@ class Controls extends React.PureComponent {
     lockCalculation();
   }
 
+  // eslint-disable-next-line react/sort-comp
   handleSendToDocGen() {
     const { onSendToDocGen } = this.props;
     onSendToDocGen(false);
@@ -214,9 +218,11 @@ class Controls extends React.PureComponent {
     const checkTrialAccess = RouteAccess.hasTrialManagerDashboardAccess(groups);
     const showForbearanceIcon = R.equals('Active', taskStatus) && (R.equals('Forbearance', taskName) || R.equals('Forbearance Plan', taskName)) && checkTrialAccess;
     const showTrialIcon = R.equals('Active', taskStatus) && (R.equals('Trial Modification', taskName) || R.equals('Trial Plan', taskName)) && checkTrialAccess;
-    const onEndShiftClick = () => onEndShift(
-      EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
-    );
+    const onEndShiftClick = () => {
+      onEndShift(
+        EndShiftModel.SAVE_DISPOSITION_AND_CLEAR_DASHBOARD_DATA,
+      );
+    };
     const validate = showValidate || showUpdateRemedy ? (
       <Control
         className={classNames(styles.controls, styles.spacer)}
@@ -225,6 +231,7 @@ class Controls extends React.PureComponent {
         label={showValidate ? 'Validate' : 'Update Remedy'}
       />
     ) : null;
+
     const showCheckButton = isIncomeVerification && !historyView && !disabledChecklist ? (
       <Button
         className="material-ui-button"
@@ -419,6 +426,7 @@ Controls.propTypes = {
     userGroups: PropTypes.array,
   }).isRequired,
   validateDispositionTrigger: PropTypes.func.isRequired,
+
 };
 
 const mapStateToProps = (state) => {
@@ -428,12 +436,12 @@ const mapStateToProps = (state) => {
   const enableValidate = !checklistSelectors.showComment(state)
     ? true : checklistSelectors.enableValidate(state);
   const shouldSkipValidation = checklistSelectors.enableValidate(state)
-    && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER);
+    && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER
+      || group === DashboardModel.UWSTAGER);
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
   const isIncomeVerification = isAssigned && selectors.isIncomeVerification(state);
   return {
-
     historyView: incomeSelectors.getHistoryView(state),
     disabledChecklist: incomeSelectors.disabledChecklist(state),
     disableValidation,
@@ -460,6 +468,10 @@ const mapStateToProps = (state) => {
     errorBanner: selectors.errorBanner(state),
     enableLockButton: selectors.enableLockButton(state),
     isIncomeVerification,
+    disposition: checklistSelectors.getDisposition(state),
+    loanNumber: selectors.loanNumber(state),
+    taskId: selectors.taskId(state),
+    stagerTaskName: stagerSelectors.getTaskName(state),
   };
 };
 

@@ -14,6 +14,8 @@ import {
   CLEAR_STAGER_RESPONSE,
   SET_STAGER_LOAN_NUMBER,
   TOGGLE_AZURE_SEARCH,
+  STORE_DELAY_CHECKLIST,
+  STORE_DELAY_CHECKLIST_HISTORY,
 } from './types';
 
 const reducer = (state = { azureSearchToggle: true }, action) => {
@@ -147,6 +149,18 @@ const reducer = (state = { azureSearchToggle: true }, action) => {
       return {
         ...state,
         searchStagerLoanNumber: action.payload,
+      };
+    }
+    case STORE_DELAY_CHECKLIST: {
+      return {
+        ...state,
+        delayCheckList: action.payload,
+      };
+    }
+    case STORE_DELAY_CHECKLIST_HISTORY: {
+      return {
+        ...state,
+        delayCheckListHistory: action.payload,
       };
     }
     default:

@@ -12,6 +12,7 @@ const POSTMOD = 'POSTMOD';
 const BOOKING = 'BOOKING';
 const DOCGENVENDOR = 'DOCGENVENDOR';
 const FHLMCRESOLVE = 'FHLMCRESOLVE';
+const UWSTAGER = 'UWSTAGER';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -21,6 +22,7 @@ const checklistGroupNames = [
   DOCS_IN,
   POSTMOD,
   BOOKING,
+  UWSTAGER,
 ];
 
 const userGroupList = [

@@ -81,7 +81,7 @@ function* postComment(payload) {
     const response = yield call(Api.callPost, '/api/utility/comment', payload.payload);
     const groupName = yield select(selectors.groupName);
     const group = getGroup(groupName);
-    if (group !== DashboardModel.POSTMODSTAGER) {
+    if (group !== DashboardModel.POSTMODSTAGER && group !== DashboardModel.UWSTAGER) {
       if (!response) {
         const snackBarData = {};
         snackBarData.message = 'Something went wrong!!';

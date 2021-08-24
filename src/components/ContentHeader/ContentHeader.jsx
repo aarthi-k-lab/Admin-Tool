@@ -51,7 +51,7 @@ const ContentHeader = ({
   toggleButton,
 }) => (
   <header styleName="content-header">
-    {group === DashboardModel.POSTMODSTAGER ? (
+    {group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER ? (
       <Link
         onClick={() => handleBackButton(onAutoSave,
           onEndShift,

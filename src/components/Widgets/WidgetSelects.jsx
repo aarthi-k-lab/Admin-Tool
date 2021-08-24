@@ -28,14 +28,14 @@ const widgets = [
     icon: <ChatIcon />,
     component: <CommentsWidget />,
     visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
-      'BOOKING', 'SEARCH_LOAN', 'DOCGEN_GOBACK', 'MLSTN_PAGE', 'POSTMOD'],
+      'BOOKING', 'SEARCH_LOAN', 'DOCGEN_GOBACK', 'MLSTN_PAGE', 'POSTMOD', 'UWSTAGER'],
     overlay: true,
   },
   {
     id: ADDITIONAL_INFO,
     icon: <img alt="Additional Info" src="/static/img/information.png" />,
     visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
-      'BOOKING', 'SEARCH_LOAN', 'POSTMOD'],
+      'BOOKING', 'SEARCH_LOAN', 'POSTMOD', 'UWSTAGER'],
     children: [COMMENTS],
   },
   {

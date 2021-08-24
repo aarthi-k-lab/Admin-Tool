@@ -158,8 +158,13 @@ describe('getnext Success', () => {
       .toEqual(select(selectors.groupName));
   });
 
-  it('should call save disposition generator', () => {
+  it('should get stager task name', () => {
     expect(saga.next('FEUW').value)
+      .toEqual(select(selectors.stagerTaskName));
+  });
+
+  it('should call save disposition generator', () => {
+    expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
@@ -313,8 +318,13 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(select(selectors.groupName));
   });
 
-  it('should call save disposition generator', () => {
+  it('should get stager task name', () => {
     expect(saga.next('FEUW').value)
+      .toEqual(select(selectors.stagerTaskName));
+  });
+
+  it('should call save disposition generator', () => {
+    expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
@@ -432,8 +442,13 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(select(selectors.groupName));
   });
 
-  it('should call save disposition generator', () => {
+  it('should get stager task name', () => {
     expect(saga.next('FEUW').value)
+      .toEqual(select(selectors.stagerTaskName));
+  });
+
+  it('should call save disposition generator', () => {
+    expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 
@@ -575,8 +590,13 @@ describe('endShift worker', () => {
       .toEqual(select(checklistSelectors.getDispositionCode));
   });
 
-  it('should make checklistDisposition call', () => {
+  it('should select StagerTaskName', () => {
     expect(saga.next('missingDocs').value)
+      .toEqual(select(selectors.stagerTaskName));
+  });
+
+  it('should make checklistDisposition call', () => {
+    expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
   });
 

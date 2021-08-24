@@ -130,3 +130,15 @@ title {
 .AppBar {
   width: 95% !important;
 }
+
+.noHistory {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.no-preview-message {
+  color: #d6d7d8;
+  font-size: 1.5rem;
+}
