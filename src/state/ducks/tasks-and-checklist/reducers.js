@@ -310,6 +310,7 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         ruleResponse: action.payload,
+        filter: null,
       };
     }
 
