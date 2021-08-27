@@ -13,6 +13,7 @@ import {
   SUCCESS_LOADING_TOMBSTONE_DATA,
   FETCH_TOMBSTONE_DATA,
 } from './types';
+import { SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
 import { TestExports } from './sagas';
 import { selectors as dashboardSelectors } from '../dashboard';
 
@@ -95,6 +96,19 @@ describe('fetchTombstoneData', () => {
     expect(saga.next('NSM').value)
       .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM'));
   });
+
+  it('should dispatch SET_RESOLUTION_AND_INVSTR_HRCHY', () => {
+    expect(saga.next({
+      resolutionId: '',
+      investorHierarchy: {},
+      tombstoneData: [],
+    }).value)
+      .toEqual(put({
+        type: SET_RESOLUTION_AND_INVSTR_HRCHY,
+        payload: { resolutionId: '', investorHierarchy: {} },
+      }));
+  });
+
   it('should update isPayment deferral', () => {
     expect(saga.next(loanDetails).value).toEqual(call(setPaymentDeferral, false));
   });
@@ -109,7 +123,7 @@ describe('fetchTombstoneData', () => {
   });
   it('should update loandetails in store', () => {
     expect(saga.next().value)
-      .toEqual(put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: loanDetails }));
+      .toEqual(put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: [] }));
   });
 });
 

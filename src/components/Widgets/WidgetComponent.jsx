@@ -5,7 +5,9 @@ import * as R from 'ramda';
 
 const getSytles = (selectedApp) => {
   switch (selectedApp) {
-    case 'customCommunicationLetter': return 'right-app-bar-enlargedWidth';
+    case 'customCommunicationLetter':
+    case 'FHLMC':
+      return 'right-app-bar-enlargedWidth';
     case 'History': return '';
     default: return 'right-app-bar';
   }

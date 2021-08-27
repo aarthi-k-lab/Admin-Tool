@@ -53,7 +53,13 @@
 
 .errorSvg {
   width: 4rem !important;
-  height: 1rem !important;
+  height: 1.5rem !important;
+}
+
+.cstmBtnErrSvg {
+  width: 2rem !important;
+  height: 2rem !important;
+  margin: 0 0 -0.75rem 0 !important;
 }
 
 .status-details {
@@ -111,4 +117,26 @@
 
 .submit {
   margin-right: 1rem !important;
+}
+
+.align-selector {
+  display: 'flex' !important;
+  justify-content: 'center' !important;
+  align-items: 'center' !important;
+}
+
+.widgetDwnld {
+  margin: 1rem 0 1rem 1rem !important;
+}
+
+.tablealign {
+  margin-left: 0.5rem !important;
+}
+
+.table-content-align {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }

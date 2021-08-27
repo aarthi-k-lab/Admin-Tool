@@ -1,0 +1,44 @@
+
+.drop-down-select {
+  width: 100%;
+  margin: 1rem 11rem 2rem 0.75rem;
+  background-color: white !important;
+  height: 3rem !important;
+}
+
+.requestCategoryDropdown {
+  margin: 1.75rem 0 0 1rem !important;
+  font-size: 1.25rem !important;
+}
+
+.title {
+  color: black !important;
+  font-size: 2rem !important;
+  margin: 1rem 1rem 1rem 1rem !important;
+}
+
+.divider {
+  margin-bottom: 2rem;
+}
+
+.inputLblSelected {
+  display: none !important;
+}
+
+.inputLbl {
+  display: block !important;
+}
+
+.errorIcon {
+  margin-left: 5rem;
+}
+
+.errorSvg {
+  width: 8.5rem !important;
+  height: 1.5rem !important;
+}
+
+.errorSvgSelected {
+  width: 14rem !important;
+  height: 1.5rem !important;
+}

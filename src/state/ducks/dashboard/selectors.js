@@ -22,6 +22,8 @@ const inProgress = state => R.pathOr(false, ['dashboard', 'inProgress'], state);
 
 const resultData = state => R.pathOr({}, ['dashboard', 'resultData'], state);
 
+const resolutionId = state => R.pathOr(null, ['dashboard', 'resolutionId'], state);
+
 const wasSearched = state => R.pathOr(false, ['dashboard', 'wasSearched'], state);
 
 const saveInProgress = state => R.pathOr(false, ['dashboard', 'saveInProgress'], state);
@@ -54,6 +56,7 @@ const processName = state => R.pathOr(null, ['dashboard', 'processName'], state)
 // const getActivityDetails = state => R.pathOr(null, ['dashboard', 'loanActivityDetails'], state);
 const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
+const getInvestorHierarchy = state => R.pathOr({}, ['dashboard', 'investorHierarchy'], state);
 
 const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
 const evalData = state => R.pathOr([], ['dashboard', 'evalInsertionStatus'], state);
@@ -247,6 +250,8 @@ const selectors = {
   getEvalIndex,
   addInfoEvalId,
   getInvestorEvents,
+  getInvestorHierarchy,
+  resolutionId,
 };
 
 export default selectors;

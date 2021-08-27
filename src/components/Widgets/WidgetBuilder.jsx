@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
+import { FHLMC } from 'constants/widgets';
 import { getWidgets, getSelectedWidget } from './WidgetSelects';
 import WidgetIcon from './WidgetIcon';
 import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
 import { selectors, operations } from '../../state/ducks/widgets';
+import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
 
 class WidgetBuilder extends Component {
   constructor(props) {
     super(props);
     this.renderComponent = this.renderComponent.bind(this);
     this.renderIcon = this.renderIcon.bind(this);
+    this.checkDependency = this.checkDependency.bind(this);
+    this.renderWidgetIcon = this.renderWidgetIcon.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +79,49 @@ class WidgetBuilder extends Component {
     }
   }
 
+  // TODO: optimize
+  checkDependency(data, disabledWidgets, openWidgetList) {
+    const {
+      resolutionId, groupName, stagerTaskName, investorHierarchy,
+    } = this.props;
+    switch (data.id) {
+      case FHLMC:
+        if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)) {
+          if (!R.equals(groupName, 'POSTMOD') && R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement')) {
+            return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
+          }
+        }
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  renderWidgetIcon(data, disabledWidgets, openWidgetList) {
+    return (
+      <WidgetIcon
+        key={data.id}
+        data={data}
+        disabledWidgets={disabledWidgets}
+        onWidgetClick={event => this.handleWidgetClick(event, data.id)}
+        openWidgetList={openWidgetList}
+      />
+    );
+  }
+
+  renderIcon(rightAppBar) {
+    const { openWidgetList, disabledWidgets } = this.props;
+    return (
+      rightAppBar.length !== 0
+      && rightAppBar
+      && rightAppBar.map(data => (
+        (R.isNil(data.dependency))
+          ? this.renderWidgetIcon(data, disabledWidgets, openWidgetList)
+          : this.checkDependency(data, disabledWidgets, openWidgetList)
+      ))
+    );
+  }
+
   renderComponent(rightAppBar, page) {
     const { currentWidget } = this.props;
     return (
@@ -87,23 +134,6 @@ class WidgetBuilder extends Component {
           rightAppBar={rightAppBar}
         />
       )
-    );
-  }
-
-  renderIcon(rightAppBar) {
-    const { openWidgetList, disabledWidgets } = this.props;
-    return (
-      rightAppBar.length !== 0
-      && rightAppBar
-      && rightAppBar.map(data => (
-        <WidgetIcon
-          key={data.id}
-          data={data}
-          disabledWidgets={disabledWidgets}
-          onWidgetClick={event => this.handleWidgetClick(event, data.id)}
-          openWidgetList={openWidgetList}
-        />
-      ))
     );
   }
 
@@ -144,15 +174,23 @@ WidgetBuilder.defaultProps = {
   openWidgetList: [],
   disabledWidgets: [],
   page: '',
+  resolutionId: null,
+  groupName: '',
+  stagerTaskName: {},
+  investorHierarchy: {},
 };
 
 WidgetBuilder.propTypes = {
   className: PropTypes.string.isRequired,
   currentWidget: PropTypes.string,
   disabledWidgets: PropTypes.arrayOf(PropTypes.string),
+  groupName: PropTypes.string,
+  investorHierarchy: PropTypes.shape(),
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
+  resolutionId: PropTypes.func,
+  stagerTaskName: PropTypes.shape(),
   trialHeader: PropTypes.shape({
     downPayment: PropTypes.number,
     evalId: PropTypes.number,
@@ -169,6 +207,10 @@ const mapStateToProps = state => ({
   currentWidget: selectors.getCurrentWidget(state),
   openWidgetList: selectors.getOpenWidgetList(state),
   disabledWidgets: selectors.getDisabledWidgets(state),
+  resolutionId: dashboardSelectors.resolutionId(state),
+  groupName: dashboardSelectors.groupName(state),
+  stagerTaskName: dashboardSelectors.stagerTaskName(state),
+  investorHierarchy: dashboardSelectors.getInvestorHierarchy(state),
 });
 
 function mapDispatchToProps(dispatch) {

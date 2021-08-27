@@ -6,12 +6,20 @@ import getters from 'models/Headers';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import * as R from 'ramda';
 import extName from 'ext-name';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import TableContainer from '@material-ui/core/TableContainer';
 import { connect } from 'react-redux';
 import { selectors, operations } from 'ducks/dashboard';
+import ResultStatus from 'components/ResultStatus';
 import { PropTypes } from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import { EXCEL_FORMATS } from '../../../constants/common';
@@ -41,7 +49,7 @@ function CustomButton(props) {
             </Typography>
           )}
         >
-          <ErrorIcon styleName="errorSvg" />
+          <ErrorIcon styleName="cstmBtnErrSvg" />
         </Tooltip>
       )}
     </div>
@@ -63,6 +71,7 @@ CustomButton.propTypes = {
   title: PropTypes.string,
   tooltipMessage: PropTypes.string,
 };
+
 class FHLMCDataInsight extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -71,11 +80,22 @@ class FHLMCDataInsight extends React.PureComponent {
       buttonState: 'UPLOAD EXCEL',
       showLoader: false,
       showMessageProp: false,
+      isFileUploaded: false,
     };
     this.submitToFhlmc = this.submitToFhlmc.bind(this);
     this.handleDownload = this.handleDownload.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
+    this.renderWidgetContent = this.renderWidgetContent.bind(this);
+    this.renderCustomTable = this.renderCustomTable.bind(this);
   }
+
+  static getDerivedStateFromProps(props, state) {
+    if (!R.isEmpty(props.selectedRequestType) && props.isWidget && state.isFileUploaded) {
+      return { showSubmitFhlmc: true };
+    }
+    return null;
+  }
+
 
   componentWillUnmount() {
     const { dismissUserNotification } = this.props;
@@ -102,7 +122,9 @@ class FHLMCDataInsight extends React.PureComponent {
   }
 
   handleUpload = (event) => {
-    const { onProcessFile, openSweetAlert } = this.props;
+    const {
+      onProcessFile, openSweetAlert, isWidget, selectedRequestType,
+    } = this.props;
     const { files } = event.target;
     this.setState({ buttonState: 'UPLOADING...', showLoader: true });
     if (event.target.files[0]) {
@@ -112,21 +134,23 @@ class FHLMCDataInsight extends React.PureComponent {
         R.prop('ext'),
         R.head,
       )(fileExtension);
-      if (EXCEL_FORMATS.includes(ext)) {
+      if (EXCEL_FORMATS.includes(ext) && !R.isEmpty(selectedRequestType)) {
         setTimeout(() => {
-          this.setState({ showSubmitFhlmc: true });
+          if (!isWidget || !R.isEmpty(selectedRequestType)) {
+            this.setState({ showSubmitFhlmc: true });
+          }
           onProcessFile(files[0]);
+          this.setState({ showLoader: false, buttonState: 'UPLOAD EXCEL' });
         }, 2000);
       } else {
         const sweetAlertPayload = {
-          status: 'Kindly upload an excel File',
+          status: R.isEmpty(selectedRequestType) ? 'Please select request type and upload excel file' : 'Kindly upload an excel File',
           level: 'Warning',
           showConfirmButton: true,
         };
-        setTimeout(() => { this.setState({ showSubmitFhlmc: false }); }, 2000);
+        setTimeout(() => { this.setState({ showSubmitFhlmc: false, showLoader: false, buttonState: 'UPLOAD EXCEL' }); }, 2000);
         openSweetAlert(sweetAlertPayload);
       }
-      this.setState({ showLoader: false, buttonState: 'UPLOAD EXCEL' });
     }
   }
 
@@ -144,41 +168,103 @@ class FHLMCDataInsight extends React.PureComponent {
     downloadFile(payload);
   }
 
-  render() {
-    const {
-      showSubmitFhlmc, buttonState, showLoader, showMessageProp,
-    } = this.state;
-    const {
-      resultData, submitCases, selectedRequestType,
-    } = this.props;
+  renderWidgetContent = (selectedRequestType, resultData) => {
+    if (!R.isNil(resultData) && !R.isEmpty(resultData)) {
+      const loan = resultData[0];
+      return (
+        <Paper styleName="tablealign">
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell> Case ID</TableCell>
+                  <TableCell>Eval Id</TableCell>
+                  <TableCell>Loan Number</TableCell>
+                  <TableCell>Request Type</TableCell>
+                  <TableCell>Result</TableCell>
+                  {loan.message ? (
+                    <TableCell>
+                      Message
+                    </TableCell>
+                  ) : null}
+
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow key={loan.resolutionId}>
+                  <TableCell>
+                    {loan.resolutionId}
+                  </TableCell>
+                  <TableCell>{loan.evalId}</TableCell>
+                  <TableCell>{loan.servicerLoanIdentifier || loan.loanNumber}</TableCell>
+                  {selectedRequestType ? (
+                    <TableCell>
+                      {selectedRequestType}
+                    </TableCell>
+                  ) : (
+                    <TableCell />
+                  )}
+                  <TableCell styleName="align-selector">
+                    <ResultStatus cellProps={{ original: { isValid: loan.isValid } }} />
+                  </TableCell>
+                  {loan.message ? (
+                    <TableCell styleName="table-content-align">
+                      {loan.message}
+                    </TableCell>
+                  ) : null}
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      );
+    }
+    return null;
+  }
+
+  renderCustomTable = (resultData, submitCases, showMessageProp, selectedRequestType) => {
     const hasIncorrectData = (!R.isEmpty(resultData) && !R.isNil(resultData)) ? !R.has('evalId', R.head(resultData)) : false;
     const showTableHeaders = hasIncorrectData ? 'incorrectData' : 'submitToFhlmc';
     const failedCaseId = R.pluck('resolutionId', R.filter(R.propEq('isValid', false), resultData));
     return (
+      <CustomTable
+        defaultPageSize={25}
+        getTrProps={(state, rowInfo) => {
+          if (rowInfo) {
+            const { original } = rowInfo;
+            let style = {};
+            if (R.contains(original.resolutionId, failedCaseId)) {
+              style = {
+                background: '#e10c32',
+              };
+            }
+            return {
+              style,
+            };
+          }
+          return {};
+        }}
+        pageSizeOptions={[10, 20, 25, 50, 100]}
+        styleName="table"
+        tableData={R.isEmpty(resultData) ? [] : resultData}
+        tableHeader={getters.getFhlmcColumns((submitCases && !showMessageProp) ? 'submitCases' : showTableHeaders, selectedRequestType)}
+      />
+    );
+  }
+
+  render() {
+    const {
+      showMessageProp, showSubmitFhlmc, buttonState, showLoader,
+    } = this.state;
+    const {
+      resultData, submitCases, selectedRequestType, isWidget,
+    } = this.props;
+    return (
       <Grid container direction="column">
         <Grid item>
-          <CustomTable
-            defaultPageSize={25}
-            getTrProps={(state, rowInfo) => {
-              if (rowInfo) {
-                const { original } = rowInfo;
-                let style = {};
-                if (R.contains(original.resolutionId, failedCaseId)) {
-                  style = {
-                    background: '#e10c32',
-                  };
-                }
-                return {
-                  style,
-                };
-              }
-              return {};
-            }}
-            pageSizeOptions={[10, 20, 25, 50, 100]}
-            styleName="table"
-            tableData={R.isEmpty(resultData) ? [] : resultData}
-            tableHeader={getters.getFhlmcColumns((submitCases && !showMessageProp) ? 'submitCases' : showTableHeaders, selectedRequestType)}
-          />
+          {(isWidget)
+            ? this.renderWidgetContent(selectedRequestType, resultData, isWidget)
+            : this.renderCustomTable(resultData, submitCases, showMessageProp, selectedRequestType)}
         </Grid>
         <Grid item>
           <Grid
@@ -227,6 +313,7 @@ class FHLMCDataInsight extends React.PureComponent {
             <Grid item>
               <CustomButton
                 color="primary"
+                extraStyle={isWidget ? 'widgetDwnld' : ''}
                 hasTooltip
                 onClick={this.handleDownload}
                 startIcon={<GetAppIcon style={{ height: '1.5rem' }} />}
@@ -250,11 +337,13 @@ FHLMCDataInsight.defaultProps = {
   selectedRequestType: '',
   portfolioCode: '',
   submitCases: true,
+  isWidget: false,
 };
 
 FHLMCDataInsight.propTypes = {
   dismissUserNotification: PropTypes.func.isRequired,
   downloadFile: PropTypes.func.isRequired,
+  isWidget: PropTypes.bool,
   onProcessFile: PropTypes.func,
   onSubmitToFhlmcRequest: PropTypes.func,
   openSweetAlert: PropTypes.func,

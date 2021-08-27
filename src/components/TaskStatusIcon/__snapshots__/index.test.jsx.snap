@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<TaskStatusIcon /> TaskStatusIcon renders correctly 1`] = `
-<img
+  exports[`<TaskStatusIcon /> TaskStatusIcon renders correctly 1`] = `
+  <img
   alt="task_pane_icon"
   className="components-TaskStatusIcon-TaskStatusIcon__largeIcon"
   src="/static/img/default_unselected.svg"
-/>
-`;
+  />
+  `;

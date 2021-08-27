@@ -18,6 +18,7 @@ import {
   FETCH_TOMBSTONE_DATA,
 } from './types';
 import { selectors as dashboardSelectors } from '../dashboard';
+import { SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
 
 function* fetchTombstoneData(payload) {
   const { taskName, taskId } = payload.payload;
@@ -34,9 +35,14 @@ function* fetchTombstoneData(payload) {
     const group = userGroup === 'Recordation' || userGroup === 'Countersign' || userGroup === 'Delay Checklist' ? taskName : userGroup;
     const data = yield call(LoanTombstone.fetchData,
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand);
-    yield put(yield call(setPaymentDeferral, R.contains(DashboardModel.PDD, data)));
-    yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
-    yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: data });
+    const { resolutionId, investorHierarchy, tombstoneData } = data;
+    // storing resolution id inside dashboard object
+    yield put({
+      type: SET_RESOLUTION_AND_INVSTR_HRCHY,
+      payload: { resolutionId, investorHierarchy },
+    });
+    yield put(yield call(setPaymentDeferral, R.contains(DashboardModel.PDD, tombstoneData)));
+    yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: tombstoneData });
   } catch (e) {
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
       const defaultData = [

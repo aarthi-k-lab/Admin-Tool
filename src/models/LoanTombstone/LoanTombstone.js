@@ -548,18 +548,23 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   if (fetchPandemicFlagP.status === 200) {
     fetchPandemicFlagResponseData = await fetchPandemicFlagP.json();
   }
-
-  return [...getTombstoneItems(
-    loanDetails,
-    evalDetails,
-    previousDispositionDetails,
-    groupName,
-    additionalLoanInfo,
-    taskName,
-    taskData,
-    fetchPandemicFlagResponseData,
-    buyoutProcessDetails,
-  )];
+  // resolutionId is using for dashboard store
+  return {
+    resolutionId: R.propOr(null, 'resolutionId', evalDetails),
+    investorHierarchy: R.propOr(null, 'InvestorHierarchy', loanDetails),
+    tombstoneData:
+     [...getTombstoneItems(
+       loanDetails,
+       evalDetails,
+       previousDispositionDetails,
+       groupName,
+       additionalLoanInfo,
+       taskName,
+       taskData,
+       fetchPandemicFlagResponseData,
+       buyoutProcessDetails,
+     )],
+  };
 }
 
 const LoanTombstone = {

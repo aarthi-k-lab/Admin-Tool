@@ -3,10 +3,12 @@ import {
   select, takeEvery, all, call, put,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import { assignBookingLoan, unassignBookingLoan, additionalInfo } from 'ducks/dashboard/actions';
+import {
+  assignBookingLoan, unassignBookingLoan, additionalInfo, onFhlmcCasesBulkSubmit,
+} from 'ducks/dashboard/actions';
 import { getIncomeCalcChecklist } from 'ducks/income-calculator/actions';
 import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR,
+  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR, FHLMC,
 } from 'constants/widgets';
 import dashboardSelectors from 'ducks/dashboard/selectors';
 import { DOCS_IN } from 'constants/appGroupName';
@@ -33,6 +35,18 @@ function* toggleAdditionalInfoWidget(rightAppBarOpen) {
   }
 }
 
+
+function* getCaseDetails(rightAppBarOpen) {
+  if (rightAppBarOpen) {
+    const resolutionId = yield select(dashboardSelectors.resolutionId);
+    const payload = {
+      caseIds: [resolutionId],
+      requestIdType: 'Case id(s)',
+    };
+    yield put(onFhlmcCasesBulkSubmit(payload));
+  }
+}
+
 function* getRightAppBarAction(request) {
   const {
     isOpen,
@@ -49,6 +63,9 @@ function* getRightAppBarAction(request) {
       yield call(toggleAdditionalInfoWidget, isOpen);
       break;
     case HISTORY:
+      break;
+    case FHLMC:
+      yield call(getCaseDetails, isOpen);
       break;
     default: break;
   }

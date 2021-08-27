@@ -11,9 +11,11 @@ import {
   CUSTOM_COMM_LETTER,
   BOOKING,
   INCOME_CALCULATOR,
+  FHLMC,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
+import FHLMCWidget from './FHLMCWidget';
 
 const widgets = [
   {
@@ -56,6 +58,14 @@ const widgets = [
     icon: <Exposure />,
     visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN',
       'BOOKING'],
+    children: [COMMENTS],
+  },
+  {
+    id: FHLMC,
+    icon: <img alt="FHLMC" src="/static/img/Freddie-Widget.svg" />,
+    component: <FHLMCWidget />,
+    visibility: ['BEUW', 'DOCGEN', 'POSTMOD'],
+    overlay: true,
     children: [COMMENTS],
   },
 ];

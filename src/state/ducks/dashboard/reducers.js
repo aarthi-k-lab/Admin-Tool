@@ -91,6 +91,7 @@ import {
   DISMISS_USER_NOTIFICATION,
   SET_FHLMC_UPLOAD_RESULT,
   TOGGLE_BANNER,
+  SET_RESOLUTION_AND_INVSTR_HRCHY,
 } from './types';
 
 const reducer = (state = {
@@ -922,6 +923,15 @@ const reducer = (state = {
         completeReviewResponse: null,
       };
       return newState;
+    }
+
+    case SET_RESOLUTION_AND_INVSTR_HRCHY: {
+      const { resolutionId, investorHierarchy } = action.payload;
+      return {
+        ...state,
+        resolutionId,
+        investorHierarchy,
+      };
     }
 
     default:

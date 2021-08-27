@@ -4,6 +4,7 @@ const HISTORY = 'History';
 const CUSTOM_COMM_LETTER = 'customCommunicationLetter';
 const BOOKING = 'BookingAutomation';
 const INCOME_CALCULATOR = 'IncomeCalculator';
+const FHLMC = 'FHLMC';
 
 
 const widgets = [
@@ -13,6 +14,7 @@ const widgets = [
   CUSTOM_COMM_LETTER,
   BOOKING,
   INCOME_CALCULATOR,
+  FHLMC,
 ];
 
 export {
@@ -23,4 +25,5 @@ export {
   BOOKING,
   INCOME_CALCULATOR,
   widgets,
+  FHLMC,
 };
