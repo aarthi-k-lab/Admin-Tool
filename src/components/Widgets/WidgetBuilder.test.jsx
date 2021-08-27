@@ -38,7 +38,7 @@ describe('<WidgetBuilder />', () => {
     wrapper.setProps({
       page: 'DOCGEN',
     });
-    expect(wrapper.find('WidgetIcon')).toHaveLength(4);
+    expect(wrapper.find('WidgetIcon')).toHaveLength(5);
   });
 
   it('should call the onWidgetToggle function', () => {
