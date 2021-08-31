@@ -148,6 +148,7 @@ const setTombstoneDataForLoanView = dispatch => (payload) => {
 };
 
 const onEndShift = dispatch => (type) => {
+  dispatch(storeDelayCheckListHistory([]));
   dispatch(endShift(type));
 };
 

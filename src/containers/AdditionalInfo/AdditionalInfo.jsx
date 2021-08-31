@@ -128,7 +128,8 @@ class AdditionalInfo extends React.Component {
                   variant="standard"
                 >
                   <Tab label="Cases" styleName="cardTab" {...this.a11yProps(0)} />
-                  {groupName === DashboardModel.UWSTAGER && <Tab label="Delay Checklist History" styleName="cardTab" {...this.a11yProps(0)} />}
+                  {(groupName === DashboardModel.UWSTAGER || R.length(checklistHistory) > 0)
+                  && <Tab label="Delay Checklist History" styleName="cardTab" {...this.a11yProps(0)} />}
                 </Tabs>
               </AppBar>
               <TabPanel index={0} styleName="overFlowStyles" value={value}>
@@ -142,7 +143,7 @@ class AdditionalInfo extends React.Component {
                     />
                   ))}
               </TabPanel>
-              {groupName === DashboardModel.UWSTAGER
+              {groupName === DashboardModel.UWSTAGER || R.length(checklistHistory) > 0
                 ? (
                   <TabPanel index={1} styleName="overFlowStyles" value={value}>
                     { checklistHistory && R.length(checklistHistory) > 0

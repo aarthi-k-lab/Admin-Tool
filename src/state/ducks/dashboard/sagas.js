@@ -162,7 +162,7 @@ import {
   SET_INCOMECALC_DATA,
 } from '../income-calculator/types';
 import { selectors as stagerSelectors } from '../stager/index';
-import { saveDelayChecklistDataToDB } from '../stager/sagas';
+import { saveDelayChecklistDataToDB, fetchDelayCheckListHistory } from '../stager/sagas';
 
 const {
   Messages:
@@ -283,6 +283,7 @@ function* fetchEvalCaseDetails(payload) {
         },
       };
       yield call(fetchCaseDetails, action);
+      yield call(fetchDelayCheckListHistory);
     }
   } catch (ex) {
     yield put({

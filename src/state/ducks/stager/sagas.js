@@ -43,7 +43,6 @@ import {
   SET_SNACK_BAR_VALUES_SAGA,
 } from '../notifications/types';
 import { storeDelayCheckList, storeDelayCheckListHistory } from './actions';
-import DashboardModel from '../../../models/Dashboard';
 
 function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
@@ -402,12 +401,15 @@ export const saveDelayChecklistDataToDB = function* saveDelayChecklistDataToDB()
   }
 };
 
-function* fetchDelayCheckListHistory() {
+export const fetchDelayCheckListHistory = function* fetchDelayCheckListHistory() {
   try {
-    const groupName = yield select(dashboardSelectors.groupName);
-    if (groupName === DashboardModel.UWSTAGER) {
-      const evalId = yield select(dashboardSelectors.evalId);
-      const checkListHistory = yield call(Api.callGet, `/api/dataservice/delayCheckList/history/${evalId}`);
+    let evalId = yield select(dashboardSelectors.evalId);
+    if (!evalId) {
+      const evalCaseDetails = yield select(dashboardSelectors.getEvalCaseDetails);
+      evalId = evalCaseDetails.length && evalCaseDetails[0].evalId;
+    }
+    const checkListHistory = yield call(Api.callGet, `/api/dataservice/delayCheckList/history/${evalId}`);
+    if (checkListHistory) {
       yield put(storeDelayCheckListHistory(checkListHistory));
     } else {
       yield put(storeDelayCheckListHistory([]));
@@ -419,7 +421,7 @@ function* fetchDelayCheckListHistory() {
     snackBarData.open = true;
     yield call(fireSnackBar, snackBarData);
   }
-}
+};
 
 function* watchDashboardCountsFetch() {
   yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
