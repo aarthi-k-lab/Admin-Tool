@@ -67,6 +67,7 @@ const widgets = [
     visibility: ['BEUW', 'DOCGEN', 'POSTMOD'],
     overlay: true,
     children: [COMMENTS],
+    dependency: FHLMC,
   },
 ];
 
