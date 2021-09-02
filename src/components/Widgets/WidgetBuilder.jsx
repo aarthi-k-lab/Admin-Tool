@@ -84,12 +84,13 @@ class WidgetBuilder extends Component {
     const {
       resolutionId, groupName, stagerTaskName, investorHierarchy,
     } = this.props;
-    switch (data.id) {
+    switch (data.dependency) {
       case FHLMC:
         if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)) {
-          if (!R.equals(groupName, 'POSTMOD') && R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement')) {
+          if (!R.equals(groupName, 'POSTMOD')) {
             return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
           }
+          return (R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement')) ? this.renderWidgetIcon(data, disabledWidgets, openWidgetList) : null;
         }
         return null;
       default:
