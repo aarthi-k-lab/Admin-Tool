@@ -234,11 +234,15 @@ const reducer = (state = {
         },
       };
     }
-
     case POSTMOD_END_SHIFT: {
       return {
-        ...state,
         postModEndShift: true,
+        firstVisit: true,
+        isAssigned: true,
+        clearSearch: true,
+        groupName: state.groupName,
+        stagerTaskName: state.stagerTaskName,
+        getSearchLoanResponse: {},
       };
     }
     case CLEAR_POSTMOD_END_SHIFT: {
