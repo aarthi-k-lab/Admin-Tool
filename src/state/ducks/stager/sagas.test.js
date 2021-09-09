@@ -106,6 +106,7 @@ const mockUser = {
   userDetails: {
     email: 'bren@mrcooper.com',
   },
+  groupList: [],
 };
 
 describe('fetchDashboardCounts - success', () => {
@@ -127,8 +128,9 @@ describe('fetchDashboardCounts - success', () => {
     expect(saga.next(dateUTCValue).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
+
   it('should update with returned payload ', () => {
-    const data = { displayName: 'CurrentReview' };
+    const data = { counts: [{ displayName: 'Completed', data: [{ taskName: 'Test', displayName: 'Test' }] }] };
     expect(saga.next(data).value)
       .toEqual(put({ type: SET_STAGER_DATA_COUNTS, payload: data }));
   });
@@ -260,7 +262,7 @@ describe('fetchDashboardData - success ', () => {
         payload: {
           error: false,
           data: {
-            lastUpdatedDate: null
+            lastUpdatedDate: null,
           },
         },
       }));
