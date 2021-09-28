@@ -2245,6 +2245,29 @@ const submitToFhlmc = function* submitToFhlmc(action) {
       };
     } else {
       resultSet = resultData;
+      const errorCode = R.has('error', response) ? R.path(['error'], response) : null;
+      let message;
+      switch (errorCode) {
+        case 'ODM FAILED': {
+          message = 'ODM is currently down. Please try after again, If the issue continues to persist please reach to IT team';
+          break;
+        } case 'TKAMS FAILED': {
+          message = 'TKAMS is currently down. Please try after again, If the issue continues to persist please reach to IT team';
+          break;
+        }
+        case 'FREDDIE FAILED': {
+          message = 'FHLMC is currently down. Please try after again, If the issue continues to persist please reach to IT team';
+          break;
+        }
+        default: {
+          message = 'One of the data source is currently down. Please try after again, If the issue continues to persist please reach to IT team';
+          break;
+        }
+      }
+      sweetAlert = {
+        level: FAILED,
+        status: message,
+      };
       const nonValidResponseObjects = R.pluck('isValid', resultData);
       if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
         userNotification = {
@@ -2252,10 +2275,6 @@ const submitToFhlmc = function* submitToFhlmc(action) {
           level: ERROR,
         };
       }
-      sweetAlert = {
-        level: FAILED,
-        status: 'One of the data source is currently down. Please try after again, If the issue continues to persist please reach to IT team',
-      };
     }
     yield call(sendNotification, userNotification, resultSet, sweetAlert);
   } catch (e) {

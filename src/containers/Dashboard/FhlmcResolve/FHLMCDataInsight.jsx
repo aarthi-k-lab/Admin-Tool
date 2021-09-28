@@ -257,7 +257,7 @@ class FHLMCDataInsight extends React.PureComponent {
       showMessageProp, showSubmitFhlmc, buttonState, showLoader,
     } = this.state;
     const {
-      resultData, submitCases, selectedRequestType, isWidget,
+      resultData, submitCases, selectedRequestType, isWidget, isAssigned,
     } = this.props;
     return (
       <Grid container direction="column">
@@ -278,6 +278,7 @@ class FHLMCDataInsight extends React.PureComponent {
               {showSubmitFhlmc && (
                 <CustomButton
                   color="primary"
+                  disabled={!isAssigned}
                   extraStyle="submit"
                   hasTooltip={false}
                   onClick={this.submitToFhlmc}
@@ -291,6 +292,7 @@ class FHLMCDataInsight extends React.PureComponent {
               <label htmlFor="contained-button-file">
                 <CustomButton
                   component="span"
+                  disabled={!isAssigned}
                   extraStyle="uploadBtn"
                   hasTooltip
                   startIcon={showLoader ? <Loader size={20} style={{ height: '1.5rem' }} />
@@ -301,6 +303,7 @@ class FHLMCDataInsight extends React.PureComponent {
                   variant="contained"
                 />
                 <input
+                  disabled={!isAssigned}
                   hidden
                   id="contained-button-file"
                   multiple
@@ -313,6 +316,7 @@ class FHLMCDataInsight extends React.PureComponent {
             <Grid item>
               <CustomButton
                 color="primary"
+                disabled={!isAssigned}
                 extraStyle={isWidget ? 'widgetDwnld' : ''}
                 hasTooltip
                 onClick={this.handleDownload}
@@ -343,6 +347,7 @@ FHLMCDataInsight.defaultProps = {
 FHLMCDataInsight.propTypes = {
   dismissUserNotification: PropTypes.func.isRequired,
   downloadFile: PropTypes.func.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   isWidget: PropTypes.bool,
   onProcessFile: PropTypes.func,
   onSubmitToFhlmcRequest: PropTypes.func,
@@ -358,6 +363,7 @@ FHLMCDataInsight.propTypes = {
 
 const mapStateToProps = state => ({
   resultData: selectors.resultData(state),
+  isAssigned: selectors.isAssigned(state),
 });
 
 const mapDispatchToProps = dispatch => ({
