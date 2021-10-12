@@ -128,6 +128,14 @@ function getFhlmcColumns(status, selectedRequestType) {
       Cell: props => <ResultStatus cellProps={props} />,
     },
     {
+      Header: 'Status',
+      accessor: 'status',
+      minWidth: 50,
+      maxWidth: 100,
+      style: { width: '15%' },
+      headerStyle: { textAlign: 'left' },
+    },
+    {
       Header: 'Message',
       accessor: 'message',
       minWidth: 100,

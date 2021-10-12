@@ -2164,13 +2164,17 @@ function* sendNotification(userNotification, resultSet, sweetAlert) {
 
 const submitToFhlmc = function* submitToFhlmc(action) {
   const file = yield select(selectors.getUploadedFile);
-  const resultData = yield select(selectors.resultData);
   const user = yield select(loginSelectors.getUser);
+  const resultData = yield select(selectors.resultData);
   const userName = R.path(['userDetails', 'email'], user);
+  const winLoginName = user.userDetails.onPremisesSamAccountName;
   const { selectedRequestType, portfolioCode } = action.payload;
+  const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
+  let resultSet = null;
+  let userNotification = null;
+  let sweetAlert = null;
   try {
-    const investor = 'freddiemac';
-    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?investor=${investor}&requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}`, JSON.parse(file));
+    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`, JSON.parse(file));
     // Clearing resultData before getting eventData
     yield put({
       type: SET_FHLMC_UPLOAD_RESULT,
@@ -2180,14 +2184,9 @@ const submitToFhlmc = function* submitToFhlmc(action) {
       type: SET_USER_NOTIFICATION,
       payload: {},
     });
+    const hasStatusCode = R.has('statusCode', response);
     const parsedData = JSON.parse(file);
-    const statusCode = R.has('status', response) ? R.path(['status'], response) : R.path(['statusCode'], response);
-    let userNotification = null;
-    let resultSet = null;
-    let sweetAlert = null;
-    if (statusCode === '200') {
-      const responseArray = R.pathOr([], ['responseContent', 'message', 'responseData', 'responseWorkoutList'], response);
-      const nonValidResponseObjects = R.pluck('isValid', responseArray);
+    if (!hasStatusCode) {
       const data = R.map((cases) => {
         const filteredData = R.filter(datae => R.equals(datae.loanIdentifier.toString(),
           cases.loanIdentifier), parsedData);
@@ -2196,28 +2195,57 @@ const submitToFhlmc = function* submitToFhlmc(action) {
         caseData.evalId = R.head(filteredData).evalId;
         caseData.resolutionId = R.head(filteredData).resolutionId;
         caseData.isValid = cases.isValid;
+        caseData.status = cases.status;
         caseData.RequestType = cases.workoutReportingStatusType;
         caseData.message = JSON.stringify(cases);
         return caseData;
-      }, responseArray);
-      if (!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false)) {
-        userNotification = {
-          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
-          level: ERROR,
-        };
-      }
+      }, response);
       resultSet = data;
-      sweetAlert = {
-        level: 'Success',
-        status: 'Your request has been successfully sent to Freddie, please download the excel to view more details.',
+      let message = 'Your request has been successfully sent to Freddie, please download the excel to view more details.';
+      let level = 'Success';
+      if (!R.isEmpty(isWidgetOpen)) {
+        switch (data[0].status) {
+          case 'ODM FAILED': {
+            level = FAILED;
+            message = 'An error occured in ODM. Please download the excel to view more details. If the issue continues to persist please reach to IT team';
+            break;
+          } case 'TKAMS FAILED': {
+            level = FAILED;
+            message = 'An error occured in saving to TKAMS. Please download the excel to view more details. If the issue continues to persist please reach to IT team';
+            break;
+          }
+          case 'FREDDIE FAILED': {
+            level = FAILED;
+            message = 'An error occured in sending to Freddie. Please download the excel to view more details. If the issue continues to persist please reach to IT team';
+            break;
+          }
+          case 'FREDDIE INELIGIBLE': {
+            level = FAILED;
+            message = 'The loan is not eligible for modification as per Freddie. Please download the excel to view more details.';
+            break;
+          }
+          case 'ODM INELIGIBLE': {
+            level = FAILED;
+            message = 'The loan is not eligible for modification as per ODM rules. Please download the excel to view more details.';
+            break;
+          }
+          default: {
+            level = 'Success';
+            message = 'Your request has been successfully sent to Freddie, please download the excel to view more details.';
+            break;
+          }
+        }
+      } sweetAlert = {
+        level,
+        status: message,
       };
-    } else if (statusCode === 422) {
+    } else if (response.statusCode === 422) {
       const { invalidLoans } = response;
       const caseIds = Object.keys(invalidLoans);
       const data = R.map((cases) => {
         const caseData = {};
         caseData.resolutionId = cases.resolutionId;
-        caseData.loanNumber = cases.loanNumber;
+        caseData.loanNumber = cases.servicerLoanIdentifier;
         caseData.isValid = !R.contains(cases.resolutionId.toString(), caseIds);
         return caseData;
       }, parsedData);
@@ -2230,7 +2258,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
         status: 'Incorrect Data present in the excel. Please update and try again',
         level: FAILED,
       };
-    } else if (statusCode === 400) {
+    } else if (response.statusCode === 400) {
       resultSet = resultData;
       const nonValidResponseObjects = R.pluck('isValid', resultData);
       if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
@@ -2241,40 +2269,8 @@ const submitToFhlmc = function* submitToFhlmc(action) {
       }
       sweetAlert = {
         level: FAILED,
-        status: 'FHLMC is currently down. Please try after again, If the issue continues to persist please reach to IT team.',
+        status: MSG_SERVICE_DOWN,
       };
-    } else {
-      resultSet = resultData;
-      const errorCode = R.has('error', response) ? R.path(['error'], response) : null;
-      let message;
-      switch (errorCode) {
-        case 'ODM FAILED': {
-          message = 'ODM is currently down. Please try after again, If the issue continues to persist please reach to IT team';
-          break;
-        } case 'TKAMS FAILED': {
-          message = 'TKAMS is currently down. Please try after again, If the issue continues to persist please reach to IT team';
-          break;
-        }
-        case 'FREDDIE FAILED': {
-          message = 'FHLMC is currently down. Please try after again, If the issue continues to persist please reach to IT team';
-          break;
-        }
-        default: {
-          message = 'One of the data source is currently down. Please try after again, If the issue continues to persist please reach to IT team';
-          break;
-        }
-      }
-      sweetAlert = {
-        level: FAILED,
-        status: message,
-      };
-      const nonValidResponseObjects = R.pluck('isValid', resultData);
-      if ((!R.isEmpty(nonValidResponseObjects) && nonValidResponseObjects.includes(false))) {
-        userNotification = {
-          message: "Entered incorrect 'LoanId/CaseId'.Highlighted in Red for your reference",
-          level: ERROR,
-        };
-      }
     }
     yield call(sendNotification, userNotification, resultSet, sweetAlert);
   } catch (e) {

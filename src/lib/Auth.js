@@ -48,6 +48,7 @@ Auth.prototype.getUserDetails = function getUserDetails() {
     email: this.jwtPayload.data.user.userPrincipalName,
     jobTitle: this.jwtPayload.data.user.jobTitle,
     name: this.jwtPayload.data.user.displayName,
+    onPremisesSamAccountName: this.jwtPayload.data.user.onPremisesSamAccountName,
   };
 };
 
