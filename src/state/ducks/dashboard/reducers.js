@@ -92,6 +92,7 @@ import {
   SET_FHLMC_UPLOAD_RESULT,
   TOGGLE_BANNER,
   SET_RESOLUTION_AND_INVSTR_HRCHY,
+  SET_REQUEST_TYPE_DATA,
 } from './types';
 
 const reducer = (state = {
@@ -935,6 +936,14 @@ const reducer = (state = {
         ...state,
         resolutionId,
         investorHierarchy,
+      };
+    }
+
+    case SET_REQUEST_TYPE_DATA: {
+      const setRequestTypeData = action.payload;
+      return {
+        ...state,
+        setRequestTypeData,
       };
     }
 

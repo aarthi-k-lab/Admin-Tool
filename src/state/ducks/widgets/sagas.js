@@ -4,7 +4,11 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import {
-  assignBookingLoan, unassignBookingLoan, additionalInfo, onFhlmcCasesBulkSubmit,
+  assignBookingLoan,
+  unassignBookingLoan,
+  additionalInfo,
+  onFhlmcCasesBulkSubmit,
+  setRequestTypeDataAction,
 } from 'ducks/dashboard/actions';
 import { getIncomeCalcChecklist } from 'ducks/income-calculator/actions';
 import {
@@ -39,6 +43,7 @@ function* toggleAdditionalInfoWidget(rightAppBarOpen) {
 function* getCaseDetails(rightAppBarOpen) {
   if (rightAppBarOpen) {
     const resolutionId = yield select(dashboardSelectors.resolutionId);
+    yield put(setRequestTypeDataAction(''));
     const payload = {
       caseIds: [resolutionId],
       requestIdType: 'Case id(s)',

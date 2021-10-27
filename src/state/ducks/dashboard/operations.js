@@ -67,6 +67,7 @@ import {
   onSubmitToFhlmcAction,
   dismissUserNotification,
   unassignBookingLoan,
+  setRequestTypeDataAction,
 } from './actions';
 
 import {
@@ -360,6 +361,10 @@ const onDismissUserNotification = dispatch => () => {
   dispatch(dismissUserNotification());
 };
 
+const setRequestTypeDataOperation = dispatch => (payload) => {
+  dispatch(setRequestTypeDataAction(payload));
+};
+
 const operations = {
   openSweetAlert,
   onDismissUserNotification,
@@ -433,6 +438,7 @@ const operations = {
   onEvalRowSelect,
   setTombstoneDataForLoanView,
   onFhlmcCasesSubmit,
+  setRequestTypeDataOperation,
 };
 
 export default operations;

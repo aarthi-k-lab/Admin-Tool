@@ -19,10 +19,6 @@ import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataI
 class FHLMCWidget extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedRequestType: '',
-      portfolioCode: '',
-    };
     this.handleRequestType = this.handleRequestType.bind(this);
     this.renderCategoryDropDown = this.renderCategoryDropDown.bind(this);
   }
@@ -33,8 +29,7 @@ class FHLMCWidget extends Component {
   }
 
   renderCategoryDropDown = () => {
-    const { selectedRequestType } = this.state;
-    const { investorEvents, stagerTaskName } = this.props;
+    const { investorEvents, stagerTaskName, requestTypeData } = this.props;
     const requestType = R.compose(R.uniq, R.pluck('requestType'), R.flatten)(investorEvents);
     const handledRequestType = !R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement') ? R.reject(R.equals('SETReq'))(requestType) : requestType;
     return (
@@ -53,20 +48,20 @@ class FHLMCWidget extends Component {
                 </Typography>
               )}
             >
-              <ErrorIcon styleName={!R.isEmpty(selectedRequestType) ? 'errorSvgSelected' : 'errorSvg'} />
+              <ErrorIcon styleName={!R.isEmpty(requestTypeData) ? 'errorSvgSelected' : 'errorSvg'} />
             </Tooltip>
           </span>
         </div>
         <div>
           <FormControl variant="outlined">
-            <InputLabel styleName={!R.isEmpty(selectedRequestType) ? 'inputLblSelected' : 'inputLbl'}>Please Select</InputLabel>
+            <InputLabel styleName={!R.isEmpty(requestTypeData) ? 'inputLblSelected' : 'inputLbl'}>Please Select</InputLabel>
             <Select
               id="requestCategoryDropdown"
               input={<OutlinedInput name="selectedEventCategory" />}
               label="category"
               onChange={this.handleRequestType}
               styleName="drop-down-select"
-              value={selectedRequestType}
+              value={requestTypeData}
             >
               {handledRequestType.map(item => (
                 <MenuItem key={item} value={item}>
@@ -84,12 +79,18 @@ class FHLMCWidget extends Component {
   }
 
   handleRequestType = (event) => {
-    const { investorEvents } = this.props;
-    const portFolioCode = R.find(item => item.requestType === event.target.value, investorEvents);
-    this.setState({
-      selectedRequestType: event.target.value,
-      portfolioCode: portFolioCode.portfolioCode,
-    });
+    const {
+      setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData,
+    } = this.props;
+    setRequestTypeData(event.target.value);
+    if (R.has('message', R.head(resultData))) {
+      const payload = {
+        caseIds: [resolutionId],
+        requestType: event.target.value,
+        requestIdType: '',
+      };
+      onFhlmcBulkSubmit(payload);
+    }
   }
 
   handleClose = () => {
@@ -101,8 +102,9 @@ class FHLMCWidget extends Component {
   }
 
   render() {
-    const { selectedRequestType, portfolioCode } = this.state;
-    const { resultOperation } = this.props;
+    const { resultOperation, investorEvents, requestTypeData } = this.props;
+    const portFolio = R.find(item => item.requestType === requestTypeData, investorEvents);
+    const portfolioCode = R.pathOr('', ['portfolioCode'], portFolio);
     const renderAlert = (
       <SweetAlertBox
         confirmButtonColor="#004261"
@@ -125,7 +127,7 @@ class FHLMCWidget extends Component {
         <FHLMCDataInsight
           isWidget
           portfolioCode={portfolioCode}
-          selectedRequestType={selectedRequestType}
+          selectedRequestType={requestTypeData}
           submitCases
         />
 
@@ -137,14 +139,23 @@ class FHLMCWidget extends Component {
 FHLMCWidget.defaultProps = {
   populateInvestorDropdown: () => { },
   investorEvents: [],
+  resultData: [],
   resultOperation: {},
+  requestTypeData: '',
   stagerTaskName: {},
 };
 
 FHLMCWidget.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
+  onFhlmcBulkSubmit: PropTypes.func.isRequired,
   populateInvestorDropdown: PropTypes.func,
+  requestTypeData: PropTypes.string,
+  resolutionId: PropTypes.string.isRequired,
+  resultData: PropTypes.arrayOf({
+    caseId: PropTypes.string,
+    message: PropTypes.string,
+  }),
   resultOperation: PropTypes.shape({
     clearData: PropTypes.string,
     isOpen: PropTypes.bool,
@@ -153,6 +164,7 @@ FHLMCWidget.propTypes = {
     status: PropTypes.string,
     title: PropTypes.string,
   }),
+  setRequestTypeData: PropTypes.func.isRequired,
   stagerTaskName: PropTypes.shape(),
 };
 
@@ -160,11 +172,16 @@ const mapStateToProps = state => ({
   investorEvents: selectors.getInvestorEvents(state),
   resultOperation: selectors.resultOperation(state),
   stagerTaskName: selectors.stagerTaskName(state),
+  requestTypeData: selectors.getRequestTypeData(state),
+  resolutionId: selectors.resolutionId(state),
+  resultData: selectors.resultData(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   closeSweetAlert: operations.closeSweetAlert(dispatch),
   populateInvestorDropdown: operations.populateInvestorEvents(dispatch),
+  setRequestTypeData: operations.setRequestTypeDataOperation(dispatch),
+  onFhlmcBulkSubmit: operations.onFhlmcCasesSubmit(dispatch),
 });
 
 export { FHLMCWidget };

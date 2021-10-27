@@ -160,6 +160,7 @@ const getEvalIndex = state => R.pathOr(0, ['dashboard', 'evalIndex'], state);
 
 const getUserNotification = state => R.pathOr(0, ['dashboard', 'userNotification'], state);
 
+const getRequestTypeData = state => R.pathOr('', ['dashboard', 'setRequestTypeData'], state);
 
 const selectors = {
   getUserNotification,
@@ -252,6 +253,7 @@ const selectors = {
   getInvestorEvents,
   getInvestorHierarchy,
   resolutionId,
+  getRequestTypeData,
 };
 
 export default selectors;

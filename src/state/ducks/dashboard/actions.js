@@ -73,6 +73,7 @@ import {
   DISMISS_USER_NOTIFICATION,
   SHOW_LOADER,
   HIDE_LOADER,
+  SET_REQUEST_TYPE_DATA,
 } from './types';
 
 
@@ -418,6 +419,11 @@ const dismissUserNotification = () => ({
   type: DISMISS_USER_NOTIFICATION,
 });
 
+const setRequestTypeDataAction = payload => ({
+  type: SET_REQUEST_TYPE_DATA,
+  payload,
+});
+
 
 export {
   dismissUserNotification,
@@ -493,4 +499,5 @@ export {
   additionalInfo,
   evalSelectRow,
   onFhlmcCasesBulkSubmit,
+  setRequestTypeDataAction,
 };
