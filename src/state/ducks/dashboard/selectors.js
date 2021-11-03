@@ -159,6 +159,7 @@ const getCaseDetails = R.pathOr([], ['dashboard', 'caseDetails']);
 const getEvalIndex = state => R.pathOr(0, ['dashboard', 'evalIndex'], state);
 
 const getUserNotification = state => R.pathOr(0, ['dashboard', 'userNotification'], state);
+const eligibleData = state => R.pathOr([], ['dashboard', 'eligibleData'], state);
 
 const getRequestTypeData = state => R.pathOr('', ['dashboard', 'setRequestTypeData'], state);
 
@@ -253,6 +254,7 @@ const selectors = {
   getInvestorEvents,
   getInvestorHierarchy,
   resolutionId,
+  eligibleData,
   getRequestTypeData,
 };
 

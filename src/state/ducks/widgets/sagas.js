@@ -90,6 +90,7 @@ function* widgetToggle(action) {
   };
   const prevOpenWidgetList = yield select(selectors.getOpenWidgetList);
   const deSelectionWidgets = R.difference(prevOpenWidgetList, openWidgetList);
+  yield put({ type: WIDGET_TOGGLE, payload: currentSelection });
   if (!R.isEmpty(deSelectionWidgets)) {
     yield all(R.map((widget) => {
       const deselection = {
@@ -102,7 +103,6 @@ function* widgetToggle(action) {
   if (!R.contains(currentWidget, prevOpenWidgetList)) {
     yield call(getRightAppBarAction, currentSelection);
   }
-  yield put({ type: WIDGET_TOGGLE, payload: currentSelection });
 }
 
 

@@ -22,6 +22,7 @@ const defaultProps = {
     type: '',
     message: '',
   },
+  eligibleData: 'Ineligible',
 }
 
 describe('<FHLMCWidget />', () => {

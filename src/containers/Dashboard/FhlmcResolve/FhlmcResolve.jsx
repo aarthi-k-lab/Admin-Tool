@@ -14,6 +14,7 @@ import SweetAlertBox from 'components/SweetAlertBox';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
 import { selectors, operations } from 'ducks/dashboard';
+import { operations as widgetoperations } from 'ducks/widgets';
 import { PropTypes } from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -47,8 +48,9 @@ class FhlmcResolve extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { populateInvestorDropdown } = this.props;
+    const { populateInvestorDropdown, resetWidget } = this.props;
     populateInvestorDropdown();
+    resetWidget();
   }
 
   onResetClick = () => {
@@ -359,6 +361,7 @@ FhlmcResolve.propTypes = {
   onFhlmcBulkSubmit: PropTypes.func,
   onResetData: PropTypes.func,
   populateInvestorDropdown: PropTypes.func,
+  resetWidget: PropTypes.func.isRequired,
   resultOperation: PropTypes.shape({
     clearData: PropTypes.string,
     isOpen: PropTypes.bool,
@@ -387,6 +390,7 @@ const mapDispatchToProps = dispatch => ({
   populateInvestorDropdown: operations.populateInvestorEvents(dispatch),
   closeSweetAlert: operations.closeSweetAlert(dispatch),
   dismissUserNotification: operations.onDismissUserNotification(dispatch),
+  resetWidget: widgetoperations.resetWidget(dispatch),
 });
 
 const FhlmcResolveContainer = connect(mapStateToProps, mapDispatchToProps)(FhlmcResolve);

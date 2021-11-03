@@ -92,6 +92,7 @@ import {
   SET_FHLMC_UPLOAD_RESULT,
   TOGGLE_BANNER,
   SET_RESOLUTION_AND_INVSTR_HRCHY,
+  GET_ELIGIBLE_DATA,
   SET_REQUEST_TYPE_DATA,
 } from './types';
 
@@ -944,6 +945,13 @@ const reducer = (state = {
       return {
         ...state,
         setRequestTypeData,
+      };
+    }
+
+    case GET_ELIGIBLE_DATA: {
+      return {
+        ...state,
+        eligibleData: action.payload,
       };
     }
 

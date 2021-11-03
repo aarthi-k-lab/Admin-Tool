@@ -15,6 +15,7 @@
   color: black !important;
   font-size: 2rem !important;
   margin: 1rem 1rem 1rem 1rem !important;
+  display: inline-flex;
 }
 
 .divider {
@@ -41,4 +42,32 @@
 .errorSvgSelected {
   width: 14rem !important;
   height: 1.5rem !important;
+}
+
+.eligible {
+  margin: 0rem 0rem 0rem 2rem !important;
+}
+
+.passedTab {
+  color: green;
+  font-size: small !important;
+  margin-right: 0.5rem !important;
+}
+
+.failedTab {
+  color: red;
+  font-size: small !important;
+  margin-right: 0.5rem !important;
+}
+
+.failed {
+  color: red;
+  font-size: medium !important;
+
+}
+
+.passed {
+  color: green;
+  font-size: medium !important;
+
 }

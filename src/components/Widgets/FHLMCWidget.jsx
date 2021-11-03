@@ -11,10 +11,19 @@ import SweetAlertBox from 'components/SweetAlertBox';
 import Typography from '@material-ui/core/Typography';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import './FHLMCWidget.css';
 import * as R from 'ramda';
 import { PropTypes } from 'prop-types';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
+import { ELIGIBLE, INELIGIBLE, NOCALL } from '../../constants/fhlmc';
+
+
+const eligibilityIndicator = {
+  Eligible: ELIGIBLE,
+  Ineligible: INELIGIBLE,
+  'No Call': NOCALL,
+};
 
 class FHLMCWidget extends Component {
   constructor(props) {
@@ -102,9 +111,15 @@ class FHLMCWidget extends Component {
   }
 
   render() {
-    const { resultOperation, investorEvents, requestTypeData } = this.props;
+    const {
+      resultOperation,
+      investorEvents,
+      requestTypeData,
+      eligibleData,
+    } = this.props;
     const portFolio = R.find(item => item.requestType === requestTypeData, investorEvents);
     const portfolioCode = R.pathOr('', ['portfolioCode'], portFolio);
+    const eligibileVerify = eligibleData && eligibleData.includes('Ineligible');
     const renderAlert = (
       <SweetAlertBox
         confirmButtonColor="#004261"
@@ -120,6 +135,12 @@ class FHLMCWidget extends Component {
       <section>
         {renderAlert}
         <Typography styleName="title">FHLMC</Typography>
+        <span styleName="eligible">
+          <FiberManualRecordIcon styleName={eligibileVerify ? 'failedTab' : 'passedTab'} />
+        </span>
+        <span styleName={eligibileVerify ? 'failed' : 'passed'}>
+          {eligibleData && R.prop(eligibleData, eligibilityIndicator)}
+        </span>
         <div styleName="divider">
           <Divider />
         </div>
@@ -147,6 +168,7 @@ FHLMCWidget.defaultProps = {
 
 FHLMCWidget.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
+  eligibleData: PropTypes.string.isRequired,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
   onFhlmcBulkSubmit: PropTypes.func.isRequired,
   populateInvestorDropdown: PropTypes.func,
@@ -172,6 +194,7 @@ const mapStateToProps = state => ({
   investorEvents: selectors.getInvestorEvents(state),
   resultOperation: selectors.resultOperation(state),
   stagerTaskName: selectors.stagerTaskName(state),
+  eligibleData: selectors.eligibleData(state),
   requestTypeData: selectors.getRequestTypeData(state),
   resolutionId: selectors.resolutionId(state),
   resultData: selectors.resultData(state),

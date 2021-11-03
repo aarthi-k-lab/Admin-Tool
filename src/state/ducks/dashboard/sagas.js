@@ -9,7 +9,7 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
-import { actions as tombstoneActions } from 'ducks/tombstone/index';
+import { actions as tombstoneActions, selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
 import {
@@ -142,6 +142,7 @@ import {
   SET_USER_NOTIFICATION,
   DISMISS_USER_NOTIFICATION,
   FETCH_EVAL_CASE,
+  GET_ELIGIBLE_DATA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1864,6 +1865,9 @@ function* onFhlmcBulkUpload(payload) {
   const {
     caseIds, requestIdType,
   } = payload.payload;
+  const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
+  const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
+  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
   let response;
   try {
     if (caseIds.length > 50) {
@@ -1896,6 +1900,15 @@ function* onFhlmcBulkUpload(payload) {
       type: SET_BULK_UPLOAD_RESULT,
       payload: {},
     });
+    if (!R.isEmpty(isWidgetOpen)) {
+      const caseId = R.head(caseIds);
+      const eligibiltyresponse = yield call(Api.callGetText, `/api/dataservice/api/fetchCaseEligibilityIndicator?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}`);
+      yield put({
+        type: GET_ELIGIBLE_DATA,
+        payload: eligibiltyresponse,
+      });
+    }
+
     if (!R.isNil(response)) {
       const hasStatusCode = R.has('status', response);
       if (hasStatusCode && R.equals(R.path(['status'], response), 404)) {
