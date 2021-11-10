@@ -178,7 +178,7 @@ class Processor extends React.PureComponent {
   renderTableData() {
     const { tableData } = this.props;
     return (
-      <Grid container direction="column" style={{ paddingLeft: '1rem' }}>
+      <Grid direction="column" item style={{ paddingLeft: '1rem' }} xs={10}>
         <div styleName="table-container">
           <div styleName="height-limiter">
             <ReactTable
