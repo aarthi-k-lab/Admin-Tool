@@ -2183,6 +2183,9 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const winLoginName = user.userDetails.onPremisesSamAccountName;
   const { selectedRequestType, portfolioCode } = action.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
+  const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
+  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
+  const caseId = R.head(R.pluck('resolutionId', resultData));
   let resultSet = null;
   let userNotification = null;
   let sweetAlert = null;
@@ -2248,6 +2251,11 @@ const submitToFhlmc = function* submitToFhlmc(action) {
             break;
           }
         }
+        const eligibiltyresponse = yield call(Api.callGetText, `/api/dataservice/api/fetchCaseEligibilityIndicator?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}`);
+        yield put({
+          type: GET_ELIGIBLE_DATA,
+          payload: eligibiltyresponse,
+        });
       } sweetAlert = {
         level,
         status: message,
