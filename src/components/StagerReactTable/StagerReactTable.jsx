@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unused-state */
-/* eslint-disable no-restricted-syntax */
 import Checkbox from '@material-ui/core/Checkbox';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -23,15 +20,6 @@ const handleRowValue = value => (value.startsWith('cmod') ? 'Unassign' : value);
 class StagerReactTable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      page: 0,
-      pageSizeOptions: [5, 10, 20, 25, 50, 100],
-      pageSize: 5,
-      totalRecords: 0,
-      numberOfPages: 0,
-      tableData: [
-      ],
-    };
     this.getCheckBox = this.getCheckBox.bind(this);
   }
 

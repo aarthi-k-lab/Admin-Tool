@@ -20,6 +20,7 @@ const getSearchStagerLoanNumber = state => (state.stager && state.stager.searchS
 const getAzureSearchToggle = state => R.pathOr(false, ['stager', 'azureSearchToggle'], state);
 const getDelayCheckList = state => R.path(['stager', 'delayCheckList'], state);
 const getDelayCheckListHistory = state => R.pathOr([], ['stager', 'delayCheckListHistory'], state);
+const showRefreshButton = state => R.contains(R.pathOr(null, ['stager', 'data', 'stagerTaskStatus'], state), ['To Order', 'Ordered']);
 
 const selectors = {
   getAzureSearchToggle,
@@ -39,6 +40,7 @@ const selectors = {
   getTaskName,
   getDelayCheckList,
   getDelayCheckListHistory,
+  showRefreshButton,
 };
 
 export default selectors;

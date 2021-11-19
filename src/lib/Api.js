@@ -53,6 +53,13 @@ const callPost = function callPost(endpoint, body, params = {}) {
     .then((response) => {
       if (R.prop('ok', response)
         || R.contains(R.prop('status', response), postResponseCodes)) {
+        if (R.equals(R.prop('status', response), 202)) {
+          return {
+            statusCode: 202,
+            status: 'Accepted',
+            ...body,
+          };
+        }
         if (R.equals(R.prop('status', response), 204)) {
           return {
             statusCode: 204,

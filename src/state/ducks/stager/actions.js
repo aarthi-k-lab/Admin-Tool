@@ -9,10 +9,16 @@ import {
   STORE_DELAY_CHECKLIST,
   FETCH_DELAY_CHECKLIST_HISTORY,
   STORE_DELAY_CHECKLIST_HISTORY,
+  REFRESH_STAGER_TILE,
 } from './types';
 
 const triggerDashboardCounts = () => ({
   type: GET_DASHBOARD_COUNTS_SAGA,
+});
+
+
+const refreshStagerTile = () => ({
+  type: REFRESH_STAGER_TILE,
 });
 
 const triggerDashboardDataFetch = payload => ({
@@ -135,4 +141,5 @@ export {
   storeDelayCheckList,
   fetchDelayCheckListHistory,
   storeDelayCheckListHistory,
+  refreshStagerTile,
 };

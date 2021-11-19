@@ -17,11 +17,14 @@ import {
   azureSearchToggle,
   fetchStagerPayload,
   saveDelayChecklistData,
+  refreshStagerTile,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
   triggerDashboardCounts(),
 );
+
+const onRefreshStagerTile = dispatch => () => dispatch(refreshStagerTile());
 const getDashboardData = dispatch => payload => dispatch(triggerDashboardDataFetch(payload));
 const onDownloadData = dispatch => payload => dispatch(triggerDownloadDataFetch(payload));
 const onCheckBoxClick = dispatch => selectedData => dispatch(
@@ -78,6 +81,7 @@ const operations = {
   onClearStagerResponse,
   onLoansSubmit,
   setDelayChecklistData,
+  onRefreshStagerTile,
 };
 
 export default operations;

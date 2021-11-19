@@ -15,6 +15,7 @@ import {
 import { selectors as dashboardSelectors } from 'ducks/dashboard/index';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index';
 import { ERROR, SUCCESS } from 'constants/common';
+import { statusMessage } from 'constants/stager';
 import {
   GET_DASHBOARD_COUNTS_SAGA,
   GET_DOWNLOAD_DATA_SAGA,
@@ -35,6 +36,7 @@ import {
   FETCH_STAGER_PAYLOAD,
   SAVE_DELAY_CHECKLIST_DATA,
   FETCH_DELAY_CHECKLIST_HISTORY,
+  REFRESH_STAGER_TILE,
 } from './types';
 
 import selectors from './selectors';
@@ -429,6 +431,31 @@ export const fetchDelayCheckListHistory = function* fetchDelayCheckListHistory()
   }
 };
 
+function* refreshStagerTile() {
+  try {
+    const stagerType = yield select(selectors.getStagerValue);
+    const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
+    const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
+    const payload = buildDateObj(stagerType, stagerStartEndDate, activeSearchTerm);
+    const response = yield call(Api.callPost, 'api/stager/dashboard/refreshStagerTile', payload);
+
+    const statusCode = R.propOr(500, 'statusCode', response);
+    const snackBarData = {
+      message: R.prop(statusCode, statusMessage),
+      type: R.equals(statusCode, 202) ? SUCCESS : ERROR,
+      open: true,
+    };
+    yield call(fireSnackBar, snackBarData);
+  } catch (e) {
+    const snackBarData = {
+      message: 'Stager refresh failed',
+      type: ERROR,
+      open: true,
+    };
+    yield call(fireSnackBar, snackBarData);
+  }
+}
+
 function* watchDashboardCountsFetch() {
   yield takeEvery(GET_DASHBOARD_COUNTS_SAGA, fetchDashboardCounts);
 }
@@ -470,7 +497,12 @@ function* watchFetchDelayCheckListHistory() {
   yield takeEvery(FETCH_DELAY_CHECKLIST_HISTORY, fetchDelayCheckListHistory);
 }
 
+function* watchRefreshStagerTile() {
+  yield takeEvery(REFRESH_STAGER_TILE, refreshStagerTile);
+}
+
 export const TestExports = {
+  watchRefreshStagerTile,
   watchDashboardCountsFetch,
   watchDashboardDataFetch,
   watchDownloadDataFetch,
@@ -493,6 +525,7 @@ export const TestExports = {
 
 export function* combinedSaga() {
   yield all([
+    watchRefreshStagerTile(),
     watchDashboardCountsFetch(),
     watchDownloadDataFetch(),
     watchDashboardDataFetch(),
