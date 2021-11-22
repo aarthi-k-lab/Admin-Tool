@@ -74,6 +74,7 @@ import {
   SHOW_LOADER,
   HIDE_LOADER,
   SET_REQUEST_TYPE_DATA,
+  SET_EVALID,
 } from './types';
 
 
@@ -268,6 +269,11 @@ const completeMyReview = disposition => ({
   payload: disposition,
 });
 
+const onEvalSubmitAction = payload => ({
+  type: SET_EVALID,
+  payload,
+});
+
 const onLoansSubmitAction = payload => ({
   type: SET_ADD_DOCS_IN,
   payload,
@@ -279,6 +285,11 @@ const onCoviusBulkSubmit = payload => ({
 });
 
 const onLoanValidationError = payload => ({
+  type: SET_RESULT_OPERATION,
+  payload,
+});
+
+const onEvalValidationError = payload => ({
   type: SET_RESULT_OPERATION,
   payload,
 });
@@ -469,8 +480,10 @@ export {
   cleanResult,
   continueMyReview,
   completeMyReview,
+  onEvalSubmitAction,
   onLoansSubmitAction,
   onLoanValidationError,
+  onEvalValidationError,
   setBeginSearchAction,
   pageType,
   clearUserNotifyMsg,

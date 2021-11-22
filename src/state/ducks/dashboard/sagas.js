@@ -143,6 +143,8 @@ import {
   DISMISS_USER_NOTIFICATION,
   FETCH_EVAL_CASE,
   GET_ELIGIBLE_DATA,
+  SET_EVALID,
+  SET_VALID_EVALDATA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -175,6 +177,7 @@ const {
     MSG_FILE_UPLOAD_FAILURE,
     MSG_FILE_DOWNLOAD_FAILURE,
     MSG_SENDTOCOVIUS_FAILED,
+    MSG_SENDTOEVAL_FAILED,
   },
 } = DashboardModel;
 
@@ -2413,6 +2416,30 @@ const onDownloadFile = function* onDownloadFile(action) {
   }
 };
 
+const onSubmitEval = function* onSubmitEval(action) {
+  const evalId = R.pathOr([], ['evalId'], action.payload);
+  const taskName = R.pathOr('', ['taskName'], action.payload);
+  const body = {
+    evalId,
+    taskName,
+  };
+  const response = yield call(Api.callPost, '/api/release/api/process/validateEligibleTask', body);
+  if (response.length > 0 && response != null) {
+    yield put({
+      type: SET_VALID_EVALDATA,
+      payload: response,
+    });
+  } else {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        status: MSG_SENDTOEVAL_FAILED,
+        level: LEVEL_FAILED,
+      },
+    });
+  }
+};
+
 function* watchSubmitToFhlmc() {
   yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
 }
@@ -2498,6 +2525,9 @@ function* watchOnDownloadFile() {
   yield takeEvery(DOWNLOAD_FILE, onDownloadFile);
 }
 
+function* watchonSubmitEval() {
+  yield takeEvery(SET_EVALID, onSubmitEval);
+}
 function* watchOnWidgetClick() {
   yield takeEvery(ASSIGN_BOOKING_LOAN, assignBookingLoan);
 }
@@ -2570,6 +2600,8 @@ export const TestExports = {
   watchOnDownloadFile,
   assignBookingLoan,
   watchLoanviewTombstoneData,
+  watchonSubmitEval,
+  onSubmitEval,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -2612,5 +2644,6 @@ export const combinedSaga = function* combinedSaga() {
     watchAdditionalInfo(),
     watchEvalRowSelect(),
     watchLoanviewTombstoneData(),
+    watchonSubmitEval(),
   ]);
 };

@@ -2253,3 +2253,11 @@ describe('unassignBookingLoan : Failed', () => {
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));
   });
 });
+
+describe('watch Submit EvalIds ', () => {
+  it('should trigger onSubmitEval worker', () => {
+    const saga = cloneableGenerator(TestExports.watchonSubmitEval)();
+    expect(saga.next().value)
+      .toEqual(takeEvery(actionTypes.SET_EVALID, TestExports.onSubmitEval));
+  });
+});

@@ -16,8 +16,13 @@ const MSG_CAN_UNASSIGN = 'Please click Unassign to unassign the task from the us
 const MSG_CANNOT_UNASSIGN = 'Please note only Manager can unassign the task.';
 const MSG_SHOULD_ASSIGN = 'WARNING – You are not assigned to this task. Please select “Assign to Me” to begin working.';
 const MSG_DSPN_SUCCESS = 'The task has been dispositioned successfully with disposition';
+const MSG_SENDTOEVAL_FAILED = 'Unable to send to Activate Service at this time. Please try again later';
 const MSG_VALIDATION_SUCCESS = 'Validation successful!';
 const MSG_UPDATED_REMEDY = 'Successfully Updated Remedy';
+const MSG_VALIDATION_FAILED = 'Please enter eval Id(s) in correct format. Only comma and newline separated loan numbers are accepted.';
+const MSG_LIMIT_EXCEED = 'Please enter a maximum of 50 evalIds.';
+const MSG_INVALID_TASKNAME = 'Please enter valid task name';
+const MSG_NULL_REQUEST = 'Please enter a eval Id.';
 const SUCCESS_MESSAGES = [MSG_VALIDATION_SUCCESS, MSG_UPDATED_REMEDY];
 
 function reduceMessageListToMessage(acc, msg) {
@@ -103,8 +108,13 @@ const Messages = {
   MSG_FILE_UPLOAD_FAILURE,
   MSG_FILE_DOWNLOAD_FAILURE,
   MSG_SENDTOCOVIUS_FAILED,
+  MSG_SENDTOEVAL_FAILED,
   MSG_NO_TASKS_FOUND,
   MSG_TASK_FETCH_ERROR,
+  MSG_VALIDATION_FAILED,
+  MSG_INVALID_TASKNAME,
+  MSG_LIMIT_EXCEED,
+  MSG_NULL_REQUEST,
 };
 
 export default Messages;

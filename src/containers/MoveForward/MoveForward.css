@@ -1,25 +1,146 @@
-.move-forward-main {
+.landing-page {
+  align-items: center;
+  background-color: var(--grey-200);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing-page span {
+  color: var(--grey-500);
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+.title-row {
+  padding: 0 0% 0 6%;
+}
+
+.title-row > :last-child {
+  border-radius: 0;
+}
+
+.main {
   margin: 20px;
 }
 
-.move-forward-table-container {
-  display: flex;
-  flex-grow: 1;
+.interactive-button {
+  position: relative;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.move-forward-height-limiter {
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.pid-textbox {
+  /* width: 25vw; */
+  width: 98%;
+  height: 70%;
+}
+
+.page-header {
+  font-size: 1.3rem;
+  padding: 1rem 2rem;
+}
+
+.table-container {
+  display: flex;
+  flex-grow: 1;
+  max-width: 100%;
+  padding-left: 1rem;
+}
+
+.height-limiter {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
-  width: 0;
+  width: fit-content;
 }
 
-.move-forward-message {
-  align-self: center;
+.message {
+  align-self: right;
 }
 
-.move-forward-table {
+.eval-Ids {
+  font-size: 1.1rem;
+  padding-left: 0.7rem;
+}
+
+.table {
   flex-basis: 100%;
   height: 0;
-  margin: 0 0.5rem;
+  text-align: left !important;
+}
+
+.regColumn {
+  width: 15%;
+}
+
+.statusColumn {
+  width: 55%;
+}
+
+.download-btn {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.download-icon {
+  width: 1.2rem;
+  margin-left: 0.3rem;
+}
+
+.backButton {
+  margin-left: -1rem;
+  font-size: 14px;
+  padding-top: 0.2rem;
+}
+
+.backButton a {
+  color: rgb(50, 148, 185) !important;
+  text-decoration: none;
+}
+
+.status-details-parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  height: 100%;
+  background-color: #eaeaea;
+}
+
+.status-details {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  width: 95%;
+  margin: auto;
+  padding-top: 0.2rem;
+  padding-bottom: 0.5rem;
+}
+
+.eval-activity {
+  align-self: stretch;
+  height: 93%;
+}
+
+.drop-down-select {
+  max-width: 27rem !important;
+  margin: 1.25rem 0rem 0rem 0rem !important;
+}
+
+.investorLabel {
+  font-size: 1.25rem !important;
+  margin: 2rem 2rem 2rem 2rem !important;
+  white-space: nowrap;
+}
+
+.text-field {
+  height: 98% !important;
+  width: 100% !important;
+  resize: none;
 }

@@ -27,7 +27,9 @@ import {
   cleanResult,
   continueMyReview,
   completeMyReview,
+  onEvalSubmitAction,
   onLoansSubmitAction,
+  onEvalValidationError,
   onLoanValidationError,
   setBeginSearchAction,
   pageType,
@@ -220,6 +222,11 @@ const onCompleteMyReview = dispatch => (disposition) => {
   dispatch(completeMyReview(disposition));
 };
 
+const onEvalSubmit = dispatch => (payload) => {
+  console.log('OnevalSubmit operations');
+  dispatch(onEvalSubmitAction(payload));
+};
+
 const onLoansSubmit = dispatch => (payload) => {
   dispatch(onLoansSubmitAction(payload));
 };
@@ -240,6 +247,10 @@ const onSubmitToFhlmcRequest = dispatch => (selectedRequestType,
 
 const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
+};
+
+const onFailedEvalValidation = dispatch => (payload) => {
+  dispatch(onEvalValidationError(payload));
 };
 
 const openSweetAlert = dispatch => (sweetAlertPayload) => {
@@ -405,8 +416,10 @@ const operations = {
   onCleanResult,
   onContinueMyReview,
   onCompleteMyReview,
+  onEvalSubmit,
   onLoansSubmit,
   onFailedLoanValidation,
+  onFailedEvalValidation,
   setBeginSearch,
   setPageType,
   onLoansSubmitStager,

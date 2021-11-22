@@ -109,6 +109,7 @@ const incentiveTaskCodes = state => R.pathOr({}, ['dashboard', 'incentiveTaskCod
 const errorBanner = state => R.pathOr({}, ['dashboard', 'banner'], state);
 const showBanner = state => R.pathOr(false, ['dashboard', 'showBanner'], state);
 const enableLockButton = state => R.pathOr(false, ['dashboard', 'enableLockButton'], state);
+
 // eslint-disable-next-line
 const getChecklistDiscrepancies = state => (state.dashboard && state.dashboard.checklistDiscrepancies ? state.dashboard.checklistDiscrepancies : {});
 
@@ -162,6 +163,8 @@ const getUserNotification = state => R.pathOr(0, ['dashboard', 'userNotification
 const eligibleData = state => R.pathOr([], ['dashboard', 'eligibleData'], state);
 
 const getRequestTypeData = state => R.pathOr('', ['dashboard', 'setRequestTypeData'], state);
+
+const getEvalStatus = state => R.pathOr([], ['dashboard', 'evalStatusData'], state);
 
 const selectors = {
   getUserNotification,
@@ -256,6 +259,7 @@ const selectors = {
   resolutionId,
   eligibleData,
   getRequestTypeData,
+  getEvalStatus,
 };
 
 export default selectors;

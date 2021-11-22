@@ -94,6 +94,7 @@ import {
   SET_RESOLUTION_AND_INVSTR_HRCHY,
   GET_ELIGIBLE_DATA,
   SET_REQUEST_TYPE_DATA,
+  SET_VALID_EVALDATA,
 } from './types';
 
 const reducer = (state = {
@@ -952,6 +953,16 @@ const reducer = (state = {
       return {
         ...state,
         eligibleData: action.payload,
+      };
+    }
+
+    case SET_VALID_EVALDATA: {
+      const evalStatusData = action.payload;
+      const resultOperation = {};
+      return {
+        ...state,
+        evalStatusData,
+        resultOperation,
       };
     }
 
