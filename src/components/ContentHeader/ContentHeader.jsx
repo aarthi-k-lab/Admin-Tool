@@ -7,7 +7,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import Switch from '@material-ui/core/Switch';
-import Button from '@material-ui/core/Button';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
 import { selectors as configSelectors } from 'ducks/config';
 import { selectors as loginSelectors } from 'ducks/login';
@@ -38,8 +37,7 @@ const ContentHeader = ({
   handleClick, showAddButton, group,
   onAutoSave, onEndShift, enableGetNext, evalId,
   isAssigned, handleToggle, azureSearchToggle,
-  features, userGroupList, toggleButton,
-  showRefreshButton, onRefreshStagerTile,
+  features, isUtilGroupPresent, toggleButton,
 }) => (
   <header styleName="content-header">
     {group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER ? (
@@ -51,7 +49,7 @@ const ContentHeader = ({
           isAssigned)}
         to={renderBackButtonPage}
       >
-          &lt; BACK
+        &lt; BACK
       </Link>
     ) : null}
 
@@ -78,30 +76,20 @@ const ContentHeader = ({
         <AddIcon />
       </Fab>
     )}
-    {R.propOr(false, 'azureSearchToggle', features) && userGroupList.includes('util-mgr') && toggleButton && (
-    <>
-      <h4>Azure Search</h4>
-      <h4>NO</h4>
-      <Switch
-        checked={azureSearchToggle}
-        color="primary"
-        inputProps={{ 'aria-label': 'primary checkbox' }}
-        name="toggleEL"
-        onChange={event => handleAzureToggle(event, handleToggle)}
-      />
-      <h4>YES</h4>
+    {R.propOr(false, 'azureSearchToggle', features) && isUtilGroupPresent && toggleButton && (
+      <>
+        <h4>Azure Search</h4>
+        <h4>NO</h4>
+        <Switch
+          checked={azureSearchToggle}
+          color="primary"
+          inputProps={{ 'aria-label': 'primary checkbox' }}
+          name="toggleEL"
+          onChange={event => handleAzureToggle(event, handleToggle)}
+        />
+        <h4>YES</h4>
 
-    </>
-    )}
-    {userGroupList.includes('stager-mgr') && showRefreshButton
-    && (
-      <Button
-        onClick={onRefreshStagerTile}
-        style={{ marginLeft: '2rem' }}
-        variant="contained"
-      >
-        Refresh
-      </Button>
+      </>
     )}
     <span styleName="spacer" />
     {children}
@@ -120,8 +108,6 @@ ContentHeader.defaultProps = {
   isAssigned: false,
   onAutoSave: () => { },
   onEndShift: () => { },
-  userGroupList: [],
-  showRefreshButton: false,
 };
 
 ContentHeader.propTypes = {
@@ -135,14 +121,12 @@ ContentHeader.propTypes = {
   handleClick: PropTypes.func,
   handleToggle: PropTypes.func.isRequired,
   isAssigned: PropTypes.bool,
+  isUtilGroupPresent: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func,
   onEndShift: PropTypes.func,
-  onRefreshStagerTile: PropTypes.func.isRequired,
   showAddButton: PropTypes.bool,
-  showRefreshButton: PropTypes.bool,
   title: PropTypes.string,
   toggleButton: PropTypes.bool.isRequired,
-  userGroupList: PropTypes.arrayOf(PropTypes.string),
 };
 
 const mapStateToProps = state => ({
@@ -151,15 +135,13 @@ const mapStateToProps = state => ({
   isAssigned: selectors.isAssigned(state),
   azureSearchToggle: stagerSelectors.getAzureSearchToggle(state),
   features: configSelectors.getFeatures(state),
-  userGroupList: loginSelectors.getGroupList(state),
-  showRefreshButton: stagerSelectors.showRefreshButton(state),
+  isUtilGroupPresent: loginSelectors.isUtilGroupPresent(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   handleToggle: stagerOperations.handleAzureSearchToggle(dispatch),
-  onRefreshStagerTile: stagerOperations.onRefreshStagerTile(dispatch),
 });
 const TestExports = {
   ContentHeader,

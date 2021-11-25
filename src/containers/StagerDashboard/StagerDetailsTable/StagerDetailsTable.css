@@ -90,3 +90,12 @@
   font-size: 0.7rem;
   padding: 0.2rem;
 }
+
+.get-next.get-next {
+  float: right !important;
+}
+
+.get-next.get-next:hover {
+  background-color: var(--blue-900);
+}
+

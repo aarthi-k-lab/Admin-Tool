@@ -12,6 +12,7 @@ import { CSVLink } from 'react-csv';
 import CustomReactTable from 'components/CustomReactTable';
 import StagerReactTable from 'components/StagerReactTable';
 import { selectors as stagerSelectors, operations as stagerOperations } from 'ducks/stager';
+import { selectors as loginSelectors } from 'ducks/login';
 import renderSkeletonLoader from './TableSkeletonLoader';
 import StagerPopup from '../StagerPopUp';
 
@@ -123,6 +124,7 @@ class StagerDetailsTable extends React.PureComponent {
       data, loading,
       onOrderClick, selectedData, popupData, docGenAction,
       downloadedData, getActiveSearchTerm, getStagerValue,
+      showRefreshButton, onRefreshStagerTile, userGroupList,
     } = this.props;
     const downloadFileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
     const displayLastUpdatedDate = ['Completed', 'Ordered'];
@@ -187,6 +189,17 @@ class StagerDetailsTable extends React.PureComponent {
                     <DownloadIcon styleName="details-table-download-icon" />
                     {' DOWNLOAD'}
                   </Button>
+                  {userGroupList.includes('stager-mgr') && showRefreshButton
+                    && (
+                      <Button
+                        onClick={onRefreshStagerTile}
+                        style={{ marginLeft: '2rem' }}
+                        styleName="get-next"
+                        variant="contained"
+                      >
+                        Refresh
+                      </Button>
+                    )}
                   <CSVLink
                     // eslint-disable-next-line no-return-assign
                     ref={e => this.csvLink = e}
@@ -224,6 +237,8 @@ const TestExports = {
 
 StagerDetailsTable.defaultProps = {
   popupData: [],
+  userGroupList: [],
+  showRefreshButton: false,
 };
 
 StagerDetailsTable.propTypes = {
@@ -240,6 +255,7 @@ StagerDetailsTable.propTypes = {
   onClearDocGenAction: PropTypes.func.isRequired,
   onDownloadData: PropTypes.func.isRequired,
   onOrderClick: PropTypes.func.isRequired,
+  onRefreshStagerTile: PropTypes.func.isRequired,
   onSelectAll: PropTypes.func.isRequired,
   popupData: PropTypes.arrayOf(
     PropTypes.shape({
@@ -247,8 +263,10 @@ StagerDetailsTable.propTypes = {
     }),
   ),
   selectedData: PropTypes.shape().isRequired,
+  showRefreshButton: PropTypes.bool,
   triggerDispositionOperationCall: PropTypes.func.isRequired,
   triggerStagerGroup: PropTypes.func.isRequired,
+  userGroupList: PropTypes.arrayOf(PropTypes.string),
 };
 
 const mapStateToProps = state => ({
@@ -259,6 +277,8 @@ const mapStateToProps = state => ({
   getSearchStagerLoanNumber: stagerSelectors.getSearchStagerLoanNumber(state),
   getStagerSearchResponse: stagerSelectors.getStagerSearchResponse(state),
   azureSearchToggle: stagerSelectors.getAzureSearchToggle(state),
+  userGroupList: loginSelectors.getGroupList(state),
+  showRefreshButton: stagerSelectors.showRefreshButton(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -266,6 +286,7 @@ const mapDispatchToProps = dispatch => ({
   onClearDocGenAction: stagerOperations.onClearDocGenAction(dispatch),
   onDownloadData: stagerOperations.onDownloadData(dispatch),
   triggerStagerGroup: stagerOperations.triggerStagerGroup(dispatch),
+  onRefreshStagerTile: stagerOperations.onRefreshStagerTile(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StagerDetailsTable);
