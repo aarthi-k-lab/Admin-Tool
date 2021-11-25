@@ -17,10 +17,7 @@ function mock() {
   },
   {
     groupName: 'fhlmcresolve'
-  },
-  {
-    groupName: 'util'
-  }, {
+  },{
     groupName: 'booking'
   }, {
     groupName: 'booking-mgr'

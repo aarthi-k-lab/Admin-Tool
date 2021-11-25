@@ -22,7 +22,7 @@ const moveForward = {
   path: '/move-forward',
   name: 'move-forward',
   img: '/static/img/move_forward.svg',
-  groups: ['util-mgr', 'allaccess'],
+  groups: ['util-mgr'],
 };
 
 const docProcessor = {

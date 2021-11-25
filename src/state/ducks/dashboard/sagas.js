@@ -2419,9 +2419,12 @@ const onDownloadFile = function* onDownloadFile(action) {
 const onSubmitEval = function* onSubmitEval(action) {
   const evalId = R.pathOr([], ['evalId'], action.payload);
   const taskName = R.pathOr('', ['taskName'], action.payload);
+  const user = yield select(loginSelectors.getUser);
+  const userEmail = R.path(['userDetails', 'email'], user);
   const body = {
     evalId,
     taskName,
+    userEmail,
   };
   const response = yield call(Api.callPost, '/api/release/api/process/validateEligibleTask', body);
   if (response.length > 0 && response != null) {
