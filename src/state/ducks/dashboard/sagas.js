@@ -400,6 +400,7 @@ function* onSearchWithTask(payload) {
       rowData.taskIterationCounter = bpmTaskDetail.currentTaskIterationCounter;
       rowData.taskName = bpmTaskDetail.taskName;
       rowData.taskStatus = bpmTaskDetail.currentStatus;
+      rowData.PID = bpmTaskDetail.processId;
       if (rowData['Assigned To']) {
         rowData['Assigned To'] = rowData['Assigned To'].startsWith('cmod-') ? 'In Queue' : rowData['Assigned To'];
       }
