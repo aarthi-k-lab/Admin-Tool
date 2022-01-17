@@ -39,8 +39,8 @@ class FHLMCWidget extends Component {
 
   renderCategoryDropDown = () => {
     const { investorEvents, stagerTaskName, requestTypeData } = this.props;
-    const requestType = R.compose(R.uniq, R.pluck('requestType'), R.flatten)(investorEvents);
-    const handledRequestType = !R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement') ? R.reject(R.equals('SETReq'))(requestType) : requestType;
+    const requestType = R.project(['requestType', 'displayText'], investorEvents);
+    const handledRequestType = !R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement') ? R.reject(e => e.requestType === 'SETReq')(requestType) : requestType;
     return (
       <>
         <div styleName="requestCategoryDropdown">
@@ -72,9 +72,9 @@ class FHLMCWidget extends Component {
               styleName="drop-down-select"
               value={requestTypeData}
             >
-              {handledRequestType.map(item => (
-                <MenuItem key={item} value={item}>
-                  {item}
+              {handledRequestType && handledRequestType.map(item => (
+                <MenuItem key={item.requestType} value={item.requestType}>
+                  {item.displayText}
                 </MenuItem>
               ))}
             </Select>

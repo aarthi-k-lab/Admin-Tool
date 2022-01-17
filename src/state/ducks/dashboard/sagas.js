@@ -1829,7 +1829,16 @@ function* onSelectTrialTask(payload) {
 
 function* populateInvestorDropdown() {
   try {
-    const response = yield call(Api.callGet, '/api/dataservice/api/InvestorRequestType/FHLMC');
+    const responseMapper = item => ({
+      portfolioCode: item.className,
+      requestType: item.classCode,
+      activeIndicator: item.activeIndicator,
+      displayText: item.displayText,
+    });
+    let response = yield call(Api.callGet, '/api/dataservice/api/classCodes/FHLMC');
+    if (response && response.length > 0) {
+      response = R.map(responseMapper, response);
+    }
     yield put({
       type: SAVE_INVESTOR_EVENTS_DROPDOWN,
       payload: response,

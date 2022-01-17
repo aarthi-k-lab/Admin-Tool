@@ -115,7 +115,7 @@ class FhlmcResolve extends React.PureComponent {
   renderCategoryDropDown = () => {
     const { selectedRequestType } = this.state;
     const { investorEvents } = this.props;
-    const requestType = R.compose(R.uniq, R.pluck('requestType'), R.flatten)(investorEvents);
+    const requestType = R.project(['requestType', 'displayText'], investorEvents);
     return (
       <FormControl variant="outlined">
         <Select
@@ -126,9 +126,9 @@ class FhlmcResolve extends React.PureComponent {
           styleName="drop-down-select"
           value={selectedRequestType}
         >
-          {requestType.map(item => (
-            <MenuItem key={item} value={item}>
-              {item}
+          {requestType && requestType.map(item => (
+            <MenuItem key={item.requestType} value={item.requestType}>
+              {item.displayText}
             </MenuItem>
           ))}
         </Select>
