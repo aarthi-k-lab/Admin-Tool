@@ -36,7 +36,6 @@
 }
 
 .pid-textbox {
-  /* width: 25vw; */
   width: 98%;
   height: 70%;
 }
@@ -130,7 +129,7 @@
 
 .drop-down-select {
   max-width: 27rem !important;
-  margin: 1.25rem 0rem 0rem 0rem !important;
+  margin: 1.25rem 0 0 0 !important;
 }
 
 .investorLabel {

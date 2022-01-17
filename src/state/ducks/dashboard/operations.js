@@ -223,7 +223,6 @@ const onCompleteMyReview = dispatch => (disposition) => {
 };
 
 const onEvalSubmit = dispatch => (payload) => {
-  console.log('OnevalSubmit operations');
   dispatch(onEvalSubmitAction(payload));
 };
 
