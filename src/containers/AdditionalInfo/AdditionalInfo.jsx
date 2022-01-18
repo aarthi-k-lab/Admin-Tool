@@ -9,7 +9,6 @@ import Tabs from '@material-ui/core/Tabs';
 import ListIcon from '@material-ui/icons/List';
 import Typography from '@material-ui/core/Typography';
 import * as R from 'ramda';
-import DashboardModel from '../../models/Dashboard';
 import { selectors, operations } from '../../state/ducks/dashboard';
 import EvalTable from './EvalTable';
 import Cards from './Cards';
@@ -86,7 +85,7 @@ class AdditionalInfo extends React.Component {
 
   render() {
     const {
-      evalCaseDetails, index, type, caseDetails, groupName, checklistHistory,
+      evalCaseDetails, index, type, caseDetails, checklistHistory,
     } = this.props;
     let sortedcaseDetailsByDesc = R.sort(R.descend(
       R.compose(
@@ -128,8 +127,7 @@ class AdditionalInfo extends React.Component {
                   variant="standard"
                 >
                   <Tab label="Cases" styleName="cardTab" {...this.a11yProps(0)} />
-                  {(groupName === DashboardModel.UWSTAGER || R.length(checklistHistory) > 0)
-                  && <Tab label="Delay Checklist History" styleName="cardTab" {...this.a11yProps(0)} />}
+                  <Tab label="Delay Checklist History" styleName="cardTab" {...this.a11yProps(0)} />
                 </Tabs>
               </AppBar>
               <TabPanel index={0} styleName="overFlowStyles" value={value}>
@@ -143,15 +141,12 @@ class AdditionalInfo extends React.Component {
                     />
                   ))}
               </TabPanel>
-              {groupName === DashboardModel.UWSTAGER || R.length(checklistHistory) > 0
-                ? (
-                  <TabPanel index={1} styleName="overFlowStyles" value={value}>
-                    { checklistHistory && R.length(checklistHistory) > 0
-                      ? checklistHistory.map(history => (
-                        <DelayChecklistHistoy history={history} />
-                      )) : this.renderNoHistory()}
-                  </TabPanel>
-                ) : null }
+              <TabPanel index={1} styleName="overFlowStyles" value={value}>
+                { checklistHistory && R.length(checklistHistory) > 0
+                  ? checklistHistory.map(history => (
+                    <DelayChecklistHistoy history={history} />
+                  )) : this.renderNoHistory()}
+              </TabPanel>
             </Grid>
           </Grid>
         </>

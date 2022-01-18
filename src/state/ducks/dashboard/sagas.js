@@ -23,7 +23,7 @@ import {
   actions as checklistActions,
   selectors as checklistSelectors,
 } from 'ducks/tasks-and-checklist/index';
-import { storeDelayCheckList } from 'ducks/stager/actions';
+import { storeDelayCheckList, storeDelayCheckListHistory } from 'ducks/stager/actions';
 import * as XLSX from 'xlsx';
 import AppGroupName from 'models/AppGroupName';
 import EndShift from 'models/EndShift';
@@ -253,6 +253,12 @@ const fetchCaseDetails = function* fetchCaseDetails(action) {
         type: SET_EVAL_INDEX,
         payload: { index, evalId },
       });
+    }
+    const checkListHistory = yield call(Api.callGet, `/api/dataservice/delayCheckList/history/${evalId}`);
+    if (checkListHistory) {
+      yield put(storeDelayCheckListHistory(checkListHistory));
+    } else {
+      yield put(storeDelayCheckListHistory([]));
     }
   } catch (ex) {
     yield put({
