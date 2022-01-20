@@ -15,7 +15,7 @@ import { operations, selectors } from '../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
 import './StagerReactTable.css';
 
-const handleRowValue = value => (value.startsWith('cmod') ? 'Unassign' : value);
+const handleRowValue = value => (value && value.startsWith('cmod') ? 'Unassign' : value);
 
 class StagerReactTable extends React.PureComponent {
   constructor(props) {
@@ -33,7 +33,7 @@ class StagerReactTable extends React.PureComponent {
       return `${pointerStyle} days-until-sla-red`;
     }
     if (value === 0) {
-      return `${pointerStyle}days-until-sla-gray`;
+      return `${pointerStyle} days-until-sla-gray`;
     }
     return `${pointerStyle} tableRow`;
   }
