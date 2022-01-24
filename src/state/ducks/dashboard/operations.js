@@ -70,6 +70,8 @@ import {
   dismissUserNotification,
   unassignBookingLoan,
   setRequestTypeDataAction,
+  onFHLMCModHistoryPopup,
+  onTablePopupClose,
 } from './actions';
 
 import {
@@ -232,6 +234,18 @@ const onLoansSubmit = dispatch => (payload) => {
 
 const onCoviusCasesSubmit = dispatch => (payload) => {
   dispatch(onCoviusBulkSubmit(payload));
+};
+
+const onFHLMCModHistory = dispatch => () => {
+  dispatch(onFHLMCModHistoryPopup());
+};
+
+const onTablePopupDataClear = dispatch => () => {
+  dispatch(onTablePopupClose());
+};
+
+const onPopupClose = dispatch => () => {
+  dispatch(onClearPopupDataAction());
 };
 
 const onFhlmcCasesSubmit = dispatch => (payload) => {
@@ -450,6 +464,9 @@ const operations = {
   onEvalRowSelect,
   setTombstoneDataForLoanView,
   onFhlmcCasesSubmit,
+  onFHLMCModHistory,
+  onTablePopupDataClear,
+  onPopupClose,
   setRequestTypeDataOperation,
 };
 

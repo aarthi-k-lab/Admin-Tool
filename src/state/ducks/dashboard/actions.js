@@ -75,6 +75,8 @@ import {
   HIDE_LOADER,
   SET_REQUEST_TYPE_DATA,
   SET_EVALID,
+  GET_FHLMC_MOD_HISTORY,
+  CLEAR_POPUP_TABLE_DATA,
 } from './types';
 
 
@@ -223,6 +225,14 @@ const clearBulkUploadDataAction = () => ({
 const onFhlmcCasesBulkSubmit = payload => ({
   type: PROCESS_FHLMC_RESOSLVE_BULK,
   payload,
+});
+
+const onFHLMCModHistoryPopup = () => ({
+  type: GET_FHLMC_MOD_HISTORY,
+});
+
+const onTablePopupClose = () => ({
+  type: CLEAR_POPUP_TABLE_DATA,
 });
 
 const onSubmitToFhlmcAction = (selectedRequestType, portfolioCode) => ({
@@ -511,6 +521,8 @@ export {
   assignBookingLoan,
   additionalInfo,
   evalSelectRow,
+  onFHLMCModHistoryPopup,
+  onTablePopupClose,
   onFhlmcCasesBulkSubmit,
   setRequestTypeDataAction,
 };

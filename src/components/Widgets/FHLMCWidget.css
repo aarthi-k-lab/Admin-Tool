@@ -71,3 +71,14 @@
   font-size: medium !important;
 
 }
+
+.modHistory {
+  float: right;
+  margin: -20px 10px 0px 10px;
+  cursor: pointer;
+}
+
+.table {
+  flex-basis: 60%;
+  text-align: left !important;
+}

@@ -12,11 +12,15 @@ import Typography from '@material-ui/core/Typography';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import HistoryIcon from '@material-ui/icons/History';
 import './FHLMCWidget.css';
 import * as R from 'ramda';
 import { PropTypes } from 'prop-types';
+import CustomTable from 'components/CustomTable';
+import getters from 'models/Headers';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
 import { ELIGIBLE, INELIGIBLE, NOCALL } from '../../constants/fhlmc';
+import DialogBox from '../DialogBox';
 
 
 const eligibilityIndicator = {
@@ -28,8 +32,13 @@ const eligibilityIndicator = {
 class FHLMCWidget extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isOpen: false,
+    };
     this.handleRequestType = this.handleRequestType.bind(this);
     this.renderCategoryDropDown = this.renderCategoryDropDown.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.getModHistory = this.getModHistory.bind(this);
   }
 
   componentDidMount() {
@@ -37,29 +46,57 @@ class FHLMCWidget extends Component {
     populateInvestorDropdown();
   }
 
+  getModHistory(isOpen) {
+    const { fhlmcModHistoryData } = this.props;
+    return (
+      <DialogBox
+        fullWidth="true"
+        isOpen={isOpen}
+        maxWidth="lg"
+        message={(
+          <CustomTable
+            defaultPageSize={20}
+            loading={R.isNil(fhlmcModHistoryData)}
+            pageSizeOptions={[10, 20, 25, 50, 100]}
+            styleName="table"
+            tableData={fhlmcModHistoryData}
+            tableHeader={getters.getFHLMCModHistoryColumns()}
+          />
+        )}
+        onClose={this.handleDialogClose}
+        title="Mod History"
+      />
+    );
+  }
+
   renderCategoryDropDown = () => {
     const { investorEvents, stagerTaskName, requestTypeData } = this.props;
     const requestType = R.project(['requestType', 'displayText'], investorEvents);
     const handledRequestType = !R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement') ? R.reject(e => e.requestType === 'SETReq')(requestType) : requestType;
+    const { isOpen } = this.state;
     return (
       <>
-        <div styleName="requestCategoryDropdown">
-          <span>
-            {'Request Type'}
-          </span>
-          <span styleName="errorIcon">
-            <Tooltip
-              placement="right-end"
-              title={(
-                <Typography>
-                  This is the type of action or information that you
-                  want to send to FHLMC. What type of message is this?
-                </Typography>
-              )}
-            >
-              <ErrorIcon styleName={!R.isEmpty(requestTypeData) ? 'errorSvgSelected' : 'errorSvg'} />
-            </Tooltip>
-          </span>
+        {this.getModHistory(isOpen)}
+        <div>
+          <div styleName="requestCategoryDropdown">
+            <span>
+              {'Request Type'}
+            </span>
+            <span styleName="errorIcon">
+              <Tooltip
+                placement="right-end"
+                title={(
+                  <Typography>
+                    This is the type of action or information that you
+                    want to send to FHLMC. What type of message is this?
+                  </Typography>
+                )}
+              >
+                <ErrorIcon styleName={!R.isEmpty(requestTypeData) ? 'errorSvgSelected' : 'errorSvg'} />
+              </Tooltip>
+            </span>
+          </div>
+          <Tooltip aria-label="Mod History" classes="tooltip" placement="left" title={<h3>Mod History</h3>}><span styleName="modHistory"><HistoryIcon onClick={() => this.handleDialogData()} /></span></Tooltip>
         </div>
         <div>
           <FormControl variant="outlined">
@@ -108,6 +145,18 @@ class FHLMCWidget extends Component {
       this.onResetClick();
     }
     closeSweetAlert();
+  }
+
+  handleDialogClose = () => {
+    const { onTablePopupDataClear } = this.props;
+    onTablePopupDataClear();
+    this.setState({ isOpen: false });
+  }
+
+  handleDialogData = () => {
+    const { onFhlmcModHistoryPopup } = this.props;
+    onFhlmcModHistoryPopup();
+    this.setState({ isOpen: true });
   }
 
   render() {
@@ -164,13 +213,19 @@ FHLMCWidget.defaultProps = {
   resultOperation: {},
   requestTypeData: '',
   stagerTaskName: {},
+  onFhlmcModHistoryPopup: {},
+  fhlmcModHistoryData: null,
+  onTablePopupDataClear: {},
 };
 
 FHLMCWidget.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
   eligibleData: PropTypes.string.isRequired,
+  fhlmcModHistoryData: PropTypes.arrayOf(PropTypes.shape({})),
   investorEvents: PropTypes.arrayOf(PropTypes.String),
   onFhlmcBulkSubmit: PropTypes.func.isRequired,
+  onFhlmcModHistoryPopup: PropTypes.func,
+  onTablePopupDataClear: PropTypes.func,
   populateInvestorDropdown: PropTypes.func,
   requestTypeData: PropTypes.string,
   resolutionId: PropTypes.string.isRequired,
@@ -191,6 +246,7 @@ FHLMCWidget.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  fhlmcModHistoryData: selectors.getFhlmcModHistory(state),
   investorEvents: selectors.getInvestorEvents(state),
   resultOperation: selectors.resultOperation(state),
   stagerTaskName: selectors.stagerTaskName(state),
@@ -205,6 +261,8 @@ const mapDispatchToProps = dispatch => ({
   populateInvestorDropdown: operations.populateInvestorEvents(dispatch),
   setRequestTypeData: operations.setRequestTypeDataOperation(dispatch),
   onFhlmcBulkSubmit: operations.onFhlmcCasesSubmit(dispatch),
+  onFhlmcModHistoryPopup: operations.onFHLMCModHistory(dispatch),
+  onTablePopupDataClear: operations.onTablePopupDataClear(dispatch),
 });
 
 export { FHLMCWidget };

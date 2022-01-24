@@ -8,12 +8,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const DialogBox = ({
-  isOpen, title, message, onClose,
+  isOpen, title, message, onClose, fullWidth, maxWidth,
 }) => (
   <>
     <Dialog
       aria-describedby="alert-dialog-description"
       aria-labelledby="alert-dialog-title"
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
       open={isOpen}
     >
       <DialogTitle id="alert-dialog-title">
@@ -26,7 +28,7 @@ const DialogBox = ({
       </DialogContent>
       <DialogActions>
         <Button autoFocus color="primary" onClick={onClose}>
-                OK
+          OK
         </Button>
       </DialogActions>
     </Dialog>
@@ -34,12 +36,16 @@ const DialogBox = ({
 );
 
 DialogBox.defaultProps = {
+  fullWidth: undefined,
   isOpen: false,
+  maxWidth: undefined,
   title: 'Message',
 };
 
 DialogBox.propTypes = {
+  fullWidth: PropTypes.string,
   isOpen: PropTypes.bool,
+  maxWidth: PropTypes.string,
   message: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   title: PropTypes.string,

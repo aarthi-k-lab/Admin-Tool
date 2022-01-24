@@ -146,8 +146,61 @@ function getFhlmcColumns(status, selectedRequestType) {
   ];
 }
 
+function getFHLMCModHistoryColumns() {
+  return [
+    {
+      Header: 'Request Type',
+      accessor: 'reqTypeText',
+      minWidth: 50,
+      maxWidth: 140,
+      style: { width: '10%' },
+      headerStyle: { textAlign: 'left' },
+    },
+    {
+      Header: 'Resolution Id',
+      accessor: 'caseId',
+      minWidth: 50,
+      maxWidth: 70,
+      style: { width: '10%' },
+      headerStyle: { textAlign: 'left' },
+    },
+    {
+      Header: 'Date Requested',
+      accessor: 'requestDateTime',
+      minWidth: 50,
+      maxWidth: 100,
+      style: { width: '10%' },
+      headerStyle: { textAlign: 'left' },
+    }, {
+      Header: 'Result',
+      accessor: 'requestStatus',
+      minWidth: 50,
+      maxWidth: 100,
+      style: { width: '10%' },
+      headerStyle: { textAlign: 'left' },
+    },
+    {
+      Header: 'Message',
+      accessor: 'requestStatusMessage',
+      minWidth: 50,
+      maxWidth: 1000,
+      style: { width: '10%', 'white-space': 'unset' },
+      headerStyle: { textAlign: 'left' },
+    },
+    {
+      Header: 'Modification History',
+      accessor: 'modHistory',
+      minWidth: 50,
+      maxWidth: 1000,
+      style: { width: '10%', 'white-space': 'unset' },
+      headerStyle: { textAlign: 'left' },
+    },
+  ];
+}
+
 const getters = {
   getFhlmcColumns,
+  getFHLMCModHistoryColumns,
 };
 
 export default getters;

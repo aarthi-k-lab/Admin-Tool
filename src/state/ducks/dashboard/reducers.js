@@ -90,11 +90,13 @@ import {
   SET_USER_NOTIFICATION,
   DISMISS_USER_NOTIFICATION,
   SET_FHLMC_UPLOAD_RESULT,
+  SET_FHLMC_MOD_HISTORY,
   TOGGLE_BANNER,
   SET_RESOLUTION_AND_INVSTR_HRCHY,
   GET_ELIGIBLE_DATA,
   SET_REQUEST_TYPE_DATA,
   SET_VALID_EVALDATA,
+  CLEAR_POPUP_TABLE_DATA,
 } from './types';
 
 const reducer = (state = {
@@ -697,6 +699,21 @@ const reducer = (state = {
         ...state,
         resultData,
         loading: false,
+      };
+    }
+
+    case SET_FHLMC_MOD_HISTORY: {
+      const popupTableData = action.payload;
+      return {
+        ...state,
+        popupTableData,
+      };
+    }
+
+    case CLEAR_POPUP_TABLE_DATA: {
+      return {
+        ...state,
+        popupTableData: null,
       };
     }
 

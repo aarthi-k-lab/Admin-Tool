@@ -57,6 +57,7 @@ const processName = state => R.pathOr(null, ['dashboard', 'processName'], state)
 const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
 const groupName = state => R.pathOr(null, ['dashboard', 'groupName'], state);
 const getInvestorHierarchy = state => R.pathOr({}, ['dashboard', 'investorHierarchy'], state);
+const getFhlmcModHistory = state => R.pathOr(null, ['dashboard', 'popupTableData'], state);
 
 const tableData = state => R.pathOr([], ['dashboard', 'tableData'], state);
 const evalData = state => R.pathOr([], ['dashboard', 'evalInsertionStatus'], state);
@@ -256,6 +257,7 @@ const selectors = {
   addInfoEvalId,
   getInvestorEvents,
   getInvestorHierarchy,
+  getFhlmcModHistory,
   resolutionId,
   eligibleData,
   getRequestTypeData,

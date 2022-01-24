@@ -97,6 +97,8 @@ import {
   COMPLETE_MY_REVIEW_RESULT,
   SET_ENABLE_SEND_BACK_GEN,
   SET_BULK_UPLOAD_RESULT,
+  GET_FHLMC_MOD_HISTORY,
+  SET_FHLMC_MOD_HISTORY,
   PROCESS_COVIUS_BULK,
   PROCESS_FHLMC_RESOSLVE_BULK,
   SET_ADD_DOCS_IN,
@@ -2105,6 +2107,27 @@ function* onSelectModReversal() {
   }
 }
 
+function* onFHLMCModHistoryPopup() {
+  try {
+    const loanNumber = yield select(selectors.loanNumber);
+    const response = yield call(Api.callGet, `/api/dataservice/api/investorRequestResponse/${loanNumber}`);
+    if (response !== null) {
+      yield put({
+        type: SET_FHLMC_MOD_HISTORY,
+        payload: response,
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+}
+
 function* manualInsertion(payload) {
   try {
     yield put({ type: SHOW_LOADER });
@@ -2481,6 +2504,9 @@ function* watchCoviusBulkOrder() {
 function* watchFhlmcBulkOrder() {
   yield takeEvery(PROCESS_FHLMC_RESOSLVE_BULK, onFhlmcBulkUpload);
 }
+function* watchFhlmcModHistory() {
+  yield takeEvery(GET_FHLMC_MOD_HISTORY, onFHLMCModHistoryPopup);
+}
 function* watchManualInsertion() {
   yield takeEvery(INSERT_EVALID, manualInsertion);
 }
@@ -2651,6 +2677,7 @@ export const combinedSaga = function* combinedSaga() {
     watchOnSelectReject(),
     watchOnSearchWithTask(),
     watchOnSelectModReversal(),
+    watchFhlmcModHistory(),
     watchManualInsertion(),
     watchCompleteMyReview(),
     watchOnTrialTask(),
