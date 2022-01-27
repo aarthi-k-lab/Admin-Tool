@@ -155,10 +155,6 @@
   font-weight: 510 !important;
 }
 
-.rental-address {
-
-}
-
 .pitia-sect {
   display: flex;
   align-items: center;
@@ -235,10 +231,6 @@
 .rental-share-grid-item {
   display: flex;
   align-items: center;
-}
-
-.ri-share-sect-title {
-
 }
 
 .ri-share-sect-header {

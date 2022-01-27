@@ -1,4 +1,5 @@
 import Checkbox from '@material-ui/core/Checkbox';
+import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
@@ -40,7 +41,7 @@ class StagerReactTable extends React.PureComponent {
 
   static getCellContent(row, stagerTaskType, stagerTaskStatus) {
     const pointerStyle = (DashboardModel.POSTMOD_TASKNAMES.includes(stagerTaskType)
-    || DashboardModel.UWSTAGER_TASKNAMES.includes(stagerTaskType)) && stagerTaskStatus !== 'Completed' ? 'pointer' : '';
+      || DashboardModel.UWSTAGER_TASKNAMES.includes(stagerTaskType)) && stagerTaskStatus !== 'Completed' ? 'pointer' : '';
     switch (row.column.id) {
       case 'Days Until SLA':
         return (
@@ -74,8 +75,12 @@ class StagerReactTable extends React.PureComponent {
         );
       default:
         return (
-          <div styleName={`${pointerStyle} tableRow`}>
-            {row.value}
+          <div>
+            <Tooltip title={<h2>{row.value}</h2>}>
+              <div styleName={`${pointerStyle} tableRow`}>
+                {row.value}
+              </div>
+            </Tooltip>
           </div>
         );
     }
@@ -144,9 +149,9 @@ class StagerReactTable extends React.PureComponent {
               styleName="filterDropDown"
               value={filter ? filter.value : 'all'}
             >
-              <option value="">{}</option>
+              <option value="">{ }</option>
               {dropDownValues
-              && dropDownValues.map(value => <option value={value}>{value}</option>)}
+                && dropDownValues.map(value => <option value={value}>{value}</option>)}
             </select>
           );
           return columnObj;
@@ -257,7 +262,7 @@ class StagerReactTable extends React.PureComponent {
     } = this.props;
     const { original } = rowInfo;
     if ((DashboardModel.POSTMOD_TASKNAMES.includes(data.stagerTaskType)
-    || DashboardModel.UWSTAGER_TASKNAMES.includes(data.stagerTaskType)) && stagerTaskStatus !== 'Completed') {
+      || DashboardModel.UWSTAGER_TASKNAMES.includes(data.stagerTaskType)) && stagerTaskStatus !== 'Completed') {
       const payload = { activeTab: stagerTaskStatus, activeTile: stagerTaskType };
       setStagerTaskName(payload);
       const searchPayload = {

@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import Checkbox from '@material-ui/core/Checkbox';
+import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
@@ -74,8 +75,12 @@ class CustomReactTable extends React.PureComponent {
         );
       default:
         return (
-          <div styleName={`${pointerStyle} tableRow`}>
-            {row.value}
+          <div>
+            <Tooltip title={<h2>{row.value}</h2>}>
+              <div styleName={`${pointerStyle} tableRow`}>
+                {row.value}
+              </div>
+            </Tooltip>
           </div>
         );
     }
