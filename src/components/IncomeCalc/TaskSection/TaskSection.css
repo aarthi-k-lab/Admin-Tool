@@ -155,6 +155,16 @@
   font-weight: 510 !important;
 }
 
+/* Do not remove. This is a default value. */
+.rental-address {
+
+}
+
+/* Do not remove. This is a default value. */
+.ri-share-sect-title {
+
+}
+
 .pitia-sect {
   display: flex;
   align-items: center;
