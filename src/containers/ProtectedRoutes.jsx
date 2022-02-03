@@ -64,6 +64,7 @@ class ProtectedRoutes extends React.Component {
     this.renderMilestoneActivity = this.renderMilestoneActivity.bind(this);
     this.renderfhlmcPageRoute = this.renderfhlmcPageRoute.bind(this);
     this.renderfhlmcBulkOrderPageRoute = this.renderfhlmcBulkOrderPageRoute.bind(this);
+    this.renderInvestorSettlementRoute = this.renderInvestorSettlementRoute.bind(this);
     this.getHiddenRoutes = this.getHiddenRoutes.bind(this);
   }
 
@@ -279,6 +280,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderInvestorSettlementRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasInvestorSettlementAccess(groups)
+        ? <Dashboard group={DashboardModel.INVSET} />
+        : <Redirect to="/unauthorized?error=INVESTOR_SETTLEMENT_ACCESS_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
     const { expandView, location, user } = this.props;
@@ -313,6 +323,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/fhlmc-resolve" render={this.renderfhlmcPageRoute} />
           <Route path="/coviusBulkOrder" render={this.rendercoviusBulkOrderPageRoute} />
           <Route path="/fhlmcBulkOrder" render={this.renderfhlmcBulkOrderPageRoute} />
+          <Route path="/investor-settlement" render={this.renderInvestorSettlementRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route path="/uwstager" render={() => <Dashboard group={DashboardModel.UWSTAGER} />} />
           <Route component={SearchLoan} exact path="/search" />

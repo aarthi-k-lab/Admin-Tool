@@ -207,6 +207,20 @@ exports[`<Profile /> snapshot test 1`] = `
           fhlmcresolve-mgr
         </p>
       </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          invset
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          invset-mgr
+        </p>
+      </li>
     </ol>
   </div>
   <div
