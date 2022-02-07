@@ -222,8 +222,13 @@ describe('fetchDashboardData - success ', () => {
   };
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
 
-  it('should update as loading ', () => {
+  it('get stager value', () => {
     expect(saga.next(payload).value)
+      .toEqual(select(selectors.getStagerValue));
+  });
+
+  it('should update as loading ', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(put({
         type: SET_STAGER_DATA_LOADING,
         payload: {
@@ -308,8 +313,13 @@ describe('fetchDashboardData - empty response', () => {
   };
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
 
-  it('should update as loading ', () => {
+  it('get stager value', () => {
     expect(saga.next(payload).value)
+      .toEqual(select(selectors.getStagerValue));
+  });
+
+  it('should update as loading ', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(put({
         type: SET_STAGER_DATA_LOADING,
         payload: {

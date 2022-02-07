@@ -93,7 +93,7 @@ function* fetchDashboardData(data) {
   let payload;
   try {
     const searchTerm = data.payload.activeSearchTerm;
-    const stagerType = data.payload.stager;
+    const stagerType = yield select(selectors.getStagerValue);
     const { payload: searchDetails } = data;
     const {
       top, page, orderby, orderType, filter,
