@@ -17,84 +17,54 @@ import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
 import FHLMCWidget from './FHLMCWidget';
 
-import DashboardModel from '../../models/Dashboard';
-
-const {
-  FEUW,
-  BEUW,
-  PROC,
-  DOC_GEN,
-  DOCS_IN, STAGER,
-  LOAN_ACTIVITY,
-  POSTMODSTAGER,
-  UWSTAGER,
-  SEARCH_LOAN,
-  DOCGEN_GOBACK,
-  MLSTN_PAGE,
-  INVSET,
-  BOOKING: BOOKING_GROUP,
-} = DashboardModel;
-
 const widgets = [
   {
     id: CUSTOM_COMM_LETTER,
     icon: <TrailButton />,
     component: <TrialLetter />,
-    visibility: [LOAN_ACTIVITY],
+    visibility: ['LA'],
     defaultOpen: true,
   },
   {
     id: COMMENTS,
     icon: <ChatIcon />,
     component: <CommentsWidget />,
-    visibility: [
-      FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
-      BOOKING_GROUP, SEARCH_LOAN, DOCGEN_GOBACK,
-      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET,
-    ],
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
+      'BOOKING', 'SEARCH_LOAN', 'DOCGEN_GOBACK', 'MLSTN_PAGE', 'POSTMOD', 'UWSTAGER'],
     overlay: true,
   },
   {
     id: ADDITIONAL_INFO,
     icon: <img alt="Additional Info" src="/static/img/information.png" />,
-    visibility: [
-      FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
-      BOOKING_GROUP, SEARCH_LOAN, POSTMODSTAGER, UWSTAGER, INVSET,
-    ],
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN', 'STAGER', 'LA',
+      'BOOKING', 'SEARCH_LOAN', 'POSTMOD', 'UWSTAGER'],
     children: [COMMENTS],
   },
   {
     id: HISTORY,
     icon: <HistoryIcon />,
-    visibility: [
-      FEUW, BEUW, PROC, DOC_GEN, DOCS_IN,
-      STAGER, LOAN_ACTIVITY, BOOKING_GROUP, POSTMODSTAGER, INVSET,
-    ],
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN',
+      'STAGER', 'LA', 'BOOKING', 'POSTMOD'],
     children: [COMMENTS],
   },
   {
     id: BOOKING,
     icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
-    visibility: [
-      DOCS_IN, BOOKING_GROUP,
-    ],
+    visibility: ['DOCSIN', 'BOOKING'],
     children: [COMMENTS],
   },
   {
     id: INCOME_CALCULATOR,
     icon: <Exposure />,
-    visibility: [
-      FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, BOOKING_GROUP,
-    ],
+    visibility: ['FEUW', 'BEUW', 'PROC', 'DOCGEN', 'DOCSIN',
+      'BOOKING'],
     children: [COMMENTS],
   },
   {
     id: FHLMC,
     icon: <img alt="FHLMC" src="/static/img/Freddie-Widget.svg" />,
     component: <FHLMCWidget />,
-    visibility: [
-      BEUW, DOC_GEN, POSTMODSTAGER, INVSET,
-    ],
+    visibility: ['BEUW', 'DOCGEN', 'POSTMOD'],
     overlay: true,
     children: [COMMENTS],
     dependency: FHLMC,

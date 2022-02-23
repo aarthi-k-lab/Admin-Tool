@@ -436,7 +436,8 @@ const mapStateToProps = (state) => {
   const enableValidate = !checklistSelectors.showComment(state)
     ? true : checklistSelectors.enableValidate(state);
   const shouldSkipValidation = checklistSelectors.enableValidate(state)
-    && DashboardModel.checkDisableValidateButton(group);
+    && (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.ALL_STAGER
+      || group === DashboardModel.UWSTAGER);
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
   const isIncomeVerification = isAssigned && selectors.isIncomeVerification(state);

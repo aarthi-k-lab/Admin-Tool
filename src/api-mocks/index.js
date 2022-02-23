@@ -52,10 +52,6 @@ function mock() {
   }, {
     groupName: 'trial'
   }, {
-    groupName: 'invset'
-  }, {
-    groupName: 'invset-mgr'
-  }, {
     "@odata.type": "#microsoft.graph.group",
     "id": "f8af99ef-42fd-4083-bfb4-366b48d1c4a9",
     "description": "This group will be used as QA access security group for Backend Underwriter role for CMOD application",

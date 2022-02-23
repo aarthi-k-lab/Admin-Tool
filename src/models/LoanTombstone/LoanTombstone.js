@@ -151,7 +151,6 @@ function getExpirationDate(evalDetails, groupName, additionalLoanInfo, taskData)
     case DashboardModel.DOCS_IN:
       return evalDetails.modDocsReceivedDate;
     case DashboardModel.POSTMODSTAGER:
-    case DashboardModel.INVSET:
       return !R.isEmpty(additionalLoanInfo) ? additionalLoanInfo[0].dueDate : null;
     case DashboardModel.BOOKING:
       return taskData && taskData.dueDateTime;
@@ -382,7 +381,6 @@ function getTombstoneItems(loanDetails,
       ];
       break;
     case DashboardModel.POSTMODSTAGER:
-    case DashboardModel.INVSET:
       dataGenerator = [
         getLoanItem,
         getInvestorLoanItem,

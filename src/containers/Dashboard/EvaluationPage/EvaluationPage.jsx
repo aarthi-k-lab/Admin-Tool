@@ -22,6 +22,12 @@ function isNotLoanActivity(group) {
   return group !== DashboardModel.LOAN_ACTIVITY;
 }
 
+function canShowValidate(group) {
+  return group !== DashboardModel.LOAN_ACTIVITY
+    && group !== DashboardModel.POSTMODSTAGER && group !== DashboardModel.UWSTAGER
+    && group !== DashboardModel.ALLSTAGER;
+}
+
 function isTrialOrForbearance(taskName) {
   return taskName && taskName.includes('Trial') ? 'Trial ' : 'Forbearance ';
 }
@@ -44,7 +50,7 @@ class EvaluationPage extends React.PureComponent {
     } = this.props;
     const groups = user && user.groupList;
     const isPendingloan = R.equals(taskStatus, 'Active')
-      && (R.equals(processName, 'Pending Buyout') || R.equals(processName, DashboardModel.PENDING_BOOKING));
+    && (R.equals(processName, 'Pending Buyout') || R.equals(processName, DashboardModel.PENDING_BOOKING));
     return isPendingloan && group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !R.isNil(isAssigned) && !isAssigned;
   }
 
@@ -75,7 +81,7 @@ class EvaluationPage extends React.PureComponent {
             showSendToDocsIn={this.canShowSendToDocsIn()}
             showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
             showUpdateRemedy={isAutoDisposition}
-            showValidate={DashboardModel.checkShowValidation(group) && !isAutoDisposition}
+            showValidate={canShowValidate(group) && !isAutoDisposition}
           />
         </ContentHeader>
         <Tombstone />
@@ -86,10 +92,10 @@ class EvaluationPage extends React.PureComponent {
           }
         </div>
         {(R.contains(HISTORY, openWidgetList)
-          && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
-            <FullHeightColumn styleName={R.contains(HISTORY, openWidgetList) ? '' : 'columns-container'}>
-              {this.renderDashboard()}
-            </FullHeightColumn>
+        && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
+          <FullHeightColumn styleName={R.contains(HISTORY, openWidgetList) ? '' : 'columns-container'}>
+            {this.renderDashboard()}
+          </FullHeightColumn>
           )}
       </>
     );
@@ -102,7 +108,7 @@ EvaluationPage.defaultProps = {
   taskName: '',
   stagerTaskName: '',
   userNotification: { level: '', status: '' },
-  onCleanResult: () => { },
+  onCleanResult: () => {},
   openWidgetList: [],
 };
 

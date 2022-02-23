@@ -1,14 +1,14 @@
 const R = require('ramda');
 
 const checkListGroups = {
-  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager', 'invset', 'invset-mgr'],
+  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager'],
 };
 
 const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr'],
 };
 
 const stager = {
@@ -134,13 +134,6 @@ const milestoneActivity = {
   groups: ['allaccess', 'trial', 'trial-mgr', 'feuw-beta', 'feuw', 'feuw-mgr', 'beuw-beta', 'beuw', 'beuw-mgr', 'proc', 'proc-mgr', 'docgen', 'docgen-mgr', 'docsin', 'docsin-mgr', 'booking', 'booking-mgr', 'docgenvendor', 'docgenvendor-mgr', 'fhlmcresolve', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'util-mgr', 'util'],
 };
 
-const INVESTOR_SETTLEMENT = {
-  path: '/investor-settlement',
-  name: 'Investor Settlement',
-  img: '/static/img/investor_settlement.svg',
-  groups: ['invset', 'invset-mgr'],
-};
-
 const links = [
   managerDashboard,
   docProcessor,
@@ -159,7 +152,6 @@ const links = [
   COVIUS,
   fHLMCBulkOrderPage,
   milestoneActivity,
-  INVESTOR_SETTLEMENT,
 ];
 
 
@@ -256,10 +248,6 @@ function hasFhlmcResolveAccess(groups) {
   return hasGroup(fHLMCBulkOrderPage.groups, groups);
 }
 
-function hasInvestorSettlementAccess(groups) {
-  return hasGroup(INVESTOR_SETTLEMENT.groups, groups);
-}
-
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager'];
@@ -297,5 +285,4 @@ module.exports = {
   getStagerGroup,
   hasFrontEndManagerAccess,
   hasMilestoneActivityAccess,
-  hasInvestorSettlementAccess,
 };
