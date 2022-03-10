@@ -34,6 +34,7 @@ import {
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import { INCOME_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
+import { CHECK_TASKNAME } from 'constants/trialTask';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -147,6 +148,8 @@ import {
   GET_ELIGIBLE_DATA,
   SET_EVALID,
   SET_VALID_EVALDATA,
+  SET_TRIAL_DISABLE_STAGER_BUTTON,
+  CHECK_TRIAL_DISABLE_STAGER_BUTTON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -350,6 +353,22 @@ const searchLoan = function* searchLoan(loanNumber) {
     }
   }
 };
+
+function* checkTrialEnable() {
+  const searchLoanResult = yield select(selectors.searchLoanResult);
+  const evalId = yield select(selectors.evalId);
+  const { assigned, unAssigned } = searchLoanResult;
+  const allLoans = R.concat(assigned, unAssigned);
+  const selectedLoans = allLoans && allLoans.filter(e => e.evalId === evalId && CHECK_TASKNAME.some(el => e.taskName.includes(el)) && e.tstatus === 'Active');
+  let value = false;
+  if (selectedLoans && selectedLoans.length > 1) {
+    value = true;
+  }
+  yield put({
+    type: SET_TRIAL_DISABLE_STAGER_BUTTON,
+    payload: value,
+  });
+}
 
 function* onSelectReject(payload) {
   const {
@@ -2589,6 +2608,10 @@ function* watchEvalRowSelect() {
   yield takeEvery(EVAL_ROW_CLICK, fetchCaseDetails);
 }
 
+function* watchCheckTrialEnable() {
+  yield takeEvery(CHECK_TRIAL_DISABLE_STAGER_BUTTON, checkTrialEnable);
+}
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -2691,5 +2714,6 @@ export const combinedSaga = function* combinedSaga() {
     watchEvalRowSelect(),
     watchLoanviewTombstoneData(),
     watchonSubmitEval(),
+    watchCheckTrialEnable(),
   ]);
 };

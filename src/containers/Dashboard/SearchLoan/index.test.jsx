@@ -58,6 +58,7 @@ describe('Search Loan ', () => {
   const onSelectEval = jest.fn();
   const onClearStagerTaskName = jest.fn();
   const onHistorySelect = jest.fn();
+  const checkTrialStagerButton = jest.fn();
   const history = [];
   const location = {
     search: 'mock',
@@ -74,6 +75,7 @@ describe('Search Loan ', () => {
     onHistorySelect,
     history,
     location,
+    checkTrialStagerButton,
   };
   const getLoanActivityPath = jest.spyOn(SearchLoan.prototype, 'getLoanActivityPath');
   const wrapper = shallow(<SearchLoan

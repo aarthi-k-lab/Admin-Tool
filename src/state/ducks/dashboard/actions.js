@@ -77,6 +77,7 @@ import {
   SET_EVALID,
   GET_FHLMC_MOD_HISTORY,
   CLEAR_POPUP_TABLE_DATA,
+  CHECK_TRIAL_DISABLE_STAGER_BUTTON,
 } from './types';
 
 
@@ -445,6 +446,10 @@ const setRequestTypeDataAction = payload => ({
   payload,
 });
 
+const checkTrialDisableStagerButtonAction = () => ({
+  type: CHECK_TRIAL_DISABLE_STAGER_BUTTON,
+});
+
 
 export {
   dismissUserNotification,
@@ -525,4 +530,5 @@ export {
   onTablePopupClose,
   onFhlmcCasesBulkSubmit,
   setRequestTypeDataAction,
+  checkTrialDisableStagerButtonAction,
 };

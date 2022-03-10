@@ -97,6 +97,7 @@ import {
   SET_REQUEST_TYPE_DATA,
   SET_VALID_EVALDATA,
   CLEAR_POPUP_TABLE_DATA,
+  SET_TRIAL_DISABLE_STAGER_BUTTON,
 } from './types';
 
 const reducer = (state = {
@@ -980,6 +981,14 @@ const reducer = (state = {
         ...state,
         evalStatusData,
         resultOperation,
+      };
+    }
+
+    case SET_TRIAL_DISABLE_STAGER_BUTTON: {
+      const disableTrialStagerButton = action.payload;
+      return {
+        ...state,
+        disableTrialStagerButton,
       };
     }
 

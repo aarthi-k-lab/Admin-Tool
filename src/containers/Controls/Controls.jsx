@@ -212,6 +212,7 @@ class Controls extends React.PureComponent {
       isIncomeVerification,
       historyView,
       disabledChecklist,
+      isTrialDisable,
     } = this.props;
     let assign = null;
     const groups = user && user.groupList;
@@ -262,7 +263,7 @@ class Controls extends React.PureComponent {
     const getSendToUnderWritingButton = showSendToUnderWritingIcon
       ? (
         <SendToUnderwriting
-          disabled={!enableSendToUW}
+          disabled={!enableSendToUW || isTrialDisable}
           onClick={this.handleSentToUnderwriting}
         />
       ) : null;
@@ -276,7 +277,7 @@ class Controls extends React.PureComponent {
     const getSendToDocGenStagerButton = showSendToDocGenStager || showTrialIcon
       ? (
         <SendToDocGenStager
-          disabled={!enableSendToDocGen || disableTrialTaskButton}
+          disabled={isTrialDisable || (!enableSendToDocGen || disableTrialTaskButton)}
           onClick={showTrialIcon ? this.handleTrial : this.handleSendToDocGenStager}
         />
       ) : null;
@@ -338,6 +339,7 @@ Controls.defaultProps = {
   enableValidate: false,
   isFirstVisit: true,
   isIncomeVerification: false,
+  isTrialDisable: true,
   onEndShift: () => { },
   onExpand: () => { },
   onGetNext: () => { },
@@ -345,7 +347,7 @@ Controls.defaultProps = {
   onSendToDocGen: () => { },
   onSendToDocsIn: () => { },
   onSendToBooking: () => { },
-  onTrialTask: () => {},
+  onTrialTask: () => { },
   onErrorValidation: () => { },
   showEndShift: false,
   showGetNext: false,
@@ -387,6 +389,7 @@ Controls.propTypes = {
   historyView: PropTypes.bool,
   isFirstVisit: PropTypes.bool,
   isIncomeVerification: PropTypes.bool,
+  isTrialDisable: PropTypes.bool,
   lockCalculation: PropTypes.func.isRequired,
   onAssignToMeClick: PropTypes.func.isRequired,
   onCompleteMyReview: PropTypes.func,
@@ -441,6 +444,7 @@ const mapStateToProps = (state) => {
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
   const isIncomeVerification = isAssigned && selectors.isIncomeVerification(state);
+  const isTrialDisable = selectors.getTrialDisableButton(state);
   return {
     historyView: incomeSelectors.getHistoryView(state),
     disabledChecklist: incomeSelectors.disabledChecklist(state),
@@ -455,6 +459,7 @@ const mapStateToProps = (state) => {
     enableSendToUW: selectors.enableSendToUW(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
     isFirstVisit: selectors.isFirstVisit(state),
+    isTrialDisable,
     showAssign: selectors.showAssign(state),
     showContinueMyReview: selectors.showContinueMyReview(state),
     showCompleteMyReview: selectors.showCompleteMyReview(state),

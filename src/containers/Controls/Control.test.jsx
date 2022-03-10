@@ -198,7 +198,7 @@ describe('<Controls />', () => {
     wrapper.setProps({ enableSendToDocGen: false, disableTrialTaskButton: false });
     wrapper.find(SendToDocGenStager).simulate('click');
     expect(sendToDocGenStagerSpy).not.toBeCalled();
-    wrapper.setProps({ enableSendToDocGen: true, disableTrialTaskButton: false });
+    wrapper.setProps({ enableSendToDocGen: true, disableTrialTaskButton: false, isTrialDisable: false });
     wrapper.find(SendToDocGenStager).simulate('click');
     expect(sendToDocGenStagerSpy).toBeCalled();
     expect(onSendToDocGen).toBeCalledWith(true);
@@ -240,7 +240,7 @@ describe('<Controls />', () => {
     wrapper.setProps({ enableSendToUW: false });
     wrapper.find(SendToUnderwriting).simulate('click');
     expect(spy).not.toBeCalled();
-    wrapper.setProps({ enableSendToUW: true });
+    wrapper.setProps({ enableSendToUW: true, isTrialDisable: false });
     wrapper.find(SendToUnderwriting).simulate('click');
     expect(spy).toBeCalled();
     expect(onSentToUnderwriting).toBeCalled();

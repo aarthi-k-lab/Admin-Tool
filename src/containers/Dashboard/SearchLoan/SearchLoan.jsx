@@ -108,7 +108,7 @@ class SearchLoan extends React.PureComponent {
   }
 
   handleRowClick(payload, rowInfo) {
-    const { user } = this.props;
+    const { user, checkTrialStagerButton } = this.props;
     const adGroups = user && user.groupList;
     const isPostMod = payload.milestone === 'Post Mod';
     if (payload.pstatus === 'Completed' || payload.pstatus === 'Terminated') {
@@ -130,6 +130,7 @@ class SearchLoan extends React.PureComponent {
           case 'Trial Modification':
           case 'Forbearance':
             group = 'LA';
+            checkTrialStagerButton();
             this.redirectPath = this.getLoanActivityPath();
             break;
           case 'Document Generation':
@@ -502,6 +503,7 @@ SearchLoan.defaultProps = {
 };
 
 SearchLoan.propTypes = {
+  checkTrialStagerButton: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
@@ -562,6 +564,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeSweetAlert: operations.closeSweetAlert(dispatch),
+  checkTrialStagerButton: operations.checkTrialEnableStagerButtonOperation(dispatch),
   onAutoSave: operations.onAutoSave(dispatch),
   onEndShift: operations.onEndShift(dispatch),
   onSearchLoan: operations.onSearchLoan(dispatch),

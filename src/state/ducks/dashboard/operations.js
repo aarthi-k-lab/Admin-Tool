@@ -72,6 +72,7 @@ import {
   setRequestTypeDataAction,
   onFHLMCModHistoryPopup,
   onTablePopupClose,
+  checkTrialDisableStagerButtonAction,
 } from './actions';
 
 import {
@@ -389,6 +390,10 @@ const setRequestTypeDataOperation = dispatch => (payload) => {
   dispatch(setRequestTypeDataAction(payload));
 };
 
+const checkTrialEnableStagerButtonOperation = dispatch => () => {
+  dispatch(checkTrialDisableStagerButtonAction());
+};
+
 const operations = {
   openSweetAlert,
   onDismissUserNotification,
@@ -468,6 +473,7 @@ const operations = {
   onTablePopupDataClear,
   onPopupClose,
   setRequestTypeDataOperation,
+  checkTrialEnableStagerButtonOperation,
 };
 
 export default operations;

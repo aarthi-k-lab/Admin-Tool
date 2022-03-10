@@ -167,6 +167,8 @@ const getRequestTypeData = state => R.pathOr('', ['dashboard', 'setRequestTypeDa
 
 const getEvalStatus = state => R.pathOr([], ['dashboard', 'evalStatusData'], state);
 
+const getTrialDisableButton = state => R.pathOr(false, ['dashboard', 'disableTrialStagerButton'], state);
+
 const selectors = {
   getUserNotification,
   isIncomeVerification,
@@ -262,6 +264,7 @@ const selectors = {
   eligibleData,
   getRequestTypeData,
   getEvalStatus,
+  getTrialDisableButton,
 };
 
 export default selectors;
