@@ -12,3 +12,5 @@ export const BOOKING = 'booking';
 export const COVIUS = 'docgenvendor';
 export const COVIUS_MGR = 'docgenvendor-mgr';
 export const FHLMCRESOLVE = 'fhlmcresolve';
+export const RPS_STAGER = 'RPSstager';
+export const RPS_STAGER_MGR = 'RPSstager-mgr';
