@@ -207,6 +207,20 @@ exports[`<Profile /> snapshot test 1`] = `
           fhlmcresolve-mgr
         </p>
       </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          rpsstager
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          rpsstager-mgr
+        </p>
+      </li>
     </ol>
   </div>
   <div

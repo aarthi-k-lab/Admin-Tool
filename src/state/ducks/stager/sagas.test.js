@@ -89,12 +89,25 @@ describe('stager watcher ', () => {
   });
 });
 
+const startEndDate = {
+  fromDate: '2019-01-05',
+  toDate: '2019-01-05',
+};
+
 const dateValue = {
   fromDate: '2019-01-05T00:00:00.000Z',
   stagerType: 'UNDERWRITER STAGER',
   toDate: '2019-01-05T00:00:00.000Z',
   searchTerm: null,
 };
+
+const dateValueError = {
+  fromDate: {},
+  stagerType: 'UNDERWRITER STAGER',
+  toDate: {},
+  searchTerm: null,
+};
+
 const dateUTCValue = {
   fromDate: '2019-01-05',
   stagerType: 'UNDERWRITER STAGER',
@@ -102,6 +115,12 @@ const dateUTCValue = {
   searchTerm: null,
   azureSearchToggle: false,
 };
+
+const dateUTCCounts = {
+  fromDate: '2019-01-05T00:00:00.000Z',
+  toDate: '2019-01-05T00:00:00.000Z',
+};
+
 const mockUser = {
   userDetails: {
     email: 'bren@mrcooper.com',
@@ -124,8 +143,14 @@ describe('fetchDashboardCounts - success', () => {
     expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
+
+  it('call Build OBj', () => {
+    expect(saga.next(dateUTCCounts).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUTCCounts.fromDate, toDate: dateUTCCounts.toDate }, null));
+  });
+
   it('call getCounts Api', () => {
-    expect(saga.next(dateUTCValue).value)
+    expect(saga.next(dateValue).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
 
@@ -166,8 +191,14 @@ describe('fetchDashboardCounts - null response', () => {
     expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
+
+  it('call Build OBj', () => {
+    expect(saga.next(dateUTCCounts).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUTCCounts.fromDate, toDate: dateUTCCounts.toDate }, null));
+  });
+
   it('call getCounts Api', () => {
-    expect(saga.next(dateUTCValue).value)
+    expect(saga.next(dateValue).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
   });
   it('should complete', () => {
@@ -190,8 +221,19 @@ describe('fetchDashboardCounts - error', () => {
     expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
-  it('should update state with empty payload', () => {
+
+  it('call Build OBj', () => {
     expect(saga.next(null).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', null, null));
+  });
+
+  it('call getCounts Api', () => {
+    expect(saga.next(dateValueError).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValueError));
+  });
+
+  it('should update state with empty payload', () => {
+    expect(saga.throw('Error').value)
       .toEqual(put({ type: SET_STAGER_DATA_COUNTS, payload: {} }));
   });
   it('should complete', () => {
@@ -216,8 +258,6 @@ describe('fetchDashboardData - success ', () => {
   };
   const dateUtc = {
     fromDate: '2019-01-05',
-    stagerType: 'UNDERWRITER STAGER',
-    searchTerm: 'LegalFeeToOrder',
     toDate: '2019-01-05',
   };
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
@@ -249,10 +289,22 @@ describe('fetchDashboardData - success ', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerValue));
   });
-  it('call bpm audit data Api', () => {
+
+  it('get stager value', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
+      .toEqual(select(loginSelectors.isRPSGroupPresent));
+  });
+
+  it('call Build OBj', () => {
     expect(saga.next(false).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUtc.fromDate, toDate: dateUtc.toDate }, 'LegalFeeToOrder'));
+  });
+
+  it('call bpm audit data Api', () => {
+    expect(saga.next(date).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
+
   it('should update searchterm ', () => {
     expect(saga.next([]).value)
       .toEqual(put({
@@ -307,8 +359,6 @@ describe('fetchDashboardData - empty response', () => {
   };
   const dateUtc = {
     fromDate: '2019-01-05',
-    stagerType: 'UNDERWRITER STAGER',
-    searchTerm: 'LegalFeeToOrder',
     toDate: '2019-01-05',
   };
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
@@ -340,8 +390,19 @@ describe('fetchDashboardData - empty response', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerValue));
   });
-  it('call bpm audit data Api', () => {
+
+  it('get stager value', () => {
+    expect(saga.next('UNDERWRITER STAGER').value)
+      .toEqual(select(loginSelectors.isRPSGroupPresent));
+  });
+
+  it('call Build OBj', () => {
     expect(saga.next(false).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUtc.fromDate, toDate: dateUtc.toDate }, 'LegalFeeToOrder'));
+  });
+
+  it('call bpm audit data Api', () => {
+    expect(saga.next(date).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
   });
   it('should update searchterm ', () => {
@@ -370,6 +431,13 @@ describe('fetchDownloadData - success', () => {
     payload: () => {},
   };
 
+  const result = {
+    fromDate: '2019-01-05T00:00:00.000Z',
+    stagerType: 'UNDERWRITER STAGER',
+    toDate: '2019-01-05T00:00:00.000Z',
+    searchTerm: 'LegalFeeToOrder',
+  };
+
   const saga = cloneableGenerator(TestExports.fetchDownloadData)(action);
   it('should select Stager value ', () => {
     expect(saga.next().value)
@@ -380,16 +448,22 @@ describe('fetchDownloadData - success', () => {
       .toEqual(select(selectors.getActiveSearchTerm));
   });
   it('should select stager date ', () => {
-    expect(saga.next(null).value)
+    expect(saga.next('LegalFeeToOrder').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('should select stager date ', () => {
-    expect(saga.next(dateUTCValue).value)
+    expect(saga.next(startEndDate).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
-  it('call downloadDataByDate Api', () => {
+
+  it('call Build OBj', () => {
     expect(saga.next(false).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUTCValue.fromDate, toDate: dateUTCValue.toDate }, 'LegalFeeToOrder'));
+  });
+
+  it('call downloadDataByDate Api', () => {
+    expect(saga.next(result).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...result, azureSearchToggle: false }));
   });
   it('update download response in state', () => {
     expect(saga.next({ response: 'data' }).value)
@@ -413,15 +487,21 @@ describe('fetchDownloadData - null response', () => {
       .toEqual(select(selectors.getActiveSearchTerm));
   });
   it('should select stager date ', () => {
-    expect(saga.next(null).value)
+    expect(saga.next('LegalFeeToOrder').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('should select stager date ', () => {
-    expect(saga.next(dateUTCValue).value)
+    expect(saga.next(startEndDate).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
-  it('call downloadDataByDate Api', () => {
+
+  it('call Build OBj', () => {
     expect(saga.next(false).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUTCValue.fromDate, toDate: dateUTCValue.toDate }, 'LegalFeeToOrder'));
+  });
+
+  it('call downloadDataByDate Api', () => {
+    expect(saga.next(dateValue).value)
       .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
   });
   it('should complete', () => {
@@ -432,6 +512,7 @@ describe('fetchDownloadData - error', () => {
   const action = {
     payload: () => {},
   };
+
   const saga = cloneableGenerator(TestExports.fetchDownloadData)(action);
   it('should select Stager value ', () => {
     expect(saga.next().value)
@@ -442,15 +523,26 @@ describe('fetchDownloadData - error', () => {
       .toEqual(select(selectors.getActiveSearchTerm));
   });
   it('should select stager date ', () => {
-    expect(saga.next(null).value)
+    expect(saga.next('LegalFeeToOrder').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
   it('should select stager date ', () => {
     expect(saga.next(null).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
-  it('should update state with empty payload', () => {
+
+  it('call Build OBj', () => {
     expect(saga.next(false).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', null, 'LegalFeeToOrder'));
+  });
+
+  it('call downloadDataByDate Api', () => {
+    expect(saga.next(dateValueError).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValueError, azureSearchToggle: false }));
+  });
+
+  it('should update state with empty payload', () => {
+    expect(saga.throw('error').value)
       .toEqual(put({ type: SET_DOWNLOAD_DATA, payload: {} }));
   });
   it('should complete', () => {
@@ -776,7 +868,12 @@ describe('makeOrderBpmCall - error', () => {
 describe('makeStagerSearchLoanCall - success', () => {
   const payload = { payload: '123456789' };
   const saga = cloneableGenerator(TestExports.makeStagerSearchLoanCall)(payload);
-
+  const result = {
+    fromDate: '2019-01-05T00:00:00.000Z',
+    stagerType: 'UNDERWRITER STAGER',
+    toDate: '2019-01-05T00:00:00.000Z',
+    searchTerm: null,
+  };
   it('should select Stager type ', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerValue));
@@ -785,8 +882,14 @@ describe('makeStagerSearchLoanCall - success', () => {
     expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
+
+  it('call Build OBj', () => {
+    expect(saga.next(startEndDate).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUTCValue.fromDate, toDate: dateUTCValue.toDate }, null));
+  });
+
   it('call getCounts Api', () => {
-    expect(saga.next(dateValue).value)
+    expect(saga.next(result).value)
       .toEqual(call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', { ...dateValue, loanNumber: '123456789' }));
   });
   it('should trigger SEARCH_STAGER_LOAN_NUMBER', () => {
@@ -810,8 +913,14 @@ describe('makeStagerSearchLoanCall - error', () => {
     expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
+
+  it('call Build OBj', () => {
+    expect(saga.next(startEndDate).value)
+      .toEqual(call(TestExports.buildDateObj, 'UNDERWRITER STAGER', { fromDate: dateUTCValue.fromDate, toDate: dateUTCValue.toDate }, null));
+  });
+
   it('should handle error', () => {
-    expect(saga.next(null).value)
+    expect(saga.throw('error').value)
       .toEqual(put({ type: SEARCH_STAGER_LOAN_NUMBER, payload: {} }));
   });
 });

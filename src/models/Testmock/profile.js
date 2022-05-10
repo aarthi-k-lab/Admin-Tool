@@ -81,7 +81,8 @@ const userGroupsUncheckedManager = [{
   groupName: 'trial-mgr',
 }, {
   groupName: 'util-mgr',
-}];
+},
+];
 
 const isChecked = {
   PROC: true,
@@ -97,6 +98,7 @@ const isChecked = {
   BOOKING: true,
   DOCGENVENDOR: true,
   FHLMCRESOLVE: true,
+  RPSstager: true,
 };
 
 const isCheckedFalse = {
@@ -113,6 +115,7 @@ const isCheckedFalse = {
   BOOKING: false,
   DOCGENVENDOR: false,
   FHLMCRESOLVE: true,
+  RPSstager: true,
 };
 const skills = { FEUW: ['Skill14::InVESTOR', 'Skill19::MRC Onshore', 'Skill1::something', 'Skill2::nothing'] };
 

@@ -527,6 +527,7 @@ export const TestExports = {
   setDocGenData,
   watchDoneButtonClick,
   watchFetchDelayCheckListHistory,
+  buildDateObj,
 };
 
 export function* combinedSaga() {
