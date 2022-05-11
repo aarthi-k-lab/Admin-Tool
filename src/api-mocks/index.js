@@ -1,4 +1,5 @@
 /* eslint-disable */
+//AD GROUPS DEFINED BELOW MUST BE IN LOWER CASE
 function mock() {
   const {
     default: UniversalCookie
@@ -43,6 +44,10 @@ function mock() {
     groupName: 'feuw-mgr'
   }, {
     groupName: 'stager-mgr'
+  },{
+    groupName: 'rpsstager'
+  },{
+    groupName: 'rpsstager-mgr'
   }, {
     groupName: 'proc-mgr'
   }, {

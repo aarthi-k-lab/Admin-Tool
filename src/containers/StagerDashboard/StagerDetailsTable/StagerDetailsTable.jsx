@@ -189,7 +189,7 @@ class StagerDetailsTable extends React.PureComponent {
                     <DownloadIcon styleName="details-table-download-icon" />
                     {' DOWNLOAD'}
                   </Button>
-                  {userGroupList.includes('stager-mgr') && showRefreshButton
+                  {(userGroupList.includes('stager-mgr') || userGroupList.includes('rpsstager-mgr')) && showRefreshButton
                     && (
                       <Button
                         onClick={onRefreshStagerTile}

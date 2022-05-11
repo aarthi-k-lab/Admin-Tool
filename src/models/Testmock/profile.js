@@ -84,6 +84,7 @@ const userGroupsUncheckedManager = [{
 },
 ];
 
+// AD GROUPS DEFINED BELOW ARE CASE SENSITIVE
 const isChecked = {
   PROC: true,
   FEUW: true,
