@@ -163,6 +163,11 @@ describe('getnext Success', () => {
       .toEqual(select(selectors.stagerTaskName));
   });
 
+  it('should get brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRPSGroupPresent));
+  });
+
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
@@ -198,7 +203,7 @@ describe('getnext Success', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName=&brand=NSM'));
   });
 
   it('should call SET_INCOMECALC_DATA', () => {
@@ -323,6 +328,11 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(select(selectors.stagerTaskName));
   });
 
+  it('should get brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRPSGroupPresent));
+  });
+
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
@@ -357,7 +367,7 @@ describe('getnext Failure -  no tasks found', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName=&brand=NSM'));
   });
 
   it('should call SET_INCOMECALC_DATA', () => {
@@ -447,6 +457,11 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(select(selectors.stagerTaskName));
   });
 
+  it('should get brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRPSGroupPresent));
+  });
+
   it('should call save disposition generator', () => {
     expect(saga.next().value)
       .toEqual(call(TestExports.saveGeneralChecklistDisposition, action.payload));
@@ -481,7 +496,7 @@ describe('getnext Failure -  task fetch failure', () => {
 
   it('should call workassignment service to fetch taskDetails', () => {
     expect(saga.next(userDetails).value)
-      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName='));
+      .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName=&brand=NSM'));
   });
 
   it('should call SET_INCOMECALC_DATA', () => {

@@ -1166,6 +1166,7 @@ function* getNext(action) {
     const groupName = yield select(selectors.groupName);
     const group = getGroup(groupName);
     const stagerTaskName = yield select(selectors.stagerTaskName);
+    const brand = (yield select(loginSelectors.isRPSGroupPresent)) ? 'RPS' : 'NSM';
     if (group === DashboardModel.UWSTAGER && stagerTaskName.activeTile === 'Delay Checklist') {
       yield put(checklistActions.validationDisplayAction(false));
       yield call(saveDelayChecklistDataToDB);
@@ -1196,7 +1197,7 @@ function* getNext(action) {
         postmodtaskName = (taskName === 'Recordation' || taskName === 'Delay Checklist')
           ? `${taskName}-${(action.payload.activeTab || stagerTaskName.activeTab).replace(/ /g, '')}` : taskName;
       }
-      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}`);
+      const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}&brand=${brand}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
       const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
