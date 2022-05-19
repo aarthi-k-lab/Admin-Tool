@@ -995,7 +995,7 @@ const reducer = (state = {
       };
     }
 
-    
+
     case SET_CANCELLATION_REASON: {
       const cancellationReasons = action.payload;
       return {

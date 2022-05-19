@@ -327,8 +327,8 @@ class FhlmcResolve extends React.PureComponent {
           : (
             <FHLMCDataInsight
               portfolioCode={portfolioCode}
-              selectedRequestType={selectedRequestType}
               selectedCancellationReason={selectedCancellationReason}
+              selectedRequestType={selectedRequestType}
               submitCases
             />
           )
@@ -403,7 +403,6 @@ FhlmcResolve.defaultProps = {
   onResetData: () => { },
   populateInvestorDropdown: () => { },
   resultOperation: {},
-  userNotificationData: {},
   userNotificationData: {},
   getCancellationReasonsData: {},
   cancellationReasons: [],

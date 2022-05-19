@@ -174,7 +174,8 @@ class FHLMCWidget extends Component {
 
   handleRequestType = (event) => {
     const {
-      setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData, getCancellationReasonsData, clearCancellationReasons,
+      setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData,
+      getCancellationReasonsData, clearCancellationReasons,
     } = this.props;
     if (R.equals(event.target.value, 'CXLReq')) {
       getCancellationReasonsData(); // populate Cancellation Reasons

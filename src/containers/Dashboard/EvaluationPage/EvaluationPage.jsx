@@ -87,10 +87,10 @@ class EvaluationPage extends React.PureComponent {
         </div>
         {(R.contains(HISTORY, openWidgetList)
           && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
-          <FullHeightColumn styleName={R.contains(HISTORY, openWidgetList) ? '' : 'columns-container'}>
-            {this.renderDashboard()}
-          </FullHeightColumn>
-        )}
+            <FullHeightColumn styleName={R.contains(HISTORY, openWidgetList) ? '' : 'columns-container'}>
+              {this.renderDashboard()}
+            </FullHeightColumn>
+          )}
       </>
     );
   }

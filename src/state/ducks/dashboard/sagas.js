@@ -2246,6 +2246,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const file = yield select(selectors.getUploadedFile);
   const user = yield select(loginSelectors.getUser);
   const resultData = yield select(selectors.resultData);
+  const cancellationReason = yield select(selectors.cancellationReasons);
   const userName = R.path(['userDetails', 'email'], user);
   const winLoginName = user.userDetails.onPremisesSamAccountName;
   const { selectedRequestType, portfolioCode } = action.payload;
