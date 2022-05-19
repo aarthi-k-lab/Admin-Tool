@@ -69,6 +69,7 @@ const isPostModEndShift = state => R.pathOr(null, ['dashboard', 'postModEndShift
 const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeReviewResponse'], state);
 const disableSendToFEUW = state => R.pathOr(false, ['dashboard', 'disableSendToFEUW'], state);
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
+const cancellationReasons = state => R.pathOr([], ['dashboard', 'cancellationReasons'], state);
 
 
 const enableGetNext = state => (
@@ -166,6 +167,9 @@ const eligibleData = state => R.pathOr([], ['dashboard', 'eligibleData'], state)
 const getRequestTypeData = state => R.pathOr('', ['dashboard', 'setRequestTypeData'], state);
 
 const getEvalStatus = state => R.pathOr([], ['dashboard', 'evalStatusData'], state);
+
+const getSelectedCancellationReason = state => R.pathOr('', ['dashboard', 'selectedCancellationReason'], state);
+
 
 const getTrialDisableButton = state => R.pathOr(false, ['dashboard', 'disableTrialStagerButton'], state);
 
@@ -265,6 +269,8 @@ const selectors = {
   getRequestTypeData,
   getEvalStatus,
   getTrialDisableButton,
+  cancellationReasons,
+  getSelectedCancellationReason,
 };
 
 export default selectors;

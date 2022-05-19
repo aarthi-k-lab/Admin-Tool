@@ -9,6 +9,7 @@ import './FhlmcResolve.css';
 import * as R from 'ramda';
 import Select from '@material-ui/core/Select';
 import UserNotification from 'components/UserNotification';
+import InputLabel from '@material-ui/core/InputLabel';
 import Loader from 'components/Loader/Loader';
 import SweetAlertBox from 'components/SweetAlertBox';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -45,6 +46,8 @@ class FhlmcResolve extends React.PureComponent {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.onSubmitFhlmcResolveRequest = this.onSubmitFhlmcResolveRequest.bind(this);
     this.onResetClick = this.onResetClick.bind(this);
+    this.getCancellationReason = this.getCancellationReason.bind(this);
+    this.handleCancelReasons = this.handleCancelReasons.bind(this);
   }
 
   componentDidMount() {
@@ -136,6 +139,50 @@ class FhlmcResolve extends React.PureComponent {
     );
   }
 
+  handleCancelReasons = (event) => {
+    const {
+      setSelectedCancellationReasonData,
+    } = this.props;
+    setSelectedCancellationReasonData(event.target.value);
+  }
+
+  getCancellationReason = () => {
+    const { cancellationReasons, selectedCancellationReason } = this.props;
+    const { selectedRequestType } = this.state;
+    return (cancellationReasons && selectedRequestType && R.equals(selectedRequestType, 'CXLReq')
+      ? (
+        <FormControl variant="outlined">
+          <InputLabel styleName={!R.isEmpty(selectedCancellationReason) ? 'inputLblSelected' : 'inputLbl'}>Please Select Cancelation Reason</InputLabel>
+          <Select
+            id="cancellationReason"
+            input={<OutlinedInput name="selectedReason" />}
+            label="Reason"
+            onChange={this.handleCancelReasons}
+            styleName="drop-down-select"
+            value={selectedCancellationReason}
+          >
+            {cancellationReasons && cancellationReasons.map(item => (
+              <MenuItem key={item.requestType} value={item.requestType}>
+                <Tooltip
+                  placement="left"
+                  title={(
+                    <Typography>
+                      {item.tooltip}
+                    </Typography>
+                  )}
+                >
+                  <span>
+                    {item.displayText}
+                  </span>
+                </Tooltip>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ) : null
+    );
+  }
+
   renderIdsDropDown = () => {
     const { idType } = this.state;
     const idsCategories = ['Case id(s)'];
@@ -162,12 +209,18 @@ class FhlmcResolve extends React.PureComponent {
   handleRequestType(event) {
     const { investorEvents } = this.props;
     const portFolioCode = R.find(item => item.requestType === event.target.value, investorEvents);
+    const { getCancellationReasonsData, clearCancellationReasons } = this.props;
     this.setState({
       selectedRequestType: event.target.value,
       portfolioCode: portFolioCode.portfolioCode,
       isSubmitDisabled: 'disabled',
       isResetDisabled: false,
     });
+    if (R.equals(event.target.value, 'CXLReq')) {
+      getCancellationReasonsData();
+    } else {
+      clearCancellationReasons();
+    }
   }
 
   renderFHLMCResolveNotepadArea() {
@@ -208,6 +261,7 @@ class FhlmcResolve extends React.PureComponent {
           </span>
         </div>
         {this.renderCategoryDropDown()}
+        {this.getCancellationReason()}
         <div styleName="loan-numbers">
           <span>
             {'ID Type'}
@@ -260,6 +314,7 @@ class FhlmcResolve extends React.PureComponent {
 
   renderSubmitResults() {
     const { renderNoData, selectedRequestType, portfolioCode } = this.state;
+    const { selectedCancellationReason } = this.props;
     return (
       <>
         {renderNoData ? (
@@ -273,6 +328,7 @@ class FhlmcResolve extends React.PureComponent {
             <FHLMCDataInsight
               portfolioCode={portfolioCode}
               selectedRequestType={selectedRequestType}
+              selectedCancellationReason={selectedCancellationReason}
               submitCases
             />
           )
@@ -348,11 +404,24 @@ FhlmcResolve.defaultProps = {
   populateInvestorDropdown: () => { },
   resultOperation: {},
   userNotificationData: {},
+  userNotificationData: {},
+  getCancellationReasonsData: {},
+  cancellationReasons: [],
+  selectedCancellationReason: '',
+  clearCancellationReasons: {},
+  setSelectedCancellationReasonData: {},
 };
 
 FhlmcResolve.propTypes = {
+  cancellationReasons: PropTypes.arrayOf({
+    displayText: PropTypes.string,
+    requestType: PropTypes.string,
+    tooltip: PropTypes.string,
+  }),
+  clearCancellationReasons: PropTypes.func,
   closeSweetAlert: PropTypes.func.isRequired,
   dismissUserNotification: PropTypes.func.isRequired,
+  getCancellationReasonsData: PropTypes.func,
   inProgress: PropTypes.bool,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
   location: PropTypes.shape({
@@ -370,6 +439,8 @@ FhlmcResolve.propTypes = {
     status: PropTypes.string,
     title: PropTypes.string,
   }),
+  selectedCancellationReason: PropTypes.string,
+  setSelectedCancellationReasonData: PropTypes.func,
   userNotificationData: PropTypes.shape({
     isOpen: PropTypes.bool,
     level: PropTypes.string,
@@ -382,6 +453,8 @@ const mapStateToProps = state => ({
   resultOperation: selectors.resultOperation(state),
   investorEvents: selectors.getInvestorEvents(state),
   userNotificationData: selectors.getUserNotification(state),
+  cancellationReasons: selectors.cancellationReasons(state),
+  selectedCancellationReason: selectors.getSelectedCancellationReason(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -391,6 +464,9 @@ const mapDispatchToProps = dispatch => ({
   closeSweetAlert: operations.closeSweetAlert(dispatch),
   dismissUserNotification: operations.onDismissUserNotification(dispatch),
   resetWidget: widgetoperations.resetWidget(dispatch),
+  getCancellationReasonsData: operations.getCancellationReasonDetails(dispatch),
+  setSelectedCancellationReasonData: operations.setSelectedCancellationReasonData(dispatch),
+  clearCancellationReasons: operations.clearCancellationReasons(dispatch),
 });
 
 const FhlmcResolveContainer = connect(mapStateToProps, mapDispatchToProps)(FhlmcResolve);

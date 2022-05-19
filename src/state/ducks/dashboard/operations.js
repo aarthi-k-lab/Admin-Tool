@@ -73,6 +73,9 @@ import {
   onFHLMCModHistoryPopup,
   onTablePopupClose,
   checkTrialDisableStagerButtonAction,
+  getCancellationReasons,
+  setSelectedCancellationReason,
+  clearCancellationDetails,
 } from './actions';
 
 import {
@@ -394,6 +397,18 @@ const checkTrialEnableStagerButtonOperation = dispatch => () => {
   dispatch(checkTrialDisableStagerButtonAction());
 };
 
+const getCancellationReasonDetails = dispatch => () => {
+  dispatch(getCancellationReasons());
+};
+
+const setSelectedCancellationReasonData = dispatch => (payload) => {
+  dispatch(setSelectedCancellationReason(payload));
+};
+
+const clearCancellationReasons = dispatch => () => {
+  dispatch(clearCancellationDetails());
+};
+
 const operations = {
   openSweetAlert,
   onDismissUserNotification,
@@ -474,6 +489,9 @@ const operations = {
   onPopupClose,
   setRequestTypeDataOperation,
   checkTrialEnableStagerButtonOperation,
+  getCancellationReasonDetails,
+  setSelectedCancellationReasonData,
+  clearCancellationReasons,
 };
 
 export default operations;

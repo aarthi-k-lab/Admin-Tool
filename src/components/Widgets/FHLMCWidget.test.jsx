@@ -5,6 +5,11 @@ import SweetAlertBox from 'components/SweetAlertBox';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
 
 const defaultProps = {
+  getCancellationReasonsData: {},
+  cancellationReasons: [],
+  selectedCancellationReason: '',
+  setSelectedCancellationReasonData: {},
+  clearCancellationReasons: {},
   populateInvestorDropdown: jest.fn(),
   closeSweetAlert: jest.fn(),
   handleClose: jest.fn(),

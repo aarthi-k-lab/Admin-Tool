@@ -9,6 +9,7 @@ import {
   additionalInfo,
   onFhlmcCasesBulkSubmit,
   setRequestTypeDataAction,
+  setSelectedCancellationReason,
 } from 'ducks/dashboard/actions';
 import { getIncomeCalcChecklist } from 'ducks/income-calculator/actions';
 import {
@@ -44,6 +45,7 @@ function* getCaseDetails(rightAppBarOpen) {
   if (rightAppBarOpen) {
     const resolutionId = yield select(dashboardSelectors.resolutionId);
     yield put(setRequestTypeDataAction(''));
+    yield put(setSelectedCancellationReason(''));
     const payload = {
       caseIds: [resolutionId],
       requestIdType: 'Case id(s)',

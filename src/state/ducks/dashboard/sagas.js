@@ -150,6 +150,8 @@ import {
   SET_VALID_EVALDATA,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
   CHECK_TRIAL_DISABLE_STAGER_BUTTON,
+  GET_CANCELLATION_REASON,
+  SET_CANCELLATION_REASON,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -2255,7 +2257,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   let userNotification = null;
   let sweetAlert = null;
   try {
-    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`, JSON.parse(file));
+    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}&cancellationReason=${cancellationReason}`, JSON.parse(file));
     // Clearing resultData before getting eventData
     yield put({
       type: SET_FHLMC_UPLOAD_RESULT,
@@ -2505,6 +2507,32 @@ const onSubmitEval = function* onSubmitEval(action) {
   }
 };
 
+const fetchCancellationReasons = function* fetchCancellationReasons() {
+  try {
+    const responseMapper = item => ({
+      tooltip: item.longDescription,
+      requestType: item.classCode,
+      displayText: item.displayText,
+    });
+    let response = yield call(Api.callGet, '/api/dataservice/api/classCodes/FHLMCCancelReason');
+    if (response && response.length > 0) {
+      response = R.map(responseMapper, response);
+    }
+    yield put({
+      type: SET_CANCELLATION_REASON,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+};
+
 function* watchSubmitToFhlmc() {
   yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
 }
@@ -2616,6 +2644,11 @@ function* watchCheckTrialEnable() {
   yield takeEvery(CHECK_TRIAL_DISABLE_STAGER_BUTTON, checkTrialEnable);
 }
 
+function* watchCancellationReasons() {
+  yield takeEvery(GET_CANCELLATION_REASON, fetchCancellationReasons);
+}
+
+
 export const TestExports = {
   autoSaveOnClose,
   checklistSelectors,
@@ -2719,5 +2752,6 @@ export const combinedSaga = function* combinedSaga() {
     watchLoanviewTombstoneData(),
     watchonSubmitEval(),
     watchCheckTrialEnable(),
+    watchCancellationReasons(),
   ]);
 };

@@ -39,11 +39,50 @@ class FHLMCWidget extends Component {
     this.renderCategoryDropDown = this.renderCategoryDropDown.bind(this);
     this.handleDialogClose = this.handleDialogClose.bind(this);
     this.getModHistory = this.getModHistory.bind(this);
+    this.handleCancelReasons = this.handleCancelReasons.bind(this);
   }
 
   componentDidMount() {
     const { populateInvestorDropdown } = this.props;
     populateInvestorDropdown();
+  }
+
+  getCancellationReason() {
+    const { cancellationReasons, requestTypeData, selectedCancellationReason } = this.props;
+    return (cancellationReasons && requestTypeData && R.equals(requestTypeData, 'CXLReq')
+      ? (
+        <div>
+          <FormControl variant="outlined">
+            <InputLabel styleName={!R.isEmpty(selectedCancellationReason) ? 'inputLblSelected' : 'inputLbl'}>Please Select Cancelation Reason</InputLabel>
+            <Select
+              id="cancellationReason"
+              input={<OutlinedInput name="selectedReason" />}
+              label="Reason"
+              onChange={this.handleCancelReasons}
+              styleName="drop-down-select"
+              value={selectedCancellationReason}
+            >
+              {cancellationReasons && cancellationReasons.map(item => (
+                <MenuItem key={item.requestType} value={item.requestType}>
+                  <Tooltip
+                    placement="left"
+                    title={(
+                      <Typography>
+                        {item.tooltip}
+                      </Typography>
+                    )}
+                  >
+                    <span>
+                      {item.displayText}
+                    </span>
+                  </Tooltip>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      ) : null
+    );
   }
 
   getModHistory(isOpen) {
@@ -117,6 +156,7 @@ class FHLMCWidget extends Component {
             </Select>
           </FormControl>
         </div>
+        {this.getCancellationReason()}
         <div styleName="divider">
           <Divider />
         </div>
@@ -124,10 +164,23 @@ class FHLMCWidget extends Component {
     );
   }
 
+  handleCancelReasons = (event) => {
+    const {
+      setSelectedCancellationReasonData,
+    } = this.props;
+    setSelectedCancellationReasonData(event.target.value);
+  }
+
+
   handleRequestType = (event) => {
     const {
-      setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData,
+      setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData, getCancellationReasonsData, clearCancellationReasons,
     } = this.props;
+    if (R.equals(event.target.value, 'CXLReq')) {
+      getCancellationReasonsData(); // populate Cancellation Reasons
+    } else {
+      clearCancellationReasons();
+    }
     setRequestTypeData(event.target.value);
     if (R.has('message', R.head(resultData))) {
       const payload = {
@@ -165,6 +218,7 @@ class FHLMCWidget extends Component {
       investorEvents,
       requestTypeData,
       eligibleData,
+      selectedCancellationReason,
     } = this.props;
     const portFolio = R.find(item => item.requestType === requestTypeData, investorEvents);
     const portfolioCode = R.pathOr('', ['portfolioCode'], portFolio);
@@ -197,6 +251,7 @@ class FHLMCWidget extends Component {
         <FHLMCDataInsight
           isWidget
           portfolioCode={portfolioCode}
+          selectedCancellationReason={selectedCancellationReason}
           selectedRequestType={requestTypeData}
           submitCases
         />
@@ -216,12 +271,24 @@ FHLMCWidget.defaultProps = {
   onFhlmcModHistoryPopup: {},
   fhlmcModHistoryData: null,
   onTablePopupDataClear: {},
+  getCancellationReasonsData: {},
+  cancellationReasons: [],
+  selectedCancellationReason: '',
+  setSelectedCancellationReasonData: {},
+  clearCancellationReasons: {},
 };
 
 FHLMCWidget.propTypes = {
+  cancellationReasons: PropTypes.arrayOf({
+    displayText: PropTypes.string,
+    requestType: PropTypes.string,
+    tooltip: PropTypes.string,
+  }),
+  clearCancellationReasons: PropTypes.func,
   closeSweetAlert: PropTypes.func.isRequired,
   eligibleData: PropTypes.string.isRequired,
   fhlmcModHistoryData: PropTypes.arrayOf(PropTypes.shape({})),
+  getCancellationReasonsData: PropTypes.func,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
   onFhlmcBulkSubmit: PropTypes.func.isRequired,
   onFhlmcModHistoryPopup: PropTypes.func,
@@ -241,11 +308,14 @@ FHLMCWidget.propTypes = {
     status: PropTypes.string,
     title: PropTypes.string,
   }),
+  selectedCancellationReason: PropTypes.string,
   setRequestTypeData: PropTypes.func.isRequired,
+  setSelectedCancellationReasonData: PropTypes.func,
   stagerTaskName: PropTypes.shape(),
 };
 
 const mapStateToProps = state => ({
+  cancellationReasons: selectors.cancellationReasons(state),
   fhlmcModHistoryData: selectors.getFhlmcModHistory(state),
   investorEvents: selectors.getInvestorEvents(state),
   resultOperation: selectors.resultOperation(state),
@@ -254,6 +324,7 @@ const mapStateToProps = state => ({
   requestTypeData: selectors.getRequestTypeData(state),
   resolutionId: selectors.resolutionId(state),
   resultData: selectors.resultData(state),
+  selectedCancellationReason: selectors.getSelectedCancellationReason(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -263,6 +334,9 @@ const mapDispatchToProps = dispatch => ({
   onFhlmcBulkSubmit: operations.onFhlmcCasesSubmit(dispatch),
   onFhlmcModHistoryPopup: operations.onFHLMCModHistory(dispatch),
   onTablePopupDataClear: operations.onTablePopupDataClear(dispatch),
+  getCancellationReasonsData: operations.getCancellationReasonDetails(dispatch),
+  setSelectedCancellationReasonData: operations.setSelectedCancellationReasonData(dispatch),
+  clearCancellationReasons: operations.clearCancellationReasons(dispatch),
 });
 
 export { FHLMCWidget };

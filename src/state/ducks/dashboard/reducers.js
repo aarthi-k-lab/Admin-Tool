@@ -98,6 +98,9 @@ import {
   SET_VALID_EVALDATA,
   CLEAR_POPUP_TABLE_DATA,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
+  SET_CANCELLATION_REASON,
+  SET_SELECTED_CANCELLATION_REASON,
+  CLEAR_CANCELLATION_REASONS,
 } from './types';
 
 const reducer = (state = {
@@ -989,6 +992,32 @@ const reducer = (state = {
       return {
         ...state,
         disableTrialStagerButton,
+      };
+    }
+
+    
+    case SET_CANCELLATION_REASON: {
+      const cancellationReasons = action.payload;
+      return {
+        ...state,
+        selectedCancellationReason: '',
+        cancellationReasons,
+      };
+    }
+
+    case SET_SELECTED_CANCELLATION_REASON: {
+      const selectedCancellationReason = action.payload;
+      return {
+        ...state,
+        selectedCancellationReason,
+      };
+    }
+
+    case CLEAR_CANCELLATION_REASONS: {
+      return {
+        ...state,
+        selectedCancellationReason: '',
+        cancellationReasons: [],
       };
     }
 

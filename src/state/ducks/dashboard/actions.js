@@ -78,6 +78,9 @@ import {
   GET_FHLMC_MOD_HISTORY,
   CLEAR_POPUP_TABLE_DATA,
   CHECK_TRIAL_DISABLE_STAGER_BUTTON,
+  GET_CANCELLATION_REASON,
+  SET_SELECTED_CANCELLATION_REASON,
+  CLEAR_CANCELLATION_REASONS,
 } from './types';
 
 
@@ -451,6 +454,20 @@ const checkTrialDisableStagerButtonAction = () => ({
 });
 
 
+const getCancellationReasons = () => ({
+  type: GET_CANCELLATION_REASON,
+});
+
+const setSelectedCancellationReason = payload => ({
+  type: SET_SELECTED_CANCELLATION_REASON,
+  payload,
+});
+
+const clearCancellationDetails = () => ({
+  type: CLEAR_CANCELLATION_REASONS,
+});
+
+
 export {
   dismissUserNotification,
   onSubmitToFhlmcAction,
@@ -531,4 +548,7 @@ export {
   onFhlmcCasesBulkSubmit,
   setRequestTypeDataAction,
   checkTrialDisableStagerButtonAction,
+  getCancellationReasons,
+  setSelectedCancellationReason,
+  clearCancellationDetails,
 };

@@ -140,3 +140,13 @@
   white-space: nowrap;
   text-align: center;
 }
+
+.inputLblSelected {
+  display: none !important;
+}
+
+.inputLbl {
+  display: block !important;
+  left: 2% !important;
+  top: -15% !important;
+}

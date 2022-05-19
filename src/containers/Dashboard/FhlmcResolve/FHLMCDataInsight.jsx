@@ -23,6 +23,9 @@ import ResultStatus from 'components/ResultStatus';
 import { PropTypes } from 'prop-types';
 import Loader from 'components/Loader/Loader';
 import { EXCEL_FORMATS } from '../../../constants/common';
+import {
+  REQUEST_TYPE_REQ, FILE_UPLOAD_REQ, CANCELLATION_REASON, REQ_PRCS,
+} from '../../../constants/fhlmc';
 import './FhlmcResolve.css';
 
 
@@ -103,8 +106,15 @@ class FHLMCDataInsight extends React.PureComponent {
   }
 
   submitToFhlmc = () => {
-    const { onSubmitToFhlmcRequest, selectedRequestType, portfolioCode } = this.props;
-    const status = 'We are processing your request.  Please do not close the browser.';
+    const {
+      onSubmitToFhlmcRequest, selectedRequestType, portfolioCode,
+      selectedCancellationReason, openSweetAlert,
+    } = this.props;
+    if (R.equals(selectedRequestType, 'CXLReq') && R.isEmpty(selectedCancellationReason)) {
+      this.terminateAndShowWarning(CANCELLATION_REASON, openSweetAlert, true);
+      return;
+    }
+    const status = REQ_PRCS;
     const level = 'Info';
     const showConfirmButton = false;
     const sweetAlertPayload = {
@@ -143,13 +153,8 @@ class FHLMCDataInsight extends React.PureComponent {
           this.setState({ showLoader: false, buttonState: 'UPLOAD EXCEL' });
         }, 2000);
       } else {
-        const sweetAlertPayload = {
-          status: R.isEmpty(selectedRequestType) ? 'Please select request type and upload excel file' : 'Kindly upload an excel File',
-          level: 'Warning',
-          showConfirmButton: true,
-        };
-        setTimeout(() => { this.setState({ showSubmitFhlmc: false, showLoader: false, buttonState: 'UPLOAD EXCEL' }); }, 2000);
-        openSweetAlert(sweetAlertPayload);
+        const message = R.isEmpty(selectedRequestType) ? REQUEST_TYPE_REQ : FILE_UPLOAD_REQ;
+        this.terminateAndShowWarning(message, openSweetAlert, false);
       }
     }
   }
@@ -252,6 +257,16 @@ class FHLMCDataInsight extends React.PureComponent {
     );
   }
 
+  terminateAndShowWarning(message, openSweetAlert, showSubmitBtn) {
+    const sweetAlertPayload = {
+      status: message,
+      level: 'Warning',
+      showConfirmButton: true,
+    };
+    setTimeout(() => { this.setState({ showSubmitFhlmc: showSubmitBtn, showLoader: false, buttonState: 'UPLOAD EXCEL' }); }, 2000);
+    openSweetAlert(sweetAlertPayload);
+  }
+
   render() {
     const {
       showMessageProp, showSubmitFhlmc, buttonState, showLoader,
@@ -342,6 +357,7 @@ FHLMCDataInsight.defaultProps = {
   portfolioCode: '',
   submitCases: true,
   isWidget: false,
+  selectedCancellationReason: '',
 };
 
 FHLMCDataInsight.propTypes = {
@@ -357,6 +373,7 @@ FHLMCDataInsight.propTypes = {
     caseId: PropTypes.string,
     message: PropTypes.string,
   }),
+  selectedCancellationReason: PropTypes.string,
   selectedRequestType: '',
   submitCases: PropTypes.bool,
 };
