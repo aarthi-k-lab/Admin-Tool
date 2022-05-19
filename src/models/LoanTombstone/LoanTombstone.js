@@ -4,6 +4,7 @@ import Auth from 'lib/Auth';
 import * as R from 'ramda';
 import waterfallLookup from './waterfallLookup';
 import DashboardModel from '../Dashboard/index';
+import { FHLMC } from '../../constants/widgets';
 
 export const NA = 'NA';
 const pandemicFlagCommentCode = 'PCIM';
@@ -34,8 +35,16 @@ function getBuyoutProcessUrl(loanNumber) {
   return `/api/ods-gateway/booking/buyout/loans/${loanNumber}`;
 }
 
+function getResolutionDataByEvalUrl(evalId) {
+  return `/api/tkams/fetchResolutionIds/${evalId}`;
+}
+
 function getPandemicFlagUrl(loanNumber, brand) {
   return `/api/booking/api/lsamsCommentCodeFilter?loanNumber=${loanNumber}&brand=${brand}&commentCode=${pandemicFlagCommentCode}`;
+}
+
+function getFreddieIndicatorUrl() {
+  return '/api/dataservice/api/getFreddieIndicator';
 }
 
 function generateTombstoneItem(title, content) {
@@ -280,6 +289,12 @@ function getPandamicFlagItem(_l, _e, _p, _g, _a, _t, _ta, fetchPandemicFlagRespo
   return {};
 }
 
+function getFreddieIndicator(_l, _e, _p, _g, _a, _t, _ta, _pan,
+  _bpd, freddieIndicatorDetails) {
+  const indicator = freddieIndicatorDetails || '';
+  return generateTombstoneItem('Freddie System', indicator);
+}
+
 function getDelinquencyBuyoutFlagItem(_l, _e, _p, _g, _a, _t, _ta, _pan, buyoutProcessDetails) {
   const buyoutFlagItem = (buyoutProcessDetails && _e && _e.delinquencyFlag
       && Boolean(buyoutProcessDetails.delinquencyFlag)) ? {
@@ -296,7 +311,7 @@ function getTombstoneItems(loanDetails,
   evalDetails,
   previousDispositionDetails,
   groupName, additionalLoanInfo, taskName, taskData,
-  fetchPandemicFlagResponseData, buyoutProcessDetails) {
+  fetchPandemicFlagResponseData, buyoutProcessDetails, freddieIndicatorData) {
   let dataGenerator = [];
   const group = DashboardModel.POSTMOD_TASKNAMES.indexOf(groupName) !== -1
     ? DashboardModel.POSTMODSTAGER : groupName;
@@ -307,6 +322,7 @@ function getTombstoneItems(loanDetails,
         getInvestorLoanItem,
         getEvalIdItem,
         getPandamicFlagItem,
+        getFreddieIndicator,
         getEvalFlag,
         getLoanTypeDescription,
         getInvestorItem,
@@ -436,6 +452,9 @@ function getTombstoneItems(loanDetails,
   if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
   }
+  if (R.equals(group, DashboardModel.BEUW) || (R.equals(group, DashboardModel.POSTMODSTAGER) && R.equals(taskName, 'Investor Settlement'))) {
+    dataGenerator.splice(4, 0, getFreddieIndicator);
+  }
   const data = dataGenerator.map(fn => fn(loanDetails,
     evalDetails,
     previousDispositionDetails,
@@ -443,7 +462,7 @@ function getTombstoneItems(loanDetails,
     additionalLoanInfo,
     taskName,
     taskData, fetchPandemicFlagResponseData,
-    buyoutProcessDetails));
+    buyoutProcessDetails, freddieIndicatorData));
   return R.filter(item => !R.isEmpty(item), data);
 }
 
@@ -455,6 +474,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
   const buyoutProcessUrl = getBuyoutProcessUrl(loanNumber);
+  const resolutionDataUrl = getResolutionDataByEvalUrl(evalId);
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -466,6 +486,11 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   );
 
   const fetchAdditionalLoanInfo = fetch(additionalLoanInfoUrl, {
+    method: 'GET',
+    headers: { 'content-type': 'application/json' },
+  });
+
+  const resolutionDataByEvalInfo = fetch(resolutionDataUrl, {
     method: 'GET',
     headers: { 'content-type': 'application/json' },
   });
@@ -493,9 +518,9 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     evaluationInfoResponse,
     previousDispositionResponse,
     additionalLoanInfoResponse,
-    taskDataResponse, buyoutProcessResponse] = await Promise.all(
+    taskDataResponse, buyoutProcessResponse, resolutionDataByEvalResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
-      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo],
+      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo, resolutionDataByEvalInfo],
   );
 
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
@@ -506,7 +531,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     evalDetails,
     previousDispositionDetails,
     additionalLoanInfo,
-    taskData, fetchPandemicFlagResponseData] = [];
+    taskData, fetchPandemicFlagResponseData, freddieIndicatorData, resolutionData] = [];
 
   let buyoutProcessDetails = {};
 
@@ -515,30 +540,31 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
       evalDetails,
       previousDispositionDetails,
       additionalLoanInfo,
-      taskData, buyoutProcessDetails] = await Promise.all([
+      taskData, buyoutProcessDetails, resolutionData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
       buyoutProcessResponse.json(),
+      resolutionDataByEvalResponse.json(),
     ]);
   } else {
     [loanDetails,
       evalDetails,
       additionalLoanInfo,
-      taskData, buyoutProcessDetails] = await Promise.all([
+      taskData, buyoutProcessDetails, resolutionData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
       buyoutProcessResponse.json(),
+      resolutionDataByEvalResponse.json(),
     ]);
   }
 
   const pandemicFlagUrl = getPandemicFlagUrl(loanNumber,
     brand || (loanDetails && loanDetails.brandName));
-
 
   const fetchPandemicFlagP = await fetch(pandemicFlagUrl, {
     method: 'GET',
@@ -547,6 +573,32 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
 
   if (fetchPandemicFlagP.status === 200) {
     fetchPandemicFlagResponseData = await fetchPandemicFlagP.json();
+  }
+
+  const freddieIndicatorUrl = getFreddieIndicatorUrl();
+
+  function formatFreddieIndicatorRequest(caseID) {
+    return {
+      loanNumber,
+      caseID,
+      investorCode: FHLMC,
+      taskName,
+      brandId: brand || (loanDetails && loanDetails.brandName),
+    };
+  }
+
+  if (resolutionData) {
+    const fetchFreddieIndicator = await fetch(freddieIndicatorUrl, {
+      method: 'POST',
+      body: JSON.stringify(formatFreddieIndicatorRequest(
+        resolutionData.map(data => data.resolutionId),
+      )),
+      headers: { 'content-type': 'application/json' },
+    });
+
+    if (fetchFreddieIndicator.status === 200) {
+      freddieIndicatorData = await fetchFreddieIndicator.text();
+    }
   }
   // resolutionId is using for dashboard store
   return {
@@ -563,6 +615,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
        taskData,
        fetchPandemicFlagResponseData,
        buyoutProcessDetails,
+       freddieIndicatorData,
      )],
   };
 }
