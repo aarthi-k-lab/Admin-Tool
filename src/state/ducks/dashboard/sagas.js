@@ -1082,6 +1082,7 @@ function* saveGeneralChecklistDisposition(payload) {
     && AppGroupName.hasChecklist(appGroupName)) {
     const evalId = yield select(selectors.evalId);
     const groupName = payload.appGroupName;
+    const skipValidation = DashboardModel.checkSkipValidation(groupName);
     const agentName = yield select(checklistSelectors.getAgentName);
     const wfTaskId = yield select(selectors.taskId);
     const wfProcessId = yield select(selectors.processId);
@@ -1114,14 +1115,16 @@ function* saveGeneralChecklistDisposition(payload) {
       loanNumber,
       managerID,
       userGroups: assigneeUserGroups,
+      skipValidation,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
     yield put({
       type: SET_GET_NEXT_STATUS,
-      payload: tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result),
+      payload: skipValidation
+      || (tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result)),
     });
-    if (!tkamsValidation.enableGetNext) {
+    if (!skipValidation && !tkamsValidation.enableGetNext) {
       yield put({ type: HIDE_LOADER });
       yield put({
         type: USER_NOTIF_MSG,

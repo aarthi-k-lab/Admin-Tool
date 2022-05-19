@@ -24,6 +24,13 @@ const UWSTAGER_TASKNAMES = ['Delay Checklist', 'Delay Checklist-ToOrder'];
 const POSTMOD_TASKNAMES = ['Countersign', 'FNMA QC', 'Incentive', 'Investor Settlement', 'Recordation', 'Recordation-Ordered', 'Recordation-ToOrder', 'Send Mod Agreement', 'Pending Buyout - Countersign', '258A Recordation-Ordered', '258A Recordation-ToOrder', 'Assumption Agreement Recordation-Ordered', 'Assumption Agreement Recordation-ToOrder', 'Modification Agreement Recordation-Ordered', 'Modification Agreement Recordation-ToOrder', 'Partial Claim Recordation-Ordered', 'Partial Claim Recordation-ToOrder', 'Recordation-ToOrder'];
 const ALLOW_IN_QUEUE = ['Trial Modification', 'Forbearance'];
 const PENDING_BOOKING = 'Pending Booking';
+const INVSET = 'INVSET';
+const SEARCH_LOAN = 'SEARCH_LOAN';
+const DOCGEN_GOBACK = 'DOCGEN_GOBACK';
+const MLSTN_PAGE = 'MLSTN_PAGE';
+const GNRL_CHKLST_SKIP_VALIDATION_GROUPS = [INVSET];
+const DISABLE_VALIDATION_GROUPS = [LOAN_ACTIVITY, POSTMODSTAGER, UWSTAGER, ALL_STAGER, INVSET];
+const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INVSET];
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
@@ -126,6 +133,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: INVSET,
+    task: 'INVESTOR SETTLEMENT',
+    taskCode: 'INVSET',
+    path: '/investor-settlement',
+    showAssignUnassign: true,
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -143,6 +157,7 @@ const GROUPS = {
   '/special-loan': BOOKING,
   '/dg-vendor': COVIUS,
   '/fhlmcBulkOrder': FHLMCRESOLVE,
+  '/investor-settlement': INVSET,
 };
 
 function getTitle(location) {
@@ -165,10 +180,16 @@ function getTitle(location) {
       return 'COVIUS EVENTS';
     case '/fhlmcBulkOrder':
       return 'FHHLMC RESOLVE';
+    case '/investor-settlement':
+      return 'INVESTOR SETTLEMENT';
     default:
       return 'Unrecognized Dashboard';
   }
 }
+
+const checkSkipValidation = groupName => GNRL_CHKLST_SKIP_VALIDATION_GROUPS.includes(groupName);
+const checkShowValidation = groupName => !DISABLE_VALIDATION_GROUPS.includes(groupName);
+const checkDisableValidateButton = groupName => DISABLE_VALIDATE_BUTTON_GROUPS.includes(groupName);
 
 const InvalidEvalResponse = evalId => ({
   statusMessage: 'Eval id you have entered is invalid',
@@ -209,6 +230,13 @@ const DashboardModel = {
   PENDING_BOOKING,
   InvalidEvalResponse,
   PDD,
+  INVSET,
+  SEARCH_LOAN,
+  DOCGEN_GOBACK,
+  MLSTN_PAGE,
+  checkSkipValidation,
+  checkShowValidation,
+  checkDisableValidateButton,
 };
 
 export default DashboardModel;

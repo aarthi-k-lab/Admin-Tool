@@ -15,6 +15,7 @@ const DOCGENVENDOR = 'DOCGENVENDOR';
 const FHLMCRESOLVE = 'FHLMCRESOLVE';
 const UWSTAGER = 'UWSTAGER';
 const RPS_STAGER = 'RPSstager';
+const INVSET = 'INVSET';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -25,6 +26,7 @@ const checklistGroupNames = [
   POSTMOD,
   BOOKING,
   UWSTAGER,
+  INVSET,
 ];
 
 const userGroupList = [
@@ -42,6 +44,7 @@ const userGroupList = [
   DOCGENVENDOR,
   FHLMCRESOLVE,
   RPS_STAGER,
+  INVSET,
 ];
 
 

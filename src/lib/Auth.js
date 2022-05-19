@@ -9,6 +9,7 @@ import {
   COVIUS,
   COVIUS_MGR,
   FHLMCRESOLVE,
+  INVSET,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -295,6 +296,7 @@ Auth.failureMessages = {
   USER_UNAUTHORIZED: 'You have not been assigned to the app. Kindly contact the support team.',
   COVIUS_ACCESS_NEEDED: 'COVIUS Group Access is needed to view the Covius Bulk order page.',
   LOCATION_ACCESS_FAILED: 'CURRENTLY THIS FEATURE IS NOT AVAILBLE',
+  INVESTOR_SETTLEMENT_ACCESS_NEEDED: 'Investor Settlement Group Access is needed to view the Investor Settlement Dashboard.',
 };
 
 Auth.homePage = [
@@ -337,6 +339,10 @@ Auth.homePage = [
   {
     groupName: FHLMCRESOLVE,
     path: '/fhlmc-resolve',
+  },
+  {
+    groupName: INVSET,
+    path: '/investor-settlement',
   },
 ];
 
