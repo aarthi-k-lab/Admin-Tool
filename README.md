@@ -86,3 +86,6 @@ $ echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
         ii. Title
         iii. GROUP_INFO
     6. SearchLoan.jsx - for loan search
+    7. getStagerGroup - For stager access. 
+        i. stagerGroups - Add additional AD group to get Stager tiles access. 
+        ii. postModGroups - Add  additional AD group to get  POSTMOD tiles access

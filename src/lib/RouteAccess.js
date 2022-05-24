@@ -15,7 +15,7 @@ const stager = {
   path: '/stager',
   name: 'stager',
   img: '/static/img/stager.svg',
-  groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr', 'postmodstager', 'postmodstager-mgr', 'rpsstager', 'rpsstager-mgr'],
 };
 
 const moveForward = {
@@ -262,8 +262,8 @@ function hasInvestorSettlementAccess(groups) {
 
 function getStagerGroup(groups) {
   let groupName = '';
-  const stagerGroups = ['stager-mgr', 'stager'];
-  const postModGroups = ['postmodstager', 'postmodstager-mgr'];
+  const stagerGroups = ['stager-mgr', 'stager', 'rpsstager-mgr', 'rpsstager'];
+  const postModGroups = ['postmodstager', 'postmodstager-mgr', 'rpsstager-mgr', 'rpsstager'];
   const isStagerGroup = groups && R.any(group => R.contains(group, stagerGroups), groups);
   const isPostModStagerGroup = groups && R.any(group => R.contains(group, postModGroups), groups);
   if (isStagerGroup && isPostModStagerGroup) {
