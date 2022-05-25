@@ -35,10 +35,6 @@ function getBuyoutProcessUrl(loanNumber) {
   return `/api/ods-gateway/booking/buyout/loans/${loanNumber}`;
 }
 
-function getResolutionDataByEvalUrl(evalId) {
-  return `/api/tkams/fetchResolutionIds/${evalId}`;
-}
-
 function getPandemicFlagUrl(loanNumber, brand) {
   return `/api/booking/api/lsamsCommentCodeFilter?loanNumber=${loanNumber}&brand=${brand}&commentCode=${pandemicFlagCommentCode}`;
 }
@@ -469,14 +465,14 @@ function getTombstoneItems(loanDetails,
 }
 
 
-async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand) {
+async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
+  selectedResolutionId) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
   const buyoutProcessUrl = getBuyoutProcessUrl(loanNumber);
-  const resolutionDataUrl = getResolutionDataByEvalUrl(evalId);
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -488,11 +484,6 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   );
 
   const fetchAdditionalLoanInfo = fetch(additionalLoanInfoUrl, {
-    method: 'GET',
-    headers: { 'content-type': 'application/json' },
-  });
-
-  const resolutionDataByEvalInfo = fetch(resolutionDataUrl, {
     method: 'GET',
     headers: { 'content-type': 'application/json' },
   });
@@ -520,9 +511,9 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     evaluationInfoResponse,
     previousDispositionResponse,
     additionalLoanInfoResponse,
-    taskDataResponse, buyoutProcessResponse, resolutionDataByEvalResponse] = await Promise.all(
+    taskDataResponse, buyoutProcessResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
-      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo, resolutionDataByEvalInfo],
+      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo],
   );
 
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
@@ -533,7 +524,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     evalDetails,
     previousDispositionDetails,
     additionalLoanInfo,
-    taskData, fetchPandemicFlagResponseData, freddieIndicatorData, resolutionData] = [];
+    taskData, fetchPandemicFlagResponseData, freddieIndicatorData] = [];
 
   let buyoutProcessDetails = {};
 
@@ -542,26 +533,24 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
       evalDetails,
       previousDispositionDetails,
       additionalLoanInfo,
-      taskData, buyoutProcessDetails, resolutionData] = await Promise.all([
+      taskData, buyoutProcessDetails] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
       buyoutProcessResponse.json(),
-      resolutionDataByEvalResponse.json(),
     ]);
   } else {
     [loanDetails,
       evalDetails,
       additionalLoanInfo,
-      taskData, buyoutProcessDetails, resolutionData] = await Promise.all([
+      taskData, buyoutProcessDetails] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
       buyoutProcessResponse.json(),
-      resolutionDataByEvalResponse.json(),
     ]);
   }
 
@@ -589,18 +578,16 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     };
   }
 
-  if (resolutionData) {
-    const fetchFreddieIndicator = await fetch(freddieIndicatorUrl, {
-      method: 'POST',
-      body: JSON.stringify(formatFreddieIndicatorRequest(
-        resolutionData.map(data => data.resolutionId),
-      )),
-      headers: { 'content-type': 'application/json' },
-    });
+  const fetchFreddieIndicator = await fetch(freddieIndicatorUrl, {
+    method: 'POST',
+    body: JSON.stringify(formatFreddieIndicatorRequest(
+      (+selectedResolutionId),
+    )),
+    headers: { 'content-type': 'application/json' },
+  });
 
-    if (fetchFreddieIndicator.status === 200) {
-      freddieIndicatorData = await fetchFreddieIndicator.text();
-    }
+  if (fetchFreddieIndicator.status === 200) {
+    freddieIndicatorData = await fetchFreddieIndicator.text();
   }
   // resolutionId is using for dashboard store
   return {

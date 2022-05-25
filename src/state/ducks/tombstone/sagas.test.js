@@ -87,14 +87,20 @@ describe('fetchTombstoneData', () => {
       .toEqual(select(dashboardSelectors.stagerTaskName));
   });
 
-  it('should select brand from store', () => {
+  
+  it('should select resolutionId from store', () => {
     expect(saga.next('FrontEnd Review').value)
+      .toEqual(select(dashboardSelectors.selectedResolutionId));
+  });
+
+  it('should select brand from store', () => {
+    expect(saga.next(78790).value)
       .toEqual(select(dashboardSelectors.brand));
   });
 
   it('should call sods api to fetch loan details', () => {
     expect(saga.next('NSM').value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM'));
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM', 78790));
   });
 
   it('should dispatch SET_RESOLUTION_AND_INVSTR_HRCHY', () => {
@@ -165,14 +171,19 @@ describe('fetchTombStoneData should throw error on error to fetch data', () => {
       .toEqual(select(dashboardSelectors.stagerTaskName));
   });
 
-  it('should select Brand from store', () => {
+  it('should select resolutionId from store', () => {
     expect(saga.next('FrontEnd Review').value)
+      .toEqual(select(dashboardSelectors.selectedResolutionId));
+  });
+
+  it('should select Brand from store', () => {
+    expect(saga.next(78790).value)
       .toEqual(select(dashboardSelectors.brand));
   });
 
   it('should call sods api to fetch loan details', () => {
     expect(saga.next('NSM').value)
-      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM'));
+      .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM', 78790));
   });
 
   it('should update store with ERROR_LOADING_TOMBSTONE_DATA on error', () => {

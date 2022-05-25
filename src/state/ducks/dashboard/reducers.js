@@ -429,6 +429,7 @@ const reducer = (state = {
         ...state,
         brand: action.payload.brand,
         evalId: action.payload.evalId,
+        selectedResolutionId: action.payload.resolutionId,
         loanNumber: action.payload.loanNumber,
         taskId: action.payload.taskId,
         processId: action.payload.piid,

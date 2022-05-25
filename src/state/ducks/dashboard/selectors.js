@@ -173,6 +173,8 @@ const getSelectedCancellationReason = state => R.pathOr('', ['dashboard', 'selec
 
 const getTrialDisableButton = state => R.pathOr(false, ['dashboard', 'disableTrialStagerButton'], state);
 
+const selectedResolutionId = state => R.pathOr('', ['dashboard', 'selectedResolutionId'], state);
+
 const selectors = {
   getUserNotification,
   isIncomeVerification,
@@ -271,6 +273,7 @@ const selectors = {
   getTrialDisableButton,
   cancellationReasons,
   getSelectedCancellationReason,
+  selectedResolutionId,
 };
 
 export default selectors;

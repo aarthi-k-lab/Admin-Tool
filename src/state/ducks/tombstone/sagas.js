@@ -28,13 +28,14 @@ function* fetchTombstoneData(payload) {
   const evalId = yield select(dashboardSelectors.evalId);
   const groupName = yield select(dashboardSelectors.groupName);
   const postModTaskName = yield select(dashboardSelectors.stagerTaskName);
+  const selectedResolutionId = yield select(dashboardSelectors.selectedResolutionId);
   const brand = yield select(dashboardSelectors.brand);
   const tombstoneTaskId = R.equals(groupName, 'BOOKING') ? yield select(dashboardSelectors.getBookingTaskId) : taskId;
   try {
     const userGroup = R.equals(groupName, 'POSTMOD') || R.equals(groupName, 'UWSTAGER') ? postModTaskName.activeTile : groupName;
     const group = userGroup === 'Recordation' || userGroup === 'Countersign' || userGroup === 'Delay Checklist' ? taskName : userGroup;
     const data = yield call(LoanTombstone.fetchData,
-      loanNumber, evalId, group, taskName, tombstoneTaskId, brand);
+      loanNumber, evalId, group, taskName, tombstoneTaskId, brand, selectedResolutionId);
     const { resolutionId, investorHierarchy, tombstoneData } = data;
     // storing resolution id inside dashboard object
     yield put({
