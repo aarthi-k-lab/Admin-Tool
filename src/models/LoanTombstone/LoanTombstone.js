@@ -35,6 +35,10 @@ function getBuyoutProcessUrl(loanNumber) {
   return `/api/ods-gateway/booking/buyout/loans/${loanNumber}`;
 }
 
+function getResolutionDataByEvalUrl(evalId) {
+  return `/api/tkams/fetchResolutionIds/${evalId}`;
+}
+
 function getPandemicFlagUrl(loanNumber, brand) {
   return `/api/booking/api/lsamsCommentCodeFilter?loanNumber=${loanNumber}&brand=${brand}&commentCode=${pandemicFlagCommentCode}`;
 }
@@ -450,7 +454,7 @@ function getTombstoneItems(loanDetails,
   if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
     dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
   }
-  if (R.equals(group, DashboardModel.BEUW) || (R.equals(group, DashboardModel.POSTMODSTAGER) && R.equals(taskName, 'Investor Settlement'))) {
+  if (R.equals(group, DashboardModel.BEUW) || (R.equals(group, 'INVSET') && R.equals(taskName, 'Investor Settlement'))) {
     dataGenerator.splice(4, 0, getFreddieIndicator);
   }
   const data = dataGenerator.map(fn => fn(loanDetails,
@@ -465,14 +469,14 @@ function getTombstoneItems(loanDetails,
 }
 
 
-async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
-  selectedResolutionId) {
+async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand) {
   const loanInfoUrl = getUrl(loanNumber);
   const evaluationInfoUrl = getEvaluationInfoUrl(evalId);
   const previousDispositionUrl = getPreviousDispositionUrl();
   const additionalLoanInfoUrl = getAdditionalLoanInfoUrl(evalId);
   const taskDataUrl = getTaskDataUrl(taskId);
   const buyoutProcessUrl = getBuyoutProcessUrl(loanNumber);
+  const resolutionDataUrl = getResolutionDataByEvalUrl(evalId);
 
   const loanInfoResponseP = fetch(
     loanInfoUrl,
@@ -482,6 +486,11 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
       },
     },
   );
+
+  const resolutionDataByEvalInfo = fetch(resolutionDataUrl, {
+    method: 'GET',
+    headers: { 'content-type': 'application/json' },
+  });
 
   const fetchAdditionalLoanInfo = fetch(additionalLoanInfoUrl, {
     method: 'GET',
@@ -511,9 +520,9 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
     evaluationInfoResponse,
     previousDispositionResponse,
     additionalLoanInfoResponse,
-    taskDataResponse, buyoutProcessResponse] = await Promise.all(
+    taskDataResponse, buyoutProcessResponse, resolutionDataByEvalResponse] = await Promise.all(
     [loanInfoResponseP, evaluationInfoResponseP, previousDispositionP,
-      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo],
+      additionalLoanInfoP, fetchTaskInfo, fetchBuyoutProcessInfo, resolutionDataByEvalInfo],
   );
 
   if (!loanInfoResponse.ok || !evaluationInfoResponse.ok) {
@@ -524,7 +533,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
     evalDetails,
     previousDispositionDetails,
     additionalLoanInfo,
-    taskData, fetchPandemicFlagResponseData, freddieIndicatorData] = [];
+    taskData, fetchPandemicFlagResponseData, freddieIndicatorData, resolutionData] = [];
 
   let buyoutProcessDetails = {};
 
@@ -533,24 +542,26 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
       evalDetails,
       previousDispositionDetails,
       additionalLoanInfo,
-      taskData, buyoutProcessDetails] = await Promise.all([
+      taskData, buyoutProcessDetails, resolutionData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       previousDispositionResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
       buyoutProcessResponse.json(),
+      resolutionDataByEvalResponse.json(),
     ]);
   } else {
     [loanDetails,
       evalDetails,
       additionalLoanInfo,
-      taskData, buyoutProcessDetails] = await Promise.all([
+      taskData, buyoutProcessDetails, resolutionData] = await Promise.all([
       loanInfoResponse.json(),
       evaluationInfoResponse.json(),
       additionalLoanInfoResponse.json(),
       taskDataResponse.json(),
       buyoutProcessResponse.json(),
+      resolutionDataByEvalResponse.json(),
     ]);
   }
 
@@ -568,26 +579,35 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand,
 
   const freddieIndicatorUrl = getFreddieIndicatorUrl();
 
+  let investorName = '';
+
+  if (loanDetails) {
+    const investor = R.path(['investorInformation', 'investorName'], loanDetails);
+    investorName = (investor.includes('FHLMC') || investor.includes('FREDDIE')) ? FHLMC : '';
+  }
+
   function formatFreddieIndicatorRequest(caseID) {
     return {
       loanNumber,
       caseID,
-      investorCode: FHLMC,
+      investorCode: investorName,
       taskName,
       brandId: brand || (loanDetails && loanDetails.brandName),
     };
   }
 
-  const fetchFreddieIndicator = await fetch(freddieIndicatorUrl, {
-    method: 'POST',
-    body: JSON.stringify(formatFreddieIndicatorRequest(
-      (+selectedResolutionId),
-    )),
-    headers: { 'content-type': 'application/json' },
-  });
+  if (resolutionData) {
+    const fetchFreddieIndicator = await fetch(freddieIndicatorUrl, {
+      method: 'POST',
+      body: JSON.stringify(formatFreddieIndicatorRequest(
+        resolutionData.map(data => data.resolutionId),
+      )),
+      headers: { 'content-type': 'application/json' },
+    });
 
-  if (fetchFreddieIndicator.status === 200) {
-    freddieIndicatorData = await fetchFreddieIndicator.text();
+    if (fetchFreddieIndicator.status === 200) {
+      freddieIndicatorData = await fetchFreddieIndicator.text();
+    }
   }
   // resolutionId is using for dashboard store
   return {
