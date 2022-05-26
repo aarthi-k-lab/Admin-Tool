@@ -145,6 +145,10 @@ class SearchLoan extends React.PureComponent {
             group = 'BOOKING';
             this.redirectPath = '/special-loan';
             break;
+          case 'Investor Settlement':
+            group = 'INVSET';
+            this.redirectPath = '/investor-settlement';
+            break;
           default:
             this.redirectPath = '/frontend-checklist';
             group = 'FEUW';
@@ -166,7 +170,7 @@ class SearchLoan extends React.PureComponent {
 
       if ((
         payload.taskName === DashboardModel.PENDING_BOOKING
-        || isPostMod
+        || (isPostMod && !(payload.taskName === 'Investor Settlement'))
       ) && RouteAccess.hasSlaAccess(adGroups)) {
         this.redirectPath = '/special-loan';
         group = 'BOOKING';
