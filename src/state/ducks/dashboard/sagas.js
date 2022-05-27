@@ -35,6 +35,7 @@ import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import { INCOME_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
 import { CHECK_TASKNAME } from 'constants/trialTask';
+import { APPROVAL_TYPE, PRE_APPROVAL_TYPE } from 'constants/fhlmc';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -150,6 +151,9 @@ import {
   SET_VALID_EVALDATA,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
   CHECK_TRIAL_DISABLE_STAGER_BUTTON,
+  SAVE_APPROVAL_DROPDOWN,
+  SAVE_PREAPPROVAL_DROPDOWN,
+  SUBMIT_TO_BOARDING_TEMPLATE,
   GET_CANCELLATION_REASON,
   SET_CANCELLATION_REASON,
 } from './types';
@@ -1860,7 +1864,7 @@ function* onSelectTrialTask(payload) {
   }
 }
 
-function* populateInvestorDropdown() {
+function* populateInvestorDropdown(payload) {
   try {
     const responseMapper = item => ({
       portfolioCode: item.className,
@@ -1868,14 +1872,28 @@ function* populateInvestorDropdown() {
       activeIndicator: item.activeIndicator,
       displayText: item.displayText,
     });
-    let response = yield call(Api.callGet, '/api/dataservice/api/classCodes/FHLMC');
+    const type = R.propOr('', 'payload', payload);
+
+    let response = yield call(Api.callGet, `/api/dataservice/api/classCodes/${type}`);
     if (response && response.length > 0) {
       response = R.map(responseMapper, response);
     }
-    yield put({
-      type: SAVE_INVESTOR_EVENTS_DROPDOWN,
-      payload: response,
-    });
+    if (type === APPROVAL_TYPE) {
+      yield put({
+        type: SAVE_APPROVAL_DROPDOWN,
+        payload: response,
+      });
+    } else if (type === PRE_APPROVAL_TYPE) {
+      yield put({
+        type: SAVE_PREAPPROVAL_DROPDOWN,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SAVE_INVESTOR_EVENTS_DROPDOWN,
+        payload: response,
+      });
+    }
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,
@@ -1909,14 +1927,16 @@ function* populateDropdown() {
 
 function* onFhlmcBulkUpload(payload) {
   const {
-    caseIds, requestIdType,
+    caseIds, requestIdType, loanAndDisasterIds, selectedPreApprovalType,
   } = payload.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
   const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
   let response;
+  let idType;
   try {
-    if (caseIds.length > 50) {
+    if ((caseIds && caseIds.length > 50)
+      || (loanAndDisasterIds && loanAndDisasterIds.length > 50)) {
       yield put({
         type: SET_RESULT_OPERATION,
         payload: {
@@ -1926,35 +1946,59 @@ function* onFhlmcBulkUpload(payload) {
       });
       return;
     }
-    const caseSet = new Set(caseIds);
-    if (caseIds.length !== caseSet.size) {
-      yield put({
-        type: SET_RESULT_OPERATION,
-        payload: {
-          level: ERROR,
-          status: `There are duplicate ${requestIdType}. Please correct and resubmit`,
-        },
-      });
-      return;
-    }
-    yield put({ type: SHOW_LOADER });
-    const idType = R.equals('Case id(s)', requestIdType) ? 'caseId' : 'loanNbr';
-    response = yield call(Api.callPost,
-      `/api/cmodinvestor/loan-data?requestIdType=${idType}`, caseIds);
-    // Clearing resultData before getting eventData
-    yield put({
-      type: SET_BULK_UPLOAD_RESULT,
-      payload: {},
-    });
-    if (!R.isEmpty(isWidgetOpen)) {
-      const caseId = R.head(caseIds);
-      const eligibiltyresponse = yield call(Api.callGetText, `/api/dataservice/api/fetchCaseEligibilityIndicator?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}`);
-      yield put({
-        type: GET_ELIGIBLE_DATA,
-        payload: eligibiltyresponse,
-      });
-    }
+    if (requestIdType === 'Loan Number(s)') {
+      const loanNumbers = R.pluck('loanNumber', loanAndDisasterIds);
+      const loanSet = new Set(loanNumbers);
+      if (loanNumbers.length !== loanSet.size) {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: ERROR,
+            status: `There are duplicate ${requestIdType}. Please correct and resubmit`,
+          },
+        });
+        return;
+      }
+      yield put({ type: SHOW_LOADER });
+      idType = 'Loan Number(s)';
 
+      response = yield call(Api.callPost,
+        `/api/cmodinvestor/preapproval-data?approvalType=preapproval&approvalSubType=${selectedPreApprovalType}`, loanAndDisasterIds);
+      // Clearing resultData before getting eventData
+      yield put({
+        type: SET_BULK_UPLOAD_RESULT,
+        payload: {},
+      });
+    } else {
+      const caseSet = new Set(caseIds);
+      if (caseIds.length !== caseSet.size) {
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: {
+            level: ERROR,
+            status: `There are duplicate ${requestIdType}. Please correct and resubmit`,
+          },
+        });
+        return;
+      }
+      yield put({ type: SHOW_LOADER });
+      idType = R.equals('Case id(s)', requestIdType) ? 'caseId' : 'loanNbr';
+      response = yield call(Api.callPost,
+        `/api/cmodinvestor/loan-data?requestIdType=${idType}`, caseIds);
+      // Clearing resultData before getting eventData
+      yield put({
+        type: SET_BULK_UPLOAD_RESULT,
+        payload: {},
+      });
+      if (!R.isEmpty(isWidgetOpen)) {
+        const caseId = R.head(caseIds);
+        const eligibiltyresponse = yield call(Api.callGetText, `/api/dataservice/api/fetchCaseEligibilityIndicator?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}`);
+        yield put({
+          type: GET_ELIGIBLE_DATA,
+          payload: eligibiltyresponse,
+        });
+      }
+    }
     if (!R.isNil(response)) {
       const hasStatusCode = R.has('status', response);
       if (hasStatusCode && R.equals(R.path(['status'], response), 404)) {
@@ -1970,7 +2014,7 @@ function* onFhlmcBulkUpload(payload) {
           yield put({
             type: SET_USER_NOTIFICATION,
             payload: {
-              message: `Entered incorrect ${idType === 'caseId' ? 'Case ID' : 'Loan Number'}.Highlighted in Red for your reference`,
+              message: `Entered incorrect ${idType === 'caseId' ? 'Case ID' : 'Loan Number or Disaster Id'}.Highlighted in Red for your reference`,
               level: ERROR,
             },
           });
@@ -2373,6 +2417,31 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   }
 };
 
+const submitToBoardingTemplate = function* submitToBoardingTemplate(action) {
+  const user = yield select(loginSelectors.getUser);
+  const userName = R.path(['userDetails', 'email'], user);
+  const winLoginName = user.userDetails.onPremisesSamAccountName;
+  const { selectedRequestType, portfolioCode } = action.payload;
+  const responseData = yield select(selectors.resultData);
+  const validData = R.filter(R.propEq('isValid', true), responseData);
+  try {
+    yield call(Api.callPost, `/api/cmodinvestor/boarding-template?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`, validData);
+    yield put({
+      type: SET_USER_NOTIFICATION,
+      payload: {},
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+};
+
 const sendToCovius = function* sendToCovius(eventCode, payload) {
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
@@ -2645,6 +2714,10 @@ function* watchCheckTrialEnable() {
   yield takeEvery(CHECK_TRIAL_DISABLE_STAGER_BUTTON, checkTrialEnable);
 }
 
+function* watchSubmitToBoardingTemplate() {
+  yield takeEvery(SUBMIT_TO_BOARDING_TEMPLATE, submitToBoardingTemplate);
+}
+
 function* watchCancellationReasons() {
   yield takeEvery(GET_CANCELLATION_REASON, fetchCancellationReasons);
 }
@@ -2753,6 +2826,7 @@ export const combinedSaga = function* combinedSaga() {
     watchLoanviewTombstoneData(),
     watchonSubmitEval(),
     watchCheckTrialEnable(),
+    watchSubmitToBoardingTemplate(),
     watchCancellationReasons(),
   ]);
 };

@@ -139,6 +139,8 @@ const getSendToCoviusResponse = state => R.pathOr({}, ['dashboard', 'sendToCoviu
 const getDownloadResponse = state => R.pathOr({}, ['dashboard', 'downloadResponse'], state);
 const getcoviusEventOptions = state => R.pathOr([], ['dashboard', 'coviusEventOptions'], state);
 const getInvestorEvents = state => R.pathOr([], ['dashboard', 'investorEventOptions'], state);
+const getApprovalEvents = state => R.pathOr([], ['dashboard', 'approvalDropdown'], state);
+const getPreApprovalEvents = state => R.pathOr([], ['dashboard', 'preApprovalDropdown'], state);
 const getCoviusTabIndex = state => R.pathOr(0, ['dashboard', 'coviusTabIndex'], state);
 const getDisablePushData = state => R.pathOr(false, ['dashboard', 'disablePushData'], state);
 
@@ -271,6 +273,8 @@ const selectors = {
   getRequestTypeData,
   getEvalStatus,
   getTrialDisableButton,
+  getApprovalEvents,
+  getPreApprovalEvents,
   cancellationReasons,
   getSelectedCancellationReason,
   selectedResolutionId,

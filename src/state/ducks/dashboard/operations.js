@@ -73,6 +73,7 @@ import {
   onFHLMCModHistoryPopup,
   onTablePopupClose,
   checkTrialDisableStagerButtonAction,
+  onSentToBoardingAction,
   getCancellationReasons,
   setSelectedCancellationReason,
   clearCancellationDetails,
@@ -262,6 +263,11 @@ const onSubmitToFhlmcRequest = dispatch => (selectedRequestType,
   dispatch(onSubmitToFhlmcAction(selectedRequestType, portfolioCode));
 };
 
+const onSentToBoardingTemplateOperation = dispatch => (selectedRequestType,
+  portfolioCode, sweetAlertPayload) => {
+  dispatch(openSweetAlertAction(sweetAlertPayload));
+  dispatch(onSentToBoardingAction(selectedRequestType, portfolioCode));
+};
 const onFailedLoanValidation = dispatch => (payload) => {
   dispatch(onLoanValidationError(payload));
 };
@@ -331,8 +337,8 @@ const populateEvents = dispatch => () => {
   dispatch(populateEventsDropdown());
 };
 
-const populateInvestorEvents = dispatch => () => {
-  dispatch(populateInvestorEventsDropdown());
+const populateInvestorEvents = dispatch => (payload) => {
+  dispatch(populateInvestorEventsDropdown(payload));
 };
 
 const submitToCovius = dispatch => (eventCode, sweetAlertPayload) => {
@@ -489,6 +495,7 @@ const operations = {
   onPopupClose,
   setRequestTypeDataOperation,
   checkTrialEnableStagerButtonOperation,
+  onSentToBoardingTemplateOperation,
   getCancellationReasonDetails,
   setSelectedCancellationReasonData,
   clearCancellationReasons,

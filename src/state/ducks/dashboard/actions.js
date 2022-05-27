@@ -78,6 +78,7 @@ import {
   GET_FHLMC_MOD_HISTORY,
   CLEAR_POPUP_TABLE_DATA,
   CHECK_TRIAL_DISABLE_STAGER_BUTTON,
+  SUBMIT_TO_BOARDING_TEMPLATE,
   GET_CANCELLATION_REASON,
   SET_SELECTED_CANCELLATION_REASON,
   CLEAR_CANCELLATION_REASONS,
@@ -247,6 +248,13 @@ const onSubmitToFhlmcAction = (selectedRequestType, portfolioCode) => ({
   },
 });
 
+const onSentToBoardingAction = (selectedRequestType, portfolioCode) => ({
+  type: SUBMIT_TO_BOARDING_TEMPLATE,
+  payload: {
+    selectedRequestType,
+    portfolioCode,
+  },
+});
 const saveStagerTaskName = stagerTaskName => ({
   type: SET_STAGER_TASK_NAME,
   payload: stagerTaskName,
@@ -384,8 +392,9 @@ const populateEventsDropdown = () => ({
   type: POPULATE_EVENTS_DROPDOWN,
 });
 
-const populateInvestorEventsDropdown = () => ({
+const populateInvestorEventsDropdown = payload => ({
   type: POPULATE_INVESTOR_EVENTS_DROPDOWN,
+  payload,
 });
 
 const submitToCoviusAction = payload => ({
@@ -548,6 +557,7 @@ export {
   onFhlmcCasesBulkSubmit,
   setRequestTypeDataAction,
   checkTrialDisableStagerButtonAction,
+  onSentToBoardingAction,
   getCancellationReasons,
   setSelectedCancellationReason,
   clearCancellationDetails,

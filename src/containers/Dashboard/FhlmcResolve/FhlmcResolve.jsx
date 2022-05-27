@@ -22,6 +22,12 @@ import FormLabel from '@material-ui/core/FormLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
+import FHLMCPreapproved from './FHLMCPreapproved';
+import {
+  ID_CATEGORIES, APPROVAL_TYPE, PRE_APPROVAL_TYPE, FHLMC, APPROVAL_REQUEST_TYPE,
+  REGEX_FHLMC_COMMON, REGEX_FHLMC_PREAPPROVED_DISASTER,
+  LOAN_NUMBERS_IDTYPE, PREAPPROVED_DISASTER_TYPES, VALIDATION_FAILURE_MSG,
+} from '../../../constants/fhlmc';
 import FHLMCDataInsight from './FHLMCDataInsight';
 
 const renderNoDataText = 'Processed loan information will be displayed here';
@@ -31,12 +37,15 @@ class FhlmcResolve extends React.PureComponent {
     super(props);
     this.state = {
       selectedRequestType: '',
-      portfolioCode: '',
+      portfolioCode: FHLMC,
       ids: '',
       isSubmitDisabled: 'disabled',
       isResetDisabled: true,
       idType: '',
       renderNoData: true,
+      selectedApprovalType: '',
+      selectedPreApprovalType: '',
+      investorName: FHLMC,
     };
     this.handleRequestType = this.handleRequestType.bind(this);
     this.renderFHLMCResolveNotepadArea = this.renderFHLMCResolveNotepadArea.bind(this);
@@ -46,13 +55,19 @@ class FhlmcResolve extends React.PureComponent {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.onSubmitFhlmcResolveRequest = this.onSubmitFhlmcResolveRequest.bind(this);
     this.onResetClick = this.onResetClick.bind(this);
+    this.renderApprovalDropDown = this.renderApprovalDropDown.bind(this);
+    this.handleApprovalType = this.handleApprovalType.bind(this);
+    this.renderPreApprovalDropDown = this.renderPreApprovalDropDown.bind(this);
+    this.handlePreApprovalType = this.handlePreApprovalType.bind(this);
+    this.renderSubmitType = this.renderSubmitType.bind(this);
     this.getCancellationReason = this.getCancellationReason.bind(this);
     this.handleCancelReasons = this.handleCancelReasons.bind(this);
   }
 
   componentDidMount() {
     const { populateInvestorDropdown, resetWidget } = this.props;
-    populateInvestorDropdown();
+    const { investorName } = this.state;
+    populateInvestorDropdown(investorName);
     resetWidget();
   }
 
@@ -66,29 +81,99 @@ class FhlmcResolve extends React.PureComponent {
       isResetDisabled: true,
       idType: '',
       renderNoData: true,
+      selectedApprovalType: '',
+      selectedPreApprovalType: '',
+      investorName: '',
     });
     onResetData();
     dismissUserNotification();
   }
 
+  processAndValidateInput = (ids) => {
+    let error = false;
+    let data = [];
+    if (this.isPreApprovedDisasterType()) {
+      data = R.compose(
+        R.map(s => s.trim()),
+        R.split(','),
+        R.replace(/\n/g, ','),
+        R.trim(),
+      )(ids);
+
+      const re = /^[0-9]+:[0-9]+$/;
+      if (R.any(x => !re.test(x), data)) {
+        error = true;
+      }
+    } else {
+      data = (R.filter(id => !R.isEmpty(id), ids.trim().replace(/\n/g, ',').split(','))).map(s => parseInt(s.trim(), 10));
+    }
+    return {
+      error,
+      data,
+    };
+  }
+
+  buildFHLMCBulkPayload = (data) => {
+    let payload;
+    const {
+      selectedRequestType, idType, selectedApprovalType, selectedPreApprovalType,
+    } = this.state;
+    if (this.isPreApprovedDisasterType()) {
+      const loanAndDisasterIds = data.map((loanEntry) => {
+        const [loanNumber, disasterId] = loanEntry.split(':');
+        return {
+          loanNumber,
+          disasterId,
+        };
+      });
+      payload = {
+        loanAndDisasterIds,
+        selectedApprovalType,
+        selectedPreApprovalType,
+        requestIdType: idType,
+      };
+    } else {
+      payload = {
+        caseIds: R.filter(caseId => !R.isEmpty(caseId), [...data]),
+        requestType: selectedRequestType,
+        requestIdType: idType,
+      };
+    }
+    return payload;
+  }
+
   onSubmitFhlmcResolveRequest = () => {
     const {
-      ids, selectedRequestType, idType,
+      ids,
     } = this.state;
-    const { onFhlmcBulkSubmit } = this.props;
-    this.setState({ isSubmitDisabled: 'disabled', renderNoData: false });
-    const cases = (R.filter(id => !R.isEmpty(id), ids.trim().replace(/\n/g, ',').split(','))).map(s => parseInt(s.trim(), 10));
-    const payload = {
-      caseIds: R.filter(caseId => !R.isEmpty(caseId), [...cases]),
-      requestType: selectedRequestType,
-      requestIdType: idType,
-    };
-    onFhlmcBulkSubmit(payload);
+    const { onFhlmcBulkSubmit, openSweetAlert } = this.props;
+    const { error, data } = this.processAndValidateInput(ids);
+    if (error) {
+      const sweetAlertPayload = {
+        status: VALIDATION_FAILURE_MSG,
+        level: 'Warning',
+        showConfirmButton: true,
+      };
+      openSweetAlert(sweetAlertPayload);
+    } else {
+      this.setState({ isSubmitDisabled: 'disabled', renderNoData: false });
+      const payload = this.buildFHLMCBulkPayload(data);
+      onFhlmcBulkSubmit(payload);
+    }
   }
+
+  isPreApprovedDisasterType = () => {
+    const { idType, selectedApprovalType, selectedPreApprovalType } = this.state;
+    return idType === LOAN_NUMBERS_IDTYPE
+      && selectedApprovalType === PRE_APPROVAL_TYPE
+      && PREAPPROVED_DISASTER_TYPES.includes(selectedPreApprovalType);
+  }
+
 
   handleInputChange = (event) => {
     const { selectedRequestType, idType } = this.state;
-    const re = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]|^[,]/;
+    const re = this.isPreApprovedDisasterType() ? REGEX_FHLMC_PREAPPROVED_DISASTER
+      : REGEX_FHLMC_COMMON;
     if (event.target.value === '' || !re.test(event.target.value)) {
       this.setState({
         ids: event.target.value,
@@ -99,12 +184,48 @@ class FhlmcResolve extends React.PureComponent {
     }
   }
 
+  handlePreApprovalType = (event) => {
+    const investorName = APPROVAL_REQUEST_TYPE;
+    const { populateInvestorDropdown, resetWidget } = this.props;
+    this.setState({
+      selectedPreApprovalType: event.target.value,
+      isSubmitDisabled: 'disabled',
+      isResetDisabled: false,
+      investorName,
+    });
+    populateInvestorDropdown(investorName);
+    resetWidget();
+  }
+
+  handleApprovalType = (event) => {
+    const investorName = PRE_APPROVAL_TYPE;
+    const { populateInvestorDropdown, resetWidget } = this.props;
+    this.setState({
+      selectedApprovalType: event.target.value,
+      isSubmitDisabled: 'disabled',
+      isResetDisabled: false,
+      investorName,
+    });
+    populateInvestorDropdown(investorName);
+    resetWidget();
+  }
+
   handleIdsCategory = (event) => {
+    this.onResetClick();
     const idType = event.target.value;
+    const { populateInvestorDropdown, resetWidget } = this.props;
+    let investorName = FHLMC;
+    if (idType === LOAN_NUMBERS_IDTYPE) {
+      investorName = APPROVAL_TYPE;
+    }
+
     this.setState({
       idType,
       ids: '',
+      investorName,
     });
+    populateInvestorDropdown(investorName);
+    resetWidget();
   }
 
   handleClose = () => {
@@ -113,6 +234,55 @@ class FhlmcResolve extends React.PureComponent {
       this.onResetClick();
     }
     closeSweetAlert();
+  }
+
+
+  renderPreApprovalDropDown = () => {
+    const { selectedPreApprovalType } = this.state;
+    const { preApprovalDropdown } = this.props;
+    const preApprovalType = R.project(['requestType', 'displayText'], preApprovalDropdown);
+    return (
+      <FormControl variant="outlined">
+        <Select
+          id="ApprovalIdDropdown"
+          input={<OutlinedInput name="selectedApproval" />}
+          label="approvalcategory"
+          onChange={this.handlePreApprovalType}
+          styleName="drop-down-select"
+          value={selectedPreApprovalType}
+        >
+          {preApprovalType && preApprovalType.map(item => (
+            <MenuItem key={item.requestType.toLowerCase()} value={item.requestType}>
+              {item.displayText}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  }
+
+  renderApprovalDropDown = () => {
+    const { selectedApprovalType } = this.state;
+    const { approvalDropdown } = this.props;
+    const approvalType = R.project(['requestType', 'displayText'], approvalDropdown);
+    return (
+      <FormControl variant="outlined">
+        <Select
+          id="ApprovalIdDropdown"
+          input={<OutlinedInput name="selectedApproval" />}
+          label="approvalcategory"
+          onChange={this.handleApprovalType}
+          styleName="drop-down-select"
+          value={selectedApprovalType}
+        >
+          {approvalType && approvalType.map(item => (
+            <MenuItem key={item.requestType} value={item.requestType}>
+              {item.displayText}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    );
   }
 
   renderCategoryDropDown = () => {
@@ -185,34 +355,78 @@ class FhlmcResolve extends React.PureComponent {
 
   renderIdsDropDown = () => {
     const { idType } = this.state;
-    const idsCategories = ['Case id(s)'];
+    const idsCategories = ID_CATEGORIES;
     return (
-      <FormControl variant="outlined">
-        <Select
-          id="eventIdsDropdown"
-          input={<OutlinedInput name="selectedIds" />}
-          label="idcategory"
-          onChange={this.handleIdsCategory}
-          styleName="drop-down-select"
-          value={idType}
-        >
-          {idsCategories && idsCategories.map(item => (
-            <MenuItem key={item} value={item}>
-              {item}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <>
+        <FormControl variant="outlined">
+          <Select
+            id="eventIdsDropdown"
+            input={<OutlinedInput name="selectedIds" />}
+            label="idcategory"
+            onChange={this.handleIdsCategory}
+            styleName="drop-down-select"
+            value={idType}
+          >
+            {idsCategories && idsCategories.map(item => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        {
+          idType === 'Loan Number(s)' ? (
+            <>
+              <div styleName="loan-numbers">
+                <span>
+                  {'Approval Type'}
+                </span>
+                <span styleName="errorIcon">
+                  <Tooltip
+                    placement="left-end"
+                    title={(
+                      <Typography>
+                        This is the type of action or information that you
+                        want to send to FHLMC. What type of approval is this?
+                      </Typography>
+                    )}
+                  >
+                    <ErrorIcon styleName="errorSvg" />
+                  </Tooltip>
+                </span>
+              </div>
+              {this.renderApprovalDropDown()}
+              <div styleName="loan-numbers">
+                <span>
+                  {'PreApproval Type'}
+                </span>
+                <span styleName="errorIcon">
+                  <Tooltip
+                    placement="left-end"
+                    title={(
+                      <Typography>
+                        This is the type of action or information that you
+                        want to send to FHLMC. What type of preapproval is this?
+                      </Typography>
+                    )}
+                  >
+                    <ErrorIcon styleName="errorSvg" />
+                  </Tooltip>
+                </span>
+              </div>
+              {this.renderPreApprovalDropDown()}
+            </>
+          ) : ''
+        }
+      </>
     );
   }
 
   handleRequestType(event) {
-    const { investorEvents } = this.props;
-    const portFolioCode = R.find(item => item.requestType === event.target.value, investorEvents);
     const { getCancellationReasonsData, clearCancellationReasons } = this.props;
     this.setState({
       selectedRequestType: event.target.value,
-      portfolioCode: portFolioCode.portfolioCode,
+      portfolioCode: FHLMC,
       isSubmitDisabled: 'disabled',
       isResetDisabled: false,
     });
@@ -244,6 +458,24 @@ class FhlmcResolve extends React.PureComponent {
         </span>
         <div styleName="loan-numbers">
           <span>
+            {'ID Type'}
+          </span>
+          <span styleName="errorIcon">
+            <Tooltip
+              placement="right-end"
+              title={(
+                <Typography>
+                  This is the type of Ids?
+                </Typography>
+              )}
+            >
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
+          </span>
+        </div>
+        {this.renderIdsDropDown()}
+        <div styleName="loan-numbers">
+          <span>
             {'Request Type'}
           </span>
           <span styleName="errorIcon">
@@ -262,24 +494,6 @@ class FhlmcResolve extends React.PureComponent {
         </div>
         {this.renderCategoryDropDown()}
         {this.getCancellationReason()}
-        <div styleName="loan-numbers">
-          <span>
-            {'ID Type'}
-          </span>
-          <span styleName="errorIcon">
-            <Tooltip
-              placement="right-end"
-              title={(
-                <Typography>
-                  This is the type of case Ids?
-                </Typography>
-              )}
-            >
-              <ErrorIcon styleName="errorSvg" />
-            </Tooltip>
-          </span>
-        </div>
-        {this.renderIdsDropDown()}
         <span styleName="loan-numbers">
           {idType}
         </span>
@@ -312,9 +526,33 @@ class FhlmcResolve extends React.PureComponent {
     );
   }
 
-  renderSubmitResults() {
-    const { renderNoData, selectedRequestType, portfolioCode } = this.state;
+  renderSubmitType() {
+    const { selectedRequestType, portfolioCode, idType } = this.state;
     const { selectedCancellationReason } = this.props;
+    return (
+      <>
+        {idType === LOAN_NUMBERS_IDTYPE ? (
+          <FHLMCPreapproved
+            portfolioCode={portfolioCode}
+            selectedRequestType={selectedRequestType}
+            submitCases
+          />
+        ) : (
+          <FHLMCDataInsight
+            portfolioCode={portfolioCode}
+            selectedCancellationReason={selectedCancellationReason}
+            selectedRequestType={selectedRequestType}
+            submitCases
+          />
+        )
+
+        }
+      </>
+    );
+  }
+
+  renderSubmitResults() {
+    const { renderNoData } = this.state;
     return (
       <>
         {renderNoData ? (
@@ -324,14 +562,7 @@ class FhlmcResolve extends React.PureComponent {
             </Grid>
           </Grid>
         )
-          : (
-            <FHLMCDataInsight
-              portfolioCode={portfolioCode}
-              selectedCancellationReason={selectedCancellationReason}
-              selectedRequestType={selectedRequestType}
-              submitCases
-            />
-          )
+          : this.renderSubmitType()
         }
       </>
     );
@@ -400,10 +631,13 @@ FhlmcResolve.defaultProps = {
   investorEvents: [],
   inProgress: false,
   onFhlmcBulkSubmit: () => { },
+  openSweetAlert: () => { },
   onResetData: () => { },
   populateInvestorDropdown: () => { },
   resultOperation: {},
   userNotificationData: {},
+  approvalDropdown: [],
+  preApprovalDropdown: [],
   getCancellationReasonsData: {},
   cancellationReasons: [],
   selectedCancellationReason: '',
@@ -412,6 +646,7 @@ FhlmcResolve.defaultProps = {
 };
 
 FhlmcResolve.propTypes = {
+  approvalDropdown: PropTypes.arrayOf(PropTypes.String),
   cancellationReasons: PropTypes.arrayOf({
     displayText: PropTypes.string,
     requestType: PropTypes.string,
@@ -428,7 +663,9 @@ FhlmcResolve.propTypes = {
   }),
   onFhlmcBulkSubmit: PropTypes.func,
   onResetData: PropTypes.func,
+  openSweetAlert: PropTypes.func,
   populateInvestorDropdown: PropTypes.func,
+  preApprovalDropdown: PropTypes.arrayOf(PropTypes.String),
   resetWidget: PropTypes.func.isRequired,
   resultOperation: PropTypes.shape({
     clearData: PropTypes.string,
@@ -452,6 +689,8 @@ const mapStateToProps = state => ({
   resultOperation: selectors.resultOperation(state),
   investorEvents: selectors.getInvestorEvents(state),
   userNotificationData: selectors.getUserNotification(state),
+  approvalDropdown: selectors.getApprovalEvents(state),
+  preApprovalDropdown: selectors.getPreApprovalEvents(state),
   cancellationReasons: selectors.cancellationReasons(state),
   selectedCancellationReason: selectors.getSelectedCancellationReason(state),
 });
@@ -463,6 +702,7 @@ const mapDispatchToProps = dispatch => ({
   closeSweetAlert: operations.closeSweetAlert(dispatch),
   dismissUserNotification: operations.onDismissUserNotification(dispatch),
   resetWidget: widgetoperations.resetWidget(dispatch),
+  openSweetAlert: operations.openSweetAlert(dispatch),
   getCancellationReasonsData: operations.getCancellationReasonDetails(dispatch),
   setSelectedCancellationReasonData: operations.setSelectedCancellationReasonData(dispatch),
   clearCancellationReasons: operations.clearCancellationReasons(dispatch),

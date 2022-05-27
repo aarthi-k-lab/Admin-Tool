@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { FHLMCWidget } from './FHLMCWidget';
 import SweetAlertBox from 'components/SweetAlertBox';
+import { FHLMCWidget } from './FHLMCWidget';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
 
 const defaultProps = {
@@ -28,7 +28,7 @@ const defaultProps = {
     message: '',
   },
   eligibleData: 'Ineligible',
-}
+};
 
 describe('<FHLMCWidget />', () => {
   let shallowWrapper;
@@ -43,5 +43,4 @@ describe('<FHLMCWidget />', () => {
   it('Find Sweet Alert', () => {
     expect(shallowWrapper.find(SweetAlertBox).length).toBe(1);
   });
-
-})
+});

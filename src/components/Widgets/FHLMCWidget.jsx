@@ -19,7 +19,9 @@ import { PropTypes } from 'prop-types';
 import CustomTable from 'components/CustomTable';
 import getters from 'models/Headers';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
-import { ELIGIBLE, INELIGIBLE, NOCALL } from '../../constants/fhlmc';
+import {
+  ELIGIBLE, INELIGIBLE, NOCALL, FHLMC,
+} from '../../constants/fhlmc';
 import DialogBox from '../DialogBox';
 
 
@@ -44,7 +46,7 @@ class FHLMCWidget extends Component {
 
   componentDidMount() {
     const { populateInvestorDropdown } = this.props;
-    populateInvestorDropdown();
+    populateInvestorDropdown(FHLMC);
   }
 
   getCancellationReason() {

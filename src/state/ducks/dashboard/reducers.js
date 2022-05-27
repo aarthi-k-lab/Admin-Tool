@@ -98,6 +98,8 @@ import {
   SET_VALID_EVALDATA,
   CLEAR_POPUP_TABLE_DATA,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
+  SAVE_APPROVAL_DROPDOWN,
+  SAVE_PREAPPROVAL_DROPDOWN,
   SET_CANCELLATION_REASON,
   SET_SELECTED_CANCELLATION_REASON,
   CLEAR_CANCELLATION_REASONS,
@@ -875,6 +877,20 @@ const reducer = (state = {
       return {
         ...state,
         investorEventOptions: payload,
+      };
+    }
+    case SAVE_APPROVAL_DROPDOWN: {
+      const { payload } = action;
+      return {
+        ...state,
+        approvalDropdown: payload,
+      };
+    }
+    case SAVE_PREAPPROVAL_DROPDOWN: {
+      const { payload } = action;
+      return {
+        ...state,
+        preApprovalDropdown: payload,
       };
     }
     case SET_SELECTED_WIDGET: {
