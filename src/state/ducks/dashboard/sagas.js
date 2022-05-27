@@ -156,6 +156,7 @@ import {
   SUBMIT_TO_BOARDING_TEMPLATE,
   GET_CANCELLATION_REASON,
   SET_CANCELLATION_REASON,
+  SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1128,7 +1129,7 @@ function* saveGeneralChecklistDisposition(payload) {
     yield put({
       type: SET_GET_NEXT_STATUS,
       payload: skipValidation
-      || (tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result)),
+        || (tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result)),
     });
     if (!skipValidation && !tkamsValidation.enableGetNext) {
       yield put({ type: HIDE_LOADER });
@@ -1963,7 +1964,7 @@ function* onFhlmcBulkUpload(payload) {
       idType = 'Loan Number(s)';
 
       response = yield call(Api.callPost,
-        `/api/cmodinvestor/preapproval-data?approvalType=preapproval&approvalSubType=${selectedPreApprovalType}`, loanAndDisasterIds);
+        `/api/cmodinvestor/preapproval-data?approvalType=preapproval&approvalSubType=${selectedPreApprovalType.toLowerCase()}`, loanAndDisasterIds);
       // Clearing resultData before getting eventData
       yield put({
         type: SET_BULK_UPLOAD_RESULT,
@@ -2425,11 +2426,13 @@ const submitToBoardingTemplate = function* submitToBoardingTemplate(action) {
   const responseData = yield select(selectors.resultData);
   const validData = R.filter(R.propEq('isValid', true), responseData);
   try {
-    yield call(Api.callPost, `/api/cmodinvestor/boarding-template?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`, validData);
-    yield put({
-      type: SET_USER_NOTIFICATION,
-      payload: {},
-    });
+    const response = yield call(Api.callPost, `/api/cmodinvestor/boarding-template?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`, validData);
+    if (response) {
+      yield put({
+        type: SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
+        payload: true,
+      });
+    }
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,

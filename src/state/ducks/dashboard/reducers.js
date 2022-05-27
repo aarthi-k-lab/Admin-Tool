@@ -103,6 +103,7 @@ import {
   SET_CANCELLATION_REASON,
   SET_SELECTED_CANCELLATION_REASON,
   CLEAR_CANCELLATION_REASONS,
+  SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
 } from './types';
 
 const reducer = (state = {
@@ -1035,6 +1036,14 @@ const reducer = (state = {
         ...state,
         selectedCancellationReason: '',
         cancellationReasons: [],
+      };
+    }
+
+    case SET_DISABLE_GENERATE_BOARDING_TEMPLATE: {
+      const isGBTdisabled = action.payload;
+      return {
+        ...state,
+        isGBTdisabled,
       };
     }
 

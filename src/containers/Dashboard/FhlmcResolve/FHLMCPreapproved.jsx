@@ -64,9 +64,9 @@ class FHLMCPreapproved extends React.PureComponent {
   }
 
   isBoardingButtonDisabled = () => {
-    const { resultData } = this.props;
+    const { resultData, disableGenerateBoardingTemplate } = this.props;
     const valid = R.filter(R.propEq('isValid', true), resultData);
-    if (valid && valid.length > 0) {
+    if (valid && valid.length > 0 && !disableGenerateBoardingTemplate) {
       return false;
     }
     return true;
@@ -109,8 +109,10 @@ FHLMCPreapproved.defaultProps = {
   resultData: [],
   portfolioCode: '',
   onSentToBoardingTemplate: () => { },
+  disableGenerateBoardingTemplate: false,
 };
 FHLMCPreapproved.propTypes = {
+  disableGenerateBoardingTemplate: PropTypes.bool,
   onSentToBoardingTemplate: PropTypes.func,
   portfolioCode: PropTypes.string,
   resultData: PropTypes.arrayOf({
@@ -123,6 +125,7 @@ FHLMCPreapproved.propTypes = {
 const mapStateToProps = state => ({
   resultData: selectors.resultData(state),
   isAssigned: selectors.isAssigned(state),
+  disableGenerateBoardingTemplate: selectors.disableGenerateBoardingTemplate(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -252,7 +252,7 @@ class FhlmcResolve extends React.PureComponent {
           value={selectedPreApprovalType}
         >
           {preApprovalType && preApprovalType.map(item => (
-            <MenuItem key={item.requestType.toLowerCase()} value={item.requestType}>
+            <MenuItem key={item.requestType} value={item.requestType}>
               {item.displayText}
             </MenuItem>
           ))}
