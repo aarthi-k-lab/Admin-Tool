@@ -10,6 +10,7 @@ import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
 import { selectors, operations } from '../../state/ducks/widgets';
 import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
+import { selectors as loginSelectors } from '../../state/ducks/login';
 
 class WidgetBuilder extends Component {
   constructor(props) {
@@ -82,11 +83,11 @@ class WidgetBuilder extends Component {
   // TODO: optimize
   checkDependency(data, disabledWidgets, openWidgetList) {
     const {
-      resolutionId, groupName, stagerTaskName, investorHierarchy,
+      resolutionId, groupName, stagerTaskName, investorHierarchy, isRPSUser,
     } = this.props;
     switch (data.dependency) {
       case FHLMC:
-        if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)) {
+        if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3) && R.not(isRPSUser)) {
           if (!R.equals(groupName, 'POSTMOD')) {
             return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
           }
@@ -179,6 +180,7 @@ WidgetBuilder.defaultProps = {
   groupName: '',
   stagerTaskName: {},
   investorHierarchy: {},
+  isRPSUser: false,
 };
 
 WidgetBuilder.propTypes = {
@@ -187,6 +189,7 @@ WidgetBuilder.propTypes = {
   disabledWidgets: PropTypes.arrayOf(PropTypes.string),
   groupName: PropTypes.string,
   investorHierarchy: PropTypes.shape(),
+  isRPSUser: PropTypes.bool,
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
@@ -212,6 +215,7 @@ const mapStateToProps = state => ({
   groupName: dashboardSelectors.groupName(state),
   stagerTaskName: dashboardSelectors.stagerTaskName(state),
   investorHierarchy: dashboardSelectors.getInvestorHierarchy(state),
+  isRPSUser: loginSelectors.isRPSGroupPresent(state),
 });
 
 function mapDispatchToProps(dispatch) {
