@@ -178,6 +178,7 @@ const getTrialDisableButton = state => R.pathOr(false, ['dashboard', 'disableTri
 const selectedResolutionId = state => R.pathOr('', ['dashboard', 'selectedResolutionId'], state);
 
 const disableGenerateBoardingTemplate = state => R.pathOr(false, ['dashboard', 'isGBTdisabled'], state);
+const getInvestorCode = state => R.pathOr(null, ['dashboard', 'investorCode'], state);
 
 const selectors = {
   getUserNotification,
@@ -281,6 +282,7 @@ const selectors = {
   getSelectedCancellationReason,
   selectedResolutionId,
   disableGenerateBoardingTemplate,
+  getInvestorCode,
 };
 
 export default selectors;

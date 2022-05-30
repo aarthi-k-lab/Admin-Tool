@@ -13,7 +13,7 @@ import {
   SUCCESS_LOADING_TOMBSTONE_DATA,
   FETCH_TOMBSTONE_DATA,
 } from './types';
-import { SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
+import { SET_INVESTOR_CODE, SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
 import { TestExports } from './sagas';
 import { selectors as dashboardSelectors } from '../dashboard';
 
@@ -87,7 +87,7 @@ describe('fetchTombstoneData', () => {
       .toEqual(select(dashboardSelectors.stagerTaskName));
   });
 
-  
+
   it('should select resolutionId from store', () => {
     expect(saga.next('FrontEnd Review').value)
       .toEqual(select(dashboardSelectors.selectedResolutionId));
@@ -115,6 +115,14 @@ describe('fetchTombstoneData', () => {
       }));
   });
 
+  it('should update investorCode', () => {
+    expect(saga.next({
+      investorCode: '',
+    }).value)
+      .toEqual(put({
+        type: SET_INVESTOR_CODE,
+      }));
+  });
   it('should update isPayment deferral', () => {
     expect(saga.next(loanDetails).value).toEqual(call(setPaymentDeferral, false));
   });

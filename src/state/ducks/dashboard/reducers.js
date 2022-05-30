@@ -104,6 +104,7 @@ import {
   SET_SELECTED_CANCELLATION_REASON,
   CLEAR_CANCELLATION_REASONS,
   SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
+  SET_INVESTOR_CODE,
 } from './types';
 
 const reducer = (state = {
@@ -447,6 +448,7 @@ const reducer = (state = {
         showContinueMyReview: action.payload.isSearch ? action.payload.showContinueMyReview : false,
         getSearchLoanResponse: {},
         completeReviewResponse: null,
+        investorCode: action.payload.investorCode,
       };
       return newState;
     }
@@ -1044,6 +1046,13 @@ const reducer = (state = {
       return {
         ...state,
         isGBTdisabled,
+      };
+    }
+
+    case SET_INVESTOR_CODE: {
+      return {
+        ...state,
+        investorCode: action.payload,
       };
     }
 

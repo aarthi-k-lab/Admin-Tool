@@ -18,7 +18,7 @@ import {
   FETCH_TOMBSTONE_DATA,
 } from './types';
 import { selectors as dashboardSelectors } from '../dashboard';
-import { SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
+import { SET_RESOLUTION_AND_INVSTR_HRCHY, SET_INVESTOR_CODE } from '../dashboard/types';
 
 function* fetchTombstoneData(payload) {
   const { taskName, taskId } = payload.payload;
@@ -36,11 +36,17 @@ function* fetchTombstoneData(payload) {
     const group = userGroup === 'Recordation' || userGroup === 'Countersign' || userGroup === 'Delay Checklist' ? taskName : userGroup;
     const data = yield call(LoanTombstone.fetchData,
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand, selectedResolutionId);
-    const { resolutionId, investorHierarchy, tombstoneData } = data;
+    const {
+      resolutionId, investorHierarchy, tombstoneData, investorCode,
+    } = data;
     // storing resolution id inside dashboard object
     yield put({
       type: SET_RESOLUTION_AND_INVSTR_HRCHY,
       payload: { resolutionId, investorHierarchy },
+    });
+    yield put({
+      type: SET_INVESTOR_CODE,
+      payload: investorCode,
     });
     yield put(yield call(setPaymentDeferral, R.contains(DashboardModel.PDD, tombstoneData)));
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: tombstoneData });
