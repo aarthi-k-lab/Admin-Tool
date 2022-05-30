@@ -2024,6 +2024,10 @@ function* onFhlmcBulkUpload(payload) {
           type: SET_BULK_UPLOAD_RESULT,
           payload: response,
         });
+        yield put({
+          type: SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
+          payload: false,
+        });
       }
     } else {
       yield put({
