@@ -27,6 +27,7 @@ import {
   ID_CATEGORIES, APPROVAL_TYPE, PRE_APPROVAL_TYPE, FHLMC, APPROVAL_REQUEST_TYPE,
   REGEX_FHLMC_COMMON, REGEX_FHLMC_PREAPPROVED_DISASTER,
   LOAN_NUMBERS_IDTYPE, PREAPPROVED_DISASTER_TYPES, VALIDATION_FAILURE_MSG,
+  STANDARD,
 } from '../../../constants/fhlmc';
 import FHLMCDataInsight from './FHLMCDataInsight';
 
@@ -124,6 +125,19 @@ class FhlmcResolve extends React.PureComponent {
         return {
           loanNumber,
           disasterId,
+        };
+      });
+      payload = {
+        loanAndDisasterIds,
+        selectedApprovalType,
+        selectedPreApprovalType,
+        requestIdType: idType,
+      };
+    } else if (selectedPreApprovalType === STANDARD) {
+      const loanAndDisasterIds = data.map((caseId) => {
+        const loanNumber = caseId;
+        return {
+          loanNumber,
         };
       });
       payload = {

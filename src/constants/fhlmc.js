@@ -8,6 +8,7 @@ const PRE_APPROVAL_TYPE = 'FHLMCPreApproved';
 const APPROVAL_REQUEST_TYPE = 'FHLMCPreApprovedRequestType';
 const LOAN_NUMBERS_IDTYPE = 'Loan Number(s)';
 const PREAPPROVED_DISASTER_TYPES = ['Disaster', 'Pandemic'];
+const STANDARD = 'Standard';
 
 const REGEX_FHLMC_PREAPPROVED_DISASTER = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\"<>?]|^[,]|^[:]/;
 const REGEX_FHLMC_COMMON = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]|^[,]/;
@@ -38,4 +39,5 @@ module.exports = {
   REQ_PRCS,
   GENERATE_BOARDING_TEMPLATE_STATUS,
   VALIDATION_FAILURE_MSG,
+  STANDARD,
 };
