@@ -111,9 +111,9 @@ class FHLMCWidget extends Component {
   }
 
   renderCategoryDropDown = () => {
-    const { investorEvents, stagerTaskName, requestTypeData } = this.props;
+    const { investorEvents, groupName, requestTypeData } = this.props;
     const requestType = R.project(['requestType', 'displayText'], investorEvents);
-    const handledRequestType = !R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement') ? R.reject(e => e.requestType === 'SETReq')(requestType) : requestType;
+    const handledRequestType = R.equals('INVSET', groupName) ? requestType : R.reject(e => e.requestType === 'SETReq')(requestType);
     const { isOpen } = this.state;
     return (
       <>
@@ -270,11 +270,11 @@ FHLMCWidget.defaultProps = {
   resultData: [],
   resultOperation: {},
   requestTypeData: '',
-  stagerTaskName: {},
   onFhlmcModHistoryPopup: {},
   fhlmcModHistoryData: null,
   onTablePopupDataClear: {},
   getCancellationReasonsData: {},
+  groupName: '',
   cancellationReasons: [],
   selectedCancellationReason: '',
   setSelectedCancellationReasonData: {},
@@ -292,6 +292,7 @@ FHLMCWidget.propTypes = {
   eligibleData: PropTypes.string.isRequired,
   fhlmcModHistoryData: PropTypes.arrayOf(PropTypes.shape({})),
   getCancellationReasonsData: PropTypes.func,
+  groupName: PropTypes.string,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
   onFhlmcBulkSubmit: PropTypes.func.isRequired,
   onFhlmcModHistoryPopup: PropTypes.func,
@@ -314,7 +315,6 @@ FHLMCWidget.propTypes = {
   selectedCancellationReason: PropTypes.string,
   setRequestTypeData: PropTypes.func.isRequired,
   setSelectedCancellationReasonData: PropTypes.func,
-  stagerTaskName: PropTypes.shape(),
 };
 
 const mapStateToProps = state => ({
@@ -322,7 +322,7 @@ const mapStateToProps = state => ({
   fhlmcModHistoryData: selectors.getFhlmcModHistory(state),
   investorEvents: selectors.getInvestorEvents(state),
   resultOperation: selectors.resultOperation(state),
-  stagerTaskName: selectors.stagerTaskName(state),
+  groupName: selectors.groupName(state),
   eligibleData: selectors.eligibleData(state),
   requestTypeData: selectors.getRequestTypeData(state),
   resolutionId: selectors.resolutionId(state),

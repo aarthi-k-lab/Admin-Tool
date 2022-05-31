@@ -83,18 +83,18 @@ class WidgetBuilder extends Component {
   // TODO: optimize
   checkDependency(data, disabledWidgets, openWidgetList) {
     const {
-      resolutionId, groupName, stagerTaskName, investorHierarchy, investorCode,
+      resolutionId, groupName, investorHierarchy, investorCode,
       brandName,
     } = this.props;
     const rpsInvstrCode = ['LHA', 'LH8'];
     switch (data.dependency) {
       case FHLMC:
         if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)
-        && (!R.equals(brandName, 'RPS') || !R.includes(investorCode, rpsInvstrCode))) {
+          && (!R.equals(brandName, 'RPS') || !R.includes(investorCode, rpsInvstrCode))) {
           if (!R.equals(groupName, 'POSTMOD')) {
             return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
           }
-          return (R.equals(R.pathOr('', ['activeTile'], stagerTaskName), 'Investor Settlement')) ? this.renderWidgetIcon(data, disabledWidgets, openWidgetList) : null;
+          return R.equals('INVSET', groupName) ? this.renderWidgetIcon(data, disabledWidgets, openWidgetList) : null;
         }
         return null;
       default:
@@ -181,7 +181,6 @@ WidgetBuilder.defaultProps = {
   page: '',
   resolutionId: null,
   groupName: '',
-  stagerTaskName: {},
   investorHierarchy: {},
 };
 
@@ -197,7 +196,6 @@ WidgetBuilder.propTypes = {
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
   resolutionId: PropTypes.func,
-  stagerTaskName: PropTypes.shape(),
   trialHeader: PropTypes.shape({
     downPayment: PropTypes.number,
     evalId: PropTypes.number,
@@ -216,7 +214,6 @@ const mapStateToProps = state => ({
   disabledWidgets: selectors.getDisabledWidgets(state),
   resolutionId: dashboardSelectors.resolutionId(state),
   groupName: dashboardSelectors.groupName(state),
-  stagerTaskName: dashboardSelectors.stagerTaskName(state),
   investorHierarchy: dashboardSelectors.getInvestorHierarchy(state),
   isRPSUser: loginSelectors.isRPSGroupPresent(state),
   investorCode: dashboardSelectors.getInvestorCode(state),
