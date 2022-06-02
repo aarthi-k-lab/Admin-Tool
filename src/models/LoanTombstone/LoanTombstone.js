@@ -614,6 +614,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     resolutionId: R.propOr(null, 'resolutionId', evalDetails),
     investorHierarchy: R.propOr(null, 'InvestorHierarchy', loanDetails),
     investorCode: R.pathOr(null, ['investorInformation', 'investorCode'], loanDetails),
+    brandName: R.propOr(null, 'brandName', loanDetails),
     tombstoneData:
      [...getTombstoneItems(
        loanDetails,

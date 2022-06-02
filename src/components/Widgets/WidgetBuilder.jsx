@@ -90,7 +90,7 @@ class WidgetBuilder extends Component {
     switch (data.dependency) {
       case FHLMC:
         if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)
-          && (!R.equals(brandName, 'RPS') || !R.includes(investorCode, rpsInvstrCode))) {
+          && !R.equals(brandName, 'RPS') && (investorCode && !rpsInvstrCode.includes(investorCode))) {
           if (!R.equals(groupName, 'POSTMOD')) {
             return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
           }

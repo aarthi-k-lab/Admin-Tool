@@ -13,7 +13,7 @@ import {
   SUCCESS_LOADING_TOMBSTONE_DATA,
   FETCH_TOMBSTONE_DATA,
 } from './types';
-import { SET_INVESTOR_CODE, SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
+import { STORE_INVEST_CD_AND_BRAND_NM, SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
 import { TestExports } from './sagas';
 import { selectors as dashboardSelectors } from '../dashboard';
 
@@ -62,6 +62,13 @@ describe('fetchTombstoneData', () => {
       },
     ],
   };
+  const investorData = {
+    investorCode: '',
+    brandName: 'NSM',
+    resolutionId: '',
+    investorHierarchy: {},
+    tombstoneData: [],
+  };
   it('should update LOADING DATA in store', () => {
     expect(saga.next().value)
       .toEqual(put({
@@ -103,26 +110,21 @@ describe('fetchTombstoneData', () => {
       .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM', 78790));
   });
 
+  it('should dispatch STORE_INVEST_CD_AND_BRAND_NM', () => {
+    expect(saga.next(investorData).value)
+      .toEqual(put({
+        type: STORE_INVEST_CD_AND_BRAND_NM,
+        payload: { investorCode: '', brandName: 'NSM' },
+      }));
+  });
   it('should dispatch SET_RESOLUTION_AND_INVSTR_HRCHY', () => {
-    expect(saga.next({
-      resolutionId: '',
-      investorHierarchy: {},
-      tombstoneData: [],
-    }).value)
+    expect(saga.next(investorData).value)
       .toEqual(put({
         type: SET_RESOLUTION_AND_INVSTR_HRCHY,
         payload: { resolutionId: '', investorHierarchy: {} },
       }));
   });
 
-  it('should update investorCode', () => {
-    expect(saga.next({
-      investorCode: '',
-    }).value)
-      .toEqual(put({
-        type: SET_INVESTOR_CODE,
-      }));
-  });
   it('should update isPayment deferral', () => {
     expect(saga.next(loanDetails).value).toEqual(call(setPaymentDeferral, false));
   });

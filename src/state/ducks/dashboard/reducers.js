@@ -104,7 +104,7 @@ import {
   SET_SELECTED_CANCELLATION_REASON,
   CLEAR_CANCELLATION_REASONS,
   SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
-  SET_INVESTOR_CODE,
+  STORE_INVEST_CD_AND_BRAND_NM,
 } from './types';
 
 const reducer = (state = {
@@ -1049,10 +1049,12 @@ const reducer = (state = {
       };
     }
 
-    case SET_INVESTOR_CODE: {
+    case STORE_INVEST_CD_AND_BRAND_NM: {
+      const { investorCode, brandName } = action.payload;
       return {
         ...state,
-        investorCode: action.payload,
+        investorCode,
+        brand: brandName,
       };
     }
 
