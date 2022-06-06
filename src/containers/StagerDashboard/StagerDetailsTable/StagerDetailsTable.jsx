@@ -162,6 +162,14 @@ class StagerDetailsTable extends React.PureComponent {
                       ) : null
                   }
                   {
+                    data.stagerTaskType === 'Value' && data.stagerTaskStatus === 'Ordered'
+                      ? (
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData, getActiveSearchTerm, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
+                          {'COMPLETE'}
+                        </Button>
+                      ) : null
+                  }
+                  {
                     data.isManualOrder && (data.stagerTaskType === 'Current Review' || data.stagerTaskType === 'Reclass') ? (
                       <>
                         <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => this.onDocGenClick(selectedData, REJECT, data.stagerTaskType)} styleName="details-table-btn" variant="contained">

@@ -14,6 +14,7 @@ import {
 } from 'ducks/login';
 import { operations, selectors } from '../../state/ducks/dashboard';
 import { operations as checkListOperations } from '../../state/ducks/tasks-and-checklist';
+import { selectors as stagerSelectors } from '../../state/ducks/stager';
 import './CustomReactTable.css';
 
 const handleRowValue = value => (value.startsWith('cmod') ? 'Unassign' : value);
@@ -25,8 +26,12 @@ class CustomReactTable extends React.PureComponent {
   }
 
   onSelectAllOption(checked) {
-    const { onSelectAll } = this.props;
-    onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
+    const { onSelectAll, activeSearchTerm } = this.props;
+    let selection = R.map(R.prop(''), this.table.getResolvedState().sortedData);
+    if (activeSearchTerm === 'ValueOrdered') {
+      selection = selection.filter(x => R.propOr('', 'Investor Name', x) === 'Freddie');
+    }
+    onSelectAll(checked, selection);
   }
 
   static getRowStyleName(value, pointerStyle) {
@@ -98,21 +103,28 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getCheckBox() {
-    const { onCheckBoxClick, selectedData } = this.props;
+    const {
+      onCheckBoxClick, selectedData, activeSearchTerm, data,
+    } = this.props;
     return {
       accessor: '',
       Cell: ({ original }) => {
         const isSelected = selectedData.find(o => o.TKIID === original.TKIID) || false;
-        return (
-          <Checkbox
-            checked={isSelected}
-            onChange={e => onCheckBoxClick(e.target.checked, original)}
-            styleName="checkbox"
-          />
+        const shouldShowCheckbox = (activeSearchTerm !== 'ValueOrdered') || original['Investor Name'] === 'Freddie';
+        return (shouldShowCheckbox
+          ? (
+            <Checkbox
+              checked={isSelected}
+              onChange={e => onCheckBoxClick(e.target.checked, original)}
+              styleName="checkbox"
+            />
+          ) : false
         );
       },
       Header: () => (
-        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
+        (activeSearchTerm !== 'ValueOrdered') || R.any(x => R.propOr('', 'Investor Name', x) === 'Freddie', R.map(R.prop(''), data))
+          ? <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
+          : false
       ),
       sortable: false,
       filterable: false,
@@ -121,6 +133,7 @@ class CustomReactTable extends React.PureComponent {
   }
 
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
+    const { activeSearchTerm } = this.props;
     const columnData = [];
     const columnObject = {};
     let columns = [];
@@ -158,7 +171,7 @@ class CustomReactTable extends React.PureComponent {
         R.keys(),
       )(data[0]);
     }
-    columnObject.columns = isManualOrder ? [this.getCheckBox(data),
+    columnObject.columns = (isManualOrder || (activeSearchTerm === 'ValueOrdered')) ? [this.getCheckBox(data),
       ...columns] : columns;
     columnData.push(columnObject);
     return columnData;
@@ -303,9 +316,11 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   searchLoanTaskResponse: selectors.searchLoanTaskResponse(state),
+  activeSearchTerm: stagerSelectors.getActiveSearchTerm(state),
 });
 
 CustomReactTable.propTypes = {
+  activeSearchTerm: PropTypes.string.isRequired,
   data: PropTypes.shape(),
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,

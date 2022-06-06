@@ -25,8 +25,12 @@ class StagerReactTable extends React.PureComponent {
   }
 
   onSelectAllOption(checked) {
-    const { onSelectAll } = this.props;
-    onSelectAll(checked, R.map(R.prop(''), this.table.getResolvedState().sortedData));
+    const { onSelectAll, activeSearchTerm } = this.props;
+    let selection = R.map(R.prop(''), this.table.getResolvedState().sortedData);
+    if (activeSearchTerm === 'ValueOrdered') {
+      selection = selection.filter(x => R.propOr('', 'Investor Name', x) === 'Freddie');
+    }
+    onSelectAll(checked, selection);
   }
 
   static getRowStyleName(value, pointerStyle) {
@@ -98,21 +102,26 @@ class StagerReactTable extends React.PureComponent {
   }
 
   getCheckBox() {
-    const { onCheckBoxClick, selectedData } = this.props;
+    const { onCheckBoxClick, selectedData, activeSearchTerm } = this.props;
     return {
       accessor: '',
       Cell: ({ original }) => {
         const isSelected = selectedData.find(o => o.TKIID === original.TKIID) || false;
-        return (
-          <Checkbox
-            checked={isSelected}
-            onChange={e => onCheckBoxClick(e.target.checked, original)}
-            styleName="checkbox"
-          />
+        const shouldShowCheckbox = (activeSearchTerm !== 'ValueOrdered') || original['Investor Name'] === 'Freddie';
+        return (shouldShowCheckbox
+          ? (
+            <Checkbox
+              checked={isSelected}
+              onChange={e => onCheckBoxClick(e.target.checked, original)}
+              styleName="checkbox"
+            />
+          ) : null
         );
       },
       Header: () => (
-        <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
+        (activeSearchTerm !== 'ValueOrdered') || R.any(x => R.propOr('', 'Investor Name', x) === 'Freddie', R.map(R.prop(''), this.table.getResolvedState().sortedData))
+          ? <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
+          : null
       ),
       sortable: false,
       filterable: false,
@@ -123,7 +132,7 @@ class StagerReactTable extends React.PureComponent {
   getColumnData(stagerTaskType, stagerTaskStatus, isManualOrder, data) {
     const columnData = [];
     const columnObject = {};
-    const { data: { facets } } = this.props;
+    const { data: { facets }, activeSearchTerm } = this.props;
     let columns = [];
     if (data && data[0]) {
       columns = R.compose(
@@ -160,7 +169,7 @@ class StagerReactTable extends React.PureComponent {
         R.keys(),
       )(data[0]);
     }
-    columnObject.columns = isManualOrder ? [this.getCheckBox(data),
+    columnObject.columns = (isManualOrder || (activeSearchTerm === 'ValueOrdered')) ? [this.getCheckBox(data),
       ...columns] : columns;
     columnData.push(columnObject);
     return columnData;
