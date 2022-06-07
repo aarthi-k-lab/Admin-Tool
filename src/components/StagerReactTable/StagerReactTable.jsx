@@ -102,14 +102,16 @@ class StagerReactTable extends React.PureComponent {
   }
 
   getCheckBox() {
-    const { onCheckBoxClick, selectedData, activeSearchTerm } = this.props;
+    const {
+      onCheckBoxClick, selectedData, activeSearchTerm, data,
+    } = this.props;
     return {
       accessor: '',
       Cell: ({ original }) => {
         const isSelected = selectedData.find(o => o.TKIID === original.TKIID) || false;
         const shouldShowCheckbox = (activeSearchTerm !== 'ValueOrdered') || original['Investor Name'] === 'Freddie';
-        return (shouldShowCheckbox
-          ? (
+        return (
+          shouldShowCheckbox ? (
             <Checkbox
               checked={isSelected}
               onChange={e => onCheckBoxClick(e.target.checked, original)}
@@ -119,7 +121,7 @@ class StagerReactTable extends React.PureComponent {
         );
       },
       Header: () => (
-        (activeSearchTerm !== 'ValueOrdered') || R.any(x => R.propOr('', 'Investor Name', x) === 'Freddie', R.map(R.prop(''), this.table.getResolvedState().sortedData))
+        ((activeSearchTerm !== 'ValueOrdered') || R.any(x => R.propOr('', 'Investor Name', x) === 'Freddie', data.tableData))
           ? <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
           : null
       ),

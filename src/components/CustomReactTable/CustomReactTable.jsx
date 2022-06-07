@@ -122,7 +122,7 @@ class CustomReactTable extends React.PureComponent {
         );
       },
       Header: () => (
-        (activeSearchTerm !== 'ValueOrdered') || R.any(x => R.propOr('', 'Investor Name', x) === 'Freddie', R.map(R.prop(''), data))
+        ((activeSearchTerm !== 'ValueOrdered') || R.any(x => R.propOr('', 'Investor Name', x) === 'Freddie', data.tableData))
           ? <Checkbox onChange={e => this.onSelectAllOption(e.target.checked)} styleName="checkboxHeader" />
           : false
       ),
