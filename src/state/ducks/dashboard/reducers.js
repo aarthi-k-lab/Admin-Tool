@@ -98,6 +98,7 @@ import {
   SET_VALID_EVALDATA,
   CLEAR_POPUP_TABLE_DATA,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
+  SET_SAFE_ACT_REQUIRE,
   SAVE_APPROVAL_DROPDOWN,
   SAVE_PREAPPROVAL_DROPDOWN,
   SET_CANCELLATION_REASON,
@@ -907,6 +908,13 @@ const reducer = (state = {
       return {
         ...state,
         bookingTaskId,
+      };
+    }
+    case SET_SAFE_ACT_REQUIRE: {
+      const safeActRequire = action.payload;
+      return {
+        ...state,
+        safeActRequire,
       };
     }
     case TOGGLE_LOCK_BUTTON: {
