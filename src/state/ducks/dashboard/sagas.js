@@ -2009,7 +2009,7 @@ function* onFhlmcBulkUpload(payload) {
     }
     if (!R.isNil(response)) {
       const hasStatusCode = R.has('status', response);
-      if (hasStatusCode && R.equals(R.path(['status'], response), 404)) {
+      if (hasStatusCode && R.includes(R.path(['status'], response), [404, 'No Content'])) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {

@@ -200,19 +200,18 @@ class FhlmcResolve extends React.PureComponent {
 
   handlePreApprovalType = (event) => {
     const investorName = APPROVAL_REQUEST_TYPE;
-    const { populateInvestorDropdown, resetWidget } = this.props;
+    const { resetWidget } = this.props;
     this.setState({
       selectedPreApprovalType: event.target.value,
       isSubmitDisabled: 'disabled',
       isResetDisabled: false,
       investorName,
     });
-    populateInvestorDropdown(investorName);
     resetWidget();
   }
 
   handleApprovalType = (event) => {
-    const investorName = PRE_APPROVAL_TYPE;
+    const investorName = APPROVAL_REQUEST_TYPE;
     const { populateInvestorDropdown, resetWidget } = this.props;
     this.setState({
       selectedApprovalType: event.target.value,
@@ -220,6 +219,7 @@ class FhlmcResolve extends React.PureComponent {
       isResetDisabled: false,
       investorName,
     });
+    populateInvestorDropdown(PRE_APPROVAL_TYPE);
     populateInvestorDropdown(investorName);
     resetWidget();
   }
