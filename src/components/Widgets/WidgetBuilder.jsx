@@ -11,6 +11,7 @@ import WidgetComponent from './WidgetComponent';
 import { selectors, operations } from '../../state/ducks/widgets';
 import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
 import { selectors as loginSelectors } from '../../state/ducks/login';
+import { selectors as configSelectors } from '../../state/ducks/config';
 
 class WidgetBuilder extends Component {
   constructor(props) {
@@ -84,12 +85,12 @@ class WidgetBuilder extends Component {
   checkDependency(data, disabledWidgets, openWidgetList) {
     const {
       resolutionId, groupName, investorHierarchy, investorCode,
-      brandName,
+      brandName, features,
     } = this.props;
     const rpsInvstrCode = ['LHA', 'LH8'];
     switch (data.dependency) {
       case FHLMC:
-        if (!R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)
+        if (features.showFhlmcWidget && !R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)
           && !R.equals(brandName, 'RPS') && (investorCode && !rpsInvstrCode.includes(investorCode))) {
           if (!R.equals(groupName, 'POSTMOD')) {
             return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
@@ -182,6 +183,7 @@ WidgetBuilder.defaultProps = {
   resolutionId: null,
   groupName: '',
   investorHierarchy: {},
+  features: { showFhlmcWidget: true },
 };
 
 WidgetBuilder.propTypes = {
@@ -189,6 +191,9 @@ WidgetBuilder.propTypes = {
   className: PropTypes.string.isRequired,
   currentWidget: PropTypes.string,
   disabledWidgets: PropTypes.arrayOf(PropTypes.string),
+  features: PropTypes.shape({
+    showFhlmcWidget: PropTypes.bool,
+  }),
   groupName: PropTypes.string,
   investorCode: PropTypes.string.isRequired,
   investorHierarchy: PropTypes.shape(),
@@ -218,6 +223,7 @@ const mapStateToProps = state => ({
   isRPSUser: loginSelectors.isRPSGroupPresent(state),
   investorCode: dashboardSelectors.getInvestorCode(state),
   brandName: dashboardSelectors.brand(state),
+  features: configSelectors.getFeatures(state),
 });
 
 function mapDispatchToProps(dispatch) {
