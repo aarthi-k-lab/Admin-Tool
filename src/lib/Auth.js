@@ -10,6 +10,7 @@ import {
   COVIUS_MGR,
   FHLMCRESOLVE,
   INVSET,
+  SECLOOK,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -297,6 +298,7 @@ Auth.failureMessages = {
   COVIUS_ACCESS_NEEDED: 'COVIUS Group Access is needed to view the Covius Bulk order page.',
   LOCATION_ACCESS_FAILED: 'CURRENTLY THIS FEATURE IS NOT AVAILBLE',
   INVESTOR_SETTLEMENT_ACCESS_NEEDED: 'Investor Settlement Group Access is needed to view the Investor Settlement Dashboard.',
+  SECONDLOOK_ACCESS_NEEDED: 'Second Look Group Access is needed to view the Second Look Dashboard.',
 };
 
 Auth.homePage = [
@@ -342,7 +344,11 @@ Auth.homePage = [
   },
   {
     groupName: INVSET,
-    path: '/investor-settlement',
+    path: '/invpsettlement',
+  },
+  {
+    groupName: SECLOOK,
+    path: '/second-look',
   },
 ];
 

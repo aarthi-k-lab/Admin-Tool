@@ -235,6 +235,20 @@ exports[`<Profile /> snapshot test 1`] = `
           invset-mgr
         </p>
       </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          seclook
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          seclook-mgr
+        </p>
+      </li>
     </ol>
   </div>
   <div

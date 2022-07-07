@@ -31,6 +31,7 @@ const MLSTN_PAGE = 'MLSTN_PAGE';
 const GNRL_CHKLST_SKIP_VALIDATION_GROUPS = [INVSET];
 const DISABLE_VALIDATION_GROUPS = [LOAN_ACTIVITY, POSTMODSTAGER, UWSTAGER, ALL_STAGER, INVSET];
 const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INVSET];
+const SECLOOK = 'SECLOOK';
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
@@ -140,6 +141,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: SECLOOK,
+    task: 'SECOND LOOK',
+    taskCode: 'SECLOOK',
+    path: '/second-look',
+    showAssignUnassign: true,
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -158,6 +166,7 @@ const GROUPS = {
   '/dg-vendor': COVIUS,
   '/fhlmcBulkOrder': FHLMCRESOLVE,
   '/investor-settlement': INVSET,
+  '/second-look': SECLOOK,
 };
 
 function getTitle(location) {
@@ -182,6 +191,8 @@ function getTitle(location) {
       return 'FHHLMC RESOLVE';
     case '/investor-settlement':
       return 'INVESTOR SETTLEMENT';
+    case '/second-look':
+      return 'SECOND LOOK';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -237,6 +248,7 @@ const DashboardModel = {
   checkSkipValidation,
   checkShowValidation,
   checkDisableValidateButton,
+  SECLOOK,
 };
 
 export default DashboardModel;

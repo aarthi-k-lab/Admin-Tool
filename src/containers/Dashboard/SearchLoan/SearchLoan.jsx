@@ -149,6 +149,10 @@ class SearchLoan extends React.PureComponent {
             group = 'INVSET';
             this.redirectPath = '/investor-settlement';
             break;
+          case 'Second Look':
+            group = 'SECLOOK';
+            this.redirectPath = '/second-look';
+            break;
           default:
             this.redirectPath = '/frontend-checklist';
             group = 'FEUW';

@@ -1,14 +1,14 @@
 const R = require('ramda');
 
 const checkListGroups = {
-  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager', 'invset', 'invset-mgr'],
+  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager', 'invset', 'invset-mgr', 'seclook', 'seclook-mgr'],
 };
 
 const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr', 'seclook-mgr'],
 };
 
 const stager = {
@@ -141,6 +141,13 @@ const INVESTOR_SETTLEMENT = {
   groups: ['invset', 'invset-mgr'],
 };
 
+const SECOND_LOOK = {
+  path: '/second-look',
+  name: 'Second Look',
+  img: '/static/img/second_look.svg',
+  groups: ['seclook', 'seclook-mgr'],
+};
+
 const links = [
   managerDashboard,
   docProcessor,
@@ -160,6 +167,7 @@ const links = [
   fHLMCBulkOrderPage,
   milestoneActivity,
   INVESTOR_SETTLEMENT,
+  SECOND_LOOK,
 ];
 
 
@@ -260,6 +268,10 @@ function hasInvestorSettlementAccess(groups) {
   return hasGroup(INVESTOR_SETTLEMENT.groups, groups);
 }
 
+function hasSecondLookAccess(groups) {
+  return hasGroup(SECOND_LOOK.groups, groups);
+}
+
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager', 'rpsstager-mgr', 'rpsstager'];
@@ -298,4 +310,5 @@ module.exports = {
   hasFrontEndManagerAccess,
   hasMilestoneActivityAccess,
   hasInvestorSettlementAccess,
+  hasSecondLookAccess,
 };

@@ -65,6 +65,7 @@ class ProtectedRoutes extends React.Component {
     this.renderfhlmcPageRoute = this.renderfhlmcPageRoute.bind(this);
     this.renderfhlmcBulkOrderPageRoute = this.renderfhlmcBulkOrderPageRoute.bind(this);
     this.renderInvestorSettlementRoute = this.renderInvestorSettlementRoute.bind(this);
+    this.renderSecondLookPageRoute = this.renderSecondLookPageRoute.bind(this);
     this.getHiddenRoutes = this.getHiddenRoutes.bind(this);
   }
 
@@ -289,6 +290,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderSecondLookPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasSecondLookAccess(groups)
+        ? <Dashboard group={DashboardModel.SECLOOK} />
+        : <Redirect to="/unauthorized?error=SECONDLOOK_ACCESS_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
     const { expandView, location, user } = this.props;
@@ -326,6 +336,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/investor-settlement" render={this.renderInvestorSettlementRoute} />
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route path="/uwstager" render={() => <Dashboard group={DashboardModel.UWSTAGER} />} />
+          <Route path="/second-look" render={this.renderSecondLookPageRoute} />
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>
