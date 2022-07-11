@@ -175,7 +175,6 @@ const getSelectedCancellationReason = state => R.pathOr('', ['dashboard', 'selec
 
 const getTrialDisableButton = state => R.pathOr(false, ['dashboard', 'disableTrialStagerButton'], state);
 
-const getSafeActRequire = state => R.pathOr(false, ['dashboard', 'safeActRequire'], state);
 const selectedResolutionId = state => R.pathOr('', ['dashboard', 'selectedResolutionId'], state);
 
 const disableGenerateBoardingTemplate = state => R.pathOr(false, ['dashboard', 'isGBTdisabled'], state);
@@ -277,7 +276,6 @@ const selectors = {
   getRequestTypeData,
   getEvalStatus,
   getTrialDisableButton,
-  getSafeActRequire,
   getApprovalEvents,
   getPreApprovalEvents,
   cancellationReasons,

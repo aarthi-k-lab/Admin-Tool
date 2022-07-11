@@ -6,7 +6,7 @@ const getChecklistItems = (subTasks, disableSubTasks = false) => R.map(checklist
   isVisible: R.propOr(true, 'visibility', checklistItem),
   failureReason: R.propOr(null, 'failureReason', checklistItem),
   disabled: disableSubTasks || R.propOr(false, 'disabled', checklistItem)
-  || (R.pathOr(false, ['taskBlueprint', 'additionalInfo', 'disableDuplicate'], checklistItem) && R.pathOr(false, ['value', 'isDuplicate'], checklistItem)),
+    || (R.pathOr(false, ['taskBlueprint', 'additionalInfo', 'disableDuplicate'], checklistItem) && R.pathOr(false, ['value', 'isDuplicate'], checklistItem)),
   subTasks: R.propOr([], 'subTasks', checklistItem),
   options: R.propOr(R.pathOr([], ['taskBlueprint', 'options'], checklistItem), 'options', checklistItem),
   taskCode: R.pathOr([], ['taskBlueprint', 'taskCode'], checklistItem),
@@ -18,7 +18,21 @@ const getChecklistItems = (subTasks, disableSubTasks = false) => R.map(checklist
   additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
 }), R.sortBy(a => a.order, subTasks || []));
 
+const getTaskFromProcess = (taskObj, prop, value) => {
+  if (R.propEq(prop, value)(taskObj)) {
+    return taskObj;
+  }
+  const task = [];
+  if (taskObj.subTasks && R.length(taskObj.subTasks) > 0) {
+    taskObj.subTasks.forEach((subTask) => {
+      task.push(getTaskFromProcess(subTask, prop, value));
+    });
+  }
+  if (task) return task.flat();
+  return null;
+};
 
 module.exports = {
   getChecklistItems,
+  getTaskFromProcess,
 };

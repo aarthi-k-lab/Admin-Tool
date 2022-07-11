@@ -151,7 +151,6 @@ import {
   SET_VALID_EVALDATA,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
   CHECK_TRIAL_DISABLE_STAGER_BUTTON,
-  SET_SAFE_ACT_REQUIRE,
   SAVE_APPROVAL_DROPDOWN,
   SAVE_PREAPPROVAL_DROPDOWN,
   SUBMIT_TO_BOARDING_TEMPLATE,
@@ -179,6 +178,7 @@ import {
 } from '../income-calculator/types';
 import { selectors as stagerSelectors } from '../stager/index';
 import { saveDelayChecklistDataToDB, fetchDelayCheckListHistory } from '../stager/sagas';
+import { getTaskFromProcess } from '../../../lib/checklist';
 
 const {
   Messages:
@@ -855,8 +855,10 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const assigneeName = yield select(checklistSelectors.getAgentName);
     const wfProcessId = yield select(selectors.processId);
     const processStatus = yield select(selectors.processStatus);
-    const safeActRequire = yield select(selectors.getSafeActRequire);
     const validateAgent = !R.isNil(assigneeName) && !R.isEmpty(assigneeName);
+    const checklistSubtasks = yield select(checklistSelectors.getTaskTree);
+    const externalChangeSubtasks = getTaskFromProcess(checklistSubtasks, 'taskBlueprintCode', 'EXT_CHG');
+    const safeActRequire = R.pathOr(false, ['value', 'safeActRequired'], R.head(externalChangeSubtasks));
     const request = {
       evalId,
       disposition,
@@ -1215,7 +1217,6 @@ function* getNext(action) {
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}&brand=${brand}`);
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
-      const safeActRequired = R.pathOr(false, ['taskData', 'data', 'safeActRequired'], taskDetails);
       const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
       if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], taskDetails)) {
         yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
@@ -1246,7 +1247,6 @@ function* getNext(action) {
         yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName, taskId));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
         yield put({ type: HIDE_LOADER });
-        yield put({ type: SET_SAFE_ACT_REQUIRE, payload: safeActRequired });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
         yield put(errorTombstoneFetch());
