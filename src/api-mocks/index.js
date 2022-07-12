@@ -61,9 +61,9 @@ function mock() {
   }, {
     groupName: 'invset-mgr'
   }, {
-    groupName: 'secondlook'
+    groupName: 'seclook'
   }, {
-    groupName: 'secondlook-mgr'
+    groupName: 'seclook-mgr'
   },  {
     "@odata.type": "#microsoft.graph.group",
     "id": "f8af99ef-42fd-4083-bfb4-366b48d1c4a9",

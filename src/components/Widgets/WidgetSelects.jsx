@@ -31,7 +31,7 @@ const {
   DOCGEN_GOBACK,
   MLSTN_PAGE,
   INVSET,
-  SECONDLOOK,
+  SECLOOK,
   BOOKING: BOOKING_GROUP,
 } = DashboardModel;
 
@@ -50,7 +50,7 @@ const widgets = [
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
       BOOKING_GROUP, SEARCH_LOAN, DOCGEN_GOBACK,
-      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK,
+      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECLOOK,
     ],
     overlay: true,
   },
@@ -59,7 +59,7 @@ const widgets = [
     icon: <img alt="Additional Info" src="/static/img/information.png" />,
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
-      BOOKING_GROUP, SEARCH_LOAN, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK,
+      BOOKING_GROUP, SEARCH_LOAN, POSTMODSTAGER, UWSTAGER, INVSET, SECLOOK,
     ],
     children: [COMMENTS],
   },
@@ -68,7 +68,7 @@ const widgets = [
     icon: <HistoryIcon />,
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN,
-      STAGER, LOAN_ACTIVITY, BOOKING_GROUP, POSTMODSTAGER, INVSET, SECONDLOOK,
+      STAGER, LOAN_ACTIVITY, BOOKING_GROUP, POSTMODSTAGER, INVSET, SECLOOK,
     ],
     children: [COMMENTS],
   },
@@ -93,7 +93,7 @@ const widgets = [
     icon: <img alt="FHLMC" src="/static/img/Freddie-Widget.svg" />,
     component: <FHLMCWidget />,
     visibility: [
-      BEUW, DOC_GEN, POSTMODSTAGER, INVSET, SECONDLOOK,
+      BEUW, DOC_GEN, POSTMODSTAGER, INVSET, SECLOOK,
     ],
     overlay: true,
     children: [COMMENTS],

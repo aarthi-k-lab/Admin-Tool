@@ -294,7 +294,7 @@ class ProtectedRoutes extends React.Component {
     const groups = this.getGroups();
     return (
       RouteAccess.hasSecondLookAccess(groups)
-        ? <Dashboard group={DashboardModel.SECONDLOOK} />
+        ? <Dashboard group={DashboardModel.SECLOOK} />
         : <Redirect to="/unauthorized?error=SECONDLOOK_ACCESS_NEEDED" />
     );
   }

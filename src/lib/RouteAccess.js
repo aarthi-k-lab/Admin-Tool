@@ -1,14 +1,14 @@
 const R = require('ramda');
 
 const checkListGroups = {
-  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager', 'invset', 'invset-mgr', 'secondlook', 'secondlook-mgr'],
+  groups: ['allaccess', 'feuw', 'beta', 'proc', 'proc-mgr', 'beuw', 'docsin', 'postmodstager', 'invset', 'invset-mgr', 'seclook', 'seclook-mgr'],
 };
 
 const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr', 'secondlook-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr', 'seclook-mgr'],
 };
 
 const stager = {
@@ -145,7 +145,7 @@ const SECOND_LOOK = {
   path: '/second-look',
   name: 'Second Look',
   img: '/static/img/second_look.svg',
-  groups: ['secondlook', 'secondlook-mgr'],
+  groups: ['seclook', 'seclook-mgr'],
 };
 
 const links = [

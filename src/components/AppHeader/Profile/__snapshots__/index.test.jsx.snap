@@ -239,14 +239,14 @@ exports[`<Profile /> snapshot test 1`] = `
         <p
           className="MuiTypography-root MuiTypography-body2"
         >
-          secondlook
+          seclook
         </p>
       </li>
       <li>
         <p
           className="MuiTypography-root MuiTypography-body2"
         >
-          secondlook-mgr
+          seclook-mgr
         </p>
       </li>
     </ol>

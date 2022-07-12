@@ -101,7 +101,7 @@ const isChecked = {
   FHLMCRESOLVE: true,
   RPSstager: true,
   INVSET: true,
-  SECONDLOOK: true,
+  SECLOOK: true,
 };
 
 const isCheckedFalse = {
@@ -120,7 +120,7 @@ const isCheckedFalse = {
   FHLMCRESOLVE: true,
   RPSstager: true,
   INVSET: true,
-  SECONDLOOK: true,
+  SECLOOK: true,
 };
 const skills = { FEUW: ['Skill14::InVESTOR', 'Skill19::MRC Onshore', 'Skill1::something', 'Skill2::nothing'] };
 
