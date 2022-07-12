@@ -16,4 +16,4 @@ export const FHLMCRESOLVE = 'fhlmcresolve';
 export const RPS_STAGER = 'rpsstager';
 export const RPS_STAGER_MGR = 'rpsstager-mgr';
 export const INVSET = 'invset';
-export const SECLOOK = 'seclook';
+export const SECONDLOOK = 'secondlook';
