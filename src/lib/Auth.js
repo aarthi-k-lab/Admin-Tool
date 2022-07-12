@@ -344,7 +344,7 @@ Auth.homePage = [
   },
   {
     groupName: INVSET,
-    path: '/invpsettlement',
+    path: '/investor-settlement',
   },
   {
     groupName: SECLOOK,
