@@ -10,7 +10,7 @@ import {
   COVIUS_MGR,
   FHLMCRESOLVE,
   INVSET,
-  SECLOOK,
+  SECONDLOOK,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -347,7 +347,7 @@ Auth.homePage = [
     path: '/invpsettlement',
   },
   {
-    groupName: SECLOOK,
+    groupName: SECONDLOOK,
     path: '/second-look',
   },
 ];
