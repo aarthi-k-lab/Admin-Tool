@@ -89,3 +89,31 @@ $ echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
     7. getStagerGroup - For stager access. 
         i. stagerGroups - Add additional AD group to get Stager tiles access. 
         ii. postModGroups - Add  additional AD group to get  POSTMOD tiles access
+
+7) The above changes mentioned in point (6) pertains to CMOD.UI. The other dependent service changes are as follows.
+    `(NOTE: The referral PRs are authored from Second look PBIs and are shared in order. The groupName used in all these repositories should be inline with the AD group's lastname. For Example: In **cmod-dev-RPSstager** AD group, **RPSstager** can be the derived groupName and it will be used across UI/BPM/ODM/Microservice changes)`
+    1. CMOD.Disposition.Service: Adding Disposition validations.
+        i. The mentioned dispositions from the AC needs to be created as an object in src->models->validations.js file.
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/CMOD.Disposition.Service/pullrequest/129049)
+    2. CMOD.APIScheduler: Adding a build bucket scheduler to refresh/pick new tasks as per userSkill.
+        i. Add the scheduler configuration in Data->BuildBuckets.task
+        ii. The `Body` with `appFilterName, appGroupName, appName` is given as per the configuration in BPM/ODM/AD group.
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/CMOD.APIScheduler/pullrequest/130672)
+    3. CMOD.UserSkills.Cache: Adding groupName to cache skill groups in redis.
+        i. Under src->main->java->com->mrcooper->cmod->users->models->SkillGroup.java, Add the groupName to `groups` array.
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/CMOD.UserSkills.Cache/pullrequest/130671)
+    4. AUDIT.BPM.Events: Adding the enum and Assign User name to bucket and pick unassigned tasks.
+        i. Under src->main->resources->application.yml, add groupName to `ASGN_USR_NM` list in `unAssignedTasks` query.
+        ii. In src->main->java->com->mrcooper->audit->enums->GroupToTaskNameMap.java, Add the enum mapper for the persona.
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/AUDIT.BPM.Events/pullrequest/131345)
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/AUDIT.BPM.Events/pullrequest/131020)
+    5. Adding AD groups to CMOD.AD.Authentication.Service
+        i. Under deployment/appregistration/azuread.yaml file, add the AD groups in all environments
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/CMOD.AD.Authentication.Service/pullrequest/129204)
+    6. CMOD.WorkAssignment.Service: Adding groupName to pick skill based task; Changes for disposition details
+        i. Under src->models->app-group-name.js, add the groupName constant and refer the same in `checklistGroupNames` array.
+        ii. In the same file add the groupName to `appGroupNameToUserPersonaMap` object.
+        iii. Under src->models->bpmRequest.js file, create a new object with groupName and add the disposition validations.
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/CMOD.WorkAssignment.Service/pullrequest/129208)
+        (Refer PR - https://mrcooper.visualstudio.com/CMOD/_git/CMOD.WorkAssignment.Service/pullrequest/129050)
+

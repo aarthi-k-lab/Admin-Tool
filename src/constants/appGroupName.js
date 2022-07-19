@@ -16,7 +16,7 @@ const FHLMCRESOLVE = 'FHLMCRESOLVE';
 const UWSTAGER = 'UWSTAGER';
 const RPS_STAGER = 'RPSstager';
 const INVSET = 'INVSET';
-const SECLOOK = 'SECLOOK';
+const SECONDLOOK = 'SECONDLOOK';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -28,7 +28,7 @@ const checklistGroupNames = [
   BOOKING,
   UWSTAGER,
   INVSET,
-  SECLOOK,
+  SECONDLOOK,
 ];
 
 const userGroupList = [
@@ -47,7 +47,7 @@ const userGroupList = [
   FHLMCRESOLVE,
   RPS_STAGER,
   INVSET,
-  SECLOOK,
+  SECONDLOOK,
 ];
 
 

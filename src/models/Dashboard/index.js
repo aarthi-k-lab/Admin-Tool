@@ -31,7 +31,7 @@ const MLSTN_PAGE = 'MLSTN_PAGE';
 const GNRL_CHKLST_SKIP_VALIDATION_GROUPS = [INVSET];
 const DISABLE_VALIDATION_GROUPS = [LOAN_ACTIVITY, POSTMODSTAGER, UWSTAGER, ALL_STAGER, INVSET];
 const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INVSET];
-const SECLOOK = 'SECLOOK';
+const SECONDLOOK = 'SECONDLOOK';
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
@@ -141,9 +141,9 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
-    group: SECLOOK,
+    group: SECONDLOOK,
     task: 'SECOND LOOK',
-    taskCode: 'SECLOOK',
+    taskCode: 'SECONDLOOK',
     path: '/second-look',
     showAssignUnassign: true,
   },
@@ -166,7 +166,7 @@ const GROUPS = {
   '/dg-vendor': COVIUS,
   '/fhlmcBulkOrder': FHLMCRESOLVE,
   '/investor-settlement': INVSET,
-  '/second-look': SECLOOK,
+  '/second-look': SECONDLOOK,
 };
 
 function getTitle(location) {
@@ -248,7 +248,7 @@ const DashboardModel = {
   checkSkipValidation,
   checkShowValidation,
   checkDisableValidateButton,
-  SECLOOK,
+  SECONDLOOK,
 };
 
 export default DashboardModel;
