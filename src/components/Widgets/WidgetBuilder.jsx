@@ -84,13 +84,14 @@ class WidgetBuilder extends Component {
   // TODO: optimize
   checkDependency(data, disabledWidgets, openWidgetList) {
     const {
-      resolutionId, groupName, investorHierarchy,
+      resolutionId, groupName, investorHierarchy, investorCode,
       brandName, features,
     } = this.props;
+    const rpsInvstrCode = ['LHA', 'LH8'];
     switch (data.dependency) {
       case FHLMC:
         if (features.showFhlmcWidget && !R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)
-          && !R.equals(brandName, 'RPS')) {
+          && !R.equals(brandName, 'RPS') && (investorCode && !rpsInvstrCode.includes(investorCode))) {
           if (!R.equals(groupName, 'POSTMOD')) {
             return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
           }
@@ -194,6 +195,7 @@ WidgetBuilder.propTypes = {
     showFhlmcWidget: PropTypes.bool,
   }),
   groupName: PropTypes.string,
+  investorCode: PropTypes.string.isRequired,
   investorHierarchy: PropTypes.shape(),
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
