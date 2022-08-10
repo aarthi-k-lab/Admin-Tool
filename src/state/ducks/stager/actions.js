@@ -10,12 +10,17 @@ import {
   FETCH_DELAY_CHECKLIST_HISTORY,
   STORE_DELAY_CHECKLIST_HISTORY,
   REFRESH_STAGER_TILE,
+  DISABLE_COMPLETE_BUTTON,
 } from './types';
 
 const triggerDashboardCounts = () => ({
   type: GET_DASHBOARD_COUNTS_SAGA,
 });
 
+const disableCompleteButton = payload => ({
+  type: DISABLE_COMPLETE_BUTTON,
+  payload,
+});
 
 const refreshStagerTile = () => ({
   type: REFRESH_STAGER_TILE,
@@ -120,6 +125,7 @@ const storeDelayCheckListHistory = payload => ({
 });
 
 export {
+  disableCompleteButton,
   fetchStagerPayload,
   azureSearchToggle,
   triggerDashboardCounts,

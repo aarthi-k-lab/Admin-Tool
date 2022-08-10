@@ -57,6 +57,7 @@ describe('<StagerDashboard /> simulate functionalities', () => {
   const triggerStagerValue = jest.fn();
   const triggerStartEndDate = jest.fn();
   const onGetGroupName = jest.fn();
+  const onDisableCompleteButton = jest.fn();
   const closeSnackBar = jest.fn();
   const groups = ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'];
   const props = {
@@ -65,6 +66,7 @@ describe('<StagerDashboard /> simulate functionalities', () => {
     triggerStartEndDate,
     onGetGroupName,
     closeSnackBar,
+    onDisableCompleteButton,
     groups,
     snackBarData: {
       message: 'mock',

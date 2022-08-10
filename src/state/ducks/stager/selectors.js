@@ -15,6 +15,7 @@ const getDownloadData = state => (state.stager && state.stager.csvData);
 const getStagerGroup = state => (state.stager && state.stager.stagerGroup);
 const getStagerSearchResponse = state => (state.stager && state.stager.searchStagerLoanResponse);
 const getSearchStagerLoanNumber = state => (state.stager && state.stager.searchStagerLoanNumber);
+const getDisableCompleteButton = state => (state.stager && state.stager.disableComplete);
 
 
 const getAzureSearchToggle = state => R.pathOr(false, ['stager', 'azureSearchToggle'], state);
@@ -41,6 +42,7 @@ const selectors = {
   getDelayCheckList,
   getDelayCheckListHistory,
   showRefreshButton,
+  getDisableCompleteButton,
 };
 
 export default selectors;

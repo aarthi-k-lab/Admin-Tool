@@ -16,10 +16,17 @@ import {
   TOGGLE_AZURE_SEARCH,
   STORE_DELAY_CHECKLIST,
   STORE_DELAY_CHECKLIST_HISTORY,
+  DISABLE_COMPLETE_BUTTON,
 } from './types';
 
 const reducer = (state = { azureSearchToggle: true }, action) => {
   switch (action.type) {
+    case DISABLE_COMPLETE_BUTTON: {
+      return {
+        ...state,
+        disableComplete: action.payload,
+      };
+    }
     case TOGGLE_AZURE_SEARCH: {
       return {
         ...state,
