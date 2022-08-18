@@ -240,13 +240,9 @@ function getLatestHandOffDisposition(_, evalDetails,
   return generateTombstoneItem('Latest Handoff Disposition', NA);
 }
 
-function getEvalType(_, evalDetails) {
-  const evalType = getOr('evalType', evalDetails, NA);
-  return generateTombstoneItem('Evaluation Type', evalType);
-}
 function getEvalFlag(_, evalDetails) {
   let evalType = getOr('evalType', evalDetails, NA);
-  const evalTypeArray = ['PreApproved', 'Disaster', 'Inflight', 'StateReview', 'NonDelegated'];
+  const evalTypeArray = ['PreApproved', 'Disaster', 'Inflight', 'StateReview', 'NonDelegated', 'Pandemic'];
   if (evalType !== 'NA' && !evalTypeArray.includes(evalType)) {
     evalType = 'Standard';
   }
@@ -452,7 +448,7 @@ function getTombstoneItems(loanDetails,
       break;
   }
   if (R.equals(groupName, DashboardModel.LOAN_ACTIVITY)) {
-    dataGenerator.splice(7, 0, getEvalType, getBoardingDate);
+    dataGenerator.splice(7, 0, getEvalFlag, getBoardingDate);
   }
   if (R.equals(group, DashboardModel.BEUW) || (R.equals(group, 'INVSET') && R.equals(taskName, 'Investor Settlement'))) {
     dataGenerator.splice(4, 0, getFreddieIndicator);
