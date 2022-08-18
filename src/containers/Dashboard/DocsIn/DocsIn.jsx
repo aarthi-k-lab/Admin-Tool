@@ -103,9 +103,6 @@ const getPostModStagerTaskNames = () => {
     displayName: '258A ORDERED',
     value: '258A Ordered',
   }, {
-    displayName: 'INVESTOR SETTLEMENT',
-    value: 'Investor Settlement',
-  }, {
     displayName: 'MOD REVERSAL',
     value: 'modReversal',
   }];
@@ -210,12 +207,6 @@ const getOptionBasedStagerValues = (dropDownValue) => {
           displayName: 'REJECTED BY COUNTY - MODIFICATION EXCEPTION',
           value: 'Rejected by County - Modification Exception',
         }];
-      break;
-    case 'Investor Settlement':
-      value = [{
-        displayName: 'SUBMITTED FOR SETTLEMENT',
-        value: 'Submitted for Settlement',
-      }];
       break;
     default: return null;
   }
