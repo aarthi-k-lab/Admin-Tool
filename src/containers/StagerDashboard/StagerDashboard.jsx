@@ -125,7 +125,7 @@ class StagerDashboard extends React.Component {
   }
 
   onCheckBoxClick(isChecked, data) {
-    const { onCheckBoxClick, selectedData, onDisableCompleteButton } = this.props;
+    const { onCheckBoxClick, selectedData } = this.props;
     const foundData = selectedData.find(obj => data.TKIID === obj.TKIID);
     const selectedDataCopy = [...selectedData];
     if (isChecked && !foundData) {
@@ -133,23 +133,17 @@ class StagerDashboard extends React.Component {
     } else if (!isChecked && foundData) {
       selectedDataCopy.splice(selectedDataCopy.findIndex(i => i.TKIID === data.TKIID), 1);
     }
-    const disableComplete = R.length(R.filter(item => R.contains(R.prop('Investor Code', item),
-      ['LHA', 'LH8']), selectedDataCopy)) > 0;
-    onDisableCompleteButton(disableComplete);
     onCheckBoxClick(selectedDataCopy);
   }
 
   onSelectAll(isChecked, data) {
-    const { onCheckBoxClick, selectedData, onDisableCompleteButton } = this.props;
+    const { onCheckBoxClick, selectedData } = this.props;
     let selectedDataCopy = [...selectedData];
     if (isChecked) {
       selectedDataCopy = data;
     } else if (!isChecked) {
       selectedDataCopy = [];
     }
-    const disableComplete = R.length(R.filter(item => R.contains(R.prop('Investor Code', item),
-      ['LHA', 'LH8']), selectedDataCopy)) > 0;
-    onDisableCompleteButton(disableComplete);
     onCheckBoxClick(selectedDataCopy);
   }
 
@@ -281,7 +275,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getDashboardCounts: stagerOperations.getDashboardCounts(dispatch),
   getDashboardData: stagerOperations.getDashboardData(dispatch),
-  onDisableCompleteButton: stagerOperations.onDisableCompleteButton(dispatch),
   onCheckBoxClick: stagerOperations.onCheckBoxClick(dispatch),
   triggerOrderCall: stagerOperations.triggerOrderCall(dispatch),
   triggerStagerValue: stagerOperations.triggerStagerValue(dispatch),
@@ -329,7 +322,6 @@ StagerDashboard.propTypes = {
   onClearSearchResponse: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
-  onDisableCompleteButton: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   selectedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   snackBarData: PropTypes.shape(),

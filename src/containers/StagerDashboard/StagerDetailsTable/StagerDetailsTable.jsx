@@ -124,7 +124,7 @@ class StagerDetailsTable extends React.PureComponent {
       data, loading,
       onOrderClick, selectedData, popupData, docGenAction,
       downloadedData, getActiveSearchTerm, getStagerValue,
-      showRefreshButton, onRefreshStagerTile, userGroupList, disableCompleteButton,
+      showRefreshButton, onRefreshStagerTile, userGroupList,
     } = this.props;
     const downloadFileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
     const displayLastUpdatedDate = ['Completed', 'Ordered'];
@@ -164,7 +164,7 @@ class StagerDetailsTable extends React.PureComponent {
                   {
                     data.stagerTaskType === 'Value' && data.stagerTaskStatus === 'Ordered'
                       ? (
-                        <Button disabled={(disableCompleteButton || R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData, getActiveSearchTerm, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
+                        <Button disabled={(R.isEmpty(selectedData) || R.isNil(selectedData))} onClick={() => onOrderClick(selectedData, getActiveSearchTerm, data.stagerTaskType)} styleName="details-table-btn" variant="contained">
                           {'COMPLETE'}
                         </Button>
                       ) : null
@@ -247,13 +247,11 @@ StagerDetailsTable.defaultProps = {
   popupData: [],
   userGroupList: [],
   showRefreshButton: false,
-  disableCompleteButton: false,
 };
 
 StagerDetailsTable.propTypes = {
   azureSearchToggle: PropTypes.bool.isRequired,
   data: PropTypes.shape().isRequired,
-  disableCompleteButton: PropTypes.bool,
   docGenAction: PropTypes.func.isRequired,
   downloadedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getActiveSearchTerm: PropTypes.string.isRequired,
@@ -281,7 +279,6 @@ StagerDetailsTable.propTypes = {
 
 const mapStateToProps = state => ({
   docGenAction: stagerSelectors.getdocGenAction(state),
-  disableCompleteButton: stagerSelectors.getDisableCompleteButton(state),
   getStagerValue: stagerSelectors.getStagerValue(state),
   getActiveSearchTerm: stagerSelectors.getActiveSearchTerm(state),
   downloadedData: stagerSelectors.getDownloadData(state),

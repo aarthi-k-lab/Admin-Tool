@@ -18,14 +18,12 @@ import {
   fetchStagerPayload,
   saveDelayChecklistData,
   refreshStagerTile,
-  disableCompleteButton,
 } from './actions';
 
 const getDashboardCounts = dispatch => () => dispatch(
   triggerDashboardCounts(),
 );
 
-const onDisableCompleteButton = dispatch => payload => dispatch(disableCompleteButton(payload));
 const onRefreshStagerTile = dispatch => () => dispatch(refreshStagerTile());
 const getDashboardData = dispatch => payload => dispatch(triggerDashboardDataFetch(payload));
 const onDownloadData = dispatch => payload => dispatch(triggerDownloadDataFetch(payload));
@@ -84,7 +82,6 @@ const operations = {
   onLoansSubmit,
   setDelayChecklistData,
   onRefreshStagerTile,
-  onDisableCompleteButton,
 };
 
 export default operations;
