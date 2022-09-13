@@ -14,7 +14,6 @@ const defaultProps = {
   closeSweetAlert: jest.fn(),
   handleClose: jest.fn(),
   investorEvents: [''],
-  resultOperation: {},
   isWidget: true,
   portfolioCode: 'FHLMC',
   selectedRequestType: 'DraftReq',

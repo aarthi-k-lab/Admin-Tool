@@ -13,6 +13,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import HistoryIcon from '@material-ui/icons/History';
+import TextField from '@material-ui/core/TextareaAutosize';
 import './FHLMCWidget.css';
 import * as R from 'ramda';
 import { PropTypes } from 'prop-types';
@@ -20,7 +21,7 @@ import CustomTable from 'components/CustomTable';
 import getters from 'models/Headers';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
 import {
-  ELIGIBLE, INELIGIBLE, NOCALL, FHLMC,
+  ELIGIBLE, INELIGIBLE, NOCALL, FHLMC, EXCEPTION_TOGGLE, COMMENT_EXCEPTON_REQUEST_TYPES,
 } from '../../constants/fhlmc';
 import DialogBox from '../DialogBox';
 
@@ -42,11 +43,164 @@ class FHLMCWidget extends Component {
     this.handleDialogClose = this.handleDialogClose.bind(this);
     this.getModHistory = this.getModHistory.bind(this);
     this.handleCancelReasons = this.handleCancelReasons.bind(this);
+    this.handleExceptionReviewIndicator = this.handleExceptionReviewIndicator.bind(this);
+    this.handleCommentsChange = this.handleCommentsChange.bind(this);
+    this.handleCaseId = this.handleCaseId.bind(this);
+    this.onResetClick = this.onResetClick.bind(this);
   }
 
   componentDidMount() {
     const { populateInvestorDropdown } = this.props;
     populateInvestorDropdown(FHLMC);
+  }
+
+  onResetClick = () => {
+    const { onResetData, dismissUserNotification } = this.props;
+    this.setState({
+      isOpen: false,
+    });
+    onResetData();
+    dismissUserNotification();
+  }
+
+  getEnquiryRequestOption() {
+    const { requestTypeData, enquiryCallCaseIds, enquiryCaseId } = this.props;
+    const isEnquiryRequestValid = R.equals(requestTypeData, 'EnquiryReq');
+    return (isEnquiryRequestValid) ? (
+      <div>
+        <div styleName="enquiry-caseId">
+          <span>
+            {'CaseIds'}
+          </span>
+          <span styleName="errorIcon">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+                  This is the type of action or information that you
+                  want to send to FHLMC.If you do not choose anything
+                  then default CaseId will be sent for validation.
+                  What is the CaseId?
+                </Typography>
+              )}
+            >
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
+          </span>
+        </div>
+        <div>
+          <FormControl variant="outlined">
+            <InputLabel styleName={!R.isEmpty(enquiryCaseId) ? 'inputLblSelected' : 'inputLbl'}>Please Select a CaseId</InputLabel>
+            <Select
+              id="CaseIdDropDown"
+              input={<OutlinedInput name="selectedCaseId" />}
+              label="CaseId"
+              onChange={this.handleCaseId}
+              styleName="drop-down-select"
+              value={enquiryCaseId}
+            >
+              {enquiryCallCaseIds && enquiryCallCaseIds.map(item => (
+                <MenuItem key={item.resolutionId} value={item.resolutionId}>
+                  {item.resolutionId}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      </div>
+    ) : null;
+  }
+
+  getExceptionReviewComments() {
+    const { exceptionReviewComments, exceptionReviewRequestIndicator } = this.props;
+    const isCommentsValid = R.equals(exceptionReviewRequestIndicator, 'Yes');
+    return (isCommentsValid) ? (
+      <div>
+        <div styleName="exception-indicator-comments">
+          <span>
+            {'Comments'}
+          </span>
+          <span styleName="errorIcon">
+            <Tooltip
+              placement="left-end"
+              title={(
+                <Typography>
+                  This is the type of action or information that you
+                  want to send to FHLMC. You can write your comments here.
+                </Typography>
+              )}
+            >
+              <ErrorIcon styleName="errorSvg" />
+            </Tooltip>
+          </span>
+        </div>
+        <div>
+          <TextField
+            id="ids"
+            margin="normal"
+            multiline
+            onChange={event => this.handleCommentsChange(event)}
+            rows={30}
+            styleName="textarea-comments"
+            value={exceptionReviewComments}
+          />
+        </div>
+      </div>
+    ) : null;
+  }
+
+  getExceptionDropdown() {
+    const { exceptionReviewRequestIndicator } = this.props;
+    return (
+      <FormControl variant="outlined">
+        <Select
+          id="ExceptionReviewDropDown"
+          input={<OutlinedInput name="selectedExceptionReview" />}
+          label="exceptionRequestReviewValue"
+          onChange={this.handleExceptionReviewIndicator}
+          styleName="drop-down-select"
+          value={exceptionReviewRequestIndicator}
+        >
+          {EXCEPTION_TOGGLE && EXCEPTION_TOGGLE.map(item => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  }
+
+  getExceptionRequestReview() {
+    const { requestTypeData } = this.props;
+    const isExceptionReviewValid = (requestTypeData
+      && !COMMENT_EXCEPTON_REQUEST_TYPES.includes(requestTypeData));
+    return (isExceptionReviewValid) ? (
+      <div>
+        <div>
+          <div styleName="exception-indicator">
+            <span>
+              {'Exception Review Indicator'}
+            </span>
+            <span styleName="errorIcon">
+              <Tooltip
+                placement="left-end"
+                title={(
+                  <Typography>
+                    This is the type of action or information that you
+                    want to send to FHLMC. Whether the exception review indicator is required?
+                  </Typography>
+                )}
+              >
+                <ErrorIcon styleName="errorSvg" />
+              </Tooltip>
+            </span>
+          </div>
+          {this.getExceptionDropdown()}
+        </div>
+        {this.getExceptionReviewComments()}
+      </div>
+    ) : null;
   }
 
   getCancellationReason() {
@@ -93,7 +247,7 @@ class FHLMCWidget extends Component {
       <DialogBox
         fullWidth="true"
         isOpen={isOpen}
-        maxWidth="lg"
+        maxWidth="xl"
         message={(
           <CustomTable
             defaultPageSize={20}
@@ -117,53 +271,72 @@ class FHLMCWidget extends Component {
     const { isOpen } = this.state;
     return (
       <>
-        {this.getModHistory(isOpen)}
         <div>
-          <div styleName="requestCategoryDropdown">
-            <span>
-              {'Request Type'}
-            </span>
-            <span styleName="errorIcon">
-              <Tooltip
-                placement="right-end"
-                title={(
-                  <Typography>
-                    This is the type of action or information that you
-                    want to send to FHLMC. What type of message is this?
-                  </Typography>
-                )}
-              >
-                <ErrorIcon styleName={!R.isEmpty(requestTypeData) ? 'errorSvgSelected' : 'errorSvg'} />
-              </Tooltip>
-            </span>
+          {this.getModHistory(isOpen)}
+          <div>
+            <div styleName="requestCategoryDropdown">
+              <span>
+                {'Request Type'}
+              </span>
+              <span styleName="errorIcon">
+                <Tooltip
+                  placement="right-end"
+                  title={(
+                    <Typography>
+                      This is the type of action or information that you
+                      want to send to FHLMC. What type of message is this?
+                    </Typography>
+                  )}
+                >
+                  <ErrorIcon styleName={!R.isEmpty(requestTypeData) ? 'errorSvgSelected' : 'errorSvg'} />
+                </Tooltip>
+              </span>
+            </div>
+            <Tooltip aria-label="Mod History" classes="tooltip" placement="left" title={<h3>Mod History</h3>}><span styleName="modHistory"><HistoryIcon onClick={() => this.handleDialogData()} /></span></Tooltip>
           </div>
-          <Tooltip aria-label="Mod History" classes="tooltip" placement="left" title={<h3>Mod History</h3>}><span styleName="modHistory"><HistoryIcon onClick={() => this.handleDialogData()} /></span></Tooltip>
+          <div>
+            <FormControl variant="outlined">
+              <InputLabel styleName={!R.isEmpty(requestTypeData) ? 'inputLblSelected' : 'inputLbl'}>Please Select</InputLabel>
+              <Select
+                id="requestCategoryDropdown"
+                input={<OutlinedInput name="selectedEventCategory" />}
+                label="category"
+                onChange={this.handleRequestType}
+                styleName="drop-down-select"
+                value={requestTypeData}
+              >
+                {handledRequestType && handledRequestType.map(item => (
+                  <MenuItem key={item.requestType} value={item.requestType}>
+                    {item.displayText}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          {this.getExceptionRequestReview()}
+          {this.getCancellationReason()}
+          {this.getEnquiryRequestOption()}
+          <div styleName="divider">
+            <Divider />
+          </div>
         </div>
-        <div>
-          <FormControl variant="outlined">
-            <InputLabel styleName={!R.isEmpty(requestTypeData) ? 'inputLblSelected' : 'inputLbl'}>Please Select</InputLabel>
-            <Select
-              id="requestCategoryDropdown"
-              input={<OutlinedInput name="selectedEventCategory" />}
-              label="category"
-              onChange={this.handleRequestType}
-              styleName="drop-down-select"
-              value={requestTypeData}
-            >
-              {handledRequestType && handledRequestType.map(item => (
-                <MenuItem key={item.requestType} value={item.requestType}>
-                  {item.displayText}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        {this.getCancellationReason()}
-        <div styleName="divider">
-          <Divider />
-        </div>
+
       </>
     );
+  }
+
+  handleCommentsChange = (event) => {
+    const {
+      setExceptionReviewComments,
+    } = this.props;
+    setExceptionReviewComments(event.target.value);
+  }
+
+  handleExceptionReviewIndicator = (event) => {
+    const {
+      setExceptionReviewIndicator,
+    } = this.props;
+    setExceptionReviewIndicator(event.target.value);
   }
 
   handleCancelReasons = (event) => {
@@ -177,12 +350,19 @@ class FHLMCWidget extends Component {
   handleRequestType = (event) => {
     const {
       setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData,
-      getCancellationReasonsData, clearCancellationReasons,
+      getCancellationReasonsData, clearCancellationReasons, setExceptionReviewIndicator,
+      setExceptionReviewComments, getCaseIdsOperation,
     } = this.props;
+    setExceptionReviewIndicator('No');
+    setExceptionReviewComments('');
+
     if (R.equals(event.target.value, 'CXLReq')) {
       getCancellationReasonsData(); // populate Cancellation Reasons
     } else {
       clearCancellationReasons();
+    }
+    if (R.equals(event.target.value, 'EnquiryReq')) {
+      getCaseIdsOperation();
     }
     setRequestTypeData(event.target.value);
     if (R.has('message', R.head(resultData))) {
@@ -193,6 +373,17 @@ class FHLMCWidget extends Component {
       };
       onFhlmcBulkSubmit(payload);
     }
+  }
+
+  handleCaseId = (event) => {
+    const { requestTypeData, onFhlmcBulkSubmit, setEnquiryCaseId } = this.props;
+    setEnquiryCaseId(event.target.value);
+    const payload = {
+      caseIds: [event.target.value],
+      requestType: requestTypeData,
+      requestIdType: 'caseId(s)',
+    };
+    onFhlmcBulkSubmit(payload);
   }
 
   handleClose = () => {
@@ -222,6 +413,8 @@ class FHLMCWidget extends Component {
       requestTypeData,
       eligibleData,
       selectedCancellationReason,
+      exceptionReviewComments,
+      exceptionReviewRequestIndicator,
     } = this.props;
     const portFolio = R.find(item => item.requestType === requestTypeData, investorEvents);
     const portfolioCode = R.pathOr('', ['portfolioCode'], portFolio);
@@ -238,28 +431,31 @@ class FHLMCWidget extends Component {
       />
     );
     return (
-      <section>
-        {renderAlert}
-        <Typography styleName="title">FHLMC</Typography>
-        <span styleName="eligible">
-          <FiberManualRecordIcon styleName={eligibileVerify ? 'failedTab' : 'passedTab'} />
-        </span>
-        <span styleName={eligibileVerify ? 'failed' : 'passed'}>
-          {eligibleData && R.prop(eligibleData, eligibilityIndicator)}
-        </span>
-        <div styleName="divider">
-          <Divider />
-        </div>
-        {this.renderCategoryDropDown()}
-        <FHLMCDataInsight
-          isWidget
-          portfolioCode={portfolioCode}
-          selectedCancellationReason={selectedCancellationReason}
-          selectedRequestType={requestTypeData}
-          submitCases
-        />
-
-      </section>
+      <div styleName="status-details-parent">
+        <section>
+          {renderAlert}
+          <Typography styleName="title">FHLMC</Typography>
+          <span styleName="eligible">
+            <FiberManualRecordIcon styleName={eligibileVerify ? 'failedTab' : 'passedTab'} />
+          </span>
+          <span styleName={eligibileVerify ? 'failed' : 'passed'}>
+            {eligibleData && R.prop(eligibleData, eligibilityIndicator)}
+          </span>
+          <div styleName="divider">
+            <Divider />
+          </div>
+          {this.renderCategoryDropDown()}
+          <FHLMCDataInsight
+            exceptionReviewComments={exceptionReviewComments}
+            exceptionReviewRequestIndicator={exceptionReviewRequestIndicator}
+            isWidget
+            portfolioCode={portfolioCode}
+            selectedCancellationReason={selectedCancellationReason}
+            selectedRequestType={requestTypeData}
+            submitCases
+          />
+        </section>
+      </div>
     );
   }
 }
@@ -274,11 +470,20 @@ FHLMCWidget.defaultProps = {
   fhlmcModHistoryData: null,
   onTablePopupDataClear: {},
   getCancellationReasonsData: {},
+  getCaseIdsOperation: {},
   groupName: '',
   cancellationReasons: [],
   selectedCancellationReason: '',
   setSelectedCancellationReasonData: {},
   clearCancellationReasons: {},
+  exceptionReviewRequestIndicator: '',
+  exceptionReviewComments: '',
+  setExceptionReviewComments: {},
+  setExceptionReviewIndicator: {},
+  enquiryCallCaseIds: [],
+  onResetData: () => { },
+  setEnquiryCaseId: () => { },
+  enquiryCaseId: '',
 };
 
 FHLMCWidget.propTypes = {
@@ -289,13 +494,22 @@ FHLMCWidget.propTypes = {
   }),
   clearCancellationReasons: PropTypes.func,
   closeSweetAlert: PropTypes.func.isRequired,
+  dismissUserNotification: PropTypes.func.isRequired,
   eligibleData: PropTypes.string.isRequired,
+  enquiryCallCaseIds: PropTypes.arrayOf({
+    resolutionId: PropTypes.string,
+  }),
+  enquiryCaseId: PropTypes.string,
+  exceptionReviewComments: PropTypes.string,
+  exceptionReviewRequestIndicator: PropTypes.string,
   fhlmcModHistoryData: PropTypes.arrayOf(PropTypes.shape({})),
   getCancellationReasonsData: PropTypes.func,
+  getCaseIdsOperation: PropTypes.func,
   groupName: PropTypes.string,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
   onFhlmcBulkSubmit: PropTypes.func.isRequired,
   onFhlmcModHistoryPopup: PropTypes.func,
+  onResetData: PropTypes.func,
   onTablePopupDataClear: PropTypes.func,
   populateInvestorDropdown: PropTypes.func,
   requestTypeData: PropTypes.string,
@@ -313,6 +527,9 @@ FHLMCWidget.propTypes = {
     title: PropTypes.string,
   }),
   selectedCancellationReason: PropTypes.string,
+  setEnquiryCaseId: PropTypes.func,
+  setExceptionReviewComments: PropTypes.func,
+  setExceptionReviewIndicator: PropTypes.func,
   setRequestTypeData: PropTypes.func.isRequired,
   setSelectedCancellationReasonData: PropTypes.func,
 };
@@ -328,6 +545,10 @@ const mapStateToProps = state => ({
   resolutionId: selectors.resolutionId(state),
   resultData: selectors.resultData(state),
   selectedCancellationReason: selectors.getSelectedCancellationReason(state),
+  exceptionReviewRequestIndicator: selectors.getExceptionReviewIndicator(state),
+  exceptionReviewComments: selectors.getExceptionReviewComments(state),
+  enquiryCallCaseIds: selectors.getCaseIds(state),
+  enquiryCaseId: selectors.getEnquiryCaseId(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -340,6 +561,12 @@ const mapDispatchToProps = dispatch => ({
   getCancellationReasonsData: operations.getCancellationReasonDetails(dispatch),
   setSelectedCancellationReasonData: operations.setSelectedCancellationReasonData(dispatch),
   clearCancellationReasons: operations.clearCancellationReasons(dispatch),
+  setExceptionReviewIndicator: operations.setExceptionReviewIndicatorOperation(dispatch),
+  setExceptionReviewComments: operations.setExceptionReviewCommentsOperation(dispatch),
+  getCaseIdsOperation: operations.getCaseIdsOperation(dispatch),
+  onResetData: operations.onResetData(dispatch),
+  dismissUserNotification: operations.onDismissUserNotification(dispatch),
+  setEnquiryCaseId: operations.setEnquiryCaseIdOperation(dispatch),
 });
 
 export { FHLMCWidget };

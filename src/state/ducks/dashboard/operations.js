@@ -77,6 +77,10 @@ import {
   getCancellationReasons,
   setSelectedCancellationReason,
   clearCancellationDetails,
+  setExceptionReviewIndicatorAction,
+  setExceptionReviewCommentsAction,
+  getCaseIdsAction,
+  setEnquiryCaseIdAction,
 } from './actions';
 
 import {
@@ -415,6 +419,22 @@ const clearCancellationReasons = dispatch => () => {
   dispatch(clearCancellationDetails());
 };
 
+const setExceptionReviewIndicatorOperation = dispatch => (payload) => {
+  dispatch(setExceptionReviewIndicatorAction(payload));
+};
+
+const setExceptionReviewCommentsOperation = dispatch => (payload) => {
+  dispatch(setExceptionReviewCommentsAction(payload));
+};
+
+const getCaseIdsOperation = dispatch => () => {
+  dispatch(getCaseIdsAction());
+};
+
+const setEnquiryCaseIdOperation = dispatch => (payload) => {
+  dispatch(setEnquiryCaseIdAction(payload));
+};
+
 const operations = {
   openSweetAlert,
   onDismissUserNotification,
@@ -499,6 +519,10 @@ const operations = {
   getCancellationReasonDetails,
   setSelectedCancellationReasonData,
   clearCancellationReasons,
+  setExceptionReviewIndicatorOperation,
+  setExceptionReviewCommentsOperation,
+  getCaseIdsOperation,
+  setEnquiryCaseIdOperation,
 };
 
 export default operations;

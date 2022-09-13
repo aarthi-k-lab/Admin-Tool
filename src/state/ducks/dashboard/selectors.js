@@ -179,6 +179,10 @@ const selectedResolutionId = state => R.pathOr('', ['dashboard', 'selectedResolu
 
 const disableGenerateBoardingTemplate = state => R.pathOr(false, ['dashboard', 'isGBTdisabled'], state);
 const getInvestorCode = state => R.pathOr(null, ['dashboard', 'investorCode'], state);
+const getExceptionReviewIndicator = state => R.pathOr('No', ['dashboard', 'exceptionReviewIndicator'], state);
+const getExceptionReviewComments = state => R.pathOr('', ['dashboard', 'exceptionReviewComments'], state);
+const getCaseIds = state => R.pathOr('', ['dashboard', 'caseIds'], state);
+const getEnquiryCaseId = state => R.pathOr('', ['dashboard', 'enquiryCaseId'], state);
 
 const selectors = {
   getUserNotification,
@@ -283,6 +287,10 @@ const selectors = {
   selectedResolutionId,
   disableGenerateBoardingTemplate,
   getInvestorCode,
+  getExceptionReviewIndicator,
+  getExceptionReviewComments,
+  getCaseIds,
+  getEnquiryCaseId,
 };
 
 export default selectors;

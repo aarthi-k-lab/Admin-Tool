@@ -105,6 +105,10 @@ import {
   CLEAR_CANCELLATION_REASONS,
   SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
   STORE_INVEST_CD_AND_BRAND_NM,
+  SET_EXCEPTION_REVIEW_INDICATOR,
+  SET_EXCEPTION_REVIEW_COMMENTS,
+  SET_CASEIDS,
+  SET_ENQUIRY_CASE_ID,
 } from './types';
 
 const reducer = (state = {
@@ -1055,6 +1059,38 @@ const reducer = (state = {
         ...state,
         investorCode,
         brand: brandName,
+      };
+    }
+
+    case SET_EXCEPTION_REVIEW_INDICATOR: {
+      const exceptionReviewIndicator = action.payload;
+      return {
+        ...state,
+        exceptionReviewIndicator,
+      };
+    }
+
+    case SET_EXCEPTION_REVIEW_COMMENTS: {
+      const exceptionReviewComments = action.payload;
+      return {
+        ...state,
+        exceptionReviewComments,
+      };
+    }
+
+    case SET_CASEIDS: {
+      const caseIds = action.payload;
+      return {
+        ...state,
+        caseIds,
+      };
+    }
+
+    case SET_ENQUIRY_CASE_ID: {
+      const enquiryCaseId = action.payload;
+      return {
+        ...state,
+        enquiryCaseId,
       };
     }
 

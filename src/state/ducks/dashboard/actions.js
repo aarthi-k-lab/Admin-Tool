@@ -82,6 +82,10 @@ import {
   GET_CANCELLATION_REASON,
   SET_SELECTED_CANCELLATION_REASON,
   CLEAR_CANCELLATION_REASONS,
+  SET_EXCEPTION_REVIEW_COMMENTS,
+  SET_EXCEPTION_REVIEW_INDICATOR,
+  FETCH_CASEIDS,
+  SET_ENQUIRY_CASE_ID,
 } from './types';
 
 
@@ -476,6 +480,24 @@ const clearCancellationDetails = () => ({
   type: CLEAR_CANCELLATION_REASONS,
 });
 
+const setExceptionReviewIndicatorAction = payload => ({
+  type: SET_EXCEPTION_REVIEW_INDICATOR,
+  payload,
+});
+
+const setExceptionReviewCommentsAction = payload => ({
+  type: SET_EXCEPTION_REVIEW_COMMENTS,
+  payload,
+});
+
+const getCaseIdsAction = () => ({
+  type: FETCH_CASEIDS,
+});
+
+const setEnquiryCaseIdAction = payload => ({
+  type: SET_ENQUIRY_CASE_ID,
+  payload,
+});
 
 export {
   dismissUserNotification,
@@ -561,4 +583,8 @@ export {
   getCancellationReasons,
   setSelectedCancellationReason,
   clearCancellationDetails,
+  setExceptionReviewIndicatorAction,
+  setExceptionReviewCommentsAction,
+  getCaseIdsAction,
+  setEnquiryCaseIdAction,
 };

@@ -238,6 +238,14 @@ function getFHLMCModHistoryColumns() {
       style: { width: '10%', 'white-space': 'unset' },
       headerStyle: { textAlign: 'left' },
     },
+    {
+      Header: 'ODM Ineligible Response',
+      accessor: 'odmInEligibleMessage',
+      minWidth: 50,
+      maxWidth: 1000,
+      style: { width: '10%', 'white-space': 'unset' },
+      headerStyle: { textAlign: 'left' },
+    },
   ];
 }
 

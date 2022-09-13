@@ -6,7 +6,6 @@ const BOOKING = 'BookingAutomation';
 const INCOME_CALCULATOR = 'IncomeCalculator';
 const FHLMC = 'FHLMC';
 
-
 const widgets = [
   COMMENTS,
   ADDITIONAL_INFO,

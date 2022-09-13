@@ -27,7 +27,7 @@ import {
   ID_CATEGORIES, APPROVAL_TYPE, PRE_APPROVAL_TYPE, FHLMC, APPROVAL_REQUEST_TYPE,
   REGEX_FHLMC_COMMON, REGEX_FHLMC_PREAPPROVED_DISASTER,
   LOAN_NUMBERS_IDTYPE, PREAPPROVED_DISASTER_TYPES, VALIDATION_FAILURE_MSG,
-  STANDARD,
+  STANDARD, CANCEL_REQ_TYPES,
 } from '../../../constants/fhlmc';
 import FHLMCDataInsight from './FHLMCDataInsight';
 
@@ -133,7 +133,8 @@ class FhlmcResolve extends React.PureComponent {
         selectedPreApprovalType,
         requestIdType: idType,
       };
-    } else if (selectedPreApprovalType === STANDARD) {
+    } else if (selectedPreApprovalType === STANDARD
+      || (CANCEL_REQ_TYPES.includes(selectedRequestType) && idType === LOAN_NUMBERS_IDTYPE)) {
       const loanAndDisasterIds = data.map((caseId) => {
         const loanNumber = caseId;
         return {
@@ -143,7 +144,7 @@ class FhlmcResolve extends React.PureComponent {
       payload = {
         loanAndDisasterIds,
         selectedApprovalType,
-        selectedPreApprovalType,
+        selectedPreApprovalType: STANDARD,
         requestIdType: idType,
       };
     } else {
@@ -211,16 +212,13 @@ class FhlmcResolve extends React.PureComponent {
   }
 
   handleApprovalType = (event) => {
-    const investorName = APPROVAL_REQUEST_TYPE;
     const { populateInvestorDropdown, resetWidget } = this.props;
     this.setState({
       selectedApprovalType: event.target.value,
       isSubmitDisabled: 'disabled',
       isResetDisabled: false,
-      investorName,
     });
     populateInvestorDropdown(PRE_APPROVAL_TYPE);
-    populateInvestorDropdown(investorName);
     resetWidget();
   }
 
@@ -230,7 +228,7 @@ class FhlmcResolve extends React.PureComponent {
     const { populateInvestorDropdown, resetWidget } = this.props;
     let investorName = FHLMC;
     if (idType === LOAN_NUMBERS_IDTYPE) {
-      investorName = APPROVAL_TYPE;
+      investorName = APPROVAL_REQUEST_TYPE;
     }
 
     this.setState({
@@ -300,26 +298,74 @@ class FhlmcResolve extends React.PureComponent {
   }
 
   renderCategoryDropDown = () => {
-    const { selectedRequestType } = this.state;
+    const { selectedRequestType, idType } = this.state;
     const { investorEvents } = this.props;
     const requestType = R.project(['requestType', 'displayText'], investorEvents);
+    const resolverequestType = R.reject(e => e.requestType === 'EnquiryReq')(requestType);
     return (
-      <FormControl variant="outlined">
-        <Select
-          id="requestCategoryDropdown"
-          input={<OutlinedInput name="selectedEventCategory" />}
-          label="category"
-          onChange={this.handleRequestType}
-          styleName="drop-down-select"
-          value={selectedRequestType}
-        >
-          {requestType && requestType.map(item => (
-            <MenuItem key={item.requestType} value={item.requestType}>
-              {item.displayText}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <>
+        <FormControl variant="outlined">
+          <Select
+            id="requestCategoryDropdown"
+            input={<OutlinedInput name="selectedEventCategory" />}
+            label="category"
+            onChange={this.handleRequestType}
+            styleName="drop-down-select"
+            value={selectedRequestType}
+          >
+            {resolverequestType && resolverequestType.map(item => (
+              <MenuItem key={item.requestType} value={item.requestType}>
+                {item.displayText}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        {
+          (idType === 'Loan Number(s)' && !(CANCEL_REQ_TYPES.includes(selectedRequestType))) ? (
+            <>
+              <div styleName="loan-numbers">
+                <span>
+                  {'Approval Type'}
+                </span>
+                <span styleName="errorIcon">
+                  <Tooltip
+                    placement="left-end"
+                    title={(
+                      <Typography>
+                        This is the type of action or information that you
+                        want to send to FHLMC. What type of approval is this?
+                      </Typography>
+                    )}
+                  >
+                    <ErrorIcon styleName="errorSvg" />
+                  </Tooltip>
+                </span>
+              </div>
+              {this.renderApprovalDropDown()}
+              <div styleName="loan-numbers">
+                <span>
+                  {'PreApproval Type'}
+                </span>
+                <span styleName="errorIcon">
+                  <Tooltip
+                    placement="left-end"
+                    title={(
+                      <Typography>
+                        This is the type of action or information that you
+                        want to send to FHLMC. What type of preapproval is this?
+                      </Typography>
+                    )}
+                  >
+                    <ErrorIcon styleName="errorSvg" />
+                  </Tooltip>
+                </span>
+              </div>
+              {this.renderPreApprovalDropDown()}
+            </>
+          ) : ''
+        }
+      </>
+
     );
   }
 
@@ -333,7 +379,8 @@ class FhlmcResolve extends React.PureComponent {
   getCancellationReason = () => {
     const { cancellationReasons, selectedCancellationReason } = this.props;
     const { selectedRequestType } = this.state;
-    return (cancellationReasons && selectedRequestType && R.equals(selectedRequestType, 'CXLReq')
+    return ((cancellationReasons && selectedRequestType
+      && CANCEL_REQ_TYPES.includes(selectedRequestType))
       ? (
         <FormControl variant="outlined">
           <InputLabel styleName={!R.isEmpty(selectedCancellationReason) ? 'inputLblSelected' : 'inputLbl'}>Please Select Cancelation Reason</InputLabel>
@@ -388,66 +435,29 @@ class FhlmcResolve extends React.PureComponent {
             ))}
           </Select>
         </FormControl>
-        {
-          idType === 'Loan Number(s)' ? (
-            <>
-              <div styleName="loan-numbers">
-                <span>
-                  {'Approval Type'}
-                </span>
-                <span styleName="errorIcon">
-                  <Tooltip
-                    placement="left-end"
-                    title={(
-                      <Typography>
-                        This is the type of action or information that you
-                        want to send to FHLMC. What type of approval is this?
-                      </Typography>
-                    )}
-                  >
-                    <ErrorIcon styleName="errorSvg" />
-                  </Tooltip>
-                </span>
-              </div>
-              {this.renderApprovalDropDown()}
-              <div styleName="loan-numbers">
-                <span>
-                  {'PreApproval Type'}
-                </span>
-                <span styleName="errorIcon">
-                  <Tooltip
-                    placement="left-end"
-                    title={(
-                      <Typography>
-                        This is the type of action or information that you
-                        want to send to FHLMC. What type of preapproval is this?
-                      </Typography>
-                    )}
-                  >
-                    <ErrorIcon styleName="errorSvg" />
-                  </Tooltip>
-                </span>
-              </div>
-              {this.renderPreApprovalDropDown()}
-            </>
-          ) : ''
-        }
       </>
     );
   }
 
   handleRequestType(event) {
-    const { getCancellationReasonsData, clearCancellationReasons } = this.props;
+    const {
+      getCancellationReasonsData, clearCancellationReasons,
+      populateInvestorDropdown,
+    } = this.props;
+    const { idType } = this.state;
     this.setState({
       selectedRequestType: event.target.value,
       portfolioCode: FHLMC,
       isSubmitDisabled: 'disabled',
       isResetDisabled: false,
     });
-    if (R.equals(event.target.value, 'CXLReq')) {
+    if (CANCEL_REQ_TYPES.includes(event.target.value)) {
       getCancellationReasonsData();
     } else {
       clearCancellationReasons();
+    }
+    if (idType === LOAN_NUMBERS_IDTYPE && !(CANCEL_REQ_TYPES.includes(event.target.value))) {
+      populateInvestorDropdown(APPROVAL_TYPE);
     }
   }
 

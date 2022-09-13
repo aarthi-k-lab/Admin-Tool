@@ -25,6 +25,7 @@ import Loader from 'components/Loader/Loader';
 import { EXCEL_FORMATS } from '../../../constants/common';
 import {
   REQUEST_TYPE_REQ, FILE_UPLOAD_REQ, CANCELLATION_REASON, REQ_PRCS,
+  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES,
 } from '../../../constants/fhlmc';
 import './FhlmcResolve.css';
 
@@ -83,7 +84,6 @@ class FHLMCDataInsight extends React.PureComponent {
       buttonState: 'UPLOAD EXCEL',
       showLoader: false,
       showMessageProp: false,
-      isFileUploaded: false,
     };
     this.submitToFhlmc = this.submitToFhlmc.bind(this);
     this.handleDownload = this.handleDownload.bind(this);
@@ -92,13 +92,12 @@ class FHLMCDataInsight extends React.PureComponent {
     this.renderCustomTable = this.renderCustomTable.bind(this);
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (!R.isEmpty(props.selectedRequestType) && props.isWidget && state.isFileUploaded) {
-      return { showSubmitFhlmc: true };
+  componentDidMount() {
+    const { isWidget } = this.props;
+    if (isWidget) {
+      this.setState({ showSubmitFhlmc: true });
     }
-    return null;
   }
-
 
   componentWillUnmount() {
     const { dismissUserNotification } = this.props;
@@ -108,10 +107,22 @@ class FHLMCDataInsight extends React.PureComponent {
   submitToFhlmc = () => {
     const {
       onSubmitToFhlmcRequest, selectedRequestType, portfolioCode,
-      selectedCancellationReason, openSweetAlert,
+      selectedCancellationReason, openSweetAlert, exceptionReviewComments,
+      exceptionReviewRequestIndicator, isWidget,
     } = this.props;
     if (R.equals(selectedRequestType, 'CXLReq') && R.isEmpty(selectedCancellationReason)) {
       this.terminateAndShowWarning(CANCELLATION_REASON, openSweetAlert, true);
+      return;
+    }
+    const isExceptionReviewCommentsValid = R.equals(exceptionReviewRequestIndicator, 'Yes') && R.isEmpty(R.trim(exceptionReviewComments));
+    const isExceptionReviewValid = !COMMENT_EXCEPTON_REQUEST_TYPES.includes(selectedRequestType);
+    if (isExceptionReviewCommentsValid && isExceptionReviewValid && isWidget) {
+      const sweetAlertPayload = {
+        status: COMMENTS_REASON,
+        level: 'Warning',
+        showConfirmButton: true,
+      };
+      openSweetAlert(sweetAlertPayload);
       return;
     }
     const status = REQ_PRCS;
@@ -293,7 +304,7 @@ class FHLMCDataInsight extends React.PureComponent {
               {showSubmitFhlmc && (
                 <CustomButton
                   color="primary"
-                  disabled={!isAssigned}
+                  disabled={!isAssigned || R.isEmpty(selectedRequestType)}
                   extraStyle="submit"
                   hasTooltip={false}
                   onClick={this.submitToFhlmc}
@@ -303,31 +314,35 @@ class FHLMCDataInsight extends React.PureComponent {
               )
               }
             </Grid>
-            <Grid item>
-              <label htmlFor="contained-button-file">
-                <CustomButton
-                  component="span"
-                  disabled={!isAssigned}
-                  extraStyle="uploadBtn"
-                  hasTooltip
-                  startIcon={showLoader ? <Loader size={20} style={{ height: '1.5rem' }} />
-                    : <PublishIcon style={{ height: '1.5rem', color: 'darkblue' }} />}
-                  title={buttonState}
-                  tooltipMessage="Create an excel file with the data
-                      from this tab for your review."
-                  variant="contained"
-                />
-                <input
-                  disabled={!isAssigned}
-                  hidden
-                  id="contained-button-file"
-                  multiple
-                  onChange={this.handleUpload}
-                  onClick={this.handleClick}
-                  type="file"
-                />
-              </label>
-            </Grid>
+            {
+              !isWidget && (
+                <Grid item>
+                  <label htmlFor="contained-button-file">
+                    <CustomButton
+                      component="span"
+                      disabled={!isAssigned}
+                      extraStyle="uploadBtn"
+                      hasTooltip
+                      startIcon={showLoader ? <Loader size={20} style={{ height: '1.5rem' }} />
+                        : <PublishIcon style={{ height: '1.5rem', color: 'darkblue' }} />}
+                      title={buttonState}
+                      tooltipMessage="Create an excel file with the data
+                        from this tab for your review."
+                      variant="contained"
+                    />
+                    <input
+                      disabled={!isAssigned}
+                      hidden
+                      id="contained-button-file"
+                      multiple
+                      onChange={this.handleUpload}
+                      onClick={this.handleClick}
+                      type="file"
+                    />
+                  </label>
+                </Grid>
+              )
+            }
             <Grid item>
               <CustomButton
                 color="primary"
@@ -358,11 +373,15 @@ FHLMCDataInsight.defaultProps = {
   submitCases: true,
   isWidget: false,
   selectedCancellationReason: '',
+  exceptionReviewRequestIndicator: 'No',
+  exceptionReviewComments: '',
 };
 
 FHLMCDataInsight.propTypes = {
   dismissUserNotification: PropTypes.func.isRequired,
   downloadFile: PropTypes.func.isRequired,
+  exceptionReviewComments: PropTypes.string,
+  exceptionReviewRequestIndicator: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   isWidget: PropTypes.bool,
   onProcessFile: PropTypes.func,

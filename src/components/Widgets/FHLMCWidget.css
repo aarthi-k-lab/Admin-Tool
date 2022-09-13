@@ -1,13 +1,12 @@
-
 .drop-down-select {
-  width: 100%;
-  margin: 1rem 11rem 2rem 0.75rem;
+  width: 90%;
+  margin: 1rem 1rem 1rem 0.75rem;
   background-color: white !important;
   height: 3rem !important;
 }
 
 .requestCategoryDropdown {
-  margin: 1.75rem 0 0 1rem !important;
+  margin: 1rem 0 0 1rem !important;
   font-size: 1.25rem !important;
 }
 
@@ -31,7 +30,7 @@
 }
 
 .errorIcon {
-  margin-left: 5rem;
+  margin-left: 1rem;
 }
 
 .errorSvg {
@@ -79,4 +78,33 @@
 .table {
   flex-basis: 60%;
   text-align: left !important;
+}
+
+.exception-indicator {
+  font-size: 1.25rem;
+  margin: 1rem 0 0 1rem !important;
+}
+
+.enquiry-caseId {
+  font-size: 1.25rem;
+  margin: 1rem 0 0 1rem !important;
+}
+
+.exception-indicator-comments {
+  font-size: 1.25rem;
+  margin: 1rem 0 0 1rem !important;
+}
+
+.textarea-comments{
+  height: 35px !important;
+  width: 30%;
+  margin: 1rem 0rem 2rem 0.75rem;
+  font-size: 1.25rem !important;
+}
+
+.status-details-parent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%; 
 }

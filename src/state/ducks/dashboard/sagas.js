@@ -157,6 +157,8 @@ import {
   GET_CANCELLATION_REASON,
   SET_CANCELLATION_REASON,
   SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
+  SET_CASEIDS,
+  FETCH_CASEIDS,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1940,6 +1942,7 @@ function* onFhlmcBulkUpload(payload) {
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
   const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
+  const requestType = yield select(selectors.getRequestTypeData);
   let response;
   let idType;
   try {
@@ -1992,7 +1995,7 @@ function* onFhlmcBulkUpload(payload) {
       yield put({ type: SHOW_LOADER });
       idType = R.equals('Case id(s)', requestIdType) ? 'caseId' : 'loanNbr';
       response = yield call(Api.callPost,
-        `/api/cmodinvestor/loan-data?requestIdType=${idType}`, caseIds);
+        `/api/cmodinvestor/loan-data?requestIdType=${idType}&requestType=${requestType}`, caseIds);
       // Clearing resultData before getting eventData
       yield put({
         type: SET_BULK_UPLOAD_RESULT,
@@ -2308,13 +2311,21 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const { selectedRequestType, portfolioCode } = action.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
   const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
+  let exceptionReviewRequestIndicator = yield select(selectors.getExceptionReviewIndicator);
+  const exceptionReviewComments = yield select(selectors.getExceptionReviewComments);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
   const caseId = R.head(R.pluck('resolutionId', resultData));
   let resultSet = null;
   let userNotification = null;
   let sweetAlert = null;
+  exceptionReviewRequestIndicator = R.equals(exceptionReviewRequestIndicator, 'Yes') ? 'Y' : 'N';
   try {
-    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}&cancellationReason=${cancellationReason}`, JSON.parse(file));
+    const parsedData = isWidgetOpen ? R.map(d => ({
+      ...d,
+      exceptionReviewRequestIndicator,
+      workoutCommentsText: exceptionReviewComments,
+    }), resultData) : JSON.parse(file);
+    const response = yield call(Api.callPost, `/api/cmodinvestor/validation?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}&cancellationReason=${cancellationReason}`, parsedData);
     // Clearing resultData before getting eventData
     yield put({
       type: SET_FHLMC_UPLOAD_RESULT,
@@ -2325,7 +2336,6 @@ const submitToFhlmc = function* submitToFhlmc(action) {
       payload: {},
     });
     const hasStatusCode = R.has('statusCode', response);
-    const parsedData = JSON.parse(file);
     if (!hasStatusCode) {
       const data = R.map((cases) => {
         const filteredData = R.filter(datae => R.equals(datae.loanIdentifier.toString(),
@@ -2344,7 +2354,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
       let message = 'Your request has been successfully sent to Freddie, please download the excel to view more details.';
       let level = 'Success';
       if (!R.isEmpty(isWidgetOpen)) {
-        switch (data[0].status) {
+        switch (R.toUpper(R.propOr('', 'status', data[0]))) {
           case 'ODM FAILED': {
             level = FAILED;
             message = 'An error occured in ODM. Please download the excel to view more details. If the issue continues to persist please reach to IT team';
@@ -2367,6 +2377,15 @@ const submitToFhlmc = function* submitToFhlmc(action) {
           case 'ODM INELIGIBLE': {
             level = FAILED;
             message = 'The loan is not eligible for modification as per ODM rules. Please download the excel to view more details.';
+            break;
+          }
+          case 'REJECTED':
+          case 'APPROVED':
+          case 'INFO REQUESTED':
+          case 'IN REVIEW':
+          case 'SUBMITTED': {
+            level = 'Info';
+            message = `The StatusType for Enquiry call Request from Freddie is ${data[0].status}`;
             break;
           }
           default: {
@@ -2436,8 +2455,9 @@ const submitToBoardingTemplate = function* submitToBoardingTemplate(action) {
   const { selectedRequestType, portfolioCode } = action.payload;
   const responseData = yield select(selectors.resultData);
   const validData = R.filter(R.propEq('isValid', true), responseData);
+  const cancellationReason = yield select(selectors.getSelectedCancellationReason);
   try {
-    const response = yield call(Api.callPost, `/api/cmodinvestor/boarding-template?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`, validData);
+    const response = yield call(Api.callPost, `/api/cmodinvestor/boarding-template?requestType=${selectedRequestType}&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}&cancellationReason=${cancellationReason}`, validData);
     if (response) {
       yield put({
         type: SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
@@ -2617,6 +2637,38 @@ const fetchCancellationReasons = function* fetchCancellationReasons() {
   }
 };
 
+const fetchCaseIds = function* fetchCaseIds() {
+  try {
+    const evalId = yield select(selectors.evalId);
+    const responseMapper = item => ({
+      resolutionId: item.resolutionId,
+    });
+    let response = yield call(Api.callGet, `/api/tkams/fetchResolutionIds/${evalId}`);
+    if (response && response.length > 0) {
+      response = R.map(responseMapper, response);
+      yield put({
+        type: SET_CASEIDS,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: {
+          level: ERROR,
+          status: MSG_SERVICE_DOWN,
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+};
 function* watchSubmitToFhlmc() {
   yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
 }
@@ -2736,6 +2788,9 @@ function* watchCancellationReasons() {
   yield takeEvery(GET_CANCELLATION_REASON, fetchCancellationReasons);
 }
 
+function* watchCaseIds() {
+  yield takeEvery(FETCH_CASEIDS, fetchCaseIds);
+}
 
 export const TestExports = {
   autoSaveOnClose,
@@ -2842,5 +2897,6 @@ export const combinedSaga = function* combinedSaga() {
     watchCheckTrialEnable(),
     watchSubmitToBoardingTemplate(),
     watchCancellationReasons(),
+    watchCaseIds(),
   ]);
 };
