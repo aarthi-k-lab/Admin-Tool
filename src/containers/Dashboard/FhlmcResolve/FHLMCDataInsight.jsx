@@ -283,7 +283,7 @@ class FHLMCDataInsight extends React.PureComponent {
       showMessageProp, showSubmitFhlmc, buttonState, showLoader,
     } = this.state;
     const {
-      resultData, submitCases, selectedRequestType, isWidget, isAssigned,
+      resultData, submitCases, selectedRequestType, isWidget, isAssigned, disableSubmitToFhlmc,
     } = this.props;
     return (
       <Grid container direction="column">
@@ -304,7 +304,8 @@ class FHLMCDataInsight extends React.PureComponent {
               {showSubmitFhlmc && (
                 <CustomButton
                   color="primary"
-                  disabled={!isAssigned || R.isEmpty(selectedRequestType)}
+                  disabled={disableSubmitToFhlmc
+                    || !isAssigned || R.isEmpty(selectedRequestType)}
                   extraStyle="submit"
                   hasTooltip={false}
                   onClick={this.submitToFhlmc}
@@ -378,6 +379,7 @@ FHLMCDataInsight.defaultProps = {
 };
 
 FHLMCDataInsight.propTypes = {
+  disableSubmitToFhlmc: PropTypes.bool.isRequired,
   dismissUserNotification: PropTypes.func.isRequired,
   downloadFile: PropTypes.func.isRequired,
   exceptionReviewComments: PropTypes.string,
@@ -400,6 +402,7 @@ FHLMCDataInsight.propTypes = {
 const mapStateToProps = state => ({
   resultData: selectors.resultData(state),
   isAssigned: selectors.isAssigned(state),
+  disableSubmitToFhlmc: selectors.disableSubmittofhlmc(state),
 });
 
 const mapDispatchToProps = dispatch => ({

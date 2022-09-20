@@ -183,6 +183,7 @@ const getExceptionReviewIndicator = state => R.pathOr('No', ['dashboard', 'excep
 const getExceptionReviewComments = state => R.pathOr('', ['dashboard', 'exceptionReviewComments'], state);
 const getCaseIds = state => R.pathOr('', ['dashboard', 'caseIds'], state);
 const getEnquiryCaseId = state => R.pathOr('', ['dashboard', 'enquiryCaseId'], state);
+const disableSubmittofhlmc = state => R.pathOr(false, ['dashboard', 'disableSubmittoFhlmc'], state);
 
 const selectors = {
   getUserNotification,
@@ -291,6 +292,7 @@ const selectors = {
   getExceptionReviewComments,
   getCaseIds,
   getEnquiryCaseId,
+  disableSubmittofhlmc,
 };
 
 export default selectors;

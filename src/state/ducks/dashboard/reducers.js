@@ -109,6 +109,7 @@ import {
   SET_EXCEPTION_REVIEW_COMMENTS,
   SET_CASEIDS,
   SET_ENQUIRY_CASE_ID,
+  SET_DISABLE_SUBMITTOFHLMC,
 } from './types';
 
 const reducer = (state = {
@@ -1091,6 +1092,14 @@ const reducer = (state = {
       return {
         ...state,
         enquiryCaseId,
+      };
+    }
+
+    case SET_DISABLE_SUBMITTOFHLMC: {
+      const disableSubmittoFhlmc = action.payload;
+      return {
+        ...state,
+        disableSubmittoFhlmc,
       };
     }
 

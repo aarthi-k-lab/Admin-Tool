@@ -35,7 +35,7 @@ import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import { INCOME_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
 import { CHECK_TASKNAME } from 'constants/trialTask';
-import { APPROVAL_TYPE, PRE_APPROVAL_TYPE } from 'constants/fhlmc';
+import { APPROVAL_TYPE, PRE_APPROVAL_TYPE, ENQUIRY_REQ } from 'constants/fhlmc';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -159,6 +159,7 @@ import {
   SET_DISABLE_GENERATE_BOARDING_TEMPLATE,
   SET_CASEIDS,
   FETCH_CASEIDS,
+  SET_DISABLE_SUBMITTOFHLMC,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch } from './actions';
@@ -1943,6 +1944,8 @@ function* onFhlmcBulkUpload(payload) {
   const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
   const requestType = yield select(selectors.getRequestTypeData);
+  const evalId = yield select(selectors.evalId);
+  const loanNumber = yield select(selectors.loanNumber);
   let response;
   let idType;
   try {
@@ -2008,6 +2011,10 @@ function* onFhlmcBulkUpload(payload) {
           type: GET_ELIGIBLE_DATA,
           payload: eligibiltyresponse,
         });
+        yield put({
+          type: SET_DISABLE_SUBMITTOFHLMC,
+          payload: false,
+        });
       }
     }
     if (!R.isNil(response)) {
@@ -2029,6 +2036,19 @@ function* onFhlmcBulkUpload(payload) {
               level: ERROR,
             },
           });
+          if (!R.isEmpty(isWidgetOpen)) {
+            yield put({
+              type: SET_DISABLE_SUBMITTOFHLMC,
+              payload: true,
+            });
+          }
+        }
+        if (!R.isEmpty(isWidgetOpen) && requestType === ENQUIRY_REQ) {
+          response = R.map(d => ({
+            ...d,
+            loanNumber,
+            evalId,
+          }), response);
         }
         yield put({
           type: SET_BULK_UPLOAD_RESULT,

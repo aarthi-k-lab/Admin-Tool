@@ -25,6 +25,8 @@ const COMMENT_EXCEPTON_REQUEST_TYPES = ['CXLReq', 'DraftReq', 'EnquiryReq'];
 const GENERATE_BOARDING_TEMPLATE_STATUS = 'Request will be processed in the backend. Proceed with other Loans';
 const VALIDATION_FAILURE_MSG = 'One or more entries are not valid. Please check and try again';
 
+const ENQUIRY_REQ = 'EnquiryReq';
+
 module.exports = {
   ELIGIBLE,
   INELIGIBLE,
@@ -50,4 +52,5 @@ module.exports = {
   ENQUIRY_REQUESTTYPE,
   COMMENT_EXCEPTON_REQUEST_TYPES,
   CANCEL_REQ_TYPES,
+  ENQUIRY_REQ,
 };

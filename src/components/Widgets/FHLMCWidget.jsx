@@ -349,29 +349,28 @@ class FHLMCWidget extends Component {
 
   handleRequestType = (event) => {
     const {
-      setRequestTypeData, resolutionId, onFhlmcBulkSubmit, resultData,
+      setRequestTypeData, resolutionId, onFhlmcBulkSubmit,
       getCancellationReasonsData, clearCancellationReasons, setExceptionReviewIndicator,
-      setExceptionReviewComments, getCaseIdsOperation,
+      setExceptionReviewComments, getCaseIdsOperation, setEnquiryCaseId,
     } = this.props;
     setExceptionReviewIndicator('No');
     setExceptionReviewComments('');
-
+    setRequestTypeData(event.target.value);
     if (R.equals(event.target.value, 'CXLReq')) {
       getCancellationReasonsData(); // populate Cancellation Reasons
     } else {
       clearCancellationReasons();
     }
+    const payload = {
+      caseIds: [resolutionId],
+      requestType: event.target.value,
+      requestIdType: 'caseId(s)',
+    };
+    onFhlmcBulkSubmit(payload);
+
     if (R.equals(event.target.value, 'EnquiryReq')) {
       getCaseIdsOperation();
-    }
-    setRequestTypeData(event.target.value);
-    if (R.has('message', R.head(resultData))) {
-      const payload = {
-        caseIds: [resolutionId],
-        requestType: event.target.value,
-        requestIdType: '',
-      };
-      onFhlmcBulkSubmit(payload);
+      setEnquiryCaseId(resolutionId);
     }
   }
 
@@ -463,7 +462,6 @@ class FHLMCWidget extends Component {
 FHLMCWidget.defaultProps = {
   populateInvestorDropdown: () => { },
   investorEvents: [],
-  resultData: [],
   resultOperation: {},
   requestTypeData: '',
   onFhlmcModHistoryPopup: {},
@@ -514,10 +512,6 @@ FHLMCWidget.propTypes = {
   populateInvestorDropdown: PropTypes.func,
   requestTypeData: PropTypes.string,
   resolutionId: PropTypes.string.isRequired,
-  resultData: PropTypes.arrayOf({
-    caseId: PropTypes.string,
-    message: PropTypes.string,
-  }),
   resultOperation: PropTypes.shape({
     clearData: PropTypes.string,
     isOpen: PropTypes.bool,
@@ -543,7 +537,6 @@ const mapStateToProps = state => ({
   eligibleData: selectors.eligibleData(state),
   requestTypeData: selectors.getRequestTypeData(state),
   resolutionId: selectors.resolutionId(state),
-  resultData: selectors.resultData(state),
   selectedCancellationReason: selectors.getSelectedCancellationReason(state),
   exceptionReviewRequestIndicator: selectors.getExceptionReviewIndicator(state),
   exceptionReviewComments: selectors.getExceptionReviewComments(state),
