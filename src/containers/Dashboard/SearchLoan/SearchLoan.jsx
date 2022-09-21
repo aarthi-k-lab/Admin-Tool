@@ -231,7 +231,7 @@ class SearchLoan extends React.PureComponent {
       const {
         loanNumber, unAssigned, assigned, valid,
       } = searchLoanResult;
-      const data = [];
+      let data = [];
       if (valid) { // valid loan number
         if (!unAssigned && !assigned) { // no eval cases present
           return <NoEvalsPage loanNumber={loanNumber} />;
@@ -242,6 +242,12 @@ class SearchLoan extends React.PureComponent {
         if (assigned) {
           data.push(...assigned);
         }
+        data = R.sort(R.descend(
+          R.compose(
+            Number.parseInt,
+            R.prop('date'),
+          ),
+        ), data);
         const { inProgress } = this.props;
         if (inProgress) {
           return (
