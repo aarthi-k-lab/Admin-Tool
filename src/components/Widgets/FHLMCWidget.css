@@ -29,17 +29,16 @@
   display: block !important;
 }
 
+.fhlmcDropDown{
+  width: 40% !important;
+  margin-top: 1em !important;
+}
+
 .errorIcon {
   margin-left: 1rem;
 }
 
 .errorSvg {
-  width: 8.5rem !important;
-  height: 1.5rem !important;
-}
-
-.errorSvgSelected {
-  width: 14rem !important;
   height: 1.5rem !important;
 }
 

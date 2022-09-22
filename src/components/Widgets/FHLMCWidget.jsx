@@ -74,7 +74,8 @@ class FHLMCWidget extends Component {
           </span>
           <span styleName="errorIcon">
             <Tooltip
-              placement="left-end"
+              arrow
+              placement="right-start"
               title={(
                 <Typography>
                   This is the type of action or information that you
@@ -122,7 +123,8 @@ class FHLMCWidget extends Component {
           </span>
           <span styleName="errorIcon">
             <Tooltip
-              placement="left-end"
+              arrow
+              placement="right-start"
               title={(
                 <Typography>
                   This is the type of action or information that you
@@ -184,7 +186,8 @@ class FHLMCWidget extends Component {
             </span>
             <span styleName="errorIcon">
               <Tooltip
-                placement="left-end"
+                arrow
+                placement="right-start"
                 title={(
                   <Typography>
                     This is the type of action or information that you
@@ -208,7 +211,7 @@ class FHLMCWidget extends Component {
     return (cancellationReasons && requestTypeData && R.equals(requestTypeData, 'CXLReq')
       ? (
         <div>
-          <FormControl variant="outlined">
+          <FormControl styleName="fhlmcDropDown" variant="outlined">
             <InputLabel styleName={!R.isEmpty(selectedCancellationReason) ? 'inputLblSelected' : 'inputLbl'}>Please Select Cancelation Reason</InputLabel>
             <Select
               id="cancellationReason"
@@ -221,6 +224,7 @@ class FHLMCWidget extends Component {
               {cancellationReasons && cancellationReasons.map(item => (
                 <MenuItem key={item.requestType} value={item.requestType}>
                   <Tooltip
+                    arrow
                     placement="left"
                     title={(
                       <Typography>
@@ -280,7 +284,8 @@ class FHLMCWidget extends Component {
               </span>
               <span styleName="errorIcon">
                 <Tooltip
-                  placement="right-end"
+                  arrow
+                  placement="right-start"
                   title={(
                     <Typography>
                       This is the type of action or information that you
@@ -288,14 +293,14 @@ class FHLMCWidget extends Component {
                     </Typography>
                   )}
                 >
-                  <ErrorIcon styleName={!R.isEmpty(requestTypeData) ? 'errorSvgSelected' : 'errorSvg'} />
+                  <ErrorIcon styleName="errorSvg" />
                 </Tooltip>
               </span>
             </div>
-            <Tooltip aria-label="Mod History" classes="tooltip" placement="left" title={<h3>Mod History</h3>}><span styleName="modHistory"><HistoryIcon onClick={() => this.handleDialogData()} /></span></Tooltip>
+            <span><Tooltip aria-label="Mod History" arrow classes="tooltip" placement="left" title={<h3>Mod History</h3>}><span styleName="modHistory"><HistoryIcon onClick={() => this.handleDialogData()} /></span></Tooltip></span>
           </div>
           <div>
-            <FormControl variant="outlined">
+            <FormControl styleName="fhlmcDropDown" variant="outlined">
               <InputLabel styleName={!R.isEmpty(requestTypeData) ? 'inputLblSelected' : 'inputLbl'}>Please Select</InputLabel>
               <Select
                 id="requestCategoryDropdown"
