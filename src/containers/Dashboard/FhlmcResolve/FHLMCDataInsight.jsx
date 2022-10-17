@@ -25,7 +25,7 @@ import Loader from 'components/Loader/Loader';
 import { EXCEL_FORMATS } from '../../../constants/common';
 import {
   REQUEST_TYPE_REQ, FILE_UPLOAD_REQ, CANCELLATION_REASON, REQ_PRCS,
-  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES,
+  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES, DISABLE_ODM_RERUN,
 } from '../../../constants/fhlmc';
 import './FhlmcResolve.css';
 
@@ -90,6 +90,7 @@ class FHLMCDataInsight extends React.PureComponent {
     this.handleUpload = this.handleUpload.bind(this);
     this.renderWidgetContent = this.renderWidgetContent.bind(this);
     this.renderCustomTable = this.renderCustomTable.bind(this);
+    this.submitForODMRerun = this.submitForODMRerun.bind(this);
   }
 
   componentDidMount() {
@@ -135,6 +136,11 @@ class FHLMCDataInsight extends React.PureComponent {
     };
     onSubmitToFhlmcRequest(selectedRequestType, portfolioCode, sweetAlertPayload);
     this.setState({ showMessageProp: true });
+  }
+
+  submitForODMRerun = () => {
+    const { odmRerunOperation } = this.props;
+    odmRerunOperation();
   }
 
   handleClick = (event) => {
@@ -285,6 +291,8 @@ class FHLMCDataInsight extends React.PureComponent {
     const {
       resultData, submitCases, selectedRequestType, isWidget, isAssigned, disableSubmitToFhlmc,
     } = this.props;
+    const hideOdmRerun = R.isEmpty(selectedRequestType)
+    || DISABLE_ODM_RERUN.includes(selectedRequestType);
     return (
       <Grid container direction="column">
         <Grid item>
@@ -300,6 +308,21 @@ class FHLMCDataInsight extends React.PureComponent {
             style={{ marginTop: '1rem' }}
             xs={12}
           >
+            <Grid item>
+              {isWidget && !hideOdmRerun && (
+              <CustomButton
+                color="primary"
+                disabled={DISABLE_ODM_RERUN.includes(selectedRequestType)
+                  || !isAssigned || R.isEmpty(selectedRequestType)}
+                extraStyle="submit"
+                hasTooltip={false}
+                onClick={this.submitForODMRerun}
+                title="RE-RUN ODM"
+                variant="contained"
+              />
+              )
+              }
+            </Grid>
             <Grid item>
               {showSubmitFhlmc && (
                 <CustomButton
@@ -367,6 +390,7 @@ class FHLMCDataInsight extends React.PureComponent {
 FHLMCDataInsight.defaultProps = {
   onSubmitToFhlmcRequest: () => { },
   onProcessFile: () => { },
+  odmRerunOperation: () => {},
   openSweetAlert: () => { },
   resultData: [],
   selectedRequestType: '',
@@ -386,6 +410,7 @@ FHLMCDataInsight.propTypes = {
   exceptionReviewRequestIndicator: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   isWidget: PropTypes.bool,
+  odmRerunOperation: PropTypes.func,
   onProcessFile: PropTypes.func,
   onSubmitToFhlmcRequest: PropTypes.func,
   openSweetAlert: PropTypes.func,
@@ -411,6 +436,7 @@ const mapDispatchToProps = dispatch => ({
   onProcessFile: operations.onProcessFile(dispatch),
   downloadFile: operations.downloadFile(dispatch),
   dismissUserNotification: operations.onDismissUserNotification(dispatch),
+  odmRerunOperation: operations.odmRerunOperation(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FHLMCDataInsight);

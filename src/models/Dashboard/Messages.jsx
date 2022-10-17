@@ -6,6 +6,8 @@ import UserNotification from 'components/UserNotification/UserNotification';
 import * as R from 'ramda';
 
 const LEVEL_FAILED = 'Failed';
+const LEVEL_SUCCESS = 'SUCCESS';
+const ODM_RERUN_SUCCESS = 'Successfully Ran ODM Eligibility Check';
 const MSG_SENDTOCOVIUS_FAILED = 'Unable to send to Covius at this time. Please try again later.';
 const MSG_SERVICE_DOWN = 'Currently one of the services is down. Please try again. If you still facing this issue, please reach out to IT team.';
 const MSG_FILE_UPLOAD_FAILURE = 'Unable to convert the file to correct format. Please reupload and try again. If the issue continues, please reach out to the CMOD Support team';
@@ -101,6 +103,8 @@ function renderErrorNotification(
 const Messages = {
   renderErrorNotification,
   reduceMessageListToMessage,
+  ODM_RERUN_SUCCESS,
+  LEVEL_SUCCESS,
   MSG_VALIDATION_SUCCESS,
   MSG_UPDATED_REMEDY,
   MSG_SERVICE_DOWN,

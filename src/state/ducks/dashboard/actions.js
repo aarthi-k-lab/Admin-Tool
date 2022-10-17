@@ -86,6 +86,7 @@ import {
   SET_EXCEPTION_REVIEW_INDICATOR,
   FETCH_CASEIDS,
   SET_ENQUIRY_CASE_ID,
+  ODM_RERUN_SAGA,
 } from './types';
 
 
@@ -499,7 +500,12 @@ const setEnquiryCaseIdAction = payload => ({
   payload,
 });
 
+const odmRerunAction = () => ({
+  type: ODM_RERUN_SAGA,
+});
+
 export {
+  odmRerunAction,
   dismissUserNotification,
   onSubmitToFhlmcAction,
   showLoader,

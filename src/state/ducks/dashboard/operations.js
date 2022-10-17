@@ -81,6 +81,7 @@ import {
   setExceptionReviewCommentsAction,
   getCaseIdsAction,
   setEnquiryCaseIdAction,
+  odmRerunAction,
 } from './actions';
 
 import {
@@ -435,7 +436,12 @@ const setEnquiryCaseIdOperation = dispatch => (payload) => {
   dispatch(setEnquiryCaseIdAction(payload));
 };
 
+const odmRerunOperation = dispatch => () => {
+  dispatch(odmRerunAction());
+};
+
 const operations = {
+  odmRerunOperation,
   openSweetAlert,
   onDismissUserNotification,
   onSubmitToFhlmcRequest,
