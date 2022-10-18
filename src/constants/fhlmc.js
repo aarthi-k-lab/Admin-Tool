@@ -1,6 +1,7 @@
 const ELIGIBLE = 'Previous Freddie call was eligible';
 const INELIGIBLE = 'Previous Freddie call was ineligible';
 const NOCALL = 'Not yet submitted';
+const EXCEPTION_REQUEST = 'Exception Request has been submitted';
 const ID_CATEGORIES = ['Case id(s)', 'Loan Number(s)'];
 const FHLMC = 'FHLMC';
 const APPROVAL_TYPE = 'FHLMCApprovalType';
@@ -55,4 +56,5 @@ module.exports = {
   COMMENT_EXCEPTON_REQUEST_TYPES,
   CANCEL_REQ_TYPES,
   ENQUIRY_REQ,
+  EXCEPTION_REQUEST,
 };

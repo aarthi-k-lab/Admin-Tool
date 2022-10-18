@@ -22,6 +22,7 @@ import getters from 'models/Headers';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
 import {
   ELIGIBLE, INELIGIBLE, NOCALL, FHLMC, EXCEPTION_TOGGLE, COMMENT_EXCEPTON_REQUEST_TYPES,
+  EXCEPTION_REQUEST,
 } from '../../constants/fhlmc';
 import DialogBox from '../DialogBox';
 
@@ -30,6 +31,7 @@ const eligibilityIndicator = {
   Eligible: ELIGIBLE,
   Ineligible: INELIGIBLE,
   'No Call': NOCALL,
+  'Exception Request': EXCEPTION_REQUEST,
 };
 
 class FHLMCWidget extends Component {
