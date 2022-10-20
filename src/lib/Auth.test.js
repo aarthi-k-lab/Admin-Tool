@@ -84,7 +84,7 @@ describe('lib/Auth.js', () => {
     test('first', () => {
       Auth.login()
         .then((auth) => {
-          expect(auth.sessionValid).toBeNull();
+          expect(auth.sessionValid).toBeFalsy();
           expect(auth.jwtPayload).toBeNull();
           expect(auth.groups).toBeNull();
         });
