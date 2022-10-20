@@ -168,6 +168,8 @@ const eligibleData = state => R.pathOr([], ['dashboard', 'eligibleData'], state)
 
 const getRequestTypeData = state => R.pathOr('', ['dashboard', 'setRequestTypeData'], state);
 
+const getODMRetryEligibility = state => R.pathOr(false, ['dashboard', 'enableODMRerun'], state);
+
 const getEvalStatus = state => R.pathOr([], ['dashboard', 'evalStatusData'], state);
 
 const getSelectedCancellationReason = state => R.pathOr('', ['dashboard', 'selectedCancellationReason'], state);
@@ -186,6 +188,7 @@ const getEnquiryCaseId = state => R.pathOr('', ['dashboard', 'enquiryCaseId'], s
 const disableSubmittofhlmc = state => R.pathOr(false, ['dashboard', 'disableSubmittoFhlmc'], state);
 
 const selectors = {
+  getODMRetryEligibility,
   getUserNotification,
   isIncomeVerification,
   getPopupData,

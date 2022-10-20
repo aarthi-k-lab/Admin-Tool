@@ -35,7 +35,9 @@ import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import { INCOME_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
 import { CHECK_TASKNAME } from 'constants/trialTask';
-import { APPROVAL_TYPE, PRE_APPROVAL_TYPE, ENQUIRY_REQ } from 'constants/fhlmc';
+import {
+  APPROVAL_TYPE, PRE_APPROVAL_TYPE, ENQUIRY_REQ,
+} from 'constants/fhlmc';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -44,6 +46,7 @@ import {
 import selectors from './selectors';
 
 import {
+  ENABLE_ODM_RERUN_BUTTON,
   SET_FHLMC_UPLOAD_RESULT,
   SUBMIT_TO_FHLMC,
   SET_COVIUS_TABINDEX,
@@ -2009,10 +2012,15 @@ function* onFhlmcBulkUpload(payload) {
       });
       if (!R.isEmpty(isWidgetOpen)) {
         const caseId = R.head(caseIds);
-        const eligibiltyresponse = yield call(Api.callGetText, `/api/dataservice/api/fetchCaseEligibilityIndicator?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}`);
+        const eligibiltyresponse = yield call(Api.callGet, `/api/dataservice/api/fetchEligibilityIndicators?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}&requestType=${requestType}`);
+        const { caseEligibilityIndicator, odmRetryEligibilityIndicator } = eligibiltyresponse;
         yield put({
           type: GET_ELIGIBLE_DATA,
-          payload: eligibiltyresponse,
+          payload: caseEligibilityIndicator,
+        });
+        yield put({
+          type: ENABLE_ODM_RERUN_BUTTON,
+          payload: odmRetryEligibilityIndicator === 'Eligible',
         });
         yield put({
           type: SET_DISABLE_SUBMITTOFHLMC,
@@ -2417,10 +2425,15 @@ const submitToFhlmc = function* submitToFhlmc(action) {
             break;
           }
         }
-        const eligibiltyresponse = yield call(Api.callGetText, `/api/dataservice/api/fetchCaseEligibilityIndicator?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}`);
+        const eligibiltyresponse = yield call(Api.callGet, `/api/dataservice/api/fetchEligibilityIndicators?caseId=${caseId}&resolutionChoiceType=${resolutionChoiceType}&requestType=${selectedRequestType}`);
+        const { caseEligibilityIndicator, odmRetryEligibilityIndicator } = eligibiltyresponse;
         yield put({
           type: GET_ELIGIBLE_DATA,
-          payload: eligibiltyresponse,
+          payload: caseEligibilityIndicator,
+        });
+        yield put({
+          type: ENABLE_ODM_RERUN_BUTTON,
+          payload: odmRetryEligibilityIndicator === 'Eligible',
         });
       } sweetAlert = {
         level,

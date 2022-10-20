@@ -110,6 +110,7 @@ import {
   SET_CASEIDS,
   SET_ENQUIRY_CASE_ID,
   SET_DISABLE_SUBMITTOFHLMC,
+  ENABLE_ODM_RERUN_BUTTON,
 } from './types';
 
 const reducer = (state = {
@@ -986,7 +987,13 @@ const reducer = (state = {
         investorHierarchy,
       };
     }
-
+    case ENABLE_ODM_RERUN_BUTTON: {
+      const enableODMRerun = action.payload;
+      return {
+        ...state,
+        enableODMRerun,
+      };
+    }
     case SET_REQUEST_TYPE_DATA: {
       const setRequestTypeData = action.payload;
       return {

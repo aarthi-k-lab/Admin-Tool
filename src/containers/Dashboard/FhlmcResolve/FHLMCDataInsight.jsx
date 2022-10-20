@@ -25,7 +25,7 @@ import Loader from 'components/Loader/Loader';
 import { EXCEL_FORMATS } from '../../../constants/common';
 import {
   REQUEST_TYPE_REQ, FILE_UPLOAD_REQ, CANCELLATION_REASON, REQ_PRCS,
-  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES, DISABLE_ODM_RERUN,
+  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES, ENABLE_ODM_RERUN,
 } from '../../../constants/fhlmc';
 import './FhlmcResolve.css';
 
@@ -290,9 +290,8 @@ class FHLMCDataInsight extends React.PureComponent {
     } = this.state;
     const {
       resultData, submitCases, selectedRequestType, isWidget, isAssigned, disableSubmitToFhlmc,
+      enableODMRerun,
     } = this.props;
-    const hideOdmRerun = R.isEmpty(selectedRequestType)
-    || DISABLE_ODM_RERUN.includes(selectedRequestType);
     return (
       <Grid container direction="column">
         <Grid item>
@@ -309,10 +308,10 @@ class FHLMCDataInsight extends React.PureComponent {
             xs={12}
           >
             <Grid item>
-              {isWidget && !hideOdmRerun && (
+              {isWidget && (
               <CustomButton
                 color="primary"
-                disabled={DISABLE_ODM_RERUN.includes(selectedRequestType)
+                disabled={!ENABLE_ODM_RERUN.includes(selectedRequestType) || !enableODMRerun
                   || !isAssigned || R.isEmpty(selectedRequestType)}
                 extraStyle="submit"
                 hasTooltip={false}
@@ -406,6 +405,7 @@ FHLMCDataInsight.propTypes = {
   disableSubmitToFhlmc: PropTypes.bool.isRequired,
   dismissUserNotification: PropTypes.func.isRequired,
   downloadFile: PropTypes.func.isRequired,
+  enableODMRerun: PropTypes.bool.isRequired,
   exceptionReviewComments: PropTypes.string,
   exceptionReviewRequestIndicator: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
@@ -428,6 +428,7 @@ const mapStateToProps = state => ({
   resultData: selectors.resultData(state),
   isAssigned: selectors.isAssigned(state),
   disableSubmitToFhlmc: selectors.disableSubmittofhlmc(state),
+  enableODMRerun: selectors.getODMRetryEligibility(state),
 });
 
 const mapDispatchToProps = dispatch => ({

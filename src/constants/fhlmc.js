@@ -18,7 +18,7 @@ const REGEX_FHLMC_COMMON = /[a-zA-Z]|[~`(@!#$%^&*+._)=\-[\]\\';/{}|\\":<>?]|^[,]
 const REQUEST_TYPE_REQ = 'Please select request type and upload excel file';
 const FILE_UPLOAD_REQ = 'Kindly upload an excel File';
 const CANCELLATION_REASON = 'Please select Cancellation Reason and Submit';
-const DISABLE_ODM_RERUN = ['CXLReq', 'DraftReq'];
+const ENABLE_ODM_RERUN = ['EnquiryReq', 'WAReq', 'TPAReq'];
 const REQ_PRCS = 'We are processing your request.  Please do not close the browser.';
 const COMMENTS_REASON = 'Please enter a valid comment.';
 const ENQUIRY_REQUESTTYPE = 'DraftReq';
@@ -30,7 +30,7 @@ const VALIDATION_FAILURE_MSG = 'One or more entries are not valid. Please check 
 const ENQUIRY_REQ = 'EnquiryReq';
 
 module.exports = {
-  DISABLE_ODM_RERUN,
+  ENABLE_ODM_RERUN,
   ELIGIBLE,
   INELIGIBLE,
   NOCALL,
