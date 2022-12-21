@@ -46,9 +46,7 @@ import {
 } from '../notifications/types';
 import { storeDelayCheckList, storeDelayCheckListHistory } from './actions';
 
-function* buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
-  const isRPSUser = yield select(loginSelectors.isRPSGroupPresent);
-  const brandName = isRPSUser ? 'RPS' : 'NSM';
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
   const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
   const fromDate = new Date(fromDateMoment).toISOString();
@@ -58,7 +56,6 @@ function* buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
     toDate,
     stagerType,
     searchTerm,
-    brandName,
   };
   return dateValue;
 }
@@ -69,7 +66,7 @@ function* fetchDashboardCounts() {
     if (!R.isEmpty(user)) {
       const stagerType = yield select(selectors.getStagerValue);
       const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-      const dateValue = yield call(buildDateObj, stagerType, stagerStartEndDate, null);
+      const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
       const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
       if (response != null) {
         if (!R.contains('beuw-mgr', user.groupList)) {
@@ -115,10 +112,8 @@ function* fetchDashboardData(data) {
     const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
     const fromDate = new Date(fromDateMoment).toISOString();
     const toDate = new Date(toDateMoment).toISOString();
-    const isRPSUser = yield select(loginSelectors.isRPSGroupPresent);
     let requestPayload = {};
     let stagerSchedulerResponse = {};
-    const brandName = isRPSUser ? 'RPS' : 'NSM';
     const stagerFetchCriteria = {
       stagerTaskStatus: ['Ordered', 'Completed'],
       stagerTaskType: ['Escrow', 'Legal Fee', 'Value', 'Reclass'],
@@ -136,10 +131,9 @@ function* fetchDashboardData(data) {
         fromDate,
         toDate,
         azureSearchToggle,
-        brandName,
       };
     } else {
-      requestPayload = yield call(buildDateObj, stagerType,
+      requestPayload = buildDateObj(stagerType,
         stagerStartEndDate,
         searchTerm);
     }
@@ -203,7 +197,7 @@ function* fetchDownloadData(callBack) {
     const searchTerm = yield select(selectors.getActiveSearchTerm);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
     const azureSearchToggle = yield select(selectors.getAzureSearchToggle);
-    const dateValue = yield call(buildDateObj, stagerType, stagerStartEndDate, searchTerm);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
     const downloadPayload = {
       ...dateValue,
       azureSearchToggle,
@@ -310,7 +304,7 @@ function* makeStagerSearchLoanCall(payload) {
     const searchLoanNumber = payload.payload;
     const stagerType = yield select(selectors.getStagerValue);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = yield call(buildDateObj, stagerType, stagerStartEndDate, null);
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
     dateValue.loanNumber = searchLoanNumber;
     const response = yield call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', dateValue);
     yield put({
@@ -442,7 +436,7 @@ function* refreshStagerTile() {
     const stagerType = yield select(selectors.getStagerValue);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
     const activeSearchTerm = yield select(selectors.getActiveSearchTerm);
-    const payload = yield call(buildDateObj, stagerType, stagerStartEndDate, activeSearchTerm);
+    const payload = buildDateObj(stagerType, stagerStartEndDate, activeSearchTerm);
     const response = yield call(Api.callPost, 'api/stager/dashboard/refreshStagerTile', payload);
 
     const statusCode = R.propOr(500, 'statusCode', response);
