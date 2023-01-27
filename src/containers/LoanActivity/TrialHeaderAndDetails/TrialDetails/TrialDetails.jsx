@@ -8,6 +8,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TaskStatusIcon from 'components/TaskStatusIcon';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
+import TrailDatePicker from './TrailDatePicker';
 import './TrialDetails.css';
 
 class TrialDetails extends React.PureComponent {
@@ -53,6 +54,7 @@ class TrialDetails extends React.PureComponent {
     const naPaidOn = moment(paidOn).format('MM/DD/YYYY') === '01/01/0001';
     if (naPaidOn && this.isFirstNaPaidOn) {
       this.isFirstNaPaidOn = false;
+      this.dateIndex = index;
       return true;
     }
     // eslint-disable-next-line no-nested-ternary
@@ -123,16 +125,57 @@ class TrialDetails extends React.PureComponent {
                       </div>
                       <div styleName="monthDetailStyle" xs={1}>
                         <span styleName="header-style">Trial Due On</span>
-                        <span style={{ fontSize: '0.9rem' }} styleName="value-style">{moment(myTrial.trialDueOn).format(opt)}</span>
+                        <span>
+                          <TrailDatePicker
+                            fbId={myTrial.forbearanceId}
+                            fieldToUpdate="trialDueOn"
+                            presentDate={moment(myTrial.trialDueOn).format(opt)}
+                            seq={myTrial.sequence}
+                          />
+                        </span>
                       </div>
                       <div styleName="monthDetailStyle" xs={1}>
                         <span styleName="header-style">Deadline On</span>
-                        <span style={{ fontSize: '0.9rem' }} styleName="value-style">{moment(myTrial.deadlineOn).format(opt)}</span>
+                        <span>
+                          <TrailDatePicker
+                            fbId={myTrial.forbearanceId}
+                            fieldToUpdate="deadlineOn"
+                            presentDate={moment(myTrial.deadlineOn).format(opt)}
+                            seq={myTrial.sequence}
+                          />
+                        </span>
                       </div>
                       <div styleName="monthDetailStyle" xs={1}>
                         <span styleName="header-style">Paid On</span>
                         <span style={{ fontSize: '0.9rem' }} styleName="value-style">
-                          {moment(myTrial.paidOn).format(opt) !== '01/01/0001' ? moment(myTrial.paidOn).format(opt) : 'N/A'}
+                          <span>
+                            <TrailDatePicker
+                              fbId={myTrial.forbearanceId}
+                              fieldToUpdate="paidOn"
+                              presentDate={moment(myTrial.paidOn).format(opt)}
+                              seq={myTrial.sequence}
+                            />
+                            <Typography styleName={(moment(myTrial.paidOn)
+                              > moment(myTrial.deadlineOn)
+                              && moment(myTrial.paidOn).format(opt) !== '01/01/0001')
+                              ? 'daysDelayed' : 'daysAhead'}
+                            >
+                              {moment(myTrial.paidOn)
+                                > moment(myTrial.deadlineOn)
+                                && moment(myTrial.paidOn).format(opt) !== '01/01/0001'
+                                && moment(myTrial.paidOn).format(opt)
+                                !== moment(myTrial.deadlineOn).format(opt)
+                                ? `${Math.ceil(Math.abs(new Date(moment(myTrial.deadlineOn))
+                                  - new Date(moment(myTrial.paidOn)))
+                                  / (1000 * 60 * 60 * 24))} DAYS DELAYED` : ''}
+                              {moment(myTrial.deadlineOn)
+                                > moment(myTrial.paidOn)
+                                && moment(myTrial.paidOn).format(opt) !== '01/01/0001'
+                                ? `${Math.ceil(Math.abs(new Date(moment(myTrial.paidOn))
+                                  - new Date(moment(myTrial.deadlineOn)))
+                                  / (1000 * 60 * 60 * 24))} DAYS AHEAD` : ''}
+                            </Typography>
+                          </span>
                         </span>
                       </div>
                     </div>

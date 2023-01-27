@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ContentHeader from 'components/ContentHeader';
 import FullHeightColumn from 'components/FullHeightColumn';
 import Controls from 'containers/Controls';
+import MilestoneTracker from 'components/MilestoneTracker';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
@@ -61,7 +62,7 @@ class EvaluationPage extends React.PureComponent {
   render() {
     const {
       location, group, taskName, checklisttTemplateName, stagerTaskName,
-      userNotification, isAutoDisposition, openWidgetList,
+      userNotification, isAutoDisposition, openWidgetList, milestoneDetails, currentSelection,
     } = this.props;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
@@ -78,19 +79,30 @@ class EvaluationPage extends React.PureComponent {
             showValidate={DashboardModel.checkShowValidation(group) && !isAutoDisposition}
           />
         </ContentHeader>
-        <Tombstone />
-        <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
+        <div styleName="milestone-tracker">
+          <MilestoneTracker currentSelection={currentSelection} trackerItems={milestoneDetails} />
+        </div>
+        <div styleName="title-row">
           {(userNotification && userNotification.status)
             ? <UserNotification level={userNotification.level} message={userNotification.status} type="alert-box" />
             : ''
           }
         </div>
-        {(R.contains(HISTORY, openWidgetList)
+
+        <div style={{
+          display: 'flex', flexDirection: 'row', height: '85%',
+        }}
+        >
+          <Tombstone />
+          <div styleName="main-panel">
+            {(R.contains(HISTORY, openWidgetList)
           && group !== DashboardModel.LOAN_ACTIVITY) ? this.renderDashboard() : (
             <FullHeightColumn styleName={R.contains(HISTORY, openWidgetList) ? '' : 'columns-container'}>
               {this.renderDashboard()}
             </FullHeightColumn>
-          )}
+              )}
+          </div>
+        </div>
       </>
     );
   }
@@ -104,16 +116,23 @@ EvaluationPage.defaultProps = {
   userNotification: { level: '', status: '' },
   onCleanResult: () => { },
   openWidgetList: [],
+  milestoneDetails: [],
 };
 
 EvaluationPage.propTypes = {
   checklisttTemplateName: PropTypes.string,
+  currentSelection: PropTypes.string.isRequired,
   group: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   isAutoDisposition: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  milestoneDetails: PropTypes.arrayOf(PropTypes.shape({
+    mlstnNm: PropTypes.string,
+    taskId: PropTypes.string,
+    visited: PropTypes.string,
+  })),
   onCleanResult: PropTypes.func,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   processName: PropTypes.string.isRequired,
@@ -138,6 +157,8 @@ EvaluationPage.propTypes = {
 const mapStateToProps = state => ({
   openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   taskName: selectors.processName(state),
+  currentSelection: selectors.getCurrentMilestoneIndex(state),
+  milestoneDetails: selectors.getMilestoneDetails(state),
   isAssigned: selectors.showAssign(state),
   stagerTaskName: selectors.stagerTaskName(state),
   user: loginSelectors.getUser(state),

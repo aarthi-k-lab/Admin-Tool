@@ -9,7 +9,7 @@ const SendToUnderwriting = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="send-to-underwriting"
+    styleName={disabled ? 'send-to-underwriting-disabled' : 'send-to-underwriting'}
     variant="contained"
   >
     Send To Underwriting

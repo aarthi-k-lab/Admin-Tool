@@ -1,9 +1,9 @@
 const COMMENTS = 'Comments';
 const ADDITIONAL_INFO = 'Additional Info';
 const HISTORY = 'History';
-const CUSTOM_COMM_LETTER = 'customCommunicationLetter';
+const CUSTOM_COMM_LETTER = 'Customer Communication Letter';
 const BOOKING = 'BookingAutomation';
-const INCOME_CALCULATOR = 'IncomeCalculator';
+const FINANCIAL_CALCULATOR = 'FinancialCalculator';
 const FHLMC = 'FHLMC';
 
 const widgets = [
@@ -12,7 +12,7 @@ const widgets = [
   HISTORY,
   CUSTOM_COMM_LETTER,
   BOOKING,
-  INCOME_CALCULATOR,
+  FINANCIAL_CALCULATOR,
   FHLMC,
 ];
 
@@ -22,7 +22,7 @@ export {
   HISTORY,
   CUSTOM_COMM_LETTER,
   BOOKING,
-  INCOME_CALCULATOR,
+  FINANCIAL_CALCULATOR,
   widgets,
   FHLMC,
 };

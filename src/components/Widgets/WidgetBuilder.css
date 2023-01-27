@@ -21,33 +21,31 @@
 }
 
 .show {
-  width: 4.8rem;
-  height: calc(100% - 4.688rem);
+  width: 4.2rem;
+  height: 74.5%;
   overflow: auto;
   position: fixed !important;
   overflow-x: hidden;
   overflow-y: hidden;
-  background: rgb(242, 242, 242);
+  background: white;
   right: 0;
   margin-bottom: 0;
   stroke: auto;
-  border-left: 1px solid #d3d3d3;
-  border-top: 1px solid #d3d3d3;
+  border-radius: 0.5rem;
 }
 
 .showAV {
-  width: 4.8rem;
-  height: calc(100% - 4.688rem);
+  width: 4.2rem;
+  height: 80%;
   overflow: auto;
   position: fixed !important;
   overflow-x: hidden;
   overflow-y: hidden;
-  background: rgb(242, 242, 242);
+  background: white;
   right: 0;
-  margin-bottom: 0;
-  margin-top: 6.2rem;
+  margin-top: 7rem;
   z-index: 100;
+  margin-bottom: 0;
   stroke: auto;
-  border-left: 1px solid #d3d3d3;
-  border-top: 1px solid #d3d3d3;
+  border-radius: 0.5rem;
 }

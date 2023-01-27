@@ -15,7 +15,8 @@ const styles = theme => ({
   },
   custom: {
     color: 'black',
-    backgroundColor: 'var(--grey-300)',
+    boxShadow: 'none',
+    backgroundColor: 'white',
     borderRadius: '0.15rem',
     minHeight: '25px',
     width: '30px',

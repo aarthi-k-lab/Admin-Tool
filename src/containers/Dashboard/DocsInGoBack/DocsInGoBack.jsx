@@ -76,23 +76,25 @@ class DocsInGoBack extends React.PureComponent {
             showSendToDocsIn={showButton}
           />
         </ContentHeader>
-        <Tombstone />
-        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
+        <div styleName="docksin-container">
+          <Tombstone />
+          {R.contains(ADDITIONAL_INFO, openWidgetList) && (
           <div styleName="bookingWidget">
             <span styleName="widgetTitle">
               ADDITIONAL INFO
             </span>
           </div>
-        )
+          )
         }
-        <WidgetBuilder page="DOCSIN_GOBACK" />
-        { R.contains(ADDITIONAL_INFO, openWidgetList) && <AdditionalInfo />}
-        { R.contains(HISTORY, openWidgetList) && <MilestoneActivity />}
-        <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
-          {(resultOperation && resultOperation.status)
-            ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
-            : ''
+          <WidgetBuilder page="DOCSIN_GOBACK" />
+          { R.contains(ADDITIONAL_INFO, openWidgetList) && <AdditionalInfo />}
+          { R.contains(HISTORY, openWidgetList) && <MilestoneActivity />}
+          <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
+            {(resultOperation && resultOperation.status)
+              ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
+              : ''
           }
+          </div>
         </div>
       </>
     );

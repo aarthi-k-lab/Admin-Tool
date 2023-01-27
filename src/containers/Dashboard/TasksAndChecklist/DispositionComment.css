@@ -7,6 +7,7 @@
   margin-right: 1rem;
   resize: none;
   width: -webkit-fill-available;
+  background-color:  rgb(243,245,249);
 }
 
 .expanded-comment-box textarea {

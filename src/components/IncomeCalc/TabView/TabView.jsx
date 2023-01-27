@@ -86,10 +86,15 @@ class TabView extends React.PureComponent {
     this.setState({ anchorEl: null });
   }
 
+  onDisabled = (index) => {
+    const disabled = index !== 0;
+    return disabled;
+  }
+
   render() {
     const {
       subTasks, additionalInfo: {
-        valuePath,
+        valuePath, isDisabled,
       }, renderChildren, value,
       failureReason,
     } = this.props;
@@ -112,6 +117,7 @@ class TabView extends React.PureComponent {
             {displayList && displayList.map((task, index) => (
               <Tab
                 key={R.propOr('', 'name', task)}
+                disabled={isDisabled ? this.onDisabled(index) : false}
                 label={(
                   <div style={{
                     display: 'flex',
@@ -193,6 +199,7 @@ TabView.defaultProps = {
     hasTitle: false,
     styleName: '',
     valuePath: [],
+    isDisabled: false,
   },
   failureReason: [],
 };
@@ -200,6 +207,7 @@ TabView.defaultProps = {
 TabView.propTypes = {
   additionalInfo: PropTypes.shape({
     hasTitle: PropTypes.bool,
+    isDisabled: PropTypes.bool,
     styleName: PropTypes.string,
     valuePath: PropTypes.arrayOf(PropTypes.string),
   }),

@@ -86,13 +86,23 @@ import {
   SET_EXCEPTION_REVIEW_INDICATOR,
   FETCH_CASEIDS,
   SET_ENQUIRY_CASE_ID,
+  SET_TRIAL_DATE_INFO,
+  UPDATE_TRIAL_PERIOD,
   ODM_RERUN_SAGA,
+  DISABLE_SAVE,
+  DISABLE_FINANCE_CALC_TAB_BUTTON,
+  TOGGLE_LOCK_BUTTON,
 } from './types';
 
 
 const toggleIncomeVerification = visibility => ({
   type: TOGGLE_INCVRFN,
   payload: visibility,
+});
+
+const enableLockButton = payload => ({
+  type: TOGGLE_LOCK_BUTTON,
+  payload,
 });
 
 
@@ -500,12 +510,30 @@ const setEnquiryCaseIdAction = payload => ({
   payload,
 });
 
+const setTrialDateInfoAction = payload => ({
+  type: SET_TRIAL_DATE_INFO,
+  payload,
+});
+
+const onUpdateTrialPeriodAction = () => ({
+  type: UPDATE_TRIAL_PERIOD,
+});
+
 const odmRerunAction = () => ({
   type: ODM_RERUN_SAGA,
 });
 
+const disableSaveAction = payload => ({
+  type: DISABLE_SAVE,
+  payload,
+});
+
+const disableFinanceCalcTabButtonAction = payload => ({
+  type: DISABLE_FINANCE_CALC_TAB_BUTTON,
+  payload,
+});
+
 export {
-  odmRerunAction,
   dismissUserNotification,
   onSubmitToFhlmcAction,
   showLoader,
@@ -593,4 +621,10 @@ export {
   setExceptionReviewCommentsAction,
   getCaseIdsAction,
   setEnquiryCaseIdAction,
+  setTrialDateInfoAction,
+  onUpdateTrialPeriodAction,
+  odmRerunAction,
+  disableSaveAction,
+  disableFinanceCalcTabButtonAction,
+  enableLockButton,
 };

@@ -6,7 +6,7 @@ function getIcon(task, isSubTask, checked = false) {
   let iconName = '';
   switch (task.state) {
     case 'completed':
-      iconName = isSubTask ? 'default_selected_green_small' : 'default_selected_green';
+      iconName = isSubTask ? 'default_selected_blue_small' : 'default_selected_blue';
       break;
     case 'failed':
       iconName = isSubTask ? 'default_error_small' : 'default_error';

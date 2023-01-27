@@ -32,7 +32,15 @@ import {
   SET_NEW_CHECKLIST,
   PUSH_DATA,
   COMPUTE_RULES_PASSED,
+  FETCH_MONTHLY_EXPENSE_VALUES,
+  CURRENT_CHECKLIST_TYPE,
 } from './types';
+
+const currentChecklistTypeAction = payload => ({
+  type: CURRENT_CHECKLIST_TYPE,
+  payload,
+});
+
 
 const getNextChecklist = () => ({
   type: GET_NEXT_CHECKLIST,
@@ -172,6 +180,13 @@ const getDropDownOptions = (source, additionalInfo) => ({
   },
 });
 
+const getMonthlyExpenseValues = (source, selector) => ({
+  type: FETCH_MONTHLY_EXPENSE_VALUES,
+  payload: {
+    source, selector,
+  },
+});
+
 const setResolutionIdStats = (resolutionId, auditRuleType) => ({
   type: GET_RESOLUTION_ID_STATS,
   payload: {
@@ -219,6 +234,7 @@ const computeRulesPassed = payload => ({
 });
 
 export {
+  currentChecklistTypeAction,
   computeRulesPassed,
   getNextChecklist,
   getPrevChecklist,
@@ -252,4 +268,5 @@ export {
   setCurrentChecklistId,
   setNewChecklist,
   pushDataAction,
+  getMonthlyExpenseValues,
 };

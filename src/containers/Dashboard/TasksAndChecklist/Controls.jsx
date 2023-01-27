@@ -19,8 +19,8 @@ function Controls({
         disabled={disableValidation}
         onClick={controlAction}
       >
-        <CheckIcon />
-        {label}
+        <CheckIcon style={disableValidation ? null : { color: '#596FEB' }} />
+        <p style={disableValidation ? null : { color: '#596FEB' }}>{label}</p>
       </Button>
     </div>
   );

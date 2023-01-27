@@ -43,47 +43,49 @@ class MilestonePage extends React.PureComponent {
     return (
       <>
         {inSearchPage && <ContentHeader title={title} />}
-        {inSearchPage && <Tombstone />}
-        <Grid container styleName="loan-activity">
-          <Grid item styleName="status-details-parent" xs={3}>
-            <div styleName="page-header">
-              <span>Current Status: </span>
-              <span styleName="process-status">{processStatus()}</span>
-              <Tooltip
-                placement="right-end"
-                title={(
-                  <Typography>
-                    {ALL_MILESTONE_HISTORY}
-                  </Typography>
+        <div styleName="milestone-container">
+          {inSearchPage && <Tombstone />}
+          <Grid container styleName="loan-activity">
+            <Grid item styleName="status-details-parent" xs={3}>
+              <div styleName="page-header">
+                <span style={{ color: 'var(--grey-650)' }}>Current Status: </span>
+                <span styleName="process-status">{processStatus()}</span>
+                <Tooltip
+                  placement="right-end"
+                  title={(
+                    <Typography>
+                      {ALL_MILESTONE_HISTORY}
+                    </Typography>
                 )}
-              >
-                <IconButton onClick={() => this.handleClick(ALL_MILESTONE_HISTORY)}>
-                  <HistoryIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
-            <div styleName="status-details">
-              <Timeline
-                groupTaskData={groupTaskData}
-                inProgress={inProgress}
-                onClickMilestone={onClickMilestone}
-                onStagerTaskClick={onStagerTaskClick}
-                prcsId={prcsId}
-                processStatus={processStatus()}
-              />
-            </div>
-            {inSearchPage && (
+                >
+                  <IconButton onClick={() => this.handleClick(ALL_MILESTONE_HISTORY)}>
+                    <HistoryIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+              <div styleName="status-details">
+                <Timeline
+                  groupTaskData={groupTaskData}
+                  inProgress={inProgress}
+                  onClickMilestone={onClickMilestone}
+                  onStagerTaskClick={onStagerTaskClick}
+                  prcsId={prcsId}
+                  processStatus={processStatus()}
+                />
+              </div>
+              {inSearchPage && (
               <div styleName="postion">
                 <WidgetBuilder page="MLSTN_PAGE" />
               </div>
-            )}
+              )}
+            </Grid>
+            <Grid item xs={9}>
+              <div styleName="centerpane">
+                <CenterPane />
+              </div>
+            </Grid>
           </Grid>
-          <Grid item xs={9}>
-            <div styleName="centerpane">
-              <CenterPane />
-            </div>
-          </Grid>
-        </Grid>
+        </div>
       </>
     );
   }

@@ -17,7 +17,7 @@
   flex-direction: column;
   padding: 1rem;
   position: relative;
-  max-width: 90%;
+  max-width: 95%;
 }
 
 .timeline-item-content::after {
@@ -37,7 +37,7 @@
 }
 
 .timeline-item .selected-item {
-  background: #ffc6b0;
+  background-color: rgb(243, 245, 249) !important
 }
 
 .timeline-item .timeline-item-content::after {
@@ -136,6 +136,7 @@
 
 .main-container {
   border-bottom: 1px solid #b0b4b9;
+  padding: 5px;
 }
 
 .user-detail {
@@ -174,6 +175,7 @@
   padding: 1px 5px 1px 5px;
   border-radius: 0.25rem;
   text-align: center;
+  margin-bottom: 5px;
 }
 
 .successStatus {
@@ -183,6 +185,7 @@
   padding: 1px 5px 1px 5px;
   border-radius: 0.25rem;
   text-align: center;
+  margin-bottom: 5px;
 }
 
 .substatus {
@@ -206,4 +209,8 @@
   color: lightseagreen;
   margin-top: 0.5rem;
   cursor: pointer;
+}
+
+.right-item-center{
+  padding: 5px;
 }

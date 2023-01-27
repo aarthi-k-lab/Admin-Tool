@@ -10,10 +10,12 @@ const getGroupList = R.pathOr([], ['user', 'groupList']);
 
 const isUtilGroupPresent = state => getGroupList(state).includes('util-mgr');
 
+const getUserPrincipalName = state => R.path(['user', 'userDetails', 'email'], state);
 const isRPSGroupPresent = state => getGroupList(state).includes(RPS_STAGER)
   || getGroupList(state).includes(RPS_STAGER_MGR);
 
 const selectors = {
+  getUserPrincipalName,
   isUtilGroupPresent,
   isRPSGroupPresent,
   getUser,

@@ -2,17 +2,21 @@
 
 exports[`<Item /> snapshot test 1`] = `
 <div
-  className="components-Tombstone-Item-Item__item"
+  className="components-Tombstone-Item-Item__wrapper"
 >
-  <span
-    className="components-Tombstone-Item-Item__title"
+  <div
+    className="components-Tombstone-Item-Item__item"
   >
-    title
-  </span>
-  <span
-    className="components-Tombstone-Item-Item__content"
-  >
-    content
-  </span>
+    <span
+      className="components-Tombstone-Item-Item__title"
+    >
+      title
+    </span>
+    <span
+      className="components-Tombstone-Item-Item__content"
+    >
+      content
+    </span>
+  </div>
 </div>
 `;

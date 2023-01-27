@@ -5,6 +5,8 @@
   justify-content: flex-start;
   padding: 0.5rem 0.5rem;
   width: 100%;
+  margin-top: 1rem;
+  max-width: 32rem;
 }
 
 .alert-box--error {

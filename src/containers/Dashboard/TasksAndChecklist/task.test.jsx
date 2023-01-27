@@ -212,10 +212,6 @@ describe('<TasksAndChecklist />', () => {
     expect(onWidgetToggle).toBeCalledWith({ currentWidget: '', openWidgetList: [] });
 
     jest.clearAllMocks();
-    wrapper.setProps({ groupName: 'DOCSIN' });
-    wrapper.find(CloseIcon).prop('onClick')();
-    expect(onWidgetToggle).toBeCalledWith({ currentWidget: '', openWidgetList: [] });
-
 
     jest.clearAllMocks();
     wrapper.instance().componentWillUnmount();
@@ -363,9 +359,6 @@ describe('<TasksAndChecklist />', () => {
         onPrev={onPrev}
       />,
     );
-    expect(wrapper.find(BookingHomePage).prop('message')).toBe('Booking Widget');
-    wrapper.setProps({ isAssigned: false });
-    expect(wrapper.find(BookingHomePage).prop('message')).toBe('Assign to me');
     wrapper.setProps({ isPostModEndShift: true });
     expect(historyMock).toContain('/stager');
     wrapper.setProps({ isPostModEndShift: false, completeReviewResponse: { message: 'success' } });

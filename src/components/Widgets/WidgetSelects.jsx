@@ -1,8 +1,5 @@
 import React from 'react';
-import ChatIcon from '@material-ui/icons/Chat';
-import HistoryIcon from '@material-ui/icons/History';
 import TrailButton from '@material-ui/icons/Email';
-import Exposure from '@material-ui/icons/Exposure';
 import * as R from 'ramda';
 import {
   COMMENTS,
@@ -10,7 +7,7 @@ import {
   HISTORY,
   CUSTOM_COMM_LETTER,
   BOOKING,
-  INCOME_CALCULATOR,
+  FINANCIAL_CALCULATOR,
   FHLMC,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
@@ -38,14 +35,13 @@ const {
 const widgets = [
   {
     id: CUSTOM_COMM_LETTER,
-    icon: <TrailButton />,
+    icon: <TrailButton style={{ color: '#4E586E' }} />,
     component: <TrialLetter />,
     visibility: [LOAN_ACTIVITY],
-    defaultOpen: true,
   },
   {
     id: COMMENTS,
-    icon: <ChatIcon />,
+    icon: <img alt="Comment" src="/static/img/comment.png" />,
     component: <CommentsWidget />,
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
@@ -65,7 +61,7 @@ const widgets = [
   },
   {
     id: HISTORY,
-    icon: <HistoryIcon />,
+    icon: <img alt="History" src="/static/img/history.png" />,
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN,
       STAGER, LOAN_ACTIVITY, BOOKING_GROUP, POSTMODSTAGER, INVSET, SECONDLOOK,
@@ -76,13 +72,13 @@ const widgets = [
     id: BOOKING,
     icon: <img alt="BookingAutomation" src="/static/img/bookingWidget.svg" />,
     visibility: [
-      DOCS_IN, BOOKING_GROUP,
+      DOCS_IN,
     ],
     children: [COMMENTS],
   },
   {
-    id: INCOME_CALCULATOR,
-    icon: <Exposure />,
+    id: FINANCIAL_CALCULATOR,
+    icon: <img alt="Income Calculator" src="/static/img/incomecalculator.png" />,
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, BOOKING_GROUP,
     ],
@@ -90,7 +86,7 @@ const widgets = [
   },
   {
     id: FHLMC,
-    icon: <img alt="FHLMC" src="/static/img/Freddie-Widget.svg" />,
+    icon: <img alt="FHLMC" src="/static/img/Freddie_Widget.png" style={{ width: '23px' }} />,
     component: <FHLMCWidget />,
     visibility: [
       BEUW, DOC_GEN, POSTMODSTAGER, INVSET, SECONDLOOK,

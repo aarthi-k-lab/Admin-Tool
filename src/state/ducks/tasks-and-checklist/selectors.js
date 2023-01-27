@@ -174,6 +174,8 @@ const shouldDeleteTask = R.pathOr('', ['tasksAndChecklist', 'shouldDeleteTask'])
 
 const isDialogOpen = R.pathOr(false, ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'isOpen']);
 
+const getCurrentChecklistType = R.pathOr(false, ['tasksAndChecklist', 'currentChecklistType']);
+
 const getDialogContent = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'content']);
 
 const getDialogTitle = R.pathOr('', ['tasksAndChecklist', 'deleteTaskConfirmationDialog', 'title']);
@@ -182,7 +184,6 @@ const selectedTaskId = state => R.pathOr('', ['tasksAndChecklist', 'checklist', 
 const selectedTaskBlueprintCode = state => R.pathOr('', ['tasksAndChecklist', 'checklist', 'taskBlueprintCode'], state);
 
 const getDropDownOptions = state => R.pathOr([], ['tasksAndChecklist', 'dropDownOptions'], state);
-
 
 const getPath = (obj, field, match) => {
   const subPath = R.compose(
@@ -238,6 +239,7 @@ const getFailedRules = (state) => {
       title: R.pathOr([], ['taskBlueprint', 'description'], checklistItem),
       type: R.pathOr([], ['taskBlueprint', 'type'], checklistItem),
       value: getCurrentChecklistValue(checklistItem, state),
+      id: R.propOr('', '_id', checklistItem),
       additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
     })),
     R.pathOr({}, ['tasksAndChecklist', 'checklist', 'subTasks']),
@@ -283,6 +285,7 @@ const getLastMainChecklistRefresh = state => R.pathOr(null, ['tasksAndChecklist'
 
 
 const selectors = {
+  getCurrentChecklistType,
   getLastMainChecklistRefresh,
   getTasksAndChecklist,
   getChecklist,

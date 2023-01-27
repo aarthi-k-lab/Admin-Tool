@@ -186,8 +186,7 @@ class LabelWithIcon extends React.PureComponent {
                 color="primary"
                 disabled={!isAssigned || showContinueMyReview || !slaRulesProcessed}
                 onClick={() => this.handleRunAuditRulesClick()}
-                style={{ margin: '13px 0px 0px 0px' }}
-                styleName="get-next"
+                styleName={!isAssigned || showContinueMyReview || !slaRulesProcessed ? 'get-next-disabled' : 'get-next'}
                 variant="contained"
               >
                 RUN AUDIT RULES
@@ -200,7 +199,7 @@ class LabelWithIcon extends React.PureComponent {
                   disabled={disabled}
                   onClick={() => this.handlePushDataClick()}
                   style={triggerHeader ? { margin: '13px 19px 0px 0px' } : { margin: '13px 0px 0px 0px' }}
-                  styleName="get-next"
+                  styleName={disabled ? 'get-next-disabled' : 'get-next'}
                   variant="contained"
                 >
                   PUSH DATA
@@ -221,7 +220,6 @@ class LabelWithIcon extends React.PureComponent {
               <Button
                 disabled={passedRules.length === 0}
                 onClick={() => this.handleFilterClick(true)}
-                style={{ margin: '0px 9px 0px 9.5rem' }}
                 styleName={filter ? 'statusbtnClicked' : 'statusbtn'}
                 variant="contained"
               >

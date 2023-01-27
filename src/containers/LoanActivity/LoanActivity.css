@@ -10,10 +10,6 @@
   overflow-y: auto;
 }
 
-::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 0.625rem;
@@ -33,6 +29,8 @@
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
+  max-width: 100% !important;
+  flex-basis: 100% !important;
 }
 
 .loan-activity {
@@ -43,7 +41,7 @@
   flex-grow: 1;
   flex-basis: 0;
   overflow: auto;
-  width: 60%;
+  width: 65%;
   margin: auto;
 }
 
@@ -75,4 +73,13 @@
 
 .loan-act-widget {
   z-index: 11;
+}
+
+.loan-info-components {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  width: 0;
+  background-color: white;
+  border-radius: 10px;
 }

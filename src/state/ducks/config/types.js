@@ -10,6 +10,9 @@ const GET_PDFGENRATOR_URL = 'app/task-and-checklist/GET_PDFGENRATOR_URL';
 const SET_PDFGENRATOR_URL = 'app/task-and-checklist/SET_PDFGENRATOR_URL';
 const TOGGLE_ICON = 'app/task-and-checklist/TOGGLE_ICON';
 const TOGGLE_HIDDEN_ROUTE = 'app/task-and-checklist/TOGGLE_HIDDEN_ROUTE';
+const CONFIG_DATA_SUCCESS = 'app/config/FETHCING_DATA_SUCCESS';
+const CONFIG_DATA_FAILURE = 'app/config/FETCHING_DATA_FAILURE';
+
 
 export {
   FETCHCONFIG,
@@ -24,4 +27,6 @@ export {
   SET_PDFGENRATOR_URL,
   TOGGLE_ICON,
   TOGGLE_HIDDEN_ROUTE,
+  CONFIG_DATA_SUCCESS,
+  CONFIG_DATA_FAILURE,
 };

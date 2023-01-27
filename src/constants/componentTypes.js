@@ -22,6 +22,7 @@ const LINK = 'link';
 const TABS = 'tabs';
 const DIVIDER = 'divider';
 const INCOME_CALCULATOR = 'income-calculator';
+const EXPENSE_CALCULATOR = 'expense-calculator';
 const READ_ONLY_TEXT = 'read-only-text';
 
 const componentTypes = {
@@ -50,6 +51,7 @@ const componentTypes = {
   SLA_RULES,
   CHECKBOX,
   READ_ONLY_TEXT,
+  EXPENSE_CALCULATOR,
 };
 
 export default componentTypes;

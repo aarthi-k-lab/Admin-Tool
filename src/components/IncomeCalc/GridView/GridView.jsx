@@ -31,7 +31,7 @@ class GridView extends React.PureComponent {
           style={{ ...disabledStyle }}
           styleName={styleName || ''}
         >
-          {columnNames.map((columnName, index) => (
+          {columnNames && columnNames.map((columnName, index) => (
             <Grid
               item
               style={{ display: 'flex', justifyContent: 'center' }}
@@ -42,7 +42,7 @@ class GridView extends React.PureComponent {
           ))}
           {value && value.map((rowItem, index) => (
             <>
-              {columnNames.map(columnName => (
+              {columnNames && columnNames.map(columnName => (
                 <Grid
                   item
                   style={{ display: 'flex', justifyContent: 'center', padding: '1rem 0rem' }}

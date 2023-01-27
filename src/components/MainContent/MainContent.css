@@ -5,6 +5,7 @@
   flex-basis: 0;
   overflow: auto;
   flex-direction: column;
+  background-color: #f3f5f9;
 }
 
 .main-content-expanded {

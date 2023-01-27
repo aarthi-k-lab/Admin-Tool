@@ -6,6 +6,7 @@
   height: 100%;
   list-style-type: none;
   transition: width 250ms ease-in;
+  border-right: 2px solid rgb(245, 245, 245);
 }
 
 .task-pane-controls {
@@ -24,7 +25,7 @@
 }
 
 .status-select-field-text {
-  font-size: 4px !important;
+  font-size: 10px !important;
 }
 
 .collapse-icon-open:focus {
@@ -55,11 +56,11 @@ svg {
 }
 
 .icons {
-  align-items: center;
   display: flex;
+  justify-content: space-around;
 }
 
 .checklist-history-icon {
   display: flex;
-  position: fixed;
+  margin-right: 0.5rem;
 }

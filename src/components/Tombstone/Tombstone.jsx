@@ -1,11 +1,14 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-array-index-key */
+
 import React from 'react';
 import PropTypes from 'prop-types';
-import IconButton from '@material-ui/core/IconButton';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import MoreIcon from '@material-ui/icons/MoreHoriz';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import { connect } from 'react-redux';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import { operations } from 'ducks/tombstone';
+import DashboardModel from '../../models/Dashboard';
+import TabContent from './TabContent/TabContent';
 import Item from './Item';
 import Selector from '../../state/ducks/tombstone/selectors';
 import styles from './Tombstone.css';
@@ -17,109 +20,74 @@ class Tombstone extends React.Component {
     const dummy = items;
     const array = [];
     this.state = {
-      anchorEl: null,
       menuItem: dummy.slice(array.length, dummy.length),
-      tombStoneArray: array,
+      index: 0,
     };
-    this.handleClose = this.handleClose.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.resize = this.resize.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount() {
-    window.addEventListener('resize', this.resize.bind(this));
-    this.resize();
-  }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resize.bind(this));
+    const { clearTombstoneData } = this.props;
+    clearTombstoneData();
   }
 
-  resize() {
-    const { items } = this.props;
-    let { tombStoneArray } = this.state;
-    const dummy = items;
-    const screenWidth = window.innerWidth;
-    if (screenWidth < 300) tombStoneArray = items.slice(0, 2);
-    else if (screenWidth < 400) tombStoneArray = items.slice(0, 3);
-    else if (screenWidth < 500) tombStoneArray = items.slice(0, 4);
-    else if (screenWidth < 600) tombStoneArray = items.slice(0, 4);
-    else if (screenWidth < 700) tombStoneArray = items.slice(0, 5);
-    else if (screenWidth < 800) tombStoneArray = items.slice(0, 5);
-    else if (screenWidth < 900) tombStoneArray = items.slice(0, 6);
-    else if (screenWidth < 1000) tombStoneArray = items.slice(0, 7);
-    else if (screenWidth < 1100) tombStoneArray = items.slice(0, 8);
-    else if (screenWidth > 1100) tombStoneArray = items.slice(0, 9);
-    this.setState({ tombStoneArray, menuItem: dummy.slice(tombStoneArray.length, dummy.length) });
+  static getDerivedStateFromProps(props) {
+    const { items } = props;
+    return {
+      menuItem: items,
+    };
   }
 
 
-  handleClose() {
-    this.setState({ anchorEl: null });
-  }
-
-  handleClick(event) {
-    const { items } = this.props;
-    const { tombStoneArray } = this.state;
-    this.setState({
-      anchorEl: event.currentTarget,
-      menuItem: items.slice(tombStoneArray.length, items.length),
-    });
+  handleChange(_, idx) {
+    const { index } = this.state;
+    const { toggleTombstoneView } = this.props;
+    if (index !== idx) {
+      this.setState(
+        { index: idx },
+      );
+      toggleTombstoneView();
+    }
   }
 
   render() {
-    const { onOpenWindow } = this.props;
-    const { tombStoneArray, anchorEl, menuItem } = this.state;
-    const open = Boolean(anchorEl);
-    let menuDiv = <div />;
-    if (menuItem.length > 0) {
-      menuDiv = (
-        <div styleName="more-icon-button">
-          <IconButton onClick={this.handleClick}>
-            <MoreIcon styleName="more-icon" />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            classes={{
-              paper: styles.menuItemRoot,
-            }}
-            id="long-menu"
-            onClose={this.handleClose}
-            open={open}
-          >
-            {menuItem.map(option => (
-              <MenuItem key={option.title} styleName={option.content.style || 'menuItem'}>
-                <div>
-                  {option.title}
-                  <br />
-                  <span styleName="menuItemContent">
-                    {option.content.flag || option.content}
-                  </span>
-                </div>
-              </MenuItem>
-            ))}
-          </Menu>
-        </div>
-      );
-    }
-
-    const tableWidth = tombStoneArray.length > 2 ? '100%' : '20%';
+    const { menuItem, index } = this.state;
+    const { group, disableIcons } = this.props;
+    const width = group !== DashboardModel.SEARCH_LOAN ? '55%' : '100%';
+    const indicatorColor = group !== DashboardModel.SEARCH_LOAN ? 'primary' : '';
+    const tombstoneStyle = `${group === DashboardModel.SEARCH_LOAN ? 'search-loan' : 'loan-view'}`;
     return (
-      <section id="container" styleName="tombstone">
-        <table styleName="tombstone-table" width={tableWidth}>
-          <tbody>
-            <tr>
-              {Tombstone.getItems(tombStoneArray)}
-              <td>{menuDiv}</td>
-              <td>
-                <div styleName="spacer" />
-                <IconButton onClick={onOpenWindow}>
-                  <OpenInNewIcon styleName="icon" />
-                </IconButton>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <section className={styles.tombstone} id="container" styleName={group === DashboardModel.MILESTONE_ACTIVITY ? 'milestone-activity' : tombstoneStyle}>
+        <Tabs
+          indicatorColor={indicatorColor}
+          onChange={this.handleChange}
+          textColor="primary"
+          value={index}
+          variant="fullWidth"
+        >
+          <Tab
+            label="LOAN INFO"
+            style={{ minWidth: `${width}` }}
+          />
+          {group !== DashboardModel.SEARCH_LOAN
+            ? (
+              <Tab
+                label="MOD INFO"
+                style={{ minWidth: '50%' }}
+              />
+            ) : null}
+        </Tabs>
+
+        <TabContent index={0} value={index}>
+          {Tombstone.getItems(menuItem, disableIcons)}
+        </TabContent>
+        {group !== DashboardModel.SEARCH_LOAN
+          ? (
+            <TabContent index={1} value={index}>
+              {Tombstone.getItems(menuItem, disableIcons)}
+            </TabContent>
+          ) : null}
       </section>
 
     );
@@ -127,6 +95,7 @@ class Tombstone extends React.Component {
 }
 
 Tombstone.defaultProps = {
+  group: '',
   items: [
     {
       title: 'Loan #',
@@ -141,38 +110,64 @@ Tombstone.defaultProps = {
       content: 'Content',
     },
   ],
-  onOpenWindow: () => { },
 };
 
 Tombstone.propTypes = {
+  group: PropTypes.string,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       content: PropTypes.any.isRequired,
       title: PropTypes.string.isRequired,
     }).isRequired,
   ),
-  onOpenWindow: PropTypes.func,
 };
 
 
-Tombstone.getItems = function getItems(items) {
+Tombstone.getItems = function getItems(items, disableIcons) {
   const screenWidth = window.innerWidth;
   const arrayLength = items.length;
-  return items.map(({ content, title }) => (
+  return items.map(({
+    content, title, style, component,
+  }) => (
     (
-      <td key={title} style={{ maxWidth: screenWidth / arrayLength }} styleName={content.style || 'itemTd'}>
-        <Item key={title} content={content.flag || content} title={title} />
-      </td>
+      <tr key={title} style={{ maxWidth: screenWidth / arrayLength, textAlign: 'left' }} styleName={content.style || 'itemTd'}>
+        <Item
+          key={title}
+          Component={component}
+          content={content.flag || content}
+          disableIcons={disableIcons}
+          style={style}
+          title={title}
+        />
+      </tr>
     )
   ));
+};
+
+Tombstone.propTypes = {
+  clearTombstoneData: PropTypes.func,
+  disableIcons: PropTypes.bool,
+  toggleTombstoneView: PropTypes.func,
+};
+
+Tombstone.defaultProps = {
+  clearTombstoneData: () => { },
+  toggleTombstoneView: () => { },
+  disableIcons: false,
 };
 
 const mapStateToProps = state => ({
   items: Selector.getTombstoneData(state),
 });
+
+const mapDispatchToProps = dispatch => ({
+  clearTombstoneData: operations.clearTombstoneDataOperation(dispatch),
+  toggleTombstoneView: operations.toggleViewType(dispatch),
+});
+
 const TombstoneContainer = connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(Tombstone);
 
 const TestHooks = {

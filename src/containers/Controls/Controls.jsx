@@ -238,7 +238,16 @@ class Controls extends React.PureComponent {
         className="material-ui-button"
         color="primary"
         onClick={this.checkErrors}
-        style={{ marginRight: '0.5rem' }}
+        style={{
+          marginRight: '1.5rem',
+          height: '2.5rem',
+          background: 'linear-gradient(90deg, #6a81f0 0%, #4155e2 100%)',
+          borderRadius: '10px',
+          fontStyle: 'normal',
+          fontWeight: '700 !important',
+          fontSize: '15px',
+          lineHeight: '18px',
+        }}
         variant="contained"
       >
         CHECK

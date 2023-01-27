@@ -7,6 +7,10 @@ import * as R from 'ramda';
 import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
 import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { operations } from 'ducks/tasks-and-checklist';
+import Grid from '@material-ui/core/Grid';
 import RadioButtons from './RadioButtons';
 import SlaRules from '../SlaRules';
 import CheckBox from './Checkbox';
@@ -119,9 +123,14 @@ class Checklist extends React.PureComponent {
     };
   }
 
-  handleChange(id, taskCode) {
-    const { onChange } = this.props;
+  handleChange(id, taskCode, additionalInfo) {
+    const { onChange, processAction } = this.props;
+    const actions = R.propOr(false, 'actions', additionalInfo);
     return (event) => {
+      if (actions) {
+        const { postProcess, postData } = actions;
+        processAction(postProcess, { ...postData, value: event.target.value });
+      }
       onChange(id, event.target.value, taskCode);
     };
   }
@@ -215,15 +224,16 @@ class Checklist extends React.PureComponent {
   }) {
     const {
       RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, SLA_RULES,
-      CHECKBOX, READ_ONLY_TEXT, CURRENCY, INCOME_CALCULATOR,
+      CHECKBOX, READ_ONLY_TEXT, CURRENCY, INCOME_CALCULATOR, EXPENSE_CALCULATOR,
     } = HTMLElements;
     let element = {};
     switch (type) {
-      case INCOME_CALCULATOR: {
-        return (<IncomeCalcWidget processInstance={processInstance} />);
+      case INCOME_CALCULATOR:
+      case EXPENSE_CALCULATOR: {
+        return (<IncomeCalcWidget processInstance={processInstance} type={type} />);
       }
       case RADIO_BUTTONS: {
-        const onChange = this.handleChange(id, taskCode);
+        const onChange = this.handleChange(id, taskCode, additionalInfo);
         element = (
           <RadioButtons
             key={id}
@@ -521,20 +531,16 @@ class Checklist extends React.PureComponent {
     const {
       checklistItems, children, title,
       className, location, resolutionId, resolutionData, triggerHeader, incomeCalcInProgress,
+      disableNext, disablePrev, onNext, onPrev,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
     } = this.state;
-    const { INCOME_CALCULATOR } = HTMLElements;
+    const { INCOME_CALCULATOR, EXPENSE_CALCULATOR } = HTMLElements;
     const checklistElements = checklistItems.filter(({ isVisible }) => isVisible)
       .map(this.renderChecklistItem);
-    const addClearButton = (!R.equals(checklistItems[0].type, 'sla-rules') && !R.equals(checklistItems[0].type, 'income-calculator')) && (
+    const addClearButton = (!R.equals(checklistItems[0].type, 'sla-rules') && !R.equals(checklistItems[0].type, 'income-calculator') && !R.equals(checklistItems[0].type, 'expense-calculator')) && (
       <>
-        <div styleName="subTaskDescParent">
-          <div styleName="subTaskDescription">
-            <Typography styleName="checklist-title">{title}</Typography>
-          </div>
-        </div>
         {!(location.pathname === '/special-loan' || triggerHeader) && (
           <div styleName="clearButton">
             <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
@@ -544,6 +550,7 @@ class Checklist extends React.PureComponent {
         )}
       </>
     );
+    const isFinanceChecklist = R.equals(R.prop('type', R.head(checklistItems)), INCOME_CALCULATOR) || R.equals(R.prop('type', R.head(checklistItems)), EXPENSE_CALCULATOR);
     return (
       <section className={className}>
         {children}
@@ -559,15 +566,46 @@ class Checklist extends React.PureComponent {
               triggerHeader={triggerHeader}
             />
           )}
-        {addClearButton}
-        <div styleName={incomeCalcInProgress ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
-          {R.equals(R.prop('type', R.head(checklistItems)), INCOME_CALCULATOR)
-            ? checklistElements : (
-              <Paper elevation={1} styleName="checklist-form-controls">
+        <Grid container style={{ marginTop: '1rem' }}>
+          <Grid item xs={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'sla-rules' || checklistItems[0].type === 'expense-calculator' ? 10 : 6}>
+            {
+              (!R.equals(checklistItems[0].type, 'sla-rules') && !R.equals(checklistItems[0].type, 'income-calculator') && !R.equals(checklistItems[0].type, 'expense-calculator')) && (
+                <>
+                  <Typography styleName={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'expense-calculator' ? 'checklist-title-income-calc' : 'checklist-title'}>{title}</Typography>
+                </>
+              )
+            }
+          </Grid>
+          <Grid item xs={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'sla-rules' || checklistItems[0].type === 'expense-calculator' ? 1 : 2}>
+            <Button
+              color="primary"
+              disabled={disablePrev}
+              onClick={onPrev}
+            >
+                    Prev
+            </Button>
+          </Grid>
+          <Grid item xs={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'sla-rules' || checklistItems[0].type === 'expense-calculator' ? 1 : 2}>
+            <Button
+              color="primary"
+              disabled={disableNext}
+              onClick={onNext}
+            >
+                Next
+            </Button>
+          </Grid>
+          <Grid item xs={2}>
+            {addClearButton}
+          </Grid>
+        </Grid>
+        <div style={{ padding: !incomeCalcInProgress && checklistItems[0].type === 'sla-rules' ? '0 .2rem 0 0.1rem' : '' }} styleName={incomeCalcInProgress ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
+          {isFinanceChecklist ? checklistElements
+            : (
+              <Paper elevation={0} styleName="checklist-form-controls">
                 {checklistElements}
               </Paper>
-            ) }
-
+            )
+          }
         </div>
         <ConfirmationDialogBox
           isOpen={isDialogOpen}
@@ -586,6 +624,8 @@ Checklist.defaultProps = {
   triggerHeader: false,
   incomeCalcInProgress: false,
   ruleResultFromTaskTree: [],
+  disableNext: false,
+  disablePrev: false,
 };
 
 NumberFormatCustom.propTypes = {
@@ -614,6 +654,9 @@ Checklist.propTypes = {
   ).isRequired,
   children: PropTypes.node,
   className: PropTypes.string,
+  currentChecklistType: PropTypes.func.isRequired,
+  disableNext: PropTypes.bool,
+  disablePrev: PropTypes.bool,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
@@ -623,6 +666,9 @@ Checklist.propTypes = {
     search: PropTypes.string.isRequired,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
+  processAction: PropTypes.func.isRequired,
   putComputeRulesPassed: PropTypes.func.isRequired,
   resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
   resolutionId: PropTypes.string.isRequired,
@@ -631,6 +677,11 @@ Checklist.propTypes = {
   triggerHeader: PropTypes.bool,
 };
 
+function mapDispatchToProps(dispatch) {
+  return {
+    currentChecklistType: operations.currentChecklistType(dispatch),
+  };
+}
 
 const TestHooks = {
   Checklist,
@@ -640,4 +691,4 @@ const TestHooks = {
 
 export { TestHooks };
 
-export default Checklist;
+export default withRouter(connect(null, mapDispatchToProps)(Checklist));

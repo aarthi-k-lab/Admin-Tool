@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import hotkeys from 'hotkeys-js';
 import * as R from 'ramda';
@@ -28,6 +29,13 @@ import { closeWidgets } from 'components/Widgets/WidgetSelects';
 import ErrorBanner from 'components/ErrorBanner';
 import componentTypes from 'constants/componentTypes';
 import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
+import { selectors as tombstoneSelectors } from 'ducks/tombstone';
+import Grid from '@material-ui/core/Grid';
+import RFDContent from 'components/Tombstone/TombstoneComponents/RFDContent';
+import {
+  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR,
+} from 'constants/widgets';
+import { EDITABLE_FIELDS, RFD } from 'constants/loanInfoComponents';
 import Popup from '../../../components/Popup';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -35,9 +43,7 @@ import BookingHomePage from './BookingHomePage';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
-import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR,
-} from '../../../constants/widgets';
+import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent/CollateralContent';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
 
@@ -54,7 +60,7 @@ class TasksAndChecklist extends Component {
       }
     });
     if (R.equals(groupName, DashboardModel.BOOKING)
-    && !(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList))) {
+      && !(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList))) {
       const payload = {
         currentWidget: BOOKING,
         openWidgetList: [BOOKING],
@@ -86,7 +92,7 @@ class TasksAndChecklist extends Component {
   shouldRenderWidgetView = () => {
     const { openWidgetList } = this.props;
     return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR],
+      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR],
     ))(openWidgetList);
   }
 
@@ -176,6 +182,11 @@ class TasksAndChecklist extends Component {
       incomeCalcInProgress,
       taskName,
       delayChecklistHistory,
+      processAction,
+      disableNext,
+      disablePrev,
+      onNext,
+      onPrev,
     } = this.props;
 
     if (dataLoadStatus === 'failed') {
@@ -197,7 +208,7 @@ class TasksAndChecklist extends Component {
       );
     }
     let styleName = 'checklist';
-    if (checklistItems && R.equals(R.prop('type', R.head(checklistItems)), 'income-calculator')) {
+    if (checklistItems && (R.equals(R.prop('type', R.head(checklistItems)), 'income-calculator') || R.equals(R.prop('type', R.head(checklistItems)), 'expense-calculator'))) {
       styleName = 'incomeCalc';
     }
     const isBookingWidgetOpen = R.contains(BOOKING, openWidgetList);
@@ -215,6 +226,8 @@ class TasksAndChecklist extends Component {
         delayChecklistHistory={delayChecklistHistory}
         dialogContent={getDialogContent}
         dialogTitle={dialogTitle}
+        disableNext={disableNext}
+        disablePrev={disablePrev}
         failedRules={failedRules}
         groupName={groupName}
         handleClearSubTask={isConfirmed => this.handleSubTaskClearance(isConfirmed)}
@@ -225,7 +238,10 @@ class TasksAndChecklist extends Component {
         location={location}
         onChange={onChecklistChange}
         onCompleteMyReviewClick={this.handleClose}
+        onNext={onNext}
+        onPrev={onPrev}
         passedRules={passedRules}
+        processAction={processAction}
         putComputeRulesPassed={putComputeRulesPassed}
         resolutionData={resolutionData}
         resolutionId={resolutionId}
@@ -264,7 +280,7 @@ class TasksAndChecklist extends Component {
       case HISTORY:
         widgetToRender = <MilestoneActivity />;
         break;
-      case INCOME_CALCULATOR:
+      case FINANCIAL_CALCULATOR:
         widgetToRender = <IncomeCalcWidget />;
         break;
       default:
@@ -299,33 +315,95 @@ class TasksAndChecklist extends Component {
     return null;
   }
 
-  render() {
+
+  renderCenterPaneChecklist() {
     const {
       commentsRequired,
       instructions,
-      disableNext,
-      disablePrev,
       disposition,
       groupName,
-      inProgress,
-      noTasksFound,
-      onNext,
-      onPrev,
       onInstuctionDialogToggle,
       showDisposition,
       showInstructionsDialog,
+      isAssigned,
+      openWidgetList,
+    } = this.props;
+    const showDialogBox = (isAssigned && showDisposition);
+    const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
+    const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
+    const taskPane = R.contains(FINANCIAL_CALCULATOR, openWidgetList) ? null : <TaskPane styleName="tasks" />;
+    const currentOverlay = this.shouldRenderWidgetView() ? null : (
+      <>
+        {taskPane}  
+        {this.renderChecklist()}
+      </>
+    );
+    return (
+      <section styleName={R.contains(HISTORY, openWidgetList) ? 'tasks-and-checklist-loan-audit' : 'tasks-and-checklist'}>
+        {currentOverlay}
+        {this.renderSnackBar()}
+        {!this.shouldRenderWidgetView() ? (
+          <>
+            <DialogCard
+              commentsRequired={commentsRequired}
+              dialogContent={instructions}
+              dialogHeader="Steps to Resolve"
+              message={dispositionMessage}
+              onDialogToggle={onInstuctionDialogToggle}
+              shouldShow={showDialogBox}
+              showDialog={showInstructionsDialog}
+              styleName="instructions"
+              title="Disposition"
+            />
+            <Navigation
+              className={classNames(styles.footer, styles.navigation)}
+            />
+          </>
+        ) : this.renderWidgetComponents()}
+        <WidgetBuilder
+          page={groupName}
+          styleName={groupName === DashboardModel.DOCS_IN
+            && R.contains(BOOKING, openWidgetList)
+            ? 'task-checklist-bw' : 'task-checklist'}
+        />
+        {this.renderSweetAlert()}
+      </section>
+    );
+  }
+
+  renderLoanInfoComponents() {
+    const { groupName, openWidgetList, checklistCenterPaneView } = this.props;
+    return (
+      <section styleName="loanInfo">
+        <Grid styleName="rfdData">
+          {checklistCenterPaneView === RFD ? <RFDContent /> : <CollateralContent />}
+        </Grid>
+        <WidgetBuilder
+          page={groupName}
+          styleName={groupName === DashboardModel.DOCS_IN
+              && R.contains(BOOKING, openWidgetList)
+            ? 'task-checklist-bw' : 'task-checklist'}
+        />
+        {this.renderSweetAlert()}
+      </section>
+
+    );
+  }
+
+  render() {
+    const {
+      inProgress,
+      noTasksFound,
       taskFetchError,
       isGetNextError,
       isPostModEndShift,
       completeReviewResponse,
       history,
-      isAssigned,
       openWidgetList,
       errorBanner,
       showBanner,
+      checklistCenterPaneView,
     } = this.props;
-    const showDialogBox = (isAssigned && showDisposition);
-    const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
     if (isPostModEndShift) {
       history.push('/stager');
     }
@@ -337,78 +415,21 @@ class TasksAndChecklist extends Component {
         <Loader message="Please Wait" />
       );
     }
+
+    if (EDITABLE_FIELDS.includes(checklistCenterPaneView)) {
+      return (<div styleName="scroll-wrapper">{this.renderLoanInfoComponents()}</div>);
+    }
+
     if (noTasksFound || taskFetchError || isGetNextError) {
       return (
         this.renderTaskErrorMessage()
       );
     }
 
-    const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
-    const taskPane = R.contains(INCOME_CALCULATOR, openWidgetList) ? null : <TaskPane styleName="tasks" />;
-    const currentOverlay = this.shouldRenderWidgetView() ? null : (
-      <>
-        {taskPane}
-        {this.renderChecklist()}
-      </>
-    );
     return (
       <div styleName="scroll-wrapper">
-        { showBanner && <ErrorBanner errorBanner={errorBanner} /> }
-        { R.contains(BOOKING, openWidgetList) && (
-          <div styleName="bookingWidget">
-            <span styleName="widgetTitle">
-              BOOKING AUTOMATION
-            </span>
-            <span styleName="widgetClose">
-              <CloseIcon onClick={this.handleClose} />
-            </span>
-          </div>
-        )
-        }
-        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
-          <div styleName="bookingWidget">
-            <span styleName="widgetTitle">
-              ADDITIONAL INFO
-            </span>
-          </div>
-        )
-        }
-        <section styleName={R.contains(HISTORY, openWidgetList) ? 'tasks-and-checklist-loan-audit' : 'tasks-and-checklist'}>
-          {groupName === DashboardModel.BOOKING
-          && !(R.contains(R.head(openWidgetList), [ADDITIONAL_INFO, HISTORY, BOOKING]))
-            ? <BookingHomePage message={bookingHomepageMsg} />
-            : currentOverlay }
-          {this.renderSnackBar()}
-          {!this.shouldRenderWidgetView() ? (
-            <>
-              <DialogCard
-                commentsRequired={commentsRequired}
-                dialogContent={instructions}
-                dialogHeader="Steps to Resolve"
-                message={dispositionMessage}
-                onDialogToggle={onInstuctionDialogToggle}
-                shouldShow={showDialogBox}
-                showDialog={showInstructionsDialog}
-                styleName="instructions"
-                title="Disposition"
-              />
-              <Navigation
-                className={classNames(styles.footer, styles.navigation)}
-                disableNext={disableNext}
-                disablePrev={disablePrev}
-                onNext={onNext}
-                onPrev={onPrev}
-              />
-            </>
-          ) : this.renderWidgetComponents()}
-          <WidgetBuilder
-            page={groupName}
-            styleName={groupName === DashboardModel.DOCS_IN
-              && R.contains(BOOKING, openWidgetList)
-              ? 'task-checklist-bw' : 'task-checklist'}
-          />
-          {this.renderSweetAlert()}
-        </section>
+        {showBanner && <ErrorBanner errorBanner={errorBanner} />}
+        {this.renderCenterPaneChecklist()}
       </div>
     );
   }
@@ -433,6 +454,7 @@ TasksAndChecklist.defaultProps = {
   resolutionData: [],
   ruleResultFromTaskTree: [],
   openWidgetList: [],
+  checklistCenterPaneView: 'Checklist',
 };
 
 TasksAndChecklist.propTypes = {
@@ -453,6 +475,7 @@ TasksAndChecklist.propTypes = {
       wfTaskId: PropTypes.string.isRequired,
     }),
   }).isRequired,
+  checklistCenterPaneView: PropTypes.string,
   checklistErrorMessage: PropTypes.string.isRequired,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
@@ -536,6 +559,7 @@ TasksAndChecklist.propTypes = {
     showConfirmButton: PropTypes.bool,
     title: PropTypes.string,
   }).isRequired,
+  processAction: PropTypes.func.isRequired,
   putComputeRulesPassed: PropTypes.func.isRequired,
   resolutionData: PropTypes.arrayOf(PropTypes.string),
   resolutionId: PropTypes.string.isRequired,
@@ -664,11 +688,13 @@ function mapStateToProps(state) {
     loanNumber: dashboardSelectors.loanNumber(state),
     taskName: stagerSelectors.getTaskName(state),
     delayChecklistHistory: stagerSelectors.getDelayCheckListHistory(state),
+    checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    processAction: operations.preProcessChecklistItems(dispatch),
     onWidgetToggle: widgetsOperations.onWidgetToggle(dispatch),
     onChecklistChange: operations.handleChecklistItemValueChange(dispatch),
     closeSnackBar: notificationOperations.closeSnackBar(dispatch),

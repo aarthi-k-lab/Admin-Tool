@@ -38,6 +38,9 @@ import {
   COMPUTE_RULES_PASSED,
   SAVE_DROPDOWN_DATA,
   SET_LAST_UPDATED,
+  SET_RFD_CHOICE,
+  SAVE_MONTHLY_EXPENSE_VALUES,
+  CURRENT_CHECKLIST_TYPE,
 } from './types';
 
 const FAILED = 'failed';
@@ -120,6 +123,16 @@ const reducer = (state = defaultState, action) => {
       const { selector, formattedOptions } = action.payload;
       return R.assocPath(selector, formattedOptions, state);
     }
+    case SAVE_MONTHLY_EXPENSE_VALUES: {
+      const { selector, options } = action.payload;
+      return R.assocPath(selector, options, state);
+    }
+    case CURRENT_CHECKLIST_TYPE:
+      return {
+        ...state,
+        currentChecklistType: action.payload,
+      };
+
     case ERROR_LOADING_CHECKLIST:
       return {
         ...state,
@@ -338,6 +351,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         isAllRulesPassed: action.payload,
+      };
+    }
+    case SET_RFD_CHOICE: {
+      return {
+        ...state,
+        selectedRFDDesc: action.payload,
       };
     }
     default:

@@ -8,104 +8,52 @@ import {
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import {
-  POWER_BI_CONSTANTS_SAGA,
-  POWER_BI_CONSTANTS,
-  GET_FEATURES_SAGA,
-  SET_FEATURES,
-  GET_PDFGENRATOR_URL,
-  SET_PDFGENRATOR_URL,
   TOGGLE_HIDDEN_ROUTE,
   TOGGLE_ICON,
+  CONFIG_DATA_SUCCESS,
+  CONFIG_DATA_FAILURE,
+  FETCHCONFIG_SAGA,
 } from './types';
 
 import {
   TOGGLE_AZURE_SEARCH,
 } from '../stager/types';
 
-export const fetchPowerBIConfig = function* fetchPowerBIConfig() {
+function* getConfig() {
   try {
     const newPayload = yield call(Api.callGet, 'api/config');
     if (newPayload != null) {
-      const getPowerBIConstants = R.propOr({}, 'powerBIReports');
-      const powerBIConstants = getPowerBIConstants(newPayload);
+      const powerBIConstants = R.pathOr({}, ['powerBIReports'], newPayload);
+      const pdfGeneratorUrl = R.pathOr({}, ['pdfGenerator', 'pdfGeneratorUrl'], newPayload);
+      const features = R.pathOr({}, ['features'], newPayload);
+      const hiddenRoutes = R.pathOr([], ['hiddenRoutes'], newPayload);
+      const configData = {
+        powerBIConstants,
+        pdfGeneratorUrl,
+        features,
+        hiddenRoutes,
+      };
       yield put({
-        type: POWER_BI_CONSTANTS,
-        payload: powerBIConstants,
+        type: CONFIG_DATA_SUCCESS,
+        payload: configData,
       });
-    }
-  } catch (e) {
-    yield put({
-      type: POWER_BI_CONSTANTS,
-      payload: {},
-    });
-  }
-};
-
-function* getPdfGeneratorUrl() {
-  try {
-    const response = yield call(Api.callGet, 'api/config');
-    const pdfUrl = R.pathOr({}, ['pdfGenerator', 'pdfGeneratorUrl'], response);
-    if (pdfUrl != null) {
-      yield put({
-        type: GET_PDFGENRATOR_URL,
-        payload: pdfUrl,
-      });
-    }
-  } catch (e) {
-    yield put({
-      type: GET_PDFGENRATOR_URL,
-      payload: '',
-    });
-  }
-}
-
-function* fetchFeatureConfig() {
-  try {
-    const newPayload = yield call(Api.callGet, 'api/config');
-    if (newPayload != null) {
-      const getFeatures = R.propOr({}, 'features');
-      const features = getFeatures(newPayload);
-      const getIconsList = R.propOr([], 'hiddenRoutes');
-      const hiddenRoutes = getIconsList(newPayload);
       yield put({
         type: TOGGLE_AZURE_SEARCH,
         payload: R.prop('azureSearchToggle', features),
       });
-      yield put({
-        type: TOGGLE_HIDDEN_ROUTE,
-        payload: hiddenRoutes,
-      });
-      yield put({
-        type: SET_FEATURES,
-        payload: features,
-      });
     }
   } catch (e) {
     yield put({
-      type: SET_FEATURES,
+      type: CONFIG_DATA_FAILURE,
       payload: {},
     });
   }
 }
 
-function* watchFetchPowerBIConfig() {
-  let payload = yield take(POWER_BI_CONSTANTS_SAGA);
+function* watchGetConfig() {
+  let payload = yield take(FETCHCONFIG_SAGA);
   if (payload != null) {
-    payload = yield fetchPowerBIConfig();
-  }
-}
-
-function* watchGetFeatures() {
-  const payload = yield take(GET_FEATURES_SAGA);
-  if (payload != null) {
-    yield fetchFeatureConfig(payload);
-  }
-}
-
-function* watchGetPdfGeneratorUrl() {
-  const payload = yield take(SET_PDFGENRATOR_URL);
-  if (payload != null) {
-    yield getPdfGeneratorUrl();
+    payload = yield getConfig();
   }
 }
 
@@ -124,17 +72,13 @@ function* watchHiddenRoute() {
 }
 
 export const TestExports = {
-  watchFetchPowerBIConfig,
-  fetchPowerBIConfig,
-  watchGetFeatures,
-  fetchFeatureConfig,
   watchHiddenRoute,
+  watchGetConfig,
+  getConfig,
 };
 
 export function* combinedSaga() {
   yield all([
-    watchFetchPowerBIConfig(),
-    watchGetFeatures(),
-    watchGetPdfGeneratorUrl(),
+    watchGetConfig(),
   ]);
 }

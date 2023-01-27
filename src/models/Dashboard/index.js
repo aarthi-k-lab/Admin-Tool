@@ -32,6 +32,7 @@ const GNRL_CHKLST_SKIP_VALIDATION_GROUPS = [INVSET];
 const DISABLE_VALIDATION_GROUPS = [LOAN_ACTIVITY, POSTMODSTAGER, UWSTAGER, ALL_STAGER, INVSET];
 const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INVSET];
 const SECONDLOOK = 'SECONDLOOK';
+const MILESTONE_ACTIVITY = 'MA';
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
@@ -42,7 +43,7 @@ const STAGER_VALUE = {
 const GROUP_INFO = [
   {
     group: FEUW,
-    task: 'Income Calculation',
+    task: 'Financial Calculation',
     taskCode: 'UW',
     path: '/frontend-checklist',
     showAssignUnassign: true,
@@ -172,7 +173,7 @@ const GROUPS = {
 function getTitle(location) {
   switch (location) {
     case '/frontend-checklist':
-      return 'Income Calculation';
+      return 'Financial Calculation';
     case '/backend-checklist':
       return 'Underwriting';
     case '/doc-processor':
@@ -209,7 +210,7 @@ const InvalidEvalResponse = evalId => ({
 
 
 const PDD = {
-  title: 'Modification Type',
+  title: 'Mod Product Type',
   content: 'Payment Deferral Disaster',
 };
 
@@ -218,6 +219,7 @@ const DashboardModel = {
   FEUW,
   BEUW,
   PROC,
+  SEARCH_LOAN,
   PROCMGR,
   DOC_GEN,
   DOCS_IN,
@@ -242,13 +244,13 @@ const DashboardModel = {
   InvalidEvalResponse,
   PDD,
   INVSET,
-  SEARCH_LOAN,
   DOCGEN_GOBACK,
   MLSTN_PAGE,
   checkSkipValidation,
   checkShowValidation,
   checkDisableValidateButton,
   SECONDLOOK,
+  MILESTONE_ACTIVITY,
 };
 
 export default DashboardModel;

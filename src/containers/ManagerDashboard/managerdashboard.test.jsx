@@ -3,10 +3,8 @@ import { shallow } from 'enzyme';
 import { TestHooks } from './ManagerDashboard';
 
 describe('<ManagerDashboard >', () => {
-  const fetchPowerBIConstants = jest.fn();
   it('should render ManagerDashboard', () => {
     const props = {
-      fetchPowerBIConstants,
       groups: ['feuw-mgr'],
     };
     const handleChange = jest.spyOn(TestHooks.ManagerDashboard.prototype, 'handleChange');

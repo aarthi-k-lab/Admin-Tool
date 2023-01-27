@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import TrialHeaderAndDetails from '.';
+import { TrialHeaderAndDetails } from './TrialHeaderAndDetails';
 
 describe('<TrialHeaderAndDetails />', () => {
   it('should render TrialHeaderAndDetails component', () => {
@@ -48,7 +48,7 @@ describe('<TrialHeaderAndDetails />', () => {
     );
     expect(wrapper.find('UserNotification')).toHaveLength(1);
     expect(wrapper.find('TrialHeader')).toHaveLength(1);
-    expect(wrapper.find('div').at(2).text()).toBe('Trial Period');
+    expect(wrapper.find('div').at(2).text()).toBe('Trial PeriodSAVE');
   });
   it('should render Loader component', () => {
     const inProgress = true;

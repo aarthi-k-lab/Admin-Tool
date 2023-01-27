@@ -16,6 +16,7 @@
 
   /* float: left; */
   padding: 0 30% 0 20%;
+  width: 88%;
 }
 
 .title-row > :last-child {
@@ -31,4 +32,12 @@
 .bookingWidget {
   background-color: white;
   padding: 0.8rem;
+}
+
+.docksin-container{
+  display: flex;
+  flex-direction: row; 
+  background-color: rgb(243,245,249);
+  margin-top: -0.2rem;
+  height: 100%
 }

@@ -9,7 +9,7 @@ const SendToBooking = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="send-to-docs-in"
+    styleName={disabled ? 'send-to-docs-in-disabled' : 'send-to-docs-in'}
     variant="contained"
   >
     Send To Booking

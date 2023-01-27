@@ -6,14 +6,13 @@ import {
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import LoanTombstone from 'models/LoanTombstone';
-import { setPaymentDeferral } from 'ducks/dashboard/actions';
 import {
   LOADING_TOMBSTONE_DATA,
   ERROR_LOADING_TOMBSTONE_DATA,
-  SUCCESS_LOADING_TOMBSTONE_DATA,
   FETCH_TOMBSTONE_DATA,
+  SET_RFDTABLE_DATA,
 } from './types';
-import { STORE_INVEST_CD_AND_BRAND_NM, SET_RESOLUTION_AND_INVSTR_HRCHY } from '../dashboard/types';
+import { STORE_INVEST_CD_AND_BRAND_NM, SET_RESOLUTION_AND_INVSTR_HRCHY, SET_BRAND } from '../dashboard/types';
 import { TestExports } from './sagas';
 import { selectors as dashboardSelectors } from '../dashboard';
 
@@ -38,30 +37,6 @@ describe('fetchTombstoneData', () => {
     },
   };
   const saga = cloneableGenerator(TestExports.fetchTombstoneData)(payload);
-  const loanDetails = {
-    loanNumber: '596400243',
-    investorCode: '458',
-    brandName: 'NSM',
-    investorLoanNumber: '0000000',
-    upbAmount: 711766.64,
-    nextPaymentDueDate: '2013-12-01T00:00:00.000Z',
-    investorInformation: {
-      investorCode: '458',
-      investorName: 'NMST 2007-1                   ',
-    },
-    primaryBorrower: {
-      firstName: 'JOSE',
-      lastName: 'DOE',
-      borrowerType: 'Borrower',
-    },
-    coBorrowers: [
-      {
-        firstName: 'ARMIDA',
-        lastName: 'DOE',
-        borrowerType: 'Co-Borrower',
-      },
-    ],
-  };
   const investorData = {
     investorCode: '',
     brandName: 'NSM',
@@ -117,29 +92,24 @@ describe('fetchTombstoneData', () => {
         payload: { investorCode: '', brandName: 'NSM' },
       }));
   });
+  it('should dispatch SET_BRAND to store BrandName', () => {
+    expect(saga.next({
+      brand: 'NSM',
+    }).value).toEqual(put({
+      type: SET_BRAND,
+      payload: 'NSM',
+    }));
+  });
   it('should dispatch SET_RESOLUTION_AND_INVSTR_HRCHY', () => {
-    expect(saga.next(investorData).value)
+    expect(saga.next({
+      resolutionId: '',
+      investorHierarchy: {},
+      tombstoneData: [],
+    }).value)
       .toEqual(put({
         type: SET_RESOLUTION_AND_INVSTR_HRCHY,
         payload: { resolutionId: '', investorHierarchy: {} },
       }));
-  });
-
-  it('should update isPayment deferral', () => {
-    expect(saga.next(loanDetails).value).toEqual(call(setPaymentDeferral, false));
-  });
-  it('should update isPayment deferral', () => {
-    expect(saga.next({
-      type: 'app/dashboard/SET_PAYMENT_DEFERRAL',
-      payload: false,
-    }).value).toEqual(put({
-      type: 'app/dashboard/SET_PAYMENT_DEFERRAL',
-      payload: false,
-    }));
-  });
-  it('should update loandetails in store', () => {
-    expect(saga.next().value)
-      .toEqual(put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: [] }));
   });
 });
 

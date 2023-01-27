@@ -26,6 +26,7 @@ const MSG_LIMIT_EXCEED = 'Please enter a maximum of 50 evalIds.';
 const MSG_INVALID_TASKNAME = 'Please enter valid task name';
 const MSG_NULL_REQUEST = 'Please enter a eval Id.';
 const SUCCESS_MESSAGES = [MSG_VALIDATION_SUCCESS, MSG_UPDATED_REMEDY];
+const MSG_SAVE_RFD_ERROR = 'Error Saving RFD to LSAMS, Resubmit RFD or refresh the page';
 
 function reduceMessageListToMessage(acc, msg) {
   acc.push(msg);
@@ -119,6 +120,7 @@ const Messages = {
   MSG_INVALID_TASKNAME,
   MSG_LIMIT_EXCEED,
   MSG_NULL_REQUEST,
+  MSG_SAVE_RFD_ERROR,
 };
 
 export default Messages;

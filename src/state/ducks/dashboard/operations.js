@@ -81,7 +81,11 @@ import {
   setExceptionReviewCommentsAction,
   getCaseIdsAction,
   setEnquiryCaseIdAction,
+  setTrialDateInfoAction,
+  onUpdateTrialPeriodAction,
   odmRerunAction,
+  disableSaveAction,
+  enableLockButton,
 } from './actions';
 
 import {
@@ -383,6 +387,10 @@ const toggleIncvrfn = dispatch => (visibility) => {
   dispatch(toggleIncomeVerification(visibility));
 };
 
+const disableLockButton = dispatch => (payload) => {
+  dispatch(enableLockButton(payload));
+};
+
 const onAdditionalInfoClick = dispatch => (loanNumber) => {
   dispatch(additionalInfo(loanNumber));
 };
@@ -436,12 +444,24 @@ const setEnquiryCaseIdOperation = dispatch => (payload) => {
   dispatch(setEnquiryCaseIdAction(payload));
 };
 
+const setTrialDateInfo = dispatch => (payload) => {
+  dispatch(setTrialDateInfoAction(payload));
+};
+
+const onUpdateTrialPeriod = dispatch => () => {
+  dispatch(onUpdateTrialPeriodAction());
+};
+
 const odmRerunOperation = dispatch => () => {
   dispatch(odmRerunAction());
 };
 
+const disableSaveOperation = dispatch => (payload) => {
+  dispatch(disableSaveAction(payload));
+};
+
+
 const operations = {
-  odmRerunOperation,
   openSweetAlert,
   onDismissUserNotification,
   onSubmitToFhlmcRequest,
@@ -529,6 +549,11 @@ const operations = {
   setExceptionReviewCommentsOperation,
   getCaseIdsOperation,
   setEnquiryCaseIdOperation,
+  setTrialDateInfo,
+  onUpdateTrialPeriod,
+  odmRerunOperation,
+  disableSaveOperation,
+  disableLockButton,
 };
 
 export default operations;

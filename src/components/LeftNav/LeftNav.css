@@ -1,6 +1,6 @@
 .left-nav-bar {
   align-items: center;
-  background-color: Black;
+  background-color: black;
   display: inline-flex;
   flex-direction: column;
   flex-grow: 1;
@@ -21,11 +21,11 @@
 }
 
 .left-nav-bar > *:hover {
-  background-color: var(--grey-850);
+  background-color: #3d4658;
 }
 
 .active-bar {
-  background-color: var(--grey-850);
+  background-color: #3d4658;
 }
 
 .stretch-column {

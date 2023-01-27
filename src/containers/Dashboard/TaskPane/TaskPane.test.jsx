@@ -4,7 +4,6 @@ import { TestHooks } from './TaskPane';
 
 const defaultProps = {
   dataLoadStatus: '',
-  fetchPdfGeneratorUrl: jest.fn(),
   group: '',
   handleShowDeleteTaskConfirmation: jest.fn(),
   handleShowOptionalTasks: jest.fn(),
@@ -22,9 +21,8 @@ const defaultProps = {
 };
 describe('<TombstoneWrapper />', () => {
   it('shows TaskPane', () => {
-    const handleClick = jest.fn();
     const wrapper = shallow(
-      <TestHooks.TaskPane {...defaultProps} fetchPdfGeneratorUrl={handleClick} getTasks={() => {}} isAccessible />,
+      <TestHooks.TaskPane {...defaultProps} getTasks={() => {}} isAccessible />,
     );
     expect(wrapper.find('LeftTaskPane')).toHaveLength(1);
   });

@@ -2,7 +2,8 @@
   align-items: center;
   display: flex;
   flex-wrap: nowrap;
-  min-height: 3.75rem;
+  min-height: 4rem;
+  background-color: #f3f5f9;
 }
 
 .content-header > * {
@@ -11,9 +12,12 @@
 }
 
 .title.title {
+  font-style: normal;
+  font-weight: 800 !important;
+  font-size: 1.2rem !important;
+  line-height: 1.4rem !important;
   text-transform: uppercase !important;
-  font-weight: 500 !important;
-  font-size: 1.25rem !important;
+  color: #4e586e;
 }
 
 .spacer {

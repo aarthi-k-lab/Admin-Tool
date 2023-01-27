@@ -1,6 +1,26 @@
 .end-shift.end-shift {
-  color: var(--light-blue-900);
-  border-color: var(--light-blue-900);
-  padding: 0 0.5rem;
-  margin-right: 1rem;
+  box-sizing: border-box;
+  height: 2.5rem;
+  background: #fff;
+  border: 2px solid #596feb;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  color: #596feb;
+  margin-right: 1.5rem;
+}
+
+.end-shift-disabled.end-shift-disabled {
+  box-sizing: border-box;
+  height: 2.5rem;
+  background: #fff;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  margin-right: 1.5rem;
 }

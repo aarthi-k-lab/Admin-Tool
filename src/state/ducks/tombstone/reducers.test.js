@@ -57,7 +57,7 @@ describe('Ducks :: tombstone -> reducer', () => {
     const expectedState = {
       loading: false,
       error: false,
-      data: successAction.payload,
+      viewTypeData: successAction.payload,
     };
     expect(reducer(state, successAction)).toEqual(expectedState);
   });

@@ -9,7 +9,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
     id="cmod_taskpane"
     style={
       Object {
-        "width": "20rem",
+        "width": "21rem",
       }
     }
   >
@@ -22,21 +22,13 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
         <div
           className="MuiFormControl-root MuiTextField-root status-select-field"
         >
-          <label
-            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
-            data-shrink={true}
-            htmlFor="status-selector"
-            id="status-selector-label"
-          >
-            Status
-          </label>
           <div
             className="MuiInputBase-root MuiInput-root MuiInputBase-formControl MuiInput-formControl"
             onClick={[Function]}
           >
             <div
               aria-haspopup="listbox"
-              aria-labelledby="status-selector-label status-selector"
+              aria-labelledby="status-selector"
               className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input status-select-field-text"
               id="status-selector"
               onBlur={[Function]}
@@ -46,7 +38,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
               role="button"
               tabIndex={0}
             >
-              All
+              All Status
             </div>
             <input
               aria-hidden={true}
@@ -56,7 +48,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
               onChange={[Function]}
               required={false}
               tabIndex={-1}
-              value="All"
+              value="All Status"
             />
             <svg
               aria-hidden={true}
@@ -97,7 +89,7 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
             onTouchStart={[Function]}
             style={
               Object {
-                "marginLeft": "2rem",
+                "marginLeft": "4rem",
               }
             }
             tabIndex={0}
@@ -124,24 +116,6 @@ exports[`<LeftTaskPane Components /> LeftTaskPane renders correctly 1`] = `
           </button>
         </div>
       </div>
-      <span
-        className="components-LeftTaskPane-LeftTaskPane__collapse-icon-open"
-        onClick={[Function]}
-        onKeyPress={[Function]}
-        role="button"
-        tabIndex={0}
-      >
-        <svg
-          aria-hidden={true}
-          className="MuiSvgIcon-root"
-          focusable="false"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
-          />
-        </svg>
-      </span>
     </div>
     <div
       className="components-Tasks-LeftParentTasks__left-pane-tasks-main-div"

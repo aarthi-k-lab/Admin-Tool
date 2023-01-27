@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import Loader from 'components/Loader/Loader';
+import Tombstone from 'containers/Dashboard/Tombstone';
 import * as R from 'ramda';
 import { withRouter, Link } from 'react-router-dom';
 import RouteAccess from 'lib/RouteAccess';
@@ -15,7 +16,12 @@ import {
 } from 'ducks/login';
 import moment from 'moment-timezone';
 import { selectors as widgetsSelectors, operations as widgetsOperations } from 'ducks/widgets';
+import { operations as tombstoneOperations, selectors as tombstoneSelectors } from 'ducks/tombstone';
+import Grid from '@material-ui/core/Grid';
+import { operations as milestoneOperations } from 'ducks/milestone-activity';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
+import RFDContent from '../../../components/Tombstone/TombstoneComponents/RFDContent';
+import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent';
 import NoEvalsPage from '../NoEvalsPage';
 import InvalidLoanPage from '../InvalidLoanPage';
 import { EvalTableRow } from '../EvalTable';
@@ -27,6 +33,9 @@ import AdditionalInfo from '../../AdditionalInfo/AdditionalInfo';
 import GoBackToSearch from '../../../components/GoBackToSearch/GoBackToSearch';
 import { ADDITIONAL_INFO, HISTORY } from '../../../constants/widgets';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
+import { EDITABLE_FIELDS } from '../../../constants/loanInfoComponents';
+import Popup from '../../../components/Popup';
+
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
@@ -49,10 +58,13 @@ class SearchLoan extends React.PureComponent {
   componentDidMount() {
     const {
       evalId, enableGetNext, onAutoSave, isAssigned, onClearStagerTaskName,
+      onGetGroupName,
     } = this.props;
     if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
       onAutoSave('Paused');
     }
+    onGetGroupName('SEARCH_LOAN');
+    // onGetRFDData();
     onClearStagerTaskName();
   }
 
@@ -93,7 +105,15 @@ class SearchLoan extends React.PureComponent {
   }
 
   goToSearchResults = () => {
-    const { onWidgetToggle, openWidgetList } = this.props;
+    const { groupName } = this.state;
+    const { onGetGroupName } = this.props;
+    if (groupName !== 'SEARCH_LOAN') {
+      onGetGroupName('SEARCH_LOAN');
+    }
+    const {
+      onWidgetToggle, openWidgetList, onGoBackToSearch, tombstoneData,
+    } = this.props;
+    onGoBackToSearch();
     const widgetsToBeClosed = {
       openWidgetList,
       page: 'SEARCH_LOAN',
@@ -103,6 +123,7 @@ class SearchLoan extends React.PureComponent {
     const payload = {
       currentWidget: '',
       openWidgetList: widgetList,
+      data: tombstoneData,
     };
     onWidgetToggle(payload);
   }
@@ -216,8 +237,41 @@ class SearchLoan extends React.PureComponent {
     ) : null;
   }
 
+  renderCollateralAlert() {
+    const { clearPopupData, popupData } = this.props;
+    if (popupData) {
+      const {
+        isOpen, message, title, level,
+        confirmButtonText, onConfirm,
+      } = popupData;
+      const confirmAction = clearPopupData;
+      return (
+        <Popup
+          confirmButtonText={confirmButtonText}
+          level={level}
+          message={message}
+          onConfirm={() => confirmAction(onConfirm)}
+          show={isOpen}
+          showConfirmButton
+          title={title}
+        />
+      );
+    }
+    return null;
+  }
+
+  renderLoanInfoComponents() {
+    const { checklistCenterPaneView } = this.props;
+    return (
+      <Grid styleName="loan-info-components">
+        {checklistCenterPaneView === 'Reason for Default' ? <RFDContent /> : <CollateralContent />}
+        {this.renderCollateralAlert()}
+      </Grid>
+    );
+  }
+
   renderSearchResults() {
-    const { searchLoanResult, history } = this.props;
+    const { searchLoanResult, history, checklistCenterPaneView } = this.props;
     const { isRedirect } = this.state;
     if (isRedirect) {
       history.push(this.redirectPath);
@@ -254,50 +308,90 @@ class SearchLoan extends React.PureComponent {
             <Loader message="Please Wait" />
           );
         }
-        const searchResultCount = data.length;
+        const activeMods = data.filter(mod => mod.pstatus === 'Active');
+        const completedMods = data.filter(mod => mod.pstatus !== 'Active');
+
         return (
-          <div styleName="eval-table-container">
-            <div styleName="eval-table-height-limiter">
-              <h3 styleName="resultText">
-                <span styleName="searchResutlText">{searchResultCount}</span>
-                &nbsp;search results found for Loan &nbsp; &quot;
-                <span styleName="searchResutlText">{loanNumber}</span>
-                &quot;
-              </h3>
-              <ReactTable
-                className="-striped -highlight"
-                columns={SearchLoan.COLUMN_DATA}
-                data={data}
-                getTdProps={(state, rowInfo, column) => ({
-                  onClick: (event) => {
-                    const payload = { loanNumber, ...rowInfo.original, isSearch: true };
-                    if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
-                      event.stopPropagation();
-                    } else {
-                      this.handleRowClick(payload, column);
-                    }
-                  },
-                  style: {
-                    height: '3rem',
-                  },
-                })}
-                getTheadThProps={() => ({
-                  style: {
-                    'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
-                  },
-                })}
-                minRows={20}
-                style={{ marginRight: '4rem', overflow: 'hidden' }}
-              />
+          <>
+            <div styleName="resultText">
+              <p styleName="search-text">Search result for </p>
+              <p styleName="searchResutlText">{loanNumber}</p>
             </div>
-          </div>
+            <div styleName="search-container">
+              <Tombstone />
+              <div styleName="eval-table-container">
+                {EDITABLE_FIELDS.includes(checklistCenterPaneView) ? this.renderLoanInfoComponents()
+                  : (
+                    <>
+                      <div styleName="eval-table-height-limiter">
+                        <h3 style={{ paddingLeft: '2rem' }}> MOD HISTORY </h3>
+                        <h3 style={{ paddingLeft: '2rem' }}> InProgress </h3>
+                        <ReactTable
+                          className="-striped -highlight"
+                          columns={SearchLoan.COLUMN_DATA}
+                          data={activeMods}
+                          getTdProps={(state, rowInfo, column) => ({
+                            onClick: (event) => {
+                              const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                              if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
+                                event.stopPropagation();
+                              } else {
+                                this.handleRowClick(payload, column);
+                              }
+                            },
+                            style: {
+                              height: activeMods && activeMods.length > 0 ? '3rem' : '6rem',
+                            },
+                          })}
+                          getTheadThProps={() => ({
+                            style: {
+                              'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
+                            },
+                          })}
+                          minRows={1}
+                          showPagination={false}
+                          style={{ margin: '0rem 2rem' }}
+                        />
+
+                        <h3 style={{ paddingLeft: '2em' }}> Completed </h3>
+                        <ReactTable
+                          className="-striped -highlight"
+                          columns={SearchLoan.COLUMN_DATA}
+                          data={completedMods}
+                          getTdProps={(state, rowInfo, column) => ({
+                            onClick: (event) => {
+                              const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                              if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
+                                event.stopPropagation();
+                              } else {
+                                this.handleRowClick(payload, column);
+                              }
+                            },
+                            style: {
+                              height: completedMods && completedMods.length > 0 ? '3rem' : '6rem',
+                            },
+                          })}
+                          getTheadThProps={() => ({
+                            style: {
+                              'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
+                            },
+                          })}
+                          minRows={1}
+                          showPagination={false}
+                          style={{ margin: '0rem 2rem' }}
+                        />
+                      </div>
+                    </>
+                  )}
+              </div>
+            </div>
+          </>
         );
       }
       return <InvalidLoanPage loanNumber={loanNumber} />;
     }
     return null;
   }
-
 
   renderAlert = () => {
     const { resultOperation } = this.props;
@@ -411,14 +505,14 @@ SearchLoan.COLUMN_DATA = [
   }, {
     Header: 'RESOLUTION ID',
     accessor: 'resolutionId',
-    maxWidth: 70,
-    minWidth: 70,
+    maxWidth: 100,
+    minWidth: 100,
     Cell: row => <EvalTableRow row={row} />,
   }, {
     Header: 'RESOLUTIONCHOICETYPE',
     accessor: 'resolutionChoiceType',
-    maxWidth: 150,
-    minWidth: 150,
+    maxWidth: 180,
+    minWidth: 180,
     Cell: row => <EvalTableRow row={row} />,
   }, {
     Header: 'STATUS',
@@ -439,8 +533,8 @@ SearchLoan.COLUMN_DATA = [
     Header: 'STATUS DATE',
     accessor: d => (R.isNil(d.pstatusDate) ? ''
       : moment(d.pstatusDate).format('MM/DD/YYYY hh:mm:ss A')),
-    maxWidth: 110,
-    minWidth: 110,
+    maxWidth: 180,
+    minWidth: 180,
     Cell: row => <EvalTableRow row={row} />,
 
   }, {
@@ -476,8 +570,8 @@ SearchLoan.COLUMN_DATA = [
     id: 'tstatusDate',
     accessor: d => (R.isNil(d.tstatusDate) ? ''
       : moment(d.tstatusDate).format('MM/DD/YYYY hh:mm:ss A')),
-    maxWidth: 110,
-    minWidth: 110,
+    maxWidth: 150,
+    minWidth: 150,
     Cell: row => <EvalTableRow row={row} />,
 
   }, {
@@ -485,8 +579,8 @@ SearchLoan.COLUMN_DATA = [
     id: 'assignedDate',
     accessor: d => (R.isNil(d.assignedDate) ? ''
       : moment(d.assignedDate).format('MM/DD/YYYY hh:mm:ss A')),
-    maxWidth: 110,
-    minWidth: 110,
+    maxWidth: 150,
+    minWidth: 150,
     Cell: row => <EvalTableRow row={row} />,
   }, {
     Header: 'ASSIGNED TO',
@@ -508,10 +602,17 @@ SearchLoan.defaultProps = {
   inProgress: false,
   resultOperation: {},
   openWidgetList: [],
+  onGoBackToSearch: () => {},
+  checklistCenterPaneView: 'Checklist',
+  popupData: {
+    confirmButtonText: 'Okay!',
+  },
 };
 
 SearchLoan.propTypes = {
+  checklistCenterPaneView: PropTypes.string,
   checkTrialStagerButton: PropTypes.func.isRequired,
+  clearPopupData: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
   enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
@@ -528,11 +629,21 @@ SearchLoan.propTypes = {
   onAutoSave: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
   onEndShift: PropTypes.func.isRequired,
+  // onGetTombstoneData: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
+  onGoBackToSearch: PropTypes.func,
   onSearchLoan: PropTypes.func.isRequired,
   onSelectEval: PropTypes.func.isRequired,
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
+  popupData: PropTypes.shape({
+    confirmButtonText: PropTypes.string,
+    isOpen: PropTypes.bool,
+    level: PropTypes.string,
+    message: PropTypes.string,
+    onConfirm: PropTypes.func,
+    title: PropTypes.string,
+  }),
   resultOperation: PropTypes.shape(
     {
       isOpen: PropTypes.bool,
@@ -544,9 +655,17 @@ SearchLoan.propTypes = {
     assigned: PropTypes.arrayOf(PropTypes.shape()),
     loanNumber: PropTypes.string.isRequired,
     statusCode: PropTypes.string,
+    taksId: PropTypes.string.isRequired,
+    taskName: PropTypes.string.isRequired,
     unAssigned: PropTypes.arrayOf(PropTypes.shape()),
     valid: PropTypes.bool,
   }).isRequired,
+  tombstoneData: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.any.isRequired,
+      title: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     userDetails: PropTypes.shape({
@@ -568,9 +687,13 @@ const mapStateToProps = state => ({
   user: loginSelectors.getUser(state),
   inProgress: selectors.inProgress(state),
   resultOperation: selectors.resultOperation(state),
+  tombstoneData: tombstoneSelectors.getTombstoneData(state),
+  checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
+  popupData: selectors.getPopupData(state),
 });
 
 const mapDispatchToProps = dispatch => ({
+  onGetRFDData: tombstoneOperations.getRFDTableDataOperation(dispatch),
   closeSweetAlert: operations.closeSweetAlert(dispatch),
   checkTrialStagerButton: operations.checkTrialEnableStagerButtonOperation(dispatch),
   onAutoSave: operations.onAutoSave(dispatch),
@@ -581,6 +704,9 @@ const mapDispatchToProps = dispatch => ({
   onClearStagerTaskName: operations.onClearStagerTaskName(dispatch),
   onGetChecklistHistory: checkListOperations.fetchHistoricalChecklistData(dispatch),
   onWidgetToggle: widgetsOperations.onWidgetToggle(dispatch),
+  onGoBackToSearch: milestoneOperations.goBackToSearch(dispatch),
+  clearTombstoneData: tombstoneOperations.clearTombstoneDataOperation(dispatch),
+  clearPopupData: operations.clearPopupData(dispatch),
 });
 
 const SearchLoanContainer = connect(

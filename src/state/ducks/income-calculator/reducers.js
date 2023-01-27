@@ -27,6 +27,7 @@ import {
   SET_HISTORICAL_BORROWERS,
   STORE_TASK_VALUE,
   CLEAR_TASK_VALUE,
+  SET_EXPENSECALC_DATA,
 } from './types';
 
 const FAILED = 'failed';
@@ -50,6 +51,7 @@ const defaultState = {
     isOpen: false,
   },
   shouldDeleteTask: false,
+  expenseCalcData: {},
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -262,6 +264,14 @@ const reducer = (state = {}, action) => {
         taskValues: null,
       };
     }
+
+    case SET_EXPENSECALC_DATA: {
+      return {
+        ...state,
+        expenseCalcData: action.payload,
+      };
+    }
+
 
     default:
       return state;

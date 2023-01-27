@@ -42,6 +42,8 @@ import {
   PUSH_DATA,
   CHECK_RULES_PASSED,
   PUT_DROPDOWN_DATA,
+  FETCH_MONTHLY_EXPENSE_VALUES,
+  SAVE_MONTHLY_EXPENSE_VALUES,
 } from './types';
 import {
   USER_NOTIF_MSG,
@@ -581,6 +583,15 @@ function* getUsersForGroup(additionalInfo) {
   return requestData;
 }
 
+function* getExpenseValues() {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const requestData = {
+    url: `/api/tkams/search/BorrowerExpense/${loanNumber}`,
+    method: Api.callGet,
+  };
+  return requestData;
+}
+
 function getDataFromColValMap(additionalInfo) {
   const { value, columnName } = additionalInfo;
   const requestData = {
@@ -594,8 +605,37 @@ function getDataFromColValMap(additionalInfo) {
 const sourceToMethodMapping = {
   adgroup: getUsersForGroup,
   OLTP: getDataFromColValMap,
+  TKAMS: getExpenseValues,
 };
 
+function* getMonthlyExpenseValues(action) {
+  const {
+    source, selector: selectorName,
+  } = action.payload;
+  const selector = selectorName || null;
+  const dataFetchMethod = sourceToMethodMapping[source];
+  const requestData = yield dataFetchMethod();
+  const {
+    url,
+    method,
+    body,
+  } = requestData;
+  const options = yield call(method, url, body);
+  if (options) {
+    const data = {
+      options,
+      selector: selector || ['monthlyExpenseValues'],
+    };
+    try {
+      yield put({
+        type: SAVE_MONTHLY_EXPENSE_VALUES,
+        payload: data,
+      });
+    } catch (e) {
+      yield call(handleSaveChecklistError, e);
+    }
+  }
+}
 
 function* getdropDownOptions(action) {
   const {
@@ -903,6 +943,10 @@ function* watchDropDownOption() {
   yield takeEvery(FETCH_DROPDOWN_OPTIONS_SAGA, getdropDownOptions);
 }
 
+function* watchMonthlyExpenseValues() {
+  yield takeEvery(FETCH_MONTHLY_EXPENSE_VALUES, getMonthlyExpenseValues);
+}
+
 function* watchPutDropDownOption() {
   yield takeEvery(PUT_DROPDOWN_DATA, putDropDownOptions);
 }
@@ -945,6 +989,7 @@ export function* combinedSaga() {
     watchResolutionIdStatCall(),
     watchSetNewChecklist(),
     watchPushDataButton(),
+    watchMonthlyExpenseValues(),
   ]);
   // eslint-disable-next-line eol-last
 }

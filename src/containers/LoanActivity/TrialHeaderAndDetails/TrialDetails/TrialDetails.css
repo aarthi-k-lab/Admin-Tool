@@ -15,7 +15,7 @@
   padding: 0;
 }
 
-.summary > :first-child {
+.summary> :first-child {
   height: 3rem;
   padding: 0.75rem 1rem;
 }
@@ -25,7 +25,7 @@
   min-height: 0;
 }
 
-div.button:first-child > p {
+div.button:first-child>p {
   margin: 0;
   font-size: 0.75rem !important;
 }
@@ -120,4 +120,20 @@ div.button:first-child > p {
   display: flex;
   flex-direction: column;
   padding: 1rem;
+}
+
+.datePicker {
+  width: 11rem !important;
+}
+
+.daysDelayed {
+  font-size: 1rem;
+  font-weight: bold;
+  color: red;
+}
+
+.daysAhead {
+  font-size: 1rem;
+  font-weight: bold;
+  color: green;
 }

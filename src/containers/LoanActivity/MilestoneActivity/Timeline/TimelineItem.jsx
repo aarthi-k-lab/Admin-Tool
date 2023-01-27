@@ -78,7 +78,7 @@ class TimelineItem extends React.PureComponent {
               </Grid>
             </Grid>
             <Grid item styleName="right-item">
-              <Grid alignItems="center" container direction="row" justify="flex-start" spacing={1}>
+              <Grid alignItems="center" container direction="row" justify="flex-start" spacing={1} styleName="right-item-center">
                 <Grid item styleName="dateStyle" xs={4}>
                   <span styleName="value-style">START DATE</span>
                   <br />

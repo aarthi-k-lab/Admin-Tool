@@ -22,16 +22,6 @@ exports[`<EndShift /> snapshot test 1`] = `
   <span
     className="MuiButton-label"
   >
-    <svg
-      aria-hidden={true}
-      className="MuiSvgIcon-root"
-      focusable="false"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M6 6h12v12H6z"
-      />
-    </svg>
     End Shift
   </span>
 </button>

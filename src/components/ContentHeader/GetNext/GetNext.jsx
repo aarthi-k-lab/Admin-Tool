@@ -9,7 +9,7 @@ const GetNext = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="get-next"
+    styleName={disabled ? 'get-next-disabled' : 'get-next'}
     variant="contained"
   >
     Get Next

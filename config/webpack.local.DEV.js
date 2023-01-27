@@ -177,6 +177,14 @@ const config = merge(
             '^/api/dataservice': '',
           },
         },
+        '/api/financial-aggregator': {
+          target: 'https://dev.cmod.mrcooper.io/cmodfinancialsaggregator',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/financial-aggregator': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

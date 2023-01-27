@@ -15,7 +15,9 @@ import { selectors as widgetSelectors } from 'ducks/widgets';
 import logger from 'redux-logger';
 import { showLoader, hideLoader } from 'ducks/dashboard/actions';
 import { SUCCESS, FAILED } from 'constants/common';
-import { INCOME_CALCULATOR } from 'constants/widgets';
+import { FINANCIAL_CALCULATOR } from 'constants/widgets';
+import { nonSummableFields, expenseFields, checklistTypes } from 'constants/expenseCalc';
+import componentTypes from 'constants/componentTypes';
 import { selectors, actions } from './index';
 
 import {
@@ -127,8 +129,11 @@ const getTaskFromProcess = (taskObj, prop, value) => {
 
 function* fetchIncomeCalcHistory() {
   const processId = yield select(dashboardSelectors.processId);
+  const taskBluePrintCode = yield select(selectors.getTaskBlueprintCode);
+  const checklistType = taskBluePrintCode && (taskBluePrintCode === 'INC_EXP' || taskBluePrintCode === 'INCVRFN')
+    ? checklistTypes.INCOME : checklistTypes.EXPENSE;
   try {
-    const response = yield call(Api.callGet, `/api/dataservice/incomeCalc/history/${processId}`);
+    const response = yield call(Api.callGet, `/api/dataservice/incomeCalc/history/${processId}/${checklistType}`);
     yield put({
       type: STORE_INCOMECALC_HISTORY,
       payload: response,
@@ -140,22 +145,70 @@ function* fetchIncomeCalcHistory() {
   }
 }
 
+function* updateFinanceCalcFieldValues(type) {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const evalId = yield select(dashboardSelectors.evalId);
+  const loanId = loanNumber;
+  const tkamsData = yield call(Api.callGet, `/api/tkams/search/BorrowerExpense/${loanNumber}/${evalId}`);
+  let latestIncomeDetails = null;
+
+  if (tkamsData) {
+    const {
+      mortgageInsuranceP1, paymentAmount, shortageP1, insuranceP1, taxesP1,
+      primaryUseId, waterFallId,
+    } = tkamsData;
+
+    const latestExpenseDetails = {
+      monthlyExpenseFieldValues: {
+        mortgageInsuranceP1,
+        paymentAmount,
+        shortageP1,
+        insuranceP1,
+        taxesP1,
+        primaryUseId,
+        waterFallId,
+      },
+    };
+
+    if (type === 'income-calculator') {
+      const { totalMonthlyDebt } = yield call(Api.callGet, `/api/tkams/search/BorrowerTotalMonthlyDebt/${loanId}`);
+      latestIncomeDetails = {
+        totalMonthlyDebt,
+        paymentAmount,
+      };
+    }
+
+    const checklistData = yield select(selectors.getChecklist);
+    const taskObj = R.propOr(null, 'value', checklistData);
+    const rootId = R.prop('_id', checklistData);
+    if (rootId && type === 'expense-calculator') {
+      yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj, latestExpenseDetails } });
+    }
+    if (rootId && type === 'income-calculator') {
+      yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj, latestIncomeDetails } });
+    }
+  }
+}
+
 function* fetchIncomeCalcChecklist(action) {
   try {
-    const { isOpen: isWidgetOpen, processInstance } = action.payload;
+    const {
+      isOpen: isWidgetOpen, processInstance, calcType, type,
+    } = action.payload;
     if (isWidgetOpen) {
       // Income Calculator widget
       yield put(showLoader());
       const processId = yield select(dashboardSelectors.processId);
-      const incomeCalcData = yield call(Api.callGet, `/api/workassign/incomeCalc/getChecklist/${processId}`);
-      if (incomeCalcData) {
+      const financeCalcData = yield call(Api.callGet, `/api/financial-aggregator/financecalc/checklistForWidget/${processId}`);
+      if (financeCalcData) {
         const data = {
-          ...incomeCalcData,
+          ...financeCalcData,
           disableChecklist: true,
         };
         yield put({ type: SET_INCOMECALC_DATA, payload: data });
+        yield call(updateFinanceCalcFieldValues, type);
       }
-      const taskChecklistId = R.prop('taskCheckListId', incomeCalcData);
+      const taskChecklistId = R.pathOr('', [calcType, 'taskCheckListId'], financeCalcData);
       yield call(fetchChecklistDetails, { payload: taskChecklistId });
       yield call(fetchIncomeCalcHistory);
       yield put({ type: SET_MAIN_CHECKLISTID, payload: taskChecklistId });
@@ -164,6 +217,7 @@ function* fetchIncomeCalcChecklist(action) {
       // Income Calculator checklist via checklist
       yield put({ type: SHOW_LOADER });
       yield put({ type: SET_INCOMECALC_DATA, payload: { disableChecklist: false } });
+      yield call(updateFinanceCalcFieldValues, type);
       yield call(fetchChecklistDetails, { payload: processInstance });
       yield put({ type: SET_MAIN_CHECKLISTID, payload: processInstance });
       yield call(fetchIncomeCalcHistory);
@@ -177,11 +231,15 @@ function* fetchIncomeCalcChecklist(action) {
 
 
 function* closeIncomeHistory() {
+  let calcType = 'incomeCalcData';
+  const checklistType = yield select(selectors.getWidgetCheckListType);
   const processInstance = yield select(selectors.getMainChecklist);
   const widgetList = yield select(widgetSelectors.getOpenWidgetList);
+  calcType = checklistType === 'income-calculator' ? 'incomeCalcData' : 'expenseCalcData';
   const payload = {
     processInstance,
-    isOpen: R.contains(INCOME_CALCULATOR, widgetList),
+    isOpen: R.contains(FINANCIAL_CALCULATOR, widgetList),
+    calcType,
   };
   yield put(actions.getIncomeCalcChecklist(payload));
 }
@@ -287,12 +345,12 @@ function* duplicateIncome(action) {
     const request = {
       feuwChecklistId,
       loanNumber,
-      incomeChecklistId,
+      financialChecklistId: incomeChecklistId,
       taskId,
       userPrincipalName,
     };
 
-    const duplicationResponse = yield call(Api.callPost, '/api/workassign/incomeCalc/duplicateChecklist', request);
+    const duplicationResponse = yield call(Api.callPost, '/api/financial-aggregator/expenseCalc/duplicateChecklist', request);
     if (duplicationResponse.status === 200) {
       const { response } = duplicationResponse;
       yield put({
@@ -355,11 +413,11 @@ function* addContributor(action) {
       borrowerlist,
       rootId: rootIdFEUW,
     };
-    const borrowersResponse = yield call(Api.callPost, '/api/workassign/incomeCalc/addContributor', payload);
+    const borrowersResponse = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/addContributor', payload);
     if (borrowersResponse) {
       const processId = yield select(selectors.getProcessId);
       yield call(fetchChecklistDetails, { payload: processId });
-      yield put({ type: SET_BORROWERS_DATA, payload: borrowersResponse });
+      yield put({ type: SET_BORROWERS_DATA, payload: R.propOr([], 'response', borrowersResponse) });
     }
     yield put({ type: CLEAR_TASK_VALUE });
     yield put({ type: HIDE_LOADER });
@@ -383,9 +441,13 @@ function* processValidations() {
     const borrowers = yield select(selectors.getBorrowers);
     const processId = yield select(selectors.getProcessId);
     const checklistData = yield select(selectors.getChecklist);
-    const externalData = yield call(gatherDataForValidation);
+    let externalData = null;
+    const taskBluePrintCode = yield select(selectors.getTaskBlueprintCode);
     const taskObj = R.propOr(null, 'value', checklistData);
     const rootId = R.prop('_id', checklistData);
+    if (taskBluePrintCode === 'INC_EXP') {
+      externalData = yield call(gatherDataForValidation);
+    }
     if (rootId) {
       yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj, externalData } });
       const checklist = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&aggregation=true&forceNoCache=${Math.random()}`);
@@ -418,8 +480,46 @@ function* processValidations() {
   yield put({ type: HIDE_LOADER });
 }
 
+function setDefaultBorrExpenseData() {
+  const data = {};
+  R.forEach((field) => {
+    data[field] = 0.00;
+  }, expenseFields);
+  return data;
+}
+
+function* summateValuesForBorrowers(borrowerList) {
+  let defaultBorrExpenseAmount = yield call(setDefaultBorrExpenseData);
+  try {
+    const borrExpenseAmounts = yield select(selectors.getExpenseAmounts);
+    const expenseKeys = Object.keys(defaultBorrExpenseAmount);
+    const expList = [];
+    R.forEach((borrower) => {
+      const expDetails = R.find(R.has(borrower))(borrExpenseAmounts);
+      if (expDetails) {
+        expList.push(expDetails[borrower]);
+      }
+    }, borrowerList);
+    R.forEach((field) => {
+      let value = 0;
+      value = nonSummableFields.includes(field) ? R.defaultTo(0, R.head(expList)[field])
+        : R.sum(R.reject(val => !val, R.pluck(field)(expList)));
+      defaultBorrExpenseAmount = { ...defaultBorrExpenseAmount, [field]: value };
+    }, expenseKeys);
+    const totalMonthlyDebt = R.sum(Object.values(defaultBorrExpenseAmount));
+    defaultBorrExpenseAmount = { ...defaultBorrExpenseAmount, totalMonthlyDebt };
+  } catch (e) {
+    logger.info('Error in summating borrower expense data ', e);
+  }
+  return defaultBorrExpenseAmount;
+}
+
 const lockCalculation = function* lockCalculation() {
   try {
+    const { INCOME_CALCULATOR: incomeCalculator } = componentTypes;
+    const currentChecklistType = yield select(taskSelectors.getCurrentChecklistType);
+    const checklistType = currentChecklistType === incomeCalculator
+      ? checklistTypes.INCOME : checklistTypes.EXPENSE;
     const checklistSelectionIsPresent = yield select(taskSelectors.getSelectedChecklistId);
     yield put({ type: SHOW_LOADER });
     const feuwChecklistId = yield select(taskSelectors.getProcessId);
@@ -427,44 +527,62 @@ const lockCalculation = function* lockCalculation() {
     const borrowerInfo = yield select(selectors.getBorrowers);
     const borrowerList = yield select(selectors.getBorrowersList);
     const consolidation = [];
-    R.forEach((item) => {
-      const cnsdtIncome = {};
-      R.forEach((incomeType) => {
-        const incomeData = R.reject(R.isNil, R.flatten(R.pluck(incomeType,
-          R.pluck(item, R.flatten(consolidatedData)))));
-        if (incomeData.length) {
-          cnsdtIncome[incomeType] = incomeData;
-        }
-      }, R.keys(incTypeMap));
-      if (cnsdtIncome) {
-        borrowerInfo.forEach((borr) => {
-          if (R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, item)) {
-            consolidation.push({ borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome });
+    let summatedBorrData = {};
+    if (checklistType === checklistTypes.EXPENSE) {
+      summatedBorrData = yield call(summateValuesForBorrowers, borrowerList);
+    } else if (checklistType === checklistTypes.INCOME) {
+      R.forEach((item) => {
+        const cnsdtIncome = {};
+        R.forEach((incomeType) => {
+          const incomeData = R.reject(R.isNil, R.flatten(R.pluck(incomeType,
+            R.pluck(item, R.flatten(consolidatedData)))));
+          if (incomeData.length) {
+            cnsdtIncome[incomeType] = incomeData;
           }
-        });
-      }
-    }, borrowerList);
+        }, R.keys(incTypeMap));
+        if (cnsdtIncome) {
+          borrowerInfo.forEach((borr) => {
+            if (R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, item)) {
+              consolidation.push({ borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome });
+            }
+          });
+        }
+      }, borrowerList);
+    }
     const loanNumber = yield select(dashboardSelectors.loanNumber);
     const taskId = yield select(dashboardSelectors.taskId);
     const taskCheckListId = yield select(selectors.getProcessId);
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
-    const request = {
-      taskId,
-      loanNumber,
-      userPrincipalName,
-      taskCheckListId,
-      calcDateTime: new Date(),
-      feuwChecklistId,
-    };
-    const dbResult = yield call(Api.callPost, '/api/workassign/IncomeCalc/lock/', request);
-    if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
-      const response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`, consolidation);
-      if (response) {
+    const loginName = R.path(['userDetails', 'name'], user);
+    const evalId = yield select(dashboardSelectors.evalId);
+    let response = {};
+    if (checklistType === checklistTypes.INCOME) {
+      response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`,
+        consolidation);
+    } else {
+      response = yield call(Api.callPost, `/api/cmodnetcoretkams/ExpenseFinancial/lock/${loanNumber}?loginName=${loginName}`,
+        summatedBorrData);
+    }
+    const lockId = response && typeof (response) === 'object' ? R.propOr(null, 'lockId', response) : response;
+    if (lockId) {
+      const request = {
+        taskId,
+        loanNumber,
+        evalId,
+        userPrincipalName,
+        taskCheckListId,
+        calcDateTime: new Date(),
+        feuwChecklistId,
+        checklistType,
+        lockId,
+      };
+      const dbResult = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/lock/', request);
+      if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
         yield put({
           type: SET_POPUP_DATA,
           payload: {
-            message: 'Income is Locked successfully in REMEDY',
+            message: `${checklistType} is Locked successfully`,
             level: 'Success',
             title: 'Lock Calculation',
           },
@@ -488,7 +606,8 @@ const lockCalculation = function* lockCalculation() {
         yield put({
           type: SET_POPUP_DATA,
           payload: {
-            message: 'Income is not Locked in REMEDY, please select "YES" to manually update Remedy and "Retry" to try again',
+            message: `${checklistType} Lock failed due to Borrower data discrepency,
+            please select "YES" to manually update Remedy and "Retry" to try again`,
             level: 'Failed',
             title: 'Lock Calculation',
             showCancelButton: true,
@@ -502,7 +621,7 @@ const lockCalculation = function* lockCalculation() {
       yield put({
         type: SET_POPUP_DATA,
         payload: {
-          message: 'Income Lock failed due to Borrower data discrepency',
+          message: `${checklistType} is not Locked in REMEDY`,
           level: 'Failed',
           title: 'Lock Calculation',
         },

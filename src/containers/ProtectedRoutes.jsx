@@ -71,7 +71,7 @@ class ProtectedRoutes extends React.Component {
 
   componentDidMount() {
     const {
-      location, setUserSchemaTrigger, getFeaturesTrigger, fetchHiddenRoutes,
+      location, setUserSchemaTrigger, getAllConfig,
     } = this.props;
     Auth.login(location.pathname)
       .then((auth) => {
@@ -81,7 +81,6 @@ class ProtectedRoutes extends React.Component {
           this.setState({ loading: false });
           if (auth.groups) {
             let redirectPath = '';
-            fetchHiddenRoutes();
             redirectPath = this.getHiddenRoutes() || Auth.getGroupHomePage(auth.groups);
             this.shouldRedirect = !R.isNil(this.getHiddenRoutes()) || (location.pathname === '/' && redirectPath !== location.pathname);
             this.setState({
@@ -91,7 +90,7 @@ class ProtectedRoutes extends React.Component {
           }
         }
       });
-    getFeaturesTrigger();
+    getAllConfig();
   }
 
   getHiddenRoutes() {
@@ -356,8 +355,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onExpandTrigger: dashboardOperations.onExpand(dispatch),
   setUserSchemaTrigger: loginOperations.setUserSchemaTrigger(dispatch),
-  getFeaturesTrigger: config.operations.getFeaturesTrigger(dispatch),
-  fetchHiddenRoutes: config.operations.fetchHiddenRoutes(dispatch),
+  getAllConfig: config.operations.fetchConfig(dispatch),
 });
 
 ProtectedRoutes.defaultProps = {
@@ -367,8 +365,7 @@ ProtectedRoutes.defaultProps = {
 };
 ProtectedRoutes.propTypes = {
   expandView: PropTypes.bool.isRequired,
-  fetchHiddenRoutes: PropTypes.func.isRequired,
-  getFeaturesTrigger: PropTypes.func.isRequired,
+  getAllConfig: PropTypes.func.isRequired,
   hiddenRoutes: PropTypes.objectOf(PropTypes.array),
   items: PropTypes.arrayOf(
     PropTypes.shape({

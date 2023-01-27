@@ -43,12 +43,12 @@ describe('<Checklist />', () => {
   it('Show /hide Clear button', () => {
     const spy = jest.spyOn(TestHooks.Checklist.prototype, 'handleOpen');
     const wrapper = shallow(<TestHooks.Checklist {...props} />);
-    expect(wrapper.find('WithStyles(ForwardRef(Button))').text()).toBe('Clear');
-    wrapper.find('WithStyles(ForwardRef(Button))').simulate('click');
+    expect(wrapper.find('WithStyles(ForwardRef(Button))').at(2).text()).toBe('Clear');
+    wrapper.find('WithStyles(ForwardRef(Button))').at(2).simulate('click');
     expect(spy).toBeCalled();
     expect(wrapper.instance().state.isDialogOpen).toBe(true);
     wrapper.setProps({ ...props, checklistItems: bookingChecklistItems });
-    expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(0);
+    expect(wrapper.find('WithStyles(ForwardRef(Button))')).toHaveLength(2);
   });
 
   it('Show /hide SLAHeader', () => {
@@ -95,7 +95,7 @@ describe('<Checklist />', () => {
       {...props}
     />);
     let buttonYes = '';
-    wrapper.find('WithStyles(ForwardRef(Button))').simulate('click');
+    wrapper.find('WithStyles(ForwardRef(Button))').at(2).simulate('click');
     expect(wrapper.instance().state.isDialogOpen).toBe(true);
     buttonYes = wrapper.find('WithStyles(ForwardRef(Button))').filterWhere(n => n.text() === 'Yes');
     buttonYes.simulate('click');

@@ -84,59 +84,70 @@ describe('Search Loan ', () => {
   />);
   const instance = wrapper.instance();
   it('should not call onSelectEval on ReactTable getTdProps onClick on ACTIONS Header', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: [] }, { Header: 'ACTIONS' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: [] }, { Header: 'ACTIONS' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(0);
     expect(instance.redirectPath).toBe('');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and default taskname', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: [] }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: [] }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(1);
     expect(instance.redirectPath).toBe('/frontend-checklist');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Underwriting', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Underwriting' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Underwriting' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(2);
     expect(instance.redirectPath).toBe('/backend-checklist');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Processing', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Processing' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Processing' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(3);
     expect(instance.redirectPath).toBe('/doc-processor');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Document Generation', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Document Generation' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Document Generation' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(4);
     expect(instance.redirectPath).toBe('/doc-gen');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Docs In', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Docs In' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Docs In' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(5);
     expect(instance.redirectPath).toBe('/docs-in');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Pending Booking', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Pending Booking' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Pending Booking' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(6);
     expect(instance.redirectPath).toBe('/special-loan');
   });
   it('should call getLoanActivityPath on ReactTable getTdProps onClick and taskName as Forbearance', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Forbearance', assignee: 'In Queue' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Forbearance', assignee: 'In Queue' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(7);
     expect(instance.redirectPath).toBe('/loan-activity');
     expect(getLoanActivityPath).toBeCalledTimes(1);
   });
   it('should call getLoanActivityPath on ReactTable getTdProps onClick and taskName as Trial Modification', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Trial Modification' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Trial Modification' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(8);
     expect(instance.redirectPath).toBe('/loan-activity');
     expect(getLoanActivityPath).toBeCalledTimes(2);
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Docs Sent and tstatus active', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Docs Sent', tstatus: 'Active' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Docs Sent', tstatus: 'Active' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(9);
     expect(instance.redirectPath).toBe('/doc-gen-back');
   });
   it('should call onSelectEval on ReactTable getTdProps onClick and taskName as Pending Buyout and tstatus as Active', () => {
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { taskName: 'Pending Buyout', tstatus: 'Active' } }, { Header: 'mock' }).onClick();
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { taskName: 'Pending Buyout', tstatus: 'Active' } }, { Header: 'mock' })
+      .onClick();
     expect(onSelectEval).toBeCalledTimes(10);
     expect(instance.redirectPath).toBe('/docs-in-back');
   });
@@ -213,7 +224,7 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
     expect(wrapper.find('withRouter(GoBackToSearch)')).toHaveLength(0);
     expect(wrapper.find('Connect(AdditionalInfo)')).toHaveLength(0);
     expect(wrapper.find('Link')).toHaveLength(1);
-    expect(wrapper.find('ReactTable')).toHaveLength(1);
+    expect(wrapper.find('ReactTable')).toHaveLength(2);
   });
   it('  should call onWidgetToggle on go back to search results button click', () => {
     wrapper.setProps({ openWidgetList: [ADDITIONAL_INFO], searchLoanResult });
@@ -226,7 +237,8 @@ describe('When additionalInfo is displayed in Search Loan ', () => {
   });
   it('should call stop propogation in event when the source Label is remedy', () => {
     wrapper.setProps({ openWidgetList: [''], searchLoanResult });
-    wrapper.find('ReactTable').props().getTdProps({}, { original: { sourceLabel: 'REMEDY' } }, { Header: 'mock' }).onClick({ stopPropagation });
+    wrapper.find('ReactTable').first().props().getTdProps({}, { original: { sourceLabel: 'REMEDY' } }, { Header: 'mock' })
+      .onClick({ stopPropagation });
     expect(onSelectEval).toBeCalledTimes(0);
     expect(stopPropagation).toBeCalled();
   });
@@ -308,7 +320,7 @@ describe('Search Loan sweetalert functionalities', () => {
     const closeSweetAlert = jest.fn();
     const onClearStagerTaskName = jest.fn();
     const wrapper = shallow(<SearchLoan
-      {... defaultProps}
+      {...defaultProps}
       closeSweetAlert={closeSweetAlert}
       onClearStagerTaskName={onClearStagerTaskName}
       searchLoanResult={searchLoanResult}

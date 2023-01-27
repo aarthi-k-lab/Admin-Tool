@@ -9,7 +9,7 @@ const LockCalculation = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="lock"
+    styleName={disabled ? 'lock-disabled' : 'lock'}
     variant="contained"
   >
         LOCK CALCULATION

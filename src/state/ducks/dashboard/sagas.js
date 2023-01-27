@@ -12,6 +12,7 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions, selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import * as dashboardActions from 'ducks/dashboard/actions';
 import {
   actions as widgetActions,
   selectors as widgetSelectors,
@@ -32,12 +33,11 @@ import {
   ERROR, SUCCESS, FAILED, NOTFOUND,
 } from 'constants/common';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
-import { INCOME_CALCULATOR } from 'constants/widgets';
+import { FINANCIAL_CALCULATOR } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
 import { CHECK_TASKNAME } from 'constants/trialTask';
-import {
-  APPROVAL_TYPE, PRE_APPROVAL_TYPE, ENQUIRY_REQ,
-} from 'constants/fhlmc';
+import { APPROVAL_TYPE, PRE_APPROVAL_TYPE, ENQUIRY_REQ } from 'constants/fhlmc';
+import { trackerData, milestoneTitleMap } from 'constants/milestoneTracker';
 import processExcel from '../../../lib/excelParser';
 import {
   GET_EVALCOMMENTS_SAGA, POST_COMMENT_SAGA,
@@ -47,6 +47,7 @@ import selectors from './selectors';
 
 import {
   ENABLE_ODM_RERUN_BUTTON,
+  SET_DISASTER_TYPE,
   SET_FHLMC_UPLOAD_RESULT,
   SUBMIT_TO_FHLMC,
   SET_COVIUS_TABINDEX,
@@ -163,6 +164,10 @@ import {
   SET_CASEIDS,
   FETCH_CASEIDS,
   SET_DISABLE_SUBMITTOFHLMC,
+  SET_MILESTONE_DETAILS,
+  SET_CURRENT_MILESTONE,
+  UPDATE_TRIAL_PERIOD,
+  UPDATE_TRIAL_PERIOD_RESULT,
   ODM_RERUN_SAGA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
@@ -181,6 +186,7 @@ import {
 
 import {
   SET_BORROWERS_DATA,
+  SET_EXPENSECALC_DATA,
   SET_INCOMECALC_DATA,
 } from '../income-calculator/types';
 import { selectors as stagerSelectors } from '../stager/index';
@@ -345,6 +351,7 @@ const searchLoan = function* searchLoan(loanNumber) {
           type: GET_EVALCOMMENTS_SAGA,
           payload: { loanNumber: searchLoanNumber },
         });
+        yield put(tombstoneActions.fetchTombstoneData());
       } else {
         yield put({
           type: SEARCH_LOAN_RESULT,
@@ -370,7 +377,6 @@ const searchLoan = function* searchLoan(loanNumber) {
     }
   }
 };
-
 function* checkTrialEnable() {
   const searchLoanResult = yield select(selectors.searchLoanResult);
   const evalId = yield select(selectors.evalId);
@@ -552,10 +558,62 @@ function* fetchChecklistDetailsForAssign(groupName, response) {
   yield call(fetchChecklistDetails, checklistId);
 }
 
+function* fetchMilestoneData(milestone, evalId, taskId) {
+  const milestoneResponse = yield call(Api.callGet, `api/bpm-audit/loanactivity/applmlstns/${evalId}`);
+  let currentMilestone = milestone;
+  if (R.isNil(milestone)) {
+    const currentMilestoneData = R.find(R.propEq('taskId', taskId), milestoneResponse);
+    currentMilestone = R.propOr('', 'milestoneName', currentMilestoneData);
+  }
+  if (milestoneResponse) {
+    const hash = {};
+    milestoneResponse.forEach((item) => {
+      hash[milestoneTitleMap[item.milestoneName]] = item.taskId;
+    });
+    const milestoneDetails = R.map(item => ({
+      title: item.milestoneName,
+      visited: !R.isNil(hash[item.milestoneName]),
+      taskId: hash[item.milestoneName],
+    }), trackerData);
+    const secondLookIndex = R.findIndex(R.propEq('milestoneName', 'Second Look'))(milestoneResponse);
+    let milestoneTrackerData = milestoneDetails;
+    if (!R.equals(secondLookIndex, -1)) {
+      const secondLook = R.nth(secondLookIndex, milestoneResponse);
+      if (R.equals(currentMilestone, 'Second Look')) {
+        const milstoneResponseWithoutSL = R.remove(secondLookIndex, 1, milestoneResponse);
+        const latestMilestoneTask = R.last(milstoneResponseWithoutSL);
+        const latestMilstoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[latestMilestoneTask.milestoneName]))(milestoneDetails);
+        milestoneTrackerData = R.insert(latestMilstoneIndex + 1, {
+          title: secondLook.milestoneName,
+          visited: true,
+          taskId: secondLook.taskId,
+        }, milestoneDetails);
+      } else {
+        const latestMilstoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[currentMilestone]))(milestoneDetails);
+        milestoneTrackerData = R.insert(latestMilstoneIndex + 1, {
+          title: secondLook.milestoneName,
+          visited: true,
+          taskId: secondLook.taskId,
+        }, milestoneDetails);
+      }
+    }
+    yield put({
+      type: SET_MILESTONE_DETAILS,
+      payload: milestoneTrackerData,
+    });
+  }
+  yield put({ type: SET_CURRENT_MILESTONE, payload: currentMilestone });
+}
+
 
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   const { taskId: bookingTaskId } = evalDetails;
+  const disableCalcButtonPayload = {
+    disableIncomeButton: !R.propOr(false, 'hasIncomeCalcForProcess', evalDetails),
+    disableExpenseButton: !R.propOr(false, 'hasExpenseCalcForProcess', evalDetails),
+  };
+  yield put(dashboardActions.disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
   yield put({ type: SAVE_TASKID, payload: bookingTaskId });
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
@@ -566,7 +624,7 @@ function* selectEval(searchItem) {
     yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
   }
   if (!R.propOr(false, 'hasIncomeCalcForProcess', evalDetails)) {
-    yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+    yield put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] }));
   }
   yield put(resetChecklistData());
   const user = yield select(loginSelectors.getUser);
@@ -593,7 +651,9 @@ function* selectEval(searchItem) {
   }
   evalDetails.showContinueMyReview = !R.isNil(evalDetails.assignee)
     && assignedTo.toLowerCase() === evalDetails.assignee.toLowerCase();
-
+  const searchResult = yield select(selectors.searchLoanResult);
+  const disasterFlag = R.pathOr('', ['disasterType', evalDetails.resolutionId], searchResult);
+  yield put({ type: SET_DISASTER_TYPE, payload: disasterFlag.trim() });
   yield put({ type: SAVE_EVALID_LOANNUMBER, payload: evalDetails });
   if (R.equals(evalDetails.milestone, 'Pending Booking') || R.equals(evalDetails.milestone, 'Post Mod')) {
     const groupList = R.pathOr([], ['groupList'], user);
@@ -623,6 +683,8 @@ function* selectEval(searchItem) {
   //   yield call(fetchLoanActivityDetails, searchItem);
   // }
   try {
+    const milestone = R.pathOr(null, ['payload', 'milestone'], searchItem);
+    yield call(fetchMilestoneData, milestone, evalDetails.evalId, evalDetails.taskId);
     yield put(tombstoneActions.fetchTombstoneData(evalDetails.loanNumber,
       evalDetails.taskName, evalDetails.taskId));
   } catch (e) {
@@ -983,6 +1045,7 @@ function getEvalPayload(taskDetails) {
   const piid = getProcessId(taskDetails);
   const brand = R.path(['taskData', 'data', 'brand'], taskDetails);
   const investorCode = R.path(['taskData', 'data', 'investorCode'], taskDetails);
+  const disasterType = R.path(['taskData', 'data', 'disasterType'], taskDetails);
   return {
     loanNumber,
     evalId,
@@ -991,6 +1054,7 @@ function getEvalPayload(taskDetails) {
     piid,
     brand,
     investorCode,
+    disasterType,
   };
 }
 
@@ -1224,14 +1288,20 @@ function* getNext(action) {
           ? `${taskName}-${(action.payload.activeTab || stagerTaskName.activeTab).replace(/ /g, '')}` : taskName;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}&brand=${brand}`);
+      const milestone = R.pathOr(null, ['taskData', 'data', 'milestone'], taskDetails);
+      yield call(fetchMilestoneData, milestone, getEvalId(taskDetails));
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
       const bookingTaskId = R.pathOr(null, ['taskData', 'data', 'bookingTaskId'], taskDetails);
       const incomeCalcData = R.propOr(null, 'incomeCalcData', taskDetails);
+      const expenseCalcData = R.propOr(null, 'expenseCalcData', taskDetails);
       if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], taskDetails)) {
         yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
       }
+      if (R.pathOr(false, ['expenseCalcData', 'taskCheckListId'], taskDetails)) {
+        yield put({ type: SET_EXPENSECALC_DATA, payload: expenseCalcData });
+      }
       if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], taskDetails)) {
-        yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+        yield put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] }));
       }
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
@@ -1442,12 +1512,16 @@ function* assignLoan() {
     const disabledWidgets = yield select(widgetSelectors.getDisabledWidgets);
     if (R.equals(true, R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], response))) {
       yield put(setDisabledWidget({
-        disabledWidgets: R.without(INCOME_CALCULATOR, disabledWidgets),
+        disabledWidgets: R.without(FINANCIAL_CALCULATOR, disabledWidgets),
       }));
     } else {
-      yield put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] }));
+      yield put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] }));
     }
-
+    const disableCalcButtonPayload = {
+      disableIncomeButton: R.isNil(R.pathOr(null, ['incomeCalcData', 'hasIncomeCalcForProcess'], response)),
+      disableExpenseButton: R.isNil(R.pathOr(null, ['expenseCalcData', 'hasExpenseCalcForProcess'], response)),
+    };
+    yield put(dashboardActions.disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({
@@ -1564,9 +1638,42 @@ function* loadTrials(payload) {
   yield put({ type: HIDE_LOADER });
 }
 
+function* saveTrialPeriod() {
+  try {
+    const sendTrailsDetail = yield select(selectors.getTrialsDetail);
+    const resultSendTrailsDetail = sendTrailsDetail && sendTrailsDetail.filter(R.propEq('isUpdated', true)).map(({
+      deadlineOn, forbearanceId, paidOn, sequence, trialDueOn,
+    }) => ({
+      deadlineOn, fbId: forbearanceId, paidOn, seq: sequence, trialDueOn,
+    }));
+    if (resultSendTrailsDetail && resultSendTrailsDetail.length > 0) {
+      const sendTrailsDetailResponse = yield call(Api.callPost, '/api/tkams/updateTrialPeriod', resultSendTrailsDetail);
+      if (sendTrailsDetailResponse !== null && sendTrailsDetailResponse.status === 'Success') {
+        yield put({
+          type: UPDATE_TRIAL_PERIOD_RESULT,
+          payload: {
+            level: 'Success',
+            status: 'Trial Data has been saved successfully',
+          },
+        });
+      }
+    }
+  } catch (e) {
+    yield put({
+      type: UPDATE_TRIAL_PERIOD_RESULT,
+      payload: {
+        level: ERROR,
+        status: MSG_SERVICE_DOWN,
+      },
+    });
+  }
+}
+
 function* sentToUnderwriting() {
   const taskId = yield select(selectors.taskId);
   const evalId = yield select(selectors.evalId);
+
+
   try {
     yield put({ type: SHOW_LOADER });
     const responseTask = yield call(Api.callGet, `/api/bpm-audit/audit/task/${taskId}`);
@@ -1638,6 +1745,7 @@ function* sendToDocGen(payload) {
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
+    yield put(tombstoneActions.fetchTombstoneData());
     yield put({ type: SHOW_LOADER });
     const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocGen/DocGen${isStager ? 'Stager' : ''}?EvalId=${evalId}`);
     if (response !== null && response === true) {
@@ -1699,6 +1807,7 @@ function* sendToDocsIn() {
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
+    yield put(tombstoneActions.fetchTombstoneData());
     yield put({ type: SHOW_LOADER });
     const response = yield call(Api.callGet, `/api/cmodnetcoretkams/DocsIn/${isModBook ? 'ModBooking' : 'BuyOutBooking'}?EvalId=${evalId}`);
     if (response !== null && response === true) {
@@ -1762,6 +1871,7 @@ function* sendToBooking() {
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
+    yield put(tombstoneActions.fetchTombstoneData());
     yield put({ type: SHOW_LOADER });
     const payload1 = JSON.parse(`{
         "evalID": "${evalId}",
@@ -1813,6 +1923,7 @@ function* sendToFEUW(action) {
   try {
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
+
     const request = {
       ...action.payload,
       userPrincipalName,
@@ -1840,6 +1951,7 @@ function* sendToFEUW(action) {
         },
       });
     }
+    yield put(tombstoneActions.fetchTombstoneData());
   } catch (e) {
     yield put({
       type: SET_RESULT_OPERATION,
@@ -1948,7 +2060,7 @@ function* onFhlmcBulkUpload(payload) {
   } = payload.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
   const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
-  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
+  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Mod Product Type'), resolutionData));
   const requestType = yield select(selectors.getRequestTypeData);
   const evalId = yield select(selectors.evalId);
   const loanNumber = yield select(selectors.loanNumber);
@@ -2030,7 +2142,7 @@ function* onFhlmcBulkUpload(payload) {
     }
     if (!R.isNil(response)) {
       const hasStatusCode = R.has('status', response);
-      if (hasStatusCode && R.includes(R.path(['status'], response), [404, 'No Content'])) {
+      if (hasStatusCode && [404, 'No Content'].includes(R.path(['status'], response))) {
         yield put({
           type: SET_RESULT_OPERATION,
           payload: {
@@ -2344,7 +2456,7 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
   let exceptionReviewRequestIndicator = yield select(selectors.getExceptionReviewIndicator);
   const exceptionReviewComments = yield select(selectors.getExceptionReviewComments);
-  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Modification Type'), resolutionData));
+  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Mod Product Type'), resolutionData));
   const caseId = R.head(R.pluck('resolutionId', resultData));
   let resultSet = null;
   let userNotification = null;
@@ -2786,6 +2898,10 @@ function* watchSentToUnderwriting() {
   yield takeEvery(SET_TASK_UNDERWRITING, sentToUnderwriting);
 }
 
+function* watchSaveTrialPeriod() {
+  yield takeEvery(UPDATE_TRIAL_PERIOD, saveTrialPeriod);
+}
+
 function* watchSendToDocGen() {
   yield takeEvery(SET_TASK_SENDTO_DOCGEN, sendToDocGen);
 }
@@ -2875,6 +2991,7 @@ function* watchODMRerun() {
 
 export const TestExports = {
   watchODMRerun,
+  fetchMilestoneData,
   autoSaveOnClose,
   checklistSelectors,
   resetChecklistData,
@@ -2932,6 +3049,7 @@ export const TestExports = {
   watchLoanviewTombstoneData,
   watchonSubmitEval,
   onSubmitEval,
+  watchSaveTrialPeriod,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -2981,5 +3099,6 @@ export const combinedSaga = function* combinedSaga() {
     watchSubmitToBoardingTemplate(),
     watchCancellationReasons(),
     watchCaseIds(),
+    watchSaveTrialPeriod(),
   ]);
 };

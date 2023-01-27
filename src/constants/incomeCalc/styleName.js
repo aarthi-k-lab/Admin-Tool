@@ -72,6 +72,25 @@ const textFields = {
   'pp-text': {
     value: 'pp-value',
   },
+  'cnsdt-exp-sec-amt': {
+    div: 'cnsdt-exp-amt-text',
+    value: 'cnsdt-exp-amt-text',
+    textField: 'cnsdt-exp-amt-text',
+    inputProps: 'cnsdt-exp-amt-text',
+  },
+  'cnsdt-net-dti': {
+    div: 'cnsdt-net-dti',
+    title: 'cnsdt-net-dti-title',
+    value: 'cnsdt-net-dti-value',
+  },
+  'cnsdt-net-exp': {
+    div: 'cnsdt-net-exp',
+    title: 'cnsdt-net-exp-title',
+    value: 'cnsdt-net-exp-value',
+  },
+  'cnsdt-inc-count-indc': {
+    div: 'cnsdt-inc-count-indc-div',
+  },
   addr: {
     inputProps: { autoComplete: 'new-password' },
   },
@@ -157,6 +176,14 @@ const taskSection = {
     labelValue: 'cnsdt-accordian-labelValue',
     details: 'cnsdt-accordian-details',
   },
+  'cnsdt-income-data-headers': {
+    header: 'cnsdt-inc-data-header-div',
+    space: 'cnsdt-inc-data-header-space',
+  },
+  'cnsdt-income-data-row': {
+    inctype: 'cnsdt-income-data-row-inctype',
+    amount: 'cnsdt-income-data-row-amount',
+  },
   default: {
     title: 'text-label',
     header: 'radio-control-label',
@@ -176,6 +203,10 @@ const datePicker = {
     div: 'date-flex-div',
     title: 'date-flex-title',
     picker: 'date-flex-picker',
+  },
+  'datepicker-we': {
+    title: 'text-label',
+    picker: 'datepicker-we',
   },
   default: {
     title: 'text-label',

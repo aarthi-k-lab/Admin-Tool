@@ -10,6 +10,7 @@
   flex-basis: 0;
   flex-grow: 1;
   overflow: auto;
+  width: 100%;
 }
 
 .incomeCalc-inprogress {
@@ -18,6 +19,8 @@
 
 .checklist-form-controls {
   padding: 1.5rem;
+  background-color: rgb(243, 245, 249) !important;
+  border-radius: 0.5rem !important;
 }
 
 .checklist-form-controls.checklist-form-controls > * {
@@ -31,21 +34,21 @@
 
 .checklist-title.checklist-title {
   color: var(--grey-650);
-  margin-top: 1rem;
-  font-size: 1rem;
+  font-size: 1rem !important;
   text-align: justify;
   font-weight: bold;
-  margin-left: -6rem;
-  margin-right: -7rem;
   display: flex;
-  justify-content: center;
+  margin-top: 0.5rem;
 }
 
-.subTaskDescription.subTaskDescription {
-  flex-grow: 4;
-  flex-basis: 0;
-  width: 100px;
-  word-wrap: break-word;
+.checklist-title-income-calc.checklist-title-income-calc {
+  color: var(--grey-650);
+  font-size: 1rem !important;
+  text-align: justify;
+  font-weight: bold;
+  display: flex;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
 }
 
 .clearButton.clearButton {
@@ -61,12 +64,6 @@
   margin: 0 37rem 0 0;
 }
 
-.subTaskDescParent.subTaskDescParent {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-
 .tooltip.tooltip {
   font-size: 0.8rem;
 }
@@ -76,7 +73,7 @@
 }
 
 .text-label.text-label {
-  color: #000;
+  color: #4e586e;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }

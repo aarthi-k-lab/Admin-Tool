@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import StopIcon from '@material-ui/icons/Stop';
 import './EndShift.css';
 
 const EndShift = ({ disabled, onClick }) => (
@@ -10,10 +9,9 @@ const EndShift = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="end-shift"
+    styleName={disabled ? 'end-shift-disabled' : 'end-shift'}
     variant="outlined"
   >
-    <StopIcon />
     End Shift
   </Button>
 );

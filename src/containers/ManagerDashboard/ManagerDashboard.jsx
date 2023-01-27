@@ -13,7 +13,7 @@ import RouteAccess from 'lib/RouteAccess';
 import {
   operations as dashboardOperations,
 } from 'ducks/dashboard';
-import { operations, selectors } from 'ducks/config';
+import { selectors } from 'ducks/config';
 import * as R from 'ramda';
 import DropDownSelect from './DropDownSelect';
 
@@ -27,11 +27,6 @@ class ManagerDashboard extends Component {
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    const { fetchPowerBIConstants } = this.props;
-    fetchPowerBIConstants();
   }
 
   handleChange(event) {
@@ -88,7 +83,6 @@ class ManagerDashboard extends Component {
 }
 
 ManagerDashboard.propTypes = {
-  fetchPowerBIConstants: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -96,7 +90,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchPowerBIConstants: operations.fetchPowerBIConstants(dispatch),
   onExpandTrigger: dashboardOperations.onExpand(dispatch),
 });
 

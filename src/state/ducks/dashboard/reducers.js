@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import {
+  SET_DISASTER_TYPE,
   SET_EXPAND_VIEW,
   SAVE_DISPOSITION,
   SAVE_SELECTED_DISPOSITION,
@@ -97,6 +98,7 @@ import {
   SET_REQUEST_TYPE_DATA,
   SET_VALID_EVALDATA,
   CLEAR_POPUP_TABLE_DATA,
+  SET_BRAND,
   SET_TRIAL_DISABLE_STAGER_BUTTON,
   SAVE_APPROVAL_DROPDOWN,
   SAVE_PREAPPROVAL_DROPDOWN,
@@ -110,7 +112,13 @@ import {
   SET_CASEIDS,
   SET_ENQUIRY_CASE_ID,
   SET_DISABLE_SUBMITTOFHLMC,
+  SET_MILESTONE_DETAILS,
+  SET_CURRENT_MILESTONE,
+  SET_TRIAL_DATE_INFO,
+  UPDATE_TRIAL_PERIOD_RESULT,
   ENABLE_ODM_RERUN_BUTTON,
+  DISABLE_SAVE,
+  DISABLE_FINANCE_CALC_TAB_BUTTON,
 } from './types';
 
 const reducer = (state = {
@@ -118,6 +126,13 @@ const reducer = (state = {
   coviusTabIndex: 0,
 }, action) => {
   switch (action.type) {
+    case SET_CURRENT_MILESTONE: {
+      const milestone = action.payload;
+      return {
+        ...state,
+        milestone,
+      };
+    }
     case TOGGLE_INCVRFN: {
       return {
         ...state,
@@ -223,6 +238,7 @@ const reducer = (state = {
         ...state,
         firstVisit: false,
         isAssigned: false,
+        milestoneDetails: null,
       };
       return newState;
     }
@@ -455,8 +471,16 @@ const reducer = (state = {
         getSearchLoanResponse: {},
         completeReviewResponse: null,
         investorCode: action.payload.investorCode,
+        disasterType: action.payload.disasterType,
       };
       return newState;
+    }
+    case SET_DISASTER_TYPE: {
+      const disasterType = action.payload;
+      return {
+        ...state,
+        disasterType,
+      };
     }
     case SAVE_EVAL_FOR_WIDGET: {
       const widgetLoan = action.payload;
@@ -1018,7 +1042,13 @@ const reducer = (state = {
         resultOperation,
       };
     }
-
+    case SET_BRAND: {
+      const brand = action.payload;
+      return {
+        ...state,
+        brand,
+      };
+    }
     case SET_TRIAL_DISABLE_STAGER_BUTTON: {
       const disableTrialStagerButton = action.payload;
       return {
@@ -1107,6 +1137,61 @@ const reducer = (state = {
       return {
         ...state,
         disableSubmittoFhlmc,
+      };
+    }
+
+    case SET_MILESTONE_DETAILS: {
+      const milestoneDetails = action.payload;
+      return {
+        ...state,
+        milestoneDetails,
+      };
+    }
+
+    case SET_TRIAL_DATE_INFO: {
+      const { payload: { seq, fieldToUpdate, updatedDate } } = action;
+      const { trialsDetail } = state;
+      const updatedTrialsDetail = trialsDetail ? trialsDetail.map((e) => {
+        if (R.equals(R.propOr('', 'sequence', e), seq)) {
+          return {
+            ...e,
+            isUpdated: true,
+            [fieldToUpdate]: updatedDate,
+          };
+        }
+        return e;
+      }) : [];
+      return {
+        ...state,
+        trialsDetail: updatedTrialsDetail,
+      };
+    }
+
+    case UPDATE_TRIAL_PERIOD_RESULT: {
+      const { updateTrialPeriodResult } = action.payload;
+      const resultOperation = {
+        ...action.payload,
+        isOpen: true,
+      };
+      return {
+        ...state,
+        resultOperation,
+        updateTrialPeriodResult,
+        isSaveDisabled: true,
+      };
+    }
+
+    case DISABLE_SAVE: {
+      return {
+        ...state,
+        isSaveDisabled: action.payload,
+      };
+    }
+
+    case DISABLE_FINANCE_CALC_TAB_BUTTON: {
+      return {
+        ...state,
+        disableFinanceCalcTabButton: action.payload,
       };
     }
 

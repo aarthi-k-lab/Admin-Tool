@@ -26,6 +26,7 @@ import {
   setNewChecklist,
   pushDataAction,
   computeRulesPassed,
+  currentChecklistTypeAction,
 } from './actions';
 
 const fetchHistoricalChecklistData = dispatch => (taskId) => {
@@ -117,7 +118,14 @@ const preProcessChecklistItems = dispatch => (type, payload) => {
   dispatch({ type, payload });
 };
 
+
+const currentChecklistType = dispatch => (payload) => {
+  dispatch(currentChecklistTypeAction(payload));
+};
+
+
 const operations = {
+  currentChecklistType,
   preProcessChecklistItems,
   putComputeRulesPassed,
   fetchChecklist,

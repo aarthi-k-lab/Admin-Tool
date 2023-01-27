@@ -9,7 +9,7 @@ const CompleteForbearance = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="complete-forbearance"
+    styleName={disabled ? 'complete-forbearance-disabled' : 'complete-forbearance'}
     variant="contained"
   >
     Complete Forbearance

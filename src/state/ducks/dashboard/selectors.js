@@ -1,3 +1,4 @@
+import { milestoneTitleMap } from 'constants/milestoneTracker';
 import * as R from 'ramda';
 
 const expandView = state => R.propOr(false, 'expandView', state.dashboard);
@@ -52,6 +53,8 @@ const processId = state => R.pathOr(null, ['dashboard', 'processId'], state);
 const processStatus = state => R.pathOr(null, ['dashboard', 'processStatus'], state);
 
 const processName = state => R.pathOr(null, ['dashboard', 'processName'], state);
+
+const getDisasterType = state => R.pathOr('', ['dashboard', 'disasterType'], state);
 
 // const getActivityDetails = state => R.pathOr(null, ['dashboard', 'loanActivityDetails'], state);
 const comments = state => R.pathOr([], ['dashboard', 'comments'], state);
@@ -187,8 +190,23 @@ const getCaseIds = state => R.pathOr('', ['dashboard', 'caseIds'], state);
 const getEnquiryCaseId = state => R.pathOr('', ['dashboard', 'enquiryCaseId'], state);
 const disableSubmittofhlmc = state => R.pathOr(false, ['dashboard', 'disableSubmittoFhlmc'], state);
 
+const getMilestoneDetails = state => R.pathOr([], ['dashboard', 'milestoneDetails'], state);
+
+const getCurrentLoanMilestone = state => R.pathOr('', ['dashboard', 'milestone'], state);
+
+const getCurrentMilestoneIndex = state => R.findIndex(R.propEq('title', milestoneTitleMap[getCurrentLoanMilestone(state)]))(getMilestoneDetails(state));
+
+const trialDateInfo = state => R.pathOr([], ['dashboard', 'trialDateInfo'], state);
+
+const isSaveDisabled = state => R.pathOr(true, ['dashboard', 'isSaveDisabled'], state);
+
+const getDisableFinanceCalcTabButton = state => R.pathOr({}, ['dashboard', 'disableFinanceCalcTabButton'], state);
+
 const selectors = {
+  getCurrentLoanMilestone,
   getODMRetryEligibility,
+  getCurrentMilestoneIndex,
+  getMilestoneDetails,
   getUserNotification,
   isIncomeVerification,
   getPopupData,
@@ -296,6 +314,10 @@ const selectors = {
   getCaseIds,
   getEnquiryCaseId,
   disableSubmittofhlmc,
+  getDisasterType,
+  trialDateInfo,
+  isSaveDisabled,
+  getDisableFinanceCalcTabButton,
 };
 
 export default selectors;

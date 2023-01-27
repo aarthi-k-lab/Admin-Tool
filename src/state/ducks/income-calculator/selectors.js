@@ -81,6 +81,8 @@ const getBorrowers = state => R.pathOr([], ['incomeCalculator', 'processedBorrow
 
 const getBorrowersList = state => R.pathOr([], ['incomeCalculator', 'checklist', 'value', 'inc', 'borrowers'], state);
 
+const getExpenseAmounts = state => R.pathOr([], ['incomeCalculator', 'checklist', 'value', 'expenseAmounts'], state);
+
 const getConsolidatedIncome = state => R.pathOr([], ['incomeCalculator', 'checklist', 'value', 'cnsdtIncome'], state);
 
 const getIncomeChecklistRefresh = state => R.pathOr(null, ['incomeCalculator', 'lastUpdated'], state);
@@ -99,6 +101,10 @@ const disabledChecklist = state => R.pathOr(false, ['incomeCalculator', 'disable
 const getMainChecklist = state => R.pathOr(false, ['incomeCalculator', 'mainChecklistId'], state);
 
 const getTaskValues = state => R.pathOr(false, ['incomeCalculator', 'taskValues'], state);
+
+const getTaskBlueprintCode = state => R.pathOr('', ['incomeCalculator', 'checklist', 'taskBlueprintCode'], state);
+
+const getWidgetCheckListType = state => R.pathOr('', ['incomeCalculator', 'checklist', 'taskBlueprint', 'type'], state);
 
 const selectors = {
   getMainChecklist,
@@ -128,6 +134,9 @@ const selectors = {
   getHistory,
   getHistoryItem,
   getTaskValues,
+  getExpenseAmounts,
+  getTaskBlueprintCode,
+  getWidgetCheckListType,
 };
 
 export default selectors;

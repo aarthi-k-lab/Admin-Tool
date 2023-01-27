@@ -9,7 +9,7 @@ import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist/index
 import { ERROR_LOADING_TOMBSTONE_DATA } from 'ducks/tombstone/types';
 import { ERROR, SUCCESS } from 'constants/common';
 import { setDisabledWidget } from 'ducks/widgets/actions';
-import { INCOME_CALCULATOR } from 'constants/widgets';
+import { FINANCIAL_CALCULATOR } from 'constants/widgets';
 import * as actionTypes from './types';
 import {
   onExpandView, dispositionSave, clearDisposition, clearFirstVisit,
@@ -21,7 +21,6 @@ import {
 } from '../tasks-and-checklist/actions';
 import { POST_COMMENT_SAGA } from '../comments/types';
 import { GET_HISTORICAL_CHECKLIST_DATA } from '../tasks-and-checklist/types';
-import { SET_INCOMECALC_DATA } from '../income-calculator/types';
 import DashboardModel from '../../../models/Dashboard';
 
 const {
@@ -139,6 +138,7 @@ describe('getnext Success', () => {
         applicationId: '34567',
         wfProcessId: '34567',
         loanNumber: '12345',
+        milestone: 'Underwriting',
       },
     },
     incomeCalcData: {},
@@ -206,11 +206,15 @@ describe('getnext Success', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName=&brand=NSM'));
   });
 
-  it('should call SET_INCOMECALC_DATA', () => {
+  it('should call fetchmilestone', () => {
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
+      .toEqual(call(TestExports.fetchMilestoneData, 'Underwriting', '34567'));
   });
 
+  it('should call SET_INCOMECALC_DATA', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] })));
+  });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
     const taskid = {
@@ -370,9 +374,14 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName=&brand=NSM'));
   });
 
+  it('should call fetchmilestone', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(call(TestExports.fetchMilestoneData, null, undefined));
+  });
+
   it('should call SET_INCOMECALC_DATA', () => {
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] })));
   });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
@@ -499,9 +508,14 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(call(Api.callGet, 'api/workassign/getNext?appGroupName=FEUW&userPrincipalName=brent@mrcooper.com&userGroups=allaccess,cmod-dev-beta&taskName=&brand=NSM'));
   });
 
+  it('should call fetchmilestone', () => {
+    expect(saga.next(mockTaskDetails).value)
+      .toEqual(call(TestExports.fetchMilestoneData, null, undefined));
+  });
+
   it('should call SET_INCOMECALC_DATA', () => {
     expect(saga.next(mockTaskDetails).value)
-      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] })));
   });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {
@@ -1235,7 +1249,19 @@ describe('assign Loan', () => {
 
   it('should call SET_DISABLED_WIDGETS', () => {
     expect(saga.next(mockResponse).value)
-      .toEqual(put(setDisabledWidget({ disabledWidgets: [INCOME_CALCULATOR] })));
+      .toEqual(put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] })));
+  });
+
+  it('should dispatch action DISABLE_FINANCE_CALC_TAB_BUTTON for checklist', () => {
+    const disableFinanceButtonPayload = {
+      disableExpenseButton: true,
+      disableIncomeButton: true,
+    };
+    expect(saga.next(mockResponse).value)
+      .toEqual(put({
+        type: actionTypes.DISABLE_FINANCE_CALC_TAB_BUTTON,
+        payload: disableFinanceButtonPayload,
+      }));
   });
 
   it('should dispatch action GET_HISTORICAL_CHECKLIST_DATA for checklist', () => {

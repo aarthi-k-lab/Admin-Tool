@@ -18,7 +18,9 @@
 .failure-subtask-name {
   display: inline-block;
   color: var(--red-a700);
-  font-size: 0.9rem;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
 }
 
 .fill-width.fill-width {
@@ -28,5 +30,8 @@
 
 .subtask-name {
   display: inline-block;
-  font-size: 0.9rem;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #4e586e;
 }

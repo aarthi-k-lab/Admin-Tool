@@ -21,6 +21,8 @@ const STORE_STAGER_TASKS = 'app/milestoneActivity/STORE_STAGER_TASKS';
 
 const CLEAR_MLSTN_DATA = 'app/milestoneActivity/CLEAR_MLSTN_DATA';
 
+const GO_BACK_TO_SEARCH = 'app/milestoneActivity/GO_BACK_TO_SEARCH';
+
 
 export {
   SHOW_LOADER,
@@ -40,4 +42,5 @@ export {
   GET_STAGER_TASKS,
   STORE_STAGER_TASKS,
   CLEAR_MLSTN_DATA,
+  GO_BACK_TO_SEARCH,
 };

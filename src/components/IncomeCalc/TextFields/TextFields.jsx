@@ -1,5 +1,5 @@
 import TextField from '@material-ui/core/TextField';
-import { operations, selectors } from 'ducks/tasks-and-checklist';
+import { operations } from 'ducks/tasks-and-checklist';
 import * as R from 'ramda';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -41,10 +41,12 @@ class TextFields extends React.Component {
   };
 
   getProps(type, props) {
-    const { additionalInfo } = this.props;
-    const { placeholder, roundOff } = additionalInfo;
+    const { additionalInfo, globalState } = this.props;
+    const { roundOff, valuePath, placeholder } = additionalInfo;
     const { textFieldValue } = this.state;
-    let value = textFieldValue;
+    const pathValue = valuePath
+      ? R.pathOr('', valuePath, globalState) : textFieldValue;
+    let value = textFieldValue || pathValue;
     const regex = R.propOr(false, 'regex', additionalInfo);
     const format = R.propOr(false, 'format', additionalInfo);
     if (regex && value) {
@@ -62,6 +64,7 @@ class TextFields extends React.Component {
             style: { textAlign: 'right' },
           },
           value,
+          placeholder,
         };
       }
       case 'multi-line': {
@@ -95,18 +98,31 @@ class TextFields extends React.Component {
   getControl(customType) {
     const {
       additionalInfo, disabled, failureReason,
-      value, componentTitle, onBlur,
+      value, componentTitle, onBlur, globalState,
     } = this.props;
-    const properties = this.getProps(customType, { value: value || '' });
     const {
       hasTitle, valuePosition, styleName, additionalElements, adornment,
-      defaultValue,
+      valuePath, position,
     } = additionalInfo;
+
+
+    let { defaultValue } = additionalInfo;
+
+    defaultValue = valuePath
+      ? R.pathOr('', valuePath, globalState) : defaultValue;
+    const properties = this.getProps(customType, { value: value || '' });
+
     const { textFieldValue } = this.state;
     const val = R.isEmpty(textFieldValue) ? defaultValue : textFieldValue;
     if (customType === 'read-only') {
-      const readOnlyValue = additionalElements && additionalElements.includes('adornment')
-        ? `${adornment} ${val}` : val;
+      let readOnlyValue;
+      if (additionalElements && additionalElements.includes('adornment') && position !== 'end') {
+        readOnlyValue = `${adornment} ${val}`;
+      } else if (additionalElements && additionalElements.includes('adornment') && position === 'end') {
+        readOnlyValue = `${val} ${adornment}`;
+      } else {
+        readOnlyValue = val;
+      }
       return (
         <div
           style={R.propOr(direction.left, valuePosition, direction)}
@@ -126,9 +142,9 @@ class TextFields extends React.Component {
     return (
       <div styleName={getStyleName('textFields', styleName, 'div')}>
         {hasTitle && (
-        <div styleName={getStyleName('textFields', styleName, 'title')}>
-          {componentTitle}
-        </div>
+          <div styleName={getStyleName('textFields', styleName, 'title')}>
+            {componentTitle}
+          </div>
         )}
         <TextField
           disabled={disabled}
@@ -165,7 +181,6 @@ class TextFields extends React.Component {
 }
 
 TextFields.defaultProps = {
-  getDropDownOptions: [],
   error: '',
   value: '',
   additionalInfo: {
@@ -189,11 +204,7 @@ TextFields.propTypes = {
     message: PropTypes.string,
   }),
   fetchDropDownOption: PropTypes.string.isRequired,
-  getDropDownOptions: PropTypes.arrayOf(PropTypes.shape({
-    displayName: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-    mail: PropTypes.string.isRequired,
-  })),
+  globalState: PropTypes.shape.isRequired,
   onBlur: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   renderChecklistItems: PropTypes.func.isRequired,
@@ -209,7 +220,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-  getDropDownOptions: selectors.getDropDownOptions(state),
+  globalState: state,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TextFields);

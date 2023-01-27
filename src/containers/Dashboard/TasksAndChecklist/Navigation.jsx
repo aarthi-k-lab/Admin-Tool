@@ -1,7 +1,6 @@
 import React from 'react';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import './Navigation.css';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment-timezone';
@@ -53,10 +52,6 @@ class Navigation extends React.PureComponent {
 
   render() {
     const {
-      disableNext,
-      disablePrev,
-      onNext,
-      onPrev,
       checklistLoadStatus,
       incomeCalcDataLoadStatus,
       classes,
@@ -67,28 +62,9 @@ class Navigation extends React.PureComponent {
     return (
       <Grid
         container
-        justify="space-between"
+        justify="flex-end"
         styleName="navigation"
       >
-        <Grid item xs={2} />
-        <Grid item xs={8}>
-          <Button
-            color="primary"
-            disabled={disablePrev}
-            onClick={onPrev}
-            styleName="nav-button"
-          >
-          Prev
-          </Button>
-          <Button
-            color="primary"
-            disabled={disableNext}
-            onClick={onNext}
-            styleName="nav-button"
-          >
-          Next
-          </Button>
-        </Grid>
         <Grid item styleName="lastUpdated" xs={2}>
           <>
             <p styleName="status">Last refreshed: </p>
@@ -100,8 +76,6 @@ class Navigation extends React.PureComponent {
   }
 }
 Navigation.defaultProps = {
-  disableNext: false,
-  disablePrev: false,
   incomeCalcDataLoadStatus: null,
   checklistLoadStatus: null,
 };
@@ -109,11 +83,7 @@ Navigation.defaultProps = {
 Navigation.propTypes = {
   checklistLoadStatus: PropTypes.string,
   classes: PropTypes.shape().isRequired,
-  disableNext: PropTypes.bool,
-  disablePrev: PropTypes.bool,
   incomeCalcDataLoadStatus: PropTypes.string,
-  onNext: PropTypes.func.isRequired,
-  onPrev: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

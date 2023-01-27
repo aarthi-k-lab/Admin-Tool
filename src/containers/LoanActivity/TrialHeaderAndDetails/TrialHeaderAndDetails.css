@@ -30,6 +30,7 @@
 
 .card-border {
   border-radius: 0;
+  overflow:initial !important;
 }
 
 .card-content.card-content {
@@ -65,4 +66,14 @@
 .letterItems {
   display: flex;
   flex-direction: column;
+}
+
+.getNext-button.getNext-button {
+  background-color: var(--light-blue-900);
+  color: aliceblue;
+  float:right !important;
+}
+
+.getNext-button.getNext-button:hover {
+  background-color: var(--blue-900);
 }

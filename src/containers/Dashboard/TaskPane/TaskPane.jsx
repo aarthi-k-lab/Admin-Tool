@@ -2,7 +2,7 @@ import React from 'react';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { operations as configOperations, selectors } from 'ducks/config';
+import { selectors } from 'ducks/config';
 import { operations as taskOperations, selectors as taskSelectors } from 'ducks/tasks-and-checklist';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import LeftTaskPane from 'components/LeftTaskPane';
@@ -13,11 +13,6 @@ import DashboardModel from '../../../models/Dashboard';
 import { BOOKING } from '../../../constants/widgets';
 
 class TaskPane extends React.PureComponent {
-  componentDidMount() {
-    const { fetchPdfGeneratorUrl } = this.props;
-    fetchPdfGeneratorUrl();
-  }
-
   render() {
     const {
       className,
@@ -83,7 +78,6 @@ TaskPane.defaultProps = {
 TaskPane.propTypes = {
   className: PropTypes.string,
   dataLoadStatus: PropTypes.string.isRequired,
-  fetchPdfGeneratorUrl: PropTypes.func.isRequired,
   group: PropTypes.string.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
   handleShowOptionalTasks: PropTypes.func.isRequired,
@@ -130,7 +124,6 @@ const mapDispatchToProps = dispatch => ({
   handleShowDeleteTaskConfirmation: taskOperations.handleShowDeleteTaskConfirmation(dispatch),
   updateChecklist: taskOperations.handleUpdateChecklist(dispatch),
   resetDeleteTaskConfirmation: taskOperations.resetDeleteTaskConfirmationValues(dispatch),
-  fetchPdfGeneratorUrl: configOperations.fetchPdfGeneratorUrl(dispatch),
 });
 
 const TaskPaneContainer = connect(mapStateToProps, mapDispatchToProps)(TaskPane);

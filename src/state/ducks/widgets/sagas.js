@@ -11,9 +11,10 @@ import {
   setRequestTypeDataAction,
   setSelectedCancellationReason,
 } from 'ducks/dashboard/actions';
+import { actions as tombStoneActions } from 'ducks/tombstone/index';
 import { getIncomeCalcChecklist } from 'ducks/income-calculator/actions';
 import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, INCOME_CALCULATOR, FHLMC,
+  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, FHLMC,
 } from 'constants/widgets';
 import dashboardSelectors from 'ducks/dashboard/selectors';
 import { DOCS_IN } from 'constants/appGroupName';
@@ -33,10 +34,12 @@ function* toggleBookingWidget(rightAppBarOpen) {
   }
 }
 
-function* toggleAdditionalInfoWidget(rightAppBarOpen) {
+function* toggleAdditionalInfoWidget(rightAppBarOpen, data) {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   if (rightAppBarOpen) {
     yield put(additionalInfo(loanNumber));
+  } if ((!data || data.length === 0) && !rightAppBarOpen) {
+    yield put(tombStoneActions.fetchTombstoneData());
   }
 }
 
@@ -58,16 +61,17 @@ function* getRightAppBarAction(request) {
   const {
     isOpen,
     currentWidget,
+    data,
   } = request;
   switch (currentWidget) {
-    case INCOME_CALCULATOR:
-      yield put(getIncomeCalcChecklist({ isOpen }));
+    case FINANCIAL_CALCULATOR:
+      yield put(getIncomeCalcChecklist({ isOpen, calcType: 'incomeCalcData' }));
       break;
     case BOOKING:
       yield call(toggleBookingWidget, isOpen);
       break;
     case ADDITIONAL_INFO:
-      yield call(toggleAdditionalInfoWidget, isOpen);
+      yield call(toggleAdditionalInfoWidget, isOpen, data);
       break;
     case HISTORY:
       break;
@@ -83,12 +87,14 @@ function* widgetToggle(action) {
     currentWidget,
     openWidgetList,
     page,
+    data,
   } = action.payload;
   const currentSelection = {
     currentWidget,
     openWidgetList,
     isOpen: true,
     page,
+    data,
   };
   const prevOpenWidgetList = yield select(selectors.getOpenWidgetList);
   const deSelectionWidgets = R.difference(prevOpenWidgetList, openWidgetList);
@@ -98,6 +104,7 @@ function* widgetToggle(action) {
       const deselection = {
         isOpen: false,
         currentWidget: widget,
+        data,
       };
       return call(getRightAppBarAction, deselection);
     }, deSelectionWidgets));

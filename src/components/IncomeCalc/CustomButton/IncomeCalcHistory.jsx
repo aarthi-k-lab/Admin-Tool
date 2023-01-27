@@ -8,8 +8,16 @@ import Icon from '@material-ui/core/Icon';
 import Popover from '@material-ui/core/Popover';
 import { selectors, operations } from 'ducks/income-calculator';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
-import { INCOME_CALCULATOR } from 'constants/widgets';
+import { FINANCIAL_CALCULATOR } from 'constants/widgets';
 import Tooltip from '@material-ui/core/Tooltip';
+import Divider from '@material-ui/core/Divider';
+
+
+function getCurrentDate() {
+  const date = new Date();
+  const dateTime = moment(date).format('YYYY-MM-DD');
+  return dateTime;
+}
 
 class IncomeCalcHistory extends React.PureComponent {
   constructor(props) {
@@ -26,7 +34,7 @@ class IncomeCalcHistory extends React.PureComponent {
   handleDuplicateHistoryItem = (item) => {
     const { taskCheckListId } = item;
     const { duplicateHistoryItem, openWidgetList, disabled } = this.props;
-    if (disabled || !R.contains(INCOME_CALCULATOR, openWidgetList)) {
+    if (disabled || !R.contains(FINANCIAL_CALCULATOR, openWidgetList)) {
       duplicateHistoryItem(taskCheckListId);
     }
   }
@@ -45,35 +53,39 @@ class IncomeCalcHistory extends React.PureComponent {
     closeHistoryView();
   }
 
-  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY hh:mm:ss A'))
+  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY'))
 
   renderDropDownItems = () => {
     const { openWidgetList, historyData, disabled } = this.props;
-    const isWidgetOpen = R.contains(INCOME_CALCULATOR, openWidgetList);
+    const isWidgetOpen = R.contains(FINANCIAL_CALCULATOR, openWidgetList);
     const disableCopy = disabled || isWidgetOpen;
-    return (!R.isEmpty(historyData) ? historyData.map(item => (
-      <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
-        <div>
-          <p style={{ margin: 0 }}>{item.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}</p>
-          <p style={{ margin: 0 }}>{this.getCSTDateTime(item.calcDateTime)}</p>
-        </div>
-        <Icon
-          color="primary"
-          onClick={() => this.handleDuplicateHistoryItem(item)}
-          style={{ marginLeft: '1rem', cursor: disableCopy ? 'not-allowed' : 'pointer' }}
-        >
+    return (!R.isEmpty(historyData) ? historyData.map((item, index) => (
+      <>
+        <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>{this.getCSTDateTime(item.calcDateTime)}</h3>
+            {item.lockId ? <h5 style={{ margin: 0, color: 'gray' }}>{item.lockId}</h5>
+              : <h5 style={{ margin: 0, color: 'gray' }}>--</h5> }
+          </div>
+          <Icon
+            color="primary"
+            onClick={() => this.handleDuplicateHistoryItem(item)}
+            style={{ marginLeft: '1rem', cursor: disableCopy ? 'not-allowed' : 'pointer' }}
+          >
         content_copy
-        </Icon>
-        <Icon
-          color="primary"
+          </Icon>
+          <Icon
+            color="primary"
 
-          onClick={() => this.handleViewHistoryItem(item)}
-          style={{ margin: '0 0.5rem', cursor: 'pointer' }}
-        >
+            onClick={() => this.handleViewHistoryItem(item)}
+            style={{ margin: '0 0.5rem', cursor: 'pointer' }}
+          >
 visibility
 
-        </Icon>
-      </div>
+          </Icon>
+        </div>
+        {index + 1 !== historyData.length && <Divider style={{ height: '1px', margin: '0px 3px' }} />}
+      </>
     ))
       : (
         <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
@@ -96,6 +108,7 @@ visibility
             </div>
           ) : (
             <>
+              <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span>
               <Tooltip placement="left" title="Calculation History">
                 <Icon
                   onClick={this.handleViewHistory}

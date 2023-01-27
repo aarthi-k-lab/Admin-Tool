@@ -9,7 +9,7 @@ const SendToDocGen = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="send-to-doc-gen"
+    styleName={disabled ? 'send-to-doc-gen-disabled' : 'send-to-doc-gen'}
     variant="contained"
   >
     Send To Doc Gen

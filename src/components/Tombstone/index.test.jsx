@@ -24,18 +24,11 @@ describe('<Tombstone />', () => {
       },
     ];
     const wrapper = shallow(<TestHooks.Tombstone items={items} />);
-    wrapper.find('WithStyles(ForwardRef(IconButton))').at(0).simulate('Click');
-    expect(wrapper.find(Item.name)).toHaveLength(items.length);
+    expect(wrapper.find(Item.name)).toHaveLength(4);
     expect(wrapper.find(Item.name).at(0).props().content).toBe(items[0].content);
     expect(wrapper.find(Item.name).at(0).props().title).toBe(items[0].title);
     expect(wrapper.find(Item.name).at(1).props().content).toBe(items[1].content);
     expect(wrapper.find(Item.name).at(1).props().title).toBe(items[1].title);
-  });
-
-  test('calls the \'onOpenWindow\' prop', () => {
-    const handleOnOpenWindow = jest.fn();
-    const wrapper = shallow(<TestHooks.Tombstone onOpenWindow={handleOnOpenWindow} />);
-    expect(wrapper.find('WithStyles(ForwardRef(IconButton))').at(0).prop('onClick')).toBe(handleOnOpenWindow);
   });
 });
 

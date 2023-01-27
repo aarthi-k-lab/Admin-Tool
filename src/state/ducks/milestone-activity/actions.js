@@ -1,3 +1,4 @@
+
 import {
   LOAD_MLSTN_SAGA,
   GET_TASKS_SAGA,
@@ -6,6 +7,7 @@ import {
   GET_TASKS_DETAILS,
   GET_STAGER_TASKS,
   CLEAR_MLSTN_DATA,
+  GO_BACK_TO_SEARCH,
 } from './types';
 
 const loadMlstnAction = prcsId => ({
@@ -34,6 +36,10 @@ const getStagerTasks = datas => ({
 const clearMlstnData = () => ({
   type: CLEAR_MLSTN_DATA,
 });
+const goBackToSearchAction = payload => ({
+  type: GO_BACK_TO_SEARCH,
+  payload,
+});
 export {
   loadMlstnAction,
   getStatusByTaskAction,
@@ -42,4 +48,5 @@ export {
   getTaskDetails,
   getStagerTasks,
   clearMlstnData,
+  goBackToSearchAction,
 };

@@ -33,7 +33,7 @@ const getContextTaskName = (groupName) => {
   let taskName = '';
   switch (groupName) {
     case 'FEUW':
-      taskName = 'Income Calculation Review';
+      taskName = 'Financial Calculation Review';
       break;
     case 'BEUW':
       taskName = 'Underwriting Review';

@@ -10,21 +10,33 @@ import * as R from 'ramda';
 import IncomeChecklist from 'components/IncomeCalc/IncomeChecklist';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import {
-  INCOME_CALCULATOR,
+  FINANCIAL_CALCULATOR,
 } from '../../constants/widgets';
 
 class IncomeCalcWidget extends React.Component {
   componentDidMount() {
-    const { incomeCalcChecklist, openWidgetList, processInstance } = this.props;
-    if (!R.contains(INCOME_CALCULATOR, openWidgetList)) {
-      incomeCalcChecklist({ processInstance });
+    const {
+      incomeCalcChecklist, openWidgetList, processInstance, type,
+    } = this.props;
+    if (!R.contains(FINANCIAL_CALCULATOR, openWidgetList)) {
+      incomeCalcChecklist({ processInstance, type });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      incomeCalcChecklist, openWidgetList, processInstance, type,
+    } = this.props;
+    if (!R.contains(FINANCIAL_CALCULATOR, openWidgetList)
+    && type !== prevProps.type) {
+      incomeCalcChecklist({ processInstance, type });
     }
   }
 
   render() {
     const {
       inProgress, checklistItems, onChecklistChange, historyView,
-      disabledChecklist, openWidgetList,
+      disabledChecklist, openWidgetList, type,
     } = this.props;
     if (inProgress) {
       return (
@@ -33,11 +45,12 @@ class IncomeCalcWidget extends React.Component {
         </div>
       );
     }
-    if (R.contains(INCOME_CALCULATOR, openWidgetList)) {
+    if (R.contains(FINANCIAL_CALCULATOR, openWidgetList)) {
       return (
         <div styleName="income-checklist">
           <IncomeChecklist
             checklistItems={checklistItems}
+            checklistType={type}
             disabled={disabledChecklist || historyView}
             onChange={onChecklistChange}
             onDelete={this.onDeleteItem}
@@ -50,6 +63,7 @@ class IncomeCalcWidget extends React.Component {
     return (
       <IncomeChecklist
         checklistItems={checklistItems}
+        checklistType={type}
         disabled={disabledChecklist || historyView}
         onChange={onChecklistChange}
         onDelete={this.onDeleteItem}
@@ -66,6 +80,8 @@ IncomeCalcWidget.defaultProps = {
   historyView: false,
   disabledChecklist: false,
   openWidgetList: [],
+  type: 'income-calculator',
+
 };
 
 IncomeCalcWidget.propTypes = {
@@ -90,7 +106,7 @@ IncomeCalcWidget.propTypes = {
   onChecklistChange: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   processInstance: PropTypes.string.isRequired,
-
+  type: PropTypes.string,
 };
 
 const TestHooks = {

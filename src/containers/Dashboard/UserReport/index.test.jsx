@@ -4,7 +4,6 @@ import { TestHooks } from './UserReport';
 
 const props = {
   setPageType: jest.fn(),
-  fetchPowerBIConstants: jest.fn(),
   history: [],
 };
 describe('<UserReport />', () => {

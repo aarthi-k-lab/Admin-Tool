@@ -22,7 +22,7 @@ const WidgetIcon = (props) => {
   } = props;
   const isSelected = (R.contains(data.id, openWidgetList));
   const style = {
-    background: isSelected ? '#d7d8d9' : 'rgb(242, 242, 242)',
+    background: isSelected ? '#d7d8d9' : 'white',
     cursor: R.contains(data.id, disabledWidgets) ? 'not-allowed' : 'pointer',
   };
   return (

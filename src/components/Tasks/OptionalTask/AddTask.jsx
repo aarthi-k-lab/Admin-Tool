@@ -14,7 +14,7 @@ const styles = theme => ({
   },
   custom: {
     color: 'black',
-    backgroundColor: 'var(--grey-300)',
+    backgroundColor: 'white',
     borderRadius: '0.15rem',
     minHeight: '25px',
     width: '30px',
@@ -22,6 +22,7 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: 'var(--grey-300)',
     },
+    boxShadow: 'none',
   },
 });
 
@@ -45,7 +46,8 @@ const AddTask = ({
 AddTask.defaultProps = {
   disabled: false,
   margin: {
-    'margin-left': '10rem',
+    'margin-left': '1rem',
+    'margin-right': '1rem',
   },
   onClick: () => {},
   toolTipPosition: 'bottom',

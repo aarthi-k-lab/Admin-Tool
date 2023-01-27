@@ -15,13 +15,15 @@ class CustomButton extends React.PureComponent {
       source,
       value,
       disabled,
+      isFinanceWidgetOpen,
+      typeClick,
+      disableWidgetClick,
     } = this.props;
     const {
-      customType, size, icon, styleName,
+      customType, size, icon, styleName, position, visible,
     } = additionalInfo;
     const buttonTitle = R.equals(source, 'value') ? value : title;
     const cursor = { marginLeft: '1rem', alignItems: 'center', fontSize: '1rem' };
-    const { position } = additionalInfo;
     switch (customType) {
       case 'iconWithLabel': {
         const button = (
@@ -50,11 +52,11 @@ class CustomButton extends React.PureComponent {
           button: {
             padding: '0rem 0.3rem 0rem 0.75rem',
             cursor: 'pointer',
-            backgroundColor: '#01579b',
             color: 'white',
-            borderRadius: '2px',
             display: 'flex',
             margin: 'auto',
+            background: 'linear-gradient(90deg, #6a81f0 0%, #4155e2 100%)',
+            borderRadius: '10px',
           },
           div: { display: 'flex' },
           hr: { height: '2rem', margin: '0rem' },
@@ -80,9 +82,15 @@ class CustomButton extends React.PureComponent {
       }
       case 'link': {
         return (
-          <Button color="primary" disabled={disabled}>
-            {buttonTitle}
-          </Button>
+          <>
+            {(visible || isFinanceWidgetOpen)
+              && (
+                <Button color="primary" disabled={!isFinanceWidgetOpen || disableWidgetClick} onClick={typeClick}>
+                  {buttonTitle}
+                </Button>
+              )
+            }
+          </>
         );
       }
       case 'textWithIcon': {
@@ -159,6 +167,11 @@ class CustomButton extends React.PureComponent {
     }
   };
 
+  handleTypeChange = () => {
+    const { typeClick } = this.props;
+    typeClick();
+  };
+
   render() {
     const button = this.getButtonByType();
     return button;
@@ -169,15 +182,19 @@ class CustomButton extends React.PureComponent {
 CustomButton.defaultProps = {
   additionalInfo: {},
   disabled: false,
-
+  isFinanceWidgetOpen: false,
+  disableWidgetClick: false,
 };
 
 CustomButton.propTypes = {
   additionalInfo: PropTypes.arrayOf(PropTypes.string),
   disabled: PropTypes.bool,
+  disableWidgetClick: PropTypes.bool,
+  isFinanceWidgetOpen: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   source: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  typeClick: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
 };
 

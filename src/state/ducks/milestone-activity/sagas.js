@@ -9,6 +9,7 @@ import {
 import * as Api from 'lib/Api';
 import * as R from 'ramda';
 import { selectors as dashboardSelectors } from 'ducks/dashboard/index';
+import { actions as tombStoneActions } from 'ducks/tombstone/index';
 import { ALL_MILESTONE_HISTORY } from '../../../constants/auditView';
 import {
   LOAD_MLSTN_SAGA,
@@ -28,8 +29,8 @@ import {
   STORE_MLSTN_NAME,
   GET_STAGER_TASKS,
   STORE_STAGER_TASKS,
+  GO_BACK_TO_SEARCH,
 } from './types';
-
 
 function* clearTasks() {
   yield put({
@@ -172,6 +173,10 @@ function* getStagerTasks(payload) {
   }
 }
 
+function* fetchTombstonedDataOnGoBackToSearch() {
+  yield put(tombStoneActions.fetchTombstoneData());
+}
+
 function* watchLoadMlstn() {
   yield takeLatest(LOAD_MLSTN_SAGA, loadMlstnBpm);
 }
@@ -196,6 +201,10 @@ function* watchGetStagerTasks() {
   yield takeEvery(GET_STAGER_TASKS, getStagerTasks);
 }
 
+function* watchGoBackToSearch() {
+  yield takeEvery(GO_BACK_TO_SEARCH, fetchTombstonedDataOnGoBackToSearch);
+}
+
 export const TestExports = {
   watchLoadMlstn,
   watchGetTasksByTaskCategory,
@@ -211,5 +220,6 @@ export function* combinedSaga() {
     watchClearTasks(),
     watchGetTaskDetails(),
     watchGetStagerTasks(),
+    watchGoBackToSearch(),
   ]);
 }

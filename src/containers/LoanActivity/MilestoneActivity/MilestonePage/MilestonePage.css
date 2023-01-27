@@ -31,8 +31,8 @@
 }
 
 .page-header {
-  font-size: 1.3rem;
-  padding: 1rem 2rem;
+  font-size: 1.0rem;
+  padding: 1rem 1rem;
 }
 
 .leftPanel {
@@ -52,7 +52,7 @@
   overflow: auto;
   height: 100%;
   z-index: 10;
-  background-color: rgb(235, 235, 236);
+  border-right: 2px solid rgb(245, 245, 245);
 }
 
 .status-details {
@@ -61,16 +61,21 @@
   overflow: auto;
   width: 100%;
   margin: auto;
+  padding-left: 1em;
 }
 
 .loan-activity {
   align-self: stretch;
   height: 100%;
+  width: 88% !important;
+  background-color: #fff;
+  margin-left: 10px;
+  border-radius: 5px;
 }
 
 .process-status {
   font-weight: bold;
-  color: rgb(55, 125, 158);
+  color: #4e586e !important
 }
 
 .postion {
@@ -78,10 +83,18 @@
 }
 
 .centerpane {
-  width: 90%;
+  width: 95%;
 }
 
 .historyIcon {
   float: right;
   font-size: 2rem !important;
+}
+
+.milestone-container{
+  display: flex;
+  flex-direction: row; 
+  background-color: rgb(243,245,249);
+  margin-top: -0.2rem;
+  height: 100%
 }

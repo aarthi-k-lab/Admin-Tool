@@ -38,6 +38,7 @@
 .inc-text {
   width: 12rem !important;
   text-align: right;
+  max-width: 94%;
 }
 
 .gytd-text {
@@ -77,10 +78,18 @@
   background-color: #eee;
 }
 
+.we-bs-textbox {
+  width: 12rem !important;
+  text-align: right;
+  background-color: #eee;
+  max-width: 94%;
+}
+
 .disabled {
   width: 12rem !important;
   text-align: right;
   background-color: #eee;
+  max-width: 94%;
 }
 
 .text-with-placeholder {
@@ -90,6 +99,7 @@
 
 .pitia-amt-title {
   width: 12rem;
+  margin: 0rem 0rem 0rem 1rem;
 }
 
 .pitia-amt {
@@ -231,9 +241,69 @@
 .cnsdt-net-title {
   font-weight: 350;
   font-size: 1rem;
-  margin: 1rem 0 0 0;
+}
+
+.cnsdt-net-dti {
+  align-items: center;
+  display: inline-flex !important;
+  width: 9rem;
+  border-right: solid grey;
+  border-width: thin;
+}
+
+.cnsdt-net-dti-value {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0 0 .5rem 0;
+}
+
+.cnsdt-net-dti-title {
+  font-weight: bold;
+  font-size: .9rem;
+  margin: .5rem 0 .5rem 0;
 }
 
 .cnsdt-income-div {
   justify-content: center;
+}
+
+.cnsdt-exp-amt-text{
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.cnsdt-net-exp{
+  align-items: center;
+  display: inline-flex !important;
+  width: 13.5rem;
+  border-bottom:  solid grey;
+  border-right: solid grey;
+  border-width: 0.00625rem;
+}
+
+.cnsdt-net-exp-value {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin: 0 0 .5rem 0;
+}
+
+.cnsdt-net-exp-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin: .5rem 0 .5rem 0;
+}
+
+.cnsdt-inc-count-indc-div{
+  color: black;
+  width: 3rem;
+  display: flex;
+  background: #f1f1f1;
+  height: 2rem;
+  border-radius: 1rem;
+  margin-top: 6px;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid #f1f1f1;
 }

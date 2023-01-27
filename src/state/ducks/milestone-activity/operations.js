@@ -5,6 +5,7 @@ import {
   getTaskDetails,
   getStagerTasks,
   clearMlstnData,
+  goBackToSearchAction,
 } from './actions';
 
 const loadMlstn = dispatch => prcsId => dispatch(loadMlstnAction(prcsId));
@@ -25,6 +26,8 @@ const clearMlstnDatas = dispatch => () => dispatch(
   clearMlstnData(),
 );
 
+const goBackToSearch = dispatch => payload => dispatch(goBackToSearchAction(payload));
+
 const operations = {
   loadMlstn,
   getTasksByTaskCategory,
@@ -32,6 +35,7 @@ const operations = {
   getTaskDetailsByTaskNm,
   getStagerTasksByDttm,
   clearMlstnDatas,
+  goBackToSearch,
 };
 
 export default operations;

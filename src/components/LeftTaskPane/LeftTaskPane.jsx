@@ -4,7 +4,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import ErrorIcon from '@material-ui/icons/Error';
 import classNames from 'classnames';
-import CollapseIcon from 'components/Tasks/CollapseIcon';
 import LeftParentTasks from 'components/Tasks/LeftParentTasks';
 import TaskModel from 'lib/PropertyValidation/TaskModel';
 import OptionalTaskModel from 'lib/PropertyValidation/OptionalTaskModel';
@@ -14,7 +13,7 @@ import AddTask from '../Tasks/OptionalTask/AddTask';
 import ChecklistHistory from '../Checklist/ChecklistHistory';
 import ExportCurrentChecklist from '../Checklist/ExportCurrentChecklist';
 
-const ALL = 'All';
+const ALL = 'All Status';
 const PENDING = 'Pending';
 const COMPLETED = 'Completed';
 const OPEN = 'open';
@@ -36,7 +35,6 @@ function StatusMenu({ onChange, taskStatus }) {
           },
           disableUnderline: true,
         }}
-        label="Status"
         onChange={onChange}
         select
         value={taskStatus}
@@ -69,10 +67,9 @@ class LeftTaskPane extends React.Component {
     super(props);
     this.state = {
       tasksStatus: ALL,
-      width: props.defaultState === OPEN ? props.openWidth : props.closedWidth,
+      width: props.openWidth,
       isCollapsed: props.defaultState !== OPEN,
     };
-    this.handleClick = this.handleClick.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
   }
 
@@ -84,17 +81,6 @@ class LeftTaskPane extends React.Component {
     });
     storeTaskFilter(statusMap[selectedStatus]);
   }
-
-
-  handleClick() {
-    const { isCollapsed } = this.state;
-    const { openWidth, closedWidth } = this.props;
-    this.setState({
-      width: isCollapsed ? openWidth : closedWidth,
-      isCollapsed: !isCollapsed,
-    });
-  }
-
 
   renderContent() {
     const { tasksStatus, isCollapsed } = this.state;
@@ -123,26 +109,22 @@ class LeftTaskPane extends React.Component {
     }
     return (
       <>
-        <div styleName={isCollapsed ? 'task-pane-controls task-pane-controls-collapsed' : 'task-pane-controls'}>
-          {
-            !isCollapsed
-              ? (
-                <>
-                  <StatusMenu
-                    onChange={this.handleStatusChange}
-                    taskStatus={tasksStatus}
-                  />
-                  <div styleName="icons">
-                    <div styleName="checklist-history-icon">
-                      <ChecklistHistory
-                        checkListData={historicalCheckListData}
-                        groupName={groupName}
-                        margin={{ marginLeft: '2rem' }}
-                        pdfExportPayload={pdfExportPayload}
-                        pdfGeneratorConstant={pdfGeneratorConstant}
-                        toggleWidget={toggleWidget}
-                      />
-                      {
+        <div styleName="task-pane-controls">
+          <StatusMenu
+            onChange={this.handleStatusChange}
+            taskStatus={tasksStatus}
+          />
+          <div styleName="icons">
+            <div styleName="checklist-history-icon">
+              <ChecklistHistory
+                checkListData={historicalCheckListData}
+                groupName={groupName}
+                margin={{ marginLeft: '4rem' }}
+                pdfExportPayload={pdfExportPayload}
+                pdfGeneratorConstant={pdfGeneratorConstant}
+                toggleWidget={toggleWidget}
+              />
+              {
                         showExportChecklist && (
                         <ExportCurrentChecklist
                           margin={{ marginLeft: '0.5rem' }}
@@ -152,32 +134,17 @@ class LeftTaskPane extends React.Component {
                         )
                       }
 
-                    </div>
-                    {shouldShowAddTaskButton(optionalTasks)
-                      ? (
-                        <AddTask
-                          disabled={disableModifyOptionalTasks}
-                          onClick={() => handleShowOptionalTasks()}
-                        />
-                      )
-                      : null
-                    }
-                  </div>
-                </>
+            </div>
+            {shouldShowAddTaskButton(optionalTasks)
+              ? (
+                <AddTask
+                  disabled={disableModifyOptionalTasks}
+                  onClick={() => handleShowOptionalTasks()}
+                />
               )
               : null
-          }
-          <span
-            onClick={this.handleClick}
-            onKeyPress={() => null}
-            role="button"
-            styleName={isCollapsed ? 'collapse-icon-closed' : 'collapse-icon-open'}
-            tabIndex={0}
-          >
-            <CollapseIcon
-              direction={isCollapsed ? 'right' : 'left'}
-            />
-          </span>
+                    }
+          </div>
         </div>
         <LeftParentTasks
           disabled={dataLoadStatus === 'loading'}
@@ -232,7 +199,6 @@ class LeftTaskPane extends React.Component {
 
 LeftTaskPane.propTypes = {
   className: PropTypes.string,
-  closedWidth: PropTypes.string,
   dataLoadStatus: PropTypes.string,
   defaultState: PropTypes.string,
   disableModifyOptionalTasks: PropTypes.bool.isRequired,
@@ -261,10 +227,9 @@ LeftTaskPane.propTypes = {
 
 LeftTaskPane.defaultProps = {
   className: '',
-  closedWidth: '4rem',
   dataLoadStatus: 'completed',
   defaultState: 'open', // or 'closed'
-  openWidth: '20rem',
+  openWidth: '21rem',
   selectedTaskId: '',
   optionalTasks: [],
   groupName: '',

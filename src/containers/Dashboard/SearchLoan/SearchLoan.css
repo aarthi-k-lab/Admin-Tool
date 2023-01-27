@@ -1,10 +1,21 @@
 .resultText {
-  margin-left: 1rem;
+  font-family: Lato;
+  font-size: 1.2rem;
+  line-height: 17px;
+  display: flex;
+}
+
+.search-text {
+  font-weight: 400;
+  margin-left: 2rem;
+  color: #939299;
 }
 
 .searchResutlText {
+  font-weight: 700;
   margin-right: 2px;
-  margin-left: 2px;
+  margin-left: 4px;
+  color: #4E586E;
 }
 
 .evalTable {
@@ -17,6 +28,10 @@
   display: flex;
   flex-grow: 1;
   overflow: hidden;
+  margin: 1rem 0rem 2rem 1rem;
+  margin-right: 6rem;
+  background-color: white;
+  border-radius: 0.5em;
 }
 
 .eval-table-height-limiter {
@@ -43,7 +58,7 @@
 }
 
 .backButton {
-  margin: 1rem 0 0 1rem;
+  margin: 1rem 0 0 2rem;
   font-size: 14px;
 }
 
@@ -54,4 +69,20 @@
 
 [role=rowgroup]:hover {
   background: #e4f9fc !important;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: row; 
+    background-color: rgb(243,245,249);
+    height: 100%;
+}
+
+.loan-info-components {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  width: 0;
+  background-color: white;
+  border-radius: 10px;
 }

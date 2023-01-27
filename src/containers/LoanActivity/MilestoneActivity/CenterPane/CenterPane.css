@@ -9,13 +9,14 @@
 .taskPerformed {
   margin-top: 1rem;
   margin-left: 1rem;
-  color: rgb(208, 210, 211);
+  color: var(--grey-650)
 }
 
 .taskPerformedstats {
   margin-top: 1rem;
   margin-left: 1rem;
-  color: rgb(51, 54, 69);
+  color: #4e586e !important;
+  font-weight: 700;
 }
 
 .divider {
@@ -25,4 +26,10 @@
 .container {
   max-height: 31rem !important;
   border-bottom: 0 !important;
+  background-color: rgb(243, 245, 249) !important;
+  border-radius: 5px !important;
+}
+.container::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
 }

@@ -34,7 +34,7 @@
 
 .cnsdtIncome {
   width: 27rem;
-  height: 51rem;
+  height: 51.5rem;
   margin-left: 2rem;
   align-items: center;
 }
@@ -299,13 +299,14 @@
 }
 
 .cnsdt-income {
-  background-color: #014260;
+  background-color: #4E586E;
   color: #fff;
-  padding: 1rem 0 2rem 0;
 }
 
 .cnsdt-accordian-details {
   background-color: #eee;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .cnsdt-accordian-label {
@@ -368,9 +369,101 @@
 
 .default-grid-label-spacing {
   margin: 0;
-  padding-right: 5rem;
+  padding-right: 0.7rem;
 }
 
 .fixed-income-net-value {
   margin-right: -4px;
+}
+
+.expense-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  overflow-y: scroll;
+  height: 46.6rem;
+}
+
+.expense-cnsdt-items {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.cnsdt-amt-sect-details{
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+
+.acc-sub-header-txt{
+  color: gray;
+  font-size: 1.1rem;
+}
+
+.acc-sub-header-amt-txt{
+  color: gray;
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.expense-cnsdt-grid{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0px 1rem;
+  background-color: lightgray;
+}
+
+.inc-borrower-headers {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.gn-sub-header-amt-txt{
+  color: gray;
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+.gross-net-section{
+  display: flex;
+  justify-content: space-between;
+}
+
+.gross-net-div{
+  display: inline-block !important;
+  width: 13rem;
+}
+
+.cnsdt-inc-types-sect{
+  display: flex;
+  justify-content: space-between;
+  width: 10rem;
+}
+
+.cnsdt-inc-data-header-space {
+  width: 12rem;
+}
+
+.cnsdt-inc-data-header-div{
+  color: gray !important;
+  font-size: 1rem !important;
+  width: 7.4rem !important;
+  text-align: initial !important;
+  padding-left: 0px !important;
+}
+
+.cnsdt-income-data-row-inctype{
+  color: gray !important;
+  font-size: 1.1rem !important;
+  width: 12rem !important;
+}
+
+.cnsdt-income-data-row-amount {
+  color: black !important;
+  font-size: 1.1rem !important;
+  width: 7.4rem !important;
+  display: flex !important;
+  justify-content: initial !important;
+  padding: 6px 0 !important;
 }

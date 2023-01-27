@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { selectors as incomeSelectors, operations as incomeOperations } from 'ducks/income-calculator';
 import { operations as taskOperations } from 'ducks/tasks-and-checklist';
 import { operations as dashboardOperations, selectors as dashboardSelector } from 'ducks/dashboard';
+import { selectors as widgetsSelectors } from 'ducks/widgets';
 import processItem from 'lib/CustomFunctions';
 import { getChecklistItems } from 'lib/checklist';
 import { UNFORMAT } from 'lib/Formatters';
@@ -21,6 +22,9 @@ import RadioButtons from '../RadioButtons';
 import DatePicker from '../DatePicker';
 import CheckBox from '../Checkbox';
 import GridView from '../GridView';
+import {
+  FINANCIAL_CALCULATOR,
+} from '../../../constants/widgets';
 
 
 const NumberFormatCustom = (props) => {
@@ -55,6 +59,7 @@ class IncomeChecklist extends React.PureComponent {
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleWidgetClick = this.handleWidgetClick.bind(this);
     this.state = {
       multilineTextDirtyValues: {},
     };
@@ -63,13 +68,16 @@ class IncomeChecklist extends React.PureComponent {
 
 
   componentDidMount() {
-    const { toggleIncvrfn } = this.props;
+    const { toggleIncvrfn, checklistType, currentChecklistType } = this.props;
+    currentChecklistType(checklistType);
     toggleIncvrfn(true);
   }
 
   componentWillUnmount() {
-    const { toggleIncvrfn } = this.props;
+    const { toggleIncvrfn, disableLockButton, currentChecklistType } = this.props;
+    currentChecklistType('');
     toggleIncvrfn(false);
+    disableLockButton(false);
   }
 
   static getDerivedStateFromProps(props) {
@@ -90,6 +98,22 @@ class IncomeChecklist extends React.PureComponent {
       return initialValue;
     }
     return dirtyValue;
+  }
+
+  handleWidgetCalcTypeChange = (source, value, title, isFinanceWidgetOpen) => () => {
+    const { incomeCalcChecklist } = this.props;
+    const buttonTitle = R.equals(source, 'value') ? value : title;
+    const calcType = buttonTitle === 'Income' ? 'incomeCalcData' : 'expenseCalcData';
+    incomeCalcChecklist({ isOpen: isFinanceWidgetOpen, calcType });
+  }
+
+  handleWidgetClick(title) {
+    const {
+      disableFinanceCalcTabButton: { disableIncomeButton, disableExpenseButton },
+    } = this.props;
+    if (R.equals('Income', title)) return disableIncomeButton || false;
+    if (R.equals('Expense', title)) return disableExpenseButton || false;
+    return false;
   }
 
   handleDateChange(id, taskCode, additionalInfo) {
@@ -204,7 +228,7 @@ class IncomeChecklist extends React.PureComponent {
     } = ComponentTypes;
     const {
       disabled: disableIncomeCalc, checklistLoadStatus, location, incomeCalcData,
-      isAssigned, taskValues,
+      isAssigned, taskValues, openWidgetList,
     } = this.props;
     const skipSubTask = [TASK_SECTION];
     const children = [];
@@ -248,6 +272,7 @@ class IncomeChecklist extends React.PureComponent {
         } break;
         case TASK_SECTION: {
           const onChange = this.handleDateChange(id, taskCode, additionalInfo);
+          const { accHeaderData } = processedItem;
           const onDelete = this.handleRemoveTask(id, taskCode);
           const props = {
             title,
@@ -260,6 +285,8 @@ class IncomeChecklist extends React.PureComponent {
             disabled,
             renderChildren: this.renderChildren(disabled),
             failureReason,
+            source,
+            accHeaderData,
           };
           element = <TaskSection key={id} {...props} />;
         } break;
@@ -282,18 +309,25 @@ class IncomeChecklist extends React.PureComponent {
         case BUTTON: {
           const onChange = this.handleDateChange(id, taskCode, additionalInfo);
           const text = title || additionalInfo.placeholder;
+          const isFinanceWidgetOpen = R.contains(FINANCIAL_CALCULATOR, openWidgetList);
+          const typeClick = this.handleWidgetCalcTypeChange(source, value, title,
+            isFinanceWidgetOpen);
+          const disableWidgetClick = this.handleWidgetClick(title);
           const props = {
             id,
             taskCode,
             title: text,
             additionalInfo,
             onChange,
+            typeClick,
             options,
             state,
             source,
             value,
             failureReason,
             disabled,
+            isFinanceWidgetOpen,
+            disableWidgetClick,
           };
           element = (<CustomButton key={id} {...props} />);
         } break;
@@ -423,6 +457,7 @@ IncomeChecklist.defaultProps = {
   checklistLoadStatus: null,
   isAssigned: false,
   taskValues: {},
+  openWidgetList: [],
 };
 
 NumberFormatCustom.propTypes = {
@@ -447,13 +482,18 @@ IncomeChecklist.propTypes = {
     }),
   ).isRequired,
   checklistLoadStatus: PropTypes.string,
+  checklistType: PropTypes.string.isRequired,
   children: PropTypes.arrayOf(PropTypes.shape()),
   className: PropTypes.string,
+  currentChecklistType: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  disableFinanceCalcTabButton: PropTypes.shape().isRequired,
+  disableLockButton: PropTypes.func.isRequired,
   displayInRow: PropTypes.bool,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  incomeCalcChecklist: PropTypes.func.isRequired,
   incomeCalcData: PropTypes.shape().isRequired,
   isAssigned: PropTypes.bool,
   location: PropTypes.shape({
@@ -463,6 +503,7 @@ IncomeChecklist.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onRemoveTask: PropTypes.func.isRequired,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   processAction: PropTypes.func.isRequired,
   putComputeRulesPassed: PropTypes.func.isRequired,
   resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -489,12 +530,17 @@ const mapStateToProps = state => ({
   checklistLoadStatus: incomeSelectors.getIncomeChecklistLoadStatus(state),
   isAssigned: dashboardSelector.isAssigned(state),
   taskValues: incomeSelectors.getTaskValues(state),
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
+  disableFinanceCalcTabButton: dashboardSelector.getDisableFinanceCalcTabButton(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   processAction: taskOperations.preProcessChecklistItems(dispatch),
   toggleIncvrfn: dashboardOperations.toggleIncvrfn(dispatch),
+  disableLockButton: dashboardOperations.disableLockButton(dispatch),
   storeTaskValue: incomeOperations.storeTaskValue(dispatch),
+  currentChecklistType: taskOperations.currentChecklistType(dispatch),
+  incomeCalcChecklist: incomeOperations.incomeCalcChecklist(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(IncomeChecklist);

@@ -9,7 +9,7 @@ const SendToDocGenStager = ({ disabled, onClick }) => (
     color="primary"
     disabled={disabled}
     onClick={onClick}
-    styleName="send-to-doc-gen-stager"
+    styleName={disabled ? 'send-to-doc-gen-stager-disabled' : 'send-to-doc-gen-stager'}
     variant="contained"
   >
     Send To Doc Gen Stager

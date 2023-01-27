@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import AdditionalInfo from 'containers/AdditionalInfo';
+import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
 import MilestoneActivity from './MilestoneActivity';
 import TrialHeaderAndDetails from './TrialHeaderAndDetails';
 import { selectors, operations } from '../../state/ducks/dashboard';
@@ -11,6 +12,11 @@ import './LoanActivity.css';
 import { ADDITIONAL_INFO, HISTORY } from '../../constants/widgets';
 import WidgetBuilder from '../../components/Widgets/WidgetBuilder';
 import SweetAlertBox from '../../components/SweetAlertBox/SweetAlertBox';
+import { selectors as tombstoneSelectors } from '../../state/ducks/tombstone';
+import { EDITABLE_FIELDS } from '../../constants/loanInfoComponents';
+import RFDContent from '../../components/Tombstone/TombstoneComponents/RFDContent';
+import CollateralContent from '../../components/Tombstone/TombstoneComponents/CollateralContent';
+import Popup from '../../components/Popup';
 
 class LoanActivity extends React.PureComponent {
   constructor(props) {
@@ -34,9 +40,42 @@ class LoanActivity extends React.PureComponent {
     this.setState({ isOpen: false });
   }
 
+  renderCollateralAlert() {
+    const { clearPopupData, popupData } = this.props;
+    if (popupData) {
+      const {
+        isOpen, message, title, level,
+        confirmButtonText, onConfirm,
+      } = popupData;
+      const confirmAction = clearPopupData;
+      return (
+        <Popup
+          confirmButtonText={confirmButtonText}
+          level={level}
+          message={message}
+          onConfirm={() => confirmAction(onConfirm)}
+          show={isOpen}
+          showConfirmButton
+          title={title}
+        />
+      );
+    }
+    return null;
+  }
+
+  renderLoanInfoComponents() {
+    const { checklistCenterPaneView } = this.props;
+    return (
+      <Grid styleName="loan-info-components">
+        {checklistCenterPaneView === 'Reason for Default' ? <RFDContent /> : <CollateralContent />}
+      </Grid>
+    );
+  }
+
   render() {
     const {
       trialHeader, openWidgetList, trialsDetail, inProgress, resultUnderwriting, getTrialResponse,
+      checklistCenterPaneView,
     } = this.props;
     const { isOpen } = this.state;
     let renderComponent = null;
@@ -58,32 +97,45 @@ class LoanActivity extends React.PureComponent {
           <div styleName="addInfo">
             <div styleName="bookingWidget">
               <span styleName="widgetTitle">
-              ADDITIONAL INFO
+                ADDITIONAL INFO
               </span>
             </div>
             <AdditionalInfo />
           </div>
         )
         }
-        { R.contains(HISTORY, openWidgetList) && (
-        <MilestoneActivity />
+        {R.contains(HISTORY, openWidgetList) && (
+          <MilestoneActivity />
         )
-          }
-        {!(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList)) && (
-        <Grid alignItems="stretch" container styleName="loan-activity">
-          <Grid item styleName="status-details-parent" xs={9}>
-            {renderComponent}
-            <div styleName="status-details">
-              <TrialHeaderAndDetails
-                inProgress={inProgress}
-                resultUnderwriting={resultUnderwriting}
-                trialHeader={trialHeader}
-                trialsDetail={trialsDetail}
-              />
-            </div>
-          </Grid>
-        </Grid>
-        )}
+        }
+        {EDITABLE_FIELDS.includes(checklistCenterPaneView)
+          ? (
+            <>
+              {this.renderCollateralAlert()}
+              {this.renderLoanInfoComponents()}
+            </>
+          )
+          : (
+            <>
+              {!(R.contains(ADDITIONAL_INFO, openWidgetList)
+                || R.contains(HISTORY, openWidgetList)) && (
+                  <Grid alignItems="stretch" container styleName="loan-activity">
+                    <Grid item styleName="status-details-parent" xs={9}>
+                      {renderComponent}
+                      <div styleName="status-details">
+                        <TrialHeaderAndDetails
+                          inProgress={inProgress}
+                          resultUnderwriting={resultUnderwriting}
+                          trialHeader={trialHeader}
+                          trialsDetail={trialsDetail}
+                        />
+                      </div>
+                    </Grid>
+                  </Grid>
+              )}
+            </>
+
+          )}
         <WidgetBuilder page="LA" styleName="loan-act-widget" />
       </>
     );
@@ -92,6 +144,7 @@ class LoanActivity extends React.PureComponent {
 
 const mapDispatchToProps = dispatch => ({
   loadTrials: operations.loadTrials(dispatch),
+  clearPopupData: dashboardOperations.clearPopupData(dispatch),
 });
 
 const mapStateToProps = state => ({
@@ -103,6 +156,8 @@ const mapStateToProps = state => ({
   trialsLetter: selectors.getTrialLetter(state),
   resultUnderwriting: selectors.resultUnderwriting(state),
   getTrialResponse: selectors.getTrialResponse(state),
+  checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
+  popupData: dashboardSelectors.getPopupData(state),
 });
 
 LoanActivity.defaultProps = {
@@ -113,9 +168,15 @@ LoanActivity.defaultProps = {
   trialsDetail: [],
   getTrialResponse: {},
   openWidgetList: [],
+  checklistCenterPaneView: 'Checklist',
+  popupData: {
+    confirmButtonText: 'Okay!',
+  },
 };
 
 LoanActivity.propTypes = {
+  checklistCenterPaneView: PropTypes.string,
+  clearPopupData: PropTypes.func.isRequired,
   evalId: PropTypes.string,
   getTrialResponse: PropTypes.shape({
     level: PropTypes.string,
@@ -124,6 +185,14 @@ LoanActivity.propTypes = {
   inProgress: PropTypes.bool,
   loadTrials: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
+  popupData: PropTypes.shape({
+    confirmButtonText: PropTypes.string,
+    isOpen: PropTypes.bool,
+    level: PropTypes.string,
+    message: PropTypes.string,
+    onConfirm: PropTypes.func,
+    title: PropTypes.string,
+  }),
   resultUnderwriting: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,

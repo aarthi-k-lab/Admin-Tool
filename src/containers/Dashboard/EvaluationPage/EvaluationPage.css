@@ -1,7 +1,9 @@
 .columns-container {
   align-items: flex-start;
-  background-color: var(--grey-200);
+  background-color: white;
   justify-content: flex-start;
+  border-radius: 10px;
+  margin-right: 1rem;
 }
 
 .loan-audit-container {
@@ -18,4 +20,16 @@
 
 .title-row > :last-child {
   border-radius: 0;
+}
+
+.milestone-tracker {
+  margin-bottom: 1rem;
+}
+
+.main-panel {
+  height: 95%;
+  display: flex;
+  flex-direction: 'row';
+  width: 85%;
+  margin: 1rem 0rem 0rem 1rem;
 }
