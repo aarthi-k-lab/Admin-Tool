@@ -89,7 +89,7 @@ const widgets = [
     icon: <img alt="FHLMC" src="/static/img/Freddie_Widget.png" style={{ width: '23px' }} />,
     component: <FHLMCWidget />,
     visibility: [
-      BEUW, DOC_GEN, POSTMODSTAGER, INVSET, SECONDLOOK,
+      BEUW, DOC_GEN, INVSET,
     ],
     overlay: true,
     children: [COMMENTS],

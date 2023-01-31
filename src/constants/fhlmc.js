@@ -23,6 +23,7 @@ const REQ_PRCS = 'We are processing your request.  Please do not close the brows
 const COMMENTS_REASON = 'Please enter a valid comment.';
 const ENQUIRY_REQUESTTYPE = 'DraftReq';
 const COMMENT_EXCEPTON_REQUEST_TYPES = ['CXLReq', 'DraftReq', 'EnquiryReq'];
+const DISABLE_WIDGET_INVESTOR_CODES = ['BJ9', 'CAT', 'BX6', 'BX7'];
 
 const GENERATE_BOARDING_TEMPLATE_STATUS = 'Request will be processed in the backend. Proceed with other Loans';
 const VALIDATION_FAILURE_MSG = 'One or more entries are not valid. Please check and try again';
@@ -57,4 +58,5 @@ module.exports = {
   CANCEL_REQ_TYPES,
   ENQUIRY_REQ,
   EXCEPTION_REQUEST,
+  DISABLE_WIDGET_INVESTOR_CODES,
 };

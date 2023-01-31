@@ -12,6 +12,7 @@ import { selectors, operations } from '../../state/ducks/widgets';
 import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
 import { selectors as loginSelectors } from '../../state/ducks/login';
 import { selectors as configSelectors } from '../../state/ducks/config';
+import { DISABLE_WIDGET_INVESTOR_CODES } from '../../constants/fhlmc';
 
 class WidgetBuilder extends Component {
   constructor(props) {
@@ -84,15 +85,15 @@ class WidgetBuilder extends Component {
   // TODO: optimize
   checkDependency(data, disabledWidgets, openWidgetList) {
     const {
-      resolutionId, groupName, investorHierarchy, features,
+      resolutionId, investorHierarchy, features, investorCode,
     } = this.props;
     switch (data.dependency) {
       case FHLMC:
-        if (features.showFhlmcWidget && !R.isNil(resolutionId) && R.equals(investorHierarchy.levelName, 'Freddie') && R.equals(investorHierarchy.levelNumber, 3)) {
-          if (!R.equals(groupName, 'POSTMOD')) {
-            return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
-          }
-          return R.equals('INVSET', groupName) ? this.renderWidgetIcon(data, disabledWidgets, openWidgetList) : null;
+        if (features.showFhlmcWidget && !R.isNil(resolutionId)
+        && R.equals(investorHierarchy.levelName, 'Freddie')
+        && R.equals(investorHierarchy.levelNumber, 3)
+        && !DISABLE_WIDGET_INVESTOR_CODES.includes(investorCode)) {
+          return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
         }
         return null;
       default:
@@ -178,7 +179,7 @@ WidgetBuilder.defaultProps = {
   disabledWidgets: [],
   page: '',
   resolutionId: null,
-  groupName: '',
+  investorCode: '',
   investorHierarchy: {},
   features: { showFhlmcWidget: true },
 };
@@ -190,7 +191,7 @@ WidgetBuilder.propTypes = {
   features: PropTypes.shape({
     showFhlmcWidget: PropTypes.bool,
   }),
-  groupName: PropTypes.string,
+  investorCode: PropTypes.string,
   investorHierarchy: PropTypes.shape(),
   onWidgetToggle: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
@@ -213,7 +214,6 @@ const mapStateToProps = state => ({
   openWidgetList: selectors.getOpenWidgetList(state),
   disabledWidgets: selectors.getDisabledWidgets(state),
   resolutionId: dashboardSelectors.resolutionId(state),
-  groupName: dashboardSelectors.groupName(state),
   investorHierarchy: dashboardSelectors.getInvestorHierarchy(state),
   isRPSUser: loginSelectors.isRPSGroupPresent(state),
   investorCode: dashboardSelectors.getInvestorCode(state),
