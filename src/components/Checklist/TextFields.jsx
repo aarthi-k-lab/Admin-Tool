@@ -7,9 +7,10 @@ import * as R from 'ramda';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import HTMLElements from '../../constants/componentTypes';
 import './TextFields.css';
-
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import HTMLElements from '../../constants/componentTypes';
 
 function getCurrentDate() {
   const date = new Date();
@@ -68,6 +69,13 @@ class TextFields extends React.Component {
     }
   }
 
+  getDropDownSelectOptions() {
+    const { getDropDownOptions } = this.props;
+    return (getDropDownOptions
+      ? getDropDownOptions.map(option => <MenuItem {...option}>{option.displayName}</MenuItem>)
+      : null);
+  }
+
   getDropDownOptions() {
     const { getDropDownOptions } = this.props;
     const isDisabled = option => !(R.propOr(true, 'isEnabled', option));
@@ -82,22 +90,38 @@ class TextFields extends React.Component {
     const { DROPDOWN } = HTMLElements;
     const { componentTitle, ...other } = this.props;
     const properties = getProps(type, { ...other });
-    return (type === DROPDOWN) ? (
-      <TextField
-        styleName="dropDownStyle"
-        {...this.props}
-        margin="dense"
-        select
-        SelectProps={{
-          native: true,
-          MenuProps: {
-            styleName: 'dropDownMenuStyle',
-          },
-        }}
-      >
-        { this.getDropDownOptions() }
-      </TextField>
-    ) : (<TextField {...properties} />);
+    if (type === DROPDOWN && R.equals('dropdownSelect', R.propOr('', 'source', other))) {
+      return (
+        <Select
+          displayEmpty
+          styleName="dropdownSelectStyle"
+          {...this.props}
+          value={other.value || ''}
+        >
+          { this.getDropDownSelectOptions() }
+        </Select>
+      );
+    }
+    if (type === DROPDOWN) {
+      return (
+        <TextField
+          styleName="dropDownStyle"
+          {...this.props}
+          margin="dense"
+          select
+          SelectProps={{
+            native: true,
+            MenuProps: {
+              styleName: 'dropDownMenuStyle',
+            },
+          }}
+        >
+          { this.getDropDownOptions() }
+        </TextField>
+      );
+    }
+
+    return (<TextField {...properties} />);
   }
 
   render() {

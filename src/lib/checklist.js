@@ -32,7 +32,10 @@ const getTaskFromProcess = (taskObj, prop, value) => {
   return null;
 };
 
+const getPropertyFromProcess = (prop, task) => R.propOr('', prop, R.head(task));
+
 module.exports = {
   getChecklistItems,
   getTaskFromProcess,
+  getPropertyFromProcess,
 };

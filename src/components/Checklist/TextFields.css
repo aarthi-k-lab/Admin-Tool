@@ -21,3 +21,9 @@
   min-width: 25rem !important;
   border: 0.1rem solid black !important;
 }
+
+.dropdownSelectStyle {
+  min-width: 25rem !important;
+  padding: 0.5rem !important;
+  color: var(--grey-650) !important;
+}

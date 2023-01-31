@@ -602,10 +602,19 @@ function getDataFromColValMap(additionalInfo) {
   return requestData;
 }
 
+function getDropDownWithOptions(additionalInfo) {
+  const { options: defaultOptions } = additionalInfo;
+  return {
+    defaultOptions,
+    formatResponse: R.clone,
+  };
+}
+
 const sourceToMethodMapping = {
   adgroup: getUsersForGroup,
   OLTP: getDataFromColValMap,
   TKAMS: getExpenseValues,
+  dropdownSelect: getDropDownWithOptions,
 };
 
 function* getMonthlyExpenseValues(action) {
@@ -638,6 +647,7 @@ function* getMonthlyExpenseValues(action) {
 }
 
 function* getdropDownOptions(action) {
+  let options;
   const {
     source,
     additionalInfo,
@@ -650,8 +660,13 @@ function* getdropDownOptions(action) {
     method,
     body,
     formatResponse,
+    defaultOptions,
   } = requestData;
-  const options = yield call(method, url, body);
+  if (defaultOptions) {
+    options = defaultOptions;
+  } else {
+    options = yield call(method, url, body);
+  }
   if (options) {
     const formattedOptions = yield formatResponse(options);
     const data = {

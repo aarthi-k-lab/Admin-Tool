@@ -12,7 +12,6 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions, selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
-import * as dashboardActions from 'ducks/dashboard/actions';
 import {
   actions as widgetActions,
   selectors as widgetSelectors,
@@ -171,7 +170,7 @@ import {
   ODM_RERUN_SAGA,
 } from './types';
 import DashboardModel from '../../../models/Dashboard';
-import { errorTombstoneFetch } from './actions';
+import { errorTombstoneFetch, disableFinanceCalcTabButtonAction } from './actions';
 import {
   getTasks,
   resetChecklistData,
@@ -191,7 +190,7 @@ import {
 } from '../income-calculator/types';
 import { selectors as stagerSelectors } from '../stager/index';
 import { saveDelayChecklistDataToDB, fetchDelayCheckListHistory } from '../stager/sagas';
-import { getTaskFromProcess } from '../../../lib/checklist';
+import { getTaskFromProcess, getPropertyFromProcess } from '../../../lib/checklist';
 
 const {
   Messages:
@@ -613,7 +612,7 @@ function* selectEval(searchItem) {
     disableIncomeButton: !R.propOr(false, 'hasIncomeCalcForProcess', evalDetails),
     disableExpenseButton: !R.propOr(false, 'hasExpenseCalcForProcess', evalDetails),
   };
-  yield put(dashboardActions.disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
+  yield put(disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
   yield put({ type: SAVE_TASKID, payload: bookingTaskId });
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
@@ -1176,6 +1175,19 @@ function* saveGeneralChecklistDisposition(payload) {
     const processStatus = yield select(selectors.processStatus);
     const loanNumber = yield select(selectors.loanNumber);
     const user = yield select(loginSelectors.getUser);
+    const checklist = yield select(checklistSelectors.getChecklist);
+    // Only applicable for Second Look - Send To Underwriting and
+    // Front End Underwiriting Drop Down Value
+    const secondlookDropdown = getTaskFromProcess(checklist, 'taskBlueprintCode', 'SECLOOK_CHK5');
+    const secondlookFeuwDropdown = getTaskFromProcess(checklist, 'taskBlueprintCode', 'SECLOOK_CHK6');
+    const isSLBeuwVisible = getPropertyFromProcess('visibility', secondlookDropdown);
+    const isSLFeuwVisible = getPropertyFromProcess('visibility', secondlookFeuwDropdown);
+    let dispositionReason = '';
+    if (isSLBeuwVisible) {
+      dispositionReason = getPropertyFromProcess('value', secondlookDropdown);
+    } else if (isSLFeuwVisible) {
+      dispositionReason = getPropertyFromProcess('value', secondlookFeuwDropdown);
+    }
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const validateAgent = !R.isNil(agentName) && !R.isEmpty(agentName);
     let assigneeUserGroups = '';
@@ -1203,6 +1215,7 @@ function* saveGeneralChecklistDisposition(payload) {
       managerID,
       userGroups: assigneeUserGroups,
       skipValidation,
+      dispositionReason,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
@@ -1521,7 +1534,7 @@ function* assignLoan() {
       disableIncomeButton: R.isNil(R.pathOr(null, ['incomeCalcData', 'hasIncomeCalcForProcess'], response)),
       disableExpenseButton: R.isNil(R.pathOr(null, ['expenseCalcData', 'hasExpenseCalcForProcess'], response)),
     };
-    yield put(dashboardActions.disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
+    yield put(disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({
