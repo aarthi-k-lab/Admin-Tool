@@ -19,6 +19,7 @@ import {
   POPULATE_LIEN_BALANCES,
   POPULATE_PROPERTY_VALUATIONS,
   UPDATE_OCCUPANCY,
+  UPDATE_CONSOLIDATE_EXPENSE_DATA,
 } from './types';
 
 const loadingState = {
@@ -173,26 +174,55 @@ const reducer = (state = loadingState, action) => {
 
     case UPDATE_RFD: {
       const rfdValue = action.payload;
-      const { viewTypeData } = state;
+      const { viewTypeData, selectedView } = state;
+      const viewType = selectedView === 'loanView' ? 'modView' : 'loanView';
       const rfdIndex = R.findIndex(R.propEq('title', 'Reason for Default'), viewTypeData.loanViewData);
       viewTypeData.loanViewData[rfdIndex].content = rfdValue;
       return {
         ...state,
         viewTypeData,
-        selectedView: 'modView',
+        selectedView: viewType,
         data: viewTypeData.loanViewData,
+      };
+    }
+
+    case UPDATE_CONSOLIDATE_EXPENSE_DATA: {
+      const expenseResult = action.payload;
+      const {
+        grossIncome, netIncome, monthlyDebt, disposableIncome, debtCoverageRatio,
+      } = expenseResult;
+      const { viewTypeData, selectedView } = state;
+      const viewType = selectedView === 'loanView' ? 'modView' : 'loanView';
+      const grossIncomeIndex = R.findIndex(R.propEq('title', 'Gross Income'), viewTypeData.modViewData);
+      viewTypeData.modViewData[grossIncomeIndex].content = grossIncome;
+      const netIncomeIndex = R.findIndex(R.propEq('title', 'Net Income'), viewTypeData.modViewData);
+      viewTypeData.modViewData[netIncomeIndex].content = netIncome;
+      const monthlyDebtIndex = R.findIndex(R.propEq('title', 'Monthly Debt'), viewTypeData.modViewData);
+      viewTypeData.modViewData[monthlyDebtIndex].content = monthlyDebt;
+      const disposableIncomeIndex = R.findIndex(R.propEq('title', 'Disposable Income'), viewTypeData.modViewData);
+      viewTypeData.modViewData[disposableIncomeIndex].content = disposableIncome;
+      const debtCoverageRatioIndex = R.findIndex(R.propEq('title', 'Debt Coverage Ratio'), viewTypeData.modViewData);
+      viewTypeData.modViewData[
+        debtCoverageRatioIndex].content = `${(debtCoverageRatio / 100).toFixed(2)}%`;
+
+      return {
+        ...state,
+        viewTypeData,
+        selectedView: viewType,
+        data: viewTypeData.modViewData,
       };
     }
 
     case UPDATE_OCCUPANCY: {
       const occupancyValue = action.payload;
-      const { viewTypeData } = state;
+      const { viewTypeData, selectedView } = state;
+      const viewType = selectedView === 'loanView' ? 'modView' : 'loanView';
       const occupancyIndex = R.findIndex(R.propEq('title', 'Occupancy Type'), viewTypeData.loanViewData);
       viewTypeData.loanViewData[occupancyIndex].content = occupancyValue;
       return {
         ...state,
         viewTypeData,
-        selectedView: 'modView',
+        selectedView: viewType,
         data: viewTypeData.loanViewData,
       };
     }

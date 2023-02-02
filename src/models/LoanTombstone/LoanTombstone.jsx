@@ -152,7 +152,8 @@ function getDispossableIncome(modInfoDetails) {
 
 function getDebtCoverageRatio(modInfoDetails) {
   const debtCoverageRatio = getOr('debtCoverageRatio', modInfoDetails, NA);
-  return generateTombstoneItem('Debt Coverage Ratio', debtCoverageRatio);
+  const debtRatio = `${(debtCoverageRatio / 100).toFixed(2)}%`;
+  return generateTombstoneItem('Debt Coverage Ratio', debtRatio);
 }
 
 function getCapModId(modInfoDetails) {

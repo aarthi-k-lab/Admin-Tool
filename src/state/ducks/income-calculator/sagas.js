@@ -41,6 +41,9 @@ import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
   SET_POPUP_DATA,
 } from '../dashboard/types';
+import {
+  UPDATE_CONSOLIDATE_EXPENSE_DATA, TOGGLE_VIEW,
+} from '../tombstone/types';
 import { SET_SNACK_BAR_VALUES } from '../notifications/types';
 import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCodes';
 import consolidateValidations from '../../../lib/consolidateValidation';
@@ -579,6 +582,14 @@ const lockCalculation = function* lockCalculation() {
       };
       const dbResult = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/lock/', request);
       if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+        const expenseResult = yield call(Api.callGet, `/api/tkams/getModInfoData/${evalId}`);
+        yield put({
+          type: UPDATE_CONSOLIDATE_EXPENSE_DATA,
+          payload: expenseResult,
+        });
+        yield put({
+          type: TOGGLE_VIEW,
+        });
         yield put({
           type: SET_POPUP_DATA,
           payload: {
@@ -591,7 +602,6 @@ const lockCalculation = function* lockCalculation() {
           type: TOGGLE_LOCK_BUTTON,
           payload: false,
         });
-
         const processId = R.path(['response', '_id'], dbResult);
         yield all([
           put(taskActions.getTasks()),
