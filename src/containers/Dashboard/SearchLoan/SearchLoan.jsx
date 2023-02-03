@@ -35,7 +35,7 @@ import { ADDITIONAL_INFO, HISTORY } from '../../../constants/widgets';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import { EDITABLE_FIELDS } from '../../../constants/loanInfoComponents';
 import Popup from '../../../components/Popup';
-import { CLOSED, REJECTED, ACTIVE } from '../../../constants/status';
+import { COMPLETED, REJECTED, ACTIVE } from '../../../constants/status';
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
@@ -310,14 +310,14 @@ class SearchLoan extends React.PureComponent {
         }
         const activeMods = [];
         const completedMods = [];
-        const evalCompletedStatus = [CLOSED, REJECTED];
+        const evalCompletedStatus = [COMPLETED, REJECTED];
         /* If the task is in active status (or)
-        eval status is not Rejected or Closed and no process is present in CMOD,
+        eval status is not Rejected or Completed and no process is present in CMOD,
         then display eval in the In Progress section
         else in completed section */
         data.forEach((mod) => {
           if (mod.pstatus === ACTIVE
-            || (!mod.piid && !evalCompletedStatus.includes(mod.resolutionStatus))) {
+            || (!mod.piid && !evalCompletedStatus.includes(mod.evalStatus))) {
             activeMods.push(mod);
           } else completedMods.push(mod);
         });

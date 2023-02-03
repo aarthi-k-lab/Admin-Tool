@@ -7,3 +7,4 @@ export const SENT_FOR_APPROVAL = 'Sent for Approval';
 export const APPROVED = 'Approved';
 export const LOCKED = 'Locked';
 export const ACTIVE = 'Active';
+export const COMPLETED = 'Completed';
