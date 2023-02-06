@@ -17,7 +17,7 @@ function TrailDatePicker(props) {
   const onDateChange = (date) => {
     setSelectedDate(date);
     const payload = {
-      fbId, seq, fieldToUpdate, updatedDate: date ? date.toISOString() : '',
+      fbId, seq, fieldToUpdate, updatedDate: date ? date.toISOString(true) : '',
     };
     setTrialDateInfo(payload);
     disableSaveOperation(false);
