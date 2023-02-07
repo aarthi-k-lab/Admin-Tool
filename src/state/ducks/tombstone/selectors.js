@@ -24,6 +24,8 @@ const getLienLoanBalance = state => R.pathOr([], ['tombstone', 'lienLoanBalance'
 
 const getPropertyValuations = state => R.pathOr([], ['tombstone', 'propertyValuations'], state);
 
+const getTombstoneModViewData = state => R.pathOr([], ['tombstone', 'viewTypeData', 'modViewData'], state);
+
 const selectors = {
   getTombstoneData,
   hasError,
@@ -38,6 +40,7 @@ const selectors = {
   getCollateralData,
   getLienLoanBalance,
   getPropertyValuations,
+  getTombstoneModViewData,
 };
 
 export default selectors;

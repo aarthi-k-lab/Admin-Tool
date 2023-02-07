@@ -2072,8 +2072,8 @@ function* onFhlmcBulkUpload(payload) {
     caseIds, requestIdType, loanAndDisasterIds, selectedPreApprovalType,
   } = payload.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
-  const resolutionData = yield select(tombstoneSelectors.getTombstoneData);
-  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Mod Product Type'), resolutionData));
+  const resolutionData = yield select(tombstoneSelectors.getTombstoneModViewData);
+  const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
   const requestType = yield select(selectors.getRequestTypeData);
   const evalId = yield select(selectors.evalId);
   const loanNumber = yield select(selectors.loanNumber);
