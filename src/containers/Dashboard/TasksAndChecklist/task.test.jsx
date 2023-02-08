@@ -46,6 +46,7 @@ const defaultProps = {
   onWidgetClick: jest.fn(),
   onWidgetToggle: jest.fn(),
   putComputeRulesPassed: jest.fn(),
+  dashboardResetDataOperation: jest.fn(),
   passedRules: [],
   failedRules: [],
   location: {

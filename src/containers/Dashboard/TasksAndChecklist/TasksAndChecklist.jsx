@@ -72,11 +72,13 @@ class TasksAndChecklist extends Component {
   componentWillUnmount() {
     hotkeys.unbind('right,left');
     const {
+      dashboardResetDataOperation,
       openWidgetList,
     } = this.props;
     if (R.contains(BOOKING, openWidgetList)) {
       this.handleClose();
     }
+    dashboardResetDataOperation();
   }
 
   getChecklistItems() {
@@ -709,6 +711,7 @@ function mapDispatchToProps(dispatch) {
     clearPopupData: dashboardOperations.clearPopupData(dispatch),
     putComputeRulesPassed: operations.putComputeRulesPassed(dispatch),
     dispatchAction: dashboardOperations.dispatchAction(dispatch),
+    dashboardResetDataOperation: dashboardOperations.dashboardResetDataOperation(dispatch),
   };
 }
 

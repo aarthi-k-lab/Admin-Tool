@@ -119,6 +119,7 @@ import {
   ENABLE_ODM_RERUN_BUTTON,
   DISABLE_SAVE,
   DISABLE_FINANCE_CALC_TAB_BUTTON,
+  RESET_DATA,
 } from './types';
 
 const reducer = (state = {
@@ -1192,6 +1193,14 @@ const reducer = (state = {
       return {
         ...state,
         disableFinanceCalcTabButton: action.payload,
+      };
+    }
+
+    case RESET_DATA: {
+      return {
+        ...state,
+        isGetNextError: false,
+        getNextError: '',
       };
     }
 

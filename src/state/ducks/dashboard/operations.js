@@ -86,6 +86,7 @@ import {
   odmRerunAction,
   disableSaveAction,
   enableLockButton,
+  dashboardResetDataAction,
 } from './actions';
 
 import {
@@ -460,6 +461,10 @@ const disableSaveOperation = dispatch => (payload) => {
   dispatch(disableSaveAction(payload));
 };
 
+const dashboardResetDataOperation = dispatch => () => {
+  dispatch(dashboardResetDataAction());
+};
+
 
 const operations = {
   openSweetAlert,
@@ -554,6 +559,7 @@ const operations = {
   odmRerunOperation,
   disableSaveOperation,
   disableLockButton,
+  dashboardResetDataOperation,
 };
 
 export default operations;

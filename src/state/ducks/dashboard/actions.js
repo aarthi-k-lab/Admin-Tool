@@ -92,6 +92,7 @@ import {
   DISABLE_SAVE,
   DISABLE_FINANCE_CALC_TAB_BUTTON,
   TOGGLE_LOCK_BUTTON,
+  RESET_DATA,
 } from './types';
 
 
@@ -533,6 +534,10 @@ const disableFinanceCalcTabButtonAction = payload => ({
   payload,
 });
 
+const dashboardResetDataAction = () => ({
+  type: RESET_DATA,
+});
+
 export {
   dismissUserNotification,
   onSubmitToFhlmcAction,
@@ -627,4 +632,5 @@ export {
   disableSaveAction,
   disableFinanceCalcTabButtonAction,
   enableLockButton,
+  dashboardResetDataAction,
 };
