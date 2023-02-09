@@ -494,7 +494,8 @@ function setDefaultBorrExpenseData() {
 function* summateValuesForBorrowers(borrowerList) {
   let defaultBorrExpenseAmount = yield call(setDefaultBorrExpenseData);
   try {
-    const borrExpenseAmounts = yield select(selectors.getExpenseAmounts);
+    let borrExpenseAmounts = yield select(selectors.getExpenseAmounts);
+    borrExpenseAmounts = R.reject(R.isNil, borrExpenseAmounts);
     const expenseKeys = Object.keys(defaultBorrExpenseAmount);
     const expList = [];
     R.forEach((borrower) => {
