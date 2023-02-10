@@ -579,8 +579,7 @@ function* fetchMilestoneData(milestone, evalId, taskId) {
     if (!R.equals(secondLookIndex, -1)) {
       const secondLook = R.nth(secondLookIndex, milestoneResponse);
       if (R.equals(currentMilestone, 'Second Look')) {
-        const milstoneResponseWithoutSL = R.remove(secondLookIndex, 1, milestoneResponse);
-        const latestMilestoneTask = R.last(milstoneResponseWithoutSL);
+        const latestMilestoneTask = R.nth((R.length(milestoneResponse) - 1), milestoneResponse);
         const latestMilstoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[latestMilestoneTask.milestoneName]))(milestoneDetails);
         milestoneTrackerData = R.insert(latestMilstoneIndex + 1, {
           title: secondLook.milestoneName,
