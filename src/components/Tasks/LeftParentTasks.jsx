@@ -26,6 +26,17 @@ class LeftParentTasks extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(props, state) {
+    const optionalTasks = R.propOr([], 'optionalTasks', props);
+    const isTaskAdded = R.propOr([], 'isTaskAdded', state);
+    if (optionalTasks.length > 0 && optionalTasks.length !== isTaskAdded.length) {
+      return ({
+        isTaskAdded: optionalTasks.map(task => task.visibility),
+      });
+    }
+    return null;
+  }
+
   componentDidMount() {
     hotkeys('*', (event) => {
       if (event.type === 'keydown') {
