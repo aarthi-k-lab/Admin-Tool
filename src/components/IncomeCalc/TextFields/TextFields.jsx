@@ -114,15 +114,14 @@ class TextFields extends React.Component {
 
     const { textFieldValue } = this.state;
     const val = R.isEmpty(textFieldValue) ? defaultValue : textFieldValue;
-    const formattedVal = val !== undefined ? FORMAT.currency(val.toString()) : val;
     if (customType === 'read-only') {
       let readOnlyValue;
       if (additionalElements && additionalElements.includes('adornment') && position !== 'end') {
-        readOnlyValue = `${adornment} ${formattedVal}`;
+        readOnlyValue = `${adornment} ${val}`;
       } else if (additionalElements && additionalElements.includes('adornment') && position === 'end') {
-        readOnlyValue = `${formattedVal} ${adornment}`;
+        readOnlyValue = `${val} ${adornment}`;
       } else {
-        readOnlyValue = formattedVal;
+        readOnlyValue = val;
       }
       return (
         <div

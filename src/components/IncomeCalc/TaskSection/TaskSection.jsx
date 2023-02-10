@@ -20,7 +20,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import { FORMAT } from 'lib/Formatters';
 
 const AccordionSummary = withStyles({
   root: {
@@ -282,7 +281,7 @@ class TaskSection extends React.PureComponent {
               {label}
             </Typography>
             <Typography style={{ fontWeight: 'bold', fontSize: '1.1rem' }} variant="h6">
-              {FORMAT.currency(`$ ${R.pathOr('0.00', ['labelValues', 'GrossNetIncome', label], value)}`)}
+              {`$ ${R.pathOr('0.00', ['labelValues', 'GrossNetIncome', label], value)}`}
             </Typography>
           </div>
         ));
@@ -299,7 +298,7 @@ class TaskSection extends React.PureComponent {
                       {R.propOr('', '0', labels)}
                     </Typography>
                     <Typography style={{ fontWeight: 'bold', fontSize: '1.1rem' }} variant="h6">
-                      {FORMAT.currency(`$ ${R.pathOr('0.00', ['labelValues', 'ExpenseAmt'], value)}`)}
+                      {`$ ${R.pathOr('0.00', ['labelValues', 'ExpenseAmt'], value)}`}
                     </Typography>
                   </div>
                 </div>
@@ -355,10 +354,10 @@ class TaskSection extends React.PureComponent {
               >
                 <TableCell colSpan={6} styleName={getStyleName('taskSection', styleName, 'inctype')}>{columnLabel}</TableCell>
                 <TableCell colSpan={6} styleName={getStyleName('taskSection', styleName, 'amount')}>
-                  {FORMAT.currency(`$ ${R.pathOr('0.00', ['totalGrossNet', 'GROSS'], value)}`)}
+                  {`$ ${R.pathOr('0.00', ['totalGrossNet', 'GROSS'], value)}`}
                 </TableCell>
                 <TableCell colSpan={6} styleName={getStyleName('taskSection', styleName, 'amount')}>
-                  {FORMAT.currency(`$ ${R.pathOr('0.00', ['totalGrossNet', 'NET'], value)}`)}
+                  {`$ ${R.pathOr('0.00', ['totalGrossNet', 'NET'], value)}`}
                 </TableCell>
               </TableRow>
             </TableBody>
