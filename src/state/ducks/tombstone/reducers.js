@@ -194,16 +194,16 @@ const reducer = (state = loadingState, action) => {
       const { viewTypeData, selectedView } = state;
       const viewType = selectedView === 'loanView' ? 'modView' : 'loanView';
       const grossIncomeIndex = R.findIndex(R.propEq('title', 'Gross Income'), viewTypeData.modViewData);
-      viewTypeData.modViewData[grossIncomeIndex].content = grossIncome;
+      viewTypeData.modViewData[grossIncomeIndex].content = grossIncome || 0.00;
       const netIncomeIndex = R.findIndex(R.propEq('title', 'Net Income'), viewTypeData.modViewData);
-      viewTypeData.modViewData[netIncomeIndex].content = netIncome;
+      viewTypeData.modViewData[netIncomeIndex].content = netIncome || 0.00;
       const monthlyDebtIndex = R.findIndex(R.propEq('title', 'Monthly Debt'), viewTypeData.modViewData);
-      viewTypeData.modViewData[monthlyDebtIndex].content = monthlyDebt;
+      viewTypeData.modViewData[monthlyDebtIndex].content = monthlyDebt || 0.00;
       const disposableIncomeIndex = R.findIndex(R.propEq('title', 'Disposable Income'), viewTypeData.modViewData);
-      viewTypeData.modViewData[disposableIncomeIndex].content = disposableIncome;
+      viewTypeData.modViewData[disposableIncomeIndex].content = disposableIncome || 0.00;
       const debtCoverageRatioIndex = R.findIndex(R.propEq('title', 'Debt Coverage Ratio'), viewTypeData.modViewData);
       viewTypeData.modViewData[
-        debtCoverageRatioIndex].content = `${(debtCoverageRatio / 100).toFixed(2)}%`;
+        debtCoverageRatioIndex].content = debtCoverageRatio ? `${(debtCoverageRatio / 100).toFixed(2)}%` : '0.00%';
 
       return {
         ...state,

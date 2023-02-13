@@ -2,6 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 
 import React from 'react';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
@@ -124,24 +125,27 @@ Tombstone.propTypes = {
 
 
 Tombstone.getItems = function getItems(items, disableIcons) {
-  const screenWidth = window.innerWidth;
-  const arrayLength = items.length;
-  return items.map(({
-    content, title, style, component,
-  }) => (
-    (
-      <tr key={title} style={{ maxWidth: screenWidth / arrayLength, textAlign: 'left' }} styleName={content.style || 'itemTd'}>
-        <Item
-          key={title}
-          Component={component}
-          content={content.flag || content}
-          disableIcons={disableIcons}
-          style={style}
-          title={title}
-        />
-      </tr>
-    )
-  ));
+  if (items && R.length(items) > 0) {
+    const screenWidth = window.innerWidth;
+    const arrayLength = items.length;
+    return items.map(({
+      content, title, style, component,
+    }) => (
+      (
+        <tr key={title} style={{ maxWidth: screenWidth / arrayLength, textAlign: 'left' }} styleName={R.propOr('itemTd', 'style', content) || 'itemTd'}>
+          <Item
+            key={title}
+            Component={component}
+            content={R.propOr(content, 'flag', content)}
+            disableIcons={disableIcons}
+            style={style}
+            title={title}
+          />
+        </tr>
+      )
+    ));
+  }
+  return <></>;
 };
 
 Tombstone.propTypes = {
