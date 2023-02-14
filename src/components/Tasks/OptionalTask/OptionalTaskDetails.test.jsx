@@ -127,7 +127,7 @@ describe('<OptionalTaskDetails />', () => {
       },
       {
         id: '5f2d1f2787d90ee9c3fde4d9',
-        visibility: false,
+        visibility: true,
         name: 'Miscellaneous',
         description: 'Miscellaneous',
         taskCode: 'MISC',
@@ -213,7 +213,7 @@ describe('<OptionalTaskDetails />', () => {
       },
       {
         id: '5f2d1f2787d90ee9c3fde4d9',
-        visibility: false,
+        visibility: true,
         name: 'Miscellaneous',
         description: 'Miscellaneous',
         taskCode: 'MISC',
@@ -258,7 +258,6 @@ describe('<OptionalTaskDetails />', () => {
     const wrapper = shallow(
       <OptionalTaskDetails {...props} />,
     );
-    wrapper.setState({ isTaskAdded: [{ mock: '' }, {}] });
     wrapper.find('WithStyles(DeleteTask)').at(0).simulate('click');
     expect(props.handleShowDeleteTaskConfirmation).toBeCalled();
   });

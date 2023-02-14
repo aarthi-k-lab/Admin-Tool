@@ -24,6 +24,22 @@ class OptionalTaskDetails extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(props, state) {
+    const tasks = R.propOr([], 'tasks', props);
+
+    if (tasks.length > 0) {
+      const optTaskListFromProps = tasks.map(task => task.visibility);
+      const isTaskAdded = R.propOr([], 'isTaskAdded', state);
+
+      if (!R.equals(optTaskListFromProps, isTaskAdded)) {
+        return ({
+          isTaskAdded: optTaskListFromProps,
+        });
+      }
+    }
+    return null;
+  }
+
   componentDidUpdate(prevProps) {
     const { shouldDeleteTask, resetDeleteTaskConfirmation } = this.props;
     const { taskIdx, task } = this.changedTask;
