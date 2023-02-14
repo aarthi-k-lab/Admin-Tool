@@ -593,9 +593,17 @@ function* fetchMilestoneData(milestone, evalId, taskId) {
           taskId: secondLook.taskId,
         }, milestoneDetails);
       } else {
-        const prevMilestoneOfSecondLook = R.nth((LatestSecondLookIndex - 1), milestoneResponse);
-        const prevMilestoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[prevMilestoneOfSecondLook.milestoneName]))(milestoneDetails);
-        milestoneTrackerData = R.insert((prevMilestoneIndex + 1), {
+        const milestoneSecondLook = R.nth((LatestSecondLookIndex - 1), milestoneResponse);
+        let latestMilestoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[milestoneSecondLook.milestoneName]))(milestoneDetails);
+        if (R.equals(LatestSecondLookIndex, 0)) {
+          const milestoneAftrSecondLook = R.nth((LatestSecondLookIndex + 1), milestoneResponse);
+          if (!R.isNil(milestoneAftrSecondLook)) {
+            latestMilestoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[milestoneAftrSecondLook.milestoneName]))(milestoneDetails) - 1;
+          } else {
+            latestMilestoneIndex = -1;
+          }
+        }
+        milestoneTrackerData = R.insert((latestMilestoneIndex + 1), {
           title: secondLook.milestoneName,
           visited: true,
           taskId: secondLook.taskId,
