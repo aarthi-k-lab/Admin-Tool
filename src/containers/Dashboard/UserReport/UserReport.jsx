@@ -9,7 +9,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
-import { selectors } from 'ducks/config';
+import { selectors, operations as configOperations } from 'ducks/config';
 import { selectors as LoginSelectors } from 'ducks/login';
 import { operations as dashboardOperations } from 'ducks/dashboard';
 import Expand from 'components/ContentHeader/Expand';
@@ -34,6 +34,11 @@ class UserReport extends React.PureComponent {
     this.reportStyle = { width: '100%', height: '100%' };
     this.renderReport = this.renderReport.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
+  }
+
+  componentDidMount() {
+    const { fetchConfig } = this.props;
+    fetchConfig();
   }
 
   onHandleClick = () => {
@@ -123,6 +128,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setPageType: dashboardOperations.setPageType(dispatch),
+  fetchConfig: configOperations.fetchConfig(dispatch),
 });
 
 UserReport.defaultProps = {
@@ -141,6 +147,7 @@ UserReport.defaultProps = {
 };
 
 UserReport.propTypes = {
+  fetchConfig: PropTypes.func.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,

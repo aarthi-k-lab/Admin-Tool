@@ -4,6 +4,7 @@ import { TestHooks } from './UserReport';
 
 const props = {
   setPageType: jest.fn(),
+  fetchConfig: jest.fn(),
   history: [],
 };
 describe('<UserReport />', () => {
