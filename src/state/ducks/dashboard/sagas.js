@@ -574,10 +574,10 @@ function* fetchMilestoneData(milestone, evalId, taskId) {
       visited: !R.isNil(hash[item.milestoneName]),
       taskId: hash[item.milestoneName],
     }), trackerData);
-    const secondLookIndex = R.findIndex(R.propEq('milestoneName', 'Second Look'))(milestoneResponse);
+    const LatestSecondLookIndex = R.findLastIndex(R.propEq('milestoneName', 'Second Look'))(milestoneResponse);
     let milestoneTrackerData = milestoneDetails;
-    if (!R.equals(secondLookIndex, -1)) {
-      const secondLook = R.nth(secondLookIndex, milestoneResponse);
+    if (!R.equals(LatestSecondLookIndex, -1)) {
+      const secondLook = R.nth(LatestSecondLookIndex, milestoneResponse);
       if (R.equals(currentMilestone, 'Second Look')) {
         const resArrLength = R.length(milestoneResponse);
         let latestMilestoneTask;
@@ -593,8 +593,9 @@ function* fetchMilestoneData(milestone, evalId, taskId) {
           taskId: secondLook.taskId,
         }, milestoneDetails);
       } else {
-        const latestMilstoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[currentMilestone]))(milestoneDetails);
-        milestoneTrackerData = R.insert(latestMilstoneIndex + 1, {
+        const prevMilestoneOfSecondLook = R.nth((LatestSecondLookIndex - 1), milestoneResponse);
+        const prevMilestoneIndex = R.findIndex(R.propEq('title', milestoneTitleMap[prevMilestoneOfSecondLook.milestoneName]))(milestoneDetails);
+        milestoneTrackerData = R.insert((prevMilestoneIndex + 1), {
           title: secondLook.milestoneName,
           visited: true,
           taskId: secondLook.taskId,
