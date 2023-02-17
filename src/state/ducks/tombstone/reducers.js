@@ -203,7 +203,7 @@ const reducer = (state = loadingState, action) => {
       viewTypeData.modViewData[disposableIncomeIndex].content = disposableIncome || 0.00;
       const debtCoverageRatioIndex = R.findIndex(R.propEq('title', 'Debt Coverage Ratio'), viewTypeData.modViewData);
       viewTypeData.modViewData[
-        debtCoverageRatioIndex].content = debtCoverageRatio ? `${(debtCoverageRatio / 100).toFixed(2)}%` : '0.00%';
+        debtCoverageRatioIndex].content = debtCoverageRatio ? `${(debtCoverageRatio).toFixed(2)}%` : '0.00%';
 
       return {
         ...state,
