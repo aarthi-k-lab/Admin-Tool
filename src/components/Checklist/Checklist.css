@@ -34,6 +34,8 @@
 
 .checklist-title.checklist-title {
   color: var(--grey-650);
+  max-width: 30rem;
+  word-wrap: break-word;
   font-size: 1rem !important;
   text-align: justify;
   font-weight: bold;
