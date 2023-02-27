@@ -22,10 +22,11 @@ import RadioButtons from '../RadioButtons';
 import DatePicker from '../DatePicker';
 import CheckBox from '../Checkbox';
 import GridView from '../GridView';
+import MUITable from '../Table';
 import {
   FINANCIAL_CALCULATOR,
 } from '../../../constants/widgets';
-
+import { TABLE_SCHEMA } from '../../../constants/tableSchema';
 
 const NumberFormatCustom = (props) => {
   const { inputRef, ...other } = props;
@@ -221,19 +222,20 @@ class IncomeChecklist extends React.PureComponent {
       disableChecklist));
   }
 
-
   renderChecklistItem = (checklistItems) => {
     const {
       BUTTON, TASK_SECTION, TABS, DROPDOWN, RADIO_BUTTONS, TEXT, DATE, CHECKBOX,
     } = ComponentTypes;
     const {
       disabled: disableIncomeCalc, checklistLoadStatus, location, incomeCalcData,
-      isAssigned, taskValues, openWidgetList,
+      isAssigned, taskValues, openWidgetList, ficoHistoryTableData, selectedBorrowerData,
     } = this.props;
     const skipSubTask = [TASK_SECTION];
     const children = [];
     return checklistItems.map((item) => {
-      const processedItem = processItem({ ...item, incomeCalcData }, 'preProcess');
+      const processedItem = processItem({
+        ...item, incomeCalcData, selectedBorrowerData,
+      }, 'preProcess');
       const {
         disabled: disabledChecklistItem,
         id,
@@ -392,6 +394,7 @@ class IncomeChecklist extends React.PureComponent {
         case DATE: {
           const onChange = this.handleDateChange(id, taskCode);
           const text = title || additionalInfo.placeholder;
+          const editable = additionalInfo.editable && true;
           const props = {
             disabled,
             id,
@@ -404,6 +407,7 @@ class IncomeChecklist extends React.PureComponent {
             source,
             value,
             failureReason,
+            editable,
           };
           element = (<DatePicker key={id} {...props} />);
         } break;
@@ -427,6 +431,23 @@ class IncomeChecklist extends React.PureComponent {
           };
           element = (<CheckBox key={id} {...props} />);
         } break;
+
+        case 'table': {
+          const { additionalInfo: { tableId } } = processedItem;
+          const columns = R.propOr([], tableId, TABLE_SCHEMA);
+          const operation = R.pathOr(false, ['actions', 'preProcess'], additionalInfo);
+          let data = [];
+          if (R.equals(tableId, 'FICO')) {
+            data = ficoHistoryTableData;
+          }
+          const props = {
+            columns,
+            data,
+            operation,
+          };
+          element = (<MUITable {...props} />);
+        }
+          break;
         default:
           element = (
             <div />
@@ -458,6 +479,7 @@ IncomeChecklist.defaultProps = {
   isAssigned: false,
   taskValues: {},
   openWidgetList: [],
+  ficoHistoryTableData: [],
 };
 
 NumberFormatCustom.propTypes = {
@@ -490,6 +512,7 @@ IncomeChecklist.propTypes = {
   disableFinanceCalcTabButton: PropTypes.shape().isRequired,
   disableLockButton: PropTypes.func.isRequired,
   displayInRow: PropTypes.bool,
+  ficoHistoryTableData: PropTypes.arrayOf(PropTypes.shape),
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
@@ -510,6 +533,7 @@ IncomeChecklist.propTypes = {
   resolutionId: PropTypes.string.isRequired,
   rootTaskId: PropTypes.string,
   ruleResultFromTaskTree: PropTypes.arrayOf(PropTypes.shape),
+  selectedBorrowerData: PropTypes.string.isRequired,
   selectedWidget: PropTypes.string.isRequired,
   storeTaskValue: PropTypes.func.isRequired,
   taskValues: PropTypes.shape(),
@@ -531,6 +555,8 @@ const mapStateToProps = state => ({
   isAssigned: dashboardSelector.isAssigned(state),
   taskValues: incomeSelectors.getTaskValues(state),
   openWidgetList: widgetsSelectors.getOpenWidgetList(state),
+  ficoHistoryTableData: incomeSelectors.getFicoHistoryTableData(state),
+  selectedBorrowerData: incomeSelectors.getSelectedBorrowerData(state),
   disableFinanceCalcTabButton: dashboardSelector.getDisableFinanceCalcTabButton(state),
 });
 

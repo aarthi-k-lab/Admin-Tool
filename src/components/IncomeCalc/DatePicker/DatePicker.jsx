@@ -18,12 +18,16 @@ const useStyles = makeStyles({
 });
 function BasicDatePicker(props) {
   const {
-    disabled, title, onChange, value, additionalInfo, failureReason,
+    disabled, title, onChange, value, additionalInfo, failureReason, editable,
   } = props;
   let date = null;
   if (!R.isNil(value)) {
     date = moment(value).isValid() ? moment(value).format(DATE_FORMAT) : null;
   }
+  if (!editable) {
+    date = moment(new Date()).isValid() ? moment(new Date()).format(DATE_FORMAT) : null;
+  }
+
   const [datePicker, setDatePicker] = useState(date);
   const { hasTitle, styleName, disableFuture } = additionalInfo;
   const onChangeDatePickerHandler = (selectedDate) => {
@@ -92,6 +96,7 @@ BasicDatePicker.defaultProps = {
   title: '',
   additionalInfo: { hasTitle: false, styleName: '', disableFuture: false },
   failureReason: [],
+  editable: true,
 };
 
 BasicDatePicker.propTypes = {
@@ -101,6 +106,7 @@ BasicDatePicker.propTypes = {
     styleName: PropTypes.string,
   }),
   disabled: PropTypes.bool,
+  editable: PropTypes.bool,
   failureReason: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func.isRequired,
   title: PropTypes.string,

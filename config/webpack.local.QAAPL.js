@@ -80,8 +80,7 @@ const config = merge(
           },
         },
         '/api/workassign': {
-          // target: 'https://dev.cmod.mrcooper.io/cmodworkassignmentqaapl',
-          target: 'http://localhost:7800',
+          target: 'https://dev.cmod.mrcooper.io/cmodworkassignmentqaapl',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -113,7 +112,6 @@ const config = merge(
           },
         },
         '/api/tkams': {
-          // target: 'http://localhost:7100',
           target: 'https://dev.cmod.mrcooper.io/cmodtkamsqaapl',
           secure: false,
           changeOrigin: true,
@@ -130,7 +128,7 @@ const config = merge(
           },
         },
         '/api/task-engine': {
-          target: 'https://dev.cmod.mrcooper.io/cmodtaskengine',
+          target: 'https://qa.cmod.mrcooper.io/cmodtaskengine',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -154,7 +152,7 @@ const config = merge(
           },
         },
         '/api/cmodnetcoretkams': {
-          target: 'https://dev.cmod.mrcooper.io/cmodtkamsnetcoreqaapl',
+          target: 'https://dev.cmod.mrcooper.io/cmodtkamsnetcoreapl',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -194,7 +192,7 @@ const config = merge(
           },
         },
         '/api/financial-aggregator': {
-          target: 'http://localhost:7900',
+          target: 'https://dev.cmod.mrcooper.io/cmodfinancialsaggregatorqaapl',
           secure: false,
           changeOrigin: true,
           pathRewrite: {

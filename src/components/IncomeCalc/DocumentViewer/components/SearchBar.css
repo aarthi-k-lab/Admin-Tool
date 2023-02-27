@@ -1,0 +1,21 @@
+.searchIcon{
+    position: relative !important;
+    width: 0.313rem !important;
+    height: 0.625rem !important;
+}
+
+.filterContainer{
+    display: flex !important;
+    justify-content: end !important;
+}
+
+.filterIndicator{
+    width:0.5rem !important;
+    height: 0.5rem !important;
+    border-radius: 50% !important;
+    background-color: #596FEB !important;
+    border: 0.063rem solid #F3F5F9 !important;
+    top: 0.188rem !important;
+    right: 0.188rem !important;
+    position: absolute !important;
+}

@@ -1,0 +1,33 @@
+.header{
+    flex: 1 !important;
+    font: Lato !important;
+    color: #4E586E !important;
+    padding: 0.313rem !important;
+    font-weight: bold !important;
+    font-size: 0.75rem !important;
+}
+
+.cancelBtn{
+    width: 2.813rem !important;
+    min-width: 2.813rem !important;
+    height: 1.25rem !important;
+    background: #F3F5F9 !important;
+    border-radius: 0.313rem !important;
+    font: Lato !important;
+    font-size: 0.625rem !important;
+    box-shadow: none !important;
+    color: #596FEB !important;
+}
+
+.doneBtn{
+    width: 2.813rem !important;
+    min-width: 2.813rem !important;
+    height: 1.25rem !important;
+    margin-left: 0.313rem !important;
+    background: #596FEB !important;
+    border-radius: 0.313rem !important;
+    font: Lato !important;
+    font-size: 0.625rem !important;
+    box-shadow: none !important;
+    color: #FFFFFF !important;
+}

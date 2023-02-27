@@ -9,8 +9,21 @@ import NumberFormat from 'react-number-format';
 import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { operations } from 'ducks/tasks-and-checklist';
+import { operations, selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
+import {
+  operations as dashboardOperations,
+  selectors as dashboardSelectors,
+} from 'ducks/dashboard';
+import {
+  selectors as incomeSelectors,
+  operations as incomeOperations,
+} from 'ducks/income-calculator';
+import { hideClearButton, financialChecklist, checklistGridColumnSize } from 'constants/common';
+import { operations as documentChecklistOperations } from 'ducks/document-checklist';
 import Grid from '@material-ui/core/Grid';
+import {
+  LockCalculation,
+} from 'components/ContentHeader';
 import RadioButtons from './RadioButtons';
 import SlaRules from '../SlaRules';
 import CheckBox from './Checkbox';
@@ -20,6 +33,7 @@ import styles from './Checklist.css';
 import SlaHeader from '../SlaHeader';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 import HTMLElements from '../../constants/componentTypes';
+import { FEUW_CHECKLIST } from '../../constants/frontEndChecklist';
 
 const DIALOG_TITLE = 'Do you want to clear current checklist?';
 const DELETE_TASK = 'DELETE TASK';
@@ -40,6 +54,8 @@ const NumberFormatCustom = (props) => {
 
 const removeCharaters = value => value.replace(/[^0-9.]/g, '');
 
+const getChecklistGridName = (key, type) => R.pathOr(R.pathOr('', [key, 'default'], checklistGridColumnSize), [key, type], checklistGridColumnSize);
+
 class Checklist extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -50,6 +66,9 @@ class Checklist extends React.PureComponent {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.checkErrors = this.checkErrors.bind(this);
+    this.onClickLockCalc = this.onClickLockCalc.bind(this);
+    this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.state = {
       multilineTextDirtyValues: {},
       isDialogOpen: false,
@@ -81,6 +100,22 @@ class Checklist extends React.PureComponent {
     return null;
   }
 
+  onClickLockCalc = () => {
+    const {
+      lockCalculation, ficoBluePrintCode, ficoLockCalculation,
+    } = this.props;
+    if (FEUW_CHECKLIST.includes(ficoBluePrintCode)) {
+      ficoLockCalculation();
+    } else {
+      lockCalculation();
+    }
+  }
+
+  onBackButtonClick = () => {
+    const { closeHistoryView } = this.props;
+    closeHistoryView();
+  }
+
   getMultilineTextValue(id, initialValue) {
     const { multilineTextDirtyValues } = this.state;
     const dirtyValue = multilineTextDirtyValues[id];
@@ -88,6 +123,14 @@ class Checklist extends React.PureComponent {
       return initialValue;
     }
     return dirtyValue;
+  }
+
+  checkErrors() {
+    const {
+      onErrorValidation, documentValidation, groupName,
+    } = this.props;
+    onErrorValidation(groupName);
+    documentValidation(groupName);
   }
 
   handleBlur(id, taskCode, type) {
@@ -224,13 +267,16 @@ class Checklist extends React.PureComponent {
   }) {
     const {
       RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, SLA_RULES,
-      CHECKBOX, READ_ONLY_TEXT, CURRENCY, INCOME_CALCULATOR, EXPENSE_CALCULATOR,
+      CHECKBOX, READ_ONLY_TEXT, CURRENCY, CHECKLIST_INTERFACE,
+      INCOME_CALCULATOR, EXPENSE_CALCULATOR,
     } = HTMLElements;
     let element = {};
     switch (type) {
+      case CHECKLIST_INTERFACE:
       case INCOME_CALCULATOR:
       case EXPENSE_CALCULATOR: {
-        return (<IncomeCalcWidget processInstance={processInstance} type={type} />);
+        const { checklistType } = additionalInfo;
+        return (<IncomeCalcWidget processInstance={processInstance} type={checklistType} />);
       }
       case RADIO_BUTTONS: {
         const onChange = this.handleChange(id, taskCode, additionalInfo);
@@ -531,26 +577,64 @@ class Checklist extends React.PureComponent {
     const {
       checklistItems, children, title,
       className, location, resolutionId, resolutionData, triggerHeader, incomeCalcInProgress,
-      disableNext, disablePrev, onNext, onPrev,
+      disableNext, disablePrev, onNext, onPrev, isIncomeVerification, historyView,
+      disabledChecklist, enableLockButton, groupName, ficoBluePrintCode,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
     } = this.state;
-    const { INCOME_CALCULATOR, EXPENSE_CALCULATOR } = HTMLElements;
-    const checklistElements = checklistItems.filter(({ isVisible }) => isVisible)
-      .map(this.renderChecklistItem);
-    const addClearButton = (!R.equals(checklistItems[0].type, 'sla-rules') && !R.equals(checklistItems[0].type, 'income-calculator') && !R.equals(checklistItems[0].type, 'expense-calculator')) && (
+    const { additionalInfo: { checklistType } } = checklistItems[0];
+    const type = checklistType || checklistItems[0].type;
+    const { AV } = HTMLElements;
+    const showControlButtons = isIncomeVerification && !historyView && !disabledChecklist;
+    const showCheckButton = isIncomeVerification && !historyView
+    && !disabledChecklist && checklistType !== AV
+    && !FEUW_CHECKLIST.includes(ficoBluePrintCode) ? (
+      <Button
+        className="material-ui-button"
+        color="primary"
+        onClick={this.checkErrors}
+        style={{ marginRight: '0.5rem' }}
+        variant="contained"
+      >
+        CHECK
+      </Button>
+      ) : null;
+
+    const showLock = showControlButtons && groupName !== 'PROC' ? (
+      <LockCalculation
+        disabled={!enableLockButton}
+        onClick={this.onClickLockCalc}
+      />
+    ) : null;
+    const addBackButton = isIncomeVerification && historyView && !disabledChecklist
+    && R.equals(type, AV) ? (
+      <Button
+        color="primary"
+        onClick={this.onBackButtonClick}
+      >
+         BACK
+      </Button>
+      )
+      : null;
+
+    const addClearButton = (!hideClearButton.includes(type)) ? (
       <>
         {!(location.pathname === '/special-loan' || triggerHeader) && (
           <div styleName="clearButton">
             <Button disabled={checklistItems[0].disabled} onClick={() => this.handleOpen()}>
-            Clear
+              Clear
             </Button>
           </div>
         )}
       </>
-    );
-    const isFinanceChecklist = R.equals(R.prop('type', R.head(checklistItems)), INCOME_CALCULATOR) || R.equals(R.prop('type', R.head(checklistItems)), EXPENSE_CALCULATOR);
+    ) : null;
+
+    const checklistElements = checklistItems.filter(({ isVisible }) => isVisible)
+      .map(this.renderChecklistItem);
+
+    const isFinanceChecklist = financialChecklist.includes(type);
+
     return (
       <section className={className}>
         {children}
@@ -567,38 +651,58 @@ class Checklist extends React.PureComponent {
             />
           )}
         <Grid container style={{ marginTop: '1rem' }}>
-          <Grid item xs={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'sla-rules' || checklistItems[0].type === 'expense-calculator' ? 10 : 6}>
-            {
-              (!R.equals(checklistItems[0].type, 'sla-rules') && !R.equals(checklistItems[0].type, 'income-calculator') && !R.equals(checklistItems[0].type, 'expense-calculator')) && (
-                <>
-                  <Typography styleName={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'expense-calculator' ? 'checklist-title-income-calc' : 'checklist-title'}>{title}</Typography>
-                </>
-              )
-            }
+          <Grid item xs={getChecklistGridName('title', !R.isNil(addBackButton) ? `${type}-back` : type)}>
+            <Typography styleName={financialChecklist.includes(type) ? 'checklist-title-income-calc' : 'checklist-title'}>{title}</Typography>
           </Grid>
-          <Grid item xs={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'sla-rules' || checklistItems[0].type === 'expense-calculator' ? 1 : 2}>
-            <Button
-              color="primary"
-              disabled={disablePrev}
-              onClick={onPrev}
-            >
-                    Prev
-            </Button>
+          { !R.isNil(showCheckButton) && (
+          <Grid item xs={getChecklistGridName('check', type)}>
+            {showCheckButton}
           </Grid>
-          <Grid item xs={checklistItems[0].type === 'income-calculator' || checklistItems[0].type === 'sla-rules' || checklistItems[0].type === 'expense-calculator' ? 1 : 2}>
-            <Button
-              color="primary"
-              disabled={disableNext}
-              onClick={onNext}
-            >
-                Next
-            </Button>
+          )
+          }
+          { !R.isNil(showLock) && (
+          <Grid item xs={getChecklistGridName('lock', type)}>
+            {showLock}
           </Grid>
-          <Grid item xs={2}>
+          )
+          }
+          { !R.isNil(addBackButton) && (
+          <Grid item xs={getChecklistGridName('back', type)}>
+            {addBackButton}
+          </Grid>
+          )
+        }
+          { R.isNil(addBackButton) && (
+          <>
+            <Grid item xs={getChecklistGridName('prev', type)}>
+              <Button
+                color="primary"
+                disabled={disablePrev}
+                onClick={onPrev}
+              >
+                  Prev
+              </Button>
+            </Grid>
+            <Grid item xs={getChecklistGridName('next', type)}>
+              <Button
+                color="primary"
+                disabled={disableNext}
+                onClick={onNext}
+              >
+                    Next
+              </Button>
+            </Grid>
+
+          </>
+          )}
+          { !R.isNil(addClearButton) && (
+          <Grid item xs={getChecklistGridName('clear', type)}>
             {addClearButton}
           </Grid>
+          )
+          }
         </Grid>
-        <div style={{ padding: !incomeCalcInProgress && checklistItems[0].type === 'sla-rules' ? '0 .2rem 0 0.1rem' : '' }} styleName={incomeCalcInProgress ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
+        <div style={{ padding: !incomeCalcInProgress && type === 'sla-rules' ? '0 .2rem 0 21.1rem' : '' }} styleName={incomeCalcInProgress ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
           {isFinanceChecklist ? checklistElements
             : (
               <Paper elevation={0} styleName="checklist-form-controls">
@@ -626,6 +730,15 @@ Checklist.defaultProps = {
   ruleResultFromTaskTree: [],
   disableNext: false,
   disablePrev: false,
+  lockCalculation: () => {},
+  onErrorValidation: () => {},
+  isIncomeVerification: false,
+  disabledChecklist: false,
+  enableLockButton: false,
+  historyView: false,
+  groupName: null,
+  ficoBluePrintCode: '',
+  ficoLockCalculation: () => {},
 };
 
 NumberFormatCustom.propTypes = {
@@ -635,6 +748,7 @@ NumberFormatCustom.propTypes = {
 Checklist.propTypes = {
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
+      additionalInfo: PropTypes.shape(),
       disabled: PropTypes.bool,
       id: PropTypes.string,
       isVisible: PropTypes.bool,
@@ -654,18 +768,30 @@ Checklist.propTypes = {
   ).isRequired,
   children: PropTypes.node,
   className: PropTypes.string,
+  closeHistoryView: PropTypes.func.isRequired,
   currentChecklistType: PropTypes.func.isRequired,
+  disabledChecklist: PropTypes.bool,
   disableNext: PropTypes.bool,
   disablePrev: PropTypes.bool,
+  documentValidation: PropTypes.func.isRequired,
+  enableLockButton: PropTypes.bool,
+  ficoBluePrintCode: PropTypes.string,
+  ficoLockCalculation: PropTypes.func,
+  groupName: PropTypes.string,
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  historyView: PropTypes.bool,
   incomeCalcInProgress: PropTypes.bool,
+  inProgress: PropTypes.bool.isRequired,
+  isIncomeVerification: PropTypes.bool,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
   }).isRequired,
+  lockCalculation: PropTypes.func,
   onChange: PropTypes.func.isRequired,
+  onErrorValidation: PropTypes.func,
   onNext: PropTypes.func.isRequired,
   onPrev: PropTypes.func.isRequired,
   processAction: PropTypes.func.isRequired,
@@ -673,6 +799,7 @@ Checklist.propTypes = {
   resolutionData: PropTypes.arrayOf(PropTypes.string).isRequired,
   resolutionId: PropTypes.string.isRequired,
   ruleResultFromTaskTree: PropTypes.arrayOf(PropTypes.shape),
+  selectedChecklistLock: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   triggerHeader: PropTypes.bool,
 };
@@ -680,8 +807,28 @@ Checklist.propTypes = {
 function mapDispatchToProps(dispatch) {
   return {
     currentChecklistType: operations.currentChecklistType(dispatch),
+    onErrorValidation: dashboardOperations.onErrorValidation(dispatch),
+    lockCalculation: incomeOperations.lockCalculation(dispatch),
+    closeHistoryView: incomeOperations.closeHistoryView(dispatch),
+    documentValidation: documentChecklistOperations.onDocValidation(dispatch),
+    ficoLockCalculation: incomeOperations.ficoLockCalculation(dispatch),
   };
 }
+
+const mapStateToProps = (state) => {
+  const isAssigned = dashboardSelectors.isAssigned(state);
+  const ficoBluePrintCode = checklistSelectors.selectedTaskBlueprintCode(state);
+  return {
+    isIncomeVerification: isAssigned && dashboardSelectors.isIncomeVerification(state),
+    historyView: incomeSelectors.getHistoryView(state),
+    disabledChecklist: incomeSelectors.disabledChecklist(state),
+    enableLockButton: dashboardSelectors.enableLockButton(state),
+    selectedChecklistLock: dashboardSelectors.getSelectedChecklistLock(state),
+    inProgress: incomeSelectors.inProgress(state),
+    groupName: dashboardSelectors.groupName(state),
+    ficoBluePrintCode,
+  };
+};
 
 const TestHooks = {
   Checklist,
@@ -691,4 +838,4 @@ const TestHooks = {
 
 export { TestHooks };
 
-export default withRouter(connect(null, mapDispatchToProps)(Checklist));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Checklist));

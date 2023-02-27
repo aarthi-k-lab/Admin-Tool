@@ -8,6 +8,9 @@ import {
   CLOSE_INC_HISTORY,
   LOCK_INCOME_CALCULATION,
   STORE_TASK_VALUE,
+  FETCH_SELECTED_BORROWER_DATA,
+  FICO_LOCK_CALCULATION,
+  SET_SELECTED_BORROWER,
 } from './types';
 
 
@@ -97,6 +100,22 @@ const storeTaskValueAction = payload => ({
   payload,
 });
 
+const fetchSelectedBorrowerData = payload => ({
+  type: FETCH_SELECTED_BORROWER_DATA,
+  payload,
+});
+
+
+const handleFicoLockCalculation = payload => ({
+  type: FICO_LOCK_CALCULATION,
+  payload,
+});
+
+const setSelectedBorrowerAction = payload => ({
+  type: SET_SELECTED_BORROWER,
+  payload,
+});
+
 export {
   onLockCalc,
   closeIncomeHistory,
@@ -114,4 +133,7 @@ export {
   setHistoryItem,
   fetchHistoryChecklist,
   storeTaskValueAction,
+  fetchSelectedBorrowerData,
+  handleFicoLockCalculation,
+  setSelectedBorrowerAction,
 };

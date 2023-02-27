@@ -19,7 +19,7 @@ import './MUITable.css';
 function MUITable(props) {
   const { columns, data } = props;
 
-  const processData = () => data.map((item) => {
+  const processData = () => data && data.map((item) => {
     let newObject = {};
     columns.forEach(
       (obj) => {

@@ -23,9 +23,13 @@ const TABS = 'tabs';
 const DIVIDER = 'divider';
 const INCOME_CALCULATOR = 'income-calculator';
 const EXPENSE_CALCULATOR = 'expense-calculator';
+const AV = 'asset-verification';
 const READ_ONLY_TEXT = 'read-only-text';
+const CHECKLIST_INTERFACE = 'checklist-interface';
 
 const componentTypes = {
+  CHECKLIST_INTERFACE,
+  AV,
   INCOME_CALCULATOR,
   TABS,
   LINK,

@@ -6,10 +6,8 @@ import {
   EndShift, Expand, GetNext, Assign, Unassign, SendToUnderwriting,
   SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn,
   CompleteForbearance, CompleteMyReview, SendToBooking,
-  LockCalculation,
 } from 'components/ContentHeader';
 import classNames from 'classnames';
-import Button from '@material-ui/core/Button';
 import DashboardModel from 'models/Dashboard';
 import {
   operations,
@@ -19,7 +17,6 @@ import EndShiftModel from 'models/EndShift';
 import AppGroupName from 'models/AppGroupName';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
-import { selectors as incomeSelectors, operations as incomeOperations } from 'ducks/income-calculator';
 import { selectors as stagerSelectors } from 'ducks/stager';
 import RouteAccess from 'lib/RouteAccess';
 import * as R from 'ramda';
@@ -44,7 +41,6 @@ class Controls extends React.PureComponent {
     this.handleSendToDocsIn = this.handleSendToDocsIn.bind(this);
     this.handleSendToBooking = this.handleSendToBooking.bind(this);
     this.handleTrial = this.handleTrial.bind(this);
-    this.checkErrors = this.checkErrors.bind(this);
   }
 
   componentDidMount() {
@@ -91,11 +87,6 @@ class Controls extends React.PureComponent {
   handleCompleteMyReview = () => {
     const { onCompleteMyReview } = this.props;
     onCompleteMyReview('Complete My Review');
-  }
-
-  onClickLockCalc = () => {
-    const { lockCalculation } = this.props;
-    lockCalculation();
   }
 
   // eslint-disable-next-line react/sort-comp
@@ -152,13 +143,6 @@ class Controls extends React.PureComponent {
     onGetNext({ appGroupName: groupName, isFirstVisit, dispositionCode });
   }
 
-  checkErrors() {
-    const {
-      onErrorValidation,
-    } = this.props;
-    onErrorValidation();
-  }
-
   validateDisposition() {
     const {
       groupName, validateDispositionTrigger, dispositionCode,
@@ -208,10 +192,6 @@ class Controls extends React.PureComponent {
       taskName,
       taskStatus,
       disableTrialTaskButton,
-      enableLockButton,
-      isIncomeVerification,
-      historyView,
-      disabledChecklist,
       isTrialDisable,
     } = this.props;
     let assign = null;
@@ -230,33 +210,6 @@ class Controls extends React.PureComponent {
         controlAction={() => this.validateDisposition()}
         disableValidation={disableValidation}
         label={showValidate ? 'Validate' : 'Update Remedy'}
-      />
-    ) : null;
-
-    const showCheckButton = isIncomeVerification && !historyView && !disabledChecklist ? (
-      <Button
-        className="material-ui-button"
-        color="primary"
-        onClick={this.checkErrors}
-        style={{
-          marginRight: '1.5rem',
-          height: '2.5rem',
-          background: 'linear-gradient(90deg, #6a81f0 0%, #4155e2 100%)',
-          borderRadius: '10px',
-          fontStyle: 'normal',
-          fontWeight: '700 !important',
-          fontSize: '15px',
-          lineHeight: '18px',
-        }}
-        variant="contained"
-      >
-        CHECK
-      </Button>
-    ) : null;
-    const showLock = isIncomeVerification && !historyView && !disabledChecklist ? (
-      <LockCalculation
-        disabled={!enableLockButton}
-        onClick={this.onClickLockCalc}
       />
     ) : null;
     const getNext = showGetNext
@@ -318,8 +271,6 @@ class Controls extends React.PureComponent {
       ? <CompleteMyReview onClick={this.handleCompleteMyReview} /> : null;
     return (
       <>
-        {showCheckButton}
-        {showLock}
         {assign}
         {AppGroupName.hasChecklist(groupName) ? validate : null}
         {endShift}
@@ -347,7 +298,6 @@ Controls.defaultProps = {
   enableSendToUW: true,
   enableValidate: false,
   isFirstVisit: true,
-  isIncomeVerification: false,
   isTrialDisable: true,
   onEndShift: () => { },
   onExpand: () => { },
@@ -357,7 +307,6 @@ Controls.defaultProps = {
   onSendToDocsIn: () => { },
   onSendToBooking: () => { },
   onTrialTask: () => { },
-  onErrorValidation: () => { },
   showEndShift: false,
   showGetNext: false,
   showSendToUnderWritingIcon: false,
@@ -370,20 +319,15 @@ Controls.defaultProps = {
   showContinueMyReview: null,
   showAssign: null,
   showValidate: false,
-  enableLockButton: false,
   groupName: null,
-  historyView: false,
-  disabledChecklist: false,
 };
 
 Controls.propTypes = {
-  disabledChecklist: PropTypes.bool,
   disableTrialTaskButton: PropTypes.bool.isRequired,
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
   enableEndShift: PropTypes.bool,
   enableGetNext: PropTypes.bool,
-  enableLockButton: PropTypes.bool,
   enableSendToBooking: PropTypes.bool,
   enableSendToDocGen: PropTypes.bool,
   enableSendToDocsIn: PropTypes.bool,
@@ -395,16 +339,12 @@ Controls.propTypes = {
   }).isRequired,
   evalId: PropTypes.string.isRequired,
   groupName: PropTypes.string,
-  historyView: PropTypes.bool,
   isFirstVisit: PropTypes.bool,
-  isIncomeVerification: PropTypes.bool,
   isTrialDisable: PropTypes.bool,
-  lockCalculation: PropTypes.func.isRequired,
   onAssignToMeClick: PropTypes.func.isRequired,
   onCompleteMyReview: PropTypes.func,
   onContinueMyReview: PropTypes.func,
   onEndShift: PropTypes.func,
-  onErrorValidation: PropTypes.func,
   onExpand: PropTypes.func,
   onGetNext: PropTypes.func,
   onSendToBooking: PropTypes.func,
@@ -438,7 +378,6 @@ Controls.propTypes = {
     userGroups: PropTypes.array,
   }).isRequired,
   validateDispositionTrigger: PropTypes.func.isRequired,
-
 };
 
 const mapStateToProps = (state) => {
@@ -451,11 +390,9 @@ const mapStateToProps = (state) => {
     && DashboardModel.checkDisableValidateButton(group);
   const disableValidation = !isAssigned || !showDisposition || !enableValidate;
   const isPaymentDeferral = selectors.getIsPaymentDeferral(state);
-  const isIncomeVerification = isAssigned && selectors.isIncomeVerification(state);
   const isTrialDisable = selectors.getTrialDisableButton(state);
+  const ficoBluePrintCode = checklistSelectors.selectedTaskBlueprintCode(state);
   return {
-    historyView: incomeSelectors.getHistoryView(state),
-    disabledChecklist: incomeSelectors.disabledChecklist(state),
     disableValidation,
     enableValidate,
     enableEndShift: selectors.enableEndShift(state) || shouldSkipValidation,
@@ -479,12 +416,11 @@ const mapStateToProps = (state) => {
     processId: selectors.processId(state),
     disableTrialTaskButton: selectors.disableTrialTaskButton(state),
     errorBanner: selectors.errorBanner(state),
-    enableLockButton: selectors.enableLockButton(state),
-    isIncomeVerification,
     disposition: checklistSelectors.getDisposition(state),
     loanNumber: selectors.loanNumber(state),
     taskId: selectors.taskId(state),
     stagerTaskName: stagerSelectors.getTaskName(state),
+    ficoBluePrintCode,
   };
 };
 
@@ -502,8 +438,6 @@ const mapDispatchToProps = dispatch => ({
   onCompleteMyReview: operations.onCompleteMyReview(dispatch),
   onTrialTask: operations.onTrialTask(dispatch),
   onAssignToMeClick: operations.onAssignToMeClick(dispatch),
-  onErrorValidation: operations.onErrorValidation(dispatch),
-  lockCalculation: incomeOperations.lockCalculation(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

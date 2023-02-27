@@ -16,6 +16,15 @@
   margin: 0 0 0 22rem;
 }
 
+.incomeCalc-av {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 4;
+  grid-row: 1 / 4;
+  margin: 0 0 0 22rem;
+}
+
+
 .pushData {
   align-self: stretch;
   align-items: center;

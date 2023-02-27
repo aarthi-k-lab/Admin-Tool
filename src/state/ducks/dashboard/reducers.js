@@ -292,7 +292,6 @@ const reducer = (state = {
       let loannumber = null;
       if (action.payload) {
         getSearchLoanResponse = action.payload;
-
         const { loanNumber } = getSearchLoanResponse;
         loannumber = loanNumber;
       }
@@ -941,10 +940,11 @@ const reducer = (state = {
       };
     }
     case TOGGLE_LOCK_BUTTON: {
-      const enableLockButton = action.payload;
+      const { enable, selectedChecklistLock } = action.payload;
       return {
         ...state,
-        enableLockButton,
+        enableLockButton: enable,
+        selectedChecklistLock,
       };
     }
 

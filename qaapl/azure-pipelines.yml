@@ -14,6 +14,8 @@ trigger:
   branches:
     exclude: 
       - master
+    include:
+      - CMOD/MARCH
   paths:
     exclude:
       - secrets

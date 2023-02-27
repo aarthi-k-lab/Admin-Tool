@@ -17,6 +17,11 @@ const textFields = {
     div: 'display-in-row',
     inputProps: { style: { width: '17rem' } },
   },
+  'fico-scr': {
+    title: 'fico-scr-title',
+    div: 'display-in-row',
+    inputProps: { style: { width: '17rem' } },
+  },
   'pay-periods-text': {
     div: 'pay-periods-text',
     title: 'pay-periods-title',
@@ -35,6 +40,10 @@ const textFields = {
   },
   'weekly-amt': {
     div: 'weekly-amt',
+    textField: 'weekly-text',
+  },
+  savings: {
+    div: 'savings',
     textField: 'weekly-text',
   },
   'monthly-inc': {
@@ -137,6 +146,9 @@ const taskSection = {
   'add-contrib': {
     grid: 'add-contrib-grid',
   },
+  'av-sect': {
+    grid: 'av-sect-grid',
+  },
   'rental-address-wrapper': {
     grid: 'rental-address-wrapper',
     icon: 'rental-address-icon',
@@ -184,6 +196,12 @@ const taskSection = {
     inctype: 'cnsdt-income-data-row-inctype',
     amount: 'cnsdt-income-data-row-amount',
   },
+  'fico-score': {
+    item: 'fico-score',
+  },
+  'fico-sect': {
+    grid: 'fico-sect',
+  },
   default: {
     title: 'text-label',
     header: 'radio-control-label',
@@ -203,6 +221,11 @@ const datePicker = {
     div: 'date-flex-div',
     title: 'date-flex-title',
     picker: 'date-flex-picker',
+  },
+  'fico-scr': {
+    title: 'fico-scr-title',
+    inputProps: { style: { width: '17rem', margin: '1rem 1rem 1rem 0rem !important' } },
+    div: 'fico-date-row',
   },
   'datepicker-we': {
     title: 'text-label',
@@ -267,6 +290,15 @@ const direction = {
   bottom: { display: 'flex', flexDirection: 'column-reverse' },
 };
 
+const tabStyle = {
+  docBorrowerTab: {
+    tabs: 'doc-tab-view',
+  },
+  default: {
+    tabs: 'tabview',
+  },
+};
+
 const styleData = {
   datePicker,
   textFields,
@@ -274,6 +306,7 @@ const styleData = {
   dropDown,
   radioButtons,
   createSelect,
+  tabStyle,
 };
 
 const getStyleObj = component => R.prop(null, component, styleData);

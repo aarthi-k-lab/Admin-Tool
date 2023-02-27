@@ -10,6 +10,7 @@ import { reducers as comments } from './comments';
 import { reducers as incomeCalculator } from './income-calculator';
 import { reducers as milestoneActivity } from './milestone-activity';
 import { reducers as widgets } from './widgets';
+import { reducers as documentChecklist } from './document-checklist';
 
 
 const rootReducer = combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   incomeCalculator,
   milestoneActivity,
   widgets,
+  documentChecklist,
 });
 
 export default rootReducer;

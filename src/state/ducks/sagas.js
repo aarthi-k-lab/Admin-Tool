@@ -10,6 +10,7 @@ import { combinedSaga as commentsSaga } from './comments/sagas';
 import { combinedSaga as incomeCalculatorSaga } from './income-calculator/sagas';
 import { combinedSaga as milestoneActivitySaga } from './milestone-activity/sagas';
 import { combinedSaga as widgetsSaga } from './widgets/sagas';
+import { combinedSaga as documentChecklistSaga } from './document-checklist/sagas';
 
 
 export default function* rootSaga() {
@@ -25,5 +26,6 @@ export default function* rootSaga() {
     incomeCalculatorSaga(),
     milestoneActivitySaga(),
     widgetsSaga(),
+    documentChecklistSaga(),
   ]);
 }

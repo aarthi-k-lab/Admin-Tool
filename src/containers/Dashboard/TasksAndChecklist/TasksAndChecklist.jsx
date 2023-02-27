@@ -14,7 +14,7 @@ import CustomSnackBar from 'components/CustomSnackBar';
 import AdditionalInfo from 'containers/AdditionalInfo';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
-import { ERROR, SUCCESS } from 'constants/common';
+import { ERROR, SUCCESS, financialChecklist } from 'constants/common';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -210,8 +210,12 @@ class TasksAndChecklist extends Component {
       );
     }
     let styleName = 'checklist';
-    if (checklistItems && (R.equals(R.prop('type', R.head(checklistItems)), 'income-calculator') || R.equals(R.prop('type', R.head(checklistItems)), 'expense-calculator'))) {
+    const checklistType = checklistItems && R.pathOr('',['additionalInfo', 'checklistType'],R.head(checklistItems));
+    if (financialChecklist.includes(checklistType) ) {
       styleName = 'incomeCalc';
+    }
+    if (checklistItems && ( R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'asset-verification'))) {
+      styleName = 'incomeCalc-av';
     }
     const isBookingWidgetOpen = R.contains(BOOKING, openWidgetList);
     if (groupName === DashboardModel.BOOKING || isBookingWidgetOpen) {

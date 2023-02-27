@@ -3,9 +3,16 @@ import * as R from 'ramda';
 const processBorrowerData = (item) => {
   const { incomeCalcData, failureReason } = item;
   const isHistoryView = R.propOr(false, 'isHistoryView', incomeCalcData);
-  const borrowers = R.propOr([], isHistoryView ? 'historicalBorrowers' : 'processedBorrowerData', incomeCalcData);
+  let borrowers = R.propOr([], isHistoryView ? 'historicalBorrowers' : 'processedBorrowerData', incomeCalcData);
+  if (!borrowers || borrowers.length === 0) {
+    borrowers = R.propOr([], 'borrowerData', incomeCalcData);
+  }
   const failures = [];
-  const checklistBorrowers = R.pathOr(null, ['checklist', 'value', 'inc', 'borrowers'], incomeCalcData);
+  let checklistBorrowers = R.pathOr(null, ['checklist', 'value', 'inc', 'borrowers'], incomeCalcData);
+  if (!checklistBorrowers) {
+    const path = R.pathOr(null, ['additionalInfo', 'borrowerDataField'], item);
+    checklistBorrowers = R.pathOr(null, path, incomeCalcData);
+  }
   const data = checklistBorrowers && checklistBorrowers.map((_, index) => {
     const borr = R.nth(index, borrowers);
     const failureData = R.propOr(null, `${R.prop('firstName', borr)}_${R.prop('borrowerPstnNumber', borr)}`, failureReason);

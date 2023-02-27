@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   select,
   take,
@@ -12,6 +13,7 @@ import * as Api from 'lib/Api';
 import { actions as tombstoneActions, selectors as tombstoneSelectors } from 'ducks/tombstone/index';
 import { actions as commentsActions } from 'ducks/comments/index';
 import { selectors as loginSelectors } from 'ducks/login/index';
+import * as dashboardActions from 'ducks/dashboard/actions';
 import {
   actions as widgetActions,
   selectors as widgetSelectors,
@@ -169,8 +171,8 @@ import {
   UPDATE_TRIAL_PERIOD_RESULT,
   ODM_RERUN_SAGA,
 } from './types';
+import { SAVE_DOC_CHECKLIST_DATA } from '../document-checklist/types';
 import DashboardModel from '../../../models/Dashboard';
-import { errorTombstoneFetch, disableFinanceCalcTabButtonAction } from './actions';
 import {
   getTasks,
   resetChecklistData,
@@ -187,6 +189,8 @@ import {
   SET_BORROWERS_DATA,
   SET_EXPENSECALC_DATA,
   SET_INCOMECALC_DATA,
+  SET_FICO_TABLE_DATA,
+  SET_BORROWER_DATA,
 } from '../income-calculator/types';
 import { selectors as stagerSelectors } from '../stager/index';
 import { saveDelayChecklistDataToDB, fetchDelayCheckListHistory } from '../stager/sagas';
@@ -376,6 +380,7 @@ const searchLoan = function* searchLoan(loanNumber) {
     }
   }
 };
+
 function* checkTrialEnable() {
   const searchLoanResult = yield select(selectors.searchLoanResult);
   const evalId = yield select(selectors.evalId);
@@ -626,7 +631,7 @@ function* selectEval(searchItem) {
     disableIncomeButton: !R.propOr(false, 'hasIncomeCalcForProcess', evalDetails),
     disableExpenseButton: !R.propOr(false, 'hasExpenseCalcForProcess', evalDetails),
   };
-  yield put(disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
+  yield put(dashboardActions.disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
   yield put({ type: SAVE_TASKID, payload: bookingTaskId });
   let taskCheckListId = R.pathOr('', ['payload', 'taskCheckListId'], searchItem);
   const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
@@ -960,6 +965,11 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       type: SET_GET_NEXT_STATUS,
       payload: tkamsValidation.enableGetNext && (!validateAgent || skillValidation.result),
     });
+    if (groupName === 'PROC') {
+      yield put({
+        type: SAVE_DOC_CHECKLIST_DATA,
+      });
+    }
     if (!tkamsValidation.enableGetNext) {
       yield put({
         type: USER_NOTIF_MSG,
@@ -1330,6 +1340,9 @@ function* getNext(action) {
       if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], taskDetails)) {
         yield put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] }));
       }
+      if (group === DashboardModel.PROC) {
+        yield put({ type: SET_BORROWER_DATA, payload: R.propOr([], 'processedBorrowerData', taskDetails) });
+      }
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
@@ -1355,25 +1368,25 @@ function* getNext(action) {
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
-        yield put(errorTombstoneFetch());
+        yield put(dashboardActions.errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else if (!R.isNil(R.path(['getNextError'], taskDetails))) {
         yield put({
           type: GET_NEXT_ERROR,
           payload: { isGetNextError: true, getNextError: taskDetails.getNextError },
         });
-        yield put(errorTombstoneFetch());
+        yield put(dashboardActions.errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       } else {
         yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-        yield put(errorTombstoneFetch());
+        yield put(dashboardActions.errorTombstoneFetch());
         yield call(errorFetchingChecklistDetails);
       }
     }
     yield put({ type: HIDE_LOADER });
   } catch (e) {
     yield put({ type: TASKS_FETCH_ERROR, payload: { taskfetchError: true } });
-    yield put(errorTombstoneFetch());
+    yield put(dashboardActions.errorTombstoneFetch());
     yield call(errorFetchingChecklistDetails);
     yield put({ type: HIDE_LOADER });
   } finally {
@@ -1533,8 +1546,12 @@ function* assignLoan() {
     const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
     const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
     const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
+    const ficoTableData = R.pathOr([], ['ficoData', 'ficoTableData'], response);
     if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
+    }
+    if (R.pathOr(false, ['ficoData', 'ficoTableData'], response)) {
+      yield put({ type: SET_FICO_TABLE_DATA, payload: ficoTableData });
     }
     const disabledWidgets = yield select(widgetSelectors.getDisabledWidgets);
     if (R.equals(true, R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], response))) {
@@ -1548,7 +1565,7 @@ function* assignLoan() {
       disableIncomeButton: R.isNil(R.pathOr(null, ['incomeCalcData', 'hasIncomeCalcForProcess'], response)),
       disableExpenseButton: R.isNil(R.pathOr(null, ['expenseCalcData', 'hasExpenseCalcForProcess'], response)),
     };
-    yield put(disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
+    yield put(dashboardActions.disableFinanceCalcTabButtonAction(disableCalcButtonPayload));
     yield put(getHistoricalCheckListData(taskId));
     if (response !== null && !response.error) {
       yield put({

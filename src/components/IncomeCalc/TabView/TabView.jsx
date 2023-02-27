@@ -13,6 +13,10 @@ import Icon from '@material-ui/core/Icon';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import TabScrollButton from '@material-ui/core/TabScrollButton';
 import { withStyles } from '@material-ui/core/styles';
+import { getStyleName } from 'constants/incomeCalc/styleName';
+import { connect } from 'react-redux';
+import { selectors as documentChecklistSelectors } from '../../../state/ducks/document-checklist';
+import { operations as incomeCalcOperations } from '../../../state/ducks/income-calculator';
 
 const tabScrollButton = withStyles(() => ({
   root: {
@@ -64,11 +68,12 @@ class TabView extends React.PureComponent {
   }
 
   onTabSelection = (selectedIndex, tabViewList) => {
-    const { additionalInfo, onChange } = this.props;
+    const { additionalInfo, onChange, setSelectedBorrorwer } = this.props;
     const { valuePath } = additionalInfo;
     const value = R.propOr('', 'value', R.nth(selectedIndex, tabViewList));
     const targetValue = R.assocPath(valuePath, value, {});
     onChange(targetValue);
+    setSelectedBorrorwer(targetValue);
   }
 
   handlePopperClick = (event) => {
@@ -94,23 +99,24 @@ class TabView extends React.PureComponent {
   render() {
     const {
       subTasks, additionalInfo: {
-        valuePath, isDisabled,
+        valuePath, isDisabled, styleName,
       }, renderChildren, value,
       failureReason,
+      errorFields,
     } = this.props;
     const {
       anchorEl, displayList, dropDownList,
     } = this.state;
     const tabIndex = displayList && R.findIndex(R.propEq('value', R.pathOr(value, valuePath || [], value)))(displayList);
+    const borrowerValue = errorFields.borrowerNames || [];
     return (
-      <div styleName="tabview">
-        <Paper elevation={1} square>
+      <div styleName={getStyleName('tabStyle', styleName, 'tabs')}>
+        <Paper elevation={1} square styleName="borrowerBanner">
           <Tabs
-            indicatorColor="primary"
+            inkBarStyle={{ background: '#596feb' }}
             onChange={(_, selectedIndex) => this.onTabSelection(selectedIndex, displayList)}
             scrollable="true"
             ScrollButtonComponent={tabScrollButton}
-            textColor="primary"
             value={tabIndex === -1 ? null : tabIndex}
             variant="scrollable"
           >
@@ -129,12 +135,13 @@ class TabView extends React.PureComponent {
                     <div>
                       {R.prop(1, R.nth(index, failureReason)) ? <span styleName="dot" /> : null }
                       {R.prop(2, R.nth(index, failureReason)) ? <span styleName="dot1" /> : null }
+                      {borrowerValue.includes(task && R.propOr('', 'value', task)) ? <span styleName="dot" /> : null }
                     </div>
                     <div style={{ display: 'grid', textTransform: 'capitalize' }}>
-                      <Typography style={{ fontWeight: '600' }} variant="subtitle1">
+                      <Typography style={{ fontWeight: '700', color: '#4e586e' }} variant="subtitle1">
                         {task && R.propOr('', 'name', task)}
                       </Typography>
-                      <Typography variant="subtitle2">
+                      <Typography style={{ color: '#939299' }} variant="subtitle2">
                         {task && R.propOr('', 'description', task)}
                       </Typography>
                     </div>
@@ -148,11 +155,11 @@ class TabView extends React.PureComponent {
                 <Tab
                   label={(
                     <Box style={{ display: 'flex', fontWeight: 500, marginLeft: '6rem' }}>
-                    +
+                      +
                       {dropDownList && dropDownList.length}
                       <Icon>expand_more</Icon>
                     </Box>
-                )}
+                  )}
                   onClick={this.handlePopperClick}
                   style={{ width: '2rem' }}
                 />
@@ -211,14 +218,23 @@ TabView.propTypes = {
     styleName: PropTypes.string,
     valuePath: PropTypes.arrayOf(PropTypes.string),
   }),
+  errorFields: PropTypes.shape().isRequired,
   failureReason: PropTypes.arrayOf({
     level: PropTypes.number,
     message: PropTypes.string,
   }),
   onChange: PropTypes.func.isRequired,
   renderChildren: PropTypes.func.isRequired,
+  setSelectedBorrorwer: PropTypes.func.isRequired,
   subTasks: PropTypes.arrayOf(PropTypes.string).isRequired,
   value: PropTypes.string.isRequired,
 };
 
-export default TabView;
+const mapStateToProps = state => ({
+  errorFields: documentChecklistSelectors.getErrorFields(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  setSelectedBorrorwer: incomeCalcOperations.setSelectedBorrower(dispatch),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(TabView);

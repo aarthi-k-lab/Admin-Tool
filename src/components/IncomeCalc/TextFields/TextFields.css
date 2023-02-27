@@ -99,7 +99,7 @@
 
 .pitia-amt-title {
   width: 12rem;
-  margin: 0rem 0rem 0rem 1rem;
+  margin: 0 0 0 1rem;
 }
 
 .pitia-amt {
@@ -160,6 +160,16 @@
   font-size: 1rem;
   margin: 1rem 1.5rem;
   padding-bottom: 1rem;
+}
+
+.savings {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin: 1rem 1.5rem;
+  padding-bottom: 1rem;
+  width: 50%;
+  justify-content: space-between;
 }
 
 .weekly-text {
@@ -252,50 +262,48 @@
 }
 
 .cnsdt-net-dti-value {
-  margin: 0;
   font-weight: bold;
   font-size: 1rem;
-  margin: 0 0 .5rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .cnsdt-net-dti-title {
   font-weight: bold;
-  font-size: .9rem;
-  margin: .5rem 0 .5rem 0;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0.5rem 0;
 }
 
 .cnsdt-income-div {
   justify-content: center;
 }
 
-.cnsdt-exp-amt-text{
+.cnsdt-exp-amt-text {
   font-size: 1.1rem;
   font-weight: bold;
 }
 
-.cnsdt-net-exp{
+.cnsdt-net-exp {
   align-items: center;
   display: inline-flex !important;
   width: 13.5rem;
-  border-bottom:  solid grey;
+  border-bottom: solid grey;
   border-right: solid grey;
   border-width: 0.00625rem;
 }
 
 .cnsdt-net-exp-value {
-  margin: 0;
   font-weight: bold;
   font-size: 1.1rem;
-  margin: 0 0 .5rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .cnsdt-net-exp-title {
   font-weight: bold;
   font-size: 1.1rem;
-  margin: .5rem 0 .5rem 0;
+  margin: 0.5rem 0 0.5rem 0;
 }
 
-.cnsdt-inc-count-indc-div{
+.cnsdt-inc-count-indc-div {
   color: black;
   width: 3rem;
   display: flex;
@@ -306,4 +314,14 @@
   align-items: center;
   justify-content: center;
   border: 0.5px solid #f1f1f1;
+}
+
+.fico-scr-title {
+  width: 12rem;
+  margin: 0 0 0 1rem;
+}
+
+.fico-display-in-row {
+  display: flex;
+  align-items: center;
 }

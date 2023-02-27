@@ -368,8 +368,8 @@ const handleSelectedWidgets = dispatch => payload => (
   dispatch(setSelectedWidgets(payload))
 );
 
-const onErrorValidation = dispatch => () => {
-  dispatch(processValidations());
+const onErrorValidation = dispatch => (groupName) => {
+  if (groupName !== 'PROC') { dispatch(processValidations()); }
 };
 
 const dispatchAction = dispatch => (type, payload) => {
@@ -464,7 +464,6 @@ const disableSaveOperation = dispatch => (payload) => {
 const dashboardResetDataOperation = dispatch => () => {
   dispatch(dashboardResetDataAction());
 };
-
 
 const operations = {
   openSweetAlert,

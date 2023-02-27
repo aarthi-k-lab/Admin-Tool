@@ -64,7 +64,7 @@ const EvalTable = ({ rows, selectRow, selectedIndex }) => {
               />
             ))}
             {emptyRows > 0 && (
-              <TableRow style={{ height: 59 * emptyRows }}>
+              <TableRow>
                 <TableCell colSpan={6} styleName="headStyle" />
               </TableRow>
             )}

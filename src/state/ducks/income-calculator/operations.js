@@ -9,6 +9,8 @@ import {
   fetchHistoryChecklist,
   onLockCalc,
   storeTaskValueAction,
+  handleFicoLockCalculation,
+  setSelectedBorrowerAction,
 } from './actions';
 
 const enableHistoryView = dispatch => (item) => {
@@ -43,6 +45,13 @@ const lockCalculation = dispatch => () => dispatch(onLockCalc());
 
 const storeTaskValue = dispatch => (key, value) => dispatch(storeTaskValueAction({ key, value }));
 
+const ficoLockCalculation = dispatch => (payload) => {
+  dispatch(handleFicoLockCalculation(payload));
+};
+const setSelectedBorrower = dispatch => (payload) => {
+  dispatch(setSelectedBorrowerAction(payload));
+};
+
 const operations = {
   lockCalculation,
   incomeCalcWidgetToggle,
@@ -52,6 +61,8 @@ const operations = {
   incomeCalcChecklist,
   closeHistoryView,
   storeTaskValue,
+  ficoLockCalculation,
+  setSelectedBorrower,
 };
 
 export default operations;
