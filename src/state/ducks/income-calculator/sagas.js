@@ -788,6 +788,7 @@ const ficoLockCalculation = function* ficoLockCalculation() {
       position: selectedBorrowerPosition,
       userName: userPrincipalName,
       ficoScore,
+      evalId: yield select(dashboardSelectors.evalId),
     }];
     const response = yield call(Api.callPost, '/api/dataservice/fico/insertFicoDetails', payload);
     const request = { taskCheckListId };
