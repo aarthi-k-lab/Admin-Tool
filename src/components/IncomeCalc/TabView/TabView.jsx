@@ -17,6 +17,7 @@ import { getStyleName } from 'constants/incomeCalc/styleName';
 import { connect } from 'react-redux';
 import { selectors as documentChecklistSelectors } from '../../../state/ducks/document-checklist';
 import { operations as incomeCalcOperations } from '../../../state/ducks/income-calculator';
+import { operations as documentChecklistOperations } from '../../../state/ducks/document-checklist';
 
 const tabScrollButton = withStyles(() => ({
   root: {
@@ -68,12 +69,15 @@ class TabView extends React.PureComponent {
   }
 
   onTabSelection = (selectedIndex, tabViewList) => {
-    const { additionalInfo, onChange, setSelectedBorrorwer } = this.props;
+    const {
+      additionalInfo, onChange, setSelectedBorrorwer, setDocSelectedBorrorwer,
+    } = this.props;
     const { valuePath } = additionalInfo;
     const value = R.propOr('', 'value', R.nth(selectedIndex, tabViewList));
     const targetValue = R.assocPath(valuePath, value, {});
     onChange(targetValue);
     setSelectedBorrorwer(targetValue);
+    setDocSelectedBorrorwer(targetValue);
   }
 
   handlePopperClick = (event) => {
@@ -225,6 +229,7 @@ TabView.propTypes = {
   }),
   onChange: PropTypes.func.isRequired,
   renderChildren: PropTypes.func.isRequired,
+  setDocSelectedBorrorwer: PropTypes.func.isRequired,
   setSelectedBorrorwer: PropTypes.func.isRequired,
   subTasks: PropTypes.arrayOf(PropTypes.string).isRequired,
   value: PropTypes.string.isRequired,
@@ -236,5 +241,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setSelectedBorrorwer: incomeCalcOperations.setSelectedBorrower(dispatch),
+  setDocSelectedBorrorwer: documentChecklistOperations.setSelectedBorrowerOperation(dispatch),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(TabView);

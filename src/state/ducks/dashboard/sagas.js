@@ -1550,6 +1550,9 @@ function* assignLoan() {
     if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     }
+    if (group === DashboardModel.PROC) {
+      yield put({ type: SET_BORROWER_DATA, payload: R.propOr([], 'processedBorrowerData', response) });
+    }
     if (R.pathOr(false, ['ficoData', 'ficoTableData'], response)) {
       yield put({ type: SET_FICO_TABLE_DATA, payload: ficoTableData });
     }

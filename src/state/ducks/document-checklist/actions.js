@@ -13,9 +13,10 @@ import {
   SET_FILTER_DOC_CAT,
   UPLOADED_FILES,
   DOCUMENT_DETAILS_CHANGE,
-  FETCH_DOC_TXNS, DOC_CHECKLIST_DATA, // SAVE_DOC_CHECKLIST_DATA,
+  FETCH_DOC_TXNS, DOC_CHECKLIST_DATA,
   TRIGGER_DOC_VALIDATION,
   DEFECT_REASON_DROPDOWN,
+  SET_SELECTED_BORROWER,
 } from './types';
 
 const fetchFileNetData = payload => ({
@@ -93,11 +94,6 @@ const setDocChecklistData = payload => ({
   payload,
 });
 
-// const saveDocChecklistData = payload => ({
-//   type: SAVE_DOC_CHECKLIST_DATA,
-//   payload,
-// });
-
 const docValidation = () => ({
   type: TRIGGER_DOC_VALIDATION,
 });
@@ -107,11 +103,16 @@ const defectReasonDropdown = payload => ({
   payload,
 });
 
+const setSelectedBorrower = payload => ({
+  type: SET_SELECTED_BORROWER,
+  payload,
+});
+
 
 export {
   radioSelectAction, setMockDataAction, linkDocuments, borrowerNames, unLinkDocuments, setTag,
   docReviewStatusDropdown,
   fetchFileNetData, setFilterStartDate, setFilterEndDate, setFilterDocCategory, setUploadedFiles,
-  changeDocDetails, fetchDocChecklistData, setDocChecklistData, // saveDocChecklistData,
-  docValidation, defectReasonDropdown,
+  changeDocDetails, fetchDocChecklistData, setDocChecklistData,
+  docValidation, defectReasonDropdown, setSelectedBorrower,
 };

@@ -4,8 +4,8 @@ import {
   setTag, docReviewStatusDropdown,
   fetchFileNetData,
   setFilterStartDate, setFilterEndDate, setFilterDocCategory, setUploadedFiles,
-  changeDocDetails, fetchDocChecklistData, // saveDocChecklistData,
-  docValidation, defectReasonDropdown,
+  changeDocDetails, fetchDocChecklistData,
+  docValidation, defectReasonDropdown, setSelectedBorrower,
 } from './actions';
 
 const fetchFileNetDataOperation = dispatch => () => dispatch(fetchFileNetData());
@@ -35,15 +35,16 @@ const setDocChecklistDataOperation = dispatch => () => {
   dispatch(fetchDocChecklistData());
 };
 
-// const saveDocChecklistDataOperation = dispatch => (payload) => {
-//   dispatch(saveDocChecklistData(payload));
-// };
 const onDocValidation = dispatch => (groupName) => {
   if (groupName === 'PROC') { dispatch(docValidation()); }
 };
 
 const defectReasonDropdownOperation = dispatch => (payload) => {
   dispatch(defectReasonDropdown(payload));
+};
+
+const setSelectedBorrowerOperation = dispatch => (payload) => {
+  dispatch(setSelectedBorrower(payload));
 };
 
 export default {
@@ -61,7 +62,7 @@ export default {
   setUploadedFilesOperation,
   changeDocumentDetails,
   setDocChecklistDataOperation,
-  // saveDocChecklistDataOperation,
   onDocValidation,
   defectReasonDropdownOperation,
+  setSelectedBorrowerOperation,
 };

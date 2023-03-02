@@ -18,6 +18,7 @@ import {
   DOC_CHECKLIST_DATA,
   SET_ERROR_FIELDS,
   SAVE_DEFECT_REASON_DROPDOWN,
+  SET_SELECTED_BORROWER,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -127,6 +128,13 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         defectReasonData: action.payload,
+      };
+    }
+    case SET_SELECTED_BORROWER: {
+      const { selectedBorrower } = action.payload;
+      return {
+        ...state,
+        selectedBorrower,
       };
     }
     default:

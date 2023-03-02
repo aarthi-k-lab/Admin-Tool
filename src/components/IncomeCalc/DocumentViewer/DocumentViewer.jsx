@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 import {
   Checkbox,
   Link,
@@ -122,13 +123,18 @@ const DocumentViewer = (props) => {
 
   const getFilteredDocuments = () => {
     const files = [...documents];
-    const pages = Math.ceil(files.length / paginationVal.docsPerPage);
+    const filteredFiles = files.slice()
+      .filter((doc) => {
+        const isDocTitle = R.toUpper(doc.docTitle).includes(R.toUpper(searchText));
+        return (isDocTitle);
+      });
+    const pages = Math.ceil(filteredFiles.length / paginationVal.docsPerPage);
     if (pages !== paginationVal.noOfPages) {
       setPaginationVal(
         { ...paginationVal, noOfPages: pages },
       );
     }
-    return files;
+    return filteredFiles;
   };
 
   const handleFilter = (event) => {
