@@ -43,12 +43,12 @@ function TagPopover(props) {
   const renderOtherBorrowers = () => (
     <>
       {
-        borrowerNames && borrowerNames.filter(
+        borrowerNames && Object.keys(borrowerNames).filter(
           name => name !== selectedBorrower,
         ).map(name => (
           <Grid item>
             <Grid container>
-              <Grid item style={{ padding: '0px', marginTop: '1rem' }} xs={2}>
+              <Grid item styleName="tag-dialog-check-box" xs={1}>
                 <Checkbox
                   checked={checkedBorrowers.includes(name)}
                   onClick={() => checkBorrowers(name)}
@@ -60,9 +60,9 @@ function TagPopover(props) {
                   }}
                 />
               </Grid>
-              <Grid item style={{ padding: '0px' }} xs={10}>
+              <Grid item style={{ padding: '0px' }} xs={11}>
                 <Typography styleName="tag-dialog-content-main-name">
-                  {name}
+                  {borrowerNames[name]}
                 </Typography>
                 <Typography styleName="tag-dialog-content-name">
                     Borrower
@@ -100,7 +100,7 @@ function TagPopover(props) {
         <Grid container direction="column">
           <Grid item>
             <Grid container>
-              <Grid item style={{ padding: '0px', marginTop: '1rem' }} xs={2}>
+              <Grid item style={{ padding: '0px', marginTop: '1rem' }} xs={1}>
                 <Checkbox
                   checked={checkedBorrowers.includes(selectedBorrower)}
                   onClick={() => checkBorrowers(selectedBorrower)}
@@ -112,9 +112,9 @@ function TagPopover(props) {
                   }}
                 />
               </Grid>
-              <Grid item style={{ padding: '0px' }} xs={10}>
+              <Grid item style={{ padding: '0px' }} xs={11}>
                 <Typography styleName="tag-dialog-content-main-name">
-                  {selectedBorrower}
+                  {borrowerNames[selectedBorrower]}
                 </Typography>
                 <Typography styleName="tag-dialog-content-name">
                     Borrower

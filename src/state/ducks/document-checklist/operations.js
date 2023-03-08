@@ -7,6 +7,9 @@ import {
   changeDocDetails, fetchDocChecklistData,
   docValidation, defectReasonDropdown, setSelectedBorrower,
 } from './actions';
+import {
+  fetchSelectedBorrowerData,
+} from '../income-calculator/actions';
 
 const fetchFileNetDataOperation = dispatch => () => dispatch(fetchFileNetData());
 const radioSelectOperation = dispatch => payload => dispatch(radioSelectAction(payload));
@@ -47,6 +50,10 @@ const setSelectedBorrowerOperation = dispatch => (payload) => {
   dispatch(setSelectedBorrower(payload));
 };
 
+const fetchInitialSelectedBorrowerOperation = dispatch => (payload) => {
+  dispatch(fetchSelectedBorrowerData(payload));
+};
+
 export default {
   fetchFileNetDataOperation,
   radioSelectOperation,
@@ -65,4 +72,5 @@ export default {
   onDocValidation,
   defectReasonDropdownOperation,
   setSelectedBorrowerOperation,
+  fetchInitialSelectedBorrowerOperation,
 };

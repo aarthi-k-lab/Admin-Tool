@@ -25,12 +25,13 @@ const FileUpload = function FileUpload(props) {
       setSnackBarValuesTrigger,
       selectedFilenetType, selectedFilenetCategory,
     } = data;
-    const url = 'api/document/FileNet/UploadAndGetDocument';
+    const url = '/api/document/api/FileNet/UploadAndGetDocument';
     setIsUploading(true);
     return new Promise((res, rej) => {
       xhr.open('POST', url, true);
       xhr.onload = () => {
         setIsUploading(false);
+        const uploadResponse = JSON.parse(xhr.response);
         if (xhr.status === 404) {
           setSnackBarValuesTrigger({
             open: true,
@@ -38,14 +39,25 @@ const FileUpload = function FileUpload(props) {
             type: 'error',
             timeout: 3000,
           });
+          handleClose();
           return;
         }
-        const uploadResponse = JSON.parse(xhr.response);
+        if (xhr.status === 400) {
+          setSnackBarValuesTrigger({
+            open: true,
+            message: uploadResponse.title,
+            type: 'error',
+            timeout: 3000,
+          });
+          handleClose();
+          return;
+        }
         if (uploadResponse) {
           removeUploadedFiles(uploadResponse.docTitle, setUploadedFiles, uploadedFiles);
           setProgress(0);
           handleClose();
         } else {
+          handleClose();
           setSnackBarValuesTrigger({
             open: true,
             message: 'Unable to upload files',

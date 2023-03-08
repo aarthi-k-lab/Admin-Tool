@@ -48,6 +48,9 @@ import {
   SET_LOCK_AV,
 } from './types';
 import {
+  SET_SELECTED_BORROWER,
+} from '../document-checklist/types';
+import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
   SET_POPUP_DATA,
 } from '../dashboard/types';
@@ -81,6 +84,10 @@ const fetchBorrowerData = function* fetchBorrowerData(action) {
   yield put({
     type: SET_SELECTED_BORROWER_DATA,
     payload: borrowerName,
+  });
+  yield put({
+    type: SET_SELECTED_BORROWER,
+    payload: { selectedBorrower: borrowerName },
   });
 };
 

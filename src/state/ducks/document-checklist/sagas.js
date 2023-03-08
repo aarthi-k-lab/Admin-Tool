@@ -48,7 +48,7 @@ function* linkDocuments(payload) {
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
   const requestData = [];
-  const newData = docChecklistData.map((data) => {
+  const newData = docChecklistData ? docChecklistData.map((data) => {
     if (checkedBorrowers.includes(data.borrowerName)) {
       // eslint-disable-next-line no-unused-vars
       const newDocumentData = data.documents ? data.documents.map((document) => {
@@ -93,7 +93,7 @@ function* linkDocuments(payload) {
       }) : [];
     }
     return data;
-  });
+  }) : [];
   yield call(Api.callPost, `/api/dataservice/DocCheckList/linkDocksAndDocTxn/${userPrincipalName}}`, requestData);
   yield put({
     type: LINK_DOCUMENTS,
@@ -107,7 +107,7 @@ function* unlinkDocuments(payload) {
   const docTxnIds = [];
   const user = yield select(loginSelectors.getUser);
   const userPrincipalName = R.path(['userDetails', 'email'], user);
-  const newData = docChecklistData.map((data) => {
+  const newData = docChecklistData ? docChecklistData.map((data) => {
     if (checkedBorrowers.includes(data.borrowerName)) {
       // eslint-disable-next-line no-unused-vars
       const newDocumentData = data.documents ? data.documents.map((document) => {
@@ -126,7 +126,7 @@ function* unlinkDocuments(payload) {
       }) : [];
     }
     return data;
-  });
+  }) : [];
   const payLoad = {
     docTxnIds,
     removalDocumentId,
@@ -142,7 +142,13 @@ function* fetchBorrowersNames(payload) {
   const { payload: { type } } = payload;
   const docChecklistData = yield select(selectors.getDocChecklistData);
   if (type === 'link') {
-    const data = docChecklistData.map(borrower => borrower.borrowerName);
+    const data = {};
+    if (docChecklistData) {
+      docChecklistData.map((borrower) => {
+        data[borrower.borrowerName] = borrower.displayName;
+        return borrower;
+      });
+    }
     yield put({
       type: BORRORWERS_NAMES,
       payload: data,
@@ -156,16 +162,17 @@ function* fetchBorrowersNames(payload) {
           if (curr1.documentName === removalDocumentName && curr1.linkedDocuments) {
             return curr1.linkedDocuments.reduce((acc2, curr2) => {
               if (curr2.fileNetDocId === removalDocumentId) {
-                return [...acc2, curr.borrowerName];
+                const { borrowerName, displayName } = curr;
+                return { ...acc2, [borrowerName]: displayName };
               }
               return acc2;
-            }, [...acc1]);
+            }, { ...acc1 });
           }
           return acc1;
-        }, [...acc]);
+        }, { ...acc });
       }
       return acc;
-    }, []);
+    }, {});
     yield put({
       type: BORRORWERS_NAMES,
       payload: borrowerNames,
@@ -177,13 +184,14 @@ function* fetchBorrowersNames(payload) {
       if (curr.documents) {
         return curr.documents.reduce((acc1, curr1) => {
           if (curr1.documentName === taggedDocumentName && curr1.required === tagRequired) {
-            return [...acc1, curr.borrowerName];
+            const { borrowerName, displayName } = curr;
+            return { ...acc1, [borrowerName]: displayName };
           }
           return acc1;
-        }, [...acc]);
+        }, { ...acc });
       }
       return acc;
-    }, []);
+    }, {});
     yield put({
       type: BORRORWERS_NAMES,
       payload: borrowerNames,
@@ -195,7 +203,7 @@ function* setTagData(payload) {
   const docChecklistData = yield select(selectors.getDocChecklistData);
   const email = yield select(loginSelectors.getUserPrincipalName);
   const { payload: { checkedBorrowers, taggedDocumentName, required } } = payload;
-  const newData = docChecklistData.map((data) => {
+  const newData = docChecklistData ? docChecklistData.map((data) => {
     if (checkedBorrowers.includes(data.borrowerName)) {
       // eslint-disable-next-line no-unused-vars
       const documentData = data.documents.map((document) => {
@@ -207,7 +215,7 @@ function* setTagData(payload) {
       });
     }
     return data;
-  });
+  }) : [];
   yield put({
     type: SET_TAG,
     payload: newData,
@@ -261,7 +269,7 @@ function* fetchFileNetData() {
     const filterStartDate = yield select(selectors.getFilterStartDate);
     const filterEndDate = yield select(selectors.getFilterEndDate);
     const filterDocCategory = yield select(selectors.getFilterDocCategory);
-    const fileNetData = yield call(Api.callGet, `/api/document/FileNet/GetDocuments/${loanId}?${filterDocCategory !== '' ? `DocumentCategory=${filterDocCategory}` : ''}${filterStartDate ? `&CreatedDateFrom=${filterStartDate}` : ''}${filterEndDate ? `&CreatedDateTo=${filterEndDate}` : ''}`, { brand });
+    const fileNetData = yield call(Api.callGet, `/api/document/api/FileNet/GetDocuments/${loanId}?${filterDocCategory !== '' ? `DocumentCategory=${filterDocCategory}` : ''}${filterStartDate ? `&CreatedDateFrom=${filterStartDate}` : ''}${filterEndDate ? `&CreatedDateTo=${filterEndDate}` : ''}`, { brand });
     yield put({ type: SET_FILENET_DATA, payload: fileNetData });
   } catch (e) {
     yield put({ type: SET_FILENET_DATA, payload: [] });
@@ -306,7 +314,7 @@ function* changeDocDetails(payload) {
   const { payload: { key, value, docTxnId } } = payload;
   const docChecklistData = yield select(selectors.getDocChecklistData);
   const email = yield select(loginSelectors.getUserPrincipalName);
-  const data = docChecklistData.map((borrData) => {
+  const data = docChecklistData ? docChecklistData.map((borrData) => {
     if (borrData.documents) {
       borrData.documents.map((document) => {
         if (document.docTxnId === docTxnId) {
@@ -321,7 +329,7 @@ function* changeDocDetails(payload) {
       });
     }
     return borrData;
-  });
+  }) : [];
   const taskTree = yield select(taskAndChecklistSelectors.getTaskTree);
   const task = R.find(R.propEq('taskBlueprintCode', 'EXT_CHG'))(taskTree.subTasks);
   const { validationSuccess } = task.value;
@@ -335,11 +343,29 @@ function* changeDocDetails(payload) {
   });
 }
 
+function preprocessDocChecklistData(data) {
+  const processedData = data.map((borrData) => {
+    if (borrData.documents) {
+      borrData.documents.map((document) => {
+        if (R.isNil(document.documentReviewStatus)
+        || R.isEmpty(document.documentReviewStatus)
+         || R.isEmpty(document.linkedDocuments)) {
+          document.documentReviewStatus = 'Not Provided';
+        }
+        return document;
+      });
+    }
+    return borrData;
+  });
+  return processedData;
+}
+
 function* fetchDocChecklistData() {
   try {
     const evalId = yield select(dashboardSelectors.evalId);
     const loanNum = yield select(dashboardSelectors.loanNumber);
     const data = yield call(Api.callGet, `/api/dataservice/DocCheckList/getDocTypes/${loanNum}/${evalId}`);
+    if (data) { preprocessDocChecklistData(data); }
     yield put({
       type: DOC_CHECKLIST_DATA,
       payload: data,
@@ -392,35 +418,35 @@ function* docValidation() {
   const banner = { 1: [], 2: [] };
   const errorFields = { borrowerNames: [] };
   // eslint-disable-next-line no-unused-vars
-  const data = docChecklistData.map((borrData) => {
+  const data = docChecklistData ? docChecklistData.map((borrData) => {
     borrData.documents.map((document) => {
       const ed = [];
       if (document.documentReviewStatus === 'Defects' && document.docReasons.length === 0) {
         const d = {
           messages: ['Defect(s) reason need to be selected'],
-          path: ['Doc Checklist', borrData.borrowerName, document.documentName, 'Doc Reason(s)'],
+          path: ['Doc Checklist', borrData.displayName, document.documentName, 'Doc Reason(s)'],
         };
         banner[1] = [...banner[1], d];
         ed.push('documentReviewStatus');
       }
-      if (!document.expirationDate) {
+      if (document.linkedDocuments.length !== 0 && !document.expirationDate) {
         const d = {
           messages: ['Expiration date need to be selected'],
-          path: ['Doc Checklist', borrData.borrowerName, document.documentName, 'expiration'],
+          path: ['Doc Checklist', borrData.displayName, document.documentName, 'expiration'],
         };
         banner[1] = [...banner[1], d];
         ed.push('expirationDate');
       }
       if (ed.length > 0) {
         errorFields[document.docTxnId] = ed;
-        if (!errorFields.borrowerNames.includes(borrData.borrowerName)) {
-          errorFields.borrowerNames = [...errorFields.borrowerNames, borrData.borrowerName];
+        if (!errorFields.borrowerNames.includes(borrData.displayName)) {
+          errorFields.borrowerNames = [...errorFields.borrowerNames, borrData.displayName];
         }
       }
       return document;
     });
     return borrData;
-  });
+  }) : [];
   if (R.isEmpty(R.propOr([], 1, banner)) && R.isEmpty(R.propOr([], 2, banner))) {
     yield call(updateAndSaveChecklist, true);
   }

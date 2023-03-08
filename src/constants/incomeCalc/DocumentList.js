@@ -1,6 +1,8 @@
 const PROPERTY_PRIMARY_USE = 'Doc Review Status';
 const DOC_DOCUMENT_CAT = 'FilenetDocCategory';
+const TASK_BLUEPRINT_CODE = 'DOC_CHKLST_BORR_LIST';
 module.exports = {
   PROPERTY_PRIMARY_USE,
   DOC_DOCUMENT_CAT,
+  TASK_BLUEPRINT_CODE,
 };

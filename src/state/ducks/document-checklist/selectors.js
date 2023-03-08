@@ -7,7 +7,7 @@ const getDocuments = state => R.pathOr([], ['documentChecklist', 'documents'], s
 
 const getSelectedBorrower = state => R.pathOr('', ['documentChecklist', 'selectedBorrower'], state);
 
-const getBorrowers = state => R.pathOr('', ['documentChecklist', 'borrowerNames'], state);
+const getBorrowers = state => R.pathOr({}, ['documentChecklist', 'borrowerNames'], state);
 const getDocReviewStatusDropdown = state => R.pathOr([], ['documentChecklist', 'docReviewStatusData'], state);
 const getFilterStartDate = state => R.pathOr(null, ['documentChecklist', 'filterStartDate'], state);
 const getFilterEndDate = state => R.pathOr(null, ['documentChecklist', 'filterEndDate'], state);

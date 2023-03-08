@@ -67,3 +67,8 @@
     font-size: 12px !important;
     color: #939299;
 }
+
+.tag-dialog-check-box{
+    padding: 0px;
+    marginTop: 1rem;
+}

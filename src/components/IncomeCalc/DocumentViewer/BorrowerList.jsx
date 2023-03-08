@@ -37,7 +37,7 @@ function BorrowerList(props) {
         </Typography>
       </Grid>
       {
-        borrowerNames && borrowerNames.filter(
+        borrowerNames && Object.keys(borrowerNames).filter(
           name => name !== selectedBorrower,
         ).map(name => (
           <Grid container styleName="borrowerContainer">
@@ -48,12 +48,10 @@ function BorrowerList(props) {
                 size="small"
                 styleName={checkedBorrowers.includes(name) ? 'borrowerCheckBoxChecked' : 'borrowerCheckBoxUnchecked'}
               />
-
-
             </Grid>
             <Grid item styleName="borrowerDetailConatiner" xs={10}>
               <Typography styleName="borrowerName">
-                {name}
+                {borrowerNames[name]}
               </Typography>
               <Typography styleName="borrowerOrder">
                 Borrower

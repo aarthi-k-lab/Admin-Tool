@@ -24,10 +24,10 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { operations as documentChecklistOperations } from 'ducks/document-checklist';
 import { selectors as documentChecklistSelectors } from 'ducks/document-checklist';
-import { selectors as incomeCalcSelectors } from 'ducks/income-calculator';
-import { PROPERTY_PRIMARY_USE } from '../../../constants/incomeCalc/DocumentList';
+import { PROPERTY_PRIMARY_USE, TASK_BLUEPRINT_CODE } from '../../../constants/incomeCalc/DocumentList';
 import Date from './DatePicker';
 import './DocumentList.css';
 import DocumentHistoryModal from './DocumentHistoryModal';
@@ -61,9 +61,13 @@ class DocumentList extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { docReviewStatusDropdown, fetchDocTxnDocuments } = this.props;
+    const {
+      docReviewStatusDropdown,
+      fetchDocTxnDocuments, fetchInitialSelectedBorrower,
+    } = this.props;
     docReviewStatusDropdown(PROPERTY_PRIMARY_USE);
     fetchDocTxnDocuments();
+    fetchInitialSelectedBorrower(TASK_BLUEPRINT_CODE);
   }
 
   static getDerivedStateFromProps(props) {
@@ -233,6 +237,7 @@ class DocumentList extends React.PureComponent {
   }
 
   dateFormatter = (date) => {
+    if (R.isNil(date)) { return ''; }
     const year = date.slice(0, 4);
     const month = date.slice(5, 7);
     const day = date.slice(8, 10);
@@ -241,7 +246,7 @@ class DocumentList extends React.PureComponent {
 
   render() {
     const {
-      docReviewStatusOptions, changeDocumentDetails, errorFields,
+      docReviewStatusOptions, errorFields,
       defectReasonOptions,
     } = this.props;
     const {
@@ -257,34 +262,30 @@ class DocumentList extends React.PureComponent {
       <>
 
         {
-            R.isEmpty(documents) ? <Loader />
-              : (
-                <div>
-                  {documents.map((item, index) => {
-                    const {
-                      documentName, linkedDocuments, expirationDate,
-                      documentReviewStatus, required, comments, docTxnId,
-                    } = item;
-                    const errors = errorFields[docTxnId] || [];
-                    if (R.isNil(documentReviewStatus) || R.isEmpty(documentReviewStatus)) {
-                      changeDocumentDetails({ key: 'documentReviewStatus', value: 'Not Provided', docTxnId });
-                    }
-                    const selectedStyleName = documentName === radio ? 'selected' : '';
-                    const errorStyle = errors.length > 0 ? 'error' : '';
-                    const docReviewError = errors.includes('documentReviewStatus') ? 'docReviewError' : '';
-                    const expirationDateError = errors.includes('expirationDate') ? 'expirationDateError' : '';
-                    // const dropDownData = R.propOr([], documentName, tempData);
-                    const text = this.getDocReasonText(index);
-                    return (
-                      <Paper key={documentName} styleName={`doc-container ${selectedStyleName} ${errorStyle}`} variant="outlined">
-                        <div styleName="accordian-header">
-                          <div styleName="left-header">
-                            <Radio
-                              checked={documentName === radio}
-                              onChange={this.handleRadioClick(documentName)}
-                              value={documentName}
-                            />
-                            {
+          R.isEmpty(documents) ? <Loader />
+            : (
+              <div>
+                {documents.map((item, index) => {
+                  const {
+                    documentName, linkedDocuments, expirationDate,
+                    documentReviewStatus, required, comments, docTxnId,
+                  } = item;
+                  const errors = errorFields[docTxnId] || [];
+                  const selectedStyleName = documentName === radio ? 'selected' : '';
+                  const errorStyle = errors.length > 0 ? 'error' : '';
+                  const docReviewError = errors.includes('documentReviewStatus') ? 'docReviewError' : '';
+                  const expirationDateError = errors.includes('expirationDate') ? 'expirationDateError' : '';
+                  const text = this.getDocReasonText(index);
+                  return (
+                    <Paper key={documentName} styleName={`doc-container ${selectedStyleName} ${errorStyle}`} variant="outlined">
+                      <div styleName="accordian-header">
+                        <div styleName="left-header">
+                          <Radio
+                            checked={documentName === radio}
+                            onChange={this.handleRadioClick(documentName)}
+                            value={documentName}
+                          />
+                          {
                     required ? (
                       <span
                         style={{
@@ -298,45 +299,45 @@ class DocumentList extends React.PureComponent {
                         REQ
                       </span>
                     ) : ''}
-                            <ExpTag expDate={expirationDate} />
-                            <p styleName="typography">{documentName}</p>
-                          </div>
-                          <div styleName="right-header">
-                            <History onClick={this.handleOpenHistoryModel(index)} styleName="cursor" />
-                            <MoreVertIcon onClick={this.handleOpenMoreOptions(index)} styleName="cursor" />
-                            <Menu
-                              anchorEl={anchorMoreOptions[index]}
-                              id="simple-menu"
-                              keepMounted
-                              onClose={this.handleCloseMoreOptions(index, null)}
-                              open={Boolean(anchorMoreOptions[index])}
-                            >
-                              <MenuItem onClick={this.handleCloseMoreOptions(index, required)}>
-                                {required ? 'Mark as Optional' : 'Mark as Required'}
-                              </MenuItem>
-                            </Menu>
-                            {R.propOr(false, documentName, expanded)
-                              ? <ExpandLess onClick={this.handleAccordianClick(documentName)} styleName="cursor" />
-                              : <ExpandMore onClick={this.handleAccordianClick(documentName)} styleName="cursor" />}
-                          </div>
+                          <ExpTag expDate={expirationDate} />
+                          <p styleName="typography">{documentName}</p>
                         </div>
-                        <div styleName="doc-components">
-                          <div styleName="doc-review">
-                            <Typography>Doc Review Status</Typography>
-                            <Button
-                              endIcon={<Icon>arrow_drop_down</Icon>}
-                              onClick={this.handleClick(index)}
-                            >
-                              {documentReviewStatus || 'Select'}
-                            </Button>
-                            <Menu
-                              anchorEl={R.propOr(null, index, anchorDocReview)}
-                              id={index}
-                              keepMounted
-                              onClose={this.handleClose(index)}
-                              open={Boolean(R.propOr(null, index, anchorDocReview))}
-                            >
-                              {docReviewStatusOptions
+                        <div styleName="right-header">
+                          <History onClick={this.handleOpenHistoryModel(index)} styleName="cursor" />
+                          <MoreVertIcon onClick={this.handleOpenMoreOptions(index)} styleName="cursor" />
+                          <Menu
+                            anchorEl={anchorMoreOptions[index]}
+                            id="simple-menu"
+                            keepMounted
+                            onClose={this.handleCloseMoreOptions(index, null)}
+                            open={Boolean(anchorMoreOptions[index])}
+                          >
+                            <MenuItem onClick={this.handleCloseMoreOptions(index, required)}>
+                              {required ? 'Mark as Optional' : 'Mark as Required'}
+                            </MenuItem>
+                          </Menu>
+                          {R.propOr(false, documentName, expanded)
+                            ? <ExpandLess onClick={this.handleAccordianClick(documentName)} styleName="cursor" />
+                            : <ExpandMore onClick={this.handleAccordianClick(documentName)} styleName="cursor" />}
+                        </div>
+                      </div>
+                      <div styleName="doc-components">
+                        <div styleName="doc-review">
+                          <Typography>Doc Review Status</Typography>
+                          <Button
+                            endIcon={<Icon>arrow_drop_down</Icon>}
+                            onClick={this.handleClick(index)}
+                          >
+                            {documentReviewStatus || 'Select'}
+                          </Button>
+                          <Menu
+                            anchorEl={R.propOr(null, index, anchorDocReview)}
+                            id={index}
+                            keepMounted
+                            onClose={this.handleClose(index)}
+                            open={Boolean(R.propOr(null, index, anchorDocReview))}
+                          >
+                            {docReviewStatusOptions
                         && docReviewStatusOptions.map(({ requestType, displayText }) => (
                           <MenuItem
                             key={requestType}
@@ -347,18 +348,24 @@ class DocumentList extends React.PureComponent {
                           </MenuItem>
                         ))}
 
-                            </Menu>
-                          </div>
+                          </Menu>
+                        </div>
 
-                          {R.equals(documentReviewStatus, 'Defects') && (
+                        {R.equals(documentReviewStatus, 'Defects') && (
                           <div styleName={`doc-reason ${docReviewError}`}>
-                            <Typography>Doc Reason(s)</Typography>
-                            <Typography
-                              onClick={this.handleDocReasonClick(index)}
-                              styleName="cursor"
-                            >
-                              {text}
-                            </Typography>
+                            <Typography>Doc Reaason(s)</Typography>
+                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                              <Typography
+                                onClick={this.handleDocReasonClick(index)}
+                                styleName="cursor"
+                              >
+                                {text}
+                              </Typography>
+                              <ArrowDropDownIcon
+                                onClick={this.handleDocReasonClick(index)}
+                                styleName="cursor"
+                              />
+                            </div>
                             <Popover
                               anchorEl={anchorDocReasons[index]}
                               anchorOrigin={{
@@ -405,46 +412,46 @@ class DocumentList extends React.PureComponent {
                               </Paper>
                             </Popover>
                           </div>
-                          )}
+                        )}
 
-                          <div styleName={`doc-expiration ${expirationDateError}`}>
-                            <Typography>Expiration</Typography>
-                            <Date
-                              date={expirationDate}
-                              onDateChange={this.handleDateChange(index, docTxnId)}
-                            />
-                          </div>
-
-                          <div styleName="doc-comments">
-                            <CommentOutlined />
-                            {R.equals(editText, index)
-                              ? (
-                                <div styleName="editText">
-                                  <TextField
-                                    onChange={this.handleTextChange}
-                                    value={editedComment}
-                                  />
-                                  <CheckIcon
-                                    onClick={this.handleCommentUpdate(index, docTxnId)}
-                                    styleName="cursor"
-                                  />
-                                  <CloseIcon
-                                    onClick={this.handleEditClick(null)}
-                                    styleName="cursor"
-                                  />
-                                </div>
-                              ) : (
-                                <Typography
-                                  onClick={this.handleEditClick(index)}
-                                  styleName="comment cursor"
-                                >
-                                  {comments}
-                                </Typography>
-                              )}
-                          </div>
-
+                        <div styleName={`doc-expiration ${expirationDateError}`}>
+                          <Typography>Expiration</Typography>
+                          <Date
+                            date={expirationDate}
+                            onDateChange={this.handleDateChange(index, docTxnId)}
+                          />
                         </div>
-                        {R.propOr(false, documentName, expanded) && (
+
+                        <div styleName="doc-comments">
+                          <CommentOutlined />
+                          {R.equals(editText, index)
+                            ? (
+                              <div styleName="editText">
+                                <TextField
+                                  onChange={this.handleTextChange}
+                                  value={editedComment}
+                                />
+                                <CheckIcon
+                                  onClick={this.handleCommentUpdate(index, docTxnId)}
+                                  styleName="cursor"
+                                />
+                                <CloseIcon
+                                  onClick={this.handleEditClick(null)}
+                                  styleName="cursor"
+                                />
+                              </div>
+                            ) : (
+                              <Typography
+                                onClick={this.handleEditClick(index)}
+                                styleName="comment cursor"
+                              >
+                                {R.isNil(comments) ? 'Add comments' : comments}
+                              </Typography>
+                            )}
+                        </div>
+
+                      </div>
+                      {R.propOr(false, documentName, expanded) && (
                         <div styleName="linked-docs-contianer">
                           <Typography styleName="linked-typography">Linked Documents</Typography>
                           <div styleName="linked-docs">
@@ -469,31 +476,31 @@ class DocumentList extends React.PureComponent {
                             ))}
                           </div>
                         </div>
-                        )}
-                      </Paper>
-                    );
-                  })}
-                  <DocumentHistoryModal
-                    documentName={R.propOr('', 'documentName', R.nth(openHistoryModel, documents))}
-                    handleClose={this.handleCloseHistoryModel}
-                    historyData={R.propOr([], 'history', R.nth(openHistoryModel, documents))}
-                    isOpen={!R.isNil(openHistoryModel)}
-                  />
-                  <LinkPopover
-                    linkDocPopover={linkDocPopover}
-                    removalDocumentId={removalDocumentId}
-                    removalDocumentName={removalDocumentName}
-                    setLinkDocPopover={this.handleLinkPopover}
-                    type="unlink"
-                  />
-                  <TagPopover
-                    setTagPopover={this.handleTagPopover}
-                    taggedDocumentName={taggedDocumentName}
-                    tagPopover={tagPopover}
-                    tagRequired={tagRequired}
-                  />
-                </div>
-              )
+                      )}
+                    </Paper>
+                  );
+                })}
+                <DocumentHistoryModal
+                  documentName={R.propOr('', 'documentName', R.nth(openHistoryModel, documents))}
+                  handleClose={this.handleCloseHistoryModel}
+                  historyData={R.propOr([], 'history', R.nth(openHistoryModel, documents))}
+                  isOpen={!R.isNil(openHistoryModel)}
+                />
+                <LinkPopover
+                  linkDocPopover={linkDocPopover}
+                  removalDocumentId={removalDocumentId}
+                  removalDocumentName={removalDocumentName}
+                  setLinkDocPopover={this.handleLinkPopover}
+                  type="unlink"
+                />
+                <TagPopover
+                  setTagPopover={this.handleTagPopover}
+                  taggedDocumentName={taggedDocumentName}
+                  tagPopover={tagPopover}
+                  tagRequired={tagRequired}
+                />
+              </div>
+            )
          }
 
       </>
@@ -510,15 +517,15 @@ DocumentList.propTypes = {
   docReviewStatusOptions: PropTypes.shape().isRequired,
   errorFields: PropTypes.shape().isRequired,
   fetchDocTxnDocuments: PropTypes.func.isRequired,
+  fetchInitialSelectedBorrower: PropTypes.func.isRequired,
   setRadioSelect: PropTypes.func.isRequired,
-  // tempData: PropTypes.shape().isRequired,
 };
 
 const mapStateToProps = state => ({
   value: documentChecklistSelectors.getDocChecklistData(state),
   docReviewStatusOptions: documentChecklistSelectors.getDocReviewStatusDropdown(state),
   errorFields: documentChecklistSelectors.getErrorFields(state),
-  selectedBorrower: incomeCalcSelectors.getSelectedBorrower(state),
+  selectedBorrower: documentChecklistSelectors.getSelectedBorrower(state),
   defectReasonOptions: documentChecklistSelectors.getDefectReasonDropdown(state),
 });
 
@@ -529,5 +536,7 @@ const mapDispatchToProps = dispatch => ({
   changeDocumentDetails: documentChecklistOperations.changeDocumentDetails(dispatch),
   fetchDocTxnDocuments: documentChecklistOperations.setDocChecklistDataOperation(dispatch),
   defectReasonDropdown: documentChecklistOperations.defectReasonDropdownOperation(dispatch),
+  fetchInitialSelectedBorrower:
+  documentChecklistOperations.fetchInitialSelectedBorrowerOperation(dispatch),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentList);

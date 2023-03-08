@@ -21,7 +21,7 @@ const LinkPopover = (props) => {
   const {
     linkDocPopover, setLinkDocPopover,
     selectedBorrower, removalDocumentName, removalDocumentId,
-    checkedFilenetDocs, type,
+    checkedFilenetDocs, type, borrowerNames,
   } = props;
   const [checkedBorrowers, setCheckedBorrowers] = useState([selectedBorrower]);
 
@@ -118,7 +118,7 @@ const LinkPopover = (props) => {
               </Grid>
               <Grid item style={{ padding: '0px' }} xs={10}>
                 <Typography styleName="link-pop-grid-item-name">
-                  {selectedBorrower}
+                  {borrowerNames[selectedBorrower]}
                 </Typography>
                 <Typography styleName="link-pop-grid-item-name-typo">
                 Borrower
@@ -160,6 +160,7 @@ const LinkPopover = (props) => {
 };
 
 LinkPopover.propTypes = {
+  borrowerNames: PropTypes.shape().isRequired,
   checkedFilenetDocs: PropTypes.arrayOf({}).isRequired,
   linkDocPopover: PropTypes.bool.isRequired,
   linkDocumentsToBorrowers: PropTypes.func.isRequired,
@@ -173,6 +174,7 @@ LinkPopover.propTypes = {
 
 const mapStateToProps = state => ({
   selectedBorrower: documentChecklistSelectors.getSelectedBorrower(state),
+  borrowerNames: documentChecklistSelectors.getBorrowers(state),
 });
 
 const mapDispatchToProps = dispatch => ({
