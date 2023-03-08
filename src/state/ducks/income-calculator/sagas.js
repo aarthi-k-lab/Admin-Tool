@@ -95,10 +95,21 @@ const fetchChecklistFieldData = function* fetchChecklistFieldData(action) {
   const data = yield select(selectors.getChecklist);
   const taskData = getTaskFromProcess(data, 'taskBlueprintCode', action.payload);
   const fieldValue = R.pathOr('', [0, 'value'], taskData);
+  const decimalValidation = fieldValue.split('.');
   // need to handle anabling lock button for multiple tasks in future.
   let enableLockbutton = false;
-  if (!R.isEmpty(fieldValue)) {
+  if (!R.isEmpty(fieldValue) && decimalValidation.length === 1) {
     enableLockbutton = true;
+  }
+  if (decimalValidation.length > 1) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        message: 'Fico Score is not a decimal number. ',
+        level: 'Error',
+        title: 'Lock Calculation',
+      },
+    });
   }
   yield put({
     type: TOGGLE_LOCK_BUTTON,
@@ -797,9 +808,16 @@ const ficoLockCalculation = function* ficoLockCalculation() {
       ficoScore,
       evalId: yield select(dashboardSelectors.evalId),
     }];
+    const tkamsPayload = [{
+      loanNbr: loanNumber,
+      position: selectedBorrowerPosition,
+      userName: userPrincipalName,
+      ficoScore,
+    }];
     const response = yield call(Api.callPost, '/api/dataservice/fico/insertFicoDetails', payload);
+    const tkamsResponse = yield call(Api.callPost, '/api/tkams/fico/saveFicoData', tkamsPayload);
     const request = { taskCheckListId };
-    if (R.equals((R.propOr(null, 'status', response), 200))) {
+    if ((R.equals((R.propOr(null, 'status', response), 200))) && (R.equals((R.propOr(null, 'status', tkamsResponse), 200)))) {
       const dbResult = yield call(Api.callPost, '/api/financial-aggregator/financecalc/updateTasksInChecklist', request);
       if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
         yield put({
@@ -817,28 +835,31 @@ const ficoLockCalculation = function* ficoLockCalculation() {
         });
       } else {
         yield put({
-          type: SET_RESULT_OPERATION,
+          type: SET_POPUP_DATA,
           payload: {
-            level: ERROR,
-            status: 'Error while updating Checklist. Please try after some time.',
+            message: 'Error while updating Checklist. ',
+            level: 'Error',
+            title: 'Lock Calculation',
           },
         });
       }
     } else {
       yield put({
-        type: SET_RESULT_OPERATION,
+        type: SET_POPUP_DATA,
         payload: {
-          level: ERROR,
-          status: 'Error while updating Checklist. Please try after some time.',
+          message: 'Error while saving Checklist. Please try after some time. ',
+          level: 'Error',
+          title: 'Lock Calculation',
         },
       });
     }
   } catch (e) {
     yield put({
-      type: SET_RESULT_OPERATION,
+      type: SET_POPUP_DATA,
       payload: {
-        level: FAILED,
-        status: 'Error while locking Fico.',
+        message: 'Error while saving Checklist. Please try after some time. ',
+        level: 'Error',
+        title: 'Lock Calculation',
       },
     });
   }
