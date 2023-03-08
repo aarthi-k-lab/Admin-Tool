@@ -117,11 +117,11 @@ visibility
             </div>
           ) : (
             <>
-              <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span>
+              {checklistType !== AV ? <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span> : null }
               <Tooltip placement="left" title="Calculation History">
                 <Icon
                   onClick={this.handleViewHistory}
-                  style={{ cursor: 'pointer' }}
+                  style={checklistType !== AV ? { cursor: 'pointer' } : { cursor: 'pointer', marginRight: '20rem' }}
                 >
             history
                 </Icon>
@@ -145,7 +145,6 @@ visibility
             </>
           )
         }
-
       </div>
     );
   }

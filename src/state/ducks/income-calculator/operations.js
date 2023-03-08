@@ -11,6 +11,7 @@ import {
   storeTaskValueAction,
   handleFicoLockCalculation,
   setSelectedBorrowerAction,
+  handleAssetVerificationLockCalculation,
 } from './actions';
 
 const enableHistoryView = dispatch => (item) => {
@@ -52,6 +53,10 @@ const setSelectedBorrower = dispatch => (payload) => {
   dispatch(setSelectedBorrowerAction(payload));
 };
 
+const assetVerificationLockCalculation = dispatch => (payload) => {
+  dispatch(handleAssetVerificationLockCalculation(payload));
+};
+
 const operations = {
   lockCalculation,
   incomeCalcWidgetToggle,
@@ -63,6 +68,7 @@ const operations = {
   storeTaskValue,
   ficoLockCalculation,
   setSelectedBorrower,
+  assetVerificationLockCalculation,
 };
 
 export default operations;

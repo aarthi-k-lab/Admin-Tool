@@ -10,6 +10,7 @@ import {
   STORE_TASK_VALUE,
   FETCH_SELECTED_BORROWER_DATA,
   FICO_LOCK_CALCULATION,
+  ASSET_LOCK_CALCULATION,
   SET_SELECTED_BORROWER,
 } from './types';
 
@@ -111,6 +112,11 @@ const handleFicoLockCalculation = payload => ({
   payload,
 });
 
+const handleAssetVerificationLockCalculation = payload => ({
+  type: ASSET_LOCK_CALCULATION,
+  payload,
+});
+
 const setSelectedBorrowerAction = payload => ({
   type: SET_SELECTED_BORROWER,
   payload,
@@ -136,4 +142,5 @@ export {
   fetchSelectedBorrowerData,
   handleFicoLockCalculation,
   setSelectedBorrowerAction,
+  handleAssetVerificationLockCalculation,
 };

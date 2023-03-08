@@ -97,3 +97,13 @@
 .titleStyle {
   margin-right: 5rem !important;
 }
+
+.asset.asset {
+  color: var(--grey-650);
+  font-size: 1rem !important;
+  text-align: justify;
+  font-weight: bold;
+  display: flex;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+}

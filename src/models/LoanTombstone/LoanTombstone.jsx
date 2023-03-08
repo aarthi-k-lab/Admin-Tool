@@ -72,6 +72,12 @@ function getInvestorItem(loanDetails) {
   return generateTombstoneItem('Investor', investor);
 }
 
+function getAssumptorDetails(assumptorDetails) {
+  const name = getOr('borrowerName', assumptorDetails, NA);
+  const borrowerName = name === NA ? `${name}` : `$${name.toLocaleString('en-US')}`;
+  return generateTombstoneItem('Assumptor', borrowerName);
+}
+
 function getUPBItem(loanDetails) {
   const amount = getOr('upbAmount', loanDetails, NA);
   const upbAmount = amount === NA ? `${amount}` : `$${amount.toLocaleString('en-US')}`;
@@ -254,9 +260,11 @@ function getTombstoneItems(tombstoneData) {
     groupName, taskName,
     freddieIndicatorData,
     loanViewData,
+    assumptorDetails,
   } = tombstoneData;
   const loanViewDataGenerator = [
     getLoanNumber,
+    getAssumptorDetails,
     getUPBItem,
     getPrimaryBorrowerItem,
     geCoBorrowerItem,
@@ -309,6 +317,7 @@ function getTombstoneItems(tombstoneData) {
       taskName,
       freddieIndicatorData,
       loanDetails,
+      assumptorDetails,
     ));
   }
 
@@ -329,6 +338,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     previousDispositionDetails,
     freddieIndicatorData,
     loanViewData,
+    assumptorDetails,
   } = response;
   return {
     resolutionId: R.propOr(null, 'modId', modInfoDetails),
@@ -345,6 +355,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
          taskName,
          freddieIndicatorData,
          loanViewData,
+         assumptorDetails,
        }),
      },
   };

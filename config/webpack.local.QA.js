@@ -201,6 +201,14 @@ const config = merge(
             '^/api/cmodinvestor': '',
           },
         },
+        '/api/financial-aggregator': {
+          target: 'https://qa.cmod.mrcooper.io/cmodfinancialsaggregator',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api/financial-aggregator': '',
+          },
+        },
       },
       publicPath: '/',
       noInfo: false,

@@ -48,6 +48,7 @@ const checklistTypes = {
   'income-calculator': 'INCOME',
   'expense-calculator': 'EXPENSE',
   'asset-verification': 'AV',
+  'fico-score': 'FICO',
 };
 
 module.exports = {

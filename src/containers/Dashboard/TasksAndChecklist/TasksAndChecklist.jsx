@@ -214,7 +214,7 @@ class TasksAndChecklist extends Component {
     if (financialChecklist.includes(checklistType) ) {
       styleName = 'incomeCalc';
     }
-    if (checklistItems && ( R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'asset-verification'))) {
+    if (checklistItems && (R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'asset-verification')) && (R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'fico-score'))) {
       styleName = 'incomeCalc-av';
     }
     const isBookingWidgetOpen = R.contains(BOOKING, openWidgetList);

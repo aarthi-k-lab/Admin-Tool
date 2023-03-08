@@ -46,6 +46,7 @@ import {
   SET_FICO_TABLE_DATA,
   UPDATE_CHECKLIST_TASKS,
   SET_LOCK_AV,
+  ASSET_LOCK_CALCULATION,
 } from './types';
 import {
   SET_SELECTED_BORROWER,
@@ -612,6 +613,38 @@ function* summateValuesForBorrowers(borrowerList) {
   return defaultBorrExpenseAmount;
 }
 
+const checkDuplicate = (filterResponseData) => {
+  const isDuplicateValuePresent = [];
+  let objList = {
+    checkingAccount: [],
+    savingsAccount: [],
+    ira: [],
+    stocks: [],
+  };
+  if (filterResponseData && filterResponseData.length > 0) {
+    filterResponseData.forEach((borrData) => {
+      if (borrData) {
+        const indvData = R.dissoc('selectedState', R.prop(0, R.values(borrData)));
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key of Object.keys(objList)) {
+          const rec = R.propOr([], key, R.dissoc('key', objList));
+          rec.push(R.propOr(0, key, indvData));
+          objList = { ...objList, key: rec };
+        }
+      }
+    });
+    objList = R.dissoc('key', objList);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of Object.keys(objList)) {
+      const valArr = R.filter(x => x > 0, objList[key]);
+      if (valArr.length !== new Set(valArr).size) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
 const lockCalculation = function* lockCalculation() {
   try {
     const { INCOME_CALCULATOR: incomeCalculator } = componentTypes;
@@ -660,38 +693,6 @@ const lockCalculation = function* lockCalculation() {
     } else if (checklistType === checklistTypes['expense-calculator']) {
       response = yield call(Api.callPost, `/api/cmodnetcoretkams/ExpenseFinancial/lock/${loanNumber}?loginName=${loginName}`,
         summatedBorrData);
-    } else if (checklistType === checklistTypes['asset-verification']) {
-      const data = yield select(selectors.getChecklist);
-      yield put({ type: SHOW_LOADER });
-      const borrDetails = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
-      const borrIdDetails = {};
-      borrDetails.map((borr) => {
-        if (borr) {
-          borrIdDetails[borr.firstName] = borr.borrowerId;
-        }
-        return null;
-      });
-      const filterResponseData = R.pathOr(null, ['value', 'assetCalc'], data);
-      const assetlockRequest = [];
-      // need to change this to more generic to avoid error
-      const assetId = Math.floor(1000 + Math.random() * 9000);
-      filterResponseData.map((task) => {
-        const reqData = Object.keys(task)[0];
-        if (task[reqData]) {
-          const filterReqData = R.filter(x => R.isNil(x) || !R.isEmpty(x) || x > 0, task[reqData]);
-          if (filterReqData && !R.isEmpty(filterReqData)) {
-            const name = reqData.split('_')[0];
-            assetlockRequest.push({
-              ...filterReqData,
-              borrId: borrIdDetails[name],
-              assetId,
-              userName: userPrincipalName,
-            });
-          }
-        }
-        return null;
-      });
-      const cmodRes = yield call(Api.callPost, '/api/dataservice/asset/assetLockCalculation', assetlockRequest);
     }
     response = Math.floor(1000 + Math.random() * 9000);
     const lockId = response && typeof (response) === 'object' ? R.propOr(null, 'lockId', response) : response;
@@ -865,6 +866,131 @@ const ficoLockCalculation = function* ficoLockCalculation() {
   }
 };
 
+const assetVerificationLockCalculation = function* assetVerificationLockCalculation() {
+  try {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    let checkFilterResponseData = false;
+    const data = yield select(selectors.getChecklist);
+    const taskId = yield select(dashboardSelectors.taskId);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const taskCheckListId = yield select(selectors.getProcessId);
+    const feuwChecklistId = yield select(taskSelectors.getProcessId);
+    const currentChecklistType = yield select(taskSelectors.getCurrentChecklistType);
+    const checklistType = checklistTypes[currentChecklistType];
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const checklistSelectionIsPresent = yield select(taskSelectors.getSelectedChecklistId);
+    let assetLockResponse = {};
+    yield put({ type: SHOW_LOADER });
+    const borrDetails = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
+    const borrIdDetails = {};
+    borrDetails.map((borr) => {
+      if (borr) {
+        borrIdDetails[borr.firstName] = borr.borrowerId;
+      }
+      return null;
+    });
+    const filterResponseData = R.pathOr(null, ['value', 'assetCalc'], data);
+    if (filterResponseData) {
+      checkFilterResponseData = checkDuplicate(filterResponseData);
+    }
+    if (checkFilterResponseData !== true) {
+      const assetlockRequest = [];
+      // need to change this to more generic to avoid error
+      const assetId = Math.floor(1000 + Math.random() * 9000);
+      filterResponseData.map((task) => {
+        const reqData = Object.keys(task)[0];
+        if (task[reqData]) {
+          const filterReqData = R.filter(x => R.isNil(x)
+          || !R.isEmpty(x) || x > 0, task[reqData]);
+          if (filterReqData && !R.isEmpty(filterReqData)) {
+            const name = reqData.split('_')[0];
+            assetlockRequest.push({
+              ...filterReqData,
+              borrId: borrIdDetails[name],
+              assetId,
+              userName: userPrincipalName,
+            });
+          }
+        }
+        return null;
+      });
+      assetLockResponse = yield call(Api.callPost, '/api/dataservice/asset/assetLockCalculation', assetlockRequest);
+
+      if (assetLockResponse) {
+        const request = {
+          taskId,
+          loanNumber,
+          evalId,
+          userPrincipalName,
+          taskCheckListId,
+          calcDateTime: new Date(),
+          feuwChecklistId,
+          checklistType,
+          lockId: assetId,
+        };
+        const dbResult = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/lock/', request);
+        if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+          yield put({
+            type: SET_POPUP_DATA,
+            payload: {
+              message: 'Asset Verification is Locked successfully',
+              level: 'Success',
+              title: 'Lock Calculation',
+            },
+          });
+          yield put({
+            type: TOGGLE_LOCK_BUTTON,
+            payload: { enable: false, selectedChecklistLock: '' },
+          });
+          const processId = R.path(['response', '_id'], dbResult);
+          yield all([
+            put(taskActions.getTasks()),
+            put(taskActions.getChecklist(checklistSelectionIsPresent)),
+          ]);
+          const payload = {
+            processInstance: processId,
+            isOpen: false,
+          };
+          yield put(actions.getIncomeCalcChecklist(payload));
+        } else {
+          yield put({
+            type: SET_POPUP_DATA,
+            payload: {
+              message: `Asset Verification Lock failed due to Borrower data discrepency,
+            please select "YES" to manually update Remedy and "Retry" to try again`,
+              level: 'Failed',
+              title: 'Lock Calculation',
+              showCancelButton: true,
+              confirmButtonText: 'Retry',
+              cancelButtonText: 'Yes',
+              onConfirm: LOCK_INCOME_CALCULATION,
+            },
+          });
+        }
+      }
+    } else {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Duplication found in asset details',
+          level: 'Failed',
+          title: 'Lock Calculation',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: FAILED,
+        status: 'Error while locking Asset.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+};
+
 const fetchFicoTableData = function* fetchFicoTableData() {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const updatedFicoTableData = yield call(Api.callGet, `/api/dataservice/fico/fico-history/${loanNumber}`);
@@ -929,6 +1055,10 @@ function* watchFicoLockCalculation() {
   yield takeEvery(FICO_LOCK_CALCULATION, ficoLockCalculation);
 }
 
+function* watchAssetVerificationLockCalculation() {
+  yield takeEvery(ASSET_LOCK_CALCULATION, assetVerificationLockCalculation);
+}
+
 function* watchFetchFicoTableData() {
   yield takeEvery(FETCH_FICO_TABLE_DATA, fetchFicoTableData);
 }
@@ -955,5 +1085,6 @@ export const combinedSaga = function* combinedSaga() {
     watchFetchFicoTableData(),
     watchUpdateChecklistTasks(),
     watchgetAssetLockstatus(),
+    watchAssetVerificationLockCalculation(),
   ]);
 };

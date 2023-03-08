@@ -9,7 +9,7 @@ import NumberFormat from 'react-number-format';
 import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { operations, selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
+import { operations, selectors as checklistSelectors, utils } from 'ducks/tasks-and-checklist';
 import {
   operations as dashboardOperations,
   selectors as dashboardSelectors,
@@ -103,9 +103,15 @@ class Checklist extends React.PureComponent {
   onClickLockCalc = () => {
     const {
       lockCalculation, ficoBluePrintCode, ficoLockCalculation,
+      checklistItems, assetVerificationLockCalculation,
     } = this.props;
+    const { additionalInfo: { checklistType } } = checklistItems[0];
+    const type = checklistType || checklistItems[0].type;
+    const { AV } = HTMLElements;
     if (FEUW_CHECKLIST.includes(ficoBluePrintCode)) {
       ficoLockCalculation();
+    } else if (type === AV) {
+      assetVerificationLockCalculation();
     } else {
       lockCalculation();
     }
@@ -578,7 +584,7 @@ class Checklist extends React.PureComponent {
       checklistItems, children, title,
       className, location, resolutionId, resolutionData, triggerHeader, incomeCalcInProgress,
       disableNext, disablePrev, onNext, onPrev, isIncomeVerification, historyView,
-      disabledChecklist, enableLockButton, groupName, ficoBluePrintCode,
+      disabledChecklist, enableLockButton, groupName, ficoBluePrintCode, inProgress, historyItem,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
@@ -586,6 +592,7 @@ class Checklist extends React.PureComponent {
     const { additionalInfo: { checklistType } } = checklistItems[0];
     const type = checklistType || checklistItems[0].type;
     const { AV } = HTMLElements;
+    const { getCSTDateTime } = utils;
     const showControlButtons = isIncomeVerification && !historyView && !disabledChecklist;
     const showCheckButton = isIncomeVerification && !historyView
     && !disabledChecklist && checklistType !== AV
@@ -654,6 +661,24 @@ class Checklist extends React.PureComponent {
           <Grid item xs={getChecklistGridName('title', !R.isNil(addBackButton) ? `${type}-back` : type)}>
             <Typography styleName={financialChecklist.includes(type) ? 'checklist-title-income-calc' : 'checklist-title'}>{title}</Typography>
           </Grid>
+          {type === AV && historyView && !inProgress && (
+            <>
+              <Grid>
+                <Typography styleName="asset">{getCSTDateTime(historyItem.calcDateTime)}</Typography>
+              </Grid>
+              <Grid>
+                <Typography styleName="asset">
+                  {` Asset ID: ${historyItem.lockId}`}
+                </Typography>
+              </Grid>
+              <Grid>
+                <Typography styleName="asset">
+                  {` Completed By: ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}
+                </Typography>
+              </Grid>
+            </>
+          )
+          }
           { !R.isNil(showCheckButton) && (
           <Grid item xs={getChecklistGridName('check', type)}>
             {showCheckButton}
@@ -730,6 +755,7 @@ Checklist.defaultProps = {
   ruleResultFromTaskTree: [],
   disableNext: false,
   disablePrev: false,
+  historyItem: null,
   lockCalculation: () => {},
   onErrorValidation: () => {},
   isIncomeVerification: false,
@@ -739,6 +765,7 @@ Checklist.defaultProps = {
   groupName: null,
   ficoBluePrintCode: '',
   ficoLockCalculation: () => {},
+  assetVerificationLockCalculation: () => {},
 };
 
 NumberFormatCustom.propTypes = {
@@ -746,6 +773,7 @@ NumberFormatCustom.propTypes = {
 };
 
 Checklist.propTypes = {
+  assetVerificationLockCalculation: PropTypes.func,
   checklistItems: PropTypes.arrayOf(
     PropTypes.shape({
       additionalInfo: PropTypes.shape(),
@@ -781,6 +809,11 @@ Checklist.propTypes = {
   handleClearSubTask: PropTypes.func.isRequired,
   handleDeleteTask: PropTypes.func.isRequired,
   handleShowDeleteTaskConfirmation: PropTypes.func.isRequired,
+  historyItem: PropTypes.shape({
+    calcByUserName: PropTypes.string,
+    calcDateTime: PropTypes.string,
+    lockId: PropTypes.string,
+  }),
   historyView: PropTypes.bool,
   incomeCalcInProgress: PropTypes.bool,
   inProgress: PropTypes.bool.isRequired,
@@ -812,6 +845,7 @@ function mapDispatchToProps(dispatch) {
     closeHistoryView: incomeOperations.closeHistoryView(dispatch),
     documentValidation: documentChecklistOperations.onDocValidation(dispatch),
     ficoLockCalculation: incomeOperations.ficoLockCalculation(dispatch),
+    assetVerificationLockCalculation: incomeOperations.assetVerificationLockCalculation(dispatch),
   };
 }
 
@@ -827,6 +861,8 @@ const mapStateToProps = (state) => {
     inProgress: incomeSelectors.inProgress(state),
     groupName: dashboardSelectors.groupName(state),
     ficoBluePrintCode,
+    historyItem: incomeSelectors.getHistoryItem(state),
+
   };
 };
 
