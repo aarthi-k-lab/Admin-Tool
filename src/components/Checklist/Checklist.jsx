@@ -602,6 +602,7 @@ class Checklist extends React.PureComponent {
         color="primary"
         onClick={this.checkErrors}
         style={{ marginRight: '0.5rem' }}
+        styleName="check"
         variant="contained"
       >
         CHECK
@@ -619,6 +620,7 @@ class Checklist extends React.PureComponent {
       <Button
         color="primary"
         onClick={this.onBackButtonClick}
+        styleName="backButton"
       >
          BACK
       </Button>

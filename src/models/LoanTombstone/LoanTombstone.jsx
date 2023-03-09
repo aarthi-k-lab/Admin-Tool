@@ -72,9 +72,9 @@ function getInvestorItem(loanDetails) {
   return generateTombstoneItem('Investor', investor);
 }
 
-function getAssumptorDetails(assumptorDetails) {
-  const name = getOr('borrowerName', assumptorDetails, NA);
-  const borrowerName = name === NA ? `${name}` : `$${name.toLocaleString('en-US')}`;
+function getAssumptorDetails(_lv, _pd, _g, _t, _a, assumptorDetails) {
+  const borrowerName = getOr('borrowerName', assumptorDetails, NA);
+  console.log('assumptorDetails', assumptorDetails);
   return generateTombstoneItem('Assumptor', borrowerName);
 }
 
@@ -308,7 +308,8 @@ function getTombstoneItems(tombstoneData) {
     loanViewData,
     previousDispositionDetails,
     groupName,
-    taskName));
+    taskName,
+    assumptorDetails));
   if (groupName !== 'SEARCH_LOAN') {
     data.modViewData = modViewDataGenerator.map(fn => fn(
       modInfoDetails,

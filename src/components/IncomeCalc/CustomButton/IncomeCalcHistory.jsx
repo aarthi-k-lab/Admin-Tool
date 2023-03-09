@@ -121,7 +121,7 @@ visibility
               <Tooltip placement="left" title="Calculation History">
                 <Icon
                   onClick={this.handleViewHistory}
-                  style={checklistType !== AV ? { cursor: 'pointer' } : { cursor: 'pointer', marginRight: '20rem' }}
+                  style={{ cursor: 'pointer' }}
                 >
             history
                 </Icon>

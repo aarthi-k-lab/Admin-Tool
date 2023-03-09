@@ -969,6 +969,37 @@ const assetVerificationLockCalculation = function* assetVerificationLockCalculat
           });
         }
       }
+      if (assetlockRequest) {
+        if (assetlockRequest.length > 0) {
+          const coBorrowerPresent = assetlockRequest.length >= 2;
+          const saveToTkamsPayload = {
+            borrower401KBalance: assetlockRequest[0].ira,
+            borrowerCheckingAccountBalance: assetlockRequest[0].checkingAccount,
+            borrowerSavingAccountBalance: assetlockRequest[0].savingsAccount,
+            borrowerStocksBondsOther: assetlockRequest[0].stocks,
+            coBorrower401KBalance: coBorrowerPresent ? assetlockRequest[1].ira : 0,
+            coBorrowerCheckingAccountBalance: coBorrowerPresent
+              ? assetlockRequest[1].checkingAccount : 0,
+            coBorrowerSavingAccountBalance: coBorrowerPresent
+              ? assetlockRequest[1].savingsAccount : 0,
+            coBorrowerStockBondsOther: coBorrowerPresent ? assetlockRequest[1].stocks : 0,
+            email: userPrincipalName,
+            evalId,
+            loanId: loanNumber,
+          };
+          const saveToTkamsResponse = yield call(Api.callPost, '/api/tkams/asset/saveToTkams', saveToTkamsPayload);
+          if (!saveToTkamsResponse.saveStatus) {
+            yield put({
+              type: SET_POPUP_DATA,
+              payload: {
+                message: saveToTkamsResponse.errorMessage,
+                level: 'Failed',
+                title: 'Saving Asset to TKAMS',
+              },
+            });
+          }
+        }
+      }
     } else {
       yield put({
         type: SET_POPUP_DATA,
