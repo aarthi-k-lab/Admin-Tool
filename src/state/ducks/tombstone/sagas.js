@@ -43,7 +43,7 @@ import { selectors as loginSelectors } from '../login';
 import { selectors as loanTombstoneSelectors } from '.';
 import {
   SET_RESOLUTION_AND_INVSTR_HRCHY, SET_BRAND, STORE_INVEST_CD_AND_BRAND_NM,
-  SET_RESULT_OPERATION, SET_POPUP_DATA,
+  SET_RESULT_OPERATION, SET_POPUP_DATA, SET_LOAN_TYPE, SET_WATERFALLID,
 } from '../dashboard/types';
 import { PROPERTY_PRIMARY_USE } from '../../../constants/collaterlUI';
 import {
@@ -73,9 +73,9 @@ function* fetchTombstoneData(payload) {
     const data = yield call(LoanTombstone.fetchData,
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand, selectedResolutionId);
     const {
-      resolutionId, investorHierarchy, tombstoneData, investorCode, brandName,
+      resolutionId, investorHierarchy, tombstoneData, investorCode,
+      brandName, loanType, waterfallId,
     } = data;
-
     yield put({
       type: STORE_INVEST_CD_AND_BRAND_NM,
       payload: { investorCode, brandName },
@@ -88,6 +88,14 @@ function* fetchTombstoneData(payload) {
     yield put({
       type: SET_RESOLUTION_AND_INVSTR_HRCHY,
       payload: { resolutionId, investorHierarchy },
+    });
+    yield put({
+      type: SET_LOAN_TYPE,
+      payload: loanType,
+    });
+    yield put({
+      type: SET_WATERFALLID,
+      payload: waterfallId,
     });
     if (R.has('modViewData', tombstoneData)) {
       yield put(yield call(setPaymentDeferral,

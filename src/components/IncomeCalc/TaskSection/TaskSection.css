@@ -479,3 +479,43 @@
   background-color: #f3f5f9 !important;
   margin-top: 1rem;
 }
+
+.doc-add-contrib-grid{
+  margin: 0 2rem 0 .5rem;
+  width: 75rem !important;
+  height: 19rem;
+  line-height: .5rem;
+}
+
+.doc-add-action{
+  margin: 2rem 0rem 2rem 2rem;
+  justify-content: space-between;
+}
+
+.doc-add-contrib-item{
+  display: flex;
+  align-items: center;
+  margin-left: 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.doc-chk-add-contrib-sect{
+  min-height: 44.1rem;
+  z-index: 1;
+  position: absolute;
+  margin-top: .5rem;
+  width: 48rem;
+  left: 52rem;
+  border-radius: 10px;
+  top:28rem;
+  padding: 0 !important;
+  border: 1px solid black;
+}
+
+.doc-chk-borr{
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+

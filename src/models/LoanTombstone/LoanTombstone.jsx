@@ -332,7 +332,6 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   };
 
   const response = await Api.callPost('/api/data-aggregator/tombstone/data/', payload);
-
   const {
     loanDetails,
     modInfoDetails,
@@ -346,6 +345,8 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     investorHierarchy: R.propOr(null, 'InvestorHierarchy', loanDetails),
     investorCode: R.pathOr(null, ['investorInformation', 'investorCode'], loanDetails),
     brandName: R.propOr(null, 'brandName', loanDetails),
+    loanType: R.pathOr(null, ['loanType'], loanDetails),
+    waterfallId: R.pathOr(null, ['waterfallId'], modInfoDetails),
     tombstoneData:
      {
        ...getTombstoneItems({

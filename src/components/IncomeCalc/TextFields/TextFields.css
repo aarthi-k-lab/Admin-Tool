@@ -325,3 +325,20 @@
   display: flex;
   align-items: center;
 }
+
+.doc-text{
+  width: 13rem !important;
+  text-align: left;
+  max-width: 94%;
+}
+
+.doc-add-contrib-title {
+  width: 7rem;
+  margin: 0rem 0rem 0rem 1rem;
+}
+
+.doc-chk-text {
+  width: 13rem !important;
+  text-align: right;
+  max-width: 94%;
+}

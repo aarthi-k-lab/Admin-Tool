@@ -100,6 +100,12 @@ const textFields = {
   'cnsdt-inc-count-indc': {
     div: 'cnsdt-inc-count-indc-div',
   },
+  'contrib-text': {
+    title: 'doc-add-contrib-title',
+    div: 'display-in-row',
+    textField: 'doc-text',
+    inputProps: { style: { width: '30rem !important' } },
+  },
   addr: {
     inputProps: { autoComplete: 'new-password' },
   },
@@ -202,6 +208,21 @@ const taskSection = {
   'fico-sect': {
     grid: 'fico-sect',
   },
+  'doc-add-contrib': {
+    grid: 'doc-add-contrib-grid',
+  },
+  'doc-chk-add-contrib-sect': {
+    header: 'add-contrib-header',
+    item: 'doc-add-contrib-item',
+    icon: 'chevron-left',
+  },
+  'doc-chk-borr': {
+    item: 'inc-calc-borr-item',
+    header: 'radio-control-label',
+  },
+  'doc-add-action': {
+    item: 'doc-add-action',
+  },
   default: {
     title: 'text-label',
     header: 'radio-control-label',
@@ -231,6 +252,11 @@ const datePicker = {
     title: 'text-label',
     picker: 'datepicker-we',
   },
+  'doc-chk-date': {
+    div: 'doc-date-flex-div',
+    title: 'doc-date-flex-title',
+    picker: 'doc-date-flex-picker',
+  },
   default: {
     title: 'text-label',
     picker: 'datepicker',
@@ -256,6 +282,12 @@ const dropDown = {
     dropdown: '',
     select: 'contrib',
     title: '',
+  },
+  'contrib-drop-down': {
+    'dropdown-sect': 'displayInRow',
+    dropDown: '',
+    select: 'doc-contrib-select',
+    title: 'title',
   },
   default: {
     'dropdown-sect': 'displayInRow',

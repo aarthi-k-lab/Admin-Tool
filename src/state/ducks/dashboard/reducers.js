@@ -120,6 +120,8 @@ import {
   DISABLE_SAVE,
   DISABLE_FINANCE_CALC_TAB_BUTTON,
   RESET_DATA,
+  SET_LOAN_TYPE,
+  SET_WATERFALLID,
 } from './types';
 
 const reducer = (state = {
@@ -1201,6 +1203,20 @@ const reducer = (state = {
         ...state,
         isGetNextError: false,
         getNextError: '',
+      };
+    }
+
+    case SET_LOAN_TYPE: {
+      return {
+        ...state,
+        loanType: action.payload,
+      };
+    }
+
+    case SET_WATERFALLID: {
+      return {
+        ...state,
+        waterfallId: action.payload,
       };
     }
 

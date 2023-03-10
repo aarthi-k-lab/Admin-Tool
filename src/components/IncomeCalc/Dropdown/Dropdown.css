@@ -93,3 +93,13 @@
 .selectType {
   height: 3rem;
 }
+
+.doc-contrib-select {
+  margin-left: 1.45rem;
+  font-size: 15px !important;
+  margin-top: .12rem;
+  line-height: 1.8rem !important;
+  width: 13rem;
+}
+
+

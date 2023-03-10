@@ -50,7 +50,7 @@
 .cancel {
   color: white !important;
   cursor: 'pointer';
-  background-color: #01579b !important;
+  background-color: #596FEB !important;
 }
 
 .done {
@@ -65,6 +65,25 @@
   cursor: 'pointer';
   background-color: #c6c6c6 !important;
   margin-left: 3rem !important;
+}
+
+.add {
+  color: white !important;
+  cursor: 'pointer';
+  background-color: #596FEB !important;
+  right: 1rem;
+}
+
+.add:disabled {
+  color: black !important;
+  cursor: 'pointer';
+  background-color: #c6c6c6 !important;
+}
+
+.add-contrib-icon{
+  top: 0.7em;
+  position: relative;
+  right: 1.5em;
 }
 
 .monthly-inc {

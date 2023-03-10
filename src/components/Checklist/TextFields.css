@@ -27,3 +27,20 @@
   padding: 0.5rem !important;
   color: var(--grey-650) !important;
 }
+
+.doc-text{
+  width: 15rem !important;
+  text-align: left;
+  max-width: 94%;
+}
+
+.doc-add-contrib-title {
+  width: 7rem;
+  margin: 0rem 0rem 0rem 1rem;
+}
+
+.doc-chk-text {
+  width: 14rem !important;
+  text-align: right;
+  max-width: 94%;
+}

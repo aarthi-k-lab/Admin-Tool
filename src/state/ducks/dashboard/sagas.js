@@ -948,6 +948,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const checklistSubtasks = yield select(checklistSelectors.getTaskTree);
     const externalChangeSubtasks = getTaskFromProcess(checklistSubtasks, 'taskBlueprintCode', 'EXT_CHG');
     const safeActRequire = R.pathOr(false, ['value', 'safeActRequired'], R.head(externalChangeSubtasks));
+    const loanNbr = yield (select(selectors.loanNumber));
     const request = {
       evalId,
       disposition,
@@ -958,6 +959,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       wfProcessId,
       processStatus,
       safeActRequire,
+      loanNbr,
     };
     const response = yield call(Api.callPost, `/api/disposition/validate-disposition?isAuto=${isAuto}`, request);
     const { tkamsValidation, skillValidation } = response;

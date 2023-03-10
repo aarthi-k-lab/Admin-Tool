@@ -9,6 +9,7 @@ import {
 import * as Api from 'lib/Api';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as taskAndChecklistSelectors } from 'ducks/tasks-and-checklist';
+import { selectors as incomeCalcSelectors } from 'ducks/income-calculator';
 import * as R from 'ramda';
 import {
   getTasks,
@@ -35,8 +36,12 @@ import {
   DOCUMENT_DETAILS_CHANGE,
   DOCUMENT_DETAILS_CHANGE_SAGA, FETCH_DOC_TXNS, DOC_CHECKLIST_DATA, SAVE_DOC_CHECKLIST_DATA,
   TRIGGER_DOC_VALIDATION, SET_ERROR_FIELDS, SAVE_DEFECT_REASON_DROPDOWN, DEFECT_REASON_DROPDOWN,
+  DOC_CHECKLIST_ADD_CONTRIBUTOR,
 } from './types';
-import { SET_BANNER_DATA } from '../income-calculator/types';
+import {
+  SET_BANNER_DATA, SET_BORROWERS_DATA, HIDE_LOADER, CLEAR_TASK_VALUE,
+  SHOW_LOADER, STORE_CHECKLIST, SET_PROCESS_ID,
+} from '../income-calculator/types';
 import selectors from './selectors';
 import { selectors as loginSelectors } from '../login';
 
@@ -485,6 +490,125 @@ function* fetchDefectReasonDropdown(payload) {
   }
 }
 
+const getTaskFromProcess = (taskObj, prop, value) => {
+  if (R.propEq(prop, value)(taskObj)) {
+    return taskObj;
+  }
+  const task = [];
+  if (taskObj.subTasks && R.length(taskObj.subTasks) > 0) {
+    taskObj.subTasks.forEach((subTask) => {
+      task.push(getTaskFromProcess(subTask, prop, value));
+    });
+  }
+  if (task) return task.flat();
+  return null;
+};
+
+function* fetchChecklistDetails(action) {
+  const processId = action.payload;
+  try {
+    const isChecklistIdInvalid = R.isNil(processId) || R.isEmpty(processId);
+    if (isChecklistIdInvalid) {
+      yield put({
+        type: CHECKLIST_NOT_FOUND,
+        payload: {
+          messageCode: ChecklistErrorMessageCodes.NO_CHECKLIST_ID_PRESENT,
+        },
+      });
+      return;
+    }
+    const response = yield call(Api.callGet, `/api/task-engine/process/${processId}?shouldGetTaskTree=true&visibility=true&aggregation=true&forceNoCache=${Math.random()}`);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    }
+    const checklist = {
+      lastUpdated: `${new Date()}`,
+      response,
+    };
+    yield put({ type: SET_PROCESS_ID, payload: processId });
+    yield put({ type: STORE_CHECKLIST, payload: checklist });
+  } catch (e) {
+    yield put({
+      type: CHECKLIST_NOT_FOUND,
+      payload: {
+        messageCode: ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED,
+      },
+    });
+  }
+}
+
+
+function* addContributorDocChecklist(action) {
+  try {
+    yield put({ type: SHOW_LOADER });
+    let newAddedBorrowerPsntNum = 0;
+    const dataToFetch = R.pathOr([], ['payload', 'contributorFields'], action);
+    const data = yield select(incomeCalcSelectors.getChecklist);
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const user = yield select(loginSelectors.getUser);
+    const rootIdFEUW = yield select(taskAndChecklistSelectors.getRootTaskId);
+    const dbRecCreatedByUser = R.path(['userDetails', 'email'], user);
+    const taskData = R.flatten(dataToFetch.map(taskCode => getTaskFromProcess(data, 'taskBlueprintCode', taskCode)));
+    const taskValues = yield select(incomeCalcSelectors.getTaskValues);
+    let contributorData = {};
+    taskData.forEach((task) => {
+      contributorData = { ...contributorData, [R.path(['taskBlueprint', 'additionalInfo', 'fieldName'], task)]: task.value };
+    });
+    const borrowerData = yield select(incomeCalcSelectors.getBorrowers);
+    const borrowerlist = R.pathOr(null, ['value', 'borrowers'], data);
+    const maxPositionNum = R.compose(
+      R.prop('borrowerPstnNumber'),
+      R.last,
+      R.sortBy(R.prop('borrowerPstnNumber')),
+    )(borrowerData);
+    newAddedBorrowerPsntNum = maxPositionNum + 1;
+    const payload = {
+      contributorData: {
+        ...contributorData,
+        taxpyrIdVal: R.propOr('', 'DOC_ADD_CHK3', taskValues),
+        loanNumber,
+        dbRecCreatedByUser,
+        borrowerPstnNumber: maxPositionNum + 1,
+      },
+      borrowerData,
+      borrowerlist,
+      rootId: rootIdFEUW,
+    };
+    const borrowersResponse = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/addContributor', payload);
+    if (borrowersResponse) {
+      const processId = yield select(incomeCalcSelectors.getProcessId);
+      yield call(fetchChecklistDetails, { payload: processId });
+      yield put({ type: SET_BORROWERS_DATA, payload: R.propOr([], 'response', borrowersResponse) });
+    }
+    yield put({ type: CLEAR_TASK_VALUE });
+    yield put({ type: HIDE_LOADER });
+    const evalId = yield select(dashboardSelectors.evalId);
+    const loanType = yield select(dashboardSelectors.getLoanType);
+    const waterfallId = yield select(dashboardSelectors.getWaterfallId);
+    const payloadForCreateDoc = {
+      borrowerPstnNumber: newAddedBorrowerPsntNum,
+      evalId,
+      loanId: loanNumber,
+      loanType,
+      requestedBy: dbRecCreatedByUser,
+      waterfallId,
+    };
+    const addDocTxnsResponse = yield call(Api.callPost, '/api/dataservice/DocCheckList/createDocChecklist', payloadForCreateDoc);
+    if (addDocTxnsResponse.length > 0) {
+      const newData = yield call(Api.callGet, `/api/dataservice/DocCheckList/getDocTxns/${loanNumber}/${newAddedBorrowerPsntNum}`);
+      let docChecklistData = yield select(selectors.getDocChecklistData);
+      docChecklistData = [...docChecklistData, newData];
+      yield put({
+        type: DOCUMENT_DETAILS_CHANGE_SAGA,
+        payload: docChecklistData,
+      });
+    }
+  } catch (e) {
+    yield put({});
+  }
+}
+
 function* watchLinkDocuments() {
   yield takeEvery(LINK_DOCUMENTS_SAGA, linkDocuments);
 }
@@ -529,6 +653,10 @@ function* watchDefectReasonDropdown() {
   yield takeEvery(DEFECT_REASON_DROPDOWN, fetchDefectReasonDropdown);
 }
 
+function* watchAddContributor() {
+  yield takeEvery(DOC_CHECKLIST_ADD_CONTRIBUTOR, addContributorDocChecklist);
+}
+
 export const TestExports = {
   watchLinkDocuments,
   watchBorrowerNames,
@@ -553,5 +681,6 @@ export const combinedSaga = function* combinedSaga() {
     watchSaveDocChecklistData(),
     watchDocValidation(),
     watchDefectReasonDropdown(),
+    watchAddContributor(),
   ]);
 };
