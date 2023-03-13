@@ -142,6 +142,8 @@ function* handleSaveChecklistError(e) {
 function* fetchChecklistDetails(action) {
   const processId = action.payload;
   const taskBluePrintCode = yield select(taskSelectors.selectedTaskBlueprintCode);
+  const currentChecklistType = yield select(taskSelectors.getCurrentChecklistType);
+  const checklistType = checklistTypes[currentChecklistType];
   try {
     const isChecklistIdInvalid = R.isNil(processId) || R.isEmpty(processId);
     if (isChecklistIdInvalid) {
@@ -167,7 +169,7 @@ function* fetchChecklistDetails(action) {
     if (FEUW_CHECKLIST.includes(taskBluePrintCode)) {
       yield put({ type: FETCH_SELECTED_BORROWER_DATA, payload: FICO_TASK_BLUEPRINT_CODE });
       yield put({ type: FETCH_SELECTED_CHECKLIST_DATA, payload: FICO_SCORE });
-    } else {
+    } if (checklistType === 'AV') {
       yield put({ type: SET_LOCK_AV });
     }
   } catch (e) {
@@ -411,7 +413,7 @@ function* handleChecklistItemChange(action) {
     if (FEUW_CHECKLIST.includes(taskBluePrintCode)) {
       yield put({ type: FETCH_SELECTED_BORROWER_DATA, payload: FICO_TASK_BLUEPRINT_CODE });
       yield put({ type: FETCH_SELECTED_CHECKLIST_DATA, payload: FICO_SCORE });
-    } else {
+    } if (checklistType === 'AV') {
       yield put({ type: SET_LOCK_AV });
     }
     // clear the dirty state
@@ -931,6 +933,7 @@ const assetVerificationLockCalculation = function* assetVerificationLockCalculat
         };
         const dbResult = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/lock/', request);
         if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+          yield call(fetchIncomeCalcHistory);
           yield put({
             type: SET_POPUP_DATA,
             payload: {
@@ -994,7 +997,7 @@ const assetVerificationLockCalculation = function* assetVerificationLockCalculat
               payload: {
                 message: saveToTkamsResponse.errorMessage,
                 level: 'Failed',
-                title: 'Saving Asset to TKAMS',
+                title: 'Failed Saving Asset verification details to TKAMS',
               },
             });
           }
