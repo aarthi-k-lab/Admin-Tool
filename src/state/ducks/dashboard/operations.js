@@ -97,6 +97,9 @@ import {
   processValidations,
 } from '../income-calculator/actions';
 import { storeDelayCheckListHistory } from '../stager/actions';
+import {
+  resetDocChecklistData,
+} from '../document-checklist/actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -134,6 +137,7 @@ const onGetNext = dispatch => (payload) => {
   dispatch(clearBEDisposition());
   dispatch(clearDisposition());
   dispatch(storeDelayCheckListHistory([]));
+  dispatch(resetDocChecklistData());
   dispatch(getNext(payload));
 };
 

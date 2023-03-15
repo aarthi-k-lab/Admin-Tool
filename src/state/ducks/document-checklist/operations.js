@@ -5,7 +5,7 @@ import {
   fetchFileNetData,
   setFilterStartDate, setFilterEndDate, setFilterDocCategory, setUploadedFiles,
   changeDocDetails, fetchDocChecklistData,
-  docValidation, defectReasonDropdown, setSelectedBorrower,
+  docValidation, defectReasonDropdown, setSelectedBorrower, fetchDocHistory,
 } from './actions';
 import {
   fetchSelectedBorrowerData,
@@ -54,6 +54,10 @@ const fetchInitialSelectedBorrowerOperation = dispatch => (payload) => {
   dispatch(fetchSelectedBorrowerData(payload));
 };
 
+const fetchDocHistoryOperation = dispatch => (payload) => {
+  dispatch(fetchDocHistory(payload));
+};
+
 export default {
   fetchFileNetDataOperation,
   radioSelectOperation,
@@ -73,4 +77,5 @@ export default {
   defectReasonDropdownOperation,
   setSelectedBorrowerOperation,
   fetchInitialSelectedBorrowerOperation,
+  fetchDocHistoryOperation,
 };

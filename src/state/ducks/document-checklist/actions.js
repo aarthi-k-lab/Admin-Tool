@@ -17,6 +17,8 @@ import {
   TRIGGER_DOC_VALIDATION,
   DEFECT_REASON_DROPDOWN,
   SET_SELECTED_BORROWER,
+  FETCH_DOC_HISTORY,
+  RESET_DOC_CHK_DATA,
 } from './types';
 
 const fetchFileNetData = payload => ({
@@ -108,11 +110,19 @@ const setSelectedBorrower = payload => ({
   payload,
 });
 
+const fetchDocHistory = payload => ({
+  type: FETCH_DOC_HISTORY, payload,
+});
+
+const resetDocChecklistData = () => ({
+  type: RESET_DOC_CHK_DATA,
+});
+
 
 export {
   radioSelectAction, setMockDataAction, linkDocuments, borrowerNames, unLinkDocuments, setTag,
   docReviewStatusDropdown,
   fetchFileNetData, setFilterStartDate, setFilterEndDate, setFilterDocCategory, setUploadedFiles,
   changeDocDetails, fetchDocChecklistData, setDocChecklistData,
-  docValidation, defectReasonDropdown, setSelectedBorrower,
+  docValidation, defectReasonDropdown, setSelectedBorrower, fetchDocHistory, resetDocChecklistData,
 };

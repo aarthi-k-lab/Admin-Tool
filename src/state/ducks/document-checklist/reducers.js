@@ -19,6 +19,8 @@ import {
   SET_ERROR_FIELDS,
   SAVE_DEFECT_REASON_DROPDOWN,
   SET_SELECTED_BORROWER,
+  SET_DOC_HISTORY,
+  RESET_DOC_CHK_DATA,
 } from './types';
 
 const reducer = (state = {}, action) => {
@@ -136,6 +138,15 @@ const reducer = (state = {}, action) => {
         ...state,
         selectedBorrower,
       };
+    }
+    case SET_DOC_HISTORY: {
+      return {
+        ...state,
+        docHistory: action.payload,
+      };
+    }
+    case RESET_DOC_CHK_DATA: {
+      return {};
     }
     default:
       return state;

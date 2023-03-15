@@ -54,11 +54,22 @@ const DocumentViewer = (props) => {
     setUploadedFiles, uploadedFiles, fetchFilenetDocType, brand, loanNumber,
     setSnackBarValuesTrigger,
   } = props;
-
   useEffect(() => {
     fetchFileNetData();
     filenetDocCategoryDropDown(DOC_DOCUMENT_CAT);
   }, []);
+
+  const handleDone = (val) => {
+    setLinkDocPopover(val);
+    if (!val) {
+      setcheckedDocumentId([]);
+      setcheckedFilenetDoc([]);
+    }
+  };
+
+  useEffect(() => {
+    handleDone(false);
+  }, [radioSelect]);
 
   const handleSearchChange = (value) => {
     setSearchText(value);
@@ -125,8 +136,11 @@ const DocumentViewer = (props) => {
     const files = [...documents];
     const filteredFiles = files.slice()
       .filter((doc) => {
-        const isDocTitle = R.toUpper(doc.docTitle).includes(R.toUpper(searchText));
-        return (isDocTitle);
+        if (doc.docTitle) {
+          const isDocTitle = R.toUpper(doc.docTitle).includes(R.toUpper(searchText));
+          return (isDocTitle);
+        }
+        return false;
       });
     const pages = Math.ceil(filteredFiles.length / paginationVal.docsPerPage);
     if (pages !== paginationVal.noOfPages) {
@@ -142,11 +156,6 @@ const DocumentViewer = (props) => {
     setFilterAnchorEl(event.currentTarget);
     setFilterOpen(true);
     setPopoverId('simple-popover');
-  };
-
-  const handleDone = (val) => {
-    setLinkDocPopover(val);
-    if (!val) { setcheckedDocumentId([]); }
   };
 
   const selectDocument = (doc) => {
@@ -272,6 +281,7 @@ const DocumentViewer = (props) => {
   const handleUploadClose = () => {
     setIsUploadOpen(false);
     setUploadedFiles([]);
+    setSelectedFilenetCategory('');
   };
 
   const handleClose = () => {
@@ -346,6 +356,7 @@ const DocumentViewer = (props) => {
       />
       <LinkPopover
         checkedFilenetDocs={checkedFilenetDoc}
+        handleDone={handleDone}
         linkDocPopover={linkDocPopover}
         setLinkDocPopover={setLinkDocPopover}
         type="link"

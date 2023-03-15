@@ -22,6 +22,9 @@ import {
   actions as incomeActions,
 } from 'ducks/income-calculator/index';
 import {
+  actions as docChecklistActions,
+} from 'ducks/document-checklist/index';
+import {
   actions as checklistActions,
   selectors as checklistSelectors,
 } from 'ducks/tasks-and-checklist/index';
@@ -637,6 +640,7 @@ function* selectEval(searchItem) {
   const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
   yield put(incomeActions.resetIncomeChecklistData());
   yield put(widgetActions.resetWidgetData());
+  yield put(docChecklistActions.resetDocChecklistData());
   if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
     yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });

@@ -1,5 +1,7 @@
 import React from 'react';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -11,6 +13,7 @@ import List from '@material-ui/core/List';
 import IconButton from '@material-ui/core/IconButton';
 import MessageOutlinedIcon from '@material-ui/icons/MessageOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import { selectors as documentChecklistSelectors } from 'ducks/document-checklist';
 import './DocumentHistory.css';
 import { DateFormatter } from '../../../lib/DateUtils';
 
@@ -37,12 +40,12 @@ const DialogTitle = withStyles(styles)((props) => {
   return (
     <MuiDialogTitle className={classes.root} disableTypography {...other}>
       <Typography
-        style={{ fontSize: '16px', fontWeight: 700, color: '#4E586E' }}
+        styleName="doc-title"
         variant="h6"
       >
         {title}
       </Typography>
-      <Typography style={{ fontSize: '1rem', color: '#939299' }} variant="h6">
+      <Typography styleName="title" variant="h6">
         {documentTitle}
       </Typography>
       {onClose ? (
@@ -101,7 +104,7 @@ const DocumentCard = (props) => {
             Expiration
           </Grid>
           <Grid item styleName="itemValue">
-            {DateFormatter(expirationDate)}
+            {R.isNil(expirationDate) ? 'MM/DD/YYYY' : DateFormatter(expirationDate)}
           </Grid>
         </Grid>
         <Grid xs={4}>
@@ -144,9 +147,9 @@ function generate(index, val, isLast) {
   return <DocumentCard key={index} data={val} isLast={isLast} />;
 }
 
-export default function DocumentHistoryModal(props) {
+function DocumentHistoryModal(props) {
   const {
-    historyData, isOpen, handleClose, documentName,
+    isOpen, handleClose, documentName, historyData,
   } = props;
 
   return (
@@ -171,11 +174,24 @@ export default function DocumentHistoryModal(props) {
           title="Document History"
         />
         <DialogContent>
-          <List styleName="doc-history-list">
-            {
+          {R.isEmpty(historyData) || R.isNil(historyData)
+            ? (
+              <Typography
+                styleName="no-history"
+                variant="h6"
+              >
+                {'No History Found'}
+              </Typography>
+            )
+
+            : (
+              <List styleName="doc-history-list">
+                {
             historyData.map((val, index, arr) => generate(index, val, !(arr.length - 1 === index)))
             }
-          </List>
+              </List>
+            )
+}
         </DialogContent>
       </Dialog>
     </div>
@@ -185,16 +201,12 @@ export default function DocumentHistoryModal(props) {
 DocumentHistoryModal.propTypes = {
   documentName: PropTypes.string.isRequired,
   handleClose: PropTypes.func.isRequired,
-  historyData: PropTypes.arrayOf(
-    PropTypes.shape({
-      comments: PropTypes.string,
-      expiredDate: PropTypes.string,
-      uploadedDate: PropTypes.string,
-    }),
-  ),
+  historyData: PropTypes.shape().isRequired,
   isOpen: PropTypes.bool.isRequired,
 };
 
-DocumentHistoryModal.defaultProps = {
-  historyData: [],
-};
+const mapStateToProps = state => ({
+  historyData: documentChecklistSelectors.getDocHistory(state),
+});
+
+export default connect(mapStateToProps, null)(DocumentHistoryModal);

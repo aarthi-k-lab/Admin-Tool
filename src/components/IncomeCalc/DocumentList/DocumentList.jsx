@@ -48,7 +48,6 @@ class DocumentList extends React.PureComponent {
       editText: null,
       expanded: {},
       anchorDocReview: {},
-      radio: null,
       documents: null,
       openHistoryModel: null,
       linkDocPopover: false,
@@ -63,15 +62,25 @@ class DocumentList extends React.PureComponent {
   componentDidMount() {
     const {
       docReviewStatusDropdown,
-      fetchDocTxnDocuments, fetchInitialSelectedBorrower,
+      fetchDocTxnDocuments, fetchInitialSelectedBorrower, value,
     } = this.props;
     docReviewStatusDropdown(PROPERTY_PRIMARY_USE);
-    fetchDocTxnDocuments();
+    if (R.isEmpty(value) || R.isNil(value)) { fetchDocTxnDocuments(); }
     fetchInitialSelectedBorrower(TASK_BLUEPRINT_CODE);
   }
 
+  componentDidUpdate(prevProps) {
+    const { selectedBorrower, setRadioSelect } = this.props;
+
+    if (prevProps.selectedBorrower !== selectedBorrower) {
+      setRadioSelect('');
+    }
+  }
+
   static getDerivedStateFromProps(props) {
-    const { value, selectedBorrower } = props;
+    const {
+      value, selectedBorrower,
+    } = props;
     const data = R.propOr([], 'documents', R.find(R.propEq('borrowerName',
       selectedBorrower))(value));
     if (data) {
@@ -81,6 +90,10 @@ class DocumentList extends React.PureComponent {
   }
 
   handleOpenHistoryModel = index => () => {
+    const { fetchDocHistory } = this.props;
+    const { documents } = this.state;
+    const docTxnId = R.propOr(0, 'docTxnId', R.nth(index, documents));
+    fetchDocHistory({ docTxnId });
     this.setState({ openHistoryModel: index });
   }
 
@@ -123,7 +136,6 @@ class DocumentList extends React.PureComponent {
 
   handleRadioClick = documentName => () => {
     const { setRadioSelect } = this.props;
-    this.setState({ radio: documentName });
     setRadioSelect({ radioSelect: documentName });
   }
 
@@ -153,7 +165,7 @@ class DocumentList extends React.PureComponent {
 
   handleDocReasonClick = index => (event) => {
     const { anchorDocReasons, documents } = this.state;
-    const { defectReasonDropdown } = this.props;
+    const { defectReasonDropdown, defectReasonOptions } = this.props;
     const docReasons = R.pathOr([], [index, 'docReasons'], documents);
     this.setState({
       editCheckBox: anchorDocReasons[index] ? null : docReasons,
@@ -163,7 +175,9 @@ class DocumentList extends React.PureComponent {
           ? null : event.currentTarget,
       },
     });
-    defectReasonDropdown(R.pathOr('', [index, 'documentName'], documents));
+    const docName = R.pathOr('', [index, 'documentName'], documents);
+    if (!defectReasonOptions[docName]
+      || defectReasonOptions[docName].length === 0) { defectReasonDropdown(docName); }
   }
 
   handCheckboxClick = checkBoxItem => (event) => {
@@ -189,7 +203,10 @@ class DocumentList extends React.PureComponent {
   getDefectReasonText = (docReasons, index) => {
     const { documents } = this.state;
     const docName = R.pathOr('', [index, 'documentName'], documents);
-    const { defectReasonOptions } = this.props;
+    const { defectReasonOptions, defectReasonDropdown } = this.props;
+    if (docReasons.length > 0 && !defectReasonOptions[docName]) {
+      defectReasonDropdown(docName);
+    }
     const dftData = defectReasonOptions[docName]
       ? defectReasonOptions[docName].reduce((acc, curr) => {
         if (docReasons.includes(curr.docDefectId)) {
@@ -247,7 +264,7 @@ class DocumentList extends React.PureComponent {
   render() {
     const {
       docReviewStatusOptions, errorFields,
-      defectReasonOptions,
+      defectReasonOptions, radioSelect,
     } = this.props;
     const {
       documents,
@@ -255,7 +272,7 @@ class DocumentList extends React.PureComponent {
       removalDocumentName, removalDocumentId, tagPopover, tagRequired, taggedDocumentName,
     } = this.state;
     const {
-      anchorDocReview, radio, expanded, openHistoryModel, editText, editedComment,
+      anchorDocReview, expanded, openHistoryModel, editText, editedComment,
       anchorDocReasons, editCheckBox, anchorMoreOptions,
     } = this.state;
     return (
@@ -271,7 +288,7 @@ class DocumentList extends React.PureComponent {
                     documentReviewStatus, required, comments, docTxnId,
                   } = item;
                   const errors = errorFields[docTxnId] || [];
-                  const selectedStyleName = documentName === radio ? 'selected' : '';
+                  const selectedStyleName = documentName === radioSelect ? 'selected' : '';
                   const errorStyle = errors.length > 0 ? 'error' : '';
                   const docReviewError = errors.includes('documentReviewStatus') ? 'docReviewError' : '';
                   const expirationDateError = errors.includes('expirationDate') ? 'expirationDateError' : '';
@@ -281,7 +298,7 @@ class DocumentList extends React.PureComponent {
                       <div styleName="accordian-header">
                         <div styleName="left-header">
                           <Radio
-                            checked={documentName === radio}
+                            checked={documentName === radioSelect}
                             onChange={this.handleRadioClick(documentName)}
                             value={documentName}
                           />
@@ -483,7 +500,6 @@ class DocumentList extends React.PureComponent {
                 <DocumentHistoryModal
                   documentName={R.propOr('', 'documentName', R.nth(openHistoryModel, documents))}
                   handleClose={this.handleCloseHistoryModel}
-                  historyData={R.propOr([], 'history', R.nth(openHistoryModel, documents))}
                   isOpen={!R.isNil(openHistoryModel)}
                 />
                 <LinkPopover
@@ -516,9 +532,17 @@ DocumentList.propTypes = {
   docReviewStatusDropdown: PropTypes.func.isRequired,
   docReviewStatusOptions: PropTypes.shape().isRequired,
   errorFields: PropTypes.shape().isRequired,
+  fetchDocHistory: PropTypes.func.isRequired,
   fetchDocTxnDocuments: PropTypes.func.isRequired,
   fetchInitialSelectedBorrower: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string.isRequired,
+  }).isRequired,
+  radioSelect: PropTypes.string.isRequired,
+  selectedBorrower: PropTypes.string.isRequired,
   setRadioSelect: PropTypes.func.isRequired,
+  value: PropTypes.shape().isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -527,6 +551,7 @@ const mapStateToProps = state => ({
   errorFields: documentChecklistSelectors.getErrorFields(state),
   selectedBorrower: documentChecklistSelectors.getSelectedBorrower(state),
   defectReasonOptions: documentChecklistSelectors.getDefectReasonDropdown(state),
+  radioSelect: documentChecklistSelectors.getRadioSelect(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -538,5 +563,6 @@ const mapDispatchToProps = dispatch => ({
   defectReasonDropdown: documentChecklistOperations.defectReasonDropdownOperation(dispatch),
   fetchInitialSelectedBorrower:
   documentChecklistOperations.fetchInitialSelectedBorrowerOperation(dispatch),
+  fetchDocHistory: documentChecklistOperations.fetchDocHistoryOperation(dispatch),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentList);

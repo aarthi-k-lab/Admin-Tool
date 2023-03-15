@@ -7,13 +7,10 @@ import {
   Button,
   Grid,
   Typography,
-  // InputLabel,
   FormControl,
   Divider,
   InputAdornment,
   IconButton,
-  // Select,
-  // OutlinedInput,
   MenuItem,
   Select,
 } from '@material-ui/core';
@@ -119,8 +116,7 @@ function FilterPopover(props) {
                 </Typography>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <DatePicker
-                    disableFuture
-                    disableToolbar
+                    autoOk
                     emptyLabel="MM/DD/YYYY"
                     format="MM/DD/YYYY"
                     InputProps={{
@@ -138,11 +134,12 @@ function FilterPopover(props) {
                       ),
                     }}
                     inputVariant="outlined"
-                    maxDate={filterEndDate || ''}
+                    maxDate={filterEndDate || new Date()}
                     name="filterStartDate"
                     onChange={value => setFilterStartDate(dateFormatter(value))}
                     style={{ padding: '0px' }}
                     value={filterStartDate}
+                    variant="inline"
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
@@ -152,8 +149,7 @@ function FilterPopover(props) {
                 </Typography>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <DatePicker
-                    disableFuture
-                    disableToolbar
+                    autoOk
                     emptyLabel="MM/DD/YYYY"
                     format="MM/DD/YYYY"
                     InputProps={{
@@ -171,11 +167,13 @@ function FilterPopover(props) {
                       ),
                     }}
                     inputVariant="outlined"
+                    maxDate={new Date()}
                     minDate={filterStartDate || ''}
                     name="filterEndDate"
                     onChange={value => setFilterEndDate(dateFormatter(value))}
                     style={{ padding: '0px' }}
                     value={filterEndDate}
+                    variant="inline"
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
@@ -186,7 +184,6 @@ function FilterPopover(props) {
             <Grid item>
               <Typography styleName="filter-pop-grid-item-category">
               Document Category
-
               </Typography>
             </Grid>
             <Grid item style={{ width: '145px' }} xs="12">

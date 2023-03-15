@@ -41,7 +41,7 @@ export default function DocNavHeader(props) {
                   styleName="doneBtn"
                   variant="contained"
                 >
-                  DONE
+                  LINK
 
                 </Button>
               </Toolbar>

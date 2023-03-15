@@ -23,33 +23,6 @@ import TableCell from '@material-ui/core/TableCell';
 import DocumentList from '../DocumentList';
 import DocumentViewer from '../DocumentViewer/DocumentViewer';
 
-const tempData = {
-  '4506-C': ['Section 6 incomplete, must list 1040',
-    'Section 6A incomplete',
-    'Section 8 missing current year or correct format',
-    'Section 3 does not reflect correct mailing address filed with Tax Return',
-    'Document is not legible',
-    'Document is expired',
-    'Missing Pages',
-    'Document is altered/marked up',
-    'Document is filled out incorrectly',
-    'Document is not signed',
-    'Document is not Dated',
-    'Other-See Comments',
-    'Need 4506-C not 4506-T or  4506-T EZ form',
-    'Document not provided'],
-  'Mortgage Assistance Application (MAA)': ['Section 6 incomplete, must list 1040',
-    'Section 6A incomplete',
-    'Section 8 missing current year or correct format',
-    'Section 3 does not reflect correct mailing address filed with Tax Return',
-    'Document is not legible',
-    'Document is expired',
-    'Missing Pages'],
-};
-
-// const mockData = ;
-
-
 const AccordionSummary = withStyles({
   root: {
     minHeight: '1.5rem',
@@ -99,7 +72,6 @@ class TaskSection extends React.PureComponent {
         isAccordianTitle, defaultExpanded, cnsdtType, colSpan, columnHeaders, columnLabel, spacing,
       }, title, disabled, failureReason, onChange, accHeaderData,
     } = this.props;
-    // const { mockData, radioSelect } = this.state;
     const actionValue = valuePath ? R.assocPath(valuePath, true, {}) : true;
     const headerStyle = getStyleName('taskSection', styleName, 'header');
     const hr = horizontalRule && (
@@ -394,7 +366,7 @@ class TaskSection extends React.PureComponent {
             </TableBody>
           </Table>
         );
-      case 'document-checklist': { return (<DocumentList tempData={tempData} />); }
+      case 'document-checklist': { return (<DocumentList />); }
       case 'document-viewer': { return <DocumentViewer />; }
       default: {
         return (

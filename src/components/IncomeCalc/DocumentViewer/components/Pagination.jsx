@@ -6,7 +6,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { ChevronLeftOutlined, ChevronRightOutlined } from '@material-ui/icons';
-// import styles from './Pagination.css';
 
 function Pagination(props) {
   const {
@@ -41,8 +40,8 @@ function Pagination(props) {
         dots,
         numberOfPages.length,
       ];
-    } else if (currDocPage > numberOfPages.length - 4) { // > 7
-      const sliced = numberOfPages.slice(numberOfPages.length - 5); // slice(10-4)
+    } else if (currDocPage > numberOfPages.length - 4) {
+      const sliced = numberOfPages.slice(numberOfPages.length - 5);
       tempNumberOfPages = ([1, dots, ...sliced]);
     }
     setArrOfcurrPages(tempNumberOfPages);
@@ -57,7 +56,6 @@ function Pagination(props) {
       >
         <IconButton
           onClick={() => {
-            // setcurrentPage(prev => (prev <= 1 ? prev : prev - 1));
             updatePagination('dec', 0);
           }
           }
@@ -90,7 +88,6 @@ function Pagination(props) {
             >
               <Typography
                 onClick={() => {
-                  // setcurrentPage(item);
                   updatePagination('', item);
                 }}
                 style={currDocPage === item ? {
@@ -123,9 +120,7 @@ function Pagination(props) {
         xs={2}
       >
         <IconButton
-          // className={currDocPage === 1 ? styles.disabled : ''}
           onClick={() => {
-            // setcurrentPage(prev => (prev >= numberOfPages.length ? prev : prev + 1));
             updatePagination('inc', 0);
           }
             }
@@ -139,9 +134,7 @@ function Pagination(props) {
 
 Pagination.propTypes = {
   currDocPage: PropTypes.number.isRequired,
-  // pages: PropTypes.string.isRequired,
   paginationVal: PropTypes.number.isRequired,
-  // setPaginationVal: PropTypes.func.isRequired,
   updatePagination: PropTypes.func.isRequired,
 };
 

@@ -16,6 +16,7 @@ import {
   storeProcessDetails,
 } from 'ducks/tasks-and-checklist/actions';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
+import moment from 'moment';
 import {
   SET_RESULT_OPERATION, TOGGLE_BANNER, USER_NOTIF_MSG,
   SET_GET_NEXT_STATUS, CHECKLIST_NOT_FOUND,
@@ -26,7 +27,7 @@ import {
   DOC_CHECKLIST_FETCH_ERROR,
   DOC_CHECKLIST_SAVE_ERROR,
   DEFECT_REASON_ERROR,
-
+  DOC_HIST_ERROR,
 } from '../../../constants/loanInfoComponents';
 import {
   LINK_DOCUMENTS_SAGA, LINK_DOCUMENTS, BORRORWERS_NAMES_SAGA, BORRORWERS_NAMES,
@@ -36,6 +37,7 @@ import {
   DOCUMENT_DETAILS_CHANGE,
   DOCUMENT_DETAILS_CHANGE_SAGA, FETCH_DOC_TXNS, DOC_CHECKLIST_DATA, SAVE_DOC_CHECKLIST_DATA,
   TRIGGER_DOC_VALIDATION, SET_ERROR_FIELDS, SAVE_DEFECT_REASON_DROPDOWN, DEFECT_REASON_DROPDOWN,
+  FETCH_DOC_HISTORY, SET_DOC_HISTORY,
   DOC_CHECKLIST_ADD_CONTRIBUTOR,
 } from './types';
 import {
@@ -133,8 +135,8 @@ function* unlinkDocuments(payload) {
     return data;
   }) : [];
   const payLoad = {
-    docTxnIds,
-    removalDocumentId,
+    docTransactionId: docTxnIds,
+    fileNetDocId: removalDocumentId,
   };
   yield call(Api.callPost, `/api/dataservice/DocCheckList/unlinkDocsAndDocTxn/${userPrincipalName}`, payLoad);
   yield put({
@@ -146,11 +148,17 @@ function* unlinkDocuments(payload) {
 function* fetchBorrowersNames(payload) {
   const { payload: { type } } = payload;
   const docChecklistData = yield select(selectors.getDocChecklistData);
+  const processedBorrower = yield select(incomeCalcSelectors.getBorrowers);
   if (type === 'link') {
     const data = {};
     if (docChecklistData) {
       docChecklistData.map((borrower) => {
-        data[borrower.borrowerName] = borrower.displayName;
+        const positionNum = parseInt(borrower.borrowerName.split('_')[1], 10);
+        const borrObj = R.find(R.propEq('borrowerPstnNumber', positionNum))(processedBorrower);
+        data[borrower.borrowerName] = {
+          displayName: borrower.displayName,
+          description: borrObj.description,
+        };
         return borrower;
       });
     }
@@ -168,7 +176,13 @@ function* fetchBorrowersNames(payload) {
             return curr1.linkedDocuments.reduce((acc2, curr2) => {
               if (curr2.fileNetDocId === removalDocumentId) {
                 const { borrowerName, displayName } = curr;
-                return { ...acc2, [borrowerName]: displayName };
+                const positionNum = parseInt(borrowerName.split('_')[1], 10);
+                const borrObj = R.find(R.propEq('borrowerPstnNumber', positionNum))(processedBorrower);
+                return {
+                  ...acc2,
+                  [borrowerName]:
+                  { displayName, description: borrObj.description },
+                };
               }
               return acc2;
             }, { ...acc1 });
@@ -190,7 +204,9 @@ function* fetchBorrowersNames(payload) {
         return curr.documents.reduce((acc1, curr1) => {
           if (curr1.documentName === taggedDocumentName && curr1.required === tagRequired) {
             const { borrowerName, displayName } = curr;
-            return { ...acc1, [borrowerName]: displayName };
+            const positionNum = parseInt(borrowerName.split('_')[1], 10);
+            const borrObj = R.find(R.propEq('borrowerPstnNumber', positionNum))(processedBorrower);
+            return { ...acc1, [borrowerName]: { displayName, description: borrObj.description } };
           }
           return acc1;
         }, { ...acc });
@@ -235,7 +251,9 @@ function* fetchdocReviewStatusDropdown(payload) {
       activeIndicator: item.activeIndicator,
       displayText: item.classCode,
     });
-    const type = R.propOr('', 'payload', payload);
+    let type = R.propOr('', 'payload', payload);
+    // replacing / with !!! as / is not encoded
+    type = type.replaceAll('/', '!!!');
     let response = yield call(Api.callGet, `/api/dataservice/api/classCodes/${type}`);
     if (type === 'Doc Review Status') {
       if (response && response.length > 0) {
@@ -272,7 +290,10 @@ function* fetchFileNetData() {
     const loanId = yield select(dashboardSelectors.loanNumber);
     const brand = yield select(dashboardSelectors.brand);
     const filterStartDate = yield select(selectors.getFilterStartDate);
-    const filterEndDate = yield select(selectors.getFilterEndDate);
+
+    let filterEndDate = yield select(selectors.getFilterEndDate);
+    filterEndDate = moment(filterEndDate).add(1, 'd').format('MM/DD/YYYY');
+    filterEndDate = filterEndDate === 'Invalid date' ? null : filterEndDate;
     const filterDocCategory = yield select(selectors.getFilterDocCategory);
     const fileNetData = yield call(Api.callGet, `/api/document/api/FileNet/GetDocuments/${loanId}?${filterDocCategory !== '' ? `DocumentCategory=${filterDocCategory}` : ''}${filterStartDate ? `&CreatedDateFrom=${filterStartDate}` : ''}${filterEndDate ? `&CreatedDateTo=${filterEndDate}` : ''}`, { brand });
     yield put({ type: SET_FILENET_DATA, payload: fileNetData });
@@ -398,7 +419,7 @@ function* saveDocChecklistData() {
             comments: doc.comments,
             docReviewStatus: doc.documentReviewStatus,
             defectReasons: doc.docReasons,
-            expirationDate: new Date(doc.expirationDate),
+            expirationDate: doc.expirationDate ? new Date(doc.expirationDate) : null,
             isRequired: doc.required ? 1 : 0,
           };
           return [...acc1, obj];
@@ -444,8 +465,9 @@ function* docValidation() {
       }
       if (ed.length > 0) {
         errorFields[document.docTxnId] = ed;
-        if (!errorFields.borrowerNames.includes(borrData.displayName)) {
-          errorFields.borrowerNames = [...errorFields.borrowerNames, borrData.displayName];
+        if (!errorFields.borrowerNames.includes(borrData.borrowerName)) {
+          errorFields.borrowerNames = [...errorFields.borrowerNames, borrData.borrowerName,
+          ];
         }
       }
       return document;
@@ -473,7 +495,7 @@ function* fetchDefectReasonDropdown(payload) {
   try {
     let docChecklistData = yield select(selectors.getDefectReasonDropdown);
     const type = R.propOr('', 'payload', payload);
-    const response = yield call(Api.callGet, `/api/dataservice/api/getDefectReasonBydocType/${type}`);
+    const response = yield call(Api.callPost, '/api/dataservice/api/getDefectReasonBydocType', { docName: type });
     docChecklistData = { ...docChecklistData, [type]: response };
     yield put({
       type: SAVE_DEFECT_REASON_DROPDOWN,
@@ -485,6 +507,25 @@ function* fetchDefectReasonDropdown(payload) {
       payload: {
         level: ERROR,
         status: DEFECT_REASON_ERROR,
+      },
+    });
+  }
+}
+
+function* fetchDocTransactionHistory(payload) {
+  try {
+    const { payload: { docTxnId } } = payload;
+    const response = yield call(Api.callGet, `/api/dataservice/DocCheckList/getDocHistory/${docTxnId}`);
+    yield put({
+      type: SET_DOC_HISTORY,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: DOC_HIST_ERROR,
       },
     });
   }
@@ -596,9 +637,11 @@ function* addContributorDocChecklist(action) {
     };
     const addDocTxnsResponse = yield call(Api.callPost, '/api/dataservice/DocCheckList/createDocChecklist', payloadForCreateDoc);
     if (addDocTxnsResponse.length > 0) {
-      const newData = yield call(Api.callGet, `/api/dataservice/DocCheckList/getDocTxns/${loanNumber}/${newAddedBorrowerPsntNum}`);
+      let newData = yield call(Api.callGet, `/api/dataservice/DocCheckList/getDocTxns/${loanNumber}/${newAddedBorrowerPsntNum}`);
+      newData = [newData];
+      newData = preprocessDocChecklistData(newData);
       let docChecklistData = yield select(selectors.getDocChecklistData);
-      docChecklistData = [...docChecklistData, newData];
+      docChecklistData = [...docChecklistData, ...newData];
       yield put({
         type: DOCUMENT_DETAILS_CHANGE_SAGA,
         payload: docChecklistData,
@@ -653,6 +696,10 @@ function* watchDefectReasonDropdown() {
   yield takeEvery(DEFECT_REASON_DROPDOWN, fetchDefectReasonDropdown);
 }
 
+function* watchFetchDocTransactionHistory() {
+  yield takeEvery(FETCH_DOC_HISTORY, fetchDocTransactionHistory);
+}
+
 function* watchAddContributor() {
   yield takeEvery(DOC_CHECKLIST_ADD_CONTRIBUTOR, addContributorDocChecklist);
 }
@@ -666,6 +713,7 @@ export const TestExports = {
   watchFetchDocChecklistData,
   watchSaveDocChecklistData,
   watchDefectReasonDropdown,
+  watchFetchDocTransactionHistory,
 };
 
 export const combinedSaga = function* combinedSaga() {
@@ -681,6 +729,7 @@ export const combinedSaga = function* combinedSaga() {
     watchSaveDocChecklistData(),
     watchDocValidation(),
     watchDefectReasonDropdown(),
+    watchFetchDocTransactionHistory(),
     watchAddContributor(),
   ]);
 };

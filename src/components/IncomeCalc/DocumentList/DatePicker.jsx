@@ -22,7 +22,6 @@ export default function Date({ date, onDateChange }) {
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <DatePicker
-        disableToolbar
         emptyLabel="MM/DD/YYYY"
         format="MM/DD/YYYY"
         onChange={onDateChange}

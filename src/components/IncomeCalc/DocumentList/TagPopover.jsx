@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import * as R from 'ramda';
 import { connect } from 'react-redux';
 import {
   Dialog, DialogTitle, DialogContent, Grid, Typography, IconButton, Checkbox, Button,
@@ -62,10 +63,10 @@ function TagPopover(props) {
               </Grid>
               <Grid item style={{ padding: '0px' }} xs={11}>
                 <Typography styleName="tag-dialog-content-main-name">
-                  {borrowerNames[name]}
+                  {R.pathOr('', [name, 'displayName'], borrowerNames)}
                 </Typography>
                 <Typography styleName="tag-dialog-content-name">
-                    Borrower
+                  {R.pathOr('', [name, 'description'], borrowerNames)}
                 </Typography>
               </Grid>
             </Grid>
@@ -114,10 +115,10 @@ function TagPopover(props) {
               </Grid>
               <Grid item style={{ padding: '0px' }} xs={11}>
                 <Typography styleName="tag-dialog-content-main-name">
-                  {borrowerNames[selectedBorrower]}
+                  {R.pathOr('', [selectedBorrower, 'displayName'], borrowerNames)}
                 </Typography>
                 <Typography styleName="tag-dialog-content-name">
-                    Borrower
+                  {R.pathOr('', [selectedBorrower, 'description'], borrowerNames)}
                 </Typography>
               </Grid>
             </Grid>

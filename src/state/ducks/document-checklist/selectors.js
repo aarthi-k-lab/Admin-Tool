@@ -18,6 +18,7 @@ const getFilenetDocType = state => R.pathOr([], ['documentChecklist', 'filenetDo
 const getDocChecklistData = state => R.pathOr([], ['documentChecklist', 'docChecklistData'], state);
 const getErrorFields = state => R.pathOr({}, ['documentChecklist', 'errorFields'], state);
 const getDefectReasonDropdown = state => R.pathOr({}, ['documentChecklist', 'defectReasonData'], state);
+const getDocHistory = state => R.pathOr([], ['documentChecklist', 'docHistory'], state);
 
 const selectors = {
   getRadioSelect,
@@ -35,6 +36,7 @@ const selectors = {
   getDocChecklistData,
   getErrorFields,
   getDefectReasonDropdown,
+  getDocHistory,
 };
 
 export default selectors;

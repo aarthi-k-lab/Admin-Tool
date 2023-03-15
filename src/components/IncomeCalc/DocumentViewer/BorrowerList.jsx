@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import * as R from 'ramda';
 import { connect } from 'react-redux';
 import * as PropTypes from 'prop-types';
 import { Grid, Typography, Checkbox } from '@material-ui/core';
@@ -51,10 +52,10 @@ function BorrowerList(props) {
             </Grid>
             <Grid item styleName="borrowerDetailConatiner" xs={10}>
               <Typography styleName="borrowerName">
-                {borrowerNames[name]}
+                {R.pathOr('', [name, 'displayName'], borrowerNames)}
               </Typography>
               <Typography styleName="borrowerOrder">
-                Borrower
+                {R.pathOr('', [name, 'description'], borrowerNames)}
               </Typography>
             </Grid>
           </Grid>

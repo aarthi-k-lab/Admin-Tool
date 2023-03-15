@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import * as R from 'ramda';
 import { connect } from 'react-redux';
 import {
   IconButton,
@@ -21,9 +22,13 @@ const LinkPopover = (props) => {
   const {
     linkDocPopover, setLinkDocPopover,
     selectedBorrower, removalDocumentName, removalDocumentId,
-    checkedFilenetDocs, type, borrowerNames,
+    checkedFilenetDocs, type, borrowerNames, handleDone,
   } = props;
-  const [checkedBorrowers, setCheckedBorrowers] = useState([selectedBorrower]);
+  const [checkedBorrowers, setCheckedBorrowers] = useState([]);
+
+  useEffect(() => {
+    setCheckedBorrowers([selectedBorrower]);
+  }, [linkDocPopover]);
 
   const checkBorrowers = (name) => {
     setCheckedBorrowers(checkedBorrowers.includes(name)
@@ -39,6 +44,7 @@ const LinkPopover = (props) => {
     };
     linkDocumentsToBorrowers(payload);
     setLinkDocPopover(false);
+    handleDone(false);
     setCheckedBorrowers([selectedBorrower]);
   };
 
@@ -118,10 +124,10 @@ const LinkPopover = (props) => {
               </Grid>
               <Grid item style={{ padding: '0px' }} xs={10}>
                 <Typography styleName="link-pop-grid-item-name">
-                  {borrowerNames[selectedBorrower]}
+                  {R.pathOr('', [selectedBorrower, 'displayName'], borrowerNames)}
                 </Typography>
                 <Typography styleName="link-pop-grid-item-name-typo">
-                Borrower
+                  {R.pathOr('', [selectedBorrower, 'description'], borrowerNames)}
                 </Typography>
               </Grid>
             </Grid>
@@ -139,9 +145,7 @@ const LinkPopover = (props) => {
                 styleName="link-pop-link-unlink-button"
                 variant="contained"
               >
-                {
-                type === 'link' ? 'Link' : 'Unlink'
-              }
+              Done
               </Button>
               <Button
                 onClick={() => setLinkDocPopover(false)}
@@ -162,6 +166,7 @@ const LinkPopover = (props) => {
 LinkPopover.propTypes = {
   borrowerNames: PropTypes.shape().isRequired,
   checkedFilenetDocs: PropTypes.arrayOf({}).isRequired,
+  handleDone: PropTypes.func.isRequired,
   linkDocPopover: PropTypes.bool.isRequired,
   linkDocumentsToBorrowers: PropTypes.func.isRequired,
   removalDocumentId: PropTypes.number.isRequired,

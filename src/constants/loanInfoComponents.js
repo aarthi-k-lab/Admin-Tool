@@ -15,6 +15,7 @@ const RFD_TITLE = 'Reason for Default (RFD)';
 const RFD_SAVE_INFO = 'Clicking on the Save Button will Add the RFD information to the Reason(s) History';
 const DOC_CHECKLIST_FETCH_ERROR = "Couldn't fetch Doc Checklist Data. Service down";
 const DOC_CHECKLIST_SAVE_ERROR = 'Error while saving Data.Please try after sometime';
+const DOC_HIST_ERROR = "Couldn't fetch Document History";
 
 module.exports = {
   CHECKLIST,
@@ -34,4 +35,5 @@ module.exports = {
   DOC_CHECKLIST_FETCH_ERROR,
   DOC_CHECKLIST_SAVE_ERROR,
   DEFECT_REASON_ERROR,
+  DOC_HIST_ERROR,
 };
