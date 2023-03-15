@@ -12,6 +12,7 @@ const checklistGridColumnSize = {
     'income-calculator': 8,
     'expense-calculator': 8,
     'asset-verification': 8,
+    'fico-score': 8,
     'asset-verification-back': 2,
     'sla-rules': 10,
     default: 6,
@@ -29,12 +30,14 @@ const checklistGridColumnSize = {
     'income-calculator': 1,
     'expense-calculator': 1,
     'asset-verification': 1,
+    'fico-score': 1,
     default: 2,
   },
   lock: {
     'income-calculator': 1,
     'expense-calculator': 1,
     'asset-verification': 1,
+    'fico-score': 1,
     default: 2,
   },
   prev: {
@@ -42,6 +45,7 @@ const checklistGridColumnSize = {
     'expense-calculator': 1,
     'asset-verification': 1,
     'sla-rules': 1,
+    'fico-score': 1,
     default: 2,
   },
   next: {
@@ -49,6 +53,7 @@ const checklistGridColumnSize = {
     'expense-calculator': 1,
     'asset-verification': 1,
     'sla-rules': 1,
+    'fico-score': 1,
     default: 2,
   },
   back: {

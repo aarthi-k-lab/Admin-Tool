@@ -118,3 +118,18 @@
 .default {
   margin: 0.5rem 0 1rem 1rem;
 }
+
+.asset.asset {
+  color: var(--grey-650);
+  font-size: 1rem !important;
+  text-align: justify;
+  font-weight: bold;
+  display: flex;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+}
+
+.assetHistoryDetails {
+  display: flex !important;
+  margin-right: 1rem !important;
+}

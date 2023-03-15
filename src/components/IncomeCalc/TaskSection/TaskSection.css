@@ -519,3 +519,10 @@
   padding: 1rem;
 }
 
+.siTypeSect{
+  margin-top: 2rem !important;
+  border-radius: 7px !important;
+  width: 53% !important;
+  background-color: #f3f5f9 !important;
+}
+

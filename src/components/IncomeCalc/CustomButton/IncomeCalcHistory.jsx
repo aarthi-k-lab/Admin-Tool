@@ -13,6 +13,9 @@ import { FINANCIAL_CALCULATOR } from 'constants/widgets';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 import HTMLElements from 'constants/componentTypes';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import './CustomButton.css';
 
 
 function getCurrentDate() {
@@ -118,10 +121,30 @@ visibility
           ) : (
             <>
               {checklistType !== AV ? <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span> : null }
+              <>
+                {historyView && checklistType === AV
+                  ? (
+                    <Grid styleName="assetHistoryDetails">
+                      <Grid>
+                        <Typography styleName="asset">{getCSTDateTime(historyItem.calcDateTime)}</Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography styleName="asset">
+                          {` Asset ID: ${historyItem.lockId}`}
+                        </Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography styleName="asset">
+                          {` Completed By: ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  ) : null }
+              </>
               <Tooltip placement="left" title="Calculation History">
                 <Icon
                   onClick={this.handleViewHistory}
-                  style={{ cursor: 'pointer' }}
+                  style={checklistType !== AV ? { cursor: 'pointer' } : { cursor: 'pointer', margin: '0.6rem 0rem 0rem 0rem' }}
                 >
             history
                 </Icon>
@@ -170,6 +193,7 @@ IncomeCalcHistory.propTypes = {
   historyItem: PropTypes.shape({
     calcByUserName: PropTypes.string,
     calcDateTime: PropTypes.string,
+    lockId: PropTypes.string,
   }),
   historyView: PropTypes.bool,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),

@@ -270,6 +270,7 @@ function* fetchIncomeCalcChecklist(action) {
     const {
       isOpen: isWidgetOpen, processInstance, calcType, type,
     } = action.payload;
+    const taskBluePrintCode = yield select(taskSelectors.selectedTaskBlueprintCode);
     if (isWidgetOpen) {
       // Income Calculator widget
       yield put(showLoader());
@@ -296,6 +297,9 @@ function* fetchIncomeCalcChecklist(action) {
       yield call(fetchChecklistDetails, { payload: processInstance });
       yield put({ type: SET_MAIN_CHECKLISTID, payload: processInstance });
       yield call(fetchIncomeCalcHistory);
+      if (taskBluePrintCode === 'ASTVRFN') {
+        yield put({ type: SET_LOCK_AV });
+      }
       yield put({ type: HIDE_LOADER });
     }
     yield put({ type: TOGGLE_HISTORY_VIEW, payload: false });
@@ -413,8 +417,13 @@ function* handleChecklistItemChange(action) {
     if (FEUW_CHECKLIST.includes(taskBluePrintCode)) {
       yield put({ type: FETCH_SELECTED_BORROWER_DATA, payload: FICO_TASK_BLUEPRINT_CODE });
       yield put({ type: FETCH_SELECTED_CHECKLIST_DATA, payload: FICO_SCORE });
-    } if (checklistType === 'AV') {
+    } else if (checklistType === 'AV') {
       yield put({ type: SET_LOCK_AV });
+    } else if (checklistType === 'INCOME') {
+      yield put({
+        type: TOGGLE_LOCK_BUTTON,
+        payload: { enable: false, selectedChecklistLock: '' },
+      });
     }
     // clear the dirty state
     yield put({

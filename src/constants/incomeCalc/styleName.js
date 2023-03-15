@@ -45,6 +45,7 @@ const textFields = {
   savings: {
     div: 'savings',
     textField: 'weekly-text',
+    value: 'asset-text',
   },
   'monthly-inc': {
     div: 'monthly-inc',
@@ -222,6 +223,9 @@ const taskSection = {
   },
   'doc-add-action': {
     item: 'doc-add-action',
+  },
+  siTypeSect: {
+    item: 'siTypeSect',
   },
   default: {
     title: 'text-label',

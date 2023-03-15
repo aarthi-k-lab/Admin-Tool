@@ -168,7 +168,6 @@
   font-size: 1rem;
   margin: 1rem 1.5rem;
   padding-bottom: 1rem;
-  width: 50%;
   justify-content: space-between;
 }
 
@@ -341,4 +340,8 @@
   width: 13rem !important;
   text-align: right;
   max-width: 94%;
+}
+
+.asset-text{
+  background-color: white !important;
 }

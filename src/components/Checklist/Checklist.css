@@ -123,3 +123,8 @@
 .backButton {
   padding-left: 21.5rem !important;
 }
+
+.buttonStyle {
+  margin-top: 1rem !important;
+  justify-content: space-between;
+}

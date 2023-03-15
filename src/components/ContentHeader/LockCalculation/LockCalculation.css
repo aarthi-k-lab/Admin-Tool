@@ -1,5 +1,5 @@
 .lock.lock {
-  margin-right: 1.5rem;
+  margin: 0rem 1.5rem 0rem 0.5rem;
   height: 2.5rem;
   background: linear-gradient(90deg, #6a81f0 0%, #4155e2 100%);
   border-radius: 10px;
@@ -11,7 +11,7 @@
 }
 
 .lock-disabled.lock-disabled {
-  margin-right: 1.5rem;
+  margin: 0rem 1.5rem 0rem 0.5rem;
   height: 2.5rem;
   border-radius: 10px;
   font-style: normal;

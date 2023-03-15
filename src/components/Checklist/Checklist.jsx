@@ -9,7 +9,7 @@ import NumberFormat from 'react-number-format';
 import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { operations, selectors as checklistSelectors, utils } from 'ducks/tasks-and-checklist';
+import { operations, selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import {
   operations as dashboardOperations,
   selectors as dashboardSelectors,
@@ -584,7 +584,7 @@ class Checklist extends React.PureComponent {
       checklistItems, children, title,
       className, location, resolutionId, resolutionData, triggerHeader, incomeCalcInProgress,
       disableNext, disablePrev, onNext, onPrev, isIncomeVerification, historyView,
-      disabledChecklist, enableLockButton, groupName, ficoBluePrintCode, inProgress, historyItem,
+      disabledChecklist, enableLockButton, groupName, ficoBluePrintCode,
     } = this.props;
     const {
       isDialogOpen, dialogContent, dialogTitle,
@@ -592,7 +592,6 @@ class Checklist extends React.PureComponent {
     const { additionalInfo: { checklistType } } = checklistItems[0];
     const type = checklistType || checklistItems[0].type;
     const { AV } = HTMLElements;
-    const { getCSTDateTime } = utils;
     const showControlButtons = isIncomeVerification && !historyView && !disabledChecklist;
     const showCheckButton = isIncomeVerification && !historyView
     && !disabledChecklist && checklistType !== AV
@@ -620,7 +619,6 @@ class Checklist extends React.PureComponent {
       <Button
         color="primary"
         onClick={this.onBackButtonClick}
-        styleName="backButton"
       >
          BACK
       </Button>
@@ -659,28 +657,10 @@ class Checklist extends React.PureComponent {
               triggerHeader={triggerHeader}
             />
           )}
-        <Grid container style={{ marginTop: '1rem' }}>
+        <Grid container styleName="buttonStyle">
           <Grid item xs={getChecklistGridName('title', !R.isNil(addBackButton) ? `${type}-back` : type)}>
             <Typography styleName={financialChecklist.includes(type) ? 'checklist-title-income-calc' : 'checklist-title'}>{title}</Typography>
           </Grid>
-          {type === AV && historyView && !inProgress && (
-            <>
-              <Grid>
-                <Typography styleName="asset">{getCSTDateTime(historyItem.calcDateTime)}</Typography>
-              </Grid>
-              <Grid>
-                <Typography styleName="asset">
-                  {` Asset ID: ${historyItem.lockId}`}
-                </Typography>
-              </Grid>
-              <Grid>
-                <Typography styleName="asset">
-                  {` Completed By: ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}
-                </Typography>
-              </Grid>
-            </>
-          )
-          }
           { !R.isNil(showCheckButton) && (
           <Grid item xs={getChecklistGridName('check', type)}>
             {showCheckButton}
