@@ -224,15 +224,28 @@ function* updateFinanceCalcFieldValues(type) {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const evalId = yield select(dashboardSelectors.evalId);
   const loanId = loanNumber;
+  const lockedHistoryData = yield call(Api.callGet, `/api/tkams/search/BorrowerExpenseFinancial/${loanNumber}`);
   const tkamsData = yield call(Api.callGet, `/api/tkams/search/BorrowerExpense/${loanNumber}/${evalId}`);
   let latestIncomeDetails = null;
-
   if (tkamsData) {
-    const {
+    const { primaryUseId, waterFallId, completedDate } = tkamsData;
+    let {
       mortgageInsuranceP1, paymentAmount, shortageP1, insuranceP1, taxesP1,
-      primaryUseId, waterFallId,
     } = tkamsData;
 
+    if (lockedHistoryData && type === 'expense-calculator') {
+      const {
+        lockedDate, propertyTaxes, nstr1stMortgage,
+        homeOwnersInsurance, loanEscrowShortage, mortgageInsurance,
+      } = lockedHistoryData;
+      if (lockedDate > completedDate) {
+        mortgageInsuranceP1 = mortgageInsurance;
+        paymentAmount = nstr1stMortgage;
+        shortageP1 = loanEscrowShortage;
+        insuranceP1 = homeOwnersInsurance;
+        taxesP1 = propertyTaxes;
+      }
+    }
     const latestExpenseDetails = {
       monthlyExpenseFieldValues: {
         mortgageInsuranceP1,
