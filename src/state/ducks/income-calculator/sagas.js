@@ -238,7 +238,7 @@ function* updateFinanceCalcFieldValues(type) {
         lockedDate, propertyTaxes, nstr1stMortgage,
         homeOwnersInsurance, loanEscrowShortage, mortgageInsurance,
       } = lockedHistoryData;
-      if (lockedDate > completedDate) {
+      if ((R.isNil(completedDate) && !R.isNil(lockedDate)) || lockedDate > completedDate) {
         mortgageInsuranceP1 = mortgageInsurance;
         paymentAmount = nstr1stMortgage;
         shortageP1 = loanEscrowShortage;
@@ -926,7 +926,7 @@ const assetVerificationLockCalculation = function* assetVerificationLockCalculat
         const reqData = Object.keys(task)[0];
         if (task[reqData]) {
           const filterReqData = R.filter(x => R.isNil(x)
-          || !R.isEmpty(x) || x > 0, task[reqData]);
+            || !R.isEmpty(x) || x > 0, task[reqData]);
           if (filterReqData && !R.isEmpty(filterReqData)) {
             const name = reqData.split('_')[0];
             assetlockRequest.push({
