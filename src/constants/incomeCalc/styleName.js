@@ -17,11 +17,6 @@ const textFields = {
     div: 'display-in-row',
     inputProps: { style: { width: '17rem' } },
   },
-  'fico-scr': {
-    title: 'fico-scr-title',
-    div: 'display-in-row',
-    inputProps: { style: { width: '17rem' } },
-  },
   'pay-periods-text': {
     div: 'pay-periods-text',
     title: 'pay-periods-title',
@@ -41,11 +36,6 @@ const textFields = {
   'weekly-amt': {
     div: 'weekly-amt',
     textField: 'weekly-text',
-  },
-  savings: {
-    div: 'savings',
-    textField: 'weekly-text',
-    value: 'asset-text',
   },
   'monthly-inc': {
     div: 'monthly-inc',
@@ -101,12 +91,6 @@ const textFields = {
   'cnsdt-inc-count-indc': {
     div: 'cnsdt-inc-count-indc-div',
   },
-  'contrib-text': {
-    title: 'doc-add-contrib-title',
-    div: 'display-in-row',
-    textField: 'doc-text',
-    inputProps: { style: { width: '30rem !important' } },
-  },
   addr: {
     inputProps: { autoComplete: 'new-password' },
   },
@@ -152,9 +136,6 @@ const taskSection = {
   },
   'add-contrib': {
     grid: 'add-contrib-grid',
-  },
-  'av-sect': {
-    grid: 'av-sect-grid',
   },
   'rental-address-wrapper': {
     grid: 'rental-address-wrapper',
@@ -203,30 +184,6 @@ const taskSection = {
     inctype: 'cnsdt-income-data-row-inctype',
     amount: 'cnsdt-income-data-row-amount',
   },
-  'fico-score': {
-    item: 'fico-score',
-  },
-  'fico-sect': {
-    grid: 'fico-sect',
-  },
-  'doc-add-contrib': {
-    grid: 'doc-add-contrib-grid',
-  },
-  'doc-chk-add-contrib-sect': {
-    header: 'add-contrib-header',
-    item: 'doc-add-contrib-item',
-    icon: 'chevron-left',
-  },
-  'doc-chk-borr': {
-    item: 'inc-calc-borr-item',
-    header: 'radio-control-label',
-  },
-  'doc-add-action': {
-    item: 'doc-add-action',
-  },
-  siTypeSect: {
-    item: 'siTypeSect',
-  },
   default: {
     title: 'text-label',
     header: 'radio-control-label',
@@ -247,19 +204,9 @@ const datePicker = {
     title: 'date-flex-title',
     picker: 'date-flex-picker',
   },
-  'fico-scr': {
-    title: 'fico-scr-title',
-    inputProps: { style: { width: '17rem', margin: '1rem 1rem 1rem 0rem !important' } },
-    div: 'fico-date-row',
-  },
   'datepicker-we': {
     title: 'text-label',
     picker: 'datepicker-we',
-  },
-  'doc-chk-date': {
-    div: 'doc-date-flex-div',
-    title: 'doc-date-flex-title',
-    picker: 'doc-date-flex-picker',
   },
   default: {
     title: 'text-label',
@@ -286,12 +233,6 @@ const dropDown = {
     dropdown: '',
     select: 'contrib',
     title: '',
-  },
-  'contrib-drop-down': {
-    'dropdown-sect': 'displayInRow',
-    dropDown: '',
-    select: 'doc-contrib-select',
-    title: 'title',
   },
   default: {
     'dropdown-sect': 'displayInRow',
@@ -326,15 +267,6 @@ const direction = {
   bottom: { display: 'flex', flexDirection: 'column-reverse' },
 };
 
-const tabStyle = {
-  docBorrowerTab: {
-    tabs: 'doc-tab-view',
-  },
-  default: {
-    tabs: 'tabview',
-  },
-};
-
 const styleData = {
   datePicker,
   textFields,
@@ -342,7 +274,6 @@ const styleData = {
   dropDown,
   radioButtons,
   createSelect,
-  tabStyle,
 };
 
 const getStyleObj = component => R.prop(null, component, styleData);

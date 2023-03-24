@@ -36,18 +36,9 @@ const isToday = (d) => {
   return null;
 };
 
-const DateFormatter = (date) => {
-  const objectDate = new Date(date);
-  const day = objectDate.getDate();
-  const month = objectDate.getMonth();
-  const year = objectDate.getFullYear();
-  return `${month + 1}/${day}/${year}`;
-};
-
 export {
   getDate,
   getMonth,
   getYear,
   isToday,
-  DateFormatter,
 };

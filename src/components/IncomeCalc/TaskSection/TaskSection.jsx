@@ -20,8 +20,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import DocumentList from '../DocumentList';
-import DocumentViewer from '../DocumentViewer/DocumentViewer';
 
 const AccordionSummary = withStyles({
   root: {
@@ -69,7 +67,7 @@ class TaskSection extends React.PureComponent {
         styleName, customType, labels, tooltip, hasTitle, horizontalRule, heightMultiplier,
         columnSize, labelSize, actionIcon, columns, valuePath, hasLabelValue,
         iconPosition, id, labelValuePath, showErrorCount, labelValueAdornment,
-        isAccordianTitle, defaultExpanded, cnsdtType, colSpan, columnHeaders, columnLabel, spacing,
+        isAccordianTitle, defaultExpanded, cnsdtType, colSpan, columnHeaders, columnLabel,
       }, title, disabled, failureReason, onChange, accHeaderData,
     } = this.props;
     const actionValue = valuePath ? R.assocPath(valuePath, true, {}) : true;
@@ -187,7 +185,6 @@ class TaskSection extends React.PureComponent {
             <Grid
               container
               direction="row"
-              spacing={spacing}
               styleName={getStyleName('taskSection', styleName, 'grid')}
             >
               {
@@ -366,8 +363,6 @@ class TaskSection extends React.PureComponent {
             </TableBody>
           </Table>
         );
-      case 'document-checklist': { return (<DocumentList />); }
-      case 'document-viewer': { return <DocumentViewer />; }
       default: {
         return (
           <div
@@ -423,7 +418,6 @@ TaskSection.defaultProps = {
     columnHeaders: [],
     columnLabel: '',
     colSpan: [],
-    spacing: 0,
   },
   value: {},
   disabled: false,
@@ -460,7 +454,6 @@ TaskSection.propTypes = {
     position: PropTypes.string,
     selector: PropTypes.string,
     showErrorCount: PropTypes.bool,
-    spacing: PropTypes.number,
     styleName: PropTypes.string,
     taskOptions: PropTypes.arrayOf(),
     tooltip: PropTypes.arrayOf(),

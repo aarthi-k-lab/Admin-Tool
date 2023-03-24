@@ -28,11 +28,6 @@ import {
   STORE_TASK_VALUE,
   CLEAR_TASK_VALUE,
   SET_EXPENSECALC_DATA,
-  SET_SELECTED_BORROWER_DATA,
-  SET_SELECTED_CHECKLIST_DATA,
-  SET_FICO_TABLE_DATA,
-  SET_SELECTED_BORROWER,
-  SET_BORROWER_DATA,
 } from './types';
 
 const FAILED = 'failed';
@@ -101,13 +96,6 @@ function removeDirtyChecklistItem(state) {
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
-    case SET_BORROWER_DATA: {
-      const processedBorrowerData = action.payload;
-      return {
-        ...state,
-        processedBorrowerData,
-      };
-    }
     case SET_HISTORICAL_BORROWERS: {
       const historicalBorrowers = action.payload;
       return {
@@ -284,40 +272,7 @@ const reducer = (state = {}, action) => {
       };
     }
 
-    case SET_SELECTED_BORROWER_DATA: {
-      return {
-        ...state,
-        selectedBorrowerData: action.payload,
-      };
-    }
 
-
-    case SET_SELECTED_CHECKLIST_DATA: {
-      return {
-        ...state,
-        selectedChecklistFieldData: action.payload,
-      };
-    }
-
-    case SET_FICO_TABLE_DATA: {
-      const ficoHistoryTableData = action.payload;
-      const { selectedBorrowerData } = state;
-      const selectedBorrowerPosition = parseInt(R.nth(1, R.split('_', selectedBorrowerData)), 10);
-      const ficoHistoryData = ficoHistoryTableData
-        .filter(e => e.position === selectedBorrowerPosition);
-      return {
-        ...state,
-        ficoHistoryData,
-      };
-    }
-
-    case SET_SELECTED_BORROWER: {
-      const { selectedBorrower } = action.payload;
-      return {
-        ...state,
-        selectedBorrower,
-      };
-    }
     default:
       return state;
   }

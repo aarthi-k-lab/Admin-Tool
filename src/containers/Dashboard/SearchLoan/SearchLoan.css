@@ -27,11 +27,11 @@
 .eval-table-container {
   display: flex;
   flex-grow: 1;
-  overflow: hidden;
   margin: 1rem 0rem 2rem 1rem;
   margin-right: 6rem;
   background-color: white;
   border-radius: 0.5em;
+  overflow: hidden;
 }
 
 .eval-table-height-limiter {
@@ -76,7 +76,7 @@
     flex-direction: row; 
     background-color: rgb(243,245,249);
     height: 100%;
-}
+  }
 
 .loan-info-components {
   display: flex;
@@ -85,4 +85,26 @@
   width: 0;
   background-color: white;
   border-radius: 10px;
+}
+
+.completedTable {
+  margin: 0rem 2rem !important;
+  overflow: scroll !important;
+}
+
+.inprogressTable {
+  margin: 0rem 2rem !important;
+  overflow: scroll !important;
+}
+
+.inprogressTableWithSingleRow {
+  margin: 0rem 2rem !important;
+  overflow: scroll !important;
+  height: 18rem !important;
+}
+
+.completedTableWithSingleRow {
+  margin: 0rem 2rem !important;
+  overflow: scroll !important;
+  height: 18rem !important;
 }

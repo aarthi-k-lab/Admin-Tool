@@ -42,13 +42,9 @@ const expenseFields = ['nstR1stMortgage',
   'clothing',
   'entertainment',
   'schoolTuition'];
-
-
 const checklistTypes = {
-  'income-calculator': 'INCOME',
-  'expense-calculator': 'EXPENSE',
-  'asset-verification': 'AV',
-  'fico-score': 'FICO',
+  INCOME: 'INCOME',
+  EXPENSE: 'EXPENSE',
 };
 
 module.exports = {

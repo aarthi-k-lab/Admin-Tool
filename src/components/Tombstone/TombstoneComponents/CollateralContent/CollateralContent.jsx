@@ -363,4 +363,5 @@ const mapDispatchToProps = dispatch => ({
   populateLienLoanBalances: operations.refreshLienBalanceOperation(dispatch),
 });
 
+
 export default connect(mapStateToProps, mapDispatchToProps)(CollateralContent);

@@ -25,27 +25,3 @@
 .date-flex-picker {
   width: 16.5rem;
 }
-
-.fico-date-row {
-  display: flex !important;
-  align-items: center !important;
-  margin-top: 1rem !important;
-}
-
-.fico-scr-title {
-  width: 12rem;
-  margin: 0 0 0 1rem;
-}
-
-.doc-date-flex-div {
-  display: flex;
-}
-
-.doc-date-flex-title {
-  width: 6rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-.doc-date-flex-picker{
-  width: 13rem;
-}

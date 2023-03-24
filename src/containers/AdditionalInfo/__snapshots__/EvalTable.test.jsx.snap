@@ -207,6 +207,11 @@ exports[`renders <EvalTable /> when selected index is 0 snapshot test 1`] = `
       <tr
         className="MuiTableRow-root"
         role={null}
+        style={
+          Object {
+            "height": 767,
+          }
+        }
       >
         <td
           aria-sort={null}
@@ -426,6 +431,11 @@ exports[`renders <EvalTable /> when selected index is 1 snapshot test 1`] = `
       <tr
         className="MuiTableRow-root"
         role={null}
+        style={
+          Object {
+            "height": 767,
+          }
+        }
       >
         <td
           aria-sort={null}
