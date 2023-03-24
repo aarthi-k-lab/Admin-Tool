@@ -362,9 +362,9 @@ class SearchLoan extends React.PureComponent {
                           manual
                           minRows={1}
                           showPagination={false}
-                          styleName={activeMods && activeMods.length <= 1 ? 'searchLoanwithSingleRow' : 'searchLoan'}
+                          styleName={activeMods && activeMods.length <= 1 ? 'inprogressTableWithSingleRow' : 'inprogressTable'}
                         />
-                        <h3 style={{ paddingLeft: '2em' }}> Completed </h3>
+                        <h3 style={{ paddingLeft: '2rem' }}> Completed </h3>
                         <ReactTable
                           className="-striped -highlight"
                           columns={SearchLoan.COLUMN_DATA}
@@ -390,7 +390,7 @@ class SearchLoan extends React.PureComponent {
                           manual
                           minRows={1}
                           showPagination={false}
-                          styleName={completedMods && completedMods.length <= 1 ? 'searchLoanwithSingleRow' : 'searchLoan'}
+                          styleName={completedMods && completedMods.length <= 1 ? 'completedTableWithSingleRow' : 'completedTable'}
                         />
                       </div>
                     </>

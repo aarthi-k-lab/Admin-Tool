@@ -87,13 +87,24 @@
   border-radius: 10px;
 }
 
-.searchLoan {
+.completedTable {
   margin: 0rem 2rem !important;
   overflow: scroll !important;
 }
 
-.searchLoanwithSingleRow {
+.inprogressTable {
   margin: 0rem 2rem !important;
   overflow: scroll !important;
-  height: 19rem !important;
+}
+
+.inprogressTableWithSingleRow {
+  margin: 0rem 2rem !important;
+  overflow: scroll !important;
+  height: 18rem !important;
+}
+
+.completedTableWithSingleRow {
+  margin: 0rem 2rem !important;
+  overflow: scroll !important;
+  height: 18rem !important;
 }
