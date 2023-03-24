@@ -93,38 +93,3 @@
 .componentMargin.componentMargin div > input {
   padding: 5.5px 5px;
 }
-
-.titleStyle {
-  margin-right: 5rem !important;
-}
-
-.asset.asset {
-  color: var(--grey-650);
-  font-size: 1rem !important;
-  text-align: justify;
-  font-weight: bold;
-  display: flex;
-  margin-top: 0.5rem;
-  margin-left: 1rem;
-}
-
-.check.check {
-  margin-right: 1.5rem;
-  height: 2.5rem;
-  background: linear-gradient(90deg, #6a81f0 0%, #4155e2 100%);
-  border-radius: 10px;
-  font-style: normal;
-  font-weight: 700 !important;
-  font-size: 15px;
-  line-height: 18px;
-  color: white !important;
-}
-
-.backButton {
-  padding-left: 21.5rem !important;
-}
-
-.buttonStyle {
-  margin-top: 1rem !important;
-  justify-content: space-between;
-}

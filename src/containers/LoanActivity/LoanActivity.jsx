@@ -7,6 +7,7 @@ import AdditionalInfo from 'containers/AdditionalInfo';
 import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
 import MilestoneActivity from './MilestoneActivity';
 import TrialHeaderAndDetails from './TrialHeaderAndDetails';
+import { selectors, operations } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 import { ADDITIONAL_INFO, HISTORY } from '../../constants/widgets';
 import WidgetBuilder from '../../components/Widgets/WidgetBuilder';
@@ -142,19 +143,19 @@ class LoanActivity extends React.PureComponent {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadTrials: dashboardOperations.loadTrials(dispatch),
+  loadTrials: operations.loadTrials(dispatch),
   clearPopupData: dashboardOperations.clearPopupData(dispatch),
 });
 
 const mapStateToProps = state => ({
-  evalId: dashboardSelectors.evalId(state),
-  LoanNumber: dashboardSelectors.loanNumber(state),
-  inProgress: dashboardSelectors.inProgress(state),
-  trialHeader: dashboardSelectors.getTrialHeader(state),
-  trialsDetail: dashboardSelectors.getTrialsDetail(state),
-  trialsLetter: dashboardSelectors.getTrialLetter(state),
-  resultUnderwriting: dashboardSelectors.resultUnderwriting(state),
-  getTrialResponse: dashboardSelectors.getTrialResponse(state),
+  evalId: selectors.evalId(state),
+  LoanNumber: selectors.loanNumber(state),
+  inProgress: selectors.inProgress(state),
+  trialHeader: selectors.getTrialHeader(state),
+  trialsDetail: selectors.getTrialsDetail(state),
+  trialsLetter: selectors.getTrialLetter(state),
+  resultUnderwriting: selectors.resultUnderwriting(state),
+  getTrialResponse: selectors.getTrialResponse(state),
   checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
   popupData: dashboardSelectors.getPopupData(state),
 });

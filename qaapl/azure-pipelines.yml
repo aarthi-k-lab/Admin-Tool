@@ -15,7 +15,7 @@ trigger:
     exclude: 
       - master
     include:
-      - CMOD/MARCH
+      - CMOD/JUNE
   paths:
     exclude:
       - secrets

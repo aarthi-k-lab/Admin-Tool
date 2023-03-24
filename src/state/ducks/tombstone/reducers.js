@@ -227,7 +227,6 @@ const reducer = (state = loadingState, action) => {
       };
     }
 
-
     default: {
       return state;
     }

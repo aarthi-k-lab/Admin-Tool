@@ -7,15 +7,10 @@ import { connect } from 'react-redux';
 import Icon from '@material-ui/core/Icon';
 import Popover from '@material-ui/core/Popover';
 import { selectors, operations } from 'ducks/income-calculator';
-import { selectors as taskSelectors, utils } from 'ducks/tasks-and-checklist';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import { FINANCIAL_CALCULATOR } from 'constants/widgets';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
-import HTMLElements from 'constants/componentTypes';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import './CustomButton.css';
 
 
 function getCurrentDate() {
@@ -58,23 +53,20 @@ class IncomeCalcHistory extends React.PureComponent {
     closeHistoryView();
   }
 
+  getCSTDateTime = dateTime => (R.isNil(dateTime) ? 'N/A' : moment.utc(dateTime).tz('America/Chicago').format('MM/DD/YYYY'))
+
   renderDropDownItems = () => {
-    const {
-      openWidgetList, historyData, disabled, checklistType,
-    } = this.props;
-    const { AV } = HTMLElements;
-    const { getCSTDateTime } = utils;
+    const { openWidgetList, historyData, disabled } = this.props;
     const isWidgetOpen = R.contains(FINANCIAL_CALCULATOR, openWidgetList);
     const disableCopy = disabled || isWidgetOpen;
     return (!R.isEmpty(historyData) ? historyData.map((item, index) => (
       <>
         <div style={{ display: 'flex', alignItems: 'end', margin: '1rem' }}>
           <div>
-            <h3 style={{ margin: 0 }}>{getCSTDateTime(item.calcDateTime)}</h3>
+            <h3 style={{ margin: 0 }}>{this.getCSTDateTime(item.calcDateTime)}</h3>
             {item.lockId ? <h5 style={{ margin: 0, color: 'gray' }}>{item.lockId}</h5>
               : <h5 style={{ margin: 0, color: 'gray' }}>--</h5> }
           </div>
-          { checklistType !== AV && (
           <Icon
             color="primary"
             onClick={() => this.handleDuplicateHistoryItem(item)}
@@ -82,8 +74,6 @@ class IncomeCalcHistory extends React.PureComponent {
           >
         content_copy
           </Icon>
-          )
-  }
           <Icon
             color="primary"
 
@@ -106,45 +96,23 @@ visibility
 
   render() {
     const { anchorEl } = this.state;
-    const { historyView, historyItem, checklistType } = this.props;
-    const { AV } = HTMLElements;
-    const { getCSTDateTime } = utils;
+    const { historyView, historyItem } = this.props;
     return (
       <div style={{ display: 'flex' }}>
-        {(historyView && checklistType !== AV)
+        {historyView
           ? (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {historyItem && <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCSTDateTime(historyItem.calcDateTime)} by ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}</span>}
+              {historyItem && <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${this.getCSTDateTime(historyItem.calcDateTime)} by ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}</span>}
               <p style={{ margin: 0 }}>Close</p>
               <Icon onClick={this.handleCloseHistoryView} style={{ cursor: 'pointer' }}>close</Icon>
             </div>
           ) : (
             <>
-              {checklistType !== AV ? <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span> : null }
-              <>
-                {historyView && checklistType === AV
-                  ? (
-                    <Grid styleName="assetHistoryDetails">
-                      <Grid>
-                        <Typography styleName="asset">{getCSTDateTime(historyItem.calcDateTime)}</Typography>
-                      </Grid>
-                      <Grid>
-                        <Typography styleName="asset">
-                          {` Asset ID: ${historyItem.lockId}`}
-                        </Typography>
-                      </Grid>
-                      <Grid>
-                        <Typography styleName="asset">
-                          {` Completed By: ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  ) : null }
-              </>
+              <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span>
               <Tooltip placement="left" title="Calculation History">
                 <Icon
                   onClick={this.handleViewHistory}
-                  style={checklistType !== AV ? { cursor: 'pointer' } : { cursor: 'pointer', margin: '0.6rem 0rem 0rem 0rem' }}
+                  style={{ cursor: 'pointer' }}
                 >
             history
                 </Icon>
@@ -179,12 +147,10 @@ IncomeCalcHistory.defaultProps = {
   historyData: null,
   historyItem: null,
   disabled: false,
-  checklistType: '',
 };
 
 
 IncomeCalcHistory.propTypes = {
-  checklistType: PropTypes.string,
   closeHistoryView: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   duplicateHistoryItem: PropTypes.func.isRequired,
@@ -193,7 +159,6 @@ IncomeCalcHistory.propTypes = {
   historyItem: PropTypes.shape({
     calcByUserName: PropTypes.string,
     calcDateTime: PropTypes.string,
-    lockId: PropTypes.string,
   }),
   historyView: PropTypes.bool,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
@@ -204,7 +169,6 @@ const mapStateToProps = state => ({
   historyView: selectors.getHistoryView(state),
   historyItem: selectors.getHistoryItem(state),
   openWidgetList: widgetsSelectors.getOpenWidgetList(state),
-  checklistType: taskSelectors.getCurrentChecklistType(state),
 });
 
 const mapDispatchToProps = dispatch => ({

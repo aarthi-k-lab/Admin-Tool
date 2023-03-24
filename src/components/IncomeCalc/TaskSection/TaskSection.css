@@ -117,9 +117,7 @@
   min-height: 38.5rem;
   text-align: center;
 }
-.av-sect-grid{
-  margin-left: 12rem;
-}
+
 .no-inc {
   margin-top: 1.5rem;
   padding-top: 1rem;
@@ -158,10 +156,14 @@
 }
 
 /* Do not remove. This is a default value. */
-.rental-address {}
+.rental-address {
+
+}
 
 /* Do not remove. This is a default value. */
-.ri-share-sect-title {}
+.ri-share-sect-title {
+
+}
 
 .pitia-sect {
   display: flex;
@@ -297,7 +299,7 @@
 }
 
 .cnsdt-income {
-  background-color: #4e586e;
+  background-color: #4E586E;
   color: #fff;
 }
 
@@ -397,13 +399,13 @@
   font-size: 1.1rem;
 }
 
-.acc-sub-header-amt-txt {
+.acc-sub-header-amt-txt{
   color: gray;
   font-size: 1.1rem;
   text-align: right;
 }
 
-.expense-cnsdt-grid {
+.expense-cnsdt-grid{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   padding: 0px 1rem;
@@ -416,23 +418,23 @@
   padding: 1rem;
 }
 
-.gn-sub-header-amt-txt {
+.gn-sub-header-amt-txt{
   color: gray;
   font-size: 1.1rem;
   text-align: left;
 }
 
-.gross-net-section {
+.gross-net-section{
   display: flex;
   justify-content: space-between;
 }
 
-.gross-net-div {
+.gross-net-div{
   display: inline-block !important;
   width: 13rem;
 }
 
-.cnsdt-inc-types-sect {
+.cnsdt-inc-types-sect{
   display: flex;
   justify-content: space-between;
   width: 10rem;
@@ -442,7 +444,7 @@
   width: 12rem;
 }
 
-.cnsdt-inc-data-header-div {
+.cnsdt-inc-data-header-div{
   color: gray !important;
   font-size: 1rem !important;
   width: 7.4rem !important;
@@ -450,7 +452,7 @@
   padding-left: 0px !important;
 }
 
-.cnsdt-income-data-row-inctype {
+.cnsdt-income-data-row-inctype{
   color: gray !important;
   font-size: 1.1rem !important;
   width: 12rem !important;
@@ -464,65 +466,3 @@
   justify-content: initial !important;
   padding: 6px 0 !important;
 }
-
-.fico-score {
-  background-color: #f3f5f9 !important;
-  padding: 0 1rem 1rem 0 !important;
-  border-radius: 5px !important;
-}
-
-.fico-sect {
-  margin-top: 2rem !important;
-}
-.document-paper {
-  padding: 1rem;
-  background-color: #f3f5f9 !important;
-  margin-top: 1rem;
-}
-
-.doc-add-contrib-grid{
-  margin: 0 2rem 0 .5rem;
-  width: 75rem !important;
-  height: 19rem;
-  line-height: .5rem;
-}
-
-.doc-add-action{
-  margin: 2rem 0rem 2rem 2rem;
-  justify-content: space-between;
-}
-
-.doc-add-contrib-item{
-  display: flex;
-  align-items: center;
-  margin-left: 1.5rem;
-  padding-top: 1.5rem;
-  padding-bottom: 2rem;
-}
-
-.doc-chk-add-contrib-sect{
-  min-height: 44.1rem;
-  z-index: 1;
-  position: absolute;
-  margin-top: .5rem;
-  width: 48rem;
-  left: 52rem;
-  border-radius: 10px;
-  top:28rem;
-  padding: 0 !important;
-  border: 1px solid black;
-}
-
-.doc-chk-borr{
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-}
-
-.siTypeSect{
-  margin-top: 2rem !important;
-  border-radius: 7px !important;
-  width: 53% !important;
-  background-color: #f3f5f9 !important;
-}
-

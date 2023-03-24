@@ -136,14 +136,6 @@ const config = merge(
           pathRewrite: {
             '^/api/task-engine': '/api',
           },
-          '/api/document': {
-            target: 'https://prod.cmod.mrcooper.io/cmoddocument',
-            secure: false,
-            changeOrigin: true,
-            pathRewrite: {
-              '^/api/document': '',
-            },
-          }
         },
         '/api/utility': {
           target: 'https://prod.cmod.mrcooper.io/cmodutility',

@@ -72,12 +72,6 @@ function getInvestorItem(loanDetails) {
   return generateTombstoneItem('Investor', investor);
 }
 
-function getAssumptorDetails(_lv, _pd, _g, _t, _a, assumptorDetails) {
-  const borrowerName = getOr('borrowerName', assumptorDetails, NA);
-  console.log('assumptorDetails', assumptorDetails);
-  return generateTombstoneItem('Assumptor', borrowerName);
-}
-
 function getUPBItem(loanDetails) {
   const amount = getOr('upbAmount', loanDetails, NA);
   const upbAmount = amount === NA ? `${amount}` : `$${amount.toLocaleString('en-US')}`;
@@ -260,11 +254,9 @@ function getTombstoneItems(tombstoneData) {
     groupName, taskName,
     freddieIndicatorData,
     loanViewData,
-    assumptorDetails,
   } = tombstoneData;
   const loanViewDataGenerator = [
     getLoanNumber,
-    getAssumptorDetails,
     getUPBItem,
     getPrimaryBorrowerItem,
     geCoBorrowerItem,
@@ -308,8 +300,7 @@ function getTombstoneItems(tombstoneData) {
     loanViewData,
     previousDispositionDetails,
     groupName,
-    taskName,
-    assumptorDetails));
+    taskName));
   if (groupName !== 'SEARCH_LOAN') {
     data.modViewData = modViewDataGenerator.map(fn => fn(
       modInfoDetails,
@@ -318,7 +309,6 @@ function getTombstoneItems(tombstoneData) {
       taskName,
       freddieIndicatorData,
       loanDetails,
-      assumptorDetails,
     ));
   }
 
@@ -338,15 +328,12 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     previousDispositionDetails,
     freddieIndicatorData,
     loanViewData,
-    assumptorDetails,
   } = response;
   return {
     resolutionId: R.propOr(null, 'modId', modInfoDetails),
     investorHierarchy: R.propOr(null, 'InvestorHierarchy', loanDetails),
     investorCode: R.pathOr(null, ['investorInformation', 'investorCode'], loanDetails),
     brandName: R.propOr(null, 'brandName', loanDetails),
-    loanType: R.pathOr(null, ['loanType'], loanDetails),
-    waterfallId: R.pathOr(null, ['waterfallId'], modInfoDetails),
     tombstoneData:
      {
        ...getTombstoneItems({
@@ -357,7 +344,6 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
          taskName,
          freddieIndicatorData,
          loanViewData,
-         assumptorDetails,
        }),
      },
   };

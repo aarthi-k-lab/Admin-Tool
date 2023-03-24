@@ -359,11 +359,11 @@ class SearchLoan extends React.PureComponent {
                               'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
                             },
                           })}
+                          manual
                           minRows={1}
                           showPagination={false}
-                          style={{ margin: '0rem 2rem' }}
+                          styleName={activeMods && activeMods.length <= 1 ? 'searchLoanwithSingleRow' : 'searchLoan'}
                         />
-
                         <h3 style={{ paddingLeft: '2em' }}> Completed </h3>
                         <ReactTable
                           className="-striped -highlight"
@@ -387,9 +387,10 @@ class SearchLoan extends React.PureComponent {
                               'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
                             },
                           })}
+                          manual
                           minRows={1}
                           showPagination={false}
-                          style={{ margin: '0rem 2rem' }}
+                          styleName={completedMods && completedMods.length <= 1 ? 'searchLoanwithSingleRow' : 'searchLoan'}
                         />
                       </div>
                     </>
@@ -440,16 +441,16 @@ class SearchLoan extends React.PureComponent {
     return (
       <>
         {!R.isEmpty(searchLoanResult) && !R.contains(HISTORY, openWidgetList) && (
-        <WidgetBuilder page="SEARCH_LOAN" />
+          <WidgetBuilder page="SEARCH_LOAN" />
         )}
         {((R.contains(ADDITIONAL_INFO, openWidgetList) && valid)
-        || R.contains(HISTORY, openWidgetList)) ? (
-          <GoBackToSearch
-            history={history}
-            loanNumber={loanNumber}
-            location={location}
-            onClick={this.goToSearchResults}
-          />
+          || R.contains(HISTORY, openWidgetList)) ? (
+            <GoBackToSearch
+              history={history}
+              loanNumber={loanNumber}
+              location={location}
+              onClick={this.goToSearchResults}
+            />
           )
           : (
             <span styleName="backButton">
@@ -458,21 +459,21 @@ class SearchLoan extends React.PureComponent {
           )
         }
         {R.contains(ADDITIONAL_INFO, openWidgetList) && valid
-        && (
-        <AdditionalInfo
-          data={data}
-          loanNumber={loanNumber}
-          styleName="evalTable"
-          type="searchPage"
-        />
-        )}
+          && (
+            <AdditionalInfo
+              data={data}
+              loanNumber={loanNumber}
+              styleName="evalTable"
+              type="searchPage"
+            />
+          )}
         {R.contains(HISTORY, openWidgetList) && <MilestoneActivity inSearchPage />}
         {!(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList)) && (
-        <>
-          {this.renderRejectResults()}
-          {this.renderSearchResults()}
-          {this.renderAlert()}
-        </>
+          <>
+            {this.renderRejectResults()}
+            {this.renderSearchResults()}
+            {this.renderAlert()}
+          </>
         )}
         <>
           <SweetAlertBox

@@ -1,9 +1,0 @@
-.outerBar{
-    height: 10px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px #4E586E solid;
-    border-radius: 2px
-}

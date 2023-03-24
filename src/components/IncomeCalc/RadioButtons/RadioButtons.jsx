@@ -65,7 +65,7 @@ function RadioButtons({
         >
           {
           options.map(({
-            displayName, value, hint, isEnabled, textColor, labelValues, isChecked,
+            displayName, value, hint, isEnabled, textColor, labelValues,
           }) => (
             <FormControlLabelWithTooltip
               key={displayName}
@@ -73,7 +73,7 @@ function RadioButtons({
                 label: styles[`radio-control-option-${textColor}`],
                 root: styles['radio-control'],
               }}
-              control={<Radio checked={isChecked} styleName="radio-control-bubble" />}
+              control={<Radio styleName="radio-control-bubble" />}
               disabled={isOptionDisabled(isEnabled)}
               disableTooltip={R.isNil(hint) || R.isEmpty(hint)}
               label={labels
@@ -113,7 +113,6 @@ RadioButtons.propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape({
     displayName: PropTypes.string.isRequired,
     hint: PropTypes.string,
-    isChecked: PropTypes.bool,
     isEnabled: PropTypes.bool,
     textColor: PropTypes.string,
     value: PropTypes.string.isRequired,

@@ -73,7 +73,7 @@ const completeReviewResponse = state => R.pathOr(null, ['dashboard', 'completeRe
 const disableSendToFEUW = state => R.pathOr(false, ['dashboard', 'disableSendToFEUW'], state);
 const taskStatus = state => R.pathOr(null, ['dashboard', 'taskStatus'], state);
 const cancellationReasons = state => R.pathOr([], ['dashboard', 'cancellationReasons'], state);
-const getSelectedChecklistLock = state => R.pathOr('', ['dashboard', 'selectedChecklistLock'], state);
+
 
 const enableGetNext = state => (
   ((isFirstVisit(state)
@@ -202,12 +202,7 @@ const isSaveDisabled = state => R.pathOr(true, ['dashboard', 'isSaveDisabled'], 
 
 const getDisableFinanceCalcTabButton = state => R.pathOr({}, ['dashboard', 'disableFinanceCalcTabButton'], state);
 
-const getLoanType = state => R.pathOr(0, ['dashboard', 'loanType'], state);
-
-const getWaterfallId = state => R.pathOr(0, ['dashboard', 'waterfallId'], state);
-
 const selectors = {
-  getSelectedChecklistLock,
   getCurrentLoanMilestone,
   getODMRetryEligibility,
   getCurrentMilestoneIndex,
@@ -323,8 +318,6 @@ const selectors = {
   trialDateInfo,
   isSaveDisabled,
   getDisableFinanceCalcTabButton,
-  getLoanType,
-  getWaterfallId,
 };
 
 export default selectors;

@@ -97,9 +97,6 @@ import {
   processValidations,
 } from '../income-calculator/actions';
 import { storeDelayCheckListHistory } from '../stager/actions';
-import {
-  resetDocChecklistData,
-} from '../document-checklist/actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -137,7 +134,6 @@ const onGetNext = dispatch => (payload) => {
   dispatch(clearBEDisposition());
   dispatch(clearDisposition());
   dispatch(storeDelayCheckListHistory([]));
-  dispatch(resetDocChecklistData());
   dispatch(getNext(payload));
 };
 
@@ -372,8 +368,8 @@ const handleSelectedWidgets = dispatch => payload => (
   dispatch(setSelectedWidgets(payload))
 );
 
-const onErrorValidation = dispatch => (groupName) => {
-  if (groupName !== 'PROC') { dispatch(processValidations()); }
+const onErrorValidation = dispatch => () => {
+  dispatch(processValidations());
 };
 
 const dispatchAction = dispatch => (type, payload) => {
