@@ -86,9 +86,16 @@ class TabView extends React.PureComponent {
     this.setState({ anchorEl: null });
   }
 
-  onDisabled = (index) => {
-    const disabled = index !== 0;
-    return disabled;
+  getDisabledProperty = (isDisabled, task, index, isEstateBorr, priorityBorrower) => {
+    if (isDisabled && !isEstateBorr) {
+      const disabled = index !== 0;
+      return disabled;
+    } if (isEstateBorr) {
+      if (task && priorityBorrower) {
+        return R.propOr(null, 'value', task) !== priorityBorrower;
+      }
+    }
+    return false;
   }
 
   render() {
@@ -98,6 +105,8 @@ class TabView extends React.PureComponent {
       }, renderChildren, value,
       failureReason,
     } = this.props;
+    const isEstateBorr = R.propOr(false, 'isEstateBorr', value);
+    const priorityBorrower = R.propOr(null, 'priorityBorrower', value);
     const {
       anchorEl, displayList, dropDownList,
     } = this.state;
@@ -117,7 +126,8 @@ class TabView extends React.PureComponent {
             {displayList && displayList.map((task, index) => (
               <Tab
                 key={R.propOr('', 'name', task)}
-                disabled={isDisabled ? this.onDisabled(index) : false}
+                disabled={this.getDisabledProperty(isDisabled, task, index,
+                  isEstateBorr, priorityBorrower)}
                 label={(
                   <div style={{
                     display: 'flex',

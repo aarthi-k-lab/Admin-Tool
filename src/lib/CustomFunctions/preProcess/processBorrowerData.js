@@ -14,6 +14,8 @@ const processBorrowerData = (item) => {
       name: `${R.prop('firstName', borr)} ${R.prop('lastName', borr)}`,
       description: R.prop('description', borr),
       value: `${R.prop('firstName', borr)}_${R.prop('borrowerPstnNumber', borr)}`,
+      priority: R.propOr(null, 'priority', borr),
+      shrtDescp: R.propOr(null, 'shrtDescp', borr),
     };
   });
   return {
