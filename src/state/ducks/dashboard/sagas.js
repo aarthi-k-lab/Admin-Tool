@@ -1538,6 +1538,10 @@ function* assignLoan() {
     if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     }
+    if (R.pathOr(false, ['expenseCalcData', 'taskCheckListId'], response)) {
+      const expenseCalcData = R.propOr(null, 'expenseCalcData', response);
+      yield put({ type: SET_EXPENSECALC_DATA, payload: expenseCalcData });
+    }
     const disabledWidgets = yield select(widgetSelectors.getDisabledWidgets);
     if (R.equals(true, R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], response))) {
       yield put(setDisabledWidget({

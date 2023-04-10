@@ -404,6 +404,7 @@ function* addContributor(action) {
       R.last,
       R.sortBy(R.prop('borrowerPstnNumber')),
     )(borrowerData);
+    const expenseTaskChecklistId = yield select(selectors.getExpenseTaskChecklistId);
     const payload = {
       contributorData: {
         ...contributorData,
@@ -415,6 +416,7 @@ function* addContributor(action) {
       borrowerData,
       borrowerlist,
       rootId: rootIdFEUW,
+      expenseTaskChecklistId,
     };
     const borrowersResponse = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/addContributor', payload);
     if (borrowersResponse) {

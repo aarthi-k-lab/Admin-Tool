@@ -105,6 +105,7 @@ const getTaskValues = state => R.pathOr(false, ['incomeCalculator', 'taskValues'
 const getTaskBlueprintCode = state => R.pathOr('', ['incomeCalculator', 'checklist', 'taskBlueprintCode'], state);
 
 const getWidgetCheckListType = state => R.pathOr('', ['incomeCalculator', 'checklist', 'taskBlueprint', 'type'], state);
+const getExpenseTaskChecklistId = state => R.pathOr(null, ['incomeCalculator', 'expenseCalcData', 'taskCheckListId'], state);
 
 const selectors = {
   getMainChecklist,
@@ -137,6 +138,7 @@ const selectors = {
   getExpenseAmounts,
   getTaskBlueprintCode,
   getWidgetCheckListType,
+  getExpenseTaskChecklistId,
 };
 
 export default selectors;
