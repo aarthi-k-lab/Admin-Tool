@@ -6,6 +6,8 @@ import {
   SendToDocGen, SendToDocGenStager, ContinueMyReview, SendToDocsIn,
   CompleteForbearance, CompleteMyReview,
 } from 'components/ContentHeader';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
 import userdts from '../../models/Testmock/controls';
 import { TestHooks } from './Controls';
@@ -132,19 +134,23 @@ describe('<Controls />', () => {
       user: { ...userdts },
       validateDispositionTrigger: jest.fn(),
     };
-    const wrapper = mount(<TestHooks.Controls {...defaultProps} {...props} />);
-    expect(wrapper.find(GetNext)).toHaveLength(0);
-    wrapper.setProps({ showGetNext: true });
-    expect(wrapper.find(GetNext)).toHaveLength(1);
-    wrapper.find(GetNext).simulate('click');
+
+    const rootReducer = (state = { dashboard: { resultOperation: { status: '' } } }) => state;
+    const store = createStore(rootReducer);
+
+    const wrapper = mount(<Provider store={store}><TestHooks.Controls {...defaultProps} {...props} /></Provider>, { context: {} });
+    expect(wrapper.find('Connect(GetNext)')).toHaveLength(0);
+    wrapper.setProps({ children: <TestHooks.Controls {...defaultProps} {...props} showGetNext /> });
+    expect(wrapper.find('Connect(GetNext)')).toHaveLength(1);
+    wrapper.find('Connect(GetNext)').simulate('click');
     expect(spy).not.toBeCalled();
-    wrapper.setProps({ enableGetNext: true, isFirstVisit: false, enableValidate: false });
-    wrapper.find(GetNext).simulate('click');
+    wrapper.setProps({ children: <TestHooks.Controls {...defaultProps} {...props} enableGetNext enableValidate={false} isFirstVisit={false} showGetNext /> });
+    wrapper.find('Connect(GetNext)').simulate('click');
     document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 71 }));
     document.dispatchEvent(new KeyboardEvent('keyup', { keyCode: 71 }));
     expect(spy).not.toBeCalled();
-    wrapper.setProps({ enableGetNext: true, isFirstVisit: true, enableValidate: true });
-    wrapper.find(GetNext).simulate('click');
+    wrapper.setProps({ children: <TestHooks.Controls {...defaultProps} {...props} enableGetNext enableValidate isFirstVisit showGetNext /> });
+    wrapper.find('Connect(GetNext)').simulate('click');
     expect(spy).toBeCalled();
     expect(onGetNext).toBeCalled();
     document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 71 }));

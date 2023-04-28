@@ -30,7 +30,7 @@ describe('<Controls />', () => {
       {...defaultProps}
     />);
     expect(wrapper.find('EndShift')).toHaveLength(0);
-    expect(wrapper.find('GetNext')).toHaveLength(0);
+    expect(wrapper.find('Connect(GetNext)')).toHaveLength(0);
   });
 
   it('show \'EndShift\' and \'GetNext\'', () => {
@@ -40,7 +40,7 @@ describe('<Controls />', () => {
       showGetNext
     />);
     expect(wrapper.find('EndShift')).toHaveLength(1);
-    expect(wrapper.find('GetNext')).toHaveLength(1);
+    expect(wrapper.find('Connect(GetNext)')).toHaveLength(1);
   });
 
   it('passes the props to the child components <GetNext />, <EndShift />, <Expand />', () => {
@@ -55,7 +55,7 @@ describe('<Controls />', () => {
         showGetNext
       />,
     );
-    expect(wrapper.find('GetNext').at(0).prop('disabled')).toBe(true);
+    expect(wrapper.find('Connect(GetNext)').at(0).prop('disabled')).toBe(true);
     expect(wrapper.find('EndShift').at(0).prop('onClick')).toBeInstanceOf(Function);
     expect(wrapper.find('Expand').at(0).prop('onClick')).toBe(handleExpand);
   });

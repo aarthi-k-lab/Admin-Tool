@@ -1317,6 +1317,17 @@ function* getNext(action) {
           ? `${taskName}-${(action.payload.activeTab || stagerTaskName.activeTab).replace(/ /g, '')}` : taskName;
       }
       const taskDetails = yield call(Api.callGet, `api/workassign/getNext?appGroupName=${group}&userPrincipalName=${userPrincipalName}&userGroups=${groupList}&taskName=${postmodtaskName}&brand=${brand}`);
+      const statusCode = R.propOr(null, 'statusCode', taskDetails);
+      if (statusCode && statusCode === 'Failed') {
+        yield put({ type: HIDE_LOADER });
+        const statusText = R.propOr('', 'statusText', taskDetails);
+        const sweetAlert = { status: statusText, level: FAILED };
+        yield put({
+          type: SET_RESULT_OPERATION,
+          payload: sweetAlert,
+        });
+        return;
+      }
       const milestone = R.pathOr(null, ['taskData', 'data', 'milestone'], taskDetails);
       yield call(fetchMilestoneData, milestone, getEvalId(taskDetails));
       const taskId = R.pathOr(null, ['taskData', 'data', 'id'], taskDetails);
@@ -1534,6 +1545,17 @@ function* assignLoan() {
     }
     const assignLoanUrl = (groupName === DashboardModel.BOOKING) ? 'assignBookingLoan' : 'assignLoan';
     const response = yield call(Api.callPost, `/api/workassign/${assignLoanUrl}?evalId=${evalId}&assignedTo=${userPrincipalName}&loanNumber=${loanNumber}&taskId=${taskId}&processId=${processId}&processStatus=${processStatus}&groupName=${groupName}&userGroups=${userGroups}&taskName=${taskName}`, {});
+    const statusCode = R.propOr(null, 'statusCode', response);
+    if (statusCode && statusCode === 'Failed') {
+      const statusText = R.propOr('', 'statusText', response);
+      const sweetAlert = { status: statusText, level: FAILED };
+      yield put({
+        type: SET_RESULT_OPERATION,
+        payload: sweetAlert,
+      });
+      return;
+    }
+
     const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
     if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
