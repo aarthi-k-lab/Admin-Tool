@@ -549,7 +549,9 @@ const lockCalculation = function* lockCalculation() {
         if (cnsdtIncome) {
           borrowerInfo.forEach((borr) => {
             if (R.equals(`${borr.firstName}_${borr.borrowerPstnNumber}`, item)) {
-              consolidation.push({ borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome });
+              consolidation.push({
+                borrowerName: `${borr.firstName} ${borr.lastName}`, cnsdtIncome, borrowerRole: borr.description, borrowerFirstName: borr.firstName, borrowerLastName: borr.lastName,
+              });
             }
           });
         }
