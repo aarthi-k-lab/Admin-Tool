@@ -135,14 +135,26 @@ class Header extends React.Component {
       this.shouldSearchLoan = false;
       history.push(`/search?loanNumber=${searchText}`);
     }
+
+    const host = window.location.hostname.toUpperCase().split('.')[0].replace('CMOD', '');
+    const isUAT = host === 'UAT';
     return (
       <header styleName="header">
-        <Link onClick={this.handleLandingpage} to="/">
-          <img alt="logo" src="/static/img/logo.png" styleName="logo" />
-        </Link>
-        <span styleName="env">
-          {this.getEnv()}
-        </span>
+        {isUAT ? (
+          <Link onClick={this.handleLandingpage} style={{ textDecoration: 'none' }} styleName="env" to="/">
+            UAT
+          </Link>
+        ) : (
+          <>
+            <Link onClick={this.handleLandingpage} to="/">
+              <img alt="logo" src="/static/img/logo.png" styleName="logo" />
+            </Link>
+            <span styleName="env">
+              {this.getEnv()}
+            </span>
+          </>
+        )
+        }
         <span styleName="spacer" />
         <TextField
           InputProps={{
