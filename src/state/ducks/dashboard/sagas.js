@@ -1192,6 +1192,9 @@ function* saveGeneralChecklistDisposition(payload) {
     const loanNumber = yield select(selectors.loanNumber);
     const user = yield select(loginSelectors.getUser);
     const checklist = yield select(checklistSelectors.getChecklist);
+    const loanViewData = yield select(tombstoneSelectors.getTombstoneLoanViewData);
+    const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData));
+    const userFullName = yield select(loginSelectors.getUserFullName);
     // Only applicable for Second Look - Send To Underwriting and
     // Front End Underwiriting Drop Down Value
     const secondlookDropdown = getTaskFromProcess(checklist, 'taskBlueprintCode', 'SECLOOK_CHK5');
@@ -1232,6 +1235,8 @@ function* saveGeneralChecklistDisposition(payload) {
       userGroups: assigneeUserGroups,
       skipValidation,
       dispositionReason,
+      brandName,
+      userFullName,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
