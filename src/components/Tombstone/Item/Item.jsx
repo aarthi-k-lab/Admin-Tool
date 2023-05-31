@@ -17,13 +17,18 @@ function Item({
   content, title, Component, style, disableIcons,
 }) {
   let contentStyle = 'content';
+  let titleStyle = 'title';
+
   if (title === 'Previous Disposition' && content.trim().toLowerCase() === 'send for qc review') {
     contentStyle = 'qCReviewContent';
+  } else if (title === 'Assumptor' && content !== 'NA') {
+    contentStyle = 'assupmtor';
+    titleStyle = 'assumptorTitle';
   }
   return (
     <div styleName={R.pathOr('wrapper', [style, 'wrapper'], styleObj)}>
       <div styleName={R.pathOr('item', [style, 'item'], styleObj)}>
-        <span styleName={R.pathOr('title', [style, 'title'], styleObj)}>{title}</span>
+        <span styleName={R.pathOr(titleStyle, [style, 'title'], styleObj)}>{title}</span>
         <span styleName={R.pathOr(contentStyle, [style, 'content'], styleObj)}>{content}</span>
       </div>
       {!disableIcons ? Component : ''}
