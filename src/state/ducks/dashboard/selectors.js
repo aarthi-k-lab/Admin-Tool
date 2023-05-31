@@ -202,6 +202,11 @@ const isSaveDisabled = state => R.pathOr(true, ['dashboard', 'isSaveDisabled'], 
 
 const getDisableFinanceCalcTabButton = state => R.pathOr({}, ['dashboard', 'disableFinanceCalcTabButton'], state);
 
+const getLoanType = state => R.pathOr(0, ['dashboard', 'loanType'], state);
+
+const getWaterfallId = state => R.pathOr(0, ['dashboard', 'waterfallId'], state);
+
+
 const selectors = {
   getCurrentLoanMilestone,
   getODMRetryEligibility,
@@ -318,6 +323,8 @@ const selectors = {
   trialDateInfo,
   isSaveDisabled,
   getDisableFinanceCalcTabButton,
+  getLoanType,
+  getWaterfallId,
 };
 
 export default selectors;

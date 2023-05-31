@@ -193,6 +193,7 @@ import {
   SET_BORROWERS_DATA,
   SET_EXPENSECALC_DATA,
   SET_INCOMECALC_DATA,
+  SET_BORROWER_DATA,
 } from '../income-calculator/types';
 import { selectors as stagerSelectors } from '../stager/index';
 import { saveDelayChecklistDataToDB, fetchDelayCheckListHistory } from '../stager/sagas';
@@ -1370,6 +1371,9 @@ function* getNext(action) {
       if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], taskDetails)) {
         yield put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] }));
       }
+      if (group === DashboardModel.PROC) {
+        yield put({ type: SET_BORROWER_DATA, payload: R.propOr([], 'processedBorrowerData', taskDetails) });
+      }
       yield put(getHistoricalCheckListData(taskId));
       if (R.keys(allTasksComments).length) {
         yield all(R.keys(allTasksComments).map((taskComment) => {
@@ -1590,6 +1594,9 @@ function* assignLoan() {
     if (R.pathOr(false, ['expenseCalcData', 'taskCheckListId'], response)) {
       const expenseCalcData = R.propOr(null, 'expenseCalcData', response);
       yield put({ type: SET_EXPENSECALC_DATA, payload: expenseCalcData });
+    }
+    if (group === DashboardModel.PROC) {
+      yield put({ type: SET_BORROWER_DATA, payload: R.propOr([], 'processedBorrowerData', response) });
     }
     const disabledWidgets = yield select(widgetSelectors.getDisabledWidgets);
     if (R.equals(true, R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], response))) {
