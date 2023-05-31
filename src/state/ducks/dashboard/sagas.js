@@ -19,7 +19,11 @@ import {
 } from 'ducks/widgets/index';
 import {
   actions as incomeActions,
+  selectors as incomeSelectors,
 } from 'ducks/income-calculator/index';
+import {
+  actions as docChecklistActions,
+} from 'ducks/document-checklist/index';
 import {
   actions as checklistActions,
   selectors as checklistSelectors,
@@ -33,7 +37,7 @@ import {
   ERROR, SUCCESS, FAILED, NOTFOUND,
 } from 'constants/common';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
-import { FINANCIAL_CALCULATOR } from 'constants/widgets';
+import { FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST } from 'constants/widgets';
 import { setDisabledWidget } from 'ducks/widgets/actions';
 import { CHECK_TASKNAME } from 'constants/trialTask';
 import { APPROVAL_TYPE, PRE_APPROVAL_TYPE, ENQUIRY_REQ } from 'constants/fhlmc';
@@ -170,6 +174,7 @@ import {
   UPDATE_TRIAL_PERIOD_RESULT,
   ODM_RERUN_SAGA,
 } from './types';
+import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch, disableFinanceCalcTabButtonAction } from './actions';
 import {
@@ -634,6 +639,8 @@ function* selectEval(searchItem) {
   const incomeCalcData = R.propOr(null, 'incomeCalcData', evalDetails);
   yield put(incomeActions.resetIncomeChecklistData());
   yield put(widgetActions.resetWidgetData());
+  yield put(docChecklistActions.resetDocChecklistData());
+  yield put(checklistActions.clearFicoAssetData());
   if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
     yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
@@ -697,6 +704,10 @@ function* selectEval(searchItem) {
   //  || R.equals(evalDetails.taskName, 'Forbearance')) {
   //   yield call(fetchLoanActivityDetails, searchItem);
   // }
+  const processedBorrowerData = yield select(incomeSelectors.getBorrowers);
+  if (R.equals(appGroupName, 'PROC') && R.isEmpty(processedBorrowerData)) {
+    yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
+  }
   try {
     const milestone = R.pathOr(null, ['payload', 'milestone'], searchItem);
     yield call(fetchMilestoneData, milestone, evalDetails.evalId, evalDetails.taskId);
@@ -945,6 +956,9 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const checklistSubtasks = yield select(checklistSelectors.getTaskTree);
     const externalChangeSubtasks = getTaskFromProcess(checklistSubtasks, 'taskBlueprintCode', 'EXT_CHG');
     const safeActRequire = R.pathOr(false, ['value', 'safeActRequired'], R.head(externalChangeSubtasks));
+    const loanNbr = yield (select(selectors.loanNumber));
+    const loanViewData = yield (select(tombstoneSelectors.getTombstoneLoanViewData));
+    const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData));
     const request = {
       evalId,
       disposition,
@@ -955,7 +969,15 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       wfProcessId,
       processStatus,
       safeActRequire,
+      loanNbr,
+      brandName,
     };
+    if (groupName === 'PROC') {
+      yield put({
+        type: SAVE_DOC_CHECKLIST_DATA,
+      });
+      yield take(DOC_CHK_SAVE_SUCCESS);
+    }
     const response = yield call(Api.callPost, `/api/disposition/validate-disposition?isAuto=${isAuto}`, request);
     const { tkamsValidation, skillValidation } = response;
     yield put({

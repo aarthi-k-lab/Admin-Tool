@@ -27,6 +27,16 @@ import {
   pushDataAction,
   computeRulesPassed,
   currentChecklistTypeAction,
+  fetchFicoHistoryAction,
+  setFicoScoreAction,
+  ficoLockAction,
+  setAssetDetailAction,
+  setRadioSelectDetailAction,
+  assetLockAction,
+  fetchAssetHistoriesAction,
+  fetchAssetHistoryForAssetIdAction,
+  setAssetHistoryViewAction,
+  clearFicoAssetData,
 } from './actions';
 
 const fetchHistoricalChecklistData = dispatch => (taskId) => {
@@ -123,6 +133,45 @@ const currentChecklistType = dispatch => (payload) => {
   dispatch(currentChecklistTypeAction(payload));
 };
 
+const fetchFicoHistoryOperation = dispatch => () => {
+  dispatch(fetchFicoHistoryAction());
+};
+
+const setFicoScoreOperation = dispatch => (payload) => {
+  dispatch(setFicoScoreAction(payload));
+};
+
+const ficoLockOperation = dispatch => () => {
+  dispatch(ficoLockAction());
+};
+
+const setAssetDetailOperation = dispatch => (payload) => {
+  dispatch(setAssetDetailAction(payload));
+};
+
+const setRadioSelectDetailOperation = dispatch => (payload) => {
+  dispatch(setRadioSelectDetailAction(payload));
+};
+
+const assetLockOperation = dispatch => () => {
+  dispatch(assetLockAction());
+};
+
+const fetchAssetHistoriesOperations = dispatch => () => {
+  dispatch(fetchAssetHistoriesAction());
+};
+
+const fetchAssetHistoryForAssetIdOperation = dispatch => (payload) => {
+  dispatch(fetchAssetHistoryForAssetIdAction(payload));
+};
+
+const setAssetHistoryViewOperation = dispatch => (payload) => {
+  dispatch(setAssetHistoryViewAction(payload));
+};
+
+const clearFicoAssetDataOperation = dispatch => () => {
+  dispatch(clearFicoAssetData());
+};
 
 const operations = {
   currentChecklistType,
@@ -153,6 +202,16 @@ const operations = {
   storeCurrentChecklistId,
   storeNewChecklist,
   triggerPushData,
+  fetchFicoHistoryOperation,
+  setFicoScoreOperation,
+  ficoLockOperation,
+  setAssetDetailOperation,
+  setRadioSelectDetailOperation,
+  assetLockOperation,
+  fetchAssetHistoriesOperations,
+  fetchAssetHistoryForAssetIdOperation,
+  setAssetHistoryViewOperation,
+  clearFicoAssetDataOperation,
 };
 
 export default operations;

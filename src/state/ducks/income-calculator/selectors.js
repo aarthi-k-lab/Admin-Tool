@@ -107,6 +107,14 @@ const getTaskBlueprintCode = state => R.pathOr('', ['incomeCalculator', 'checkli
 const getWidgetCheckListType = state => R.pathOr('', ['incomeCalculator', 'checklist', 'taskBlueprint', 'type'], state);
 const getExpenseTaskChecklistId = state => R.pathOr(null, ['incomeCalculator', 'expenseCalcData', 'taskCheckListId'], state);
 
+const getborrowerData = state => R.pathOr([], ['incomeCalculator', 'borrowerData'], state);
+
+const getSelectedBorrowerData = state => R.pathOr('', ['incomeCalculator', 'selectedBorrowerData'], state);
+
+const getselectedChecklistFieldData = state => R.pathOr('', ['incomeCalculator', 'selectedChecklistFieldData'], state);
+
+const getFicoHistoryTableData = state => R.pathOr([], ['incomeCalculator', 'ficoHistoryData'], state);
+
 const selectors = {
   getMainChecklist,
   disabledChecklist,
@@ -138,6 +146,10 @@ const selectors = {
   getExpenseAmounts,
   getTaskBlueprintCode,
   getWidgetCheckListType,
+  getSelectedBorrowerData,
+  getselectedChecklistFieldData,
+  getFicoHistoryTableData,
+  getborrowerData,
   getExpenseTaskChecklistId,
 };
 

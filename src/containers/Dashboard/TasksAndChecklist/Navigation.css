@@ -14,6 +14,7 @@
   border-top: 0.1rem solid var(--grey-200);
   font-weight: 600;
   align-items: center;
+  z-index: 1 !important;
 }
 
 .status {

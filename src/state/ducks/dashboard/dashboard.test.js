@@ -1252,6 +1252,7 @@ describe('assign Loan', () => {
       .toEqual(put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] })));
   });
 
+
   it('should dispatch action DISABLE_FINANCE_CALC_TAB_BUTTON for checklist', () => {
     const disableFinanceButtonPayload = {
       disableExpenseButton: true,

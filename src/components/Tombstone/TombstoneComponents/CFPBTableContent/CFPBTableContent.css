@@ -1,0 +1,17 @@
+.table-container {
+  min-height: 85px;
+}
+
+.table-container table thead th,
+.table-container table tbody td {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.table-container table tbody tr:nth-child(even) td {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.table-container div[class*="MuiTableContainer"] {
+  max-height: calc(100vh - 200px) !important;
+}

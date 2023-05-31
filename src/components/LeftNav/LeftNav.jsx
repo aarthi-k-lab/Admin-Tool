@@ -29,13 +29,12 @@ class LeftNav extends React.PureComponent {
     const {
       onAutoSave,
       onEndShift,
-      enableGetNext,
       evalId,
       isAssigned,
       onClearStagerResponse,
       onClearStagerTaskName,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && isAssigned) {
       onAutoSave('Paused');
     }
     onClearStagerTaskName();
@@ -72,13 +71,11 @@ class LeftNav extends React.PureComponent {
   }
 }
 LeftNav.defaultProps = {
-  enableGetNext: false,
   evalId: '',
   hiddenRoutes: [],
 };
 
 LeftNav.propTypes = {
-  enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
   hiddenRoutes: PropTypes.arrayOf(PropTypes.string),
   isAssigned: PropTypes.bool.isRequired,

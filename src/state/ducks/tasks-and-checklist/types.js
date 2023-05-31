@@ -55,6 +55,23 @@ const FETCH_MONTHLY_EXPENSE_VALUES = 'app/tasks-and-checklist/FETCH_MONTHLY_EXPE
 const SAVE_MONTHLY_EXPENSE_VALUES = 'app/tasks-and-checklist/SAVE_MONTHLY_EXPENSE_VALUES';
 const CURRENT_CHECKLIST_TYPE = 'app/tasks-and-checklist/CURRENT_CHECKLIST_TYPE';
 
+const FETCH_FICO_HISTORY = 'app/tasks-and-checklist/FETCH_FICO_HISTORY';
+const SAVE_FICO_HISTORY = 'app/tasks-and-checklist/SAVE_FICO_HISTORY';
+const SET_FICO_SCORE = 'app/tasks-and-checklist/SET_FICO_SCORE';
+const SAVE_FICO_SCORE = 'app/tasks-and-checklist/SAVE_FICO_SCORE';
+const FICO_LOCK = 'app/tasks-and-checklist/FICO_LOCK';
+
+const SET_ASSET_DETAILS = 'app/tasks-and-checklist/SET_ASSET_DETAILS';
+const SAVE_ASSET_DETAILS = 'app/tasks-and-checklist/SAVE_ASSET_DETAILS';
+const SET_RADIO_STATE_DETAIL = 'app/tasks-and-checklist/SET_RADIO_STATE_DETAIL';
+const ASSET_LOCK = 'app/tasks-and-checklist/ASSET_LOCK';
+const FETCH_ASSET_HISTORIES = 'app/tasks-and-checklist/FETCH_ASSET_HISTORIES';
+const SAVE_ASSET_HISTORIES = 'app/tasks-and-checklist/SAVE_ASSET_HISTORIES';
+const FETCH_ASSET_HISTORY_FOR_ASSET_ID = 'app/tasks-and-checklist/FETCH_ASSET_HISTORY_FOR_ASSET_ID';
+const SAVE_ASSET_HISTORY_BY_ID = 'app/tasks-and-checklist/SAVE_ASSET_HISTORY_BY_ID';
+const SET_HISTORY_VIEW = 'app/tasks-and-checklist/SET_HISTORY_VIEW';
+const SAVE_HISTORY_VIEW = 'app/tasks-and-checklist/SAVE_HISTORY_VIEW';
+const CLEAR_FICO_ASSET_DATA = 'app/tasks-and-checklist/CLEAR_FICO_ASSET_DATA';
 
 export {
   CURRENT_CHECKLIST_TYPE,
@@ -113,4 +130,20 @@ export {
   CHECK_RULES_PASSED,
   FETCH_MONTHLY_EXPENSE_VALUES,
   SAVE_MONTHLY_EXPENSE_VALUES,
+  FETCH_FICO_HISTORY,
+  SAVE_FICO_HISTORY,
+  SAVE_FICO_SCORE,
+  SET_FICO_SCORE,
+  FICO_LOCK,
+  SET_ASSET_DETAILS,
+  SAVE_ASSET_DETAILS,
+  SET_RADIO_STATE_DETAIL,
+  ASSET_LOCK,
+  FETCH_ASSET_HISTORIES,
+  FETCH_ASSET_HISTORY_FOR_ASSET_ID,
+  SAVE_ASSET_HISTORIES,
+  SAVE_ASSET_HISTORY_BY_ID,
+  SET_HISTORY_VIEW,
+  SAVE_HISTORY_VIEW,
+  CLEAR_FICO_ASSET_DATA,
 };

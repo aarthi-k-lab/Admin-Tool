@@ -63,6 +63,7 @@ function* getRightAppBarAction(request) {
     currentWidget,
     data,
   } = request;
+  // const group = yield select(dashboardSelectors.groupName);
   switch (currentWidget) {
     case FINANCIAL_CALCULATOR:
       yield put(getIncomeCalcChecklist({ isOpen, calcType: 'incomeCalcData' }));

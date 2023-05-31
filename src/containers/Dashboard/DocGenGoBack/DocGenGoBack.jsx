@@ -9,14 +9,19 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { selectors, operations } from 'ducks/dashboard';
 import { selectors as loginSelectors } from 'ducks/login';
+import { selectors as tombstoneSelectors } from 'ducks/tombstone';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
+import Grid from '@material-ui/core/Grid';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import {
   ADDITIONAL_INFO, HISTORY,
 } from '../../../constants/widgets';
+import getTombstonePopup from '../../../components/Tombstone/PopupSelect';
+import { EDITABLE_FIELDS } from '../../../constants/loanInfoComponents';
+import Popup from '../../../components/Popup';
 import UserNotification from '../../../components/UserNotification/UserNotification';
 import './DocGenGoBack.css';
 
@@ -57,9 +62,48 @@ class DocGenGoBack extends React.PureComponent {
     }
   }
 
+  renderSweetAlert() {
+    const { clearPopupData, popupData, dispatchAction } = this.props;
+    if (popupData) {
+      const {
+        isOpen, message, title, level, showCancelButton,
+        cancelButtonText, confirmButtonText, onConfirm,
+      } = popupData;
+      const confirmAction = onConfirm ? dispatchAction : clearPopupData;
+      return (
+        <Popup
+          cancelButtonText={cancelButtonText}
+          confirmButtonText={confirmButtonText}
+          level={level}
+          message={message}
+          onCancel={clearPopupData}
+          onConfirm={() => confirmAction(onConfirm)}
+          show={isOpen}
+          showCancelButton={showCancelButton}
+          showConfirmButton
+          title={title}
+        />
+      );
+    }
+    return null;
+  }
+
+  renderLoanInfoComponents() {
+    const { checklistCenterPaneView } = this.props;
+    return (
+      <section styleName="loanInfo">
+        <Grid styleName="rfdData">
+          {getTombstonePopup(checklistCenterPaneView)}
+        </Grid>
+        {this.renderSweetAlert()}
+      </section>
+
+    );
+  }
+
   render() {
     const {
-      inProgress, user, openWidgetList,
+      inProgress, user, openWidgetList, checklistCenterPaneView,
     } = this.props;
     const showButton = user.groupList.includes('docgen-mgr') || user.groupList.includes('docgen');
     const title = 'Send Back Doc Gen';
@@ -77,23 +121,53 @@ class DocGenGoBack extends React.PureComponent {
             showSendToDocGenStager={showButton}
           />
         </ContentHeader>
-        <Tombstone />
-        {R.contains(ADDITIONAL_INFO, openWidgetList) && (
-          <div styleName="bookingWidget">
-            <span styleName="widgetTitle">
-              ADDITIONAL INFO
-            </span>
-          </div>
-        )
-        }
-        <WidgetBuilder page="DOCGEN_GOBACK" />
-        { R.contains(ADDITIONAL_INFO, openWidgetList) && <AdditionalInfo />}
-        { R.contains(HISTORY, openWidgetList) && <MilestoneActivity />}
-        <div style={{ paddingTop: '0.1rem', paddingBottom: '0' }} styleName="title-row">
-          {(resultOperation && resultOperation.status)
-            ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
-            : ''
+        <div styleName="docksin-container">
+          <Tombstone />
+          {
+              EDITABLE_FIELDS.includes(checklistCenterPaneView)
+                ? (
+                  <div styleName="scroll-wrapper">
+                    {this.renderLoanInfoComponents()}
+                  </div>
+                ) : (
+                  <div style={{ width: '86%' }}>
+                    {
+                    R.contains(ADDITIONAL_INFO, openWidgetList) && (
+                    <div styleName="bookingWidget">
+                      <span styleName="widgetTitle">
+                      ADDITIONAL INFO
+
+                      </span>
+                    </div>
+                    )
+                    }
+                    {
+                     R.contains(ADDITIONAL_INFO, openWidgetList)
+                     && (
+                     <div styleName="container">
+                       <AdditionalInfo />
+                     </div>
+                     )
+                    }
+                    {((R.contains(HISTORY, openWidgetList)))
+                    && (
+                    <div styleName="container">
+                      <MilestoneActivity />
+                    </div>
+                    )
+                    }
+                  </div>
+                )
+
           }
+          <div style={{ paddingTop: '1.1rem', paddingBottom: '0' }} styleName="title-row">
+            {
+                  (resultOperation && resultOperation.status)
+                    ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
+                    : ''
+                }
+            <WidgetBuilder page="DOCSIN_GOBACK" />
+          </div>
         </div>
       </>
     );
@@ -112,6 +186,9 @@ DocGenGoBack.defaultProps = {
 
 DocGenGoBack.propTypes = {
   AppName: PropTypes.string,
+  checklistCenterPaneView: PropTypes.string.isRequired,
+  clearPopupData: PropTypes.func.isRequired,
+  dispatchAction: PropTypes.func.isRequired,
   dispositionReason: PropTypes.string.isRequired,
   EvalId: PropTypes.number.isRequired,
   groupName: PropTypes.string,
@@ -120,6 +197,18 @@ DocGenGoBack.propTypes = {
   onCleanResult: PropTypes.func,
   onPostComment: PropTypes.func.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
+  popupData: PropTypes.shape({
+    cancelButtonText: PropTypes.string,
+    clearData: PropTypes.string,
+    confirmButtonText: PropTypes.string,
+    isOpen: PropTypes.bool,
+    level: PropTypes.string,
+    message: PropTypes.string,
+    onConfirm: PropTypes.func,
+    showCancelButton: PropTypes.bool,
+    showConfirmButton: PropTypes.bool,
+    title: PropTypes.string,
+  }).isRequired,
   ProcIdType: PropTypes.string,
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
@@ -147,10 +236,14 @@ const mapStateToProps = state => ({
   groupName: selectors.groupName(state),
   LoanNumber: selectors.loanNumber(state),
   resultOperation: selectors.resultOperation(state),
+  checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
+  popupData: selectors.getPopupData(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
+  clearPopupData: operations.clearPopupData(dispatch),
+  dispatchAction: operations.dispatchAction(dispatch),
 });
 
 const DocGenGoBackContainer = connect(mapStateToProps, mapDispatchToProps)(DocGenGoBack);

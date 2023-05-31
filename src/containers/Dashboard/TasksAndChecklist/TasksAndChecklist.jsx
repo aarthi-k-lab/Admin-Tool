@@ -14,7 +14,7 @@ import CustomSnackBar from 'components/CustomSnackBar';
 import AdditionalInfo from 'containers/AdditionalInfo';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
-import { ERROR, SUCCESS } from 'constants/common';
+import { ERROR, SUCCESS, financialChecklist, checklistForms } from 'constants/common';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -33,9 +33,10 @@ import { selectors as tombstoneSelectors } from 'ducks/tombstone';
 import Grid from '@material-ui/core/Grid';
 import RFDContent from 'components/Tombstone/TombstoneComponents/RFDContent';
 import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR,
+  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST,
 } from 'constants/widgets';
 import { EDITABLE_FIELDS, RFD } from 'constants/loanInfoComponents';
+import getTombstonePopup from 'components/Tombstone/PopupSelect.jsx';
 import Popup from '../../../components/Popup';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
@@ -44,6 +45,7 @@ import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
 import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent/CollateralContent';
+import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
 
@@ -94,7 +96,7 @@ class TasksAndChecklist extends Component {
   shouldRenderWidgetView = () => {
     const { openWidgetList } = this.props;
     return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR],
+      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR,DOCUMENT_CHECKLIST],
     ))(openWidgetList);
   }
 
@@ -210,8 +212,17 @@ class TasksAndChecklist extends Component {
       );
     }
     let styleName = 'checklist';
-    if (checklistItems && (R.equals(R.prop('type', R.head(checklistItems)), 'income-calculator') || R.equals(R.prop('type', R.head(checklistItems)), 'expense-calculator'))) {
+    const checklistType = checklistItems && R.pathOr('',['additionalInfo', 'checklistType'],R.head(checklistItems));
+    const checklistCustomType = checklistItems && R.pathOr('',['additionalInfo', 'customType'],R.head(checklistItems));
+    if (financialChecklist.includes(checklistType) ) {
       styleName = 'incomeCalc';
+    }
+    if (checklistItems && (R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'asset-verification')) && (R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'fico-score'))) {
+      styleName = 'incomeCalc-av';
+    }
+
+    if(checklistForms.includes(checklistCustomType)) {
+      styleName = 'incomeCalc-av';
     }
     const isBookingWidgetOpen = R.contains(BOOKING, openWidgetList);
     if (groupName === DashboardModel.BOOKING || isBookingWidgetOpen) {
@@ -284,6 +295,9 @@ class TasksAndChecklist extends Component {
         break;
       case FINANCIAL_CALCULATOR:
         widgetToRender = <IncomeCalcWidget />;
+        break;
+      case DOCUMENT_CHECKLIST:
+        widgetToRender = <DocChecklistWidget/>
         break;
       default:
         widgetToRender = null;
@@ -378,7 +392,7 @@ class TasksAndChecklist extends Component {
     return (
       <section styleName="loanInfo">
         <Grid styleName="rfdData">
-          {checklistCenterPaneView === RFD ? <RFDContent /> : <CollateralContent />}
+          {getTombstonePopup(checklistCenterPaneView)}
         </Grid>
         <WidgetBuilder
           page={groupName}

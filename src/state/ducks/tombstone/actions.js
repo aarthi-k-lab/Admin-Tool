@@ -11,6 +11,10 @@ import {
   ADD_LIEN_LOAN_BALANCE,
   SAVE_COLLATERAL_DATA,
   REFRESH_LIEN_BALANCES,
+  GET_REASONABLE_EFFORT_DATA,
+  GET_REASONABLE_EFFORT_HISTORY_DATA,
+  GET_REASONABLE_EFFORT_DATA_BY_ID,
+  GET_CFPBTABLE_DATA,
 } from './types';
 
 const fetchTombstoneData = (loanNumber, taskName, taskId) => ({
@@ -73,6 +77,25 @@ const refreshLienBalanceAction = payload => ({
   payload,
 });
 
+const getReasonableEffortDataAction = () => ({
+  type: GET_REASONABLE_EFFORT_DATA,
+});
+
+
+const getReasonableEffortHistoryData = () => ({
+  type: GET_REASONABLE_EFFORT_HISTORY_DATA,
+});
+
+const getReasonableEffortById = payload => ({
+  type: GET_REASONABLE_EFFORT_DATA_BY_ID,
+  payload,
+});
+
+const getCFPBTableData = loanNumber => ({
+  type: GET_CFPBTABLE_DATA,
+  payload: loanNumber,
+});
+
 export {
   fetchTombstoneData,
   getRFDTableData,
@@ -86,4 +109,8 @@ export {
   addLoanBalanceAction,
   saveCollateralDataAction,
   refreshLienBalanceAction,
+  getReasonableEffortDataAction,
+  getReasonableEffortHistoryData,
+  getReasonableEffortById,
+  getCFPBTableData,
 };

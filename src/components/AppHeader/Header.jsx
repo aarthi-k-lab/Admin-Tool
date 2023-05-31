@@ -97,9 +97,9 @@ class Header extends React.Component {
 
   handleLandingpage() {
     const {
-      onAutoSave, onEndShift, enableGetNext, evalId, isAssigned, onClearStagerTaskName,
+      onAutoSave, onEndShift, evalId, isAssigned, onClearStagerTaskName,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && isAssigned) {
       onAutoSave('Paused');
     }
     onClearStagerTaskName();
@@ -189,13 +189,11 @@ class Header extends React.Component {
 }
 
 Header.defaultProps = {
-  enableGetNext: false,
   evalId: '',
 };
 
 Header.propTypes = {
   clearSearch: PropTypes.bool.isRequired,
-  enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
   features: PropTypes.shape({
     userGroupsToggle: PropTypes.bool,

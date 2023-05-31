@@ -12,8 +12,6 @@ parameters:
 
 trigger:
   branches:
-    exclude: 
-      - master
     include:
       - CMOD/JUNE
   paths:
@@ -25,7 +23,6 @@ name: Release-$(Rev:r.)
 extends:
   template: k8s.yml@templates
   parameters:
-    pool: Reverse
     dryrun: ${{ parameters.dryrun }}
     includeDev: true
     includeQA: false

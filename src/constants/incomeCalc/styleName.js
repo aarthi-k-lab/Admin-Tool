@@ -267,6 +267,18 @@ const direction = {
   bottom: { display: 'flex', flexDirection: 'column-reverse' },
 };
 
+const tabStyle = {
+  docBorrowerTab: {
+    tabs: 'doc-tab-view',
+  },
+  docWidget: {
+    tabs: 'doc-widget',
+  },
+  default: {
+    tabs: 'tabview',
+  },
+};
+
 const styleData = {
   datePicker,
   textFields,
@@ -274,6 +286,7 @@ const styleData = {
   dropDown,
   radioButtons,
   createSelect,
+  tabStyle,
 };
 
 const getStyleObj = component => R.prop(null, component, styleData);

@@ -466,3 +466,66 @@
   justify-content: initial !important;
   padding: 6px 0 !important;
 }
+
+.fico-score {
+  background-color: #f3f5f9 !important;
+  padding: 0 1rem 1rem 0 !important;
+  border-radius: 5px !important;
+}
+
+.fico-sect {
+  margin-top: 2rem !important;
+}
+.document-paper {
+  padding: 1rem;
+  background-color: #f3f5f9 !important;
+  margin-top: 1rem;
+}
+
+.doc-add-contrib-grid{
+  margin: 0 2rem 0 .5rem;
+  width: 75rem !important;
+  height: 19rem;
+  line-height: .5rem;
+}
+
+.doc-add-action{
+  margin: 2rem 0rem 2rem 2rem;
+  justify-content: space-between;
+}
+
+.doc-add-contrib-item{
+  display: flex;
+  align-items: center;
+  margin-left: 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.doc-chk-add-contrib-sect{
+  min-height: 44.1rem;
+  z-index: 1;
+  position: absolute;
+  margin-top: .5rem;
+  width: 48rem;
+  left: 52rem;
+  border-radius: 10px;
+  top:28rem;
+  padding: 0 !important;
+  border: 1px solid black;
+}
+
+.doc-chk-borr{
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  box-shadow: none !important;
+}
+
+.siTypeSect{
+  margin-top: 2rem !important;
+  border-radius: 7px !important;
+  width: 53% !important;
+  background-color: #f3f5f9 !important;
+}
+

@@ -97,6 +97,12 @@ import {
   processValidations,
 } from '../income-calculator/actions';
 import { storeDelayCheckListHistory } from '../stager/actions';
+import {
+  resetDocChecklistData,
+} from '../document-checklist/actions';
+import {
+  clearFicoAssetData,
+} from '../tasks-and-checklist/actions';
 
 const onExpand = dispatch => () => dispatch(onExpandView());
 
@@ -134,6 +140,8 @@ const onGetNext = dispatch => (payload) => {
   dispatch(clearBEDisposition());
   dispatch(clearDisposition());
   dispatch(storeDelayCheckListHistory([]));
+  dispatch(resetDocChecklistData());
+  dispatch(clearFicoAssetData());
   dispatch(getNext(payload));
 };
 
@@ -170,6 +178,7 @@ const setTombstoneDataForLoanView = dispatch => (payload) => {
 const onEndShift = dispatch => (type) => {
   dispatch(storeDelayCheckListHistory([]));
   dispatch(endShift(type));
+  dispatch(clearFicoAssetData());
 };
 
 const onUnassignLoan = dispatch => () => {

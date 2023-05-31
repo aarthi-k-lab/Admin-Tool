@@ -57,10 +57,10 @@ class SearchLoan extends React.PureComponent {
 
   componentDidMount() {
     const {
-      evalId, enableGetNext, onAutoSave, isAssigned, onClearStagerTaskName,
+      evalId, onAutoSave, isAssigned, onClearStagerTaskName,
       onGetGroupName,
     } = this.props;
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && isAssigned) {
       onAutoSave('Paused');
     }
     onGetGroupName('SEARCH_LOAN');
@@ -610,7 +610,6 @@ SearchLoan.COLUMN_DATA = [
 ];
 
 SearchLoan.defaultProps = {
-  enableGetNext: false,
   inProgress: false,
   resultOperation: {},
   openWidgetList: [],
@@ -626,7 +625,6 @@ SearchLoan.propTypes = {
   checkTrialStagerButton: PropTypes.func.isRequired,
   clearPopupData: PropTypes.func.isRequired,
   closeSweetAlert: PropTypes.func.isRequired,
-  enableGetNext: PropTypes.bool,
   evalId: PropTypes.string.isRequired,
   getRejectResponse: PropTypes.shape({
     level: PropTypes.string.isRequired,

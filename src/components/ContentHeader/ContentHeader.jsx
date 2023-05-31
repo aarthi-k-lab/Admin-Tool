@@ -19,10 +19,9 @@ import DashboardModel from '../../models/Dashboard';
 const renderBackButtonPage = '/stager';
 const handleBackButton = (onAutoSave,
   onEndShift,
-  enableGetNext,
   evalId,
   isAssigned) => {
-  if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
+  if (!R.isEmpty(evalId) && !R.isNil(evalId) && isAssigned) {
     onAutoSave('Paused');
   }
   onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
@@ -35,7 +34,7 @@ const handleAzureToggle = (event, handleToggle) => {
 const ContentHeader = ({
   title, children, checklistTemplateName,
   handleClick, showAddButton, group,
-  onAutoSave, onEndShift, enableGetNext, evalId,
+  onAutoSave, onEndShift, evalId,
   isAssigned, handleToggle, azureSearchToggle,
   features, isUtilGroupPresent, toggleButton,
 }) => (
@@ -44,7 +43,6 @@ const ContentHeader = ({
       <Link
         onClick={() => handleBackButton(onAutoSave,
           onEndShift,
-          enableGetNext,
           evalId,
           isAssigned)}
         to={renderBackButtonPage}
@@ -103,7 +101,6 @@ ContentHeader.defaultProps = {
   checklistTemplateName: '',
   handleClick: () => { },
   showAddButton: false,
-  enableGetNext: false,
   evalId: '',
   isAssigned: false,
   onAutoSave: () => { },
@@ -114,7 +111,6 @@ ContentHeader.propTypes = {
   azureSearchToggle: PropTypes.bool.isRequired,
   checklistTemplateName: PropTypes.string,
   children: PropTypes.arrayOf(PropTypes.node),
-  enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
   features: PropTypes.arrayOf(PropTypes.shape).isRequired,
   group: PropTypes.string,

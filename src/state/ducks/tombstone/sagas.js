@@ -9,6 +9,8 @@ import {
 import * as R from 'ramda';
 import { setPaymentDeferral } from 'ducks/dashboard/actions';
 import LoanTombstone from 'models/LoanTombstone';
+import moment from 'moment-timezone';
+import ReasonableEffort from 'models/ReasonableEffort';
 import DashboardModel from 'models/Dashboard';
 import * as Api from 'lib/Api';
 import { ERROR, SUCCESS, FAILED } from '../../../constants/common';
@@ -37,6 +39,14 @@ import {
   POPULATE_LIEN_BALANCES,
   POPULATE_PROPERTY_VALUATIONS,
   UPDATE_OCCUPANCY,
+  GET_REASONABLE_EFFORT_DATA,
+  SET_REASONABLE_EFFORT_DATA,
+  SET_REASONABLE_EFFORT_MIS_DOC_DATA,
+  GET_REASONABLE_EFFORT_HISTORY_DATA,
+  SET_REASONABLE_EFFORT_HISTORY_DATA,
+  GET_REASONABLE_EFFORT_DATA_BY_ID,
+  GET_CFPBTABLE_DATA,
+  SET_CFPBTABLE_DATA,
 } from './types';
 import { selectors as dashboardSelectors } from '../dashboard';
 import { selectors as loginSelectors } from '../login';
@@ -53,6 +63,8 @@ import {
   NO_DATA,
   RFD_ERROR,
   SAVE_ERROR,
+  REASONABLE_EFFORT_FETCH_ERROR,
+  REASONABLE_EFFORT_HISTORY_FETCH_ERROR,
 } from '../../../constants/loanInfoComponents';
 
 function* fetchTombstoneData(payload) {
@@ -394,6 +406,119 @@ const saveRFDDetails = function* saveRFDDetails(action) {
   }
 };
 
+const getCFPBTableData = function* getCFPBTableData() {
+  try {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    yield put({
+      type: TOGGLE_LOADER,
+      payload: true,
+    });
+    const response = yield call(Api.callGet, `api/tkams/search/CFPBDelinquencyTrackingInfo/${loanNumber}`);
+    yield put({
+      type: SET_CFPBTABLE_DATA,
+      payload: response,
+    });
+    if (!response) {
+      yield put({
+        type: SET_CFPBTABLE_DATA,
+        payload: [],
+      });
+    }
+    yield put({
+      type: TOGGLE_LOADER,
+      payload: false,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_CFPBTABLE_DATA,
+      payload: [],
+    });
+  }
+};
+
+function* getReasonableEffort() {
+  try {
+    const evalId = yield select(dashboardSelectors.evalId);
+    const response = yield call(Api.callGet, `/api/tkams/search/getReasonableEffortsData/${evalId}`);
+    const reasonableEffortData = yield call(ReasonableEffort.getReasonableEffortItems,
+      response);
+    const responseMapper = item => ({
+      letterType: item.letterType,
+      letterSentdate: !R.isNil(item.dateLtrSent) ? moment(item.dateLtrSent).format('MM/DD/YYYY') : '-',
+      deadlineDate: !R.isNil(item.bcMissingDocDeadlineDate) ? moment(item.bcMissingDocDeadlineDate).format('MM/DD/YYYY') : '-',
+      exclReason: item.exclReason,
+    });
+    let missDocData = R.pathOr([], ['missingDocsInfo'], response);
+    if (missDocData && missDocData.length > 0) {
+      missDocData = R.map(responseMapper, missDocData);
+    }
+    yield put({
+      type: SET_REASONABLE_EFFORT_DATA,
+      payload: reasonableEffortData,
+    });
+    yield put({
+      type: SET_REASONABLE_EFFORT_MIS_DOC_DATA,
+      payload: missDocData,
+    });
+    yield put({
+      type: TOGGLE_LOADER,
+      payload: false,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: REASONABLE_EFFORT_FETCH_ERROR,
+      },
+    });
+  }
+}
+
+
+function* getReasonableEffortHistoryData() {
+  try {
+    const evalId = yield select(dashboardSelectors.evalId);
+    const reasonableEffortData = yield select(loanTombstoneSelectors.getReasonableEffortData);
+    const reasonableEffortId = R.pathOr('', ['content'], R.find(R.propEq('title', 'Reasonable Effort ID'))(R.pathOr({}, ['data'], reasonableEffortData)));
+    const response = yield call(Api.callGet, `/api/tkams/search/getReasonableEffortHistory/${evalId}/${reasonableEffortId}`);
+    yield put({
+      type: SET_REASONABLE_EFFORT_HISTORY_DATA,
+      payload: response,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: REASONABLE_EFFORT_HISTORY_FETCH_ERROR,
+      },
+    });
+  }
+}
+
+function* getReasonableEffortById(action) {
+  try {
+    const reasonableEffortId = action.payload;
+    const evalId = yield select(dashboardSelectors.evalId);
+    const response = yield call(Api.callGet, `/api/tkams/search/getReasonableEffortDataUsingId/${evalId}/${reasonableEffortId}`);
+    const reasonableEffortData = yield call(ReasonableEffort.getReasonableEffortItems,
+      response);
+    yield put({
+      type: SET_REASONABLE_EFFORT_DATA,
+      payload: reasonableEffortData,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: ERROR,
+        status: REASONABLE_EFFORT_FETCH_ERROR,
+      },
+    });
+  }
+}
+
 
 function* watchTombstone() {
   yield takeEvery(FETCH_TOMBSTONE_DATA, fetchTombstoneData);
@@ -431,6 +556,23 @@ function* watchGetRFDTableData() {
   yield takeEvery(GET_RFDTABLE_DATA, getRFDTableData);
 }
 
+function* watchGetReasonableEffortData() {
+  yield takeEvery(GET_REASONABLE_EFFORT_DATA, getReasonableEffort);
+}
+
+
+function* watchGetReasonableEffortHistoryData() {
+  yield takeEvery(GET_REASONABLE_EFFORT_HISTORY_DATA, getReasonableEffortHistoryData);
+}
+
+function* watchGetReasonableEffortDataById() {
+  yield takeEvery(GET_REASONABLE_EFFORT_DATA_BY_ID, getReasonableEffortById);
+}
+
+function* watchGetCFPBTableData() {
+  yield takeEvery(GET_CFPBTABLE_DATA, getCFPBTableData);
+}
+
 export const TestExports = {
   fetchTombstoneData,
   watchTombstone,
@@ -448,5 +590,9 @@ export const combinedSaga = function* combinedSaga() {
     watchSaveCollateralData(),
     watchGetRFDTableData(),
     watchLienLoanBalances(),
+    watchGetReasonableEffortData(),
+    watchGetReasonableEffortHistoryData(),
+    watchGetReasonableEffortDataById(),
+    watchGetCFPBTableData(),
   ]);
 };

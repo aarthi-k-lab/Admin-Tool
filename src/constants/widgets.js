@@ -5,6 +5,7 @@ const CUSTOM_COMM_LETTER = 'Customer Communication Letter';
 const BOOKING = 'BookingAutomation';
 const FINANCIAL_CALCULATOR = 'FinancialCalculator';
 const FHLMC = 'FHLMC';
+const DOCUMENT_CHECKLIST = 'DocumentChecklist';
 
 const widgets = [
   COMMENTS,
@@ -14,6 +15,7 @@ const widgets = [
   BOOKING,
   FINANCIAL_CALCULATOR,
   FHLMC,
+  DOCUMENT_CHECKLIST,
 ];
 
 export {
@@ -25,4 +27,5 @@ export {
   FINANCIAL_CALCULATOR,
   widgets,
   FHLMC,
+  DOCUMENT_CHECKLIST,
 };

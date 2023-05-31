@@ -28,7 +28,6 @@ class HandleBrowserEvent extends React.PureComponent {
     const {
       onAutoSave,
       onEndShift,
-      enableGetNext,
       evalId,
       isAssigned,
       onWidgetToggle,
@@ -53,7 +52,7 @@ class HandleBrowserEvent extends React.PureComponent {
       // eslint-disable-next-line no-param-reassign
       event.returnValue = '';
     }
-    if (!R.isEmpty(evalId) && !R.isNil(evalId) && (!enableGetNext) && isAssigned) {
+    if (!R.isEmpty(evalId) && !R.isNil(evalId) && isAssigned) {
       onAutoSave('Paused');
     }
     setTimeout(() => onEndShift(EndShift.CLEAR_DASHBOARD_DATA), 0);
@@ -64,13 +63,11 @@ class HandleBrowserEvent extends React.PureComponent {
   }
 }
 HandleBrowserEvent.defaultProps = {
-  enableGetNext: false,
   evalId: '',
   groupName: '',
   openWidgetList: [],
 };
 HandleBrowserEvent.propTypes = {
-  enableGetNext: PropTypes.bool,
   evalId: PropTypes.string,
   groupName: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,

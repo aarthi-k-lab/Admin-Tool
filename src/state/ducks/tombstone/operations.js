@@ -11,6 +11,10 @@ import {
   addLoanBalanceAction,
   saveCollateralDataAction,
   refreshLienBalanceAction,
+  getReasonableEffortDataAction,
+  getReasonableEffortHistoryData,
+  getReasonableEffortById,
+  getCFPBTableData,
 } from './actions';
 
 const getRFDTableDataOperation = dispatch => (loanNumber) => {
@@ -56,6 +60,22 @@ const saveCollateralDataOperation = dispatch => (payload) => {
   dispatch(saveCollateralDataAction(payload));
 };
 
+const getReasonableEffortDataOperation = dispatch => () => {
+  dispatch(getReasonableEffortDataAction());
+};
+
+const getReasonableEffortHistoryDataOperation = dispatch => () => {
+  dispatch(getReasonableEffortHistoryData());
+};
+
+const getReasonableEffortByIdOperation = dispatch => (payload) => {
+  dispatch(getReasonableEffortById(payload));
+};
+
+const getCFPBTableDataOperation = dispatch => (loanNumber) => {
+  dispatch(getCFPBTableData(loanNumber));
+};
+
 export default {
   getRFDTableDataOperation,
   getRFDReasonDescDropdownOperation,
@@ -68,4 +88,8 @@ export default {
   addLoanBalanceOperation,
   saveCollateralDataOperation,
   refreshLienBalanceOperation,
+  getReasonableEffortDataOperation,
+  getReasonableEffortHistoryDataOperation,
+  getReasonableEffortByIdOperation,
+  getCFPBTableDataOperation,
 };

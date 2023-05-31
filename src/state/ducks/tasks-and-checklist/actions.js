@@ -34,6 +34,16 @@ import {
   COMPUTE_RULES_PASSED,
   FETCH_MONTHLY_EXPENSE_VALUES,
   CURRENT_CHECKLIST_TYPE,
+  FETCH_FICO_HISTORY,
+  SET_FICO_SCORE,
+  FICO_LOCK,
+  SET_ASSET_DETAILS,
+  SET_RADIO_STATE_DETAIL,
+  ASSET_LOCK,
+  FETCH_ASSET_HISTORIES,
+  FETCH_ASSET_HISTORY_FOR_ASSET_ID,
+  SET_HISTORY_VIEW,
+  CLEAR_FICO_ASSET_DATA,
 } from './types';
 
 const currentChecklistTypeAction = payload => ({
@@ -233,6 +243,51 @@ const computeRulesPassed = payload => ({
   payload,
 });
 
+const fetchFicoHistoryAction = () => ({
+  type: FETCH_FICO_HISTORY,
+});
+
+const setFicoScoreAction = payload => ({
+  type: SET_FICO_SCORE,
+  payload,
+});
+
+const ficoLockAction = () => ({
+  type: FICO_LOCK,
+});
+
+const setAssetDetailAction = payload => ({
+  type: SET_ASSET_DETAILS,
+  payload,
+});
+
+const setRadioSelectDetailAction = payload => ({
+  type: SET_RADIO_STATE_DETAIL,
+  payload,
+});
+
+const assetLockAction = () => ({
+  type: ASSET_LOCK,
+});
+
+const fetchAssetHistoriesAction = () => ({
+  type: FETCH_ASSET_HISTORIES,
+});
+
+const fetchAssetHistoryForAssetIdAction = payload => ({
+  type: FETCH_ASSET_HISTORY_FOR_ASSET_ID,
+  payload,
+});
+
+const setAssetHistoryViewAction = payload => ({
+  type: SET_HISTORY_VIEW,
+  payload,
+});
+
+const clearFicoAssetData = () => ({
+  type: CLEAR_FICO_ASSET_DATA,
+});
+
 export {
   currentChecklistTypeAction,
   computeRulesPassed,
@@ -269,4 +324,14 @@ export {
   setNewChecklist,
   pushDataAction,
   getMonthlyExpenseValues,
+  fetchFicoHistoryAction,
+  setFicoScoreAction,
+  ficoLockAction,
+  setAssetDetailAction,
+  setRadioSelectDetailAction,
+  assetLockAction,
+  fetchAssetHistoriesAction,
+  fetchAssetHistoryForAssetIdAction,
+  setAssetHistoryViewAction,
+  clearFicoAssetData,
 };

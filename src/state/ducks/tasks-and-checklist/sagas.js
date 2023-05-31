@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   takeEvery,
   all,
@@ -7,7 +8,8 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
-import { ERROR } from 'constants/common';
+import { ERROR, FAILED } from 'constants/common';
+import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
 import {
   SET_LAST_UPDATED,
   SET_SELECTED_CHECKLIST,
@@ -44,12 +46,28 @@ import {
   PUT_DROPDOWN_DATA,
   FETCH_MONTHLY_EXPENSE_VALUES,
   SAVE_MONTHLY_EXPENSE_VALUES,
+  SAVE_FICO_HISTORY,
+  FETCH_FICO_HISTORY,
+  SAVE_FICO_SCORE,
+  SET_FICO_SCORE,
+  FICO_LOCK,
+  SET_ASSET_DETAILS,
+  SAVE_ASSET_DETAILS,
+  SET_RADIO_STATE_DETAIL,
+  ASSET_LOCK,
+  FETCH_ASSET_HISTORIES,
+  SAVE_ASSET_HISTORIES,
+  FETCH_ASSET_HISTORY_FOR_ASSET_ID,
+  SAVE_ASSET_HISTORY_BY_ID,
 } from './types';
 import {
   USER_NOTIF_MSG,
   SET_GET_NEXT_STATUS,
   SET_RESULT_OPERATION,
   DISABLE_PUSHDATA,
+  TOGGLE_LOCK_BUTTON,
+  SET_POPUP_DATA,
+  CHECKLIST_NOT_FOUND,
 } from '../dashboard/types';
 import {
   SET_SNACK_BAR_VALUES,
@@ -60,13 +78,18 @@ import {
   selectors as dashboardSelectors,
 } from '../dashboard';
 import {
+  selectors as incomeSelectors,
+} from '../income-calculator';
+import {
   selectors as loginSelectors,
 } from '../login';
 import DashboardModel from '../../../models/Dashboard/index';
 import {
   SOMETHING_WENT_WRONG,
 } from '../../../models/Alert';
-
+import {
+  ASSUMPTOR, CONTRIBUTOR,
+} from '../../../constants/frontEndChecklist';
 // import DropDownSelect from 'containers';
 const {
   Messages: {
@@ -918,6 +941,411 @@ function* setNewChecklist(action) {
   }
 }
 
+function* updateAndSaveChecklist(payload) {
+  try {
+    const { key, validationMessage } = payload;
+    const taskTree = yield select(selectors.getTaskTree);
+    const checklistId = yield select(selectors.getProcessId);
+    const task = R.find(R.propEq('taskBlueprintCode', 'EXT_CHG'))(taskTree.subTasks);
+    const { _id, value } = task;
+    yield call(Api.put, `/api/task-engine/task/${_id}`, { value: { ...value, [key]: validationMessage } });
+    const response = yield call(Api.callGet, `/api/task-engine/process/${checklistId}?shouldGetTaskTree=false&forceNoCache=${Math.random()}`);
+    const didErrorOccur = response === null;
+    if (didErrorOccur) {
+      throw new Error('Api call failed');
+    } else {
+      yield put({
+        type: USER_NOTIF_MSG,
+        payload: {},
+      });
+      yield put({
+        type: SET_GET_NEXT_STATUS,
+        payload: false,
+      });
+    }
+    const { rootId: rootTaskId } = response;
+    yield put(actions.storeProcessDetails(checklistId, rootTaskId));
+    yield put(actions.getTasks());
+  } catch (e) {
+    yield put({
+      type: CHECKLIST_NOT_FOUND,
+      payload: {
+        messageCode: ChecklistErrorMessageCodes.CHECKLIST_FETCH_FAILED,
+      },
+    });
+  }
+}
+
+function* fetchFicoHistory() {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const updatedFicoTableData = yield call(Api.callGet, `/api/dataservice/fico/fico-history/${loanNumber}`);
+  yield put({ type: SAVE_FICO_HISTORY, payload: updatedFicoTableData });
+}
+
+function* setFicoScore(action) {
+  const { position, value } = action.payload;
+  const ficoScoreData = yield select(selectors.getFicoScoreData);
+  const isPresent = R.find(R.propEq('position', (position)))(ficoScoreData);
+  const ficoScoreValue = parseInt(value, 10);
+  const decimalValidation = R.is(Number, ficoScoreValue) && !Number.isInteger(ficoScoreValue)
+   && !R.isNil(value) && !R.isEmpty(value);
+  if (decimalValidation) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        message: 'Fico Score is not a decimal number. ',
+        level: 'Error',
+        title: 'Lock Calculation',
+      },
+    });
+  } else {
+    if (isPresent) {
+      const newData = ficoScoreData.map((d) => {
+        if (d.position === position) {
+          d.ficoScore = ficoScoreValue;
+        }
+        return d;
+      });
+      yield put({
+        type: SAVE_FICO_SCORE,
+        payload: newData,
+      });
+    } else {
+      const newData = [...ficoScoreData, { position, ficoScore: ficoScoreValue }];
+      yield put({
+        type: SAVE_FICO_SCORE,
+        payload: newData,
+      });
+    }
+    if (ficoScoreValue !== 0 && !R.isNil(value) && !R.isEmpty(value)) {
+      yield put({
+        type: TOGGLE_LOCK_BUTTON,
+        payload: { enable: true, selectedChecklistLock: '' },
+      });
+    } else {
+      yield put({
+        type: TOGGLE_LOCK_BUTTON,
+        payload: { enable: false, selectedChecklistLock: '' },
+      });
+    }
+  }
+}
+
+function* ficoLockCalculation() {
+  try {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const borrowers = yield select(incomeSelectors.getBorrowers);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const ficoScoreData = yield select(selectors.getFicoScoreData);
+    let ficolockRequest = [];
+    let tkamsResponse = null;
+    ficolockRequest = ficoScoreData.map(data => ({
+      loanNbr: loanNumber,
+      position: data.position,
+      userName: userPrincipalName,
+      ficoScore: data.ficoScore,
+      evalId,
+    }));
+    ficolockRequest = ficolockRequest.filter(d => d.ficoScore !== 0 && !R.isNil(d.ficoScore));
+    const response = yield call(Api.callPost, '/api/dataservice/fico/insertFicoDetails', ficolockRequest);
+    ficolockRequest.map((e) => {
+      borrowers.map((x) => {
+        if (x.borrowerPstnNumber === e.position) {
+          e.description = x.description;
+        }
+        return null;
+      });
+      return null;
+    });
+    const filteredRequest = R.filter(x => !x.description.includes(ASSUMPTOR)
+    && !x.description.includes(CONTRIBUTOR), ficolockRequest);
+    const ficolockRequestTkams = filteredRequest.map(data => ({
+      loanNbr: data.loanNbr,
+      position: data.position,
+      userName: userPrincipalName,
+      ficoScore: data.ficoScore,
+    }));
+    if (ficolockRequestTkams && ficolockRequestTkams.length > 0) {
+      tkamsResponse = yield call(Api.callPost, '/api/tkams/fico/saveFicoData', ficolockRequestTkams);
+    }
+    if ((R.equals((R.propOr(null, 'status', response), 'Success')))) {
+      yield put({
+        type: TOGGLE_LOCK_BUTTON,
+        payload: { enable: false, selectedChecklistLock: '' },
+      });
+      yield put({ type: FETCH_FICO_HISTORY });
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Fico Score is Locked successfully',
+          level: 'Success',
+          title: 'Lock Calculation',
+        },
+      });
+      yield call(updateAndSaveChecklist, { key: 'ficoLockSuccess', validationMessage: true });
+    }
+
+    if ((filteredRequest && filteredRequest.length > 0) && !R.equals(R.propOr(null, 'status', tkamsResponse), 'Success')) {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Failed Saving fico details to TKAMS. ',
+          level: 'Error',
+          title: 'Lock Calculation',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        message: 'Something went wrong. Please try after some time. ',
+        level: 'Error',
+        title: 'Lock Calculation',
+      },
+    });
+  }
+}
+
+
+function* setAssetDetail(action) {
+  const { value, key, selectedBorrower } = action.payload;
+  const assetData = yield select(selectors.getAssetDetails);
+  const isPresent = R.find(R.propEq('borrValue', selectedBorrower))(assetData);
+  let newData = [];
+  if (isPresent) {
+    newData = assetData.map((d) => {
+      if (d.borrValue === selectedBorrower) {
+        d[key] = value;
+      }
+      return d;
+    });
+    yield put({
+      type: SAVE_ASSET_DETAILS,
+      payload: newData,
+    });
+  } else {
+    const data = {
+      borrValue: selectedBorrower,
+    };
+    data[key] = value;
+    newData = [...assetData, data];
+    yield put({
+      type: SAVE_ASSET_DETAILS,
+      payload: newData,
+    });
+  }
+  const enableLockButton = R.any((data) => {
+    if ((!R.isNil(data.checkingAccount) && !R.isEmpty(data.checkingAccount))
+    || (!R.isNil(data.savingsAccount) && !R.isEmpty(data.savingsAccount))
+    || (!R.isNil(data.ira) && !R.isEmpty(data.ira))
+    || (!R.isNil(data.stocks) && !R.isEmpty(data.stocks))
+    ) {
+      return true;
+    }
+    return false;
+  }, newData);
+  if (enableLockButton) {
+    yield put({
+      type: TOGGLE_LOCK_BUTTON,
+      payload: { enable: true, selectedChecklistLock: '' },
+    });
+  } else {
+    yield put({
+      type: TOGGLE_LOCK_BUTTON,
+      payload: { enable: false, selectedChecklistLock: '' },
+    });
+  }
+}
+
+function* setRadioOptionInAsset(action) {
+  const { value, key, selectedBorrower } = action.payload;
+  const assetData = yield select(selectors.getAssetDetails);
+  const isPresent = R.find(R.propEq('borrValue', selectedBorrower))(assetData);
+  if (isPresent) {
+    const newData = assetData.map((d) => {
+      if (d.borrValue === selectedBorrower) {
+        d[key] = value;
+      }
+      return d;
+    });
+    yield put({
+      type: SAVE_ASSET_DETAILS,
+      payload: newData,
+    });
+  } else {
+    const data = {
+      borrValue: selectedBorrower,
+    };
+    data[key] = value;
+    const newData = [...assetData, data];
+    yield put({
+      type: SAVE_ASSET_DETAILS,
+      payload: newData,
+    });
+  }
+}
+
+const checkDuplicatesInAsset = (assetData) => {
+  const data = R.map(R.omit(['selectedState']), assetData);
+  const hasRepeatedValueOtherThanZero = (arr) => {
+    const keys = Object.keys(arr[0]);
+    const len = arr.length;
+    for (let i = 1; i < len; i += 1) {
+      for (let j = 0; j < keys.length; j += 1) {
+        const key = keys[j];
+        if (arr[i][key] !== '0' && arr[i][key] !== '' && arr[i][key] === arr[i - 1][key]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+  return hasRepeatedValueOtherThanZero(data);
+};
+
+function* assetLockCalculation() {
+  try {
+    let assetData = yield select(selectors.getAssetDetails);
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const borrowers = yield select(incomeSelectors.getBorrowers);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const borrValueList = borrowers.map(borr => `${borr.firstName}_${borr.borrowerPstnNumber}`);
+    const isDuplicates = checkDuplicatesInAsset(assetData);
+    if (!isDuplicates) {
+      assetData = assetData.map(data => ({
+        borrValue: data.borrValue,
+        checkingAccount: data.checkingAccount ? parseFloat(data.checkingAccount, 10) : 0,
+        savingsAccount: data.savingsAccount ? parseFloat(data.savingsAccount, 10) : 0,
+        ira: data.ira ? parseFloat(data.ira, 10) : 0,
+        stocks: data.stocks ? parseFloat(data.stocks, 10) : 0,
+        selectedState: data.selectedState ? data.selectedState : 'Verified',
+      }));
+      let assetLockRequest = borrValueList.map((value) => {
+        const asset = R.find(R.propEq('borrValue', value))(assetData);
+        if (asset) {
+          return asset;
+        }
+        return {
+          borrValue: value,
+          savingsAccount: 0,
+          checkingAccount: 0,
+          ira: 0,
+          stocks: 0,
+          selectedState: 'Verified',
+        };
+      });
+      const borrDetails = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
+      const borrIdDetails = {};
+      borrDetails.map((borr) => {
+        if (borr) {
+          borrIdDetails[`${borr.firstName}_${borr.borrowerPstnNumber}`] = borr.borrowerId;
+        }
+        return null;
+      });
+      const assetId = Math.floor(1000 + Math.random() * 9000);
+      assetLockRequest = assetLockRequest.map(d => ({
+        ...d,
+        borrId: borrIdDetails[d.borrValue],
+        assetId,
+        userName: userPrincipalName,
+      }));
+      const assetLockResponse = yield call(Api.callPost, '/api/dataservice/asset/assetLockCalculation', assetLockRequest);
+      if ((R.equals((R.propOr(null, 'status', assetLockResponse), 'Success')))) {
+        const mappedAssetLockRequest = R.map((x) => {
+          const borrData = R.find(R.propEq('borrowerId', x.borrId))(borrDetails);
+          return {
+            ...x,
+            borrowerAffilCd: borrData.borrowerAffilCd,
+          };
+        }, assetLockRequest);
+        if (mappedAssetLockRequest) {
+          if (mappedAssetLockRequest.length > 0) {
+            const saveToTkamsPayload = {
+              borrowerAssetList: mappedAssetLockRequest,
+              email: userPrincipalName,
+              evalId,
+              loanId: loanNumber,
+            };
+            const saveToTkamsResponse = yield call(Api.callPost, '/api/tkams/asset/saveToTkams', saveToTkamsPayload);
+            if (!saveToTkamsResponse.saveStatus) {
+              yield put({
+                type: SET_POPUP_DATA,
+                payload: {
+                  message: saveToTkamsResponse.errorMessage,
+                  level: 'Failed',
+                  title: 'Failed Saving Asset verification details to TKAMS',
+                },
+              });
+            }
+          }
+        }
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Asset Verification is Locked successfully',
+            level: 'Success',
+            title: 'Lock Calculation',
+          },
+        });
+        yield put({ type: FETCH_ASSET_HISTORIES });
+        yield call(updateAndSaveChecklist, { key: 'assetLockSuccess', validationMessage: true });
+        yield put({
+          type: TOGGLE_LOCK_BUTTON,
+          payload: { enable: false, selectedChecklistLock: '' },
+        });
+      }
+    } else {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Duplication found in asset details',
+          level: 'Failed',
+          title: 'Lock Calculation',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: FAILED,
+        status: 'Error while locking Asset.',
+      },
+    });
+  }
+}
+
+function* fetchAssetHistory() {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const assetHistoryData = yield call(Api.callGet, `/api/dataservice/asset/fetchHistories/${loanNumber}`);
+  yield put({ type: SAVE_ASSET_HISTORIES, payload: assetHistoryData });
+}
+
+function* fetchAssetHistoryById(action) {
+  const { assetId } = action.payload;
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const assetHistoryDataById = yield call(Api.callGet, `/api/dataservice/asset/fetchHistory/${assetId}`);
+  const borrDetails = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
+  const borrIdDetails = {};
+  borrDetails.map((borr) => {
+    if (borr) {
+      borrIdDetails[borr.borrowerId] = `${borr.firstName}_${borr.borrowerPstnNumber}`;
+    }
+    return null;
+  });
+  const newData = assetHistoryDataById.map(d => ({
+    ...d,
+    borrValue: borrIdDetails[d.borrId],
+    selectedState: d.selectedState === 'N/A' ? 'Verified' : d.selectedState,
+  }));
+  yield put({ type: SAVE_ASSET_HISTORY_BY_ID, payload: newData });
+}
+
 function* watchChecklistItemChange() {
   yield takeEvery(HANDLE_CHECKLIST_ITEM_CHANGE, handleChecklistItemChange);
 }
@@ -978,6 +1406,38 @@ function* watchPushDataButton() {
   yield takeEvery(PUSH_DATA, addPushDataResponse);
 }
 
+function* watchFetchFicoHistory() {
+  yield takeEvery(FETCH_FICO_HISTORY, fetchFicoHistory);
+}
+
+function* watchSetFicoScore() {
+  yield takeEvery(SET_FICO_SCORE, setFicoScore);
+}
+
+function* watchFicoLock() {
+  yield takeEvery(FICO_LOCK, ficoLockCalculation);
+}
+
+function* watchSetAssetDetail() {
+  yield takeEvery(SET_ASSET_DETAILS, setAssetDetail);
+}
+
+function* watchSetRadioSelectDetail() {
+  yield takeEvery(SET_RADIO_STATE_DETAIL, setRadioOptionInAsset);
+}
+
+function* watchAssetLock() {
+  yield takeEvery(ASSET_LOCK, assetLockCalculation);
+}
+
+function* watchFetchAssetHistories() {
+  yield takeEvery(FETCH_ASSET_HISTORIES, fetchAssetHistory);
+}
+
+function* watchFetchAssetHistoryById() {
+  yield takeEvery(FETCH_ASSET_HISTORY_FOR_ASSET_ID, fetchAssetHistoryById);
+}
+
 export const TestExports = {
   watchGetTasks,
   getTasks,
@@ -1005,6 +1465,14 @@ export function* combinedSaga() {
     watchSetNewChecklist(),
     watchPushDataButton(),
     watchMonthlyExpenseValues(),
+    watchFetchFicoHistory(),
+    watchSetFicoScore(),
+    watchFicoLock(),
+    watchSetAssetDetail(),
+    watchSetRadioSelectDetail(),
+    watchAssetLock(),
+    watchFetchAssetHistories(),
+    watchFetchAssetHistoryById(),
   ]);
   // eslint-disable-next-line eol-last
 }

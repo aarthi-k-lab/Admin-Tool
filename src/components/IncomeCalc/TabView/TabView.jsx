@@ -13,6 +13,12 @@ import Icon from '@material-ui/core/Icon';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import TabScrollButton from '@material-ui/core/TabScrollButton';
 import { withStyles } from '@material-ui/core/styles';
+import { getStyleName } from 'constants/incomeCalc/styleName';
+import { connect } from 'react-redux';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { selectors as widgetsSelectors } from 'ducks/widgets';
+import { DOCUMENT_CHECKLIST } from 'constants/widgets';
+import { operations as incomeCalcOperations } from '../../../state/ducks/income-calculator';
 
 const tabScrollButton = withStyles(() => ({
   root: {
@@ -101,9 +107,9 @@ class TabView extends React.PureComponent {
   render() {
     const {
       subTasks, additionalInfo: {
-        valuePath, isDisabled,
-      }, renderChildren, value,
-      failureReason,
+        valuePath, isDisabled, styleName,
+      }, renderChildren, value, openWidgetList,
+      failureReason, groupName,
     } = this.props;
     const isEstateBorr = R.propOr(false, 'isEstateBorr', value);
     const priorityBorrower = R.propOr(null, 'priorityBorrower', value);
@@ -111,15 +117,16 @@ class TabView extends React.PureComponent {
       anchorEl, displayList, dropDownList,
     } = this.state;
     const tabIndex = displayList && R.findIndex(R.propEq('value', R.pathOr(value, valuePath || [], value)))(displayList);
+    const borrTabStyle = R.contains(DOCUMENT_CHECKLIST, openWidgetList) ? 'docWidget' : styleName;
     return (
-      <div styleName="tabview">
-        <Paper elevation={1} square>
+      <div styleName={getStyleName('tabStyle', borrTabStyle, 'tabs')}>
+        <Paper elevation={1} square styleName="borrowerBanner">
           <Tabs
             indicatorColor="primary"
             onChange={(_, selectedIndex) => this.onTabSelection(selectedIndex, displayList)}
             scrollable="true"
             ScrollButtonComponent={tabScrollButton}
-            textColor="primary"
+            style={{ width: `${groupName === 'PROC' ? '57rem' : 'auto'}` }}
             value={tabIndex === -1 ? null : tabIndex}
             variant="scrollable"
           >
@@ -176,16 +183,16 @@ class TabView extends React.PureComponent {
                     <Paper>
                       {dropDownList && dropDownList.map((item, index) => (
                         <MenuItem
-                          key={item.name}
+                          key={R.propOr('', 'name', item)}
                           onClick={this.onMenuItemClick(DISPLAY_LENGTH + index)}
-                          value={item}
+                          value={item || {}}
                         >
                           <div style={{ display: 'grid', textTransform: 'capitalize' }}>
                             <Typography style={{ fontWeight: '600' }} variant="subtitle1">
-                              {R.toLower(R.propOr('', 'name', item))}
+                              {item && R.propOr('', 'name', item)}
                             </Typography>
                             <Typography variant="subtitle2">
-                              {R.toLower(R.propOr('', 'description', item))}
+                              {item && R.propOr('', 'description', item)}
                             </Typography>
                           </div>
                         </MenuItem>
@@ -212,6 +219,8 @@ TabView.defaultProps = {
     isDisabled: false,
   },
   failureReason: [],
+  groupName: null,
+  openWidgetList: [],
 };
 
 TabView.propTypes = {
@@ -225,10 +234,20 @@ TabView.propTypes = {
     level: PropTypes.number,
     message: PropTypes.string,
   }),
+  groupName: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   renderChildren: PropTypes.func.isRequired,
   subTasks: PropTypes.arrayOf(PropTypes.string).isRequired,
   value: PropTypes.string.isRequired,
 };
 
-export default TabView;
+const mapStateToProps = state => ({
+  groupName: dashboardSelectors.groupName(state),
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  setSelectedBorrorwer: incomeCalcOperations.setSelectedBorrower(dispatch),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(TabView);

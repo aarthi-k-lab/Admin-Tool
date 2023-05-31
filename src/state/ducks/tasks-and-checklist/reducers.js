@@ -41,6 +41,13 @@ import {
   SET_RFD_CHOICE,
   SAVE_MONTHLY_EXPENSE_VALUES,
   CURRENT_CHECKLIST_TYPE,
+  SAVE_FICO_HISTORY,
+  SAVE_FICO_SCORE,
+  SAVE_ASSET_DETAILS,
+  SAVE_ASSET_HISTORIES,
+  SAVE_ASSET_HISTORY_BY_ID,
+  SET_HISTORY_VIEW,
+  CLEAR_FICO_ASSET_DATA,
 } from './types';
 
 const FAILED = 'failed';
@@ -64,6 +71,16 @@ const defaultState = {
     isOpen: false,
   },
   shouldDeleteTask: false,
+  fico: {
+    ficoHistory: [],
+    ficoScore: [],
+  },
+  asset: {
+    assetDetails: [],
+    assetHistoryDetails: [],
+    assetHistoryData: [],
+  },
+  isAssetHistoryClicked: false,
 };
 
 function storeChecklistItemChange(state, id, value) {
@@ -357,6 +374,77 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         selectedRFDDesc: action.payload,
+      };
+    }
+    case SAVE_FICO_HISTORY: {
+      const ficoHistoryTableData = action.payload;
+      const { fico } = state;
+      fico.ficoHistory = ficoHistoryTableData;
+      const newData = JSON.parse(JSON.stringify(fico));
+      return {
+        ...state,
+        fico: newData,
+      };
+    }
+    case SAVE_FICO_SCORE: {
+      const ficoScoreData = action.payload;
+      const { fico } = state;
+      fico.ficoScore = ficoScoreData;
+      const newData = JSON.parse(JSON.stringify(fico));
+      return {
+        ...state,
+        fico: newData,
+      };
+    }
+    case SAVE_ASSET_DETAILS: {
+      const data = action.payload;
+      const { asset } = state;
+      asset.assetDetails = data;
+      const newData = JSON.parse(JSON.stringify(asset));
+      return {
+        ...state,
+        asset: newData,
+      };
+    }
+    case SAVE_ASSET_HISTORIES: {
+      const data = action.payload;
+      const { asset } = state;
+      asset.assetHistoryData = data;
+      const newData = JSON.parse(JSON.stringify(asset));
+      return {
+        ...state,
+        asset: newData,
+      };
+    }
+    case SAVE_ASSET_HISTORY_BY_ID: {
+      const data = action.payload;
+      const { asset } = state;
+      asset.assetHistoryDetails = data;
+      const newData = JSON.parse(JSON.stringify(asset));
+      return {
+        ...state,
+        asset: newData,
+      };
+    }
+    case SET_HISTORY_VIEW: {
+      return {
+        ...state,
+        isAssetHistoryClicked: action.payload,
+      };
+    }
+    case CLEAR_FICO_ASSET_DATA: {
+      const { fico, asset } = state;
+      fico.ficoScore = [];
+      fico.ficoHistory = [];
+      asset.assetHistoryData = [];
+      asset.assetHistoryDetails = [];
+      asset.assetDetails = [];
+      const newFicoData = JSON.parse(JSON.stringify(fico));
+      const newAssetData = JSON.parse(JSON.stringify(asset));
+      return {
+        ...state,
+        fico: newFicoData,
+        asset: newAssetData,
       };
     }
     default:

@@ -20,6 +20,11 @@ import {
   POPULATE_PROPERTY_VALUATIONS,
   UPDATE_OCCUPANCY,
   UPDATE_CONSOLIDATE_EXPENSE_DATA,
+  SET_REASONABLE_EFFORT_DATA,
+  SET_REASONABLE_EFFORT_MIS_DOC_DATA,
+  SET_REASONABLE_EFFORT_HISTORY_DATA,
+  SET_CFPBTABLE_DATA,
+  SET_UPDATED_ASSUMPTORS,
 } from './types';
 
 const loadingState = {
@@ -27,6 +32,8 @@ const loadingState = {
   error: false,
   data: [],
   selectedView: 'loanView',
+  reasonableEffortData: {
+  },
 };
 
 const errorState = {
@@ -227,6 +234,58 @@ const reducer = (state = loadingState, action) => {
       };
     }
 
+    case SET_REASONABLE_EFFORT_DATA: {
+      const data = action.payload;
+      const { reasonableEffortData } = state;
+      reasonableEffortData.data = data;
+      const newData = JSON.parse(JSON.stringify(reasonableEffortData));
+      return {
+        ...state,
+        reasonableEffortData: newData,
+      };
+    }
+
+    case SET_REASONABLE_EFFORT_MIS_DOC_DATA: {
+      const data = action.payload;
+      const { reasonableEffortData } = state;
+      reasonableEffortData.missDocData = data;
+      const newData = JSON.parse(JSON.stringify(reasonableEffortData));
+      return {
+        ...state,
+        reasonableEffortData: newData,
+      };
+    }
+
+    case SET_REASONABLE_EFFORT_HISTORY_DATA: {
+      const data = action.payload;
+      const { reasonableEffortData } = state;
+      reasonableEffortData.history = data;
+      const newData = JSON.parse(JSON.stringify(reasonableEffortData));
+      return {
+        ...state,
+        reasonableEffortData: newData,
+      };
+    }
+    case SET_CFPBTABLE_DATA: {
+      const cfpbTableData = action.payload;
+      return {
+        ...state,
+        cfpbTableData,
+      };
+    }
+    case SET_UPDATED_ASSUMPTORS: {
+      const assumptors = action.payload;
+      const { viewTypeData, selectedView } = state;
+      const viewType = selectedView === 'loanView' ? 'modView' : 'loanView';
+      const assumptorIndex = R.findIndex(R.propEq('title', 'Assumptor'), viewTypeData.loanViewData);
+      viewTypeData.loanViewData[assumptorIndex].content = assumptors || 'NA';
+      return {
+        ...state,
+        viewTypeData,
+        selectedView: viewType,
+        data: viewTypeData.loanViewData,
+      };
+    }
     default: {
       return state;
     }

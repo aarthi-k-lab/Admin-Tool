@@ -1,4 +1,6 @@
 /* eslint-disable linebreak-style */
+import * as R from 'ramda';
+
 const getDate = (d) => {
   if (d) {
     const inputDate = new Date(d);
@@ -36,9 +38,18 @@ const isToday = (d) => {
   return null;
 };
 
+const DateFormatter = (date) => {
+  if (R.isNil(date)) { return ''; }
+  const year = date.slice(0, 4);
+  const month = date.slice(5, 7);
+  const day = date.slice(8, 10);
+  return (`${month}/${day}/${year}`);
+};
+
 export {
   getDate,
   getMonth,
   getYear,
   isToday,
+  DateFormatter,
 };

@@ -283,6 +283,17 @@ const getTasksAndChecklist = state => R.propOr({}, 'tasksAndChecklist', state);
 
 const getLastMainChecklistRefresh = state => R.pathOr(null, ['tasksAndChecklist', 'lastUpdated'], state);
 
+const getFicoHistoryData = state => R.pathOr([], ['tasksAndChecklist', 'fico', 'ficoHistory'], state);
+
+const getFicoScoreData = state => R.pathOr([], ['tasksAndChecklist', 'fico', 'ficoScore'], state);
+
+const getAssetDetails = state => R.pathOr([], ['tasksAndChecklist', 'asset', 'assetDetails'], state);
+
+const getAssetHistoryClicked = state => R.pathOr(false, ['tasksAndChecklist', 'isAssetHistoryClicked'], state);
+
+const getAssetHistoryDetails = state => R.pathOr([], ['tasksAndChecklist', 'asset', 'assetHistoryDetails'], state);
+
+const getAssetHistoryDropDown = state => R.pathOr([], ['tasksAndChecklist', 'asset', 'assetHistoryData'], state);
 
 const selectors = {
   getCurrentChecklistType,
@@ -338,6 +349,12 @@ const selectors = {
   getPrevDocsInRootTaskId,
   getRulesResponse,
   getSLFailureComments,
+  getFicoHistoryData,
+  getFicoScoreData,
+  getAssetDetails,
+  getAssetHistoryClicked,
+  getAssetHistoryDetails,
+  getAssetHistoryDropDown,
 };
 
 export default selectors;

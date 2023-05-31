@@ -26,6 +26,16 @@ const getPropertyValuations = state => R.pathOr([], ['tombstone', 'propertyValua
 
 const getTombstoneModViewData = state => R.pathOr([], ['tombstone', 'viewTypeData', 'modViewData'], state);
 
+const getReasonableEffortData = state => R.pathOr({}, ['tombstone', 'reasonableEffortData'], state);
+
+const getCFPBTableData = state => R.pathOr([], ['tombstone', 'cfpbTableData'], state);
+
+const getReasonableEffortId = (state) => {
+  const data = R.pathOr([], ['tombstone', 'data'], state);
+  return R.propOr('', 'content', R.find(R.propEq('title',
+    'Reasonable Effort'))(data));
+};
+
 const getTombstoneLoanViewData = state => R.pathOr([], ['tombstone', 'viewTypeData', 'loanViewData'], state);
 
 const selectors = {
@@ -43,6 +53,9 @@ const selectors = {
   getLienLoanBalance,
   getPropertyValuations,
   getTombstoneModViewData,
+  getReasonableEffortData,
+  getCFPBTableData,
+  getReasonableEffortId,
   getTombstoneLoanViewData,
 };
 

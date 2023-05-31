@@ -72,7 +72,7 @@ const config = merge(
           },
         },
         '/api/disposition': {
-          target: 'https://qa.cmod.mrcooper.io/cmoddisposition',
+          target: 'https://dev.cmod.mrcooper.io/cmoddispositionqaapl',
           secure: false,
           changeOrigin: true,
           pathRewrite: {
@@ -133,6 +133,14 @@ const config = merge(
           changeOrigin: true,
           pathRewrite: {
             '^/api/task-engine': '/api',
+          },
+          '/api/document': {
+            target: 'https://qa.cmod.mrcooper.io/cmoddocument',
+            secure: false,
+            changeOrigin: true,
+            pathRewrite: {
+              '^/api/document': '',
+            },
           },
         },
         '/api/utility': {

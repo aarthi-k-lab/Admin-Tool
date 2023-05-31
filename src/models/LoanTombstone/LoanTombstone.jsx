@@ -2,6 +2,8 @@ import React from 'react';
 import moment from 'moment-timezone';
 import Validators from 'lib/Validators';
 import EditIcon from 'components/Tombstone/TombstoneComponents/EditIcon';
+import ReasonableEffortViewIcon from 'components/Tombstone/TombstoneComponents/ReasonableEffort/ReasonableEffortViewIcon';
+import ViewIcon from 'components/Tombstone/TombstoneComponents/ViewIcon';
 import * as R from 'ramda';
 import * as Api from 'lib/Api';
 import DashboardModel from '../Dashboard/index';
@@ -70,6 +72,11 @@ function getInvestorItem(loanDetails) {
   const investorL3 = levelNumber && levelNumber === 3 ? levelName : '';
   const investor = investorCode && investorName ? `${investorCode} - ${investorName} - ${investorL3}` : NA;
   return generateTombstoneItem('Investor', investor);
+}
+
+function getAssumptorDetails(_lv, _pd, _g, _t, _a, assumptorDetails) {
+  const assumptorName = assumptorDetails.map(item => item.borrowerName).join('\n');
+  return generateTombstoneItem('Assumptor', assumptorName || NA);
 }
 
 function getUPBItem(loanDetails) {
@@ -161,6 +168,15 @@ function getCapModId(modInfoDetails) {
   return generateTombstoneItem('Cap Mod Id', capModId);
 }
 
+function getReasonableEffort(modInfoDetails) {
+  const reasonableEffort = getOr('reasonableEffortId', modInfoDetails, NA);
+  const item = {
+    ...generateTombstoneItem('Reasonable Effort', reasonableEffort),
+    component: <ReasonableEffortViewIcon loanInfoComponent="Reasonable effort" />,
+  };
+  return item;
+}
+
 function getFLDD(loanDetails) {
   const fldd = R.path(['LoanExtension', 'firstLegalDueDate'], loanDetails);
   if (fldd) {
@@ -246,6 +262,20 @@ function getFreddieIndicator(_m, _pd, _g, _t, freddieIndicatorData, _l) {
   return generateTombstoneItem('Freddie System', freddieSystem || NA);
 }
 
+function getDelinquencyStartDate(_, loanViewData) {
+  const cfbp = R.path(['delinquencyStartDate'], loanViewData);
+  let dateString = NA;
+  if (cfbp) {
+    const date = moment.tz(cfbp, 'America/Chicago');
+    dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  }
+  const item = {
+    ...generateTombstoneItem('Delinquency Start Date', dateString),
+    component: <ViewIcon />,
+  };
+  return item;
+}
+
 function getTombstoneItems(tombstoneData) {
   const {
     loanDetails,
@@ -254,9 +284,11 @@ function getTombstoneItems(tombstoneData) {
     groupName, taskName,
     freddieIndicatorData,
     loanViewData,
+    assumptorDetails,
   } = tombstoneData;
   const loanViewDataGenerator = [
     getLoanNumber,
+    getAssumptorDetails,
     getUPBItem,
     getPrimaryBorrowerItem,
     geCoBorrowerItem,
@@ -268,6 +300,7 @@ function getTombstoneItems(tombstoneData) {
     getNextPaymentDueDateItem,
     getForeclosureSalesDate,
     getFLDD,
+    getDelinquencyStartDate,
     getReasonForDefault,
     getOccupancyType,
     getOriginalPropertyValue,
@@ -289,6 +322,7 @@ function getTombstoneItems(tombstoneData) {
     getDispossableIncome,
     getDebtCoverageRatio,
     getCapModId,
+    getReasonableEffort,
     getPreviousDisposition,
     getLatestHandOffDisposition,
   ];
@@ -300,7 +334,7 @@ function getTombstoneItems(tombstoneData) {
     loanViewData,
     previousDispositionDetails,
     groupName,
-    taskName));
+    taskName, assumptorDetails));
   if (groupName !== 'SEARCH_LOAN') {
     data.modViewData = modViewDataGenerator.map(fn => fn(
       modInfoDetails,
@@ -309,6 +343,7 @@ function getTombstoneItems(tombstoneData) {
       taskName,
       freddieIndicatorData,
       loanDetails,
+      assumptorDetails,
     ));
   }
 
@@ -328,6 +363,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     previousDispositionDetails,
     freddieIndicatorData,
     loanViewData,
+    assumptorDetails,
   } = response;
   return {
     resolutionId: R.propOr(null, 'modId', modInfoDetails),
@@ -335,17 +371,18 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     investorCode: R.pathOr(null, ['investorInformation', 'investorCode'], loanDetails),
     brandName: R.propOr(null, 'brandName', loanDetails),
     tombstoneData:
-     {
-       ...getTombstoneItems({
-         loanDetails,
-         modInfoDetails,
-         previousDispositionDetails,
-         groupName,
-         taskName,
-         freddieIndicatorData,
-         loanViewData,
-       }),
-     },
+    {
+      ...getTombstoneItems({
+        loanDetails,
+        modInfoDetails,
+        previousDispositionDetails,
+        groupName,
+        taskName,
+        freddieIndicatorData,
+        loanViewData,
+        assumptorDetails,
+      }),
+    },
   };
 }
 

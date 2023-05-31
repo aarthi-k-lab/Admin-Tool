@@ -14,10 +14,13 @@ import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as widgetSelectors } from 'ducks/widgets';
 import logger from 'redux-logger';
 import { showLoader, hideLoader } from 'ducks/dashboard/actions';
-import { SUCCESS, FAILED } from 'constants/common';
-import { FINANCIAL_CALCULATOR } from 'constants/widgets';
+import { SUCCESS, FAILED, ERROR } from 'constants/common';
+import { DOCUMENT_CHECKLIST, FINANCIAL_CALCULATOR } from 'constants/widgets';
 import { nonSummableFields, expenseFields, checklistTypes } from 'constants/expenseCalc';
 import componentTypes from 'constants/componentTypes';
+import {
+  ASSUMPTOR, AV, CONTRIBUTOR, FEUW_CHECKLIST,
+} from 'constants/frontEndChecklist';
 import { selectors, actions } from './index';
 
 import {
@@ -36,18 +39,90 @@ import {
   FETCH_HISTORY_INFO,
   LOCK_INCOME_CALCULATION,
   CLEAR_TASK_VALUE,
+  FETCH_SELECTED_BORROWER_DATA,
+  SET_SELECTED_BORROWER_DATA,
+  SET_SELECTED_CHECKLIST_DATA,
+  FETCH_SELECTED_CHECKLIST_DATA,
+  FICO_LOCK_CALCULATION,
+  FETCH_FICO_TABLE_DATA,
+  SET_FICO_TABLE_DATA,
+  UPDATE_CHECKLIST_TASKS,
+  SET_LOCK_AV,
+  ASSET_LOCK_CALCULATION,
 } from './types';
+import {
+  SET_SELECTED_BORROWER,
+} from '../document-checklist/types';
 import {
   USER_NOTIF_MSG, CHECKLIST_NOT_FOUND, TOGGLE_LOCK_BUTTON, TOGGLE_BANNER, SET_RESULT_OPERATION,
   SET_POPUP_DATA,
 } from '../dashboard/types';
 import {
-  UPDATE_CONSOLIDATE_EXPENSE_DATA, TOGGLE_VIEW,
+  UPDATE_CONSOLIDATE_EXPENSE_DATA, TOGGLE_VIEW, SET_UPDATED_ASSUMPTORS,
 } from '../tombstone/types';
 import { SET_SNACK_BAR_VALUES } from '../notifications/types';
 import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCodes';
 import consolidateValidations from '../../../lib/consolidateValidation';
 import { incTypeMap } from '../../../constants/incomeCalc';
+import { FICO_SCORE, FICO_TASK_BLUEPRINT_CODE } from '../../../constants/tableSchema';
+
+const getTaskFromProcess = (taskObj, prop, value) => {
+  if (R.propEq(prop, value)(taskObj)) {
+    return taskObj;
+  }
+  const task = [];
+  if (taskObj.subTasks && R.length(taskObj.subTasks) > 0) {
+    taskObj.subTasks.forEach((subTask) => {
+      task.push(getTaskFromProcess(subTask, prop, value));
+    });
+  }
+  if (task) return task.flat();
+  return null;
+};
+
+const fetchBorrowerData = function* fetchBorrowerData(action) {
+  const data = yield select(selectors.getChecklist);
+  const taskData = getTaskFromProcess(data, 'taskBlueprintCode', action.payload);
+  const borrowerName = R.pathOr('', [0, 'value', 'selectedBorrower'], taskData);
+  yield put({
+    type: SET_SELECTED_BORROWER_DATA,
+    payload: borrowerName,
+  });
+  yield put({
+    type: SET_SELECTED_BORROWER,
+    payload: { selectedBorrower: borrowerName },
+  });
+};
+
+const fetchChecklistFieldData = function* fetchChecklistFieldData(action) {
+  const data = yield select(selectors.getChecklist);
+  const taskData = getTaskFromProcess(data, 'taskBlueprintCode', action.payload);
+  const fieldValue = R.pathOr('', [0, 'value'], taskData);
+  const decimalValidation = fieldValue ? fieldValue.split('.') : '';
+
+  let enableLockbutton = false;
+  if (!R.isEmpty(fieldValue) && decimalValidation.length === 1 && fieldValue > 0) {
+    enableLockbutton = true;
+  }
+  if (decimalValidation.length > 1) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        message: 'Fico Score is not a decimal number. ',
+        level: 'Error',
+        title: 'Lock Calculation',
+      },
+    });
+  }
+  yield put({
+    type: TOGGLE_LOCK_BUTTON,
+    payload: { enable: enableLockbutton, selectedChecklistLock: '' },
+  });
+  yield put({
+    type: SET_SELECTED_CHECKLIST_DATA,
+    payload: fieldValue,
+  });
+};
 
 function* handleSaveChecklistError(e) {
   yield put({
@@ -115,20 +190,6 @@ function* fetchHistoryChecklist(action) {
   yield put({ type: HIDE_LOADER });
 }
 
-
-const getTaskFromProcess = (taskObj, prop, value) => {
-  if (R.propEq(prop, value)(taskObj)) {
-    return taskObj;
-  }
-  const task = [];
-  if (taskObj.subTasks && R.length(taskObj.subTasks) > 0) {
-    taskObj.subTasks.forEach((subTask) => {
-      task.push(getTaskFromProcess(subTask, prop, value));
-    });
-  }
-  if (task) return task.flat();
-  return null;
-};
 
 function* fetchIncomeCalcHistory() {
   const processId = yield select(dashboardSelectors.processId);
@@ -198,11 +259,16 @@ function* fetchIncomeCalcChecklist(action) {
     const {
       isOpen: isWidgetOpen, processInstance, calcType, type,
     } = action.payload;
+    const taskBluePrintCode = yield select(taskSelectors.selectedTaskBlueprintCode);
+    const loanNbr = yield select(dashboardSelectors.loanNumber);
+    const evalId = yield select(dashboardSelectors.evalId);
+
     if (isWidgetOpen) {
       // Income Calculator widget
       yield put(showLoader());
+      const widgetList = yield select(widgetSelectors.getOpenWidgetList);
       const processId = yield select(dashboardSelectors.processId);
-      const financeCalcData = yield call(Api.callGet, `/api/financial-aggregator/financecalc/checklistForWidget/${processId}`);
+      const financeCalcData = yield call(Api.callGet, `/api/financial-aggregator/financecalc/checklistForWidget/${processId}/${loanNbr}/${evalId}`);
       if (financeCalcData) {
         const data = {
           ...financeCalcData,
@@ -212,7 +278,10 @@ function* fetchIncomeCalcChecklist(action) {
         yield call(updateFinanceCalcFieldValues, type);
       }
       const taskChecklistId = R.pathOr('', [calcType, 'taskCheckListId'], financeCalcData);
-      yield call(fetchChecklistDetails, { payload: taskChecklistId });
+      const docChecklistId = R.pathOr('', ['docChecklistId'], financeCalcData);
+      yield call(fetchChecklistDetails, {
+        payload: R.contains(DOCUMENT_CHECKLIST, widgetList) ? docChecklistId : taskChecklistId,
+      });
       yield call(fetchIncomeCalcHistory);
       yield put({ type: SET_MAIN_CHECKLISTID, payload: taskChecklistId });
       yield put(hideLoader());
@@ -231,7 +300,6 @@ function* fetchIncomeCalcChecklist(action) {
     logger.info(e);
   }
 }
-
 
 function* closeIncomeHistory() {
   let calcType = 'incomeCalcData';
@@ -387,6 +455,7 @@ function* addContributor(action) {
     yield put({ type: SHOW_LOADER });
     const dataToFetch = R.pathOr([], ['payload', 'contributorFields'], action);
     const data = yield select(selectors.getChecklist);
+    const groupName = yield select(dashboardSelectors.groupName);
     const loanNumber = yield select(dashboardSelectors.loanNumber);
     const user = yield select(loginSelectors.getUser);
     const rootIdFEUW = yield select(taskSelectors.getRootTaskId);
@@ -416,13 +485,20 @@ function* addContributor(action) {
       borrowerData,
       borrowerlist,
       rootId: rootIdFEUW,
+      groupName,
       expenseTaskChecklistId,
     };
     const borrowersResponse = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/addContributor', payload);
     if (borrowersResponse) {
       const processId = yield select(selectors.getProcessId);
+      const borrowersData = R.propOr([], 'response', borrowersResponse);
+      const assumptors = borrowersData.filter(borrower => borrower.description.includes('Assumptor')).map(({ firstName, lastName }) => `${firstName} ${lastName}`).join('\n');
       yield call(fetchChecklistDetails, { payload: processId });
       yield put({ type: SET_BORROWERS_DATA, payload: R.propOr([], 'response', borrowersResponse) });
+      yield put({ type: SET_UPDATED_ASSUMPTORS, payload: assumptors });
+      yield put({
+        type: TOGGLE_VIEW,
+      });
     }
     yield put({ type: CLEAR_TASK_VALUE });
     yield put({ type: HIDE_LOADER });
@@ -519,6 +595,38 @@ function* summateValuesForBorrowers(borrowerList) {
   }
   return defaultBorrExpenseAmount;
 }
+
+const checkDuplicate = (filterResponseData) => {
+  const isDuplicateValuePresent = [];
+  let objList = {
+    checkingAccount: [],
+    savingsAccount: [],
+    ira: [],
+    stocks: [],
+  };
+  if (filterResponseData && filterResponseData.length > 0) {
+    filterResponseData.forEach((borrData) => {
+      if (borrData) {
+        const indvData = R.dissoc('selectedState', R.prop(0, R.values(borrData)));
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key of Object.keys(objList)) {
+          const rec = R.propOr([], key, R.dissoc('key', objList));
+          rec.push(R.propOr(0, key, indvData));
+          objList = { ...objList, key: rec };
+        }
+      }
+    });
+    objList = R.dissoc('key', objList);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of Object.keys(objList)) {
+      const valArr = R.filter(x => x > 0, objList[key]);
+      if (valArr.length !== new Set(valArr).size) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
 
 const lockCalculation = function* lockCalculation() {
   try {
@@ -654,10 +762,289 @@ const lockCalculation = function* lockCalculation() {
   yield put({ type: HIDE_LOADER });
 };
 
+const updateChecklist = function* updateChecklist(action) {
+  const checklistSelectionIsPresent = yield select(taskSelectors.getSelectedChecklistId);
+  const rootId = action.payload;
+
+  yield all([
+    put(taskActions.getTasks()),
+    put(taskActions.getChecklist(checklistSelectionIsPresent)),
+  ]);
+  const taskObj = 0;
+  yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj } });
+  yield call(getTasks);
+};
+
+const ficoLockCalculation = function* ficoLockCalculation() {
+  try {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const borrowers = yield select(selectors.getBorrowers);
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const taskCheckListId = yield select(selectors.getProcessId);
+    const data = yield select(selectors.getChecklist);
+    const filterResponseData = R.pathOr(null, ['value', 'ficoCalc'], data);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const checklistData = yield select(selectors.getChecklist);
+    const taskObj = R.propOr(null, 'value', checklistData);
+    const rootId = R.prop('_id', checklistData);
+    const ficolockRequest = [];
+    const ficoCalc = null;
+    let tkamsResponse = null;
+    filterResponseData.map((task) => {
+      const reqData = Object.keys(task)[0];
+      if (task[reqData]) {
+        const filterReqData = R.filter(x => R.isNil(x)
+          || !R.isEmpty(x) || x > 0, task[reqData]);
+        if (filterReqData && !R.isEmpty(filterReqData)) {
+          const name = reqData.split('_')[1];
+          if (filterReqData.ficoscore && filterReqData.ficoscore > 0) {
+            ficolockRequest.push({
+              loanNbr: loanNumber,
+              position: parseInt(name, 10),
+              userName: userPrincipalName,
+              ficoScore: filterReqData.ficoscore,
+              evalId,
+            });
+          }
+        }
+      }
+      return null;
+    });
+    const response = yield call(Api.callPost, '/api/dataservice/fico/insertFicoDetails', ficolockRequest);
+    ficolockRequest.map((e) => {
+      borrowers.map((x) => {
+        if (x.borrowerPstnNumber === e.position) {
+          e.description = x.description;
+        }
+        return null;
+      });
+      return null;
+    });
+    const filteredRequest = R.filter(x => !x.description.includes(ASSUMPTOR)
+      && !x.description.includes(CONTRIBUTOR), ficolockRequest);
+    if (filteredRequest && filteredRequest.length > 0) {
+      tkamsResponse = yield call(Api.callPost, '/api/tkams/fico/saveFicoData', filteredRequest);
+    }
+
+    const request = { taskCheckListId };
+    if ((R.equals((R.propOr(null, 'status', response), 200)))) {
+      const dbResult = yield call(Api.callPost, '/api/financial-aggregator/financecalc/updateTasksInChecklist', request);
+      if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+        yield put({
+          type: TOGGLE_LOCK_BUTTON,
+          payload: { enable: false, selectedChecklistLock: '' },
+        });
+        yield put({ type: FETCH_FICO_TABLE_DATA });
+        yield put({
+          type: SET_SELECTED_CHECKLIST_DATA,
+          payload: '',
+        });
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Fico Score is Locked successfully',
+            level: 'Success',
+            title: 'Lock Calculation',
+          },
+        });
+      } else {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Fico Lock is failed due to Borrower data discrepency',
+            level: 'Error',
+            title: 'Lock Calculation',
+          },
+        });
+      }
+    }
+    if ((filteredRequest && filteredRequest.length > 0) && !R.equals(R.propOr(null, 'status', tkamsResponse), 'Success')) {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Failed Saving fico details to TKAMS. ',
+          level: 'Error',
+          title: 'Lock Calculation',
+        },
+      });
+    }
+    yield call(Api.put, `/api/task-engine/task/${rootId}`, { value: { ...taskObj, ficoCalc } });
+  } catch (e) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        message: 'Something went wrong. Please try after some time. ',
+        level: 'Error',
+        title: 'Lock Calculation',
+      },
+    });
+  }
+};
+
+const assetVerificationLockCalculation = function* assetVerificationLockCalculation() {
+  try {
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    let checkFilterResponseData = false;
+    const data = yield select(selectors.getChecklist);
+    const taskId = yield select(dashboardSelectors.taskId);
+    const evalId = yield select(dashboardSelectors.evalId);
+    const taskCheckListId = yield select(selectors.getProcessId);
+    const feuwChecklistId = yield select(taskSelectors.getProcessId);
+    const currentChecklistType = yield select(taskSelectors.getCurrentChecklistType);
+    const checklistType = checklistTypes[currentChecklistType];
+    const user = yield select(loginSelectors.getUser);
+    const userPrincipalName = R.path(['userDetails', 'email'], user);
+    const checklistSelectionIsPresent = yield select(taskSelectors.getSelectedChecklistId);
+    let assetLockResponse = {};
+    yield put({ type: SHOW_LOADER });
+    const borrDetails = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
+    const borrIdDetails = {};
+    borrDetails.map((borr) => {
+      if (borr) {
+        borrIdDetails[`${borr.firstName}_${borr.borrowerPstnNumber}`] = borr.borrowerId;
+      }
+      return null;
+    });
+    const filterResponseData = R.pathOr(null, ['value', 'assetCalc'], data);
+    if (filterResponseData) {
+      checkFilterResponseData = checkDuplicate(filterResponseData);
+    }
+    if (checkFilterResponseData !== true) {
+      const assetlockRequest = [];
+      // need to change this to more generic to avoid error
+      const assetId = Math.floor(1000 + Math.random() * 9000);
+      filterResponseData.map((task) => {
+        const reqData = Object.keys(task)[0];
+        if (task[reqData]) {
+          const filterReqData = R.filter(x => R.isNil(x)
+            || !R.isEmpty(x) || x > 0, task[reqData]);
+          if (filterReqData && !R.isEmpty(filterReqData)) {
+            const name = reqData;
+            assetlockRequest.push({
+              ...filterReqData,
+              borrId: borrIdDetails[name],
+              assetId,
+              userName: userPrincipalName,
+            });
+          }
+        }
+        return null;
+      });
+      assetLockResponse = yield call(Api.callPost, '/api/dataservice/asset/assetLockCalculation', assetlockRequest);
+
+      if (assetLockResponse) {
+        const request = {
+          taskId,
+          loanNumber,
+          evalId,
+          userPrincipalName,
+          taskCheckListId,
+          calcDateTime: new Date(),
+          feuwChecklistId,
+          checklistType,
+          lockId: assetId,
+        };
+        const dbResult = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/lock/', request);
+        if (R.equals(R.propOr(null, 'status', dbResult), 200)) {
+          yield call(fetchIncomeCalcHistory);
+          yield put({
+            type: SET_POPUP_DATA,
+            payload: {
+              message: 'Asset Verification is Locked successfully',
+              level: 'Success',
+              title: 'Lock Calculation',
+            },
+          });
+          yield put({
+            type: TOGGLE_LOCK_BUTTON,
+            payload: { enable: false, selectedChecklistLock: '' },
+          });
+          const processId = R.path(['response', '_id'], dbResult);
+          yield all([
+            put(taskActions.getTasks()),
+            put(taskActions.getChecklist(checklistSelectionIsPresent)),
+          ]);
+          const payload = {
+            processInstance: processId,
+            isOpen: false,
+          };
+          yield put(actions.getIncomeCalcChecklist(payload));
+        } else {
+          yield put({
+            type: SET_POPUP_DATA,
+            payload: {
+              message: `Asset Verification Lock failed due to Borrower data discrepency,
+            please select "YES" to manually update Remedy and "Retry" to try again`,
+              level: 'Failed',
+              title: 'Lock Calculation',
+              showCancelButton: true,
+              confirmButtonText: 'Retry',
+              cancelButtonText: 'Yes',
+              onConfirm: LOCK_INCOME_CALCULATION,
+            },
+          });
+        }
+      }
+      const mappedAssetLockRequest = R.map((x) => {
+        const borrData = R.find(R.propEq('borrowerId', x.borrId))(borrDetails);
+        return {
+          ...x,
+          borrowerAffilCd: borrData.borrowerAffilCd,
+        };
+      }, assetlockRequest);
+      if (mappedAssetLockRequest) {
+        if (mappedAssetLockRequest.length > 0) {
+          const saveToTkamsPayload = {
+            borrowerAssetList: mappedAssetLockRequest,
+            email: userPrincipalName,
+            evalId,
+            loanId: loanNumber,
+          };
+          const saveToTkamsResponse = yield call(Api.callPost, '/api/tkams/asset/saveToTkams', saveToTkamsPayload);
+          if (!saveToTkamsResponse.saveStatus) {
+            yield put({
+              type: SET_POPUP_DATA,
+              payload: {
+                message: saveToTkamsResponse.errorMessage,
+                level: 'Failed',
+                title: 'Failed Saving Asset verification details to TKAMS',
+              },
+            });
+          }
+        }
+      }
+    } else {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: 'Duplication found in asset details',
+          level: 'Failed',
+          title: 'Lock Calculation',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_RESULT_OPERATION,
+      payload: {
+        level: FAILED,
+        status: 'Error while locking Asset.',
+      },
+    });
+  }
+  yield put({ type: HIDE_LOADER });
+};
+
+const fetchFicoTableData = function* fetchFicoTableData() {
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const updatedFicoTableData = yield call(Api.callGet, `/api/dataservice/fico/fico-history/${loanNumber}`);
+  yield put({ type: SET_FICO_TABLE_DATA, payload: updatedFicoTableData });
+};
+
 function* watchLockCalc() {
   yield takeEvery(LOCK_INCOME_CALCULATION, lockCalculation);
 }
-
 
 function* watchfetchChecklist() {
   yield takeEvery(FETCH_CHECKLIST, fetchChecklistDetails);
@@ -694,6 +1081,30 @@ function* watchCloseIncomeHistory() {
 
 function* watchHistoryChecklist() {
   yield takeEvery(FETCH_HISTORY_INFO, fetchHistoryChecklist);
+}
+
+function* watchfetchBorrowerData() {
+  yield takeEvery(FETCH_SELECTED_BORROWER_DATA, fetchBorrowerData);
+}
+
+function* watchfetchChecklistFieldData() {
+  yield takeEvery(FETCH_SELECTED_CHECKLIST_DATA, fetchChecklistFieldData);
+}
+
+function* watchFicoLockCalculation() {
+  yield takeEvery(FICO_LOCK_CALCULATION, ficoLockCalculation);
+}
+
+function* watchAssetVerificationLockCalculation() {
+  yield takeEvery(ASSET_LOCK_CALCULATION, assetVerificationLockCalculation);
+}
+
+function* watchFetchFicoTableData() {
+  yield takeEvery(FETCH_FICO_TABLE_DATA, fetchFicoTableData);
+}
+
+function* watchUpdateChecklistTasks() {
+  yield takeEvery(UPDATE_CHECKLIST_TASKS, updateChecklist);
 }
 
 // eslint-disable-next-line

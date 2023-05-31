@@ -1,0 +1,67 @@
+.borrowerBanner {
+    background-color: #f3f5f9 !important;
+    border-radius: 5px !important;
+    width: inherit !important;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .borrNameDiv {
+    display: grid !important;
+    text-transform: capitalize !important;
+  }
+
+  .borrName {
+    font-weight: 700 !important;
+    color: #4e586e !important;
+  }
+
+  .borrDesc {
+    color: #939299 !important;
+  }
+
+  .taballign {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    justify-content: space-evenly !important;
+  }
+  
+  .borrTab {
+    width: 12.75rem !important;
+  }
+
+  .docListContainer {
+    padding: 1rem;
+    background-color: #f3f5f9 !important;
+    margin-top: 1rem;
+  }
+
+  .dot {
+    height: 0.9rem;
+    width: 0.9rem;
+    background-color: #f03858;
+    border-radius: 50%;
+    display: inline-block;
+    z-index: 10;
+    margin-right: 5px !important;
+  }
+
+  .tabContainer{
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .add-contributor-button{
+    position: relative;
+  }
+
+  .tabWidth {
+    width: 100% !important;
+  }
+
+  .add-assumptor-disable.add-assumptor-disable {
+    pointer-events: none !important;
+    user-select: none !important;
+    opacity: 0.5 !important;
+  }

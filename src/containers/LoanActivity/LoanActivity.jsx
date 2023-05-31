@@ -11,11 +11,10 @@ import { selectors, operations } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
 import { ADDITIONAL_INFO, HISTORY } from '../../constants/widgets';
 import WidgetBuilder from '../../components/Widgets/WidgetBuilder';
+import getTombstonePopup from '../../components/Tombstone/PopupSelect';
 import SweetAlertBox from '../../components/SweetAlertBox/SweetAlertBox';
 import { selectors as tombstoneSelectors } from '../../state/ducks/tombstone';
 import { EDITABLE_FIELDS } from '../../constants/loanInfoComponents';
-import RFDContent from '../../components/Tombstone/TombstoneComponents/RFDContent';
-import CollateralContent from '../../components/Tombstone/TombstoneComponents/CollateralContent';
 import Popup from '../../components/Popup';
 
 class LoanActivity extends React.PureComponent {
@@ -67,7 +66,7 @@ class LoanActivity extends React.PureComponent {
     const { checklistCenterPaneView } = this.props;
     return (
       <Grid styleName="loan-info-components">
-        {checklistCenterPaneView === 'Reason for Default' ? <RFDContent /> : <CollateralContent />}
+        {getTombstonePopup(checklistCenterPaneView)}
       </Grid>
     );
   }

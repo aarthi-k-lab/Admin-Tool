@@ -1,0 +1,41 @@
+.reasonable-effort-history-container {
+    border: 1px solid #4E586E;
+    border-radius: 10px;
+}
+
+.reasonable-effort-history-item {
+    padding: 1rem;
+}
+
+.reasonable-effort-typo-date {
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    line-height: 17px !important;
+    color: #4E586E !important;
+}
+
+.reasonable-effort-typo-id {
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    text-transform: capitalize !important;
+    color: #4E586E !important;
+    margin-top: 2px !important;
+}
+
+.reasonable-effort-view-button {
+    padding: 0px !important;
+}
+
+.view-icon-img {
+    height: 10px !important;
+}
+
+.no-history-name {
+    padding: 1rem;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    text-transform: capitalize !important;
+    color: #4E586E !important;
+}
