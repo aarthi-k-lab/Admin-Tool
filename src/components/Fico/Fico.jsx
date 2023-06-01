@@ -109,6 +109,8 @@ function Fico(props) {
                       { <Typography styleName="fico-scr-title">Fico Score</Typography>}
                     </div>
                     <TextField
+                      disabled={(R.propOr('', 'name', R.find(R.propEq('pstnNum',
+                        (tabIndex + 1)))(displayList))).includes(DECEASED_BORROWER)}
                       margin="dense"
                       onChange={event => handleFicoScoreChange(event)}
                       size="small"

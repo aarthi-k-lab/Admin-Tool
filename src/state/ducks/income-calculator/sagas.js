@@ -386,7 +386,7 @@ function* handleChecklistItemChange(action) {
     yield call(getTasks);
     yield put({
       type: TOGGLE_LOCK_BUTTON,
-      payload: false,
+      payload: { enable: false, selectedChecklistLock: '' },
     });
     // clear the dirty state
     yield put({
@@ -544,7 +544,7 @@ function* processValidations() {
       yield put({ type: STORE_CHECKLIST, payload: data });
       yield put({
         type: TOGGLE_LOCK_BUTTON,
-        payload: R.isEmpty(R.propOr([], 1, banner)),
+        payload: { enable: R.isEmpty(R.propOr([], 1, banner)), selectedChecklistLock: '' },
       });
       yield put({
         type: TOGGLE_BANNER,
@@ -713,7 +713,7 @@ const lockCalculation = function* lockCalculation() {
         });
         yield put({
           type: TOGGLE_LOCK_BUTTON,
-          payload: false,
+          payload: { enable: false, selectedChecklistLock: '' },
         });
         const processId = R.path(['response', '_id'], dbResult);
         yield all([

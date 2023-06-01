@@ -331,6 +331,7 @@ function Assetverification(props) {
                         {<Typography styleName="fico-scr-title">{step.name}</Typography>}
                       </div>
                       <TextField
+                        disabled={selectedBorrower.includes(DECEASED_BORROWER)}
                         InputProps={{
                           startAdornment: <InputAdornment position="start">$</InputAdornment>,
                         }}
@@ -360,7 +361,7 @@ function Assetverification(props) {
                             <FormControlLabelWithTooltip
                               key={displayName}
                               control={<Radio checked={isChecked} styleName="radio-control-bubble" />}
-                              disabled={isDisabled}
+                              disabled={isDisabled || selectedBorrower.includes(DECEASED_BORROWER)}
                               disableTooltip={R.isNil(hint) || R.isEmpty(hint)}
                               label={displayName}
                               styleName={`radio-control ${isDisabled}`}
