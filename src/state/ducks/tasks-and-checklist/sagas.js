@@ -1079,23 +1079,22 @@ function* ficoLockCalculation() {
       yield put({
         type: SET_POPUP_DATA,
         payload: {
-          message: 'Fico Score is Locked successfully',
+          message: 'Fico Score is Locked successfully in CMOD',
           level: 'Success',
           title: 'Lock Calculation',
         },
       });
+      if ((filteredRequest && filteredRequest.length > 0) && !R.equals(R.propOr(null, 'saveStatus', tkamsResponse), true)) {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: `Failed to save in TKAMS : ${tkamsResponse.errorMessage}`,
+            level: 'Error',
+            title: 'Lock Calculation',
+          },
+        });
+      }
       yield call(updateAndSaveChecklist, { key: 'ficoLockSuccess', validationMessage: true });
-    }
-
-    if ((filteredRequest && filteredRequest.length > 0) && !R.equals(R.propOr(null, 'status', tkamsResponse), 'Success')) {
-      yield put({
-        type: SET_POPUP_DATA,
-        payload: {
-          message: 'Failed Saving fico details to TKAMS. ',
-          level: 'Error',
-          title: 'Lock Calculation',
-        },
-      });
     }
   } catch (e) {
     yield put({
