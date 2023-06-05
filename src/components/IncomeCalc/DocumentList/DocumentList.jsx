@@ -336,6 +336,23 @@ class DocumentList extends React.PureComponent {
                                   <div styleName="left-header">
                                     <Radio
                                       checked={documentName === radioSelect}
+                                      checkedIcon={(
+                                        <Button
+                                          disabled
+                                          styleName={`link-doc-button-disable ${disableStyle}`}
+                                          variant="contained"
+                                        >
+                                          Link Doc
+                                        </Button>
+                                       )}
+                                      icon={(
+                                        <Button
+                                          styleName={`link-doc-button ${disableStyle}`}
+                                          variant="contained"
+                                        >
+                                          Link Doc
+                                        </Button>
+                                        )}
                                       onChange={this.handleRadioClick(documentName)}
                                       styleName={disableStyle}
                                       value={documentName}
@@ -370,7 +387,7 @@ class DocumentList extends React.PureComponent {
                                       <MenuItem onClick={
                                         this.handleCloseMoreOptions(index, required)}
                                       >
-                                        {required ? 'Mark as Optional' : 'Mark as Required'}
+                                        {required ? 'Mark as Not required' : 'Mark as required'}
                                       </MenuItem>
                                     </Menu>
                                     {R.propOr(false, documentName, expanded)

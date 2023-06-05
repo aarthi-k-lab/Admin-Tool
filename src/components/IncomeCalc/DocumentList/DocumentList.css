@@ -191,3 +191,18 @@
     color: '#4e586E';
     padding: 16px 0px 16px 24px; 
   }
+
+.link-doc-button {
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+    color: #fff !important;
+    margin-right: 8px !important;
+    background: linear-gradient(90deg, #6a81f0 0%, #4155e2 100%);
+}
+
+.link-doc-button-disable {
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+    margin-right: 8px !important;
+    font-weight: 700 !important;
+}

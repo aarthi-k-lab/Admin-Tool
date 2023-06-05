@@ -89,7 +89,7 @@ function TagPopover(props) {
           <Grid item styleName="tag-dialog-title-name-grid" xs={11}>
             <Typography styleName="tag-dialog-title-name">
               {
-               tagRequired ? 'Mark Document as Optional' : 'Mark Document as Required'
+               tagRequired ? 'Mark Document as Not Required' : 'Mark Document as Required'
              }
             </Typography>
             <Typography styleName="tag-dialog-title-doc-name">
