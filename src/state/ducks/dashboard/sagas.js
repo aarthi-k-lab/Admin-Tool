@@ -1371,7 +1371,7 @@ function* getNext(action) {
       if (!R.pathOr(false, ['incomeCalcData', 'hasIncomeCalcForProcess'], taskDetails)) {
         yield put(setDisabledWidget({ disabledWidgets: [FINANCIAL_CALCULATOR] }));
       }
-      if (group === DashboardModel.PROC) {
+      if (group !== DashboardModel.FEUW) {
         yield put({ type: SET_BORROWER_DATA, payload: R.propOr([], 'processedBorrowerData', taskDetails) });
       }
       yield put(getHistoricalCheckListData(taskId));
@@ -1595,7 +1595,7 @@ function* assignLoan() {
       const expenseCalcData = R.propOr(null, 'expenseCalcData', response);
       yield put({ type: SET_EXPENSECALC_DATA, payload: expenseCalcData });
     }
-    if (group === DashboardModel.PROC) {
+    if (group !== DashboardModel.FEUW) {
       yield put({ type: SET_BORROWER_DATA, payload: R.propOr([], 'processedBorrowerData', response) });
     }
     const disabledWidgets = yield select(widgetSelectors.getDisabledWidgets);
