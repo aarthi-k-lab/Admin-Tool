@@ -38,8 +38,7 @@ function AddContributor(props) {
     onClose();
   };
 
-  const isRequiredFieldsFilled = () => firstName !== '' && lastName !== ''
-  && ssn !== '' && typeOfUser !== '';
+  const isRequiredFieldsFilled = () => firstName !== '' && lastName !== '' && typeOfUser !== '';
 
   const handleAdd = () => {
     if (isRequiredFieldsFilled) {
@@ -52,7 +51,7 @@ function AddContributor(props) {
         phoneNumber: phone !== '' ? phone : null,
         birthDate: !isDobNil ? `${dob[1]}-${dob[2]}-${dob[0]}` : '',
         borrowerAffilCd: typeOfUser,
-        taxpyrIdVal: ssn,
+        taxpyrIdVal: ssn !== '' ? ssn : null,
       };
       saveContributor(contributorFields);
       AddContribPopupClose();
@@ -134,7 +133,6 @@ function AddContributor(props) {
                 <div>
                   SSN
                   {' '}
-                  <span styleName="required">*</span>
                 </div>
 
               </Grid>

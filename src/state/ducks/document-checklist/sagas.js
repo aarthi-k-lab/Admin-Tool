@@ -488,6 +488,7 @@ function* fetchDocChecklistData() {
     });
   }
 }
+
 function processUpdatedData(oldData, newData) {
   const request = [];
   for (let i = 0; i < newData.length; i += 1) {
@@ -505,13 +506,30 @@ function processUpdatedData(oldData, newData) {
         const obj = newDoc;
         obj.toDeleteDefectReasons = [];
         obj.toAddDefectReasons = [];
-        if (!R.eqProps('docReasons', oldDoc, newDoc)) {
+        if ((oldDoc.documentReviewStatus === 'Defects' || newDoc.documentReviewStatus === 'Defects') && !R.eqProps('docReasons', oldDoc, newDoc)) {
           const toDeleteDefectReasons = R.difference(oldDoc.docReasons, newDoc.docReasons);
           const toAddDefectReasons = R.difference(newDoc.docReasons, oldDoc.docReasons);
           obj.toDeleteDefectReasons = toDeleteDefectReasons;
           obj.toAddDefectReasons = toAddDefectReasons;
         }
-        request.push(obj);
+        if (!R.equals(newDoc.documentReviewStatus, 'Defects')) {
+          obj.toDeleteDefectReasons = oldDoc.docReasons;
+          obj.toAddDefectReasons = [];
+        }
+        const isOtherChange = R.eqProps('documentReviewStatus', oldDoc, newDoc)
+        && R.eqProps('comments', oldDoc, newDoc)
+        && R.eqProps('expirationDate', oldDoc, newDoc)
+        && R.eqProps('required', oldDoc, newDoc);
+
+        if (!R.eqProps('docReasons', oldDoc, newDoc)) {
+          if (oldDoc.documentReviewStatus === 'Defects' || newDoc.documentReviewStatus === 'Defects') {
+            request.push(obj);
+          } else if (!isOtherChange) {
+            request.push(obj);
+          }
+        } else {
+          request.push(obj);
+        }
       }
     }
   }

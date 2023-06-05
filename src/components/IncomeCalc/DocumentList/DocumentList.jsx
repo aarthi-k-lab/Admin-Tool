@@ -493,7 +493,9 @@ class DocumentList extends React.PureComponent {
                                         autoOk
                                         disablePast
                                         emptyLabel="MM/DD/YYYY"
+                                        error={false}
                                         format="MM/DD/YYYY"
+                                        helperText={null}
                                         InputProps={{
                                           disableUnderline: true,
                                         }}
