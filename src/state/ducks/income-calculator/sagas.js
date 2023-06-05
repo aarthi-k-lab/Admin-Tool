@@ -259,16 +259,13 @@ function* fetchIncomeCalcChecklist(action) {
     const {
       isOpen: isWidgetOpen, processInstance, calcType, type,
     } = action.payload;
-    const taskBluePrintCode = yield select(taskSelectors.selectedTaskBlueprintCode);
-    const loanNbr = yield select(dashboardSelectors.loanNumber);
-    const evalId = yield select(dashboardSelectors.evalId);
 
     if (isWidgetOpen) {
       // Income Calculator widget
       yield put(showLoader());
       const widgetList = yield select(widgetSelectors.getOpenWidgetList);
       const processId = yield select(dashboardSelectors.processId);
-      const financeCalcData = yield call(Api.callGet, `/api/financial-aggregator/financecalc/checklistForWidget/${processId}/${loanNbr}/${evalId}`);
+      const financeCalcData = yield call(Api.callGet, `/api/financial-aggregator/financecalc/checklistForWidget/${processId}`);
       if (financeCalcData) {
         const data = {
           ...financeCalcData,
