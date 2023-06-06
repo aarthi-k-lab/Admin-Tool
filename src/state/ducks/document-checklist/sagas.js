@@ -196,7 +196,7 @@ function* unlinkDocuments(payload) {
       fileNetDocId: removalDocumentId,
     };
     const response = yield call(Api.callPost, `/api/dataservice/DocCheckList/unlinkDocsAndDocTxn/${userPrincipalName}`, payLoad);
-    const responseTKAMS = yield call(Api.callPost, '/api/tkams/DocChecklist/unlinkDocuments', payloadTKAMS);
+    const responseTKAMS = yield call(Api.callPost, `/api/tkams/DocChecklist/unlinkDocuments/${userPrincipalName}`, payloadTKAMS);
     if (response.status && responseTKAMS.status === 'Success') {
       yield put({
         type: UNLINK_DOCUMENTS,
