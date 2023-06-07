@@ -34,6 +34,7 @@ function DocChecklist(props) {
   const displayList = processBorrowerData(getborrowerData);
   const errorBorrowerValue = errorFields.borrowerNames || [];
   const tabListWidth = isDocWidgetOpen ? '75rem' : '58rem';
+  const docListWidth = isDocWidgetOpen ? '79rem' : '63rem';
   const isDocWidgetNotInProc = R.contains(DOCUMENT_CHECKLIST, openWidgetList);
   const disableStyle = (!isAssigned || isDocWidgetNotInProc) ? 'add-assumptor-disable' : '';
 
@@ -111,7 +112,7 @@ function DocChecklist(props) {
                 )}
               </Paper>
             </Grid>
-            <Grid item>
+            <Grid item style={{ width: `${docListWidth}` }}>
               <div styleName="docListContainer">
                 <DocumentList />
               </div>
