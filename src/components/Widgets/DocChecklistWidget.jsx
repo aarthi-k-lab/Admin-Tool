@@ -5,8 +5,15 @@ import { Grid } from '@material-ui/core';
 import DocChecklist from '../IncomeCalc/DocChecklist/DocChecklist';
 import Loader from '../Loader/Loader';
 import './DocChecklistWidget.css';
+import { operations as documentChecklistOperations } from '../../state/ducks/document-checklist';
+
 
 class DocChecklistWidget extends React.PureComponent {
+  componentDidMount() {
+    const { setRadioSelect } = this.props;
+    setRadioSelect('');
+  }
+
   render() {
     const {
       inProgress,
@@ -42,16 +49,20 @@ DocChecklistWidget.propTypes = {
     2: PropTypes.number,
   }),
   inProgress: PropTypes.bool.isRequired,
-
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,
   }).isRequired,
+  setRadioSelect: PropTypes.func.isRequired,
 };
+
+const mapDispatchToProps = dispatch => ({
+  setRadioSelect: documentChecklistOperations.radioSelectOperation(dispatch),
+});
 
 
 DocChecklistWidget.defaultProps = {
   failureReason: {},
 };
 
-export default connect(null, null)(DocChecklistWidget);
+export default connect(null, mapDispatchToProps)(DocChecklistWidget);
