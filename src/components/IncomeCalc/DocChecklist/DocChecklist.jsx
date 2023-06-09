@@ -14,6 +14,7 @@ import { operations as docChecklistOperations, selectors as documentChecklistSel
 import {
   selectors as dashboardSelectors,
 } from 'ducks/dashboard';
+import { selectors as taskChecklistSelectors } from 'ducks/tasks-and-checklist';
 import IconButton from '@material-ui/core/IconButton';
 import { DOCUMENT_CHECKLIST } from '../../../constants/widgets';
 import AddContributor from '../AddContributor/AddContirbutor';
@@ -26,7 +27,7 @@ import DocumentList from '../DocumentList/DocumentList';
 function DocChecklist(props) {
   const {
     getborrowerData, setDocSelectedBorrorwer, errorFields, openWidgetList,
-    isAssigned,
+    isAssigned, showDisposition,
   } = props;
   const isDocWidgetOpen = R.contains(DOCUMENT_CHECKLIST, openWidgetList);
   const [tabIndex, setTabIndex] = useState(0);
@@ -34,10 +35,10 @@ function DocChecklist(props) {
   const displayList = processBorrowerData(getborrowerData);
   const errorBorrowerValue = errorFields.borrowerNames || [];
   const tabListWidth = isDocWidgetOpen ? '75rem' : '58rem';
-  const docListWidth = isDocWidgetOpen ? '79rem' : '63rem';
+  const docListWidth = isDocWidgetOpen ? '80rem' : '64rem';
   const isDocWidgetNotInProc = R.contains(DOCUMENT_CHECKLIST, openWidgetList);
   const disableStyle = (!isAssigned || isDocWidgetNotInProc) ? 'add-assumptor-disable' : '';
-
+  const containerStyle = (isAssigned && showDisposition && !isDocWidgetNotInProc) ? 'adjust' : '';
 
   const handleTabChange = (selectedIndex) => {
     setTabIndex(selectedIndex);
@@ -113,7 +114,7 @@ function DocChecklist(props) {
               </Paper>
             </Grid>
             <Grid item style={{ width: `${docListWidth}` }}>
-              <div styleName="docListContainer">
+              <div styleName={`docListContainer ${containerStyle}`}>
                 <DocumentList />
               </div>
             </Grid>
@@ -140,6 +141,7 @@ DocChecklist.propTypes = {
   isAssigned: PropTypes.bool.isRequired,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   setDocSelectedBorrorwer: PropTypes.func.isRequired,
+  showDisposition: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -147,6 +149,7 @@ const mapStateToProps = state => ({
   errorFields: documentChecklistSelectors.getErrorFields(state),
   openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   isAssigned: dashboardSelectors.isAssigned(state),
+  showDisposition: taskChecklistSelectors.shouldShowDisposition(state),
 });
 
 const mapDispatchToProps = dispatch => ({
