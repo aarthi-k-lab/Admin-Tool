@@ -49,6 +49,7 @@ import {
   UPDATE_CHECKLIST_TASKS,
   SET_LOCK_AV,
   ASSET_LOCK_CALCULATION,
+  ADD_CONTRIBUTOR_FICO,
 } from './types';
 import {
   SET_SELECTED_BORROWER,
@@ -1039,6 +1040,58 @@ const fetchFicoTableData = function* fetchFicoTableData() {
   yield put({ type: SET_FICO_TABLE_DATA, payload: updatedFicoTableData });
 };
 
+function* addContributorFico(action) {
+  try {
+    yield put({ type: SHOW_LOADER });
+    let newAddedBorrowerPsntNum = 0;
+    const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const groupName = yield select(dashboardSelectors.groupName);
+    const taskTree = yield select(taskSelectors.getTaskTree);
+    const task = R.find(R.propEq('taskBlueprintCode', 'EXT_CHG'))(taskTree.subTasks);
+    const user = yield select(loginSelectors.getUser);
+    const dbRecCreatedByUser = R.path(['userDetails', 'email'], user);
+    const borrowerData = yield select(selectors.getBorrowers);
+    const borrowerlist = R.pathOr(null, ['value', 'borrowerlist'], task);
+    const expenseTaskChecklistId = yield select(selectors.getExpenseTaskChecklistId);
+    const rootId = yield select(taskSelectors.getRootTaskId);
+    const maxPositionNum = R.compose(
+      R.prop('borrowerPstnNumber'),
+      R.last,
+      R.sortBy(R.prop('borrowerPstnNumber')),
+    )(borrowerData);
+    newAddedBorrowerPsntNum = maxPositionNum + 1;
+    const payload = {
+      contributorData: {
+        ...action.payload,
+        loanNumber,
+        dbRecCreatedByUser,
+        borrowerPstnNumber: maxPositionNum + 1,
+      },
+      borrowerData,
+      borrowerlist,
+      rootId,
+      groupName,
+      expenseTaskChecklistId,
+    };
+    const borrowersResponse = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/addContributor', payload);
+    if (borrowersResponse) {
+      const processId = yield select(taskSelectors.getProcessId);
+      const borrowersData = R.propOr([], 'response', borrowersResponse);
+      const assumptors = borrowersData.filter(borrower => borrower.description.includes('Assumptor')).map(({ firstName, lastName }) => `${firstName} ${lastName}`).join('\n');
+      yield call(fetchChecklistDetails, { payload: processId });
+      yield put({ type: SET_BORROWERS_DATA, payload: borrowersData });
+      yield put({ type: SET_UPDATED_ASSUMPTORS, payload: assumptors });
+      yield put({
+        type: TOGGLE_VIEW,
+      });
+    }
+    yield put({ type: CLEAR_TASK_VALUE });
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
+    yield put({});
+  }
+}
+
 function* watchLockCalc() {
   yield takeEvery(LOCK_INCOME_CALCULATION, lockCalculation);
 }
@@ -1104,6 +1157,9 @@ function* watchUpdateChecklistTasks() {
   yield takeEvery(UPDATE_CHECKLIST_TASKS, updateChecklist);
 }
 
+function* watchFicoAddContributor() {
+  yield takeEvery(ADD_CONTRIBUTOR_FICO, addContributorFico);
+}
 // eslint-disable-next-line
 export const combinedSaga = function* combinedSaga() {
   yield all([
@@ -1117,5 +1173,6 @@ export const combinedSaga = function* combinedSaga() {
     watchDuplicateIncome(),
     watchCloseIncomeHistory(),
     watchLockCalc(),
+    watchFicoAddContributor(),
   ]);
 };

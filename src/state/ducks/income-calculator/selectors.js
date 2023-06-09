@@ -115,6 +115,8 @@ const getselectedChecklistFieldData = state => R.pathOr('', ['incomeCalculator',
 
 const getFicoHistoryTableData = state => R.pathOr([], ['incomeCalculator', 'ficoHistoryData'], state);
 
+const getIncomeChecklistId = state => R.pathOr(null, ['incomeCalculator', 'incomeCalcData', 'taskCheckListId'], state);
+
 const selectors = {
   getMainChecklist,
   disabledChecklist,
@@ -151,6 +153,7 @@ const selectors = {
   getFicoHistoryTableData,
   getborrowerData,
   getExpenseTaskChecklistId,
+  getIncomeChecklistId,
 };
 
 export default selectors;

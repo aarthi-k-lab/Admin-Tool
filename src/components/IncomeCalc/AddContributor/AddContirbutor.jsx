@@ -19,11 +19,14 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import './AddContributor.css';
 import { operations as docChecklistOperations } from 'ducks/document-checklist';
+import { operations as incomeCalcChecklistOperations } from 'ducks/income-calculator';
 import { FORMAT } from '../../../lib/Formatters';
 import { CONTRIBUTOR_AFFL_CODE, ASSUMPTOR_AFFL_CODE } from '../../../constants/incomeCalc/DocumentList';
 
 function AddContributor(props) {
-  const { onClose, saveContributor } = props;
+  const {
+    onClose, saveContributor, checklistType, addContributorOperation,
+  } = props;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [ssn, setSsn] = useState('');
@@ -53,7 +56,11 @@ function AddContributor(props) {
         borrowerAffilCd: typeOfUser,
         taxpyrIdVal: ssn !== '' ? ssn : null,
       };
-      saveContributor(contributorFields);
+      if (checklistType === 'Fico') {
+        addContributorOperation(contributorFields);
+      } else {
+        saveContributor(contributorFields);
+      }
       AddContribPopupClose();
     }
   };
@@ -218,15 +225,20 @@ function AddContributor(props) {
   );
 }
 
-AddContributor.defaulProps = {};
+AddContributor.defaultProps = {
+  checklistType: '',
+};
 
 AddContributor.propTypes = {
+  addContributorOperation: PropTypes.func.isRequired,
+  checklistType: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   saveContributor: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   saveContributor: docChecklistOperations.addContributorOperation(dispatch),
+  addContributorOperation: incomeCalcChecklistOperations.addContributorOperation(dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(AddContributor);

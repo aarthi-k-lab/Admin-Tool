@@ -14,10 +14,12 @@ import './Fico.css';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { selectors as incomeCalcSelectors } from 'ducks/income-calculator';
 import { selectors as taskChecklistSelectors, operations as taskChecklistOperations } from 'ducks/tasks-and-checklist';
+import { IconButton } from '@material-ui/core/index';
 import processBorrowerData from '../../lib/CustomFunctions/BorrowerData/processBorrowerData';
 import { DECEASED_BORROWER } from '../../constants/incomeCalc/DocumentList';
 import { TABLE_SCHEMA } from '../../constants/tableSchema';
 import MUITable from '../IncomeCalc/Table';
+import AddContributor from '../IncomeCalc/AddContributor/AddContirbutor';
 
 function Fico(props) {
   const {
@@ -29,7 +31,7 @@ function Fico(props) {
   const [selectedHistory, setSelectedHistory] = useState([]);
   const [selectedFicoScore, setSelectedFicoScore] = useState('');
   const isDisabled = !isAssigned ? 'disable' : '';
-
+  const [showAddContributorPopup, setShowAddContributorPopup] = useState(false);
   const columns = R.propOr([], 'FICO', TABLE_SCHEMA);
 
   const displayList = processBorrowerData(getborrowerData);
@@ -52,7 +54,13 @@ function Fico(props) {
       setFicoScoreData({ value: payload, position: selectedBorrowerPstn });
     }
   };
+  const handAddContributorClick = () => {
+    setShowAddContributorPopup(true);
+  };
 
+  const handleCloseAddContributor = () => {
+    setShowAddContributorPopup(false);
+  };
   useEffect(() => {
     fetchFicoHistory();
   }, []);
@@ -62,6 +70,7 @@ function Fico(props) {
     setSelectedFicoScore(R.propOr('', 'ficoScore', R.find(R.propEq('position',
       (tabIndex + 1)))(ficoScoreData)));
   }, [ficoHistoryData]);
+
 
   return (
     <div>
@@ -148,6 +157,12 @@ function Fico(props) {
             </>
             <MUITable columns={columns} data={selectedHistory || []} size="small" />
           </Grid>
+          <Grid style={{ paddingbottom: '0.5rem' }} xs={1}>
+            <IconButton disabled={!isAssigned} onClick={handAddContributorClick} styleName="addContributor">
+              <img alt="add-contributor" src="/static/img/person_add.svg" />
+            </IconButton>
+          </Grid>
+          {showAddContributorPopup && <AddContributor checklistType="Fico" onClose={handleCloseAddContributor} />}
         </Grid>
       </div>
     </div>

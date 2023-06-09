@@ -13,6 +13,7 @@ import {
   setSelectedBorrowerAction,
   handleAssetVerificationLockCalculation,
   handleFicoHistory,
+  handleAddContributor,
 } from './actions';
 
 const enableHistoryView = dispatch => (item) => {
@@ -62,6 +63,9 @@ const ficoHistoryData = dispatch => (payload) => {
   dispatch(handleFicoHistory(payload));
 };
 
+const addContributorOperation = dispatch => (payload) => {
+  dispatch(handleAddContributor(payload));
+};
 
 const operations = {
   lockCalculation,
@@ -76,6 +80,7 @@ const operations = {
   setSelectedBorrower,
   assetVerificationLockCalculation,
   ficoHistoryData,
+  addContributorOperation,
 };
 
 export default operations;

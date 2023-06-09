@@ -13,6 +13,7 @@ import {
   ASSET_LOCK_CALCULATION,
   SET_SELECTED_BORROWER,
   FETCH_FICO_TABLE_DATA,
+  ADD_CONTRIBUTOR_FICO,
 } from './types';
 
 
@@ -128,6 +129,10 @@ const handleFicoHistory = payload => ({
   payload,
 });
 
+const handleAddContributor = payload => ({
+  type: ADD_CONTRIBUTOR_FICO,
+  payload,
+});
 
 export {
   onLockCalc,
@@ -151,4 +156,5 @@ export {
   setSelectedBorrowerAction,
   handleAssetVerificationLockCalculation,
   handleFicoHistory,
+  handleAddContributor,
 };
