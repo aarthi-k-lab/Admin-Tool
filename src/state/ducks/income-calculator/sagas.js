@@ -191,6 +191,26 @@ function* fetchHistoryChecklist(action) {
   yield put({ type: HIDE_LOADER });
 }
 
+function* updateBorrowerDetails() {
+  const borrowerData = yield select(selectors.getBorrowers);
+  const rootIdFEUW = yield select(taskSelectors.getRootTaskId);
+  const borrowerlist = [];
+  borrowerData.map((x) => {
+    borrowerlist.push(`${x.firstName}_${x.borrowerPstnNumber}`);
+    return null;
+  });
+  const payload = {
+    borrowerlist,
+    rootId: rootIdFEUW,
+  };
+  try {
+    const borrowersDetailsUpdate = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/updateChecklist', payload);
+  } catch (e) {
+    yield put({
+      type: ERROR_LOADING_CHECKLIST,
+    });
+  }
+}
 
 function* fetchIncomeCalcHistory() {
   const processId = yield select(dashboardSelectors.processId);
@@ -277,6 +297,7 @@ function* fetchIncomeCalcChecklist(action) {
       }
       const taskChecklistId = R.pathOr('', [calcType, 'taskCheckListId'], financeCalcData);
       const docChecklistId = R.pathOr('', ['docChecklistId'], financeCalcData);
+      yield call(updateBorrowerDetails);
       yield call(fetchChecklistDetails, {
         payload: R.contains(DOCUMENT_CHECKLIST, widgetList) ? docChecklistId : taskChecklistId,
       });
@@ -288,6 +309,7 @@ function* fetchIncomeCalcChecklist(action) {
       yield put({ type: SHOW_LOADER });
       yield put({ type: SET_INCOMECALC_DATA, payload: { disableChecklist: false } });
       yield call(updateFinanceCalcFieldValues, type);
+      yield call(updateBorrowerDetails);
       yield call(fetchChecklistDetails, { payload: processInstance });
       yield put({ type: SET_MAIN_CHECKLISTID, payload: processInstance });
       yield call(fetchIncomeCalcHistory);
@@ -465,7 +487,11 @@ function* addContributor(action) {
       contributorData = { ...contributorData, [R.path(['taskBlueprint', 'additionalInfo', 'fieldName'], task)]: task.value };
     });
     const borrowerData = yield select(selectors.getBorrowers);
-    const borrowerlist = R.pathOr(null, ['value', 'inc', 'borrowers'], data);
+    const borrowerlist = [];
+    borrowerData.map((x) => {
+      borrowerlist.push(`${x.firstName}_${x.borrowerPstnNumber}`);
+      return null;
+    });
     const maxPositionNum = R.compose(
       R.prop('borrowerPstnNumber'),
       R.last,
