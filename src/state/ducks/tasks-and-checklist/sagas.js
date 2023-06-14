@@ -1255,6 +1255,14 @@ function* assetLockCalculation() {
       }));
       const assetLockResponse = yield call(Api.callPost, '/api/dataservice/asset/assetLockCalculation', assetLockRequest);
       if ((R.equals((R.propOr(null, 'status', assetLockResponse), 'Success')))) {
+        yield put({
+          type: SET_POPUP_DATA,
+          payload: {
+            message: 'Asset Verification is Locked successfully',
+            level: 'Success',
+            title: 'Lock Calculation',
+          },
+        });
         const mappedAssetLockRequest = R.map((x) => {
           const borrData = R.find(R.propEq('borrowerId', x.borrId))(borrDetails);
           return {
@@ -1283,14 +1291,6 @@ function* assetLockCalculation() {
             }
           }
         }
-        yield put({
-          type: SET_POPUP_DATA,
-          payload: {
-            message: 'Asset Verification is Locked successfully',
-            level: 'Success',
-            title: 'Lock Calculation',
-          },
-        });
         yield put({ type: FETCH_ASSET_HISTORIES });
         yield call(updateAndSaveChecklist, { key: 'assetLockSuccess', validationMessage: true });
         yield put({
