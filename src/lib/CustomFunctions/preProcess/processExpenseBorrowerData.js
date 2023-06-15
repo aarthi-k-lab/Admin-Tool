@@ -3,7 +3,8 @@ import * as R from 'ramda';
 const processExpenseBorrowerData = (item) => {
   const { incomeCalcData } = item;
   const borrName = R.pathOr(null, ['value', 'borrowerName'], item);
-  const borrowers = R.propOr([], 'processedBorrowerData', incomeCalcData);
+  const isHistoryView = R.propOr(false, 'isHistoryView', incomeCalcData);
+  const borrowers = R.propOr([], isHistoryView ? 'historicalBorrowers' : 'processedBorrowerData', incomeCalcData);
   let data = [];
   if (borrowers && borrowers.length > 0 && borrName) {
     data = borrowers
