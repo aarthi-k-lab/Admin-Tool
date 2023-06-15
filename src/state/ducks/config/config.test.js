@@ -1,9 +1,9 @@
 // import { put } from 'redux-saga/effects';
-import { take, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import * as Api from 'lib/Api';
 import * as actionTypes from './types';
-import fetchAppConfig from './actions';
+import { fetchAppConfig } from './actions';
 import { TestExports } from './sagas';
 import {
   FETCHCONFIG_SAGA,
@@ -21,13 +21,9 @@ describe('Config actions', () => {
   });
   describe('watchGetConfig', () => {
     const saga = cloneableGenerator(TestExports.watchGetConfig)();
-    it('watchGetConfig should be triggereds', () => {
+    it('should trigger getConfig', () => {
       expect(saga.next().value)
-        .toEqual(take(FETCHCONFIG_SAGA));
-    });
-    it('getConfig should be triggered', () => {
-      expect(saga.next({}).value)
-        .toEqual(TestExports.getConfig({}));
+        .toEqual(takeEvery(FETCHCONFIG_SAGA, TestExports.getConfig));
     });
   });
 
@@ -49,13 +45,14 @@ describe('Config actions', () => {
     });
     it('should update config state', () => {
       expect(saga.next(payload).value).toEqual(put({
-        type: actionTypes.CONFIG_DATA_SUCCESS,
-        payload,
+        type: actionTypes.TOGGLE_REPORTS,
+        payload: true,
       }));
     });
     it('toggle azure search', () => {
       expect(saga.next(payload).value).toEqual(put({
-        type: TOGGLE_AZURE_SEARCH,
+        type: actionTypes.CONFIG_DATA_SUCCESS,
+        payload,
       }));
     });
   });

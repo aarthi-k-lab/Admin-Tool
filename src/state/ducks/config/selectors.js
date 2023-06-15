@@ -13,8 +13,10 @@ const pdfUrlConstants = state => getPdfUrl(state.appConfig);
 
 const isTaskPaneAccessible = state => isFeatureEnabled(features.TASK_PANE, getFeatures(state));
 const hiddenRoutes = state => handleRoutes(state.appConfig);
+const getLoading = state => R.propOr(false, 'loading', state);
 
 const selectors = {
+  getLoading,
   appConfig,
   isTaskPaneAccessible,
   powerBIConstants,

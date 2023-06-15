@@ -1,5 +1,4 @@
 import {
-  take,
   all,
   call,
   put,
@@ -13,6 +12,7 @@ import {
   CONFIG_DATA_SUCCESS,
   CONFIG_DATA_FAILURE,
   FETCHCONFIG_SAGA,
+  TOGGLE_REPORTS,
 } from './types';
 
 import {
@@ -22,6 +22,7 @@ import {
 function* getConfig() {
   try {
     const newPayload = yield call(Api.callGet, 'api/config');
+    yield put({ type: TOGGLE_REPORTS, payload: true });
     if (newPayload != null) {
       const powerBIConstants = R.pathOr({}, ['powerBIReports'], newPayload);
       const pdfGeneratorUrl = R.pathOr({}, ['pdfGenerator', 'pdfGeneratorUrl'], newPayload);
@@ -48,13 +49,7 @@ function* getConfig() {
       payload: {},
     });
   }
-}
-
-function* watchGetConfig() {
-  let payload = yield take(FETCHCONFIG_SAGA);
-  if (payload != null) {
-    payload = yield getConfig();
-  }
+  yield put({ type: TOGGLE_REPORTS, payload: false });
 }
 
 function* fetchHiddenRoute() {
@@ -65,6 +60,10 @@ function* fetchHiddenRoute() {
     type: TOGGLE_HIDDEN_ROUTE,
     payload: hiddenRoutes,
   });
+}
+
+function* watchGetConfig() {
+  yield takeEvery(FETCHCONFIG_SAGA, getConfig);
 }
 
 function* watchHiddenRoute() {

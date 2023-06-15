@@ -1,3 +1,6 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-did-update-set-state */
 import React from 'react';
 import Report from 'powerbi-report-component';
 import Auth from 'lib/Auth';
@@ -9,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
+import mapRepo from 'models/powerbi';
 import { selectors, operations as configOperations } from 'ducks/config';
 import { selectors as LoginSelectors } from 'ducks/login';
 import { operations as dashboardOperations } from 'ducks/dashboard';
@@ -20,15 +24,6 @@ const BULKUPLOAD_STAGER = 'BULKUPLOAD_DOCSIN';
 class UserReport extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.mapRepo = {
-      '/frontend-checklist': 'INCOME CALCULATION Agent Dashboard',
-      '/backend-checklist': 'UNDERWRITNG Agent Dashboard',
-      '/doc-processor': 'PROCESSING Agent Dashboard',
-      '/doc-gen': 'DOC GENERATION Agent Dashboard',
-      '/docs-in': 'DOCS IN Agent Dashboard',
-      '/special-loan': 'SPECIAL LOANS Agent Dashboard',
-      '/dg-vendor': 'DOCGEN VENDOR Agent Dashboard',
-    };
     this.showAddDocsIn = false;
     this.accessToken = Auth.getPowerBIAccessToken(window.location.pathname);
     this.reportStyle = { width: '100%', height: '100%' };
@@ -39,6 +34,21 @@ class UserReport extends React.PureComponent {
   componentDidMount() {
     const { fetchConfig } = this.props;
     fetchConfig();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location, toggleReports } = prevProps;
+    const currentLocationProps = this.props.location;
+    const { fetchConfig, clearReports } = this.props;
+    if (!R.equals(currentLocationProps.pathname, location.pathname)) {
+      clearReports();
+      fetchConfig();
+    }
+  }
+
+  componentWillUnmount() {
+    const { clearReports } = this.props;
+    clearReports();
   }
 
   onHandleClick = () => {
@@ -57,10 +67,9 @@ class UserReport extends React.PureComponent {
   }
 
   renderReport(powerBIConstants) {
-    const { location } = this.props;
-    const nameRepo = this.mapRepo[location.pathname];
-    const report = R.find(R.propEq('reportName', nameRepo))(powerBIConstants);
-    if (R.isNil(report)) {
+    const { location, loading } = this.props;
+    const currentReport = R.find(R.propEq('reportName', mapRepo[location.pathname]))(powerBIConstants);
+    if (R.isNil(currentReport)) {
       return (
         <Center>
           <span styleName="error-message">
@@ -69,13 +78,16 @@ class UserReport extends React.PureComponent {
         </Center>
       );
     }
+    if (loading) {
+      return <></>;
+    }
     return (this.accessToken && powerBIConstants && powerBIConstants.length > 0)
       ? (
         <Report
           accessToken={this.accessToken}
-          embedId={report ? report.reportId : ''}
+          embedId={currentReport ? currentReport.reportId : ''}
           embedType="report"
-          embedUrl={report ? report.reportUrl : ''}
+          embedUrl={currentReport ? currentReport.reportUrl : ''}
           permissions="All"
           style={this.reportStyle}
           tokenType="Aad"
@@ -124,11 +136,14 @@ class UserReport extends React.PureComponent {
 const mapStateToProps = state => ({
   powerBIConstants: selectors.powerBIConstants(state),
   userGroupList: LoginSelectors.getGroupList(state),
+  loading: selectors.getLoading(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   setPageType: dashboardOperations.setPageType(dispatch),
   fetchConfig: configOperations.fetchConfig(dispatch),
+  clearReports: configOperations.clearReportsOperation(dispatch),
+  toggleReports: configOperations.toggleReportsOperation(dispatch),
 });
 
 UserReport.defaultProps = {
@@ -147,8 +162,10 @@ UserReport.defaultProps = {
 };
 
 UserReport.propTypes = {
+  clearReports: PropTypes.func.isRequired,
   fetchConfig: PropTypes.func.isRequired,
   history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  loading: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }),
@@ -162,6 +179,7 @@ UserReport.propTypes = {
     }),
   ),
   setPageType: PropTypes.func.isRequired,
+  toggleReports: PropTypes.func.isRequired,
   userGroupList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
