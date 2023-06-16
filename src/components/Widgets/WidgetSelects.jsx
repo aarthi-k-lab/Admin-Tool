@@ -9,7 +9,7 @@ import {
   BOOKING,
   FINANCIAL_CALCULATOR,
   FHLMC,
-  DOCUMENT_CHECKLIST,
+  // DOCUMENT_CHECKLIST,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
@@ -96,13 +96,16 @@ const widgets = [
     children: [COMMENTS],
     dependency: FHLMC,
   },
-  {
+  /* {
     id: DOCUMENT_CHECKLIST,
-    icon: <img alt="DOC CHECKLIST" src="/static/img/docchecklistwidget.png" style={{ width: '40px' }} />,
+    icon: <img
+      alt="DOC CHECKLIST"
+      src="/static/img/docchecklistwidget.png"
+      style={{ width: '40px' }}
+    />,
     visibility: [BEUW, FEUW, PROC],
     children: [COMMENTS],
-
-  },
+  }, */
 ];
 
 

@@ -174,7 +174,8 @@ import {
   UPDATE_TRIAL_PERIOD_RESULT,
   ODM_RERUN_SAGA,
 } from './types';
-import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
+// Note : Doc Checklist revert
+// import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch, disableFinanceCalcTabButtonAction } from './actions';
 import {
@@ -959,7 +960,8 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const safeActRequire = R.pathOr(false, ['value', 'safeActRequired'], R.head(externalChangeSubtasks));
     const loanNbr = yield (select(selectors.loanNumber));
     const loanViewData = yield (select(tombstoneSelectors.getTombstoneLoanViewData));
-    const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData));
+    const brandName = R.propOr('', 'content',
+      R.find(R.propEq('title', 'Brand Name'))(loanViewData));
     const request = {
       evalId,
       disposition,
@@ -973,12 +975,15 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       loanNbr,
       brandName,
     };
+    /*
+    Note : Doc Checklist revert
     if (groupName === 'PROC') {
       yield put({
         type: SAVE_DOC_CHECKLIST_DATA,
       });
       yield take(DOC_CHK_SAVE_SUCCESS);
     }
+    */
     const response = yield call(Api.callPost, `/api/disposition/validate-disposition?isAuto=${isAuto}`, request);
     const { tkamsValidation, skillValidation } = response;
     yield put({
