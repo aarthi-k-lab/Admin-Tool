@@ -1034,6 +1034,8 @@ function* setFicoScore(action) {
 function* ficoLockCalculation() {
   try {
     const loanNumber = yield select(dashboardSelectors.loanNumber);
+    const ficoHistoryData = yield select(selectors.getFicoHistoryData);
+    const isPrimaryBorrExists = ficoHistoryData.filter(e => e.position === 1).length > 0;
     const user = yield select(loginSelectors.getUser);
     const userPrincipalName = R.path(['userDetails', 'email'], user);
     const borrowers = yield select(incomeSelectors.getBorrowers);
@@ -1061,12 +1063,26 @@ function* ficoLockCalculation() {
     });
     const filteredRequest = R.filter(x => !x.description.includes(ASSUMPTOR)
     && !x.description.includes(CONTRIBUTOR), ficolockRequest);
-    const ficolockRequestTkams = filteredRequest.map(data => ({
+    let ficolockRequestTkams = [];
+    ficolockRequestTkams = filteredRequest.map(data => ({
       loanNbr: data.loanNbr,
       position: data.position,
       userName: userPrincipalName,
       ficoScore: data.ficoScore,
     }));
+    const isPrimaryBorrExistsinficoreq = ficolockRequestTkams.filter(
+      e => e.position === 1,
+    ).length > 0;
+    // creating a seperate object when Primary borr details are not present as per #755438
+    if (!isPrimaryBorrExists && !isPrimaryBorrExistsinficoreq) {
+      const primaryBorrValue = {
+        loanNbr: loanNumber,
+        position: 1,
+        userName: userPrincipalName,
+        ficoScore: 557,
+      };
+      ficolockRequestTkams = [...ficolockRequestTkams, primaryBorrValue];
+    }
     if (ficolockRequestTkams && ficolockRequestTkams.length > 0) {
       tkamsResponse = yield call(Api.callPost, '/api/tkams/fico/saveFicoData', ficolockRequestTkams);
     }
