@@ -453,8 +453,8 @@ function* getReasonableEffort() {
       response);
     const responseMapper = item => ({
       letterType: item.letterType,
-      letterSentdate: !R.isNil(item.dateLtrSent) ? moment(item.dateLtrSent).format('MM/DD/YYYY') : '-',
-      deadlineDate: !R.isNil(item.bcMissingDocDeadlineDate) ? moment(item.bcMissingDocDeadlineDate).format('MM/DD/YYYY') : '-',
+      letterSentdate: !R.isNil(item.dateLtrSent) ? moment.tz(item.dateLtrSent, 'America/Chicago').format('MM/DD/YYYY') : '-',
+      deadlineDate: !R.isNil(item.bcMissingDocDeadlineDate) ? moment.tz(item.bcMissingDocDeadlineDate, 'America/Chicago').format('MM/DD/YYYY') : '-',
       exclReason: item.exclReason,
     });
     let missDocData = R.pathOr([], ['missingDocsInfo'], response);
