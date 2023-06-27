@@ -9,7 +9,6 @@ import {
 import * as R from 'ramda';
 import { setPaymentDeferral } from 'ducks/dashboard/actions';
 import LoanTombstone from 'models/LoanTombstone';
-import moment from 'moment-timezone';
 import ReasonableEffort from 'models/ReasonableEffort';
 import DashboardModel from 'models/Dashboard';
 import * as Api from 'lib/Api';
@@ -66,6 +65,7 @@ import {
   REASONABLE_EFFORT_FETCH_ERROR,
   REASONABLE_EFFORT_HISTORY_FETCH_ERROR,
 } from '../../../constants/loanInfoComponents';
+import * as DateUtils from '../../../lib/DateUtils';
 
 function* fetchTombstoneData(payload) {
   const { taskName, taskId } = payload.payload;
@@ -453,8 +453,8 @@ function* getReasonableEffort() {
       response);
     const responseMapper = item => ({
       letterType: item.letterType,
-      letterSentdate: !R.isNil(item.dateLtrSent) ? moment.tz(item.dateLtrSent, 'America/Chicago').format('MM/DD/YYYY') : '-',
-      deadlineDate: !R.isNil(item.bcMissingDocDeadlineDate) ? moment.tz(item.bcMissingDocDeadlineDate, 'America/Chicago').format('MM/DD/YYYY') : '-',
+      letterSentdate: !R.isNil(item.dateLtrSent) ? DateUtils.DateFormatter(item.dateLtrSent) : '-',
+      deadlineDate: !R.isNil(item.bcMissingDocDeadlineDate) ? DateUtils.DateFormatter(item.bcMissingDocDeadlineDate) : '-',
       exclReason: item.exclReason,
     });
     let missDocData = R.pathOr([], ['missingDocsInfo'], response);
