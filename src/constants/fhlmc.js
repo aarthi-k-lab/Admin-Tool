@@ -8,6 +8,11 @@ const APPROVAL_TYPE = 'FHLMCApprovalType';
 const PRE_APPROVAL_TYPE = 'FHLMCPreApproved';
 const APPROVAL_REQUEST_TYPE = 'FHLMCPreApprovedRequestType';
 const LOAN_NUMBERS_IDTYPE = 'Loan Number(s)';
+const HARDSHIP_TYPE = 'Hardship Type';
+const HARDSHIP_SOURCE = 'Hardship Source';
+const SEX = 'Sex';
+const ETHNICITY = 'Ethnicity';
+const RACE = 'Race';
 const PREAPPROVED_DISASTER_TYPES = ['Disaster', 'Pandemic'];
 const STANDARD = 'Standard';
 const EXCEPTION_TOGGLE = ['Yes', 'No'];
@@ -49,6 +54,11 @@ module.exports = {
   CANCELLATION_REASON,
   REQ_PRCS,
   GENERATE_BOARDING_TEMPLATE_STATUS,
+  HARDSHIP_TYPE,
+  HARDSHIP_SOURCE,
+  SEX,
+  ETHNICITY,
+  RACE,
   VALIDATION_FAILURE_MSG,
   STANDARD,
   EXCEPTION_TOGGLE,

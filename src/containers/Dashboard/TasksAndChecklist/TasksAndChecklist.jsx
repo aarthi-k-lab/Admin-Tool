@@ -33,12 +33,13 @@ import { selectors as tombstoneSelectors } from 'ducks/tombstone';
 import Grid from '@material-ui/core/Grid';
 import RFDContent from 'components/Tombstone/TombstoneComponents/RFDContent';
 import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST,
+  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES
 } from 'constants/widgets';
-import { EDITABLE_FIELDS, RFD } from 'constants/loanInfoComponents';
+import { EDITABLE_FIELDS, HARDHSIP, RFD } from 'constants/loanInfoComponents';
 import getTombstonePopup from 'components/Tombstone/PopupSelect.jsx';
 import Popup from '../../../components/Popup';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
+import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import BookingHomePage from './BookingHomePage';
 import Navigation from './Navigation';
@@ -46,6 +47,8 @@ import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
 import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent/CollateralContent';
 import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
+import FHLMCWidget from '../../../components/Widgets/FHLMCWidget';
+import HardshipAffidavit from '../../../components/Tombstone/TombstoneComponents/HardshipAffidavit';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
 
@@ -62,7 +65,7 @@ class TasksAndChecklist extends Component {
       }
     });
     if (R.equals(groupName, DashboardModel.BOOKING)
-      && !(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList))) {
+      && !(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList) || R.contains(LSAMS_NOTES, openWidgetList))) {
       const payload = {
         currentWidget: BOOKING,
         openWidgetList: [BOOKING],
@@ -96,7 +99,7 @@ class TasksAndChecklist extends Component {
   shouldRenderWidgetView = () => {
     const { openWidgetList } = this.props;
     return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR,DOCUMENT_CHECKLIST],
+      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES],
     ))(openWidgetList);
   }
 
@@ -297,7 +300,13 @@ class TasksAndChecklist extends Component {
         widgetToRender = <IncomeCalcWidget />;
         break;
       case DOCUMENT_CHECKLIST:
-        widgetToRender = <DocChecklistWidget/>
+        widgetToRender = <DocChecklistWidget />
+        break;
+      case FHLMC:
+        widgetToRender = <FHLMCWidget />
+        break;
+      case LSAMS_NOTES:
+        widgetToRender = <LSAMSNotesWidget />;
         break;
       default:
         widgetToRender = null;
@@ -386,6 +395,7 @@ class TasksAndChecklist extends Component {
       </section>
     );
   }
+
 
   renderLoanInfoComponents() {
     const { groupName, openWidgetList, checklistCenterPaneView } = this.props;

@@ -1,5 +1,10 @@
 
 import {
+  HARDSHIP_SOURCE, HARDSHIP_TYPE, SEX, ETHNICITY, RACE,
+} from 'constants/fhlmc';
+import {
+  clearHardshipDataAction,
+  clearUpdatedHardshipDataAction,
   getRFDTableData,
   getRFDReasonDescDropdown,
   onSubmitToRFDRequest,
@@ -15,6 +20,11 @@ import {
   getReasonableEffortHistoryData,
   getReasonableEffortById,
   getCFPBTableData,
+  fetchHardshipDataAction,
+  saveHardshipDataAction,
+  updateHardsipDataAction,
+  setUpdatedBorrowerHardshipInfoAction,
+  populateHardshipDropdownAction,
 } from './actions';
 
 const getRFDTableDataOperation = dispatch => (loanNumber) => {
@@ -75,8 +85,41 @@ const getReasonableEffortByIdOperation = dispatch => (payload) => {
 const getCFPBTableDataOperation = dispatch => (loanNumber) => {
   dispatch(getCFPBTableData(loanNumber));
 };
+const fetchHardshipDataOperation = dispatch => (payload) => {
+  dispatch(fetchHardshipDataAction(payload));
+};
+
+const updateHardshipDataOperation = dispatch => (payload) => {
+  dispatch(updateHardsipDataAction(payload));
+};
+
+const setUpdateBorrwerHardshipDataOperation = dispatch => (payload) => {
+  dispatch(setUpdatedBorrowerHardshipInfoAction(payload));
+};
+
+const clearHardshipDataOperation = dispatch => () => {
+  dispatch(clearHardshipDataAction());
+};
+
+const clearUpdatedHardshipDataOperation = dispatch => () => {
+  dispatch(clearUpdatedHardshipDataAction());
+};
+
+const saveHardshipDataOperation = dispatch => (payload) => {
+  dispatch(saveHardshipDataAction(payload));
+};
+
+const populateHardshipDropdownOperation = dispatch => () => {
+  dispatch(populateHardshipDropdownAction({ type: HARDSHIP_SOURCE }));
+  dispatch(populateHardshipDropdownAction({ type: HARDSHIP_TYPE }));
+  dispatch(populateHardshipDropdownAction({ type: SEX }));
+  dispatch(populateHardshipDropdownAction({ type: ETHNICITY }));
+  dispatch(populateHardshipDropdownAction({ type: RACE }));
+};
 
 export default {
+  clearHardshipDataOperation,
+  clearUpdatedHardshipDataOperation,
   getRFDTableDataOperation,
   getRFDReasonDescDropdownOperation,
   onSubmitToRFDRequestOperation,
@@ -92,4 +135,9 @@ export default {
   getReasonableEffortHistoryDataOperation,
   getReasonableEffortByIdOperation,
   getCFPBTableDataOperation,
+  saveHardshipDataOperation,
+  fetchHardshipDataOperation,
+  updateHardshipDataOperation,
+  setUpdateBorrwerHardshipDataOperation,
+  populateHardshipDropdownOperation,
 };

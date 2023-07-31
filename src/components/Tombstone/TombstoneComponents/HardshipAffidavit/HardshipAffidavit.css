@@ -1,0 +1,197 @@
+.closeIcon {
+    margin: 0.35rem 0 0 1rem !important;
+    cursor: pointer !important;
+  }
+
+ .heading {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  margin: 1rem 1rem 1rem 2rem !important;
+  width: 15rem;
+} 
+
+.leftBox {
+  margin: 2% 5% 5% 5%;
+  background-color: #f3f5f9 !important;
+  border-radius: 10px;
+}
+
+
+.divider {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+
+.errorSvg {
+  width: 4rem !important;
+  height: 1.5rem !important;
+  margin-top: 0.5rem;
+}
+
+.errorIcon {
+  float: right !important;
+}
+
+.saveButton {
+  background-color: #596feb !important;
+  color: white !important;
+  width: 6rem;
+  height: 1rem;
+  border-radius: 5px !important;
+  margin: 1rem 0 1rem 21rem !important;
+}
+
+.disabledSaveButton {
+  color: white !important;
+  width: 6rem;
+  height: 1rem;
+  border-radius: 5px !important;
+  margin: 1rem 0 1rem 21rem !important;
+}
+
+
+.tabWidth {
+  width: 105.5rem !important;
+  padding-left: .5rem;
+}
+
+.borrowerBanner {
+  background-color: #f3f5f9 !important;
+  border-radius: 5px !important;
+  display: flex;
+  flex-direction: row;
+}
+
+.borrNameDiv {
+  display: grid !important;
+  text-transform: capitalize !important;
+}
+
+.borrName {
+  font-weight: 700 !important;
+  color: #4e586e !important;
+}
+
+.borrDesc {
+  color: #939299 !important;
+}
+
+.taballign {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  justify-content: space-evenly !important;
+}
+
+.borrTab {
+  width: 12.75rem !important;
+}
+
+.tabContainer{
+  display: flex !important;
+  align-items: center !important;
+}
+
+.hardshipContainer {
+  padding: 1rem;
+  background-color: #f3f5f9 !important;
+  margin: 1rem 1rem 0 .5rem;
+  border-radius: 10px;
+  width: 40rem;
+  height: 20rem !important;
+  overflow: hidden !important;
+  display: inline-block !important;
+}
+
+.hardshipContainer-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  padding: 1rem;
+  background-color: #f3f5f9 !important;
+  margin: 1rem 1rem 0 .5rem;
+  border-radius: 10px;
+  width: 40rem;
+  height: 20rem !important;
+  overflow: hidden !important;
+  display: inline-block !important;
+}
+
+.hmdaContainer{
+  display: inline-block !important;
+  padding: 1rem;
+  background-color: #f3f5f9 !important;
+  margin: 1rem 1rem 0 .5rem;
+  border-radius: 10px;
+  width: 40rem;
+  height: 17rem !important;
+  overflow: hidden !important;
+}
+
+.hmdaContainer-disabled{
+  pointer-events: none;
+  opacity: 0.5;
+  display: inline-block !important;
+  padding: 1rem;
+  background-color: #f3f5f9 !important;
+  margin: 1rem 1rem 0 .5rem;
+  border-radius: 10px;
+  width: 40rem;
+  height: 17rem !important;
+  overflow: hidden !important;
+}
+
+.borr-banner-container{
+  left: 2rem;
+}
+
+.hardship-label{
+  padding: 1rem 0 0 1rem !important;
+}
+
+.hardship-select{
+  width: 14.9rem;
+  border-radius: 5px !important;
+  font-size: 13.75px !important;
+  color: black !important;
+  height: 2.5rem !important;
+  background-color: white;
+}
+
+.menu-item{
+  padding-left: 0 0 0 1rem !important;
+}
+
+.disable {
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.5;
+}
+
+.hardship-container {
+  display: flex;
+  width: inherit !important;
+}
+
+
+.hardship-field{
+  width: 68rem !important;
+}
+
+.hardship-field-container{
+  margin: 1rem 0 0 0 !important;
+}
+
+.hardship-borr-tabs {
+  width: 105rem;
+}
+
+.header{
+  display: flex;
+}
+
+.hardship-date-field{
+  width: 14.9rem !important;
+  background-color: white ;
+}
+

@@ -14,6 +14,8 @@ trigger:
   branches:
     include: 
       - master
+    exclude:
+      - CMOD/JULY  
   paths:
     exclude: 
       - secrets

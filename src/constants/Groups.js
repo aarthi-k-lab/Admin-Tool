@@ -17,3 +17,4 @@ export const RPS_STAGER = 'rpsstager';
 export const RPS_STAGER_MGR = 'rpsstager-mgr';
 export const INVSET = 'invset';
 export const SECONDLOOK = 'secondlook';
+export const USERSKILLS = 'user-skills';

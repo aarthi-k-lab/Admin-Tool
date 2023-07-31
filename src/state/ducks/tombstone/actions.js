@@ -15,6 +15,13 @@ import {
   GET_REASONABLE_EFFORT_HISTORY_DATA,
   GET_REASONABLE_EFFORT_DATA_BY_ID,
   GET_CFPBTABLE_DATA,
+  FETCH_HARDSHIP_DATA,
+  SAVE_HARDSHIP_DATA,
+  SET_HARDSHIP_DATA,
+  SET_UPDATED_BORR_HARDSHIP_DATA,
+  UPDATE_HARDSHIP_DATA,
+  SAVE_UPDTD_HARDSHIP_DATA,
+  POPULATE_HARDSHIP_DROPDOWN,
 } from './types';
 
 const fetchTombstoneData = (loanNumber, taskName, taskId) => ({
@@ -95,8 +102,45 @@ const getCFPBTableData = loanNumber => ({
   type: GET_CFPBTABLE_DATA,
   payload: loanNumber,
 });
+const fetchHardshipDataAction = payload => ({
+  type: FETCH_HARDSHIP_DATA,
+  payload,
+});
+
+const updateHardsipDataAction = payload => ({
+  type: UPDATE_HARDSHIP_DATA,
+  payload,
+});
+
+const setUpdatedBorrowerHardshipInfoAction = payload => ({
+  type: SAVE_UPDTD_HARDSHIP_DATA,
+  payload,
+});
+
+const clearHardshipDataAction = () => ({
+  type: SET_HARDSHIP_DATA,
+  payload: [],
+});
+
+const clearUpdatedHardshipDataAction = () => ({
+  type: SET_UPDATED_BORR_HARDSHIP_DATA,
+  payload: [],
+});
+
+const saveHardshipDataAction = payload => ({
+  type: SAVE_HARDSHIP_DATA,
+  payload,
+});
+
+const populateHardshipDropdownAction = payload => ({
+  type: POPULATE_HARDSHIP_DROPDOWN,
+  payload,
+});
+
 
 export {
+  clearHardshipDataAction,
+  clearUpdatedHardshipDataAction,
   fetchTombstoneData,
   getRFDTableData,
   getRFDReasonDescDropdown,
@@ -113,4 +157,9 @@ export {
   getReasonableEffortHistoryData,
   getReasonableEffortById,
   getCFPBTableData,
+  fetchHardshipDataAction,
+  saveHardshipDataAction,
+  updateHardsipDataAction,
+  setUpdatedBorrowerHardshipInfoAction,
+  populateHardshipDropdownAction,
 };

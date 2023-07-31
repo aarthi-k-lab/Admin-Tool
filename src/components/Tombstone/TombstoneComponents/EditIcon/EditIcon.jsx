@@ -15,15 +15,20 @@ class EditIcon extends React.PureComponent {
 
   handleCenterPaneView() {
     const {
-      setChecklistCenterPaneData, getRFDTableData, loanNumber, loanInfoComponent,
+      setChecklistCenterPaneData,
+      getRFDTableData, loanNumber,
+      loanInfoComponent,
     } = this.props;
     getRFDTableData(loanNumber);
     setChecklistCenterPaneData(loanInfoComponent);
   }
 
   render() {
+    const { group } = this.props;
+    const isMilestoneActivityPage = group === 'MA';
+    const styleName = isMilestoneActivityPage ? 'edit-disabled' : '';
     return (
-      <IconButton onClick={this.handleCenterPaneView}>
+      <IconButton onClick={this.handleCenterPaneView} styleName={`${styleName}`}>
         <img alt="edit" src="/static/img/editIcon.png" styleName="icon" />
       </IconButton>
     );
@@ -36,6 +41,7 @@ EditIcon.defaultProps = {
 
 EditIcon.propTypes = {
   getRFDTableData: PropTypes.func,
+  group: PropTypes.string.isRequired,
   loanInfoComponent: PropTypes.string.isRequired,
   loanNumber: PropTypes.number.isRequired,
   setChecklistCenterPaneData: PropTypes.func.isRequired,
@@ -48,6 +54,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   loanNumber: dashboardSelectors.loanNumber(state),
+  group: dashboardSelectors.groupName(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditIcon);

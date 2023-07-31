@@ -3,15 +3,19 @@ import {
   takeEvery,
   all,
   call,
-  // fork,
   put,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { setPaymentDeferral } from 'ducks/dashboard/actions';
 import LoanTombstone from 'models/LoanTombstone';
 import ReasonableEffort from 'models/ReasonableEffort';
+import moment from 'moment-timezone';
 import DashboardModel from 'models/Dashboard';
 import * as Api from 'lib/Api';
+import Validators from 'lib/Validators';
+import {
+  HARDSHIP_SOURCE, HARDSHIP_TYPE, SEX, ETHNICITY, RACE,
+} from 'constants/fhlmc';
 import { ERROR, SUCCESS, FAILED } from '../../../constants/common';
 import {
   LOADING_TOMBSTONE_DATA,
@@ -46,6 +50,20 @@ import {
   GET_REASONABLE_EFFORT_DATA_BY_ID,
   GET_CFPBTABLE_DATA,
   SET_CFPBTABLE_DATA,
+  FETCH_HARDSHIP_DATA,
+  SAVE_HARDSHIP_DATA,
+  SET_HARDSHIP_DATA,
+  UPDATE_HARDSHIP_DATA,
+  SAVE_UPDTD_HARDSHIP_DATA,
+  SET_UPDATED_BORR_HARDSHIP_DATA,
+  SAVE_HARDSHIP_SOURCE_DROPDOWN,
+  SAVE_HARDSHIP_TYPE_DROPDOWN,
+  SAVE_SEX_DROPDOWN,
+  SAVE_RACE_DROPDOWN,
+  SAVE_ETHNICITY_DROPDOWN,
+  POPULATE_HARDSHIP_DROPDOWN,
+  HARDSHIP_DEFAULT_VALUE,
+  SET_HARDSHIP_TYPE,
 } from './types';
 import { selectors as dashboardSelectors } from '../dashboard';
 import { selectors as loginSelectors } from '../login';
@@ -64,6 +82,8 @@ import {
   SAVE_ERROR,
   REASONABLE_EFFORT_FETCH_ERROR,
   REASONABLE_EFFORT_HISTORY_FETCH_ERROR,
+  HARDSHIP_SUCCES_MSG,
+  FETCH_ERROR,
 } from '../../../constants/loanInfoComponents';
 import * as DateUtils from '../../../lib/DateUtils';
 
@@ -86,7 +106,7 @@ function* fetchTombstoneData(payload) {
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand, selectedResolutionId);
     const {
       resolutionId, investorHierarchy, tombstoneData, investorCode, brandName,
-      loanType, waterfallId,
+      loanType, waterfallId, hardshipBeginDate, hardshipEndDate,
     } = data;
 
     yield put({
@@ -114,6 +134,10 @@ function* fetchTombstoneData(payload) {
       yield put(yield call(setPaymentDeferral,
         R.contains(DashboardModel.PDD, tombstoneData.modViewData)));
     }
+    yield put({
+      type: HARDSHIP_DEFAULT_VALUE,
+      payload: { hardshipBeginDate, hardshipEndDate },
+    });
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: tombstoneData });
   } catch (e) {
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
@@ -484,7 +508,6 @@ function* getReasonableEffort() {
   }
 }
 
-
 function* getReasonableEffortHistoryData() {
   try {
     const evalId = yield select(dashboardSelectors.evalId);
@@ -523,6 +546,217 @@ function* getReasonableEffortById(action) {
       payload: {
         level: ERROR,
         status: REASONABLE_EFFORT_FETCH_ERROR,
+      },
+    });
+  }
+}
+
+function* populateHardshipDropdown(action) {
+  const { payload } = action;
+  const type = R.propOr('', 'type', payload);
+  const CLASS_TYPE_MAPPER = {
+    [HARDSHIP_SOURCE]: SAVE_HARDSHIP_SOURCE_DROPDOWN,
+    [HARDSHIP_TYPE]: SAVE_HARDSHIP_TYPE_DROPDOWN,
+    [SEX]: SAVE_SEX_DROPDOWN,
+    [RACE]: SAVE_RACE_DROPDOWN,
+    [ETHNICITY]: SAVE_ETHNICITY_DROPDOWN,
+  };
+  try {
+    let response = yield call(Api.callGet, `/api/dataservice/api/classCodes/${type}`);
+
+    if (response && response.length > 0) {
+      const responseMapper = item => ({
+        portfolioCode: item.className,
+        classCode: item.classCode,
+        activeIndicator: item.activeIndicator,
+        displayText: item.displayText,
+      });
+      response = R.map(responseMapper, response);
+
+      yield put({
+        type: CLASS_TYPE_MAPPER[type],
+        payload: response,
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: CLASS_TYPE_MAPPER[type],
+      payload: [],
+    });
+  }
+}
+
+function* getHardshipData() {
+  try {
+    const evalId = yield select(dashboardSelectors.evalId);
+    const response = yield call(Api.callGet, `/api/dataservice/hardship/getLatestValue/${evalId}`);
+    if (response && response.length > 0) {
+      response.forEach((res) => {
+        res.hardshipBeginDate = moment(new Date(`${res.hardshipBeginDate}`)).format('YYYY-MM-DD');
+        res.hardshipEndDate = moment(new Date(`${res.hardshipEndDate}`)).format('YYYY-MM-DD');
+      });
+      yield put({
+        type: SET_HARDSHIP_DATA,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SET_HARDSHIP_DATA,
+        payload: [],
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_HARDSHIP_DATA,
+      payload: [],
+    });
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        level: FAILED,
+        status: FETCH_ERROR,
+        title: 'Error Fetching Hardship Info!',
+      },
+    });
+  }
+}
+
+function* updateHardshipData(action) {
+  const {
+    value, key, selectedBorrowerId, selectedBorrowerDescription,
+  } = action.payload;
+  const hardshipBeginDate = yield select(loanTombstoneSelectors.getHardshipBeginDate);
+  const hardshipEndDate = yield select(loanTombstoneSelectors.getHardshipEndDate);
+  const hardshipData = yield select(loanTombstoneSelectors.getHardshipData);
+  const isPresent = R.find(R.pathSatisfies(R.equals(selectedBorrowerId), ['id', 'borrowerId']))(hardshipData);
+  let updatedHardshipData = [];
+  if (isPresent) {
+    updatedHardshipData = hardshipData.map((hardship) => {
+      const updateHrdship = { ...hardship };
+      if (updateHrdship && updateHrdship.id && updateHrdship.id.borrowerId
+        && updateHrdship.id.borrowerId === selectedBorrowerId) {
+        updateHrdship[key] = value;
+        updateHrdship.selectedBorrowerDescription = selectedBorrowerDescription;
+      }
+      return updateHrdship;
+    });
+  } else {
+    const newHardshipData = {
+      id: {
+        borrowerId: selectedBorrowerId,
+      },
+      [key]: value,
+      selectedBorrowerDescription,
+    };
+    if (!R.has('hardshipBeginDate', newHardshipData)) {
+      newHardshipData.hardshipBeginDate = hardshipBeginDate;
+    }
+    if (!R.has('hardshipEndDate', newHardshipData)) {
+      newHardshipData.hardshipEndDate = hardshipEndDate;
+    }
+    updatedHardshipData = [...hardshipData, newHardshipData];
+  }
+  yield put({
+    type: SET_HARDSHIP_DATA,
+    payload: updatedHardshipData,
+  });
+}
+
+function* saveUpdtdBorrowerHardshipData(action) {
+  const {
+    key, value, selectedBorrowerId,
+  } = action.payload;
+  const hardshipBeginDate = yield select(loanTombstoneSelectors.getHardshipBeginDate);
+  const hardshipEndDate = yield select(loanTombstoneSelectors.getHardshipEndDate);
+  const updatedHardshipInfo = yield select(loanTombstoneSelectors.getUpdatedHardshipData);
+  let isPresent;
+
+  if (updatedHardshipInfo && updatedHardshipInfo.length > 0) {
+    isPresent = R.find(R.pathSatisfies(R.equals(selectedBorrowerId), ['id', 'borrowerId']))(updatedHardshipInfo);
+  }
+  let newUpdatedHardshipDetail = [];
+  if (isPresent) {
+    newUpdatedHardshipDetail = updatedHardshipInfo.map((d) => {
+      const updateHrdship = { ...d };
+      if (updateHrdship.id.borrowerId === selectedBorrowerId) {
+        updateHrdship[key] = value;
+      }
+      return updateHrdship;
+    });
+    yield put({
+      type: SET_UPDATED_BORR_HARDSHIP_DATA,
+      payload: newUpdatedHardshipDetail,
+    });
+  } else {
+    const hardshipData = yield select(loanTombstoneSelectors.getHardshipData);
+    const existingBorrowerHardshipData = hardshipData.find(
+      data => data.id.borrowerId === selectedBorrowerId,
+    );
+    newUpdatedHardshipDetail = {
+      ...existingBorrowerHardshipData,
+      [key]: value,
+    };
+    if (!R.has('hardshipBeginDate', newUpdatedHardshipDetail)) {
+      newUpdatedHardshipDetail.hardshipBeginDate = hardshipBeginDate;
+    }
+    if (!R.has('hardshipEndDate', newUpdatedHardshipDetail)) {
+      newUpdatedHardshipDetail.hardshipEndDate = hardshipEndDate;
+    }
+    yield put({
+      type: SET_UPDATED_BORR_HARDSHIP_DATA,
+      payload: [...updatedHardshipInfo, { ...newUpdatedHardshipDetail }],
+    });
+  }
+}
+
+function* saveHardshipData(action) {
+  try {
+    const { hardshipReqData, tkamsReqData } = action.payload;
+    const hardshipResponse = yield call(Api.callPost, '/api/dataservice/hardship/insertHardshipDetails', hardshipReqData);
+    let tkamsResponse;
+    if (!R.isNil(tkamsReqData)) {
+      tkamsResponse = yield call(Api.callPost, 'api/tkams/hardship/saveHardshipAffidavit', tkamsReqData);
+    }
+
+    if (!hardshipResponse.status.includes('Error') && (R.isNil(tkamsResponse) || (tkamsResponse && !tkamsResponse.status.includes('Error')))) {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          message: HARDSHIP_SUCCES_MSG,
+          level: SUCCESS,
+          title: 'Success!',
+        },
+      });
+      yield put({
+        type: SET_UPDATED_BORR_HARDSHIP_DATA,
+        payload: [],
+      });
+
+      // On successful save, modifying the hardship data type in mod Info
+      const evalId = yield select(dashboardSelectors.evalId);
+      const { getOr } = Validators;
+
+      const hardshipTypeData = yield call(Api.callGet, `/api/dataservice/hardship/getHardshipValue/${evalId}`);
+      const hardship = getOr('hardshipType', hardshipTypeData, 'NA');
+
+      yield put({ type: SET_HARDSHIP_TYPE, payload: hardship });
+    } else {
+      yield put({
+        type: SET_POPUP_DATA,
+        payload: {
+          level: FAILED,
+          status: SAVE_ERROR,
+          title: 'Error Saving Hardship Info!',
+        },
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        level: FAILED,
+        status: SAVE_ERROR,
+        title: 'Error Saving Hardship Info!',
       },
     });
   }
@@ -581,6 +815,25 @@ function* watchGetReasonableEffortDataById() {
 function* watchGetCFPBTableData() {
   yield takeEvery(GET_CFPBTABLE_DATA, getCFPBTableData);
 }
+function* watchGetHardshipData() {
+  yield takeEvery(FETCH_HARDSHIP_DATA, getHardshipData);
+}
+
+function* watchSaveHardshipData() {
+  yield takeEvery(SAVE_HARDSHIP_DATA, saveHardshipData);
+}
+
+function* watchUpdateHardshipData() {
+  yield takeEvery(UPDATE_HARDSHIP_DATA, updateHardshipData);
+}
+
+function* watchSaveUpdtdBorrowerHardshipData() {
+  yield takeEvery(SAVE_UPDTD_HARDSHIP_DATA, saveUpdtdBorrowerHardshipData);
+}
+
+function* watchPopulateHardshipDropdownData() {
+  yield takeEvery(POPULATE_HARDSHIP_DROPDOWN, populateHardshipDropdown);
+}
 
 export const TestExports = {
   fetchTombstoneData,
@@ -603,5 +856,10 @@ export const combinedSaga = function* combinedSaga() {
     watchGetReasonableEffortHistoryData(),
     watchGetReasonableEffortDataById(),
     watchGetCFPBTableData(),
+    watchGetHardshipData(),
+    watchUpdateHardshipData(),
+    watchSaveHardshipData(),
+    watchSaveUpdtdBorrowerHardshipData(),
+    watchPopulateHardshipDropdownData(),
   ]);
 };

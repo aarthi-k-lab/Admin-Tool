@@ -249,6 +249,20 @@ exports[`<Profile /> snapshot test 1`] = `
           secondlook-mgr
         </p>
       </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          userskills
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          userskills-mgr
+        </p>
+      </li>
     </ol>
   </div>
   <div

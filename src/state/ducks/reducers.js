@@ -10,8 +10,9 @@ import { reducers as comments } from './comments';
 import { reducers as incomeCalculator } from './income-calculator';
 import { reducers as milestoneActivity } from './milestone-activity';
 import { reducers as widgets } from './widgets';
+import { reducers as lsamsNotes } from './lsams-notes';
 import { reducers as documentChecklist } from './document-checklist';
-
+import { reducers as userSkills } from './user-skills';
 
 const rootReducer = combineReducers({
   appConfig,
@@ -25,7 +26,9 @@ const rootReducer = combineReducers({
   incomeCalculator,
   milestoneActivity,
   widgets,
+  lsamsNotes,
   documentChecklist,
+  userSkills,
 });
 
 export default rootReducer;

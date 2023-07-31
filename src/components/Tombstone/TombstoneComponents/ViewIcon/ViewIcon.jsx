@@ -36,9 +36,12 @@ class ViewIcon extends React.PureComponent {
 
   render() {
     const { isDialogOpen } = this.state;
+    const { group } = this.props;
+    const isMilestoneActivityPage = group === 'MA';
+    const styleName = isMilestoneActivityPage ? 'icon-view-disabled' : 'icon-view';
     return (
       <>
-        <IconButton onClick={this.handleCenterPaneView} size="small" styleName="icon-view">
+        <IconButton onClick={this.handleCenterPaneView} size="small" styleName={`${styleName}`}>
           <VisibilityIcon />
         </IconButton>
         {isDialogOpen && (
@@ -59,6 +62,7 @@ ViewIcon.defaultProps = {
 
 ViewIcon.propTypes = {
   getCFPBTableData: PropTypes.func,
+  group: PropTypes.string.isRequired,
   loanNumber: PropTypes.number.isRequired,
 };
 
@@ -69,6 +73,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   loanNumber: dashboardSelectors.loanNumber(state),
   rfdTableData: selectors.getCFPBTableData(state),
+  group: dashboardSelectors.groupName(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewIcon);

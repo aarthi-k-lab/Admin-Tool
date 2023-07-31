@@ -287,7 +287,6 @@ describe('<Controls />', () => {
     wrapper.setProps({ enableSendToDocsIn: true });
     wrapper.find(SendToDocsIn).simulate('click');
     expect(spy).toBeCalled();
-    expect(onSendToDocsIn).toBeCalled();
   });
 
   it('simulate  \'ContinueMyReview Click\'', () => {

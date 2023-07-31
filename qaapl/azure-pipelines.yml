@@ -13,7 +13,9 @@ parameters:
 trigger:
   branches:
     include:
-      - CMOD/JUNE
+      - CMOD/JULY
+    exclude:
+      - master
   paths:
     exclude:
       - secrets
@@ -30,3 +32,4 @@ extends:
     includeProd: false
     buildpipelineconfigurationfile: $(build.sourcesdirectory)/qaapl/deployment/Chart.yaml
     deployworkingdirectory: $(Agent.BuildDirectory)/drop/qaapl
+    scanType: nonCompliant

@@ -1,0 +1,31 @@
+
+.searchStyle {
+  background-color: rgb(242, 240, 240) !important;
+  margin-top: 1.5rem !important;
+  height: 3rem !important;
+  border-radius: 6px;
+}
+
+.searchStyle input {
+  color: black !important;
+  margin-right: 4rem !important;
+  margin-top: 0.3rem !important;
+}
+
+.typography {
+  float: right;
+  margin-top: 2.3rem !important;
+}
+
+.checkbox {
+  transform: scale(0.8);
+}
+
+.dialog-content {
+  padding-top: 0 !important;
+}
+
+.table-cell {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

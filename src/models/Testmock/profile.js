@@ -102,6 +102,7 @@ const isChecked = {
   RPSstager: true,
   INVSET: true,
   SECONDLOOK: true,
+  USERSKILLS: true,
 };
 
 const isCheckedFalse = {
@@ -121,6 +122,7 @@ const isCheckedFalse = {
   RPSstager: true,
   INVSET: true,
   SECONDLOOK: true,
+  USERSKILLS: true,
 };
 const skills = { FEUW: ['Skill14::InVESTOR', 'Skill19::MRC Onshore', 'Skill1::something', 'Skill2::nothing'] };
 

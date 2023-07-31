@@ -17,6 +17,7 @@ const UWSTAGER = 'UWSTAGER';
 const RPS_STAGER = 'RPSstager';
 const INVSET = 'INVSET';
 const SECONDLOOK = 'SECONDLOOK';
+const USERSKILLS = 'USERSKILLS';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -29,6 +30,7 @@ const checklistGroupNames = [
   UWSTAGER,
   INVSET,
   SECONDLOOK,
+  USERSKILLS,
 ];
 
 const userGroupList = [
@@ -48,6 +50,7 @@ const userGroupList = [
   RPS_STAGER,
   INVSET,
   SECONDLOOK,
+  USERSKILLS,
 ];
 
 

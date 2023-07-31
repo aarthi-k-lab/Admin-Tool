@@ -1,7 +1,7 @@
 const CHECKLIST = 'Checklist';
 const RFD = 'Reason for Default';
 const COLLATERAL = 'Occupancy Type';
-const EDITABLE_FIELDS = ['Reason for Default', 'Occupancy Type', 'Reasonable effort'];
+const EDITABLE_FIELDS = ['Reason for Default', 'Occupancy Type', 'Reasonable effort', 'Hardship'];
 const RFD_ERROR = "Couldn't fetch RFD Data.Service down";
 const COLLATERAL_ERROR = "Couldn't fetch Collateral data. Service down";
 const COLLATERAL_SUCCESS_MSG = 'Successfully saved in TKAMS';
@@ -22,6 +22,12 @@ const REASONABLE_EFFORT_HISTORY_FETCH_ERROR = "Couldn't fetch Reasonable effort 
 const DOC_UNLINK_ERROR = " Couldn't unlink the document";
 const DEFECT_REASON_ERROR = "Couldn't fetch Defect Reason data. Service down";
 const DOC_REVIEW_STATUS_ERROR = "Couldn't fetch Doc Review Status data. Service down";
+const HARDHSIP = 'Hardship';
+const HARDSHIP_AFFIDAVIT_TITLE = 'Hardship Affidavit';
+const HARDSHIP_DIALOG_MSG = 'Are you sure you want to discard the unsaved changes?';
+const DECEASED_BORROWER = 'ESTATE OF';
+const HARDSHIP_SUCCES_MSG = 'Hardship details saved successfully.';
+const FETCH_ERROR = 'Error while fetching Data.Please try after sometime';
 
 module.exports = {
   CHECKLIST,
@@ -48,4 +54,10 @@ module.exports = {
   REASONABLE_EFFORT_FETCH_ERROR,
   DOC_UNLINK_ERROR,
   DOC_REVIEW_STATUS_ERROR,
+  HARDHSIP,
+  HARDSHIP_AFFIDAVIT_TITLE,
+  HARDSHIP_DIALOG_MSG,
+  DECEASED_BORROWER,
+  HARDSHIP_SUCCES_MSG,
+  FETCH_ERROR,
 };

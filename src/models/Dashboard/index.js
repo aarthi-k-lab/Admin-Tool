@@ -27,11 +27,13 @@ const PENDING_BOOKING = 'Pending Booking';
 const INVSET = 'INVSET';
 const SEARCH_LOAN = 'SEARCH_LOAN';
 const DOCGEN_GOBACK = 'DOCGEN_GOBACK';
+const DOCSIN_GOBACK = 'DOCSIN_GOBACK';
 const MLSTN_PAGE = 'MLSTN_PAGE';
 const GNRL_CHKLST_SKIP_VALIDATION_GROUPS = [INVSET];
 const DISABLE_VALIDATION_GROUPS = [LOAN_ACTIVITY, POSTMODSTAGER, UWSTAGER, ALL_STAGER, INVSET];
 const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INVSET];
 const SECONDLOOK = 'SECONDLOOK';
+const USERSKILLS = 'USERSKILLS';
 const MILESTONE_ACTIVITY = 'MA';
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
@@ -149,6 +151,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: USERSKILLS,
+    task: 'USER SKILLS',
+    taskCode: 'USERSKILLS',
+    path: '/user-skills',
+    showAssignUnassign: true,
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -168,6 +177,7 @@ const GROUPS = {
   '/fhlmcBulkOrder': FHLMCRESOLVE,
   '/investor-settlement': INVSET,
   '/second-look': SECONDLOOK,
+  '/user-skills': USERSKILLS,
 };
 
 function getTitle(location) {
@@ -194,6 +204,8 @@ function getTitle(location) {
       return 'INVESTOR SETTLEMENT';
     case '/second-look':
       return 'SECOND LOOK';
+    case '/user-skills':
+      return 'USER SKILLS';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -245,10 +257,12 @@ const DashboardModel = {
   PDD,
   INVSET,
   DOCGEN_GOBACK,
+  DOCSIN_GOBACK,
   MLSTN_PAGE,
   checkSkipValidation,
   checkShowValidation,
   checkDisableValidateButton,
+  USERSKILLS,
   SECONDLOOK,
   MILESTONE_ACTIVITY,
 };

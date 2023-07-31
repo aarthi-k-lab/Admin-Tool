@@ -1,0 +1,15 @@
+.btns-container {
+  margin-top: 1.2rem;
+}
+
+.prev-btn {
+  float: left;
+}
+
+.nxt-btn {
+  float: right;
+}
+
+.table-container {
+  max-height: 90% !important;
+}

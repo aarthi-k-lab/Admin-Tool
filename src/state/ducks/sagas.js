@@ -10,8 +10,9 @@ import { combinedSaga as commentsSaga } from './comments/sagas';
 import { combinedSaga as incomeCalculatorSaga } from './income-calculator/sagas';
 import { combinedSaga as milestoneActivitySaga } from './milestone-activity/sagas';
 import { combinedSaga as widgetsSaga } from './widgets/sagas';
+import { combinedSaga as lsamsNotesSaga } from './lsams-notes/sagas';
 import { combinedSaga as documentChecklistSaga } from './document-checklist/sagas';
-
+import { combinedSaga as userSkillsSaga } from './user-skills/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -26,6 +27,8 @@ export default function* rootSaga() {
     incomeCalculatorSaga(),
     milestoneActivitySaga(),
     widgetsSaga(),
+    lsamsNotesSaga(),
     documentChecklistSaga(),
+    userSkillsSaga(),
   ]);
 }

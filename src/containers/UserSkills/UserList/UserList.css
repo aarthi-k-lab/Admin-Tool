@@ -1,0 +1,30 @@
+.searchStyle {
+  background-color: rgb(242, 240, 240) !important;
+  margin-left: 10px !important;
+  margin-top: 0.7rem !important;
+  height: 3rem !important;
+  border-radius: 6px;
+  padding-left: 200px;
+}
+
+.searchStyle input {
+  color: black !important;
+  margin-right: 4rem;
+  margin-top: 0.3rem;
+}
+
+.search-icon {
+  margin-top: 4px !important;
+  margin-left: 5px !important;
+}
+
+.filterStyle {
+  background-color: rgb(242, 240, 240) !important;
+  margin-top: 0.7rem !important;
+  height: 3rem !important;
+  width: 30px;
+}
+
+.divider {
+  margin-top: 10px !important;
+}

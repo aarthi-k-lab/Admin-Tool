@@ -746,7 +746,7 @@ class Checklist extends React.PureComponent {
             )
           }
         </Grid>
-        <div style={{ padding: !incomeCalcInProgress && isFinanceChecklistOrForms === 'sla-rules' ? '0 .2rem 0 21.1rem' : '' }} styleName={incomeCalcInProgress && !isFinanceChecklistOrForms === 'Fico-checklist' ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
+        <div style={{ padding: !incomeCalcInProgress && isFinanceChecklistOrForms === 'sla-rules' ? '0 .2rem 0 0.1rem' : '' }} styleName={incomeCalcInProgress && !isFinanceChecklistOrForms === 'Fico-checklist' ? 'incomeCalc-inprogress' : 'scrollable-checklist'}>
           {isFinanceChecklist ? checklistElements
             : (
               <Paper

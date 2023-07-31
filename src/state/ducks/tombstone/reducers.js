@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import LoanTombstone from 'models/LoanTombstone';
 import {
   LOADING_TOMBSTONE_DATA,
   ERROR_LOADING_TOMBSTONE_DATA,
@@ -25,6 +26,15 @@ import {
   SET_REASONABLE_EFFORT_HISTORY_DATA,
   SET_CFPBTABLE_DATA,
   SET_UPDATED_ASSUMPTORS,
+  SET_HARDSHIP_DATA,
+  SET_UPDATED_BORR_HARDSHIP_DATA,
+  SAVE_HARDSHIP_SOURCE_DROPDOWN,
+  SAVE_HARDSHIP_TYPE_DROPDOWN,
+  SAVE_SEX_DROPDOWN,
+  SAVE_RACE_DROPDOWN,
+  SAVE_ETHNICITY_DROPDOWN,
+  HARDSHIP_DEFAULT_VALUE,
+  SET_HARDSHIP_TYPE,
 } from './types';
 
 const loadingState = {
@@ -286,6 +296,88 @@ const reducer = (state = loadingState, action) => {
         data: viewTypeData.loanViewData,
       };
     }
+    case SET_HARDSHIP_DATA: {
+      const hardshipData = JSON.parse(JSON.stringify(action.payload));
+      return {
+        ...state,
+        hardshipData,
+      };
+    }
+
+    case SET_UPDATED_BORR_HARDSHIP_DATA: {
+      const data = action.payload;
+      return {
+        ...state,
+        updatedBorrowerHardshipData: data,
+      };
+    }
+
+    case SAVE_HARDSHIP_SOURCE_DROPDOWN: {
+      const data = action.payload;
+      return {
+        ...state,
+        sourceDropDownValues: data,
+      };
+    }
+
+    case SAVE_HARDSHIP_TYPE_DROPDOWN: {
+      const data = action.payload;
+      return {
+        ...state,
+        typeDropDownValues: data,
+      };
+    }
+
+    case SAVE_ETHNICITY_DROPDOWN: {
+      const data = action.payload;
+      return {
+        ...state,
+        ethnicityDropDownValues: data,
+      };
+    }
+
+    case SAVE_RACE_DROPDOWN: {
+      const data = action.payload;
+      return {
+        ...state,
+        raceDropDownValues: data,
+      };
+    }
+
+    case SAVE_SEX_DROPDOWN: {
+      const data = action.payload;
+      return {
+        ...state,
+        sexDropDownValues: data,
+      };
+    }
+
+    case HARDSHIP_DEFAULT_VALUE: {
+      const { hardshipBeginDate, hardshipEndDate } = action.payload;
+      return {
+        ...state,
+        hardshipBeginDate,
+        hardshipEndDate,
+      };
+    }
+
+    case SET_HARDSHIP_TYPE: {
+      const hardship = action.payload;
+      const { viewTypeData } = state;
+      const updatedModViewData = viewTypeData.modViewData
+        && viewTypeData.modViewData.map((modData) => {
+          if (modData.title === 'Hardship') {
+            return LoanTombstone.generateTombstoneItem('Hardship', hardship);
+          }
+          return modData;
+        });
+      return {
+        ...state,
+        viewTypeData: { ...viewTypeData, modViewData: updatedModViewData },
+        data: updatedModViewData,
+      };
+    }
+
     default: {
       return state;
     }

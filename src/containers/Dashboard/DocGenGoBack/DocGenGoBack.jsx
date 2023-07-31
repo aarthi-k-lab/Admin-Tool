@@ -14,10 +14,11 @@ import PropTypes from 'prop-types';
 import DashboardModel from 'models/Dashboard';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import Grid from '@material-ui/core/Grid';
+import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import {
-  ADDITIONAL_INFO, HISTORY,
+  ADDITIONAL_INFO, HISTORY, LSAMS_NOTES,
 } from '../../../constants/widgets';
 import getTombstonePopup from '../../../components/Tombstone/PopupSelect';
 import { EDITABLE_FIELDS } from '../../../constants/loanInfoComponents';
@@ -156,6 +157,13 @@ class DocGenGoBack extends React.PureComponent {
                     </div>
                     )
                     }
+                    {((R.contains(LSAMS_NOTES, openWidgetList)))
+                    && (
+                    <div styleName="container">
+                      <LSAMSNotesWidget />
+                    </div>
+                    )
+                    }
                   </div>
                 )
 
@@ -166,7 +174,7 @@ class DocGenGoBack extends React.PureComponent {
                     ? <UserNotification level={resultOperation.level} message={resultOperation.status} type="alert-box" />
                     : ''
                 }
-            <WidgetBuilder page="DOCSIN_GOBACK" />
+            <WidgetBuilder page="DOCGEN_GOBACK" />
           </div>
         </div>
       </>

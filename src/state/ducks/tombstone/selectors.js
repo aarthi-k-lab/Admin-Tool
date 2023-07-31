@@ -38,6 +38,24 @@ const getReasonableEffortId = (state) => {
 
 const getTombstoneLoanViewData = state => R.pathOr([], ['tombstone', 'viewTypeData', 'loanViewData'], state);
 
+const getHardshipData = state => R.pathOr([], ['tombstone', 'hardshipData'], state);
+
+const getUpdatedHardshipData = state => R.pathOr([], ['tombstone', 'updatedBorrowerHardshipData'], state);
+
+const getHardshipSourceDropDownData = state => R.pathOr([], ['tombstone', 'sourceDropDownValues'], state);
+
+const getHardshipTypeDropDownData = state => R.pathOr([], ['tombstone', 'typeDropDownValues'], state);
+
+const getHardshipEthnicityDropDownData = state => R.pathOr([], ['tombstone', 'ethnicityDropDownValues'], state);
+
+const getHardshipRaceDropDownData = state => R.pathOr([], ['tombstone', 'raceDropDownValues'], state);
+
+const getHardshipSexDropDownData = state => R.pathOr([], ['tombstone', 'sexDropDownValues'], state);
+
+const getHardshipBeginDate = state => R.pathOr('', ['tombstone', 'hardshipBeginDate'], state);
+
+const getHardshipEndDate = state => R.pathOr('', ['tombstone', 'hardshipEndDate'], state);
+
 const selectors = {
   getTombstoneData,
   hasError,
@@ -57,6 +75,15 @@ const selectors = {
   getCFPBTableData,
   getReasonableEffortId,
   getTombstoneLoanViewData,
+  getHardshipData,
+  getUpdatedHardshipData,
+  getHardshipSourceDropDownData,
+  getHardshipTypeDropDownData,
+  getHardshipEthnicityDropDownData,
+  getHardshipRaceDropDownData,
+  getHardshipSexDropDownData,
+  getHardshipBeginDate,
+  getHardshipEndDate,
 };
 
 export default selectors;

@@ -9,11 +9,11 @@ import {
   BOOKING,
   FINANCIAL_CALCULATOR,
   FHLMC,
+  LSAMS_NOTES,
   // DOCUMENT_CHECKLIST,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
-import FHLMCWidget from './FHLMCWidget';
 import DashboardModel from '../../models/Dashboard';
 
 const {
@@ -30,6 +30,7 @@ const {
   MLSTN_PAGE,
   INVSET,
   SECONDLOOK,
+  DOCSIN_GOBACK,
   BOOKING: BOOKING_GROUP,
 } = DashboardModel;
 
@@ -88,13 +89,22 @@ const widgets = [
   {
     id: FHLMC,
     icon: <img alt="FHLMC" src="/static/img/Freddie_Widget.png" style={{ width: '23px' }} />,
-    component: <FHLMCWidget />,
     visibility: [
       BEUW, DOC_GEN, INVSET,
     ],
     overlay: true,
     children: [COMMENTS],
     dependency: FHLMC,
+  },
+  {
+    id: LSAMS_NOTES,
+    icon: <img alt="LSAMS Notes" src="/static/img/lsams_notes.png" style={{ width: '23px' }} />,
+    visibility: [
+      FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
+      BOOKING_GROUP, SEARCH_LOAN, DOCGEN_GOBACK, DOCSIN_GOBACK,
+      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK,
+    ],
+    children: [COMMENTS],
   },
   /* {
     id: DOCUMENT_CHECKLIST,

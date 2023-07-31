@@ -8,6 +8,7 @@ import './ReasonableEffortViewIcon.css';
 import {
   IconButton,
 } from '@material-ui/core/index';
+import { selectors as dashboardSelectors } from 'ducks/dashboard';
 
 class ReasonableEffortViewIcon extends React.PureComponent {
   constructor(props) {
@@ -24,8 +25,11 @@ class ReasonableEffortViewIcon extends React.PureComponent {
   }
 
   render() {
+    const { group } = this.props;
+    const isMilestoneActivityPage = group === 'MA';
+    const styleName = isMilestoneActivityPage ? 'icon-view-disabled' : 'icon-view';
     return (
-      <IconButton onClick={this.handleCenterPaneView} size="small" styleName="icon-view">
+      <IconButton onClick={this.handleCenterPaneView} size="small" styleName={`${styleName}`}>
         <VisibilityIcon />
       </IconButton>
     );
@@ -34,9 +38,14 @@ class ReasonableEffortViewIcon extends React.PureComponent {
 
 ReasonableEffortViewIcon.propTypes = {
   fetchReasonableEffortData: PropTypes.func.isRequired,
+  group: PropTypes.string.isRequired,
   loanInfoComponent: PropTypes.string.isRequired,
   setChecklistCenterPaneData: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  group: dashboardSelectors.groupName(state),
+});
 
 const mapDispatchToProps = dispatch => ({
   setChecklistCenterPaneData: operations.setChecklistCenterPaneDataOperation(dispatch),
@@ -44,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-export default connect(null, mapDispatchToProps)(ReasonableEffortViewIcon);
+export default connect(mapStateToProps, mapDispatchToProps)(ReasonableEffortViewIcon);

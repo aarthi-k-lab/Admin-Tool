@@ -91,7 +91,7 @@ function getNextPaymentDueDateItem(loanDetails) {
   return generateTombstoneItem('Next Payment Due Date', dateString);
 }
 
-function getModCreatedDate(modInfoDetails) {
+function getModCreatedDate({ modInfoDetails }) {
   let dateString = NA;
   if (modInfoDetails && R.has('createdDate', modInfoDetails)) {
     const date = moment.tz(modInfoDetails.createdDate, 'America/Chicago');
@@ -100,81 +100,110 @@ function getModCreatedDate(modInfoDetails) {
   return generateTombstoneItem('Created Date', dateString);
 }
 
-function getEvalId(modInfoDetails) {
+function getEvalId({ modInfoDetails }) {
   const evalId = getOr('evalId', modInfoDetails, NA);
   return generateTombstoneItem('Eval Id', evalId);
 }
 
-function getWaterfallName(modInfoDetails) {
+function getWaterfallName({ modInfoDetails }) {
   const waterfall = getOr('waterfall', modInfoDetails, NA);
   return generateTombstoneItem('Waterfall', waterfall);
 }
 
-function getModName(modInfoDetails) {
+function getModName({ modInfoDetails }) {
   const evalType = getOr('evalType', modInfoDetails, NA);
   const inflight = getOr('inflightFlag', modInfoDetails, false);
   const mod = inflight ? `${evalType}/Inflight` : evalType;
   return generateTombstoneItem('Eval Type', mod);
 }
 
-function getModificationType(modInfoDetails) {
+function getModificationType({ modInfoDetails }) {
   const modificationType = getOr('resolutionChoiceType', modInfoDetails, NA);
   return generateTombstoneItem('Resolution Choice Type', modificationType);
 }
 
-function getStatus(modInfoDetails) {
+function getStatus({ modInfoDetails }) {
   const status = getOr('status', modInfoDetails, NA);
   return generateTombstoneItem('Status', status);
 }
 
-function getSubStatus(modInfoDetails) {
+function getSubStatus({ modInfoDetails }) {
   const subStatus = getOr('subStatus', modInfoDetails, NA);
   return generateTombstoneItem('Sub Status', subStatus);
 }
 
-function getNpvStatus(modInfoDetails) {
+function getNpvStatus({ modInfoDetails }) {
   const npvStatus = getOr('npvStatus', modInfoDetails, NA);
   return generateTombstoneItem('NPV Status', npvStatus);
 }
 
-function getGrossIncome(modInfoDetails) {
+function getGrossIncome({ modInfoDetails }) {
   const grossIncome = getOr('grossIncome', modInfoDetails, NA);
   return generateTombstoneItem('Gross Income', grossIncome);
 }
 
-function getNetIncome(modInfoDetails) {
+function getNetIncome({ modInfoDetails }) {
   const netIncome = getOr('netIncome', modInfoDetails, NA);
   return generateTombstoneItem('Net Income', netIncome);
 }
 
-function getMonthlyDebt(modInfoDetails) {
+function getMonthlyDebt({ modInfoDetails }) {
   const monthlyDebt = getOr('monthlyDebt', modInfoDetails, NA);
   return generateTombstoneItem('Monthly Debt', monthlyDebt);
 }
 
-function getDispossableIncome(modInfoDetails) {
+function getDispossableIncome({ modInfoDetails }) {
   const disposableIncome = getOr('disposableIncome', modInfoDetails, NA);
   return generateTombstoneItem('Disposable Income', disposableIncome);
 }
 
-function getDebtCoverageRatio(modInfoDetails) {
+function getDebtCoverageRatio({ modInfoDetails }) {
   const debtCoverageRatio = getOr('debtCoverageRatio', modInfoDetails, NA);
   const debtRatio = `${(debtCoverageRatio / 100).toFixed(2)}%`;
   return generateTombstoneItem('Debt Coverage Ratio', debtRatio);
 }
 
-function getCapModId(modInfoDetails) {
+function getCapModId({ modInfoDetails }) {
   const capModId = getOr('capModId', modInfoDetails, NA);
   return generateTombstoneItem('Cap Mod Id', capModId);
 }
 
-function getReasonableEffort(modInfoDetails) {
+function getReasonableEffort({ modInfoDetails }) {
   const reasonableEffort = getOr('reasonableEffortId', modInfoDetails, NA);
   const item = {
     ...generateTombstoneItem('Reasonable Effort', reasonableEffort),
     component: <ReasonableEffortViewIcon loanInfoComponent="Reasonable effort" />,
   };
   return item;
+}
+
+const getHardship = ({ hardshipDetails }) => {
+  const hardship = getOr('hardshipType', hardshipDetails, NA);
+  const item = {
+    ...generateTombstoneItem('Hardship', hardship),
+    component: <EditIcon loanInfoComponent="Hardship" />,
+  };
+  return item;
+};
+
+function getPreviousDisposition({ previousDispositionDetails, taskName }) {
+  if (previousDispositionDetails) {
+    const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
+    const previousDisposition = taskObj
+      ? getOr('stsChangedCode', taskObj, NA) : NA;
+    return generateTombstoneItem('Previous Disposition', previousDisposition);
+  }
+  return generateTombstoneItem('Previous Disposition', NA);
+}
+
+function getLatestHandOffDisposition({ previousDispositionDetails, taskName }) {
+  if (previousDispositionDetails) {
+    const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
+    const previousDisposition = taskObj
+      ? getOr('latestHandOffDispositionCode', taskObj, NA) : NA;
+    return generateTombstoneItem('Latest Handoff Disposition', previousDisposition);
+  }
+  return generateTombstoneItem('Latest Handoff Disposition', NA);
 }
 
 function getFLDD(loanDetails) {
@@ -196,28 +225,6 @@ function getForeclosureSalesDate(loanDetails) {
 function getSuccessorInInterestStatus(loanDetails) {
   const successorInInterestStatus = getOr('successorInInterestStatus', loanDetails, NA);
   return generateTombstoneItem('Successor in Interest Status', successorInInterestStatus);
-}
-
-function getPreviousDisposition(modInfo,
-  previousDispositionDetails, _gn, taskName) {
-  if (previousDispositionDetails) {
-    const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
-    const previousDisposition = taskObj
-      ? getOr('stsChangedCode', taskObj, NA) : NA;
-    return generateTombstoneItem('Previous Disposition', previousDisposition);
-  }
-  return generateTombstoneItem('Previous Disposition', NA);
-}
-
-function getLatestHandOffDisposition(modInfo,
-  previousDispositionDetails, _gn, taskName) {
-  if (previousDispositionDetails) {
-    const taskObj = R.find(R.propEq('taskName', taskName))(previousDispositionDetails);
-    const previousDisposition = taskObj
-      ? getOr('latestHandOffDispositionCode', taskObj, NA) : NA;
-    return generateTombstoneItem('Latest Handoff Disposition', previousDisposition);
-  }
-  return generateTombstoneItem('Latest Handoff Disposition', NA);
 }
 
 function getReasonForDefault(_, loanViewData) {
@@ -285,6 +292,7 @@ function getTombstoneItems(tombstoneData) {
     freddieIndicatorData,
     loanViewData,
     assumptorDetails,
+    hardshipDetails,
   } = tombstoneData;
   const loanViewDataGenerator = [
     getLoanNumber,
@@ -323,6 +331,7 @@ function getTombstoneItems(tombstoneData) {
     getDebtCoverageRatio,
     getCapModId,
     getReasonableEffort,
+    getHardship,
     getPreviousDisposition,
     getLatestHandOffDisposition,
   ];
@@ -337,7 +346,7 @@ function getTombstoneItems(tombstoneData) {
     taskName,
     assumptorDetails));
   if (groupName !== 'SEARCH_LOAN') {
-    data.modViewData = modViewDataGenerator.map(fn => fn(
+    data.modViewData = modViewDataGenerator.map(fn => fn({
       modInfoDetails,
       previousDispositionDetails,
       groupName,
@@ -345,7 +354,8 @@ function getTombstoneItems(tombstoneData) {
       freddieIndicatorData,
       loanDetails,
       assumptorDetails,
-    ));
+      hardshipDetails,
+    }));
   }
 
   return data;
@@ -365,7 +375,15 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     freddieIndicatorData,
     loanViewData,
     assumptorDetails,
+    hardshipDetails,
   } = response;
+  const hardshipBegindate = moment.tz(loanDetails.nextPaymentDueDate, 'America/Chicago');
+  const hardshipBeginDateString = hardshipBegindate.isValid() ? hardshipBegindate.format('YYYY-MM-DD') : NA;
+  let hardshipEndDateString = null;
+  if (!R.isNil(modInfoDetails)) {
+    const hardshipEndDate = moment.tz(modInfoDetails.createdDate, 'America/Chicago');
+    hardshipEndDateString = hardshipEndDate.isValid() ? hardshipEndDate.format('YYYY-MM-DD') : NA;
+  }
   return {
     resolutionId: R.propOr(null, 'modId', modInfoDetails),
     investorHierarchy: R.propOr(null, 'InvestorHierarchy', loanDetails),
@@ -384,8 +402,11 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
         freddieIndicatorData,
         loanViewData,
         assumptorDetails,
+        hardshipDetails,
       }),
     },
+    hardshipEndDate: hardshipEndDateString,
+    hardshipBeginDate: hardshipBeginDateString,
   };
 }
 

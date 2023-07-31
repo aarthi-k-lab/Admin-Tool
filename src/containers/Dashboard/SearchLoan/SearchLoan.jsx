@@ -20,6 +20,8 @@ import { operations as tombstoneOperations, selectors as tombstoneSelectors } fr
 import Grid from '@material-ui/core/Grid';
 import { operations as milestoneOperations } from 'ducks/milestone-activity';
 import { closeWidgets } from 'components/Widgets/WidgetSelects';
+import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
+import { EDITABLE_FIELDS } from 'constants/loanInfoComponents';
 import RFDContent from '../../../components/Tombstone/TombstoneComponents/RFDContent';
 import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent';
 import NoEvalsPage from '../NoEvalsPage';
@@ -31,11 +33,11 @@ import './SearchLoan.css';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import AdditionalInfo from '../../AdditionalInfo/AdditionalInfo';
 import GoBackToSearch from '../../../components/GoBackToSearch/GoBackToSearch';
-import { ADDITIONAL_INFO, HISTORY } from '../../../constants/widgets';
+import { ADDITIONAL_INFO, HISTORY, LSAMS_NOTES } from '../../../constants/widgets';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
-import { EDITABLE_FIELDS } from '../../../constants/loanInfoComponents';
 import Popup from '../../../components/Popup';
 import { COMPLETED, REJECTED, ACTIVE } from '../../../constants/status';
+
 
 class SearchLoan extends React.PureComponent {
   constructor(props) {
@@ -271,7 +273,12 @@ class SearchLoan extends React.PureComponent {
   }
 
   renderSearchResults() {
-    const { searchLoanResult, history, checklistCenterPaneView } = this.props;
+    const {
+      searchLoanResult,
+      history,
+      checklistCenterPaneView,
+      openWidgetList,
+    } = this.props;
     const { isRedirect } = this.state;
     if (isRedirect) {
       history.push(this.redirectPath);
@@ -335,63 +342,66 @@ class SearchLoan extends React.PureComponent {
                   : (
                     <>
                       <div styleName="eval-table-height-limiter">
-                        <h3 style={{ paddingLeft: '2rem' }}> MOD HISTORY </h3>
-                        <h3 style={{ paddingLeft: '2rem' }}> InProgress </h3>
-                        <ReactTable
-                          className="-striped -highlight"
-                          columns={SearchLoan.COLUMN_DATA}
-                          data={activeMods}
-                          getTdProps={(state, rowInfo, column) => ({
-                            onClick: (event) => {
-                              const payload = { loanNumber, ...rowInfo.original, isSearch: true };
-                              if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
-                                event.stopPropagation();
-                              } else {
-                                this.handleRowClick(payload, column);
-                              }
-                            },
-                            style: {
-                              height: activeMods && activeMods.length > 0 ? '3rem' : '6rem',
-                            },
-                          })}
-                          getTheadThProps={() => ({
-                            style: {
-                              'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
-                            },
-                          })}
-                          manual
-                          minRows={1}
-                          showPagination={false}
-                          styleName={activeMods && activeMods.length <= 4 ? 'inprogressTableWithSingleRow' : 'inprogressTable'}
-                        />
-                        <h3 style={{ paddingLeft: '2rem' }}> Completed </h3>
-                        <ReactTable
-                          className="-striped -highlight"
-                          columns={SearchLoan.COLUMN_DATA}
-                          data={completedMods}
-                          getTdProps={(state, rowInfo, column) => ({
-                            onClick: (event) => {
-                              const payload = { loanNumber, ...rowInfo.original, isSearch: true };
-                              if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
-                                event.stopPropagation();
-                              } else {
-                                this.handleRowClick(payload, column);
-                              }
-                            },
-                            style: {
-                              height: completedMods && completedMods.length > 0 ? '3rem' : '6rem',
-                            },
-                          })}
-                          getTheadThProps={() => ({
-                            style: {
-                              'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
-                            },
-                          })}
-                          manual
-                          minRows={1}
-                          showPagination={false}
-                          styleName={completedMods && completedMods.length <= 4 ? 'completedTableWithSingleRow' : 'completedTable'}
-                        />
+                        {R.contains(LSAMS_NOTES, openWidgetList) && <LSAMSNotesWidget />}
+                        <div style={{ display: R.contains(LSAMS_NOTES, openWidgetList) ? 'none' : '' }}>
+                          <h3 style={{ paddingLeft: '2rem' }}> MOD HISTORY </h3>
+                          <h3 style={{ paddingLeft: '2rem' }}> InProgress </h3>
+                          <ReactTable
+                            className="-striped -highlight"
+                            columns={SearchLoan.COLUMN_DATA}
+                            data={activeMods}
+                            getTdProps={(state, rowInfo, column) => ({
+                              onClick: (event) => {
+                                const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                                if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
+                                  event.stopPropagation();
+                                } else {
+                                  this.handleRowClick(payload, column);
+                                }
+                              },
+                              style: {
+                                height: activeMods && activeMods.length > 0 ? '3rem' : '6rem',
+                              },
+                            })}
+                            getTheadThProps={() => ({
+                              style: {
+                                'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
+                              },
+                            })}
+                            manual
+                            minRows={1}
+                            showPagination={false}
+                            styleName={activeMods && activeMods.length <= 4 ? 'inprogressTableWithSingleRow' : 'inprogressTable'}
+                          />
+                          <h3 style={{ paddingLeft: '2rem' }}> Completed </h3>
+                          <ReactTable
+                            className="-striped -highlight"
+                            columns={SearchLoan.COLUMN_DATA}
+                            data={completedMods}
+                            getTdProps={(state, rowInfo, column) => ({
+                              onClick: (event) => {
+                                const payload = { loanNumber, ...rowInfo.original, isSearch: true };
+                                if (rowInfo.original.sourceLabel === 'REMEDY' || column.Header === 'HISTORY') {
+                                  event.stopPropagation();
+                                } else {
+                                  this.handleRowClick(payload, column);
+                                }
+                              },
+                              style: {
+                                height: completedMods && completedMods.length > 0 ? '3rem' : '6rem',
+                              },
+                            })}
+                            getTheadThProps={() => ({
+                              style: {
+                                'font-weight': 'bold', 'font-size': '10px', color: '#9E9E9E', 'text-align': 'left',
+                              },
+                            })}
+                            manual
+                            minRows={1}
+                            showPagination={false}
+                            styleName={completedMods && completedMods.length <= 4 ? 'completedTableWithSingleRow' : 'completedTable'}
+                          />
+                        </div>
                       </div>
                     </>
                   )}

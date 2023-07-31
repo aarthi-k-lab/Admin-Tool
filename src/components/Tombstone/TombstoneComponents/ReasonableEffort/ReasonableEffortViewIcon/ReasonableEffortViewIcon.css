@@ -1,7 +1,14 @@
-.icon-view {
+  .icon-view {
     padding: 5px 10px!important;
     margin-bottom: 3px !important;
   }
+
+  .icon-view-disabled {
+    padding: 5px 10px!important;
+    margin-bottom: 3px !important;
+    pointer-events: none;
+    opacity: 0.5;
+  } 
   .icon-view svg{
     width: 1.5rem;
   }

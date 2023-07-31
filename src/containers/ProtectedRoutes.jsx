@@ -36,6 +36,7 @@ import CoviusBulkOrder from './Dashboard/Covius/CoviusBulkOrder';
 import FhlmcResolve from './Dashboard/FhlmcResolve/FhlmcResolve';
 import Processor from './Dashboard/Processor/Processor';
 import MilestoneActivity from './LoanActivity/MilestoneActivity';
+import UserSkills from './UserSkills/UserSkills';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -298,6 +299,16 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+
+  renderUserSkillsPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasUserSkillsAccess(groups)
+        ? <UserSkills group={DashboardModel.USERSKILLS} />
+        : <Redirect to="/unauthorized?error=USERSKILLS_ACCESS_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
     const { expandView, location, user } = this.props;
@@ -336,6 +347,8 @@ class ProtectedRoutes extends React.Component {
           <Route path="/postmodstager" render={() => <Dashboard group={DashboardModel.POSTMODSTAGER} />} />
           <Route path="/uwstager" render={() => <Dashboard group={DashboardModel.UWSTAGER} />} />
           <Route path="/second-look" render={this.renderSecondLookPageRoute} />
+          <Route path="/user-skills" render={() => <UserSkills group={DashboardModel.USERSKILLS} />} />
+          {/* <Route path="/user-skills" render={this.renderUserSkillsPageRoute} /> */}
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

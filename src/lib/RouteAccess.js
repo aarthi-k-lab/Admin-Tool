@@ -148,6 +148,16 @@ const SECOND_LOOK = {
   groups: ['secondlook', 'secondlook-mgr'],
 };
 
+
+// User Skills
+
+const USER_SKILLS = {
+  path: '/user-skills',
+  name: 'User Skills',
+  img: '/static/img/user_skills.svg',
+  groups: ['proc', 'proc-mgr', 'allaccess'],
+};
+
 const links = [
   managerDashboard,
   docProcessor,
@@ -168,6 +178,7 @@ const links = [
   milestoneActivity,
   INVESTOR_SETTLEMENT,
   SECOND_LOOK,
+  USER_SKILLS,
 ];
 
 
@@ -272,6 +283,10 @@ function hasSecondLookAccess(groups) {
   return hasGroup(SECOND_LOOK.groups, groups);
 }
 
+function hasUserSkillsAccess(groups) {
+  return hasGroup(USER_SKILLS.groups, groups);
+}
+
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager', 'rpsstager-mgr', 'rpsstager'];
@@ -311,4 +326,5 @@ module.exports = {
   hasMilestoneActivityAccess,
   hasInvestorSettlementAccess,
   hasSecondLookAccess,
+  hasUserSkillsAccess,
 };

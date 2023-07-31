@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import AdditionalInfo from 'containers/AdditionalInfo';
+import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
 import { selectors as dashboardSelectors, operations as dashboardOperations } from 'ducks/dashboard';
+import { selectors as widgetsSelectors } from 'ducks/widgets';
 import MilestoneActivity from './MilestoneActivity';
 import TrialHeaderAndDetails from './TrialHeaderAndDetails';
 import { selectors, operations } from '../../state/ducks/dashboard';
 import './LoanActivity.css';
-import { ADDITIONAL_INFO, HISTORY } from '../../constants/widgets';
+import { ADDITIONAL_INFO, HISTORY, LSAMS_NOTES } from '../../constants/widgets';
 import WidgetBuilder from '../../components/Widgets/WidgetBuilder';
 import getTombstonePopup from '../../components/Tombstone/PopupSelect';
 import SweetAlertBox from '../../components/SweetAlertBox/SweetAlertBox';
@@ -107,6 +109,12 @@ class LoanActivity extends React.PureComponent {
           <MilestoneActivity />
         )
         }
+        {R.contains(LSAMS_NOTES, openWidgetList) && (
+          <div style={{ width: '98%' }}>
+            <LSAMSNotesWidget />
+          </div>
+        )
+        }
         {EDITABLE_FIELDS.includes(checklistCenterPaneView)
           ? (
             <>
@@ -117,7 +125,8 @@ class LoanActivity extends React.PureComponent {
           : (
             <>
               {!(R.contains(ADDITIONAL_INFO, openWidgetList)
-                || R.contains(HISTORY, openWidgetList)) && (
+                || R.contains(HISTORY, openWidgetList)
+                || R.contains(LSAMS_NOTES, openWidgetList)) && (
                   <Grid alignItems="stretch" container styleName="loan-activity">
                     <Grid item styleName="status-details-parent" xs={9}>
                       {renderComponent}
@@ -150,6 +159,7 @@ const mapStateToProps = state => ({
   evalId: selectors.evalId(state),
   LoanNumber: selectors.loanNumber(state),
   inProgress: selectors.inProgress(state),
+  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
   trialHeader: selectors.getTrialHeader(state),
   trialsDetail: selectors.getTrialsDetail(state),
   trialsLetter: selectors.getTrialLetter(state),

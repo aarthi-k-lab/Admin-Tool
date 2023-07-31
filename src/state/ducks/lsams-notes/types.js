@@ -1,0 +1,9 @@
+const FETCH_COMMENTS_CODE = 'app/lsams-notes/FETCH_COMMENTS_CODE';
+const SET_COMMENTS_CODE = 'app/lsams-notes/SET_COMMENTS_CODE';
+const CLEAR_COMMENTS_CODE = 'app/lsams-notes/CLEAR_COMMENTS_CODE';
+
+export {
+  FETCH_COMMENTS_CODE,
+  SET_COMMENTS_CODE,
+  CLEAR_COMMENTS_CODE,
+};

@@ -82,6 +82,15 @@ function MUITable(props) {
     const checkboxBoolSwitch = event.target.checked !== undefined
       ? Boolean(event.target.checked)
       : !currentTableFilter[checkState][checkValue];
+
+    const filter = document.getElementById(`filter-${stateRef}`);
+
+    if (filter.src.match('.png')) {
+      filter.src = '/static/img/filter.svg';
+    } else {
+      filter.src = '/static/img/filter.png';
+    }
+
     if (
       currentTableFilter[checkState]
       && currentTableFilter[checkState][checkValue] !== undefined
@@ -215,6 +224,7 @@ function MUITable(props) {
                           <IconButton>
                             <img
                               alt="filter"
+                              id={`filter-${item.name}`}
                               src="/static/img/filter.png"
                               style={{
                                 color: handleCheckboxFilterColorCode(item.name,
