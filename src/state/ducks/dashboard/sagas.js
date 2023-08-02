@@ -633,6 +633,19 @@ function* fetchMilestoneData(milestone, evalId, taskId) {
 }
 
 
+function* fetchBorrowers() {
+  try {
+    const loanNumber = yield select(selectors.loanNumber);
+    const borrowers = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
+    if (borrowers) {
+      yield put({ type: SET_BORROWER_DATA, payload: borrowers });
+    }
+  } catch (e) {
+    yield put({ type: SET_BORROWER_DATA, payload: [] });
+  }
+}
+
+
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   const { taskId: bookingTaskId } = evalDetails;
@@ -648,6 +661,7 @@ function* selectEval(searchItem) {
   yield put(widgetActions.resetWidgetData());
   yield put(docChecklistActions.resetDocChecklistData());
   yield put(checklistActions.clearFicoAssetData());
+  yield call(fetchBorrowers);
   if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
     yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
