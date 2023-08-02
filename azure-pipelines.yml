@@ -27,4 +27,4 @@ extends:
   parameters:
     dryrun: ${{ parameters.dryrun }}
     pool: Reverse
-    scanType: nonCompliant
+    scanType: arbExempt
