@@ -17,6 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import EndShift from 'models/EndShift';
 import SuccessDialogBox from './SuccessDialog';
 import {
   selectors,
@@ -57,6 +58,7 @@ function SendToDocsInDialog(props) {
     taskId,
     evalId,
     docsInResp,
+    onEndShift,
   } = props;
 
   const [reason, setReason] = useState('');
@@ -83,7 +85,8 @@ function SendToDocsInDialog(props) {
   const handleRedirect = () => {
     disableSendToDocsIn(false);
     closeDialog();
-    history.push('/docs-in');
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
+    history.push('/special-loan');
   };
   return (
     <>
@@ -214,6 +217,7 @@ SendToDocsInDialog.propTypes = {
   initiateBookingSendToDocsIn: PropTypes.func,
   loader: PropTypes.bool.isRequired,
   loanNumber: PropTypes.number.isRequired,
+  onEndShift: PropTypes.func.isRequired,
   processId: PropTypes.string.isRequired,
   redirectDialog: PropTypes.bool.isRequired,
   taskId: PropTypes.number.isRequired,
@@ -223,6 +227,7 @@ SendToDocsInDialog.propTypes = {
 const mapDispatchToProps = dispatch => ({
   disableSendToDocsIn: operations.toggleSendToDocsInOperation(dispatch),
   initiateBookingSendToDocsIn: operations.initiateBookingOperation(dispatch),
+  onEndShift: operations.onEndShift(dispatch),
 });
 
 const mapStateToProps = state => ({
