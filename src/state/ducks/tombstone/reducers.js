@@ -367,7 +367,7 @@ const reducer = (state = loadingState, action) => {
       const updatedModViewData = viewTypeData.modViewData
         && viewTypeData.modViewData.map((modData) => {
           if (modData.title === 'Hardship') {
-            return LoanTombstone.generateTombstoneItem('Hardship', hardship);
+            return { ...modData, ...LoanTombstone.generateTombstoneItem('Hardship', hardship) };
           }
           return modData;
         });
