@@ -6,20 +6,26 @@ import getters from 'models/Headers';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import * as R from 'ramda';
 import extName from 'ext-name';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import TableContainer from '@material-ui/core/TableContainer';
 import { connect } from 'react-redux';
 import { selectors, operations } from 'ducks/dashboard';
-import { selectors as widgetsSelectors } from 'ducks/widgets';
+import ResultStatus from 'components/ResultStatus';
 import { PropTypes } from 'prop-types';
 import Loader from 'components/Loader/Loader';
-import FHLMCAccordian from './FHLMCAccordian';
 import { EXCEL_FORMATS } from '../../../constants/common';
 import {
   REQUEST_TYPE_REQ, FILE_UPLOAD_REQ, CANCELLATION_REASON, REQ_PRCS,
-  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES, ENABLE_ODM_RERUN, FHLMC,
+  COMMENTS_REASON, COMMENT_EXCEPTON_REQUEST_TYPES, ENABLE_ODM_RERUN,
 } from '../../../constants/fhlmc';
 import './FhlmcResolve.css';
 
@@ -186,8 +192,53 @@ class FHLMCDataInsight extends React.PureComponent {
 
   renderWidgetContent = (selectedRequestType, resultData) => {
     if (!R.isNil(resultData) && !R.isEmpty(resultData)) {
+      const loan = resultData[0];
       return (
-        <FHLMCAccordian loanData={resultData} selectedRequestType={selectedRequestType} />
+        <Paper styleName="tablealign">
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell> Case ID</TableCell>
+                  <TableCell>Eval Id</TableCell>
+                  <TableCell>Loan Number</TableCell>
+                  <TableCell>Request Type</TableCell>
+                  <TableCell>Result</TableCell>
+                  {loan.message ? (
+                    <TableCell>
+                      Message
+                    </TableCell>
+                  ) : null}
+
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow key={loan.resolutionId}>
+                  <TableCell>
+                    {loan.resolutionId}
+                  </TableCell>
+                  <TableCell>{loan.evalId}</TableCell>
+                  <TableCell>{loan.servicerLoanIdentifier || loan.loanNumber}</TableCell>
+                  {selectedRequestType ? (
+                    <TableCell>
+                      {selectedRequestType}
+                    </TableCell>
+                  ) : (
+                    <TableCell />
+                  )}
+                  <TableCell styleName="align-selector">
+                    <ResultStatus cellProps={{ original: { isValid: loan.isValid } }} />
+                  </TableCell>
+                  {loan.message ? (
+                    <TableCell styleName="table-content-align">
+                      {loan.message}
+                    </TableCell>
+                  ) : null}
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       );
     }
     return null;
@@ -239,19 +290,15 @@ class FHLMCDataInsight extends React.PureComponent {
     } = this.state;
     const {
       resultData, submitCases, selectedRequestType, isWidget, isAssigned, disableSubmitToFhlmc,
-      enableODMRerun, openWidgetList,
+      enableODMRerun,
     } = this.props;
-    const isFhlmcWidget = R.contains(FHLMC, openWidgetList);
     return (
       <Grid container direction="column">
-        <div styleName="requestCategoryDropdown">
-          <span>
-            {'History'}
-          </span>
-        </div>
-        {(isWidget)
-          ? this.renderWidgetContent(selectedRequestType, resultData, isWidget)
-          : this.renderCustomTable(resultData, submitCases, showMessageProp, selectedRequestType)}
+        <Grid item>
+          {(isWidget)
+            ? this.renderWidgetContent(selectedRequestType, resultData, isWidget)
+            : this.renderCustomTable(resultData, submitCases, showMessageProp, selectedRequestType)}
+        </Grid>
         <Grid item>
           <Grid
             alignItems="center"
@@ -260,39 +307,36 @@ class FHLMCDataInsight extends React.PureComponent {
             style={{ marginTop: '1rem' }}
             xs={12}
           >
-            {!isFhlmcWidget && (
-              <>
-                <Grid item>
-                  {isWidget && (
-                  <CustomButton
-                    color="primary"
-                    disabled={!ENABLE_ODM_RERUN.includes(selectedRequestType) || !enableODMRerun
-                      || !isAssigned || R.isEmpty(selectedRequestType)}
-                    extraStyle="submit"
-                    hasTooltip={false}
-                    onClick={this.submitForODMRerun}
-                    title="RE-RUN ODM"
-                    variant="contained"
-                  />
-                  )}
-                </Grid>
-                <Grid item>
-                  {showSubmitFhlmc && (
-                  <CustomButton
-                    color="primary"
-                    disabled={disableSubmitToFhlmc
-                        || !isAssigned || R.isEmpty(selectedRequestType)}
-                    extraStyle="submit"
-                    hasTooltip={false}
-                    onClick={this.submitToFhlmc}
-                    title="SUBMIT TO FHLMC"
-                    variant="contained"
-                  />
-                  )}
-                </Grid>
-              </>
-            )}
-
+            <Grid item>
+              {isWidget && (
+              <CustomButton
+                color="primary"
+                disabled={!ENABLE_ODM_RERUN.includes(selectedRequestType) || !enableODMRerun
+                  || !isAssigned || R.isEmpty(selectedRequestType)}
+                extraStyle="submit"
+                hasTooltip={false}
+                onClick={this.submitForODMRerun}
+                title="RE-RUN ODM"
+                variant="contained"
+              />
+              )
+              }
+            </Grid>
+            <Grid item>
+              {showSubmitFhlmc && (
+                <CustomButton
+                  color="primary"
+                  disabled={disableSubmitToFhlmc
+                    || !isAssigned || R.isEmpty(selectedRequestType)}
+                  extraStyle="submit"
+                  hasTooltip={false}
+                  onClick={this.submitToFhlmc}
+                  title="SUBMIT TO FHLMC"
+                  variant="contained"
+                />
+              )
+              }
+            </Grid>
             {
               !isWidget && (
                 <Grid item>
@@ -322,22 +366,19 @@ class FHLMCDataInsight extends React.PureComponent {
                 </Grid>
               )
             }
-            {!isFhlmcWidget && (
-              <Grid item>
-                <CustomButton
-                  color="primary"
-                  disabled={!isAssigned}
-                  extraStyle={isWidget ? 'widgetDwnld' : ''}
-                  hasTooltip
-                  onClick={this.handleDownload}
-                  startIcon={<GetAppIcon style={{ height: '1.5rem' }} />}
-                  title="DOWNLOAD EXCEL TO VERIFY"
-                  tooltipMessage="Create an excel file with the data from this tab for your review."
-                  variant="contained"
-                />
-              </Grid>
-            )}
-
+            <Grid item>
+              <CustomButton
+                color="primary"
+                disabled={!isAssigned}
+                extraStyle={isWidget ? 'widgetDwnld' : ''}
+                hasTooltip
+                onClick={this.handleDownload}
+                startIcon={<GetAppIcon style={{ height: '1.5rem' }} />}
+                title="DOWNLOAD EXCEL TO VERIFY"
+                tooltipMessage="Create an excel file with the data from this tab for your review."
+                variant="contained"
+              />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -348,9 +389,8 @@ class FHLMCDataInsight extends React.PureComponent {
 FHLMCDataInsight.defaultProps = {
   onSubmitToFhlmcRequest: () => { },
   onProcessFile: () => { },
-  odmRerunOperation: () => { },
+  odmRerunOperation: () => {},
   openSweetAlert: () => { },
-  openWidgetList: [],
   resultData: [],
   selectedRequestType: '',
   portfolioCode: '',
@@ -374,7 +414,6 @@ FHLMCDataInsight.propTypes = {
   onProcessFile: PropTypes.func,
   onSubmitToFhlmcRequest: PropTypes.func,
   openSweetAlert: PropTypes.func,
-  openWidgetList: PropTypes.arrayOf(PropTypes.string),
   portfolioCode: PropTypes.string,
   resultData: PropTypes.arrayOf({
     caseId: PropTypes.string,
@@ -390,7 +429,6 @@ const mapStateToProps = state => ({
   isAssigned: selectors.isAssigned(state),
   disableSubmitToFhlmc: selectors.disableSubmittofhlmc(state),
   enableODMRerun: selectors.getODMRetryEligibility(state),
-  openWidgetList: widgetsSelectors.getOpenWidgetList(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -403,4 +441,3 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FHLMCDataInsight);
-export { CustomButton };

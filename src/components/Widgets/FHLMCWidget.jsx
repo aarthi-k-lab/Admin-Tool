@@ -6,27 +6,23 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
-import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import SweetAlertBox from 'components/SweetAlertBox';
 import Typography from '@material-ui/core/Typography';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from '@material-ui/core/Tooltip';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import HistoryIcon from '@material-ui/icons/History';
 import TextField from '@material-ui/core/TextareaAutosize';
 import './FHLMCWidget.css';
 import * as R from 'ramda';
 import { PropTypes } from 'prop-types';
 import CustomTable from 'components/CustomTable';
 import getters from 'models/Headers';
-import {
-  Button, FormControlLabel, FormLabel, Radio, RadioGroup,
-} from '@material-ui/core/index';
 import FHLMCDataInsight from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsight';
-import FHLMCDataInsightDownload from '../../containers/Dashboard/FhlmcResolve/FHLMCDataInsightDownload';
 import {
   ELIGIBLE, INELIGIBLE, NOCALL, FHLMC, EXCEPTION_TOGGLE, COMMENT_EXCEPTON_REQUEST_TYPES,
-  EXCEPTION_REQUEST, CANCELLATION_REASON, REQ_PRCS,
-  COMMENTS_REASON, ENABLE_ODM_RERUN,
+  EXCEPTION_REQUEST,
 } from '../../constants/fhlmc';
 import DialogBox from '../DialogBox';
 
@@ -38,87 +34,33 @@ const eligibilityIndicator = {
   'Exception Request': EXCEPTION_REQUEST,
 };
 
-function CustomButton(props) {
-  const {
-    onClick, title, hasTooltip, tooltipMessage, extraStyle, ...other
-  } = props;
-  return (
-    <div styleName="btns-container">
-      <Button
-        className="material-ui-button"
-        onClick={onClick}
-        styleName={extraStyle}
-        {...other}
-      >
-        {title}
-      </Button>
-      {hasTooltip && (
-        <Tooltip
-          placement="top"
-          title={(
-            <Typography>
-              {tooltipMessage}
-            </Typography>
-          )}
-        >
-          <ErrorIcon styleName="cstmBtnErrSvg" />
-        </Tooltip>
-      )}
-    </div>
-  );
-}
-
-function compareButtonOrder(a, b) {
-  const order = ['Cancel Request', 'Draft Request', 'Trial Period Approve Request', 'Workout Approve Request', 'Enquiry Call', 'Settlement Request'];
-  const indexA = order.indexOf(a.displayText);
-  const indexB = order.indexOf(b.displayText);
-  if (indexA === -1) return 1;
-  if (indexB === -1) return -1;
-  return indexA - indexB;
-}
-
-CustomButton.defaultProps = {
-  onClick: () => { },
-  title: '',
-  hasTooltip: false,
-  tooltipMessage: '',
-  extraStyle: '',
-};
-
-CustomButton.propTypes = {
-  extraStyle: PropTypes.string,
-  hasTooltip: PropTypes.bool,
-  onClick: PropTypes.func,
-  title: PropTypes.string,
-  tooltipMessage: PropTypes.string,
-};
-
 class FHLMCWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSubmitFhlmc: false,
+      isOpen: false,
     };
     this.handleRequestType = this.handleRequestType.bind(this);
     this.renderCategoryDropDown = this.renderCategoryDropDown.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
     this.getModHistory = this.getModHistory.bind(this);
     this.handleCancelReasons = this.handleCancelReasons.bind(this);
     this.handleExceptionReviewIndicator = this.handleExceptionReviewIndicator.bind(this);
     this.handleCommentsChange = this.handleCommentsChange.bind(this);
     this.handleCaseId = this.handleCaseId.bind(this);
     this.onResetClick = this.onResetClick.bind(this);
-    this.submitForODMRerun = this.submitForODMRerun.bind(this);
-    this.submitToFhlmc = this.submitToFhlmc.bind(this);
   }
 
   componentDidMount() {
     const { populateInvestorDropdown } = this.props;
     populateInvestorDropdown(FHLMC);
-    this.setState({ showSubmitFhlmc: true });
   }
 
   onResetClick = () => {
     const { onResetData, dismissUserNotification } = this.props;
+    this.setState({
+      isOpen: false,
+    });
     onResetData();
     dismissUserNotification();
   }
@@ -177,7 +119,7 @@ class FHLMCWidget extends Component {
     const isCommentsValid = R.equals(exceptionReviewRequestIndicator, 'Yes');
     return (isCommentsValid) ? (
       <div>
-        <div styleName="requestCategoryDropdown">
+        <div styleName="exception-indicator-comments">
           <span>
             {'Comments'}
           </span>
@@ -211,22 +153,25 @@ class FHLMCWidget extends Component {
     ) : null;
   }
 
-
-  getExceptionRadioBtns() {
+  getExceptionDropdown() {
     const { exceptionReviewRequestIndicator } = this.props;
     return (
-      <RadioGroup aria-label="position" defaultValue={exceptionReviewRequestIndicator} name="position" onChange={this.handleExceptionReviewIndicator} row>
-        {EXCEPTION_TOGGLE && EXCEPTION_TOGGLE.map(item => (
-          <FormControlLabel
-            key={item}
-            control={<Radio color="primary" />}
-            label={item}
-            labelPlacement="end"
-            styleName="requestCategoryDropdown"
-            value={item}
-          />
-        ))}
-      </RadioGroup>
+      <FormControl variant="outlined">
+        <Select
+          id="ExceptionReviewDropDown"
+          input={<OutlinedInput name="selectedExceptionReview" />}
+          label="exceptionRequestReviewValue"
+          onChange={this.handleExceptionReviewIndicator}
+          styleName="drop-down-select"
+          value={exceptionReviewRequestIndicator}
+        >
+          {EXCEPTION_TOGGLE && EXCEPTION_TOGGLE.map(item => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     );
   }
 
@@ -237,9 +182,9 @@ class FHLMCWidget extends Component {
     return (isExceptionReviewValid) ? (
       <div>
         <div>
-          <div styleName="requestCategoryDropdown">
+          <div styleName="exception-indicator">
             <span>
-              {'Exception Review'}
+              {'Exception Review Indicator'}
             </span>
             <span styleName="errorIcon">
               <Tooltip
@@ -256,7 +201,7 @@ class FHLMCWidget extends Component {
               </Tooltip>
             </span>
           </div>
-          {this.getExceptionRadioBtns()}
+          {this.getExceptionDropdown()}
         </div>
         {this.getExceptionReviewComments()}
       </div>
@@ -267,18 +212,35 @@ class FHLMCWidget extends Component {
     const { cancellationReasons, requestTypeData, selectedCancellationReason } = this.props;
     return (cancellationReasons && requestTypeData && R.equals(requestTypeData, 'CXLReq')
       ? (
-        <div styleName="radio-container">
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Cancellation Reason</FormLabel>
-            <RadioGroup aria-label="gender" name="gender1" onChange={this.handleCancelReasons} value={selectedCancellationReason}>
+        <div>
+          <FormControl styleName="fhlmcDropDown" variant="outlined">
+            <InputLabel styleName={!R.isEmpty(selectedCancellationReason) ? 'inputLblSelected' : 'inputLbl'}>Please Select Cancelation Reason</InputLabel>
+            <Select
+              id="cancellationReason"
+              input={<OutlinedInput name="selectedReason" />}
+              label="Reason"
+              onChange={this.handleCancelReasons}
+              styleName="drop-down-select"
+              value={selectedCancellationReason}
+            >
               {cancellationReasons && cancellationReasons.map(item => (
-                <FormControlLabel
-                  control={<Radio />}
-                  label={item.displayText}
-                  value={item.requestType}
-                />
+                <MenuItem key={item.requestType} value={item.requestType}>
+                  <Tooltip
+                    arrow
+                    placement="left"
+                    title={(
+                      <Typography>
+                        {item.tooltip}
+                      </Typography>
+                    )}
+                  >
+                    <span>
+                      {item.displayText}
+                    </span>
+                  </Tooltip>
+                </MenuItem>
               ))}
-            </RadioGroup>
+            </Select>
           </FormControl>
         </div>
       ) : null
@@ -308,90 +270,64 @@ class FHLMCWidget extends Component {
     );
   }
 
-  submitForODMRerun = () => {
-    const { odmRerunOperation } = this.props;
-    odmRerunOperation();
-  }
-
-
   renderCategoryDropDown = () => {
-    const {
-      investorEvents, groupName, requestTypeData, isAssigned,
-      enableODMRerun,
-    } = this.props;
+    const { investorEvents, groupName, requestTypeData } = this.props;
     const requestType = R.project(['requestType', 'displayText'], investorEvents);
     const handledRequestType = R.equals('INVSET', groupName) ? requestType : R.reject(e => e.requestType === 'SETReq')(requestType);
-    const sortedHandledRequestType = handledRequestType.sort(compareButtonOrder);
-    const { showSubmitFhlmc } = this.state;
-
-    const { exceptionReviewComments, exceptionReviewRequestIndicator } = this.props;
-    const isCommentsValid = R.equals(exceptionReviewRequestIndicator, 'Yes');
-
+    const { isOpen } = this.state;
     return (
       <>
-        <div styleName="request-type-container">
+        <div>
+          {this.getModHistory(isOpen)}
           <div>
             <div styleName="requestCategoryDropdown">
               <span>
-                {'Select Request Type'}
+                {'Request Type'}
+              </span>
+              <span styleName="errorIcon">
+                <Tooltip
+                  arrow
+                  placement="right-start"
+                  title={(
+                    <Typography>
+                      This is the type of action or information that you
+                      want to send to FHLMC. What type of message is this?
+                    </Typography>
+                  )}
+                >
+                  <ErrorIcon styleName="errorSvg" />
+                </Tooltip>
               </span>
             </div>
-
+            <span><Tooltip aria-label="Mod History" arrow classes="tooltip" placement="left" title={<h3>Mod History</h3>}><span styleName="modHistory"><HistoryIcon onClick={() => this.handleDialogData()} /></span></Tooltip></span>
           </div>
-          <div style={{ margin: '8px 0px 20px' }}>
-            {
-            sortedHandledRequestType && sortedHandledRequestType.map((item) => {
-              let displayText = '';
-              if (item.displayText && R.endsWith('Request', item.displayText)) {
-                displayText = R.dropLast(8, item.displayText);
-              }
-              if (item.displayText && R.endsWith('Call', item.displayText)) {
-                displayText = R.dropLast(5, item.displayText);
-              }
-              return (
-                <Button
-                  key={item.requestType}
-                  onClick={() => this.handleRequestType(item.requestType)}
-                  styleName={requestTypeData === item.requestType ? 'active btn-tabs' : 'btn-tabs'}
-                  variant="outlined"
-                >
-                  {displayText}
-                </Button>
-              );
-            })}
+          <div>
+            <FormControl styleName="fhlmcDropDown" variant="outlined">
+              <InputLabel styleName={!R.isEmpty(requestTypeData) ? 'inputLblSelected' : 'inputLbl'}>Please Select</InputLabel>
+              <Select
+                id="requestCategoryDropdown"
+                input={<OutlinedInput name="selectedEventCategory" />}
+                label="category"
+                onChange={this.handleRequestType}
+                styleName="drop-down-select"
+                value={requestTypeData}
+              >
+                {handledRequestType && handledRequestType.map(item => (
+                  <MenuItem key={item.requestType} value={item.requestType}>
+                    {item.displayText}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
           {this.getExceptionRequestReview()}
           {this.getCancellationReason()}
           {this.getEnquiryRequestOption()}
-          <div styleName="fhlmc-btn-container">
-            <Grid item>
-              <CustomButton
-                color="primary"
-                disabled={!ENABLE_ODM_RERUN.includes(requestTypeData) || !enableODMRerun
-                  || !isAssigned || R.isEmpty(requestTypeData)}
-                extraStyle="submit"
-                hasTooltip={false}
-                onClick={this.submitForODMRerun}
-                title="RE-RUN ODM"
-                variant="contained"
-              />
-            </Grid>
-            <Grid item>
-              {showSubmitFhlmc && (
-                <CustomButton
-                  color="primary"
-                  disabled={R.isEmpty(requestTypeData) || (isCommentsValid && exceptionReviewComments === '')}
-                  extraStyle="submit"
-                  hasTooltip={false}
-                  onClick={this.submitToFhlmc}
-                  title="SUBMIT TO FHLMC"
-                  variant="contained"
-                />
-              )
-              }
-            </Grid>
+          <div styleName="divider">
+            <Divider />
           </div>
         </div>
+
       </>
     );
   }
@@ -418,7 +354,7 @@ class FHLMCWidget extends Component {
   }
 
 
-  handleRequestType = (request) => {
+  handleRequestType = (event) => {
     const {
       setRequestTypeData, resolutionId, onFhlmcBulkSubmit,
       getCancellationReasonsData, clearCancellationReasons, setExceptionReviewIndicator,
@@ -426,20 +362,20 @@ class FHLMCWidget extends Component {
     } = this.props;
     setExceptionReviewIndicator('No');
     setExceptionReviewComments('');
-    setRequestTypeData(request);
-    if (R.equals(request, 'CXLReq')) {
+    setRequestTypeData(event.target.value);
+    if (R.equals(event.target.value, 'CXLReq')) {
       getCancellationReasonsData(); // populate Cancellation Reasons
     } else {
       clearCancellationReasons();
     }
     const payload = {
       caseIds: [resolutionId],
-      requestType: request,
+      requestType: event.target.value,
       requestIdType: 'caseId(s)',
     };
     onFhlmcBulkSubmit(payload);
 
-    if (R.equals(request, 'EnquiryReq')) {
+    if (R.equals(event.target.value, 'EnquiryReq')) {
       getCaseIdsOperation();
       setEnquiryCaseId(resolutionId);
     }
@@ -464,40 +400,16 @@ class FHLMCWidget extends Component {
     closeSweetAlert();
   }
 
+  handleDialogClose = () => {
+    const { onTablePopupDataClear } = this.props;
+    onTablePopupDataClear();
+    this.setState({ isOpen: false });
+  }
 
-  submitToFhlmc() {
-    const {
-      onSubmitToFhlmcRequest,
-      selectedCancellationReason, openSweetAlert, exceptionReviewComments,
-      exceptionReviewRequestIndicator, requestTypeData, investorEvents,
-    } = this.props;
-
-    const portFolio = R.find(item => item.requestType === requestTypeData, investorEvents);
-    const portfolioCode = R.pathOr('', ['portfolioCode'], portFolio);
-    if (R.equals(requestTypeData, 'CXLReq') && R.isEmpty(selectedCancellationReason)) {
-      this.terminateAndShowWarning(CANCELLATION_REASON, openSweetAlert, true);
-      return;
-    }
-    const isExceptionReviewCommentsValid = R.equals(exceptionReviewRequestIndicator, 'Yes') && R.isEmpty(R.trim(exceptionReviewComments));
-    const isExceptionReviewValid = !COMMENT_EXCEPTON_REQUEST_TYPES.includes(requestTypeData);
-    if (isExceptionReviewCommentsValid && isExceptionReviewValid) {
-      const sweetAlertPayload = {
-        status: COMMENTS_REASON,
-        level: 'Warning',
-        showConfirmButton: true,
-      };
-      openSweetAlert(sweetAlertPayload);
-      return;
-    }
-    const status = REQ_PRCS;
-    const level = 'Info';
-    const showConfirmButton = false;
-    const sweetAlertPayload = {
-      status,
-      level,
-      showConfirmButton,
-    };
-    onSubmitToFhlmcRequest(requestTypeData, portfolioCode, sweetAlertPayload);
+  handleDialogData = () => {
+    const { onFhlmcModHistoryPopup } = this.props;
+    onFhlmcModHistoryPopup();
+    this.setState({ isOpen: true });
   }
 
   render() {
@@ -528,23 +440,15 @@ class FHLMCWidget extends Component {
       <div styleName="status-details-parent">
         <section>
           {renderAlert}
-          <div styleName="d-flex">
-            <Typography styleName="title" variant="h2">FHLMC Operations</Typography>
-            <span styleName="eligible">
-              <FiberManualRecordIcon styleName={eligibileVerify ? 'failedTab' : 'passedTab'} />
-            </span>
-            <span styleName={eligibileVerify ? 'failed' : 'passed'}>
-              {eligibleData && R.prop(eligibleData, eligibilityIndicator)}
-            </span>
-            <FHLMCDataInsightDownload
-              exceptionReviewComments={exceptionReviewComments}
-              exceptionReviewRequestIndicator={exceptionReviewRequestIndicator}
-              isWidget
-              portfolioCode={portfolioCode}
-              selectedCancellationReason={selectedCancellationReason}
-              selectedRequestType={requestTypeData}
-              submitCases
-            />
+          <Typography styleName="title">FHLMC</Typography>
+          <span styleName="eligible">
+            <FiberManualRecordIcon styleName={eligibileVerify ? 'failedTab' : 'passedTab'} />
+          </span>
+          <span styleName={eligibileVerify ? 'failed' : 'passed'}>
+            {eligibleData && R.prop(eligibleData, eligibilityIndicator)}
+          </span>
+          <div styleName="divider">
+            <Divider />
           </div>
           {this.renderCategoryDropDown()}
           <FHLMCDataInsight
@@ -563,14 +467,13 @@ class FHLMCWidget extends Component {
 }
 
 FHLMCWidget.defaultProps = {
-  odmRerunOperation: () => { },
-  onSubmitToFhlmcRequest: () => { },
-  openSweetAlert: () => { },
   populateInvestorDropdown: () => { },
   investorEvents: [],
   resultOperation: {},
   requestTypeData: '',
+  onFhlmcModHistoryPopup: {},
   fhlmcModHistoryData: null,
+  onTablePopupDataClear: {},
   getCancellationReasonsData: {},
   getCaseIdsOperation: {},
   groupName: '',
@@ -598,7 +501,6 @@ FHLMCWidget.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
   dismissUserNotification: PropTypes.func.isRequired,
   eligibleData: PropTypes.string.isRequired,
-  enableODMRerun: PropTypes.bool.isRequired,
   enquiryCallCaseIds: PropTypes.arrayOf({
     resolutionId: PropTypes.string,
   }),
@@ -610,12 +512,10 @@ FHLMCWidget.propTypes = {
   getCaseIdsOperation: PropTypes.func,
   groupName: PropTypes.string,
   investorEvents: PropTypes.arrayOf(PropTypes.String),
-  isAssigned: PropTypes.bool.isRequired,
-  odmRerunOperation: PropTypes.func,
   onFhlmcBulkSubmit: PropTypes.func.isRequired,
+  onFhlmcModHistoryPopup: PropTypes.func,
   onResetData: PropTypes.func,
-  onSubmitToFhlmcRequest: PropTypes.func,
-  openSweetAlert: PropTypes.func,
+  onTablePopupDataClear: PropTypes.func,
   populateInvestorDropdown: PropTypes.func,
   requestTypeData: PropTypes.string,
   resolutionId: PropTypes.string.isRequired,
@@ -637,11 +537,8 @@ FHLMCWidget.propTypes = {
 
 const mapStateToProps = state => ({
   cancellationReasons: selectors.cancellationReasons(state),
-  disableSubmitToFhlmc: selectors.disableSubmittofhlmc(state),
-  enableODMRerun: selectors.getODMRetryEligibility(state),
   fhlmcModHistoryData: selectors.getFhlmcModHistory(state),
   investorEvents: selectors.getInvestorEvents(state),
-  isAssigned: selectors.isAssigned(state),
   resultOperation: selectors.resultOperation(state),
   groupName: selectors.groupName(state),
   eligibleData: selectors.eligibleData(state),
@@ -656,14 +553,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeSweetAlert: operations.closeSweetAlert(dispatch),
-  onSubmitToFhlmcRequest: operations.onSubmitToFhlmcRequest(dispatch),
   populateInvestorDropdown: operations.populateInvestorEvents(dispatch),
   setRequestTypeData: operations.setRequestTypeDataOperation(dispatch),
-  odmRerunOperation: operations.odmRerunOperation(dispatch),
   onFhlmcBulkSubmit: operations.onFhlmcCasesSubmit(dispatch),
   onFhlmcModHistoryPopup: operations.onFHLMCModHistory(dispatch),
   onTablePopupDataClear: operations.onTablePopupDataClear(dispatch),
-  openSweetAlert: operations.openSweetAlert(dispatch),
   getCancellationReasonsData: operations.getCancellationReasonDetails(dispatch),
   setSelectedCancellationReasonData: operations.setSelectedCancellationReasonData(dispatch),
   clearCancellationReasons: operations.clearCancellationReasons(dispatch),

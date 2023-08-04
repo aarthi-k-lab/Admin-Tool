@@ -47,7 +47,6 @@ import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
 import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent/CollateralContent';
 import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
-import FHLMCWidget from '../../../components/Widgets/FHLMCWidget';
 import HardshipAffidavit from '../../../components/Tombstone/TombstoneComponents/HardshipAffidavit';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
@@ -301,9 +300,6 @@ class TasksAndChecklist extends Component {
         break;
       case DOCUMENT_CHECKLIST:
         widgetToRender = <DocChecklistWidget />
-        break;
-      case FHLMC:
-        widgetToRender = <FHLMCWidget />
         break;
       case LSAMS_NOTES:
         widgetToRender = <LSAMSNotesWidget />;
