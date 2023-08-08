@@ -34,6 +34,7 @@ import DocsInGoBack from './Dashboard/DocsInGoBack';
 import DocsIn from './Dashboard/DocsIn/DocsIn';
 import CoviusBulkOrder from './Dashboard/Covius/CoviusBulkOrder';
 import FhlmcResolve from './Dashboard/FhlmcResolve/FhlmcResolve';
+import WestWingPage from './Dashboard/WestWing/WestWingPage';
 import Processor from './Dashboard/Processor/Processor';
 import MilestoneActivity from './LoanActivity/MilestoneActivity';
 import UserSkills from './UserSkills/UserSkills';
@@ -67,6 +68,8 @@ class ProtectedRoutes extends React.Component {
     this.renderfhlmcBulkOrderPageRoute = this.renderfhlmcBulkOrderPageRoute.bind(this);
     this.renderInvestorSettlementRoute = this.renderInvestorSettlementRoute.bind(this);
     this.renderSecondLookPageRoute = this.renderSecondLookPageRoute.bind(this);
+    this.renderWestWingPageRoute = this.renderWestWingPageRoute.bind(this);
+    this.renderWestWingOrderPageRoute = this.renderWestWingOrderPageRoute.bind(this);
     this.getHiddenRoutes = this.getHiddenRoutes.bind(this);
   }
 
@@ -299,6 +302,25 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderWestWingPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasWestWingAccess(groups)
+        ? <Dashboard group={DashboardModel.WESTWING} />
+        : <Redirect to="/unauthorized?error=WESTWING_ACCESS_NEEDED" />
+    );
+  }
+
+
+  renderWestWingOrderPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasWestWingAccess(groups)
+        ? <WestWingPage />
+        : <Redirect to="/unauthorized?error=FHHLMC_RESOLVE_ACCESS_NEEDED" />
+    );
+  }
+
 
   renderUserSkillsPageRoute() {
     const groups = this.getGroups();
@@ -349,6 +371,9 @@ class ProtectedRoutes extends React.Component {
           <Route path="/second-look" render={this.renderSecondLookPageRoute} />
           <Route path="/user-skills" render={() => <UserSkills group={DashboardModel.USERSKILLS} />} />
           {/* <Route path="/user-skills" render={this.renderUserSkillsPageRoute} /> */}
+          <Route path="/west-wing" render={this.renderWestWingPageRoute} />
+          <Route path="/westWingOrder" render={this.renderWestWingOrderPageRoute} />
+
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />
         </Switch>

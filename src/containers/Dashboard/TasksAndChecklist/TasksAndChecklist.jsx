@@ -33,7 +33,8 @@ import { selectors as tombstoneSelectors } from 'ducks/tombstone';
 import Grid from '@material-ui/core/Grid';
 import RFDContent from 'components/Tombstone/TombstoneComponents/RFDContent';
 import {
-  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES
+  BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES,
+  WESTWING
 } from 'constants/widgets';
 import { EDITABLE_FIELDS, HARDHSIP, RFD } from 'constants/loanInfoComponents';
 import getTombstonePopup from 'components/Tombstone/PopupSelect.jsx';
@@ -48,6 +49,7 @@ import styles from './TasksAndChecklist.css';
 import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent/CollateralContent';
 import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
 import HardshipAffidavit from '../../../components/Tombstone/TombstoneComponents/HardshipAffidavit';
+import WestWingWidget from 'components/Widgets/WestWing';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
 
@@ -98,7 +100,7 @@ class TasksAndChecklist extends Component {
   shouldRenderWidgetView = () => {
     const { openWidgetList } = this.props;
     return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES],
+      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR,DOCUMENT_CHECKLIST,WESTWING],
     ))(openWidgetList);
   }
 
@@ -288,6 +290,7 @@ class TasksAndChecklist extends Component {
     const { openWidgetList, groupName } = this.props;
     const mainWidget = R.head(openWidgetList);
     let widgetToRender = null;
+    console.log(WESTWING);
     switch (mainWidget) {
       case ADDITIONAL_INFO:
         widgetToRender = <AdditionalInfo groupName={groupName} />;
@@ -303,6 +306,9 @@ class TasksAndChecklist extends Component {
         break;
       case LSAMS_NOTES:
         widgetToRender = <LSAMSNotesWidget />;
+        break;
+      case WESTWING:
+        widgetToRender = <WestWingWidget />
         break;
       default:
         widgetToRender = null;

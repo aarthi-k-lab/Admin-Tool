@@ -7,6 +7,7 @@ const FINANCIAL_CALCULATOR = 'FinancialCalculator';
 const FHLMC = 'FHLMC';
 const LSAMS_NOTES = 'LSAMS Notes';
 const DOCUMENT_CHECKLIST = 'DocumentChecklist';
+const WESTWING = 'lossmitigation';
 
 const widgets = [
   COMMENTS,
@@ -18,6 +19,7 @@ const widgets = [
   FHLMC,
   LSAMS_NOTES,
   DOCUMENT_CHECKLIST,
+  WESTWING,
 ];
 
 export {
@@ -31,4 +33,5 @@ export {
   FHLMC,
   LSAMS_NOTES,
   DOCUMENT_CHECKLIST,
+  WESTWING,
 };

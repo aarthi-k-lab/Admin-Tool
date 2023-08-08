@@ -253,6 +253,20 @@ exports[`<Profile /> snapshot test 1`] = `
         <p
           className="MuiTypography-root MuiTypography-body2"
         >
+          lossmitigation
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          lossmitigation-mgr
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
           userskills
         </p>
       </li>

@@ -33,6 +33,7 @@ const {
   SECONDLOOK,
   DOCSIN_GOBACK,
   BOOKING: BOOKING_GROUP,
+  WESTWING,
 } = DashboardModel;
 
 const widgets = [
@@ -118,6 +119,14 @@ const widgets = [
     visibility: [BEUW, FEUW, PROC],
     children: [COMMENTS],
   }, */
+  {
+    id: WESTWING,
+    icon: <img alt="WestWing" src="/static/img/WestWing icon - Normal.svg" style={{ width: '23px' }} />,
+    visibility: [
+      FEUW, BEUW, DOC_GEN,
+    ],
+    children: [COMMENTS],
+  },
 ];
 
 

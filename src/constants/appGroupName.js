@@ -17,6 +17,7 @@ const UWSTAGER = 'UWSTAGER';
 const RPS_STAGER = 'RPSstager';
 const INVSET = 'INVSET';
 const SECONDLOOK = 'SECONDLOOK';
+const WESTWING = 'LOSSMITIGATION';
 const USERSKILLS = 'USERSKILLS';
 
 const checklistGroupNames = [
@@ -30,6 +31,7 @@ const checklistGroupNames = [
   UWSTAGER,
   INVSET,
   SECONDLOOK,
+  WESTWING,
   USERSKILLS,
 ];
 
@@ -50,6 +52,7 @@ const userGroupList = [
   RPS_STAGER,
   INVSET,
   SECONDLOOK,
+  WESTWING,
   USERSKILLS,
 ];
 

@@ -17,4 +17,6 @@ export const RPS_STAGER = 'rpsstager';
 export const RPS_STAGER_MGR = 'rpsstager-mgr';
 export const INVSET = 'invset';
 export const SECONDLOOK = 'secondlook';
+export const WESTWING = 'lossmitigation';
+export const WESTWING_MGR = 'lossmitigation-mgr';
 export const USERSKILLS = 'user-skills';

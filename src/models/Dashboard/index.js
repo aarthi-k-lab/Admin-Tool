@@ -14,6 +14,7 @@ const DOCS_IN = 'DOCSIN';
 const BOOKING = 'BOOKING';
 const COVIUS = 'docgenvendor';
 const FHLMCRESOLVE = 'fhlmcresolve';
+const WESTWING = 'lossmitigation';
 
 const EVENT_CATEGORY_FILTER = 'SubmitFullmentRequest';
 const STAGER = 'STAGER';
@@ -123,6 +124,13 @@ const GROUP_INFO = [
     showAssignUnassign: false,
   },
   {
+    group: WESTWING,
+    task: 'WEST WING',
+    taskCode: 'WESTWING',
+    path: '/west-wing',
+    showAssignUnassign: false,
+  },
+  {
     group: POSTMODSTAGER,
     task: 'POST MOD STAGER',
     taskCode: 'POST MOD STAGER',
@@ -178,6 +186,7 @@ const GROUPS = {
   '/investor-settlement': INVSET,
   '/second-look': SECONDLOOK,
   '/user-skills': USERSKILLS,
+  '/westWingOrder': WESTWING,
 };
 
 function getTitle(location) {
@@ -206,6 +215,8 @@ function getTitle(location) {
       return 'SECOND LOOK';
     case '/user-skills':
       return 'USER SKILLS';
+    case '/westWingOrder':
+      return 'WEST WING';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -265,6 +276,7 @@ const DashboardModel = {
   USERSKILLS,
   SECONDLOOK,
   MILESTONE_ACTIVITY,
+  WESTWING,
 };
 
 export default DashboardModel;

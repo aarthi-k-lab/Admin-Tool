@@ -2,6 +2,8 @@ import {
   WIDGET_TOGGLE,
   SET_DISABLED_WIDGETS,
   RESET_WIDGET_DATA,
+  SET_WEST_WING_DATA,
+  SET_WEST_WING_REPAY_FORB_DATA,
 } from './types';
 
 
@@ -34,6 +36,18 @@ const reducer = (state = defaultState, action) => {
     }
     case RESET_WIDGET_DATA:
       return defaultState;
+    case SET_WEST_WING_DATA: {
+      return {
+        ...state,
+        westWingWidgetData: action.payload,
+      };
+    }
+    case SET_WEST_WING_REPAY_FORB_DATA: {
+      return {
+        ...state,
+        westWingForbRepay: action.payload,
+      };
+    }
     default:
       return state;
   }

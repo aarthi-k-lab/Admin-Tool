@@ -8,7 +8,7 @@ const managerDashboard = {
   path: '/reports',
   name: 'dashboard',
   img: '/static/img/icon-dashboard.png',
-  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr', 'secondlook-mgr'],
+  groups: ['feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'postmodstager-mgr', 'booking-mgr', 'docgenvendor-mgr', 'invset-mgr', 'secondlook-mgr', 'lossmitigation-mgr'],
 };
 
 const stager = {
@@ -122,6 +122,13 @@ const fHLMCBulkOrderPage = {
   groups: ['allaccess', 'fhlmcresolve'],
 };
 
+const WESTWING = {
+  path: '/west-wing',
+  name: 'West Wing',
+  img: '/static/img/West Wing - menu icon.svg',
+  groups: ['lossmitigation', 'lossmitigation-mgr'],
+};
+
 const trial = {
   groups: ['trial-mgr', 'feuw-mgr', 'beuw-mgr', 'proc-mgr', 'docgen-mgr', 'docsin-mgr', 'stager-mgr', 'postmodstager-mgr', 'booking-mgr'],
 };
@@ -179,6 +186,7 @@ const links = [
   INVESTOR_SETTLEMENT,
   SECOND_LOOK,
   USER_SKILLS,
+  WESTWING,
 ];
 
 
@@ -287,6 +295,10 @@ function hasUserSkillsAccess(groups) {
   return hasGroup(USER_SKILLS.groups, groups);
 }
 
+function hasWestWingAccess(groups) {
+  return hasGroup(WESTWING.groups, groups);
+}
+
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager', 'rpsstager-mgr', 'rpsstager'];
@@ -327,4 +339,5 @@ module.exports = {
   hasInvestorSettlementAccess,
   hasSecondLookAccess,
   hasUserSkillsAccess,
+  hasWestWingAccess,
 };
