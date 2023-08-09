@@ -6,6 +6,7 @@ import { operations } from 'ducks/tombstone';
 import PropTypes from 'prop-types';
 import './EditIcon.css';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
+import { HARDSHIP } from '../../../../constants/loanInfoComponents';
 
 class EditIcon extends React.PureComponent {
   constructor(props) {
@@ -24,9 +25,11 @@ class EditIcon extends React.PureComponent {
   }
 
   render() {
-    const { group } = this.props;
+    const { group, loanInfoComponent, isAssigned } = this.props;
     const isMilestoneActivityPage = group === 'MA';
-    const styleName = isMilestoneActivityPage ? 'edit-disabled' : '';
+    const isNotAssignedToEditHardship = loanInfoComponent === HARDSHIP && !isAssigned;
+    const styleName = isMilestoneActivityPage || isNotAssignedToEditHardship ? 'edit-disabled' : '';
+
     return (
       <IconButton onClick={this.handleCenterPaneView} styleName={`${styleName}`}>
         <img alt="edit" src="/static/img/editIcon.png" styleName="icon" />
@@ -42,6 +45,7 @@ EditIcon.defaultProps = {
 EditIcon.propTypes = {
   getRFDTableData: PropTypes.func,
   group: PropTypes.string.isRequired,
+  isAssigned: PropTypes.bool.isRequired,
   loanInfoComponent: PropTypes.string.isRequired,
   loanNumber: PropTypes.number.isRequired,
   setChecklistCenterPaneData: PropTypes.func.isRequired,
@@ -55,6 +59,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   loanNumber: dashboardSelectors.loanNumber(state),
   group: dashboardSelectors.groupName(state),
+  isAssigned: dashboardSelectors.isAssigned(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditIcon);
