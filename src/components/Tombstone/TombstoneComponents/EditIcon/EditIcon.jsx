@@ -6,7 +6,7 @@ import { operations } from 'ducks/tombstone';
 import PropTypes from 'prop-types';
 import './EditIcon.css';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
-import { HARDSHIP } from '../../../../constants/loanInfoComponents';
+import { HARDHSIP } from '../../../../constants/loanInfoComponents';
 
 class EditIcon extends React.PureComponent {
   constructor(props) {
@@ -27,7 +27,7 @@ class EditIcon extends React.PureComponent {
   render() {
     const { group, loanInfoComponent, isAssigned } = this.props;
     const isMilestoneActivityPage = group === 'MA';
-    const isNotAssignedToEditHardship = loanInfoComponent === HARDSHIP && !isAssigned;
+    const isNotAssignedToEditHardship = loanInfoComponent === HARDHSIP && !isAssigned;
     const styleName = isMilestoneActivityPage || isNotAssignedToEditHardship ? 'edit-disabled' : '';
 
     return (
