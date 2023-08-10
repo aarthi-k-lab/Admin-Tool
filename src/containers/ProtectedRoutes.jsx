@@ -370,7 +370,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/uwstager" render={() => <Dashboard group={DashboardModel.UWSTAGER} />} />
           <Route path="/second-look" render={this.renderSecondLookPageRoute} />
           <Route path="/user-skills" render={() => <UserSkills group={DashboardModel.USERSKILLS} />} />
-          {/* <Route path="/user-skills" render={this.renderUserSkillsPageRoute} /> */}
+          <Route path="/user-skills" render={this.renderUserSkillsPageRoute} />
           <Route path="/west-wing" render={this.renderWestWingPageRoute} />
           <Route path="/westWingOrder" render={this.renderWestWingOrderPageRoute} />
 

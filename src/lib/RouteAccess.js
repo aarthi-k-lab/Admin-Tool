@@ -162,7 +162,7 @@ const USER_SKILLS = {
   path: '/user-skills',
   name: 'User Skills',
   img: '/static/img/user_skills.svg',
-  groups: ['proc', 'proc-mgr', 'allaccess'],
+  groups: [],
 };
 
 const links = [
