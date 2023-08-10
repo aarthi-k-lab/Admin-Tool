@@ -45,7 +45,7 @@ function getBorrower2NetIncome(data) {
 }
 
 function getCustomerIncomeSource(data) {
-  const customerIncomeSource = getOr('customerIncomeSource', data, NA);
+  const customerIncomeSource = getOr('borrowerIncomeType', data, NA);
   return generateWestWingItem('Customer income source', customerIncomeSource);
 }
 
@@ -105,12 +105,12 @@ function getCurrentValuationAmount(data) {
 }
 
 function getFrontEndDTIAfterMod(data) {
-  const frontEndDTIAfterMod = getOr('modTotalPayment', data, NA);
+  const frontEndDTIAfterMod = getOr('frontEndDTIAfterMod', data, NA);
   return generateWestWingItem('Front end DTI after MOD', frontEndDTIAfterMod);
 }
 
 function getFrontEndDTIBeforeMod(data) {
-  const frontEndDTIBeforeMod = getOr('currentPITI', data, NA);
+  const frontEndDTIBeforeMod = getOr('frontEndDTIBeforeMod', data, NA);
   return generateWestWingItem('Front end DTI Before MOD', frontEndDTIBeforeMod);
 }
 
@@ -295,12 +295,12 @@ function getPortFolio(data) {
 }
 
 function getOccupTypeDesc(data) {
-  const occupTypeDesc = getOr('occupTypeDesc', data, NA);
+  const occupTypeDesc = getOr('occupancy', data, NA);
   return generateWestWingItem('Occupancy', occupTypeDesc);
 }
 
 function getPropertyOccupancy(data) {
-  const occupTypeDesc = getOr('occupTypeDesc', data, NA);
+  const occupTypeDesc = getOr('occupancy', data, NA);
   return generateWestWingItem('Property Occupancy', occupTypeDesc);
 }
 

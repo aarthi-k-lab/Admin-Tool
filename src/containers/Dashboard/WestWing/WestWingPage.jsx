@@ -37,7 +37,7 @@ class WestWingPage extends React.PureComponent {
       if (event.target.value === '' || !REGEX_COMMON.test(event.target.value)) {
         this.setState({
           ids: event.target.value,
-          isSubmitDisabled: event.target.value.trim() ? '' : 'disabled',
+          isSubmitDisabled: !event.target.value.trim(),
           idType,
           isSubmitClicked: false,
         });
@@ -86,7 +86,7 @@ class WestWingPage extends React.PureComponent {
   }
 
   renderWestWingNotepadArea = () => {
-    const { ids, isSubmitDisabled } = this.state;
+    const { ids, isSubmitDisabled, idType } = this.state;
     return (
       <>
         <div styleName="status-details-parent">
@@ -104,6 +104,7 @@ class WestWingPage extends React.PureComponent {
           </div>
           <div styleName="status-details">
             <TextField
+              disabled={idType === ''}
               id="ids"
               margin="normal"
               multiline
