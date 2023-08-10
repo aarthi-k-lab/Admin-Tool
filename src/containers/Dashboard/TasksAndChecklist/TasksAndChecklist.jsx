@@ -100,7 +100,7 @@ class TasksAndChecklist extends Component {
   shouldRenderWidgetView = () => {
     const { openWidgetList } = this.props;
     return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR,DOCUMENT_CHECKLIST,WESTWING],
+      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES, WESTWING],
     ))(openWidgetList);
   }
 
