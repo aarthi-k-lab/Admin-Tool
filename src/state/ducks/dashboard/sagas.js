@@ -1638,6 +1638,7 @@ function* assignLoan() {
         payload: response,
       });
       yield call(fetchChecklistDetailsForAssign, groupName, response);
+      yield call(fetchBorrowers, loanNumber);
     } else {
       yield put({
         type: ASSIGN_LOAN_RESULT,
