@@ -206,6 +206,8 @@ const getLoanType = state => R.pathOr(0, ['dashboard', 'loanType'], state);
 
 const getWaterfallId = state => R.pathOr(0, ['dashboard', 'waterfallId'], state);
 
+const showWestwingWidget = state => R.pathOr(false, ['dashboard', 'showWestwingWidget'], state);
+
 const selectors = {
   getCurrentLoanMilestone,
   getODMRetryEligibility,
@@ -324,6 +326,7 @@ const selectors = {
   getDisableFinanceCalcTabButton,
   getLoanType,
   getWaterfallId,
+  showWestwingWidget,
 };
 
 export default selectors;

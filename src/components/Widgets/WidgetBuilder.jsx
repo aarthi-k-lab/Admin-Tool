@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import { FHLMC } from 'constants/widgets';
+import { FHLMC, WESTWINGWIDGET } from 'constants/widgets';
 import { getWidgets, getSelectedWidget } from './WidgetSelects';
 import WidgetIcon from './WidgetIcon';
 import styles from './WidgetBuilder.css';
@@ -85,7 +85,7 @@ class WidgetBuilder extends Component {
   // TODO: optimize
   checkDependency(data, disabledWidgets, openWidgetList) {
     const {
-      resolutionId, investorHierarchy, features, investorCode,
+      resolutionId, investorHierarchy, features, investorCode, showWestwingWidget,
     } = this.props;
     switch (data.dependency) {
       case FHLMC:
@@ -93,6 +93,11 @@ class WidgetBuilder extends Component {
         && R.equals(investorHierarchy.levelName, 'Freddie')
         && R.equals(investorHierarchy.levelNumber, 3)
         && !DISABLE_WIDGET_INVESTOR_CODES.includes(investorCode)) {
+          return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
+        }
+        return null;
+      case WESTWINGWIDGET:
+        if (showWestwingWidget) {
           return this.renderWidgetIcon(data, disabledWidgets, openWidgetList);
         }
         return null;
@@ -181,6 +186,7 @@ WidgetBuilder.defaultProps = {
   resolutionId: null,
   investorCode: '',
   investorHierarchy: {},
+  showWestwingWidget: false,
   features: { showFhlmcWidget: true },
 };
 
@@ -197,6 +203,7 @@ WidgetBuilder.propTypes = {
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
   resolutionId: PropTypes.func,
+  showWestwingWidget: PropTypes.bool,
   trialHeader: PropTypes.shape({
     downPayment: PropTypes.number,
     evalId: PropTypes.number,
@@ -219,6 +226,7 @@ const mapStateToProps = state => ({
   investorCode: dashboardSelectors.getInvestorCode(state),
   brandName: dashboardSelectors.brand(state),
   features: configSelectors.getFeatures(state),
+  showWestwingWidget: dashboardSelectors.showWestwingWidget(state),
 });
 
 function mapDispatchToProps(dispatch) {

@@ -28,6 +28,7 @@ const HARDSHIP_DIALOG_MSG = 'Are you sure you want to discard the unsaved change
 const DECEASED_BORROWER = 'ESTATE OF';
 const HARDSHIP_SUCCES_MSG = 'Hardship details saved successfully.';
 const FETCH_ERROR = 'Error while fetching Data.Please try after sometime';
+const VALIDATE_WESTWING_ERROR = 'Error while fetching data from tkams to validate west wing widget. Please try after sometime';
 
 module.exports = {
   CHECKLIST,
@@ -60,4 +61,5 @@ module.exports = {
   DECEASED_BORROWER,
   HARDSHIP_SUCCES_MSG,
   FETCH_ERROR,
+  VALIDATE_WESTWING_ERROR,
 };

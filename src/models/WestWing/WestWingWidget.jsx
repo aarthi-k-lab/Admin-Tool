@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
+import moment from 'moment-timezone';
 import * as R from 'ramda';
 import Validators from 'lib/Validators';
 import * as Api from 'lib/Api';
@@ -15,6 +16,12 @@ function generateWestWingItem(title, value) {
     title,
     value,
   };
+}
+
+function dateFormatter(value) {
+  const date = moment.tz(value, 'America/Chicago');
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return dateString;
 }
 
 function getBorrower1GrossIncome(data) {
@@ -54,17 +61,17 @@ function getDisposableIncome(data) {
 
 function getModEffectiveDate(data) {
   const modEffectiveDate = getOr('columnEffectiveDate', data, NA);
-  return generateWestWingItem('MOD effective date', modEffectiveDate);
+  return generateWestWingItem('MOD effective date', dateFormatter(modEffectiveDate));
 }
 
 function getModFirstPaymentDueDate(data) {
   const modFirstPaymentDueDate = getOr('modFirstPaymentDate', data, NA);
-  return generateWestWingItem('MOD first payment due date', modFirstPaymentDueDate);
+  return generateWestWingItem('MOD first payment due date', dateFormatter(modFirstPaymentDueDate));
 }
 
 function getModificationMaturityDate(data) {
   const modificationMaturityDate = getOr('modMaturityDate', data, NA);
-  return generateWestWingItem('Modification maturity date', modificationMaturityDate);
+  return generateWestWingItem('Modification maturity date', dateFormatter(modificationMaturityDate));
 }
 
 function getModInterestRate(data) {
@@ -89,7 +96,7 @@ function getValuationType(data) {
 
 function getValuationDate(data) {
   const valuationDate = getOr('bpoEffectiveDate', data, NA);
-  return generateWestWingItem('Valuation date', valuationDate);
+  return generateWestWingItem('Valuation date', dateFormatter(valuationDate));
 }
 
 function getCurrentValuationAmount(data) {
@@ -114,7 +121,7 @@ function getCurrentUPB(data) {
 
 function getNextPaymentDate(data) {
   const nextPaymentDate = getOr('nextDueDate', data, NA);
-  return generateWestWingItem('Next payment date', nextPaymentDate);
+  return generateWestWingItem('Next payment date', dateFormatter(nextPaymentDate));
 }
 
 function getCurrentPrincipalAndInterestPayment(data) {
@@ -169,7 +176,7 @@ function getForgivenAmount(data) {
 
 function getCurrentMaturityDate(data) {
   const currentMaturityDate = getOr('origMaturityDate', data, NA);
-  return generateWestWingItem('Current maturity date', currentMaturityDate);
+  return generateWestWingItem('Current maturity date', dateFormatter(currentMaturityDate));
 }
 
 function getCurrentInterestRate(data) {
@@ -254,7 +261,7 @@ function getHasMi(data) {
 
 function getNextDueDate(data) {
   const nextDueDate = getOr('nextDueDate', data, NA);
-  return generateWestWingItem('Next due date', nextDueDate);
+  return generateWestWingItem('Next due date', dateFormatter(nextDueDate));
 }
 
 function getOldLoanNumber(data) {
@@ -393,7 +400,7 @@ function getFrontEndDTIAfterPlan(data) {
 
 function getDateDownPaymentReceived(data) {
   const dateDownPaymentReceived = getOr('dateDownPaymentReceived', data, NA);
-  return generateWestWingItem('Date Down Payment Received', dateDownPaymentReceived);
+  return generateWestWingItem('Date Down Payment Received', dateFormatter(dateDownPaymentReceived));
 }
 
 function getDownPayment(data) {
@@ -488,7 +495,7 @@ function getTotalPaymentVariance(data) {
 
 function getMODRecordedDate(data) {
   const mODRecordedDate = getOr('modRecordedDate', data, NA);
-  return generateWestWingItem('MOD Recorded Date', mODRecordedDate);
+  return generateWestWingItem('MOD Recorded Date', dateFormatter(mODRecordedDate));
 }
 
 function getMODCompleted(data) {
@@ -498,7 +505,7 @@ function getMODCompleted(data) {
 
 function getMODCompletedDate(data) {
   const mODCompletedDate = getOr('modCompletedDate', data, NA);
-  return generateWestWingItem('MOD Completed Date', mODCompletedDate);
+  return generateWestWingItem('MOD Completed Date', dateFormatter(mODCompletedDate));
 }
 
 
@@ -509,12 +516,17 @@ function getWestWingItems(response) {
     loanModification,
     isDataFromDataService,
     documents,
-    customerFinance,
     fcStageDetails,
     decision,
     comments,
     status,
   } = response;
+  let { customerFinance } = response;
+  if (R.isNil(customerFinance)) {
+    customerFinance = {};
+    customerFinance.customerFinanceExpense = {};
+    customerFinance.customerFinanceBorr = {};
+  }
   const { customerFinanceExpense, customerFinanceBorr } = customerFinance;
   let westWingData = {};
   if (!isDataFromDataService) {

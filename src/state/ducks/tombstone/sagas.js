@@ -70,7 +70,7 @@ import { selectors as loginSelectors } from '../login';
 import { selectors as loanTombstoneSelectors } from '.';
 import {
   SET_RESOLUTION_AND_INVSTR_HRCHY, SET_BRAND, STORE_INVEST_CD_AND_BRAND_NM,
-  SET_RESULT_OPERATION, SET_POPUP_DATA, SET_LOAN_TYPE, SET_WATERFALLID,
+  SET_RESULT_OPERATION, SET_POPUP_DATA, SET_LOAN_TYPE, SET_WATERFALLID, SHOW_WEST_WING_WIDGET,
 } from '../dashboard/types';
 import { PROPERTY_PRIMARY_USE } from '../../../constants/collaterlUI';
 import {
@@ -84,8 +84,33 @@ import {
   REASONABLE_EFFORT_HISTORY_FETCH_ERROR,
   HARDSHIP_SUCCES_MSG,
   FETCH_ERROR,
+  VALIDATE_WESTWING_ERROR,
 } from '../../../constants/loanInfoComponents';
 import * as DateUtils from '../../../lib/DateUtils';
+
+
+function* fetchWestwingValidation() {
+  try {
+    const resolutionId = yield select(dashboardSelectors.resolutionId);
+
+    const resolutionData = yield select(loanTombstoneSelectors.getTombstoneModViewData);
+    const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
+
+    const ValidateWestwing = yield call(Api.callGet, `/api/tkams/westwing/validate/${resolutionId}/${resolutionChoiceType}`);
+    yield put({
+      type: SHOW_WEST_WING_WIDGET,
+      payload: ValidateWestwing.isWestWingWidget,
+    });
+  } catch (e) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        level: FAILED,
+        status: VALIDATE_WESTWING_ERROR,
+      },
+    });
+  }
+}
 
 function* fetchTombstoneData(payload) {
   const { taskName, taskId } = payload.payload;
@@ -139,6 +164,9 @@ function* fetchTombstoneData(payload) {
       payload: { hardshipBeginDate, hardshipEndDate },
     });
     yield put({ type: SUCCESS_LOADING_TOMBSTONE_DATA, payload: tombstoneData });
+    if (groupName !== 'SEARCH_LOAN') {
+      yield call(fetchWestwingValidation);
+    }
   } catch (e) {
     if (!R.isNil(loanNumber) && !R.isNil(evalId)) {
       const defaultData = [

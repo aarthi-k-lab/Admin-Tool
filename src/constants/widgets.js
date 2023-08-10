@@ -8,6 +8,7 @@ const FHLMC = 'FHLMC';
 const LSAMS_NOTES = 'LSAMS Notes';
 const DOCUMENT_CHECKLIST = 'DocumentChecklist';
 const WESTWING = 'lossmitigation';
+const WESTWINGWIDGET = 'WESTWINGWIDGET';
 
 const widgets = [
   COMMENTS,
@@ -20,6 +21,7 @@ const widgets = [
   LSAMS_NOTES,
   DOCUMENT_CHECKLIST,
   WESTWING,
+  WESTWINGWIDGET,
 ];
 
 export {
@@ -34,4 +36,5 @@ export {
   LSAMS_NOTES,
   DOCUMENT_CHECKLIST,
   WESTWING,
+  WESTWINGWIDGET,
 };

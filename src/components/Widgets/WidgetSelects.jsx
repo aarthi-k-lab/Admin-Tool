@@ -10,12 +10,14 @@ import {
   FINANCIAL_CALCULATOR,
   FHLMC,
   LSAMS_NOTES,
+  WESTWINGWIDGET,
   // DOCUMENT_CHECKLIST,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
 import DashboardModel from '../../models/Dashboard';
 import FHLMCWidget from './FHLMCWidget';
+
 
 const {
   FEUW,
@@ -126,6 +128,7 @@ const widgets = [
       FEUW, BEUW, DOC_GEN,
     ],
     children: [COMMENTS],
+    dependency: WESTWINGWIDGET,
   },
 ];
 

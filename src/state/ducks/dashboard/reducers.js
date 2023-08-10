@@ -122,6 +122,7 @@ import {
   RESET_DATA,
   SET_LOAN_TYPE,
   SET_WATERFALLID,
+  SHOW_WEST_WING_WIDGET,
 } from './types';
 
 const reducer = (state = {
@@ -1216,6 +1217,14 @@ const reducer = (state = {
       return {
         ...state,
         waterfallId: action.payload,
+      };
+    }
+
+    case SHOW_WEST_WING_WIDGET: {
+      const showWestwingWidget = action.payload;
+      return {
+        ...state,
+        showWestwingWidget,
       };
     }
 
