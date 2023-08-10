@@ -287,6 +287,11 @@ describe('getnext Success', () => {
       .toEqual(put(actionDispatched));
   });
 
+  it('should dispatch action SET_BORROWER_INFO', () => {
+    expect(saga.next().value)
+      .toEqual(call(TestExports.fetchBorrowers, '12345'));
+  });
+
   it('should dispatch action HIDE_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.HIDE_LOADER }));

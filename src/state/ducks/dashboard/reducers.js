@@ -122,6 +122,7 @@ import {
   RESET_DATA,
   SET_LOAN_TYPE,
   SET_WATERFALLID,
+  SET_BORROWER_INFO,
   SHOW_WEST_WING_WIDGET,
 } from './types';
 
@@ -1217,6 +1218,14 @@ const reducer = (state = {
       return {
         ...state,
         waterfallId: action.payload,
+      };
+    }
+
+    case SET_BORROWER_INFO: {
+      const processedBorrowerData = action.payload;
+      return {
+        ...state,
+        processedBorrowerData,
       };
     }
 

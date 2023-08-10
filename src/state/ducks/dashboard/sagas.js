@@ -173,6 +173,8 @@ import {
   UPDATE_TRIAL_PERIOD,
   UPDATE_TRIAL_PERIOD_RESULT,
   ODM_RERUN_SAGA,
+  SET_BORROWER_INFO,
+
 } from './types';
 // Note : Doc Checklist revert
 // import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
@@ -628,15 +630,14 @@ function* fetchMilestoneData(milestone, evalId, taskId) {
 }
 
 
-function* fetchBorrowers() {
+function* fetchBorrowers(loanNumber) {
   try {
-    const loanNumber = yield select(selectors.loanNumber);
     const borrowers = yield call(Api.callGet, `/api/dataservice/incomeCalc/borrower/${loanNumber}`);
     if (borrowers) {
-      yield put({ type: SET_BORROWER_DATA, payload: borrowers });
+      yield put({ type: SET_BORROWER_INFO, payload: borrowers });
     }
   } catch (e) {
-    yield put({ type: SET_BORROWER_DATA, payload: [] });
+    yield put({ type: SET_BORROWER_INFO, payload: [] });
   }
 }
 
@@ -656,7 +657,6 @@ function* selectEval(searchItem) {
   yield put(widgetActions.resetWidgetData());
   yield put(docChecklistActions.resetDocChecklistData());
   yield put(checklistActions.clearFicoAssetData());
-  yield call(fetchBorrowers);
   if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], evalDetails)) {
     yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
     yield put({ type: SET_BORROWERS_DATA, payload: R.propOr(null, 'borrowerData', incomeCalcData) });
@@ -1415,6 +1415,7 @@ function* getNext(action) {
         yield put({ type: SAVE_TASKID, payload: bookingTaskId });
         yield put(tombstoneActions.fetchTombstoneData(loanNumber, taskName, taskId));
         yield put(commentsActions.loadCommentsAction(commentsPayLoad));
+        yield call(fetchBorrowers, loanNumber);
         yield put({ type: HIDE_LOADER });
       } else if (!R.isNil(R.path(['messsage'], taskDetails))) {
         yield put({ type: TASKS_NOT_FOUND, payload: { noTasksFound: true } });
@@ -1586,6 +1587,7 @@ function* assignLoan() {
     const userGroups = R.pathOr([], ['groupList'], user);
     const group = getGroup(groupName);
     let taskName = '';
+
     if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER) {
       const stagerTaskName = yield select(selectors.stagerTaskName);
       taskName = (stagerTaskName.activeTile === 'Recordation' || stagerTaskName.activeTile === 'Delay Checklist')
@@ -1605,7 +1607,6 @@ function* assignLoan() {
       });
       return;
     }
-
     const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
     if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
@@ -3158,6 +3159,7 @@ export const TestExports = {
   watchonSubmitEval,
   onSubmitEval,
   watchSaveTrialPeriod,
+  fetchBorrowers,
 };
 
 export const combinedSaga = function* combinedSaga() {

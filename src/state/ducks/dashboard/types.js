@@ -173,6 +173,7 @@ const DISABLE_FINANCE_CALC_TAB_BUTTON = 'app/dashboard/DISABLE_FINANCE_CALC_TAB_
 const RESET_DATA = 'app/dashboard/RESET_DATA';
 const SET_LOAN_TYPE = 'app/dashboard/SET_LOAN_TYPE';
 const SET_WATERFALLID = 'app/dashboard/SET_WATERFALLID';
+const SET_BORROWER_INFO = 'app/dashboard/SET_BORROWER_INFO';
 const SHOW_WEST_WING_WIDGET = 'app/dashboard/SHOW_WEST_WING_WIDGET';
 
 export {
@@ -352,5 +353,6 @@ export {
   RESET_DATA,
   SET_WATERFALLID,
   SET_LOAN_TYPE,
+  SET_BORROWER_INFO,
   SHOW_WEST_WING_WIDGET,
 };

@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
-import { selectors as incomeCalcSelectors } from 'ducks/income-calculator';
+// import { selectors as incomeCalcSelectors } from 'ducks/income-calculator';
 import { selectors as tombstoneSelectors, operations } from '../../../../state/ducks/tombstone';
 import { selectors as widgetSelectors } from '../../../../state/ducks/widgets';
 import { HARDSHIP_AFFIDAVIT_TITLE, HARDSHIP_DIALOG_MSG, DECEASED_BORROWER } from '../../../../constants/loanInfoComponents';
@@ -585,7 +585,7 @@ HardshipAffidavit.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  getborrowerData: incomeCalcSelectors.getBorrowers(state),
+  getborrowerData: dashboardSelectors.getBorrowerInfo(state),
   openWidgetList: widgetSelectors.getOpenWidgetList(state),
   getHardshipData: tombstoneSelectors.getHardshipData(state),
   getUpdatedHardshipData: tombstoneSelectors.getUpdatedHardshipData(state),

@@ -206,6 +206,7 @@ const getLoanType = state => R.pathOr(0, ['dashboard', 'loanType'], state);
 
 const getWaterfallId = state => R.pathOr(0, ['dashboard', 'waterfallId'], state);
 
+const getBorrowerInfo = state => R.pathOr([], ['dashboard', 'processedBorrowerData'], state);
 const showWestwingWidget = state => R.pathOr(false, ['dashboard', 'showWestwingWidget'], state);
 
 const selectors = {
@@ -326,6 +327,7 @@ const selectors = {
   getDisableFinanceCalcTabButton,
   getLoanType,
   getWaterfallId,
+  getBorrowerInfo,
   showWestwingWidget,
 };
 
