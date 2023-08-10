@@ -18,7 +18,7 @@ describe('<WidgetBuilder />', () => {
     const wrapper = shallow(
       <TestHooks.WidgetBuilder {...defaultProps} page="FEUW" />,
     );
-    expect(wrapper.find('WidgetIcon')).toHaveLength(6);
+    expect(wrapper.find('WidgetIcon')).toHaveLength(5);
   });
 
   it('should render the Booking widget on DOCSIN', () => {
@@ -38,14 +38,14 @@ describe('<WidgetBuilder />', () => {
     wrapper.setProps({
       page: 'DOCGEN',
     });
-    expect(wrapper.find('WidgetIcon')).toHaveLength(6);
+    expect(wrapper.find('WidgetIcon')).toHaveLength(5);
   });
 
   it('should call the onWidgetToggle function', () => {
     const wrapper = shallow(
       <TestHooks.WidgetBuilder {...defaultProps} page="FEUW" />,
     );
-    expect(wrapper.find('WidgetIcon')).toHaveLength(6);
+    expect(wrapper.find('WidgetIcon')).toHaveLength(5);
     wrapper.find('WidgetIcon').at(1).simulate('WidgetClick');
     expect(defaultProps.onWidgetToggle).toBeCalled();
   });
