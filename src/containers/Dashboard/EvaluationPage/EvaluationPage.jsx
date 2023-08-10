@@ -4,7 +4,6 @@ import ContentHeader from 'components/ContentHeader';
 import FullHeightColumn from 'components/FullHeightColumn';
 import Controls from 'containers/Controls';
 import MilestoneTracker from 'components/MilestoneTracker';
-import SendToDocsInDialog from 'components/ContentHeader/SendToDocsInDialog';
 import Tombstone from 'containers/Dashboard/Tombstone';
 import TasksAndChecklist from 'containers/Dashboard/TasksAndChecklist';
 import LoanActivity from 'containers/LoanActivity';
@@ -16,7 +15,6 @@ import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as checklistSelectors } from 'ducks/tasks-and-checklist';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import UserNotification from 'components/UserNotification/UserNotification';
-import { selectors as tombStoneSelectors } from '../../../state/ducks/tombstone';
 import { selectors, operations } from '../../../state/ducks/dashboard';
 import './EvaluationPage.css';
 import { HISTORY } from '../../../constants/widgets';
@@ -31,18 +29,8 @@ function isTrialOrForbearance(taskName) {
 class EvaluationPage extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      redirectDialog: false,
-    };
     const { onCleanResult } = props;
-    this.accessRedirectDialog = this.accessRedirectDialog.bind(this);
     onCleanResult();
-  }
-
-  accessRedirectDialog(input) {
-    const { fetchBookingRejectDropdown } = this.props;
-    this.setState({ redirectDialog: input });
-    fetchBookingRejectDropdown();
   }
 
   haveGroupTrial() {
@@ -53,19 +41,12 @@ class EvaluationPage extends React.PureComponent {
 
   canShowSendToDocsIn() {
     const {
-      group, user, isAssigned, processName, taskStatus, milestone, getModViewData,
+      group, user, isAssigned, processName, taskStatus,
     } = this.props;
-    let content = R.propOr('', 'content', R.find(R.propEq('title', ('Resolution Choice Type')))(getModViewData));
-    content = content.trim();
-    if (group === DashboardModel.BOOKING && milestone !== 'Post Mod' && content !== 'Payment Deferral'
-    && content !== 'Payment Deferral Disaster') {
-      return true;
-    }
     const groups = user && user.groupList;
     const isPendingloan = R.equals(taskStatus, 'Active')
       && (R.equals(processName, 'Pending Buyout') || R.equals(processName, DashboardModel.PENDING_BOOKING));
-    return isPendingloan && group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !R.isNil(isAssigned) && !isAssigned
-    && content !== 'Payment Deferral' && content !== 'Payment Deferral Disaster' && milestone !== 'Post Mod';
+    return isPendingloan && group === DashboardModel.BOOKING && groups.includes('docsin-mgr') && !R.isNil(isAssigned) && !isAssigned;
   }
 
   renderDashboard() {
@@ -82,9 +63,7 @@ class EvaluationPage extends React.PureComponent {
     const {
       location, group, taskName, checklisttTemplateName, stagerTaskName,
       userNotification, isAutoDisposition, openWidgetList, milestoneDetails, currentSelection,
-      rejectReasonDropdownOptions, loaderStatus,
     } = this.props;
-    const { redirectDialog } = this.state;
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     let title = el.task === 'Loan Activity' ? isTrialOrForbearance(taskName) : el.task;
     title = (stagerTaskName && stagerTaskName.activeTile) || title;
@@ -98,7 +77,6 @@ class EvaluationPage extends React.PureComponent {
             showSendToUnderWritingIcon={(!isNotLoanActivity(group) && this.haveGroupTrial())}
             showUpdateRemedy={isAutoDisposition}
             showValidate={DashboardModel.checkShowValidation(group) && !isAutoDisposition}
-            toggleDialog={this.accessRedirectDialog}
           />
         </ContentHeader>
         <div styleName="milestone-tracker">
@@ -125,12 +103,6 @@ class EvaluationPage extends React.PureComponent {
               )}
           </div>
         </div>
-        <SendToDocsInDialog
-          closeRedirectDialog={() => this.accessRedirectDialog(false)}
-          dropdownOptions={rejectReasonDropdownOptions}
-          loader={loaderStatus}
-          redirectDialog={redirectDialog}
-        />
       </>
     );
   }
@@ -144,31 +116,18 @@ EvaluationPage.defaultProps = {
   userNotification: { level: '', status: '' },
   onCleanResult: () => { },
   openWidgetList: [],
-  getModViewData: [],
   milestoneDetails: [],
-  milestone: '',
-  rejectReasonDropdownOptions: [],
-  fetchBookingRejectDropdown: () => {},
 };
 
 EvaluationPage.propTypes = {
   checklisttTemplateName: PropTypes.string,
   currentSelection: PropTypes.string.isRequired,
-  fetchBookingRejectDropdown: PropTypes.func,
-  getModViewData: PropTypes.arrayOf(
-    PropTypes.shape({
-      content: PropTypes.any.isRequired,
-      title: PropTypes.string.isRequired,
-    }).isRequired,
-  ),
   group: PropTypes.string,
   isAssigned: PropTypes.bool.isRequired,
   isAutoDisposition: PropTypes.bool.isRequired,
-  loaderStatus: PropTypes.bool.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  milestone: PropTypes.string,
   milestoneDetails: PropTypes.arrayOf(PropTypes.shape({
     mlstnNm: PropTypes.string,
     taskId: PropTypes.string,
@@ -177,12 +136,6 @@ EvaluationPage.propTypes = {
   onCleanResult: PropTypes.func,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
   processName: PropTypes.string.isRequired,
-  rejectReasonDropdownOptions: PropTypes.arrayOf(
-    PropTypes.shape({
-      classCode: PropTypes.any.isRequired,
-      shortDescription: PropTypes.string.isRequired,
-    }),
-  ),
   stagerTaskName: PropTypes.string,
   taskName: PropTypes.string,
   taskStatus: PropTypes.string.isRequired,
@@ -214,15 +167,10 @@ const mapStateToProps = state => ({
   userNotification: selectors.userNotification(state),
   processName: selectors.processName(state),
   taskStatus: selectors.taskStatus(state),
-  rejectReasonDropdownOptions: selectors.getRejectReasonDropdownOptions(state),
-  loaderStatus: selectors.saveInProgress(state),
-  milestone: selectors.getCurrentLoanMilestone(state),
-  getModViewData: tombStoneSelectors.getTombstoneModViewData(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
-  fetchBookingRejectDropdown: operations.fetchBookingRejectDropdownOperation(dispatch),
 });
 
 const container = connect(mapStateToProps, mapDispatchToProps)(EvaluationPage);

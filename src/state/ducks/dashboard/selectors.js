@@ -206,10 +206,6 @@ const getLoanType = state => R.pathOr(0, ['dashboard', 'loanType'], state);
 
 const getWaterfallId = state => R.pathOr(0, ['dashboard', 'waterfallId'], state);
 
-const getRejectReasonDropdownOptions = state => R.pathOr([], ['dashboard', 'rejectReasonDropdownOptions'], state);
-
-const getSendToDocsInResponse = state => R.pathOr({}, ['dashboard', 'sentToDocsInResponse'], state);
-
 const selectors = {
   getCurrentLoanMilestone,
   getODMRetryEligibility,
@@ -326,10 +322,8 @@ const selectors = {
   trialDateInfo,
   isSaveDisabled,
   getDisableFinanceCalcTabButton,
-  getRejectReasonDropdownOptions,
   getLoanType,
   getWaterfallId,
-  getSendToDocsInResponse,
 };
 
 export default selectors;

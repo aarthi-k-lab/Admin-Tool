@@ -92,10 +92,7 @@ import {
   DISABLE_SAVE,
   DISABLE_FINANCE_CALC_TAB_BUTTON,
   TOGGLE_LOCK_BUTTON,
-  FETCH_BOOKING_REJECT_DROPDOWN,
   RESET_DATA,
-  TOGGLE_SEND_BACK_DOCSIN,
-  BOOKING_SENDTODOCSIN,
 } from './types';
 
 
@@ -537,22 +534,8 @@ const disableFinanceCalcTabButtonAction = payload => ({
   payload,
 });
 
-const fetchBookingRejectDropdown = () => ({
-  type: FETCH_BOOKING_REJECT_DROPDOWN,
-});
-
 const dashboardResetDataAction = () => ({
   type: RESET_DATA,
-});
-
-const toggleSendToDocsIn = payload => ({
-  type: TOGGLE_SEND_BACK_DOCSIN,
-  payload,
-});
-
-const intiateBookingSendToDocsIn = payload => ({
-  type: BOOKING_SENDTODOCSIN,
-  payload,
 });
 
 export {
@@ -649,8 +632,5 @@ export {
   disableSaveAction,
   disableFinanceCalcTabButtonAction,
   enableLockButton,
-  fetchBookingRejectDropdown,
   dashboardResetDataAction,
-  toggleSendToDocsIn,
-  intiateBookingSendToDocsIn,
 };

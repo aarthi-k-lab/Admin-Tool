@@ -119,12 +119,9 @@ import {
   ENABLE_ODM_RERUN_BUTTON,
   DISABLE_SAVE,
   DISABLE_FINANCE_CALC_TAB_BUTTON,
-  SAVE_BOOKING_REJECT_DROPDOWN,
   RESET_DATA,
-  TOGGLE_SEND_BACK_DOCSIN,
   SET_LOAN_TYPE,
   SET_WATERFALLID,
-  SENT_TODOCSIN_RESPONSE,
 } from './types';
 
 const reducer = (state = {
@@ -1197,28 +1194,6 @@ const reducer = (state = {
       return {
         ...state,
         disableFinanceCalcTabButton: action.payload,
-      };
-    }
-
-    case SAVE_BOOKING_REJECT_DROPDOWN: {
-      return {
-        ...state,
-        rejectReasonDropdownOptions: action.payload,
-      };
-    }
-
-    case SENT_TODOCSIN_RESPONSE: {
-      const data = JSON.parse(JSON.stringify(action.payload));
-      return {
-        ...state,
-        sentToDocsInResponse: data,
-      };
-    }
-
-    case TOGGLE_SEND_BACK_DOCSIN: {
-      return {
-        ...state,
-        enableSendToDocsIn: action.payload,
       };
     }
 

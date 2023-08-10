@@ -44,15 +44,11 @@ class Controls extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { disableSendToDocsIn, isAssigned, taskName } = this.props;
     hotkeys('g,v,m,e', (event, handler) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress(handler);
       }
     });
-    if (!isAssigned && taskName !== 'Pending Buyout') {
-      disableSendToDocsIn(false);
-    }
   }
 
   componentWillUnmount() {
@@ -100,10 +96,8 @@ class Controls extends React.PureComponent {
   }
 
   handleSendToDocsIn() {
-    const { toggleDialog, groupName, taskName } = this.props;
-    if (groupName === DashboardModel.BOOKING || taskName === 'Pending Buyout') {
-      toggleDialog(true);
-    }
+    const { onSendToDocsIn } = this.props;
+    onSendToDocsIn();
   }
 
   handleSendToBooking() {
@@ -300,7 +294,6 @@ Controls.defaultProps = {
   enableGetNext: false,
   enableSendToDocGen: true,
   enableSendToDocsIn: true,
-  disableSendToDocsIn: () => {},
   enableSendToBooking: true,
   enableSendToUW: true,
   enableValidate: false,
@@ -311,6 +304,7 @@ Controls.defaultProps = {
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
+  onSendToDocsIn: () => { },
   onSendToBooking: () => { },
   onTrialTask: () => { },
   showEndShift: false,
@@ -326,11 +320,9 @@ Controls.defaultProps = {
   showAssign: null,
   showValidate: false,
   groupName: null,
-  toggleDialog: () => {},
 };
 
 Controls.propTypes = {
-  disableSendToDocsIn: PropTypes.func,
   disableTrialTaskButton: PropTypes.bool.isRequired,
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
@@ -347,7 +339,6 @@ Controls.propTypes = {
   }).isRequired,
   evalId: PropTypes.string.isRequired,
   groupName: PropTypes.string,
-  isAssigned: PropTypes.bool.isRequired,
   isFirstVisit: PropTypes.bool,
   isTrialDisable: PropTypes.bool,
   onAssignToMeClick: PropTypes.func.isRequired,
@@ -358,6 +349,7 @@ Controls.propTypes = {
   onGetNext: PropTypes.func,
   onSendToBooking: PropTypes.func,
   onSendToDocGen: PropTypes.func,
+  onSendToDocsIn: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   onTrialTask: PropTypes.func,
   processId: PropTypes.string.isRequired,
@@ -375,7 +367,6 @@ Controls.propTypes = {
   showValidate: PropTypes.bool,
   taskName: PropTypes.string.isRequired,
   taskStatus: PropTypes.string.isRequired,
-  toggleDialog: PropTypes.func,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array),
@@ -412,7 +403,6 @@ const mapStateToProps = (state) => {
     enableSendToBooking: selectors.enableSendToBooking(state),
     enableSendToUW: selectors.enableSendToUW(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
-    isAssigned,
     isFirstVisit: selectors.isFirstVisit(state),
     isTrialDisable,
     showAssign: selectors.showAssign(state),
@@ -448,7 +438,6 @@ const mapDispatchToProps = dispatch => ({
   onCompleteMyReview: operations.onCompleteMyReview(dispatch),
   onTrialTask: operations.onTrialTask(dispatch),
   onAssignToMeClick: operations.onAssignToMeClick(dispatch),
-  disableSendToDocsIn: operations.toggleSendToDocsInOperation(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);
