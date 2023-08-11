@@ -109,7 +109,7 @@ function WestWingWidget(props) {
             </Grid>
           </Grid>
           <Grid item styleName="containerBackground otherInfo" xs={12}>
-            <span styleName="header">Other info</span>
+            <span styleName="header">Other Information</span>
             <Grid container direction="row" styleName="otherInfoContanier">
               {renderItems('OtherInfo')}
             </Grid>
@@ -117,13 +117,13 @@ function WestWingWidget(props) {
           <Grid item styleName="containerBackground otherInfo" xs={12}>
             <Grid container>
               <Grid item xs={6}>
-                <span styleName="header">MOD details - Current information</span>
+                <span styleName="header">Current Information</span>
                 <Grid container direction="column" style={{ height: '23rem' }}>
                   {renderItems('ModCurrentInfo')}
                 </Grid>
               </Grid>
               <Grid item xs={6}>
-                <span styleName="header">MOD details - Modification terms</span>
+                <span styleName="header">Modification Terms</span>
                 <Grid container direction="column" style={{ height: '23rem' }}>
                   {renderItems('ModModificationInfo')}
                 </Grid>
@@ -200,7 +200,7 @@ function WestWingWidget(props) {
               <Grid item xs={3}>
                 <Grid container direction="column">
                   <Grid item>
-                    <span styleName="commentTitle">Add Service Comments</span>
+                    <span styleName="commentTitle">Add Servicer Comments</span>
                   </Grid>
                   <Grid item styleName="textField">
                     <TextField

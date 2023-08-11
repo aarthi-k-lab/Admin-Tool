@@ -19,9 +19,14 @@ function generateWestWingItem(title, value) {
 }
 
 function dateFormatter(value) {
-  const date = moment.tz(value, 'America/Chicago');
-  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
-  return dateString;
+  if (value === NA) {
+    return value;
+  }
+  const date = new Date(value);
+  const year = date.getUTCFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${month}/${day}/${year}`;
 }
 
 function getBorrower1GrossIncome(data) {
@@ -125,7 +130,7 @@ function getNextPaymentDate(data) {
 }
 
 function getCurrentPrincipalAndInterestPayment(data) {
-  const currentPrincipalAndInterestPayment = getOr('currentPrincipalAndInterestPayment', data, NA);
+  const currentPrincipalAndInterestPayment = getOr('currentPI', data, NA);
   return generateWestWingItem('Current Principal and Interest payment', currentPrincipalAndInterestPayment);
 }
 
