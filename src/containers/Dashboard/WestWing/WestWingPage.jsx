@@ -109,7 +109,14 @@ class WestWingPage extends React.PureComponent {
               margin="normal"
               multiline
               onChange={event => this.handleInputChange(event)}
-              style={{ width: '90%', resize: 'none', margin: '1rem' }}
+              style={{
+                width: '90%',
+                resize: 'none',
+                margin: '1rem',
+                height: '2.5rem',
+                padding: '0.5rem 0rem 0rem 0.5rem',
+
+              }}
               value={ids}
             />
           </div>

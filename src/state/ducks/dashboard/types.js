@@ -175,6 +175,7 @@ const SET_LOAN_TYPE = 'app/dashboard/SET_LOAN_TYPE';
 const SET_WATERFALLID = 'app/dashboard/SET_WATERFALLID';
 const SET_BORROWER_INFO = 'app/dashboard/SET_BORROWER_INFO';
 const SHOW_WEST_WING_WIDGET = 'app/dashboard/SHOW_WEST_WING_WIDGET';
+const SET_WORKOUT_TYPE = 'app/dashboard/SET_WORKOUT_TYPE';
 
 export {
   ENABLE_ODM_RERUN_BUTTON,
@@ -355,4 +356,5 @@ export {
   SET_LOAN_TYPE,
   SET_BORROWER_INFO,
   SHOW_WEST_WING_WIDGET,
+  SET_WORKOUT_TYPE,
 };

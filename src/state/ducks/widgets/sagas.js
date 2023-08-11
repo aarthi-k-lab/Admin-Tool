@@ -171,6 +171,7 @@ function* saveWestWingWidgetData(action) {
     const email = yield select(loginSelectors.getUserPrincipalName);
     const resolutionId = yield select(dashboardSelectors.resolutionId);
     const evalId = yield select(dashboardSelectors.evalId);
+    const workoutType = yield select(dashboardSelectors.getWorkoutType);
     const { requestData } = westWingWidgetData;
     const {
       loanModificationSods,
@@ -191,7 +192,7 @@ function* saveWestWingWidgetData(action) {
     } else {
       const westWingData = { ...loanModificationSods, ...loanModificationTkams };
       westWingData.dealComment = comments;
-      westWingData.workoutType = 'M or T';
+      westWingData.workoutType = workoutType;
       westWingData.caseId = resolutionId;
       westWingData.evalId = evalId;
       const payload = {

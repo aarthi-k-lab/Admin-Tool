@@ -290,7 +290,6 @@ class TasksAndChecklist extends Component {
     const { openWidgetList, groupName } = this.props;
     const mainWidget = R.head(openWidgetList);
     let widgetToRender = null;
-    console.log(WESTWING);
     switch (mainWidget) {
       case ADDITIONAL_INFO:
         widgetToRender = <AdditionalInfo groupName={groupName} />;

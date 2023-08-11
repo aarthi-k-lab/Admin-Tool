@@ -209,6 +209,8 @@ const getWaterfallId = state => R.pathOr(0, ['dashboard', 'waterfallId'], state)
 const getBorrowerInfo = state => R.pathOr([], ['dashboard', 'processedBorrowerData'], state);
 const showWestwingWidget = state => R.pathOr(false, ['dashboard', 'showWestwingWidget'], state);
 
+const getWorkoutType = state => R.pathOr('', ['dashboard', 'workoutType'], state);
+
 const selectors = {
   getCurrentLoanMilestone,
   getODMRetryEligibility,
@@ -329,6 +331,7 @@ const selectors = {
   getWaterfallId,
   getBorrowerInfo,
   showWestwingWidget,
+  getWorkoutType,
 };
 
 export default selectors;

@@ -124,6 +124,7 @@ import {
   SET_WATERFALLID,
   SET_BORROWER_INFO,
   SHOW_WEST_WING_WIDGET,
+  SET_WORKOUT_TYPE,
 } from './types';
 
 const reducer = (state = {
@@ -1234,6 +1235,14 @@ const reducer = (state = {
       return {
         ...state,
         showWestwingWidget,
+      };
+    }
+
+    case SET_WORKOUT_TYPE: {
+      const workoutType = action.payload;
+      return {
+        ...state,
+        workoutType,
       };
     }
 

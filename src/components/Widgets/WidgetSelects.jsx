@@ -125,7 +125,7 @@ const widgets = [
     id: WESTWING,
     icon: <img alt="WestWing" src="/static/img/WestWing icon - Normal.svg" style={{ width: '23px' }} />,
     visibility: [
-      FEUW, BEUW, DOC_GEN,
+      BEUW, DOC_GEN,
     ],
     children: [COMMENTS],
     dependency: WESTWINGWIDGET,
