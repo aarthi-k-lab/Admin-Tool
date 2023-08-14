@@ -188,13 +188,13 @@ function getWestWingItems(response) {
     status,
   } = response;
   let westWingData = {};
-  let { westWingBorrowerIncomeExpense } = response;
-  if (R.isNil(westWingBorrowerIncomeExpense)) {
-    westWingBorrowerIncomeExpense = {};
-    westWingBorrowerIncomeExpense.customerFinanceExpense = {};
-    westWingBorrowerIncomeExpense.customerFinanceBorr = {};
+  let { customerFinance } = response;
+  if (R.isNil(customerFinance)) {
+    customerFinance = {};
+    customerFinance.customerFinanceExpense = {};
+    customerFinance.customerFinanceBorr = {};
   }
-  const { customerFinanceExpense, customerFinanceBorr } = westWingBorrowerIncomeExpense;
+  const { customerFinanceExpense, customerFinanceBorr } = customerFinance;
   if (!isDataFromDataService) {
     westWingData = {
       ...westWingRepaymentTkamsResponse,
@@ -244,7 +244,7 @@ function getWestWingItems(response) {
   const data = {};
   data.repayment = repaymentGenerator.map(fn => fn(westWingData));
   data.documents = documents;
-  data.westWingBorrowerIncomeExpense = BorrIncomeExpense
+  data.customerFinance = BorrIncomeExpense
     .fetchBorrIncomeExpense({
       ...customerFinanceBorr,
       ...customerFinanceExpense,
@@ -267,7 +267,7 @@ async function fetchWestWingRepay(loanNumber) {
   const {
     status, isDataFromDataService, wwRepaymentSODSRes,
     westWingRepaymentTkamsResponse, westWingRepaymentDataService,
-    decision, comments, fcStageDetails, westWingBorrowerIncomeExpense,
+    decision, comments, fcStageDetails, customerFinance,
     documents,
   } = response;
   return {
@@ -275,7 +275,7 @@ async function fetchWestWingRepay(loanNumber) {
       westWingRepaymentTkamsResponse,
       wwRepaymentSODSRes,
       documents,
-      westWingBorrowerIncomeExpense,
+      customerFinance,
       westWingRepaymentDataService,
       isDataFromDataService,
       fcStageDetails,

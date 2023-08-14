@@ -98,8 +98,8 @@ class WestWingCenterSection extends React.PureComponent {
                 <Grid item styleName="containerBackground otherInfo">
                   <BorrowerIncomeExpense
                     borrName={westWingForbRepayData.borrowerNane}
-                    data={westWingForbRepayData.westWingBorrowerIncomeExpense
-                      ? westWingForbRepayData.westWingBorrowerIncomeExpense : {
+                    data={westWingForbRepayData.customerFinance
+                      ? westWingForbRepayData.customerFinance : {
                         incomeData: [],
                         expenseData: [],
                       }}

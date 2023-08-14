@@ -74,13 +74,13 @@ function getWestWingItems(response) {
     status,
   } = response;
   let westWingData = {};
-  let { westWingBorrowerIncomeExpense } = response;
-  if (R.isNil(westWingBorrowerIncomeExpense)) {
-    westWingBorrowerIncomeExpense = {};
-    westWingBorrowerIncomeExpense.customerFinanceExpense = {};
-    westWingBorrowerIncomeExpense.customerFinanceBorr = {};
+  let { customerFinance } = response;
+  if (R.isNil(customerFinance)) {
+    customerFinance = {};
+    customerFinance.customerFinanceExpense = {};
+    customerFinance.customerFinanceBorr = {};
   }
-  const { customerFinanceExpense, customerFinanceBorr } = westWingBorrowerIncomeExpense;
+  const { customerFinanceExpense, customerFinanceBorr } = customerFinance;
   if (!isDataFromDataService) {
     westWingData = {
       ...westWingForbearanceSods,
@@ -105,7 +105,7 @@ function getWestWingItems(response) {
   const data = {};
   data.forbreance = forbGenerator.map(fn => fn(westWingData));
   data.documents = documents;
-  data.westWingBorrowerIncomeExpense = BorrIncomeExpense
+  data.customerFinance = BorrIncomeExpense
     .fetchBorrIncomeExpense({ ...customerFinanceBorr, ...customerFinanceExpense });
   data.fcStageDetails = R.isNil(fcStageDetails) ? [] : fcStageDetails;
   data.decision = R.isNil(decision) ? '' : decision;
@@ -124,7 +124,7 @@ async function fetchWestWingForb(loanNumber) {
   const {
     status, isDataFromDataService, westWingForbearanceSods,
     westWingForbearanceTkams, westWingForbearance,
-    decision, comments, fcStageDetails, westWingBorrowerIncomeExpense,
+    decision, comments, fcStageDetails, customerFinance,
     documents, errorMessage,
   } = response;
   return {
@@ -132,7 +132,7 @@ async function fetchWestWingForb(loanNumber) {
       westWingForbearanceSods,
       westWingForbearanceTkams,
       documents,
-      westWingBorrowerIncomeExpense,
+      customerFinance,
       westWingForbearance,
       isDataFromDataService,
       fcStageDetails,

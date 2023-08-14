@@ -129,7 +129,7 @@ function LoanDocument(props) {
             ).map(row => (
               <TableRow key={row.documentId}>
                 <TableCell component="th" scope="row" styleName="tableCell">
-                  {`${row.loanDocSubTypeDescription}_${row.loanNumber}_${row.documentName}`}
+                  {row.documentName}
                 </TableCell>
                 <TableCell align="left" style={{ width: 160 }} styleName="tableCell">
                   {row.evalId}

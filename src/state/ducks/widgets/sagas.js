@@ -235,8 +235,8 @@ function* fetchWestWingFrobRepayData(action) {
   } else {
     data = yield call(WestWingRepay.fetchWestWingRepay, loanNumber);
   }
-  const { status } = data;
-  if (!status) {
+  const { fetchStatus } = data;
+  if (!fetchStatus) {
     yield put({
       type: SET_POPUP_DATA,
       payload: {
@@ -271,7 +271,7 @@ function* saveWestWingForbRepayData(action) {
     if (idType === 'Forbearance') {
       const {
         westWingForbearanceSods, westWingForbearanceTkams,
-        documents, westWingBorrowerIncomeExpense,
+        documents, customerFinance,
       } = requestData;
       const { locked } = westWingForbearanceTkams;
       if (locked === 0) {
@@ -286,13 +286,14 @@ function* saveWestWingForbRepayData(action) {
       } else {
         const forbData = { ...westWingForbearanceSods, ...westWingForbearanceTkams };
         forbData.dealComment = comments;
+        forbData.evalId = 0;
         const payload = {
           forbData,
-          customerFinance: westWingBorrowerIncomeExpense,
+          customerFinance,
           documents,
           userName: email,
         };
-        const saveResponse = yield call(Api.callPost, '/api/dataservice/WestWing/saveWestWingForbearance', payload);
+        const saveResponse = yield call(Api.callPost, '/api/dataservice/westwing/saveWestWingForbearance', payload);
         if (saveResponse) {
           yield put({
             type: SET_POPUP_DATA,
@@ -302,7 +303,7 @@ function* saveWestWingForbRepayData(action) {
               title: 'Success',
             },
           });
-          yield call(fetchWestWingFrobRepayData({ idType, loanNumber }));
+          yield call(fetchWestWingFrobRepayData, { payload: { idType, loanNumber } });
         } else {
           yield put({
             type: SET_POPUP_DATA,
@@ -317,7 +318,7 @@ function* saveWestWingForbRepayData(action) {
     } else {
       const {
         wwRepaymentSODSRes, westWingRepaymentTkamsResponse,
-        documents, westWingBorrowerIncomeExpense,
+        documents, customerFinance,
       } = requestData;
       const { locked } = westWingRepaymentTkamsResponse;
       if (locked === 0) {
@@ -332,13 +333,14 @@ function* saveWestWingForbRepayData(action) {
       } else {
         const repaymentData = { ...wwRepaymentSODSRes, ...westWingRepaymentTkamsResponse };
         repaymentData.dealComment = comments;
+        repaymentData.evalId = 0;
         const payload = {
           repaymentData,
-          customerFinance: westWingBorrowerIncomeExpense,
+          customerFinance,
           documents,
           userName: email,
         };
-        const saveResponse = yield call(Api.callPost, '/api/dataservice/WestWing/saveWestWingRepayment', payload);
+        const saveResponse = yield call(Api.callPost, '/api/dataservice/westwing/saveWestWingRepayment', payload);
         if (saveResponse) {
           yield put({
             type: SET_POPUP_DATA,
@@ -348,7 +350,7 @@ function* saveWestWingForbRepayData(action) {
               title: 'Success',
             },
           });
-          yield call(fetchWestWingFrobRepayData({ idType, loanNumber }));
+          yield call(fetchWestWingFrobRepayData, { payload: { idType, loanNumber } });
         } else {
           yield put({
             type: SET_POPUP_DATA,
