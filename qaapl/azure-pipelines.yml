@@ -32,4 +32,4 @@ extends:
     includeProd: false
     buildpipelineconfigurationfile: $(build.sourcesdirectory)/qaapl/deployment/Chart.yaml
     deployworkingdirectory: $(Agent.BuildDirectory)/drop/qaapl
-    scanType: nonCompliant
+    scanType: arbExempt
