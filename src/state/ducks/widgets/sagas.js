@@ -271,7 +271,7 @@ function* saveWestWingForbRepayData(action) {
     if (idType === 'Forbearance') {
       const {
         westWingForbearanceSods, westWingForbearanceTkams,
-        documents, customerFinance,
+        customerFinance,
       } = requestData;
       const { locked } = westWingForbearanceTkams;
       if (locked === 0) {
@@ -290,7 +290,6 @@ function* saveWestWingForbRepayData(action) {
         const payload = {
           forbData,
           customerFinance,
-          documents,
           userName: email,
         };
         const saveResponse = yield call(Api.callPost, '/api/dataservice/westwing/saveWestWingForbearance', payload);
@@ -318,7 +317,7 @@ function* saveWestWingForbRepayData(action) {
     } else {
       const {
         wwRepaymentSODSRes, westWingRepaymentTkamsResponse,
-        documents, customerFinance,
+        customerFinance,
       } = requestData;
       const { locked } = westWingRepaymentTkamsResponse;
       if (locked === 0) {
@@ -337,7 +336,6 @@ function* saveWestWingForbRepayData(action) {
         const payload = {
           repaymentData,
           customerFinance,
-          documents,
           userName: email,
         };
         const saveResponse = yield call(Api.callPost, '/api/dataservice/westwing/saveWestWingRepayment', payload);

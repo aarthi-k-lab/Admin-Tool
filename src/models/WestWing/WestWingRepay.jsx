@@ -179,7 +179,6 @@ function getWestWingItems(response) {
   const {
     westWingRepaymentTkamsResponse,
     wwRepaymentSODSRes,
-    documents,
     westWingRepaymentDataService,
     isDataFromDataService,
     fcStageDetails,
@@ -243,7 +242,6 @@ function getWestWingItems(response) {
 
   const data = {};
   data.repayment = repaymentGenerator.map(fn => fn(westWingData));
-  data.documents = documents;
   data.customerFinance = BorrIncomeExpense
     .fetchBorrIncomeExpense({
       ...customerFinanceBorr,
@@ -268,13 +266,11 @@ async function fetchWestWingRepay(loanNumber) {
     status, isDataFromDataService, wwRepaymentSODSRes,
     westWingRepaymentTkamsResponse, westWingRepaymentDataService,
     decision, comments, fcStageDetails, customerFinance,
-    documents,
   } = response;
   return {
     ...getWestWingItems({
       westWingRepaymentTkamsResponse,
       wwRepaymentSODSRes,
-      documents,
       customerFinance,
       westWingRepaymentDataService,
       isDataFromDataService,

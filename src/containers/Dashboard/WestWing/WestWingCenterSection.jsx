@@ -10,7 +10,6 @@ import { operations as widgetsOperation, selectors as widgetSelectors } from 'du
 import BorrowerIncomeExpense from '../../../components/Widgets/WestWing/BorrowerIncomeExpense';
 import WestWingRepayment from './WestWingRepayment';
 import WestWingForbearance from './WestWingForbearance';
-import LoanDocument from '../../../components/Widgets/WestWing/LoanDocument';
 import FCStageDetails from '../../../components/Widgets/WestWing/FCStageDetails';
 
 
@@ -104,9 +103,6 @@ class WestWingCenterSection extends React.PureComponent {
                         expenseData: [],
                       }}
                   />
-                </Grid>
-                <Grid item styleName="containerBackground otherInfo">
-                  <LoanDocument rows={westWingForbRepayData.documents || []} />
                 </Grid>
                 <Grid item styleName="containerBackground otherInfo">
                   <FCStageDetails rows={westWingForbRepayData.fcStageDetails || []} />

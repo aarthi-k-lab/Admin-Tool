@@ -65,7 +65,6 @@ function getWestWingItems(response) {
   const {
     westWingForbearanceSods,
     westWingForbearanceTkams,
-    documents,
     westWingForbearance,
     isDataFromDataService,
     fcStageDetails,
@@ -104,7 +103,6 @@ function getWestWingItems(response) {
 
   const data = {};
   data.forbreance = forbGenerator.map(fn => fn(westWingData));
-  data.documents = documents;
   data.customerFinance = BorrIncomeExpense
     .fetchBorrIncomeExpense({ ...customerFinanceBorr, ...customerFinanceExpense });
   data.fcStageDetails = R.isNil(fcStageDetails) ? [] : fcStageDetails;
@@ -124,14 +122,12 @@ async function fetchWestWingForb(loanNumber) {
   const {
     status, isDataFromDataService, westWingForbearanceSods,
     westWingForbearanceTkams, westWingForbearance,
-    decision, comments, fcStageDetails, customerFinance,
-    documents, errorMessage,
+    decision, comments, fcStageDetails, customerFinance, errorMessage,
   } = response;
   return {
     ...getWestWingItems({
       westWingForbearanceSods,
       westWingForbearanceTkams,
-      documents,
       customerFinance,
       westWingForbearance,
       isDataFromDataService,
