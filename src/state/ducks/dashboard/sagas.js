@@ -1332,7 +1332,8 @@ function* getNext(action) {
     const groupName = yield select(selectors.groupName);
     const group = getGroup(groupName);
     const stagerTaskName = yield select(selectors.stagerTaskName);
-    const brand = (yield select(loginSelectors.isRPSGroupPresent)) ? 'RPS' : 'NSM';
+    const isRSHGroupPresent = (yield select(loginSelectors.isRSHGroupPresent));
+    const brand = isRSHGroupPresent ? 'RSH' : 'NSM';
     if (group === DashboardModel.UWSTAGER && stagerTaskName.activeTile === 'Delay Checklist') {
       yield put(checklistActions.validationDisplayAction(false));
       yield call(saveDelayChecklistDataToDB);

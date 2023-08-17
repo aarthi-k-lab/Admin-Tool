@@ -10,7 +10,6 @@ import styles from './WidgetBuilder.css';
 import WidgetComponent from './WidgetComponent';
 import { selectors, operations } from '../../state/ducks/widgets';
 import { selectors as dashboardSelectors } from '../../state/ducks/dashboard';
-import { selectors as loginSelectors } from '../../state/ducks/login';
 import { selectors as configSelectors } from '../../state/ducks/config';
 import { DISABLE_WIDGET_INVESTOR_CODES } from '../../constants/fhlmc';
 
@@ -222,7 +221,6 @@ const mapStateToProps = state => ({
   disabledWidgets: selectors.getDisabledWidgets(state),
   resolutionId: dashboardSelectors.resolutionId(state),
   investorHierarchy: dashboardSelectors.getInvestorHierarchy(state),
-  isRPSUser: loginSelectors.isRPSGroupPresent(state),
   investorCode: dashboardSelectors.getInvestorCode(state),
   brandName: dashboardSelectors.brand(state),
   features: configSelectors.getFeatures(state),

@@ -143,6 +143,7 @@ describe('getnext Success', () => {
     },
     incomeCalcData: {},
   };
+
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -163,9 +164,9 @@ describe('getnext Success', () => {
       .toEqual(select(selectors.stagerTaskName));
   });
 
-  it('should get brand name', () => {
+  it('should get RSH brand name', () => {
     expect(saga.next().value)
-      .toEqual(select(loginSelectors.isRPSGroupPresent));
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
   });
 
   it('should call save disposition generator', () => {
@@ -317,6 +318,7 @@ describe('getnext Failure -  no tasks found', () => {
   const mockTaskDetails = {
     messsage: 'No Tasks Found',
   };
+
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
       .toEqual(put({ type: actionTypes.SHOW_LOADER }));
@@ -337,9 +339,9 @@ describe('getnext Failure -  no tasks found', () => {
       .toEqual(select(selectors.stagerTaskName));
   });
 
-  it('should get brand name', () => {
+  it('should get RSH brand name', () => {
     expect(saga.next().value)
-      .toEqual(select(loginSelectors.isRPSGroupPresent));
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
   });
 
   it('should call save disposition generator', () => {
@@ -449,7 +451,6 @@ describe('getnext Failure -  task fetch failure', () => {
     },
     groupList: ['allaccess', 'cmod-dev-beta'],
   };
-
   const mockTaskDetails = null;
   it('should dispatch action SHOW_LOADER', () => {
     expect(saga.next().value)
@@ -471,9 +472,9 @@ describe('getnext Failure -  task fetch failure', () => {
       .toEqual(select(selectors.stagerTaskName));
   });
 
-  it('should get brand name', () => {
+  it('should get RSH brand name', () => {
     expect(saga.next().value)
-      .toEqual(select(loginSelectors.isRPSGroupPresent));
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
   });
 
   it('should call save disposition generator', () => {
