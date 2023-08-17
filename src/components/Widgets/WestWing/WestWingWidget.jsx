@@ -184,10 +184,10 @@ function WestWingWidget(props) {
                                 {row.comment}
                               </TableCell>
                               <TableCell align="left">
-                                {row.addUser}
+                                {row.addUser ? row.addUser : ''}
                               </TableCell>
                               <TableCell align="left">
-                                {row.addTime}
+                                {row.addTime ? row.addTime : ''}
                               </TableCell>
                             </TableRow>
                           ))}

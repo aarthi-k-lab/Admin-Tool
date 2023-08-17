@@ -419,7 +419,7 @@ function getDownPaymentPercentage(data) {
 }
 
 function getTermofTrialPlan(data) {
-  const termofTrialPlan = getOr('termofTrialPlan', data, NA);
+  const termofTrialPlan = getOr('termOfTrialPlan', data, NA);
   return generateWestWingItem('Term of Trial Plan', termofTrialPlan);
 }
 
@@ -429,7 +429,7 @@ function getDifference(data) {
 }
 
 function getBorrowerTotalExpenses(data) {
-  const borrowerTotalExpenses = getOr('borrowerTotalExpenses', data, NA);
+  const borrowerTotalExpenses = getOr('totalMonthlyDebt', data, NA);
   return generateWestWingItem('Borrower Total Expenses', borrowerTotalExpenses);
 }
 
@@ -454,7 +454,7 @@ function getTrialPlan(data) {
 }
 
 function getTrialPlanMonths(data) {
-  const trialPlanMonths = getOr('numberTrialPayments', data, NA);
+  const trialPlanMonths = getOr('termOfTrialPlan', data, NA);
   return generateWestWingItem('Trial Plan Months', trialPlanMonths);
 }
 

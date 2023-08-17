@@ -86,12 +86,12 @@ function getTotalDueAmount(data) {
 }
 
 function getFirstName(data) {
-  const firstName = getOr('firstName', data, NA);
+  const firstName = getOr('borrowerFirstName', data, NA);
   return firstName;
 }
 
 function getLastName(data) {
-  const lastName = getOr('lastName', data, NA);
+  const lastName = getOr('borrowerLastName', data, NA);
   return lastName;
 }
 

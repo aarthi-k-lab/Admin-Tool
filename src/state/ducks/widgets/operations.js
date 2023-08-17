@@ -7,6 +7,7 @@ import {
   saveWestWingWidgetDataAction,
   fetchWestWingFrobRepayDataAction,
   saveWestWingFrobRepayDataAction,
+  restWestWingForbRepayDataAction,
 } from './actions';
 
 const onWidgetToggle = dispatch => (payload) => {
@@ -37,6 +38,10 @@ const saveWestWingForbRepayDataOperation = dispatch => (payload) => {
   dispatch(saveWestWingFrobRepayDataAction(payload));
 };
 
+const resetWestWingForbRepayDataOperation = dispatch => () => {
+  dispatch(restWestWingForbRepayDataAction());
+};
+
 
 const operations = {
   onWidgetToggle,
@@ -46,6 +51,7 @@ const operations = {
   saveWestWingWidgetDataOperation,
   fetchWestWingFrobRepayDataOperation,
   saveWestWingForbRepayDataOperation,
+  resetWestWingForbRepayDataOperation,
 };
 
 export default operations;

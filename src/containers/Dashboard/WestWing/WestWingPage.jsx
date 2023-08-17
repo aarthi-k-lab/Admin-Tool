@@ -87,6 +87,8 @@ class WestWingPage extends React.PureComponent {
 
   renderWestWingNotepadArea = () => {
     const { ids, isSubmitDisabled, idType } = this.state;
+    const { resetWestWingForbRepay } = this.props;
+    resetWestWingForbRepay();
     return (
       <>
         <div styleName="status-details-parent">
@@ -218,7 +220,7 @@ WestWingPage.propTypes = {
     showConfirmButton: PropTypes.bool,
     title: PropTypes.string,
   }).isRequired,
-
+  resetWestWingForbRepay: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -229,6 +231,7 @@ const mapDispatchToProps = dispatch => ({
   fetchData: widgetsOperation.fetchWestWingFrobRepayDataOperation(dispatch),
   dispatchAction: dashboardOperations.dispatchAction(dispatch),
   clearPopupData: dashboardOperations.clearPopupData(dispatch),
+  resetWestWingForbRepay: widgetsOperation.resetWestWingForbRepayDataOperation(dispatch),
 });
 
 
