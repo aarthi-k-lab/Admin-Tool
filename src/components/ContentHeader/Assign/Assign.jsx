@@ -24,12 +24,13 @@ class Assign extends React.Component {
 
   handleClick() {
     const {
-      onAssignLoan, location, onGetGroupName, onAssignToMeClick,
+      onAssignLoan, location, onGetGroupName, onAssignToMeClick, enableSendToDocsIn,
     } = this.props;
     onAssignToMeClick(true);
     const el = DashboardModel.GROUP_INFO.find(page => page.path === location.pathname);
     onGetGroupName(el.group);
     onAssignLoan();
+    enableSendToDocsIn(true);
   }
 
   handleClose() {
@@ -78,6 +79,7 @@ Assign.defaultProps = {
   onAssignLoan: () => { },
   onDialogClose: () => { },
   assigntomeBtnStats: false,
+  enableSendToDocsIn: () => { },
 };
 
 const mapStateToProps = state => ({
@@ -90,6 +92,7 @@ const mapDispatchToProps = dispatch => ({
   onDialogClose: operations.onDialogClose(dispatch),
   onGetGroupName: operations.onGetGroupName(dispatch),
   onAssignToMeClick: operations.onAssignToMeClick(dispatch),
+  enableSendToDocsIn: operations.toggleSendToDocsInOperation(dispatch),
 });
 
 Assign.propTypes = {
@@ -111,6 +114,7 @@ Assign.propTypes = {
     }),
   }).isRequired,
   assigntomeBtnStats: PropTypes.bool,
+  enableSendToDocsIn: PropTypes.func,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string.isRequired,

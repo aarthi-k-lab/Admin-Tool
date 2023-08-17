@@ -86,7 +86,10 @@ import {
   odmRerunAction,
   disableSaveAction,
   enableLockButton,
+  fetchBookingRejectDropdown,
   dashboardResetDataAction,
+  toggleSendToDocsIn,
+  intiateBookingSendToDocsIn,
 } from './actions';
 
 import {
@@ -472,9 +475,20 @@ const disableSaveOperation = dispatch => (payload) => {
   dispatch(disableSaveAction(payload));
 };
 
+const fetchBookingRejectDropdownOperation = dispatch => () => {
+  dispatch(fetchBookingRejectDropdown());
+};
 
 const dashboardResetDataOperation = dispatch => () => {
   dispatch(dashboardResetDataAction());
+};
+
+const toggleSendToDocsInOperation = dispatch => (payload) => {
+  dispatch(toggleSendToDocsIn(payload));
+};
+
+const initiateBookingOperation = dispatch => (payload) => {
+  dispatch(intiateBookingSendToDocsIn(payload));
 };
 
 const operations = {
@@ -570,7 +584,10 @@ const operations = {
   odmRerunOperation,
   disableSaveOperation,
   disableLockButton,
+  fetchBookingRejectDropdownOperation,
   dashboardResetDataOperation,
+  toggleSendToDocsInOperation,
+  initiateBookingOperation,
 };
 
 export default operations;
