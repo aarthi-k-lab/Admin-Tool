@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import Validators from 'lib/Validators';
+import moment from 'moment-timezone';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
 
@@ -14,6 +15,16 @@ function generateWestWingItem(title, value) {
     value,
   };
 }
+
+function dateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
+  const date = moment.tz(value, 'America/Chicago');
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return dateString;
+}
+
 
 function getFirstName(data) {
   const firstName = getOr('borrowerFirstName', data, NA);
@@ -37,7 +48,7 @@ function getProgramType(data) {
 
 function getForbearancePlanStartDate(data) {
   const forbearancePlanStartDate = getOr('firstPaymentDueDate', data, NA);
-  return generateWestWingItem('Forbearance Plan Start Date', forbearancePlanStartDate);
+  return generateWestWingItem('Forbearance Plan Start Date', dateFormatter(forbearancePlanStartDate));
 }
 
 function getForbearancePaymentAmount(data) {

@@ -22,11 +22,9 @@ function dateFormatter(value) {
   if (value === NA) {
     return value;
   }
-  const date = new Date(value);
-  const year = date.getUTCFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${month}/${day}/${year}`;
+  const date = moment.tz(value, 'America/Chicago');
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return dateString;
 }
 
 function getBorrower1GrossIncome(data) {
@@ -55,7 +53,7 @@ function getCustomerIncomeSource(data) {
 }
 
 function getBorrowerExpenseIncludingMtgPmt(data) {
-  const borrowerExpenseIncludingMtgPmt = getOr('totalMonthlyDebt', data, NA);
+  const borrowerExpenseIncludingMtgPmt = getOr('frontendexpenses', data, NA);
   return generateWestWingItem('Borrower expen. Including Mtg Pmt.', borrowerExpenseIncludingMtgPmt);
 }
 
@@ -459,7 +457,7 @@ function getTrialPlanMonths(data) {
 }
 
 function getTrialPaymentAmount(data) {
-  const trialPaymentAmount = getOr('stipPaymentAmount', data, NA);
+  const trialPaymentAmount = getOr('trialPayment', data, NA);
   return generateWestWingItem('Trial Payment Amount', trialPaymentAmount);
 }
 
@@ -474,17 +472,17 @@ function getOutstandingAttorneyFeesandCosts(data) {
 }
 
 function getUPBVariance(data) {
-  const uPBVariance = getOr('uPBVariance', data, NA);
+  const uPBVariance = getOr('upbVariance', data, NA);
   return generateWestWingItem('UPB Variance', uPBVariance);
 }
 
 function getInterestRateVariance(data) {
-  const interestRateVariance = getOr('interestRateVariance', data, NA);
+  const interestRateVariance = getOr('modInterestRate', data, NA);
   return generateWestWingItem('Interest Rate Variance', interestRateVariance);
 }
 
 function getPIpaymentvariance(data) {
-  const pIpaymentvariance = getOr('pIpaymentvariance', data, NA);
+  const pIpaymentvariance = getOr('piPaymentVariance', data, NA);
   return generateWestWingItem('P&I payment variance', pIpaymentvariance);
 }
 

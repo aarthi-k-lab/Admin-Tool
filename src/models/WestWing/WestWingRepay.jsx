@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import Validators from 'lib/Validators';
+import moment from 'moment-timezone';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
 
@@ -15,6 +16,16 @@ function generateWestWingItem(title, value) {
   };
 }
 
+function dateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
+  const date = moment.tz(value, 'America/Chicago');
+  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  return dateString;
+}
+
+
 function getBorrower1GrossIncome(data) {
   const borrower1GrossIncome = getOr('borr1GrossIncome', data, NA);
   return generateWestWingItem('Borrower 1 Gross income', borrower1GrossIncome);
@@ -26,7 +37,7 @@ function getBorrower1NetIncome(data) {
 }
 
 function getBorrower2GrossIncome(data) {
-  const borrower2GrossIncome = getOr('coBorrowerGrossIncome', data, NA);
+  const borrower2GrossIncome = getOr('borr2GrossIncome', data, NA);
   return generateWestWingItem('Borrower 2 Gross income', borrower2GrossIncome);
 }
 
@@ -48,8 +59,8 @@ function getValuationType(data) {
 }
 
 function getValuationDate(data) {
-  const valuationDate = getOr('valuationDate', data, NA);
-  return generateWestWingItem('Valuation date', valuationDate);
+  const valuationDate = getOr('bpoEffectiveDate', data, NA);
+  return generateWestWingItem('Valuation date', dateFormatter(valuationDate));
 }
 
 function getCurrentValuationAmount(data) {
@@ -149,7 +160,7 @@ function getDifference(data) {
 }
 
 function getBorrowerTotalExpenses(data) {
-  const borrowerTotalExpenses = getOr('borrowerTotalExpenses', data, NA);
+  const borrowerTotalExpenses = getOr('totalMonthlyDebt', data, NA);
   return generateWestWingItem('Borrower Total Expenses', borrowerTotalExpenses);
 }
 
