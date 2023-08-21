@@ -10,6 +10,7 @@ import {
 import { operations as widgetsOperation, selectors as widgetSelectors } from 'ducks/widgets';
 import { selectors as dashboardSelectors } from 'ducks/dashboard';
 import { makeStyles } from '@material-ui/core/styles';
+import moment from 'moment-timezone';
 import BorrowerIncomeExpense from './BorrowerIncomeExpense';
 import LoanDocument from './LoanDocument';
 import FCStageDetails from './FCStageDetails';
@@ -181,13 +182,13 @@ function WestWingWidget(props) {
                                 {row.comment}
                               </TableCell>
                               <TableCell align="left">
-                                {row.comment}
+                                {null}
                               </TableCell>
                               <TableCell align="left">
-                                {row.addUser ? row.addUser : ''}
+                                {row.audCreByNm ? row.audCreByNm : ''}
                               </TableCell>
                               <TableCell align="left">
-                                {row.addTime ? row.addTime : ''}
+                                {row.audCreDttm ? moment(row.audCreDttm).format('MM/DD/YYYY') : ''}
                               </TableCell>
                             </TableRow>
                           ))}

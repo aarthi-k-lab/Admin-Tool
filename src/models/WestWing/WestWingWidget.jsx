@@ -52,7 +52,7 @@ function getCustomerIncomeSource(data) {
 }
 
 function getBorrowerExpenseIncludingMtgPmt(data) {
-  const borrowerExpenseIncludingMtgPmt = getOr('frontendexpenses', data, NA);
+  const borrowerExpenseIncludingMtgPmt = getOr('frontEndExpenses', data, NA);
   return generateWestWingItem('Borrower expen. Including Mtg Pmt.', borrowerExpenseIncludingMtgPmt);
 }
 
@@ -416,7 +416,7 @@ function getDownPaymentPercentage(data) {
 }
 
 function getTermofTrialPlan(data) {
-  const termofTrialPlan = getOr('termOfTrialPlan', data, NA);
+  const termofTrialPlan = getOr('numberTrialPayments', data, NA);
   return generateWestWingItem('Term of Trial Plan', termofTrialPlan);
 }
 
@@ -451,7 +451,7 @@ function getTrialPlan(data) {
 }
 
 function getTrialPlanMonths(data) {
-  const trialPlanMonths = getOr('termOfTrialPlan', data, NA);
+  const trialPlanMonths = getOr('numberTrialPayments', data, NA);
   return generateWestWingItem('Trial Plan Months', trialPlanMonths);
 }
 
@@ -476,7 +476,7 @@ function getUPBVariance(data) {
 }
 
 function getInterestRateVariance(data) {
-  const interestRateVariance = getOr('modInterestRate', data, NA);
+  const interestRateVariance = getOr('interestRateVariance', data, NA);
   return generateWestWingItem('Interest Rate Variance', interestRateVariance);
 }
 
