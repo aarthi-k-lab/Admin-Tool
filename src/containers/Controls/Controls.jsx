@@ -48,7 +48,7 @@ class Controls extends React.PureComponent {
     const {
       disableSendToDocsIn, isAssigned, getModViewData, milestone, user,
     } = this.props;
-    const showButton = user.groupList.includes('docsin-mgr');
+    const showButton = user && user.groupList && user.groupList.includes('docsin-mgr');
     let content = R.propOr('', 'content', R.find(R.propEq('title',
       ('Resolution Choice Type')))(getModViewData));
     content = content.trim();
