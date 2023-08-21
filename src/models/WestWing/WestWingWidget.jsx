@@ -22,8 +22,7 @@ function dateFormatter(value) {
   if (value === NA) {
     return value;
   }
-  const date = moment.tz(value, 'America/Chicago');
-  const dateString = date.isValid() ? date.format('MM/DD/YYYY') : NA;
+  const dateString = moment(value).format('MM/DD/YYYY') || NA;
   return dateString;
 }
 
