@@ -46,17 +46,20 @@ import {
 } from '../notifications/types';
 import { storeDelayCheckList, storeDelayCheckListHistory } from './actions';
 
-function buildDateObj(stagerType, stagerStartEndDate, searchTerm) {
+function buildDateObj(stagerType, stagerStartEndDate, searchTerm, brandName = null) {
   const fromDateMoment = R.propOr({}, 'fromDate', stagerStartEndDate);
   const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
   const fromDate = new Date(fromDateMoment).toISOString();
   const toDate = new Date(toDateMoment).toISOString();
-  const dateValue = {
+  let dateValue = {
     fromDate,
     toDate,
     stagerType,
     searchTerm,
   };
+  if (brandName) {
+    dateValue = { ...dateValue, brandName };
+  }
   return dateValue;
 }
 
@@ -66,7 +69,9 @@ function* fetchDashboardCounts() {
     if (!R.isEmpty(user)) {
       const stagerType = yield select(selectors.getStagerValue);
       const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-      const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+      const isRSHGroupPresent = (yield select(loginSelectors.isRSHGroupPresent));
+      const brandName = isRSHGroupPresent ? 'RSH' : 'NSM';
+      const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, brandName);
       const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
       if (response != null) {
         if (!R.contains('beuw-mgr', user.groupList)) {
@@ -112,6 +117,8 @@ function* fetchDashboardData(data) {
     const toDateMoment = R.propOr({}, 'toDate', stagerStartEndDate);
     const fromDate = new Date(fromDateMoment).toISOString();
     const toDate = new Date(toDateMoment).toISOString();
+    const isRSHGroupPresent = (yield select(loginSelectors.isRSHGroupPresent));
+    const brandName = isRSHGroupPresent ? 'RSH' : 'NSM';
     let requestPayload = {};
     let stagerSchedulerResponse = {};
     const stagerFetchCriteria = {
@@ -131,11 +138,12 @@ function* fetchDashboardData(data) {
         fromDate,
         toDate,
         azureSearchToggle,
+        brandName,
       };
     } else {
       requestPayload = buildDateObj(stagerType,
         stagerStartEndDate,
-        searchTerm);
+        searchTerm, brandName);
     }
     const response = yield call(Api.callPost, 'api/stager/dashboard/getDataByDate', requestPayload);
     yield put({
@@ -304,7 +312,9 @@ function* makeStagerSearchLoanCall(payload) {
     const searchLoanNumber = payload.payload;
     const stagerType = yield select(selectors.getStagerValue);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null);
+    const isRSHGroupPresent = (yield select(loginSelectors.isRSHGroupPresent));
+    const brandName = isRSHGroupPresent ? 'RSH' : 'NSM';
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, brandName);
     dateValue.loanNumber = searchLoanNumber;
     const response = yield call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', dateValue);
     yield put({
