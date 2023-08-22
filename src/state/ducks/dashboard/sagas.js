@@ -3100,6 +3100,10 @@ function* watchODMRerun() {
   yield takeEvery(ODM_RERUN_SAGA, handleODMRerun);
 }
 
+export const commonExports = {
+  fetchBorrowers,
+};
+
 export const TestExports = {
   watchODMRerun,
   fetchMilestoneData,
