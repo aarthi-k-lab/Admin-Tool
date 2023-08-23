@@ -182,7 +182,7 @@ function WestWingWidget(props) {
                                 {row.comment}
                               </TableCell>
                               <TableCell align="left">
-                                {null}
+                                {'-'}
                               </TableCell>
                               <TableCell align="left">
                                 {row.audCreByNm ? row.audCreByNm : ''}
