@@ -12,7 +12,6 @@ import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import { Grid } from '@material-ui/core';
 import './LoanDocument.css';
-import TablePaginationActions from './TablePaginationActions';
 
 
 const useStyles2 = makeStyles({
@@ -80,18 +79,12 @@ function LoanDocument(props) {
           </TableBody>
           <TableFooter styleName="loanDocTableFooter">
             <TablePagination
-              ActionsComponent={TablePaginationActions}
-              colSpan={4}
               count={rows.length}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               page={page}
               rowsPerPage={rowsPerPage}
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
+              rowsPerPageOptions={[5, 10, 25]}
             />
           </TableFooter>
         </Table>

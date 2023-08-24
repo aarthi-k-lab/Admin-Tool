@@ -34,7 +34,7 @@ function getLastName(data) {
 
 function getGoodThroughDate(data) {
   const goodThroughDate = getOr('goodThroughDate', data, NA);
-  return generateWestWingItem('Good Through Date', goodThroughDate);
+  return generateWestWingItem('Good Through Date', dateFormatter(goodThroughDate));
 }
 
 function getProgramType(data) {
