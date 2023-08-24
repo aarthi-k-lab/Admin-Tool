@@ -36,6 +36,13 @@ class DocsInGoBack extends React.PureComponent {
     this.accessRedirectDialog = this.accessRedirectDialog.bind(this);
   }
 
+  componentDidMount() {
+    const {
+      disableSendToDocsIn,
+    } = this.props;
+    disableSendToDocsIn(true);
+  }
+
   componentDidUpdate() {
     const {
       onPostComment, LoanNumber, ProcIdType, EvalId,
@@ -214,12 +221,14 @@ DocsInGoBack.defaultProps = {
   openWidgetList: [],
   fetchBookingRejectDropdown: () => {},
   rejectReasonDropdownOptions: [],
+  disableSendToDocsIn: () => {},
 };
 
 DocsInGoBack.propTypes = {
   AppName: PropTypes.string,
   checklistCenterPaneView: PropTypes.string.isRequired,
   clearPopupData: PropTypes.func.isRequired,
+  disableSendToDocsIn: PropTypes.func,
   dispatchAction: PropTypes.func.isRequired,
   dispositionReason: PropTypes.string.isRequired,
   EvalId: PropTypes.number.isRequired,
@@ -287,6 +296,7 @@ const mapDispatchToProps = dispatch => ({
   clearPopupData: operations.clearPopupData(dispatch),
   dispatchAction: operations.dispatchAction(dispatch),
   fetchBookingRejectDropdown: operations.fetchBookingRejectDropdownOperation(dispatch),
+  disableSendToDocsIn: operations.toggleSendToDocsInOperation(dispatch),
 });
 
 const DocsInGoBackContainer = connect(mapStateToProps, mapDispatchToProps)(DocsInGoBack);

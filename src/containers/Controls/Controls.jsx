@@ -46,9 +46,8 @@ class Controls extends React.PureComponent {
 
   componentDidMount() {
     const {
-      disableSendToDocsIn, isAssigned, getModViewData, milestone, user,
+      disableSendToDocsIn, isAssigned, getModViewData, milestone,
     } = this.props;
-    const showButton = user && user.groupList && user.groupList.includes('docsin-mgr');
     let content = R.propOr('', 'content', R.find(R.propEq('title',
       ('Resolution Choice Type')))(getModViewData));
     content = content.trim();
@@ -59,9 +58,9 @@ class Controls extends React.PureComponent {
     });
     if (milestone !== 'Post Mod' && content !== 'Payment Deferral'
     && content !== 'Payment Deferral Disaster') {
-      if (!isAssigned && !showButton) {
+      if (!isAssigned) {
         disableSendToDocsIn(false);
-      } else if (!isAssigned && showButton) {
+      } else if (isAssigned) {
         disableSendToDocsIn(true);
       } else {
         disableSendToDocsIn(true);
@@ -80,7 +79,7 @@ class Controls extends React.PureComponent {
       && content !== 'Payment Deferral Disaster') {
         if (!isAssigned && taskName !== 'Pending Buyout') {
           disableSendToDocsIn(false);
-        } else if (!isAssigned && taskName === 'Pending Buyout') {
+        } else if (isAssigned && taskName === 'Pending Buyout') {
           disableSendToDocsIn(true);
         } else {
           disableSendToDocsIn(true);
