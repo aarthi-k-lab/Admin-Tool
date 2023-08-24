@@ -80,8 +80,8 @@ function LoanDocument(props) {
           <TableFooter styleName="loanDocTableFooter">
             <TablePagination
               count={rows.length}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
               page={page}
               rowsPerPage={rowsPerPage}
               rowsPerPageOptions={[5, 10, 25]}
