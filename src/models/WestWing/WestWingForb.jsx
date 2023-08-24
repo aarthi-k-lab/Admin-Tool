@@ -17,6 +17,9 @@ function generateWestWingItem(title, value) {
 }
 
 function dateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
   const dateString = moment(value).format('MM/DD/YYYY') || NA;
   return dateString;
 }
