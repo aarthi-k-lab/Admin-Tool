@@ -1,9 +1,8 @@
 import * as R from 'ramda';
 import Validators from 'lib/Validators';
-import moment from 'moment-timezone';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
-
+import * as DateUtils from '../../lib/DateUtils';
 
 export const NA = '-';
 
@@ -20,7 +19,7 @@ function dateFormatter(value) {
   if (value === NA) {
     return value;
   }
-  const dateString = moment(value).format('MM/DD/YYYY') || NA;
+  const dateString = DateUtils.DateFormatter(value);
   return dateString;
 }
 

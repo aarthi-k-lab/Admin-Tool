@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import moment from 'moment-timezone';
 import * as R from 'ramda';
 import Validators from 'lib/Validators';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
+import * as DateUtils from '../../lib/DateUtils';
 
 
 export const NA = '-';
@@ -18,11 +18,18 @@ function generateWestWingItem(title, value) {
   };
 }
 
+function rateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
+  return `${parseFloat(value * 100).toFixed(2)}%`;
+}
+
 function dateFormatter(value) {
   if (value === NA) {
     return value;
   }
-  const dateString = moment(value).format('MM/DD/YYYY') || NA;
+  const dateString = DateUtils.DateFormatter(value);
   return dateString;
 }
 
@@ -78,7 +85,7 @@ function getModificationMaturityDate(data) {
 
 function getModInterestRate(data) {
   const modInterestRate = getOr('modInterestRate', data, NA);
-  return generateWestWingItem('MOD Interest rate', modInterestRate);
+  return generateWestWingItem('MOD Interest rate', rateFormatter(modInterestRate));
 }
 
 function getModPrincipalAndInterestPayment(data) {
@@ -183,7 +190,7 @@ function getCurrentMaturityDate(data) {
 
 function getCurrentInterestRate(data) {
   const currentInterestRate = getOr('currentInterestRate', data, NA);
-  return generateWestWingItem('Current Interest rate', currentInterestRate);
+  return generateWestWingItem('Current Interest rate', rateFormatter(currentInterestRate));
 }
 
 function getTotalPayment(data) {
@@ -477,7 +484,7 @@ function getUPBVariance(data) {
 
 function getInterestRateVariance(data) {
   const interestRateVariance = getOr('interestRateVariance', data, NA);
-  return generateWestWingItem('Interest Rate Variance', interestRateVariance);
+  return generateWestWingItem('Interest Rate Variance', rateFormatter(interestRateVariance));
 }
 
 function getPIpaymentvariance(data) {
