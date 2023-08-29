@@ -112,6 +112,7 @@ function* fetchWestwingValidation() {
       payload: {
         level: FAILED,
         status: VALIDATE_WESTWING_ERROR,
+        message: VALIDATE_WESTWING_ERROR,
       },
     });
   }
