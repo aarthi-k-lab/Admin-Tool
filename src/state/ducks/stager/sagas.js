@@ -205,7 +205,9 @@ function* fetchDownloadData(callBack) {
     const searchTerm = yield select(selectors.getActiveSearchTerm);
     const stagerStartEndDate = yield select(selectors.getStagerStartEndDate);
     const azureSearchToggle = yield select(selectors.getAzureSearchToggle);
-    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm);
+    const isRSHGroupPresent = (yield select(loginSelectors.isRSHGroupPresent));
+    const brandName = isRSHGroupPresent ? 'RSH' : 'NSM';
+    const dateValue = buildDateObj(stagerType, stagerStartEndDate, searchTerm, brandName);
     const downloadPayload = {
       ...dateValue,
       azureSearchToggle,

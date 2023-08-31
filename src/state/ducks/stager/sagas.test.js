@@ -102,6 +102,7 @@ const dateValue = {
   stagerType: 'UNDERWRITER STAGER',
   toDate: '2023-08-21T00:00:00.000Z',
   searchTerm: null,
+  brandName: 'NSM',
 };
 
 const dateUTCValue = {
@@ -439,10 +440,14 @@ describe('fetchDownloadData - success', () => {
     expect(saga.next(dateUTCValue).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
 
   it('call downloadDataByDate Api', () => {
     expect(saga.next(false).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue }));
   });
   it('update download response in state', () => {
     expect(saga.next({ response: 'data' }).value)
@@ -473,10 +478,14 @@ describe('fetchDownloadData - null response', () => {
     expect(saga.next(dateUTCValue).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
 
   it('call downloadDataByDate Api', () => {
     expect(saga.next(false).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue }));
   });
   it('should complete', () => {
     expect(saga.next(null).done).toEqual(true);
@@ -504,7 +513,10 @@ describe('fetchDownloadData - error', () => {
     expect(saga.next(null).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
-
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
   it('should update state with empty payload', () => {
     expect(saga.next(false).value)
       .toEqual(put({ type: SET_DOWNLOAD_DATA, payload: {} }));
