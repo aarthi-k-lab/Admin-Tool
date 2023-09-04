@@ -30,6 +30,22 @@ const FICO_HISTORY_COLUMNS = [
     },
     cellFormat: value => moment(value).format('MM/DD/YYYY'),
   },
+  {
+    name: 'CompletedBy',
+
+    label: 'Completed By',
+
+    align: 'left',
+
+    options: {
+
+      filter: false,
+
+      sort: false,
+
+    },
+
+  },
 ];
 export const TABLE_SCHEMA = { FICO: FICO_HISTORY_COLUMNS };
 
