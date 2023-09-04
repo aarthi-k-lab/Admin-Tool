@@ -233,7 +233,8 @@ function* fetchWestWingFrobRepayData(action) {
   if (idType === 'Forbearance') {
     data = yield call(WestWingForb.fetchWestWingForb, loanNumber);
   } else {
-    data = yield call(WestWingRepay.fetchWestWingRepay, loanNumber);
+    const type = R.equals('Repayment Plan', idType) ? 'repaymentPlan' : 'disasterRepayment';
+    data = yield call(WestWingRepay.fetchWestWingRepay, loanNumber, type);
   }
   const { fetchStatus } = data;
   if (!fetchStatus) {

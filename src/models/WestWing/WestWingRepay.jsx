@@ -269,8 +269,8 @@ function getWestWingItems(response) {
   return data;
 }
 
-async function fetchWestWingRepay(loanNumber) {
-  const response = await Api.callGet(`/api/data-aggregator/westwing/repayment/${loanNumber}`);
+async function fetchWestWingRepay(loanNumber, type) {
+  const response = await Api.callGet(`/api/data-aggregator/westwing/repayment/${loanNumber}/${type}`);
   const {
     status, isDataFromDataService, wwRepaymentSODSRes,
     westWingRepaymentTkamsResponse, westWingRepaymentDataService,

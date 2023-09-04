@@ -48,6 +48,7 @@ class WestWingCenterSection extends React.PureComponent {
         sectionToRender = <WestWingForbearance data={westWingForbRepayData} />;
         break;
       case 'Repayment Plan':
+      case 'Disaster Repayment Plan':
         sectionToRender = <WestWingRepayment data={westWingForbRepayData} />;
         break;
       default:
