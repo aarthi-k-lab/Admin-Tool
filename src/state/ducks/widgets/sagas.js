@@ -333,7 +333,6 @@ function* saveWestWingForbRepayData(action) {
       } else {
         const repaymentData = { ...wwRepaymentSODSRes, ...westWingRepaymentTkamsResponse };
         repaymentData.dealComment = comments;
-        repaymentData.evalId = 0;
         const payload = {
           repaymentData,
           customerFinance,
