@@ -12,6 +12,7 @@ import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import { Grid } from '@material-ui/core';
 import './FCStageDetails.css';
+import { DateFormatter } from '../../../../lib/DateUtils';
 
 
 const useStyles2 = makeStyles({
@@ -59,10 +60,10 @@ function FCStageDetails(props) {
                   {row.stepDescription}
                 </TableCell>
                 <TableCell align="left" style={{ width: 160 }} styleName="tableCell">
-                  {row.referralStartDate}
+                  {row.referralStartDate ? DateFormatter(row.referralStartDate) : '-'}
                 </TableCell>
                 <TableCell align="left" style={{ width: 160 }} styleName="tableCell">
-                  {row.stepCompletionDate}
+                  {row.stepCompletionDate ? DateFormatter(row.stepCompletionDate) : '-'}
                 </TableCell>
               </TableRow>
             ))}
