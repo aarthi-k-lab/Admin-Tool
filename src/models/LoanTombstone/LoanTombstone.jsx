@@ -261,10 +261,10 @@ function getIOFlag(loanDetails) {
   return generateTombstoneItem('IO Flag', ioFlag);
 }
 
-function getFreddieIndicator(_m, _pd, _g, _t, freddieIndicatorData, _l) {
-  const investorCode = R.path(['investorInformation', 'investorCode'], _l);
+function getFreddieIndicator(_data) {
+  const investorCode = R.path(['investorInformation', 'investorCode'], _data.loanDetails);
   const investorCodes = ['BJ9', 'CAT', 'BX6', 'BX7'];
-  const freddieSystem = investorCodes.includes(investorCode) ? NA : freddieIndicatorData;
+  const freddieSystem = investorCodes.includes(investorCode) ? NA : _data.freddieIndicatorData;
 
   return generateTombstoneItem('Freddie System', freddieSystem || NA);
 }
