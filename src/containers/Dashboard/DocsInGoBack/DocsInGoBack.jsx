@@ -15,6 +15,7 @@ import AdditionalInfo from 'containers/AdditionalInfo';
 import { selectors as widgetsSelectors } from 'ducks/widgets';
 import Grid from '@material-ui/core/Grid';
 import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
+import SendToDocsInDialog from 'components/ContentHeader/SendToDocsInDialog';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
 import { HISTORY, ADDITIONAL_INFO, LSAMS_NOTES } from '../../../constants/widgets';
@@ -27,8 +28,19 @@ import './DocsInGoBack.css';
 class DocsInGoBack extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      redirectDialog: false,
+    };
     const { onCleanResult } = props;
     onCleanResult();
+    this.accessRedirectDialog = this.accessRedirectDialog.bind(this);
+  }
+
+  componentDidMount() {
+    const {
+      disableSendToDocsIn,
+    } = this.props;
+    disableSendToDocsIn(true);
   }
 
   componentDidUpdate() {
@@ -59,6 +71,12 @@ class DocsInGoBack extends React.PureComponent {
       onPostComment(commentsPayload);
       this.savedComments = '';
     }
+  }
+
+  accessRedirectDialog(input) {
+    const { fetchBookingRejectDropdown } = this.props;
+    this.setState({ redirectDialog: input });
+    fetchBookingRejectDropdown();
   }
 
   renderSweetAlert() {
@@ -102,12 +120,14 @@ class DocsInGoBack extends React.PureComponent {
 
   render() {
     const {
-      inProgress, user, openWidgetList, checklistCenterPaneView,
+      inProgress, user, openWidgetList, checklistCenterPaneView, rejectReasonDropdownOptions,
+      loaderStatus,
     } = this.props;
+    const { redirectDialog } = this.state;
     const showButton = user.groupList.includes('docsin-mgr');
     const title = 'Send Back Docs In';
     const { resultOperation } = this.props;
-    if (inProgress) {
+    if (inProgress && !redirectDialog) {
       return (
         <Loader message="Please Wait" />
       );
@@ -119,6 +139,7 @@ class DocsInGoBack extends React.PureComponent {
           <Controls
             showSendToBooking={showButton}
             showSendToDocsIn={showButton}
+            toggleDialog={this.accessRedirectDialog}
           />
         </ContentHeader>
         <div styleName="docksin-container">
@@ -176,6 +197,12 @@ class DocsInGoBack extends React.PureComponent {
             <WidgetBuilder page="DOCSIN_GOBACK" />
           </div>
         </div>
+        <SendToDocsInDialog
+          closeRedirectDialog={() => this.accessRedirectDialog(false)}
+          dropdownOptions={rejectReasonDropdownOptions}
+          loader={loaderStatus}
+          redirectDialog={redirectDialog}
+        />
       </>
     );
   }
@@ -192,17 +219,23 @@ DocsInGoBack.defaultProps = {
   //   pathname: '',
   // },
   openWidgetList: [],
+  fetchBookingRejectDropdown: () => {},
+  rejectReasonDropdownOptions: [],
+  disableSendToDocsIn: () => {},
 };
 
 DocsInGoBack.propTypes = {
   AppName: PropTypes.string,
   checklistCenterPaneView: PropTypes.string.isRequired,
   clearPopupData: PropTypes.func.isRequired,
+  disableSendToDocsIn: PropTypes.func,
   dispatchAction: PropTypes.func.isRequired,
   dispositionReason: PropTypes.string.isRequired,
   EvalId: PropTypes.number.isRequired,
+  fetchBookingRejectDropdown: PropTypes.func,
   groupName: PropTypes.string,
   inProgress: PropTypes.bool,
+  loaderStatus: PropTypes.bool.isRequired,
   LoanNumber: PropTypes.number.isRequired,
   onCleanResult: PropTypes.func,
   onPostComment: PropTypes.func.isRequired,
@@ -220,6 +253,12 @@ DocsInGoBack.propTypes = {
     title: PropTypes.string,
   }).isRequired,
   ProcIdType: PropTypes.string,
+  rejectReasonDropdownOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      classCode: PropTypes.any.isRequired,
+      shortDescription: PropTypes.string.isRequired,
+    }),
+  ),
   resultOperation: PropTypes.shape({
     level: PropTypes.string,
     status: PropTypes.string,
@@ -248,12 +287,16 @@ const mapStateToProps = state => ({
   resultOperation: selectors.resultOperation(state),
   checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
   popupData: selectors.getPopupData(state),
+  rejectReasonDropdownOptions: selectors.getRejectReasonDropdownOptions(state),
+  loaderStatus: selectors.saveInProgress(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onCleanResult: operations.onCleanResult(dispatch),
   clearPopupData: operations.clearPopupData(dispatch),
   dispatchAction: operations.dispatchAction(dispatch),
+  fetchBookingRejectDropdown: operations.fetchBookingRejectDropdownOperation(dispatch),
+  disableSendToDocsIn: operations.toggleSendToDocsInOperation(dispatch),
 });
 
 const DocsInGoBackContainer = connect(mapStateToProps, mapDispatchToProps)(DocsInGoBack);

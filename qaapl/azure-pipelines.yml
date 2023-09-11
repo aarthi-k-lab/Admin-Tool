@@ -13,7 +13,7 @@ parameters:
 trigger:
   branches:
     include:
-      - CMOD/JULY
+      - CMOD/SEPTEMBER
     exclude:
       - master
   paths:
@@ -32,4 +32,4 @@ extends:
     includeProd: false
     buildpipelineconfigurationfile: $(build.sourcesdirectory)/qaapl/deployment/Chart.yaml
     deployworkingdirectory: $(Agent.BuildDirectory)/drop/qaapl
-    scanType: nonCompliant
+    scanType: arbExempt

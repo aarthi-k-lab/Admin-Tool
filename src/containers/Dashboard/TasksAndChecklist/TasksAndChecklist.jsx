@@ -50,6 +50,7 @@ import CollateralContent from '../../../components/Tombstone/TombstoneComponents
 import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
 import HardshipAffidavit from '../../../components/Tombstone/TombstoneComponents/HardshipAffidavit';
 import WestWingWidget from 'components/Widgets/WestWing';
+import FHLMCWidget from '../../../components/Widgets/FHLMCWidget';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
 
@@ -309,6 +310,9 @@ class TasksAndChecklist extends Component {
       case WESTWING:
         widgetToRender = <WestWingWidget />
         break;
+      case FHLMC:
+        widgetToRender = <FHLMCWidget />
+        break;  
       default:
         widgetToRender = null;
     }

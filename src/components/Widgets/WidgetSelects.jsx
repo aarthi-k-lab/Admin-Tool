@@ -16,7 +16,6 @@ import {
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
 import DashboardModel from '../../models/Dashboard';
-import FHLMCWidget from './FHLMCWidget';
 
 
 const {
@@ -93,11 +92,9 @@ const widgets = [
   {
     id: FHLMC,
     icon: <img alt="FHLMC" src="/static/img/Freddie_Widget.png" style={{ width: '23px' }} />,
-    component: <FHLMCWidget />,
     visibility: [
       BEUW, DOC_GEN, INVSET,
     ],
-    overlay: true,
     children: [COMMENTS],
     dependency: FHLMC,
   },

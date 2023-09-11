@@ -173,8 +173,12 @@ import {
   UPDATE_TRIAL_PERIOD,
   UPDATE_TRIAL_PERIOD_RESULT,
   ODM_RERUN_SAGA,
+  FETCH_BOOKING_REJECT_DROPDOWN,
+  SAVE_BOOKING_REJECT_DROPDOWN,
+  BOOKING_SENDTODOCSIN,
+  SENT_TODOCSIN_RESPONSE,
+  SET_POPUP_DATA,
   SET_BORROWER_INFO,
-
 } from './types';
 // Note : Doc Checklist revert
 // import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
@@ -1588,7 +1592,6 @@ function* assignLoan() {
     const userGroups = R.pathOr([], ['groupList'], user);
     const group = getGroup(groupName);
     let taskName = '';
-
     if (group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER) {
       const stagerTaskName = yield select(selectors.stagerTaskName);
       taskName = (stagerTaskName.activeTile === 'Recordation' || stagerTaskName.activeTile === 'Delay Checklist')
@@ -1608,6 +1611,7 @@ function* assignLoan() {
       });
       return;
     }
+
     const incomeCalcData = R.propOr(null, 'incomeCalcData', response);
     if (R.pathOr(false, ['incomeCalcData', 'taskCheckListId'], response)) {
       yield put({ type: SET_INCOMECALC_DATA, payload: incomeCalcData });
@@ -2569,9 +2573,9 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const exceptionReviewComments = yield select(selectors.getExceptionReviewComments);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
   const caseId = R.head(R.pluck('resolutionId', resultData));
+  let sweetAlert = null;
   let resultSet = null;
   let userNotification = null;
-  let sweetAlert = null;
   exceptionReviewRequestIndicator = R.equals(exceptionReviewRequestIndicator, 'Yes') ? 'Y' : 'N';
   try {
     const parsedData = isWidgetOpen ? R.map(d => ({
@@ -2605,6 +2609,14 @@ const submitToFhlmc = function* submitToFhlmc(action) {
         return caseData;
       }, response);
       resultSet = data;
+      const loanNumber = yield select(selectors.loanNumber);
+      const historyResponse = yield call(Api.callGet, `/api/dataservice/api/investorRequestResponse/${loanNumber}`);
+      if (historyResponse !== null) {
+        yield put({
+          type: SET_FHLMC_MOD_HISTORY,
+          payload: historyResponse,
+        });
+      }
       let message = 'Your request has been successfully sent to Freddie, please download the excel to view more details.';
       let level = 'Success';
       if (!R.isEmpty(isWidgetOpen)) {
@@ -2658,7 +2670,8 @@ const submitToFhlmc = function* submitToFhlmc(action) {
           type: ENABLE_ODM_RERUN_BUTTON,
           payload: odmRetryEligibilityIndicator === 'Eligible',
         });
-      } sweetAlert = {
+      }
+      sweetAlert = {
         level,
         status: message,
       };
@@ -2949,6 +2962,15 @@ const handleODMRerun = function* handleODMRerun() {
           status: response.message === LEVEL_SUCCESS ? ODM_RERUN_SUCCESS : response.message,
         },
       });
+
+      const loanNumber = yield select(selectors.loanNumber);
+      const historyResponse = yield call(Api.callGet, `/api/dataservice/api/investorRequestResponse/${loanNumber}`);
+      if (historyResponse !== null) {
+        yield put({
+          type: SET_FHLMC_MOD_HISTORY,
+          payload: historyResponse,
+        });
+      }
     } else {
       yield put({
         type: SET_RESULT_OPERATION,
@@ -2968,6 +2990,56 @@ const handleODMRerun = function* handleODMRerun() {
     });
   }
 };
+
+function* fetchBookingRejectDropdown() {
+  try {
+    yield put({ type: SHOW_SAVING_LOADER });
+    const response = yield call(Api.callGet, '/api/dataservice/api/classCodes/BookingRejectReason');
+    yield put({
+      type: SAVE_BOOKING_REJECT_DROPDOWN,
+      payload: response !== null ? response : {},
+    });
+    yield put({ type: HIDE_SAVING_LOADER });
+  } catch (e) {
+    yield put({
+      type: SAVE_BOOKING_REJECT_DROPDOWN,
+      payload: [],
+    });
+    yield put({ type: HIDE_SAVING_LOADER });
+  }
+}
+
+function* fetchBookingSendToDocsIn(action) {
+  const payload = R.pathOr(null, ['payload', 'payload'], action);
+  try {
+    payload.eventName = 'DOCSIN';
+    yield put({ type: SHOW_LOADER });
+    const response = yield call(Api.callPost, '/api/booking/api/initiateBookingSendToDOCSIN', payload);
+    if (response) {
+      yield put({
+        type: SENT_TODOCSIN_RESPONSE,
+        payload: response,
+      });
+    } else {
+      yield put({
+        type: SENT_TODOCSIN_RESPONSE,
+        payload: {},
+      });
+    }
+    yield put({ type: HIDE_LOADER });
+  } catch (e) {
+    yield put({
+      type: SET_POPUP_DATA,
+      payload: {
+        message: 'Failed To Send DOCSIN',
+        level: 'Error',
+        title: 'Special Loan',
+      },
+    });
+    yield put({ type: HIDE_LOADER });
+  }
+}
+
 
 function* watchSubmitToFhlmc() {
   yield takeEvery(SUBMIT_TO_FHLMC, submitToFhlmc);
@@ -3100,6 +3172,13 @@ function* watchODMRerun() {
   yield takeEvery(ODM_RERUN_SAGA, handleODMRerun);
 }
 
+function* watchBookingRejectDropdown() {
+  yield takeEvery(FETCH_BOOKING_REJECT_DROPDOWN, fetchBookingRejectDropdown);
+}
+
+function* watchBookingSendToDocsIn() {
+  yield takeEvery(BOOKING_SENDTODOCSIN, fetchBookingSendToDocsIn);
+}
 export const commonExports = {
   fetchBorrowers,
 };
@@ -3165,6 +3244,7 @@ export const TestExports = {
   watchonSubmitEval,
   onSubmitEval,
   watchSaveTrialPeriod,
+  watchBookingRejectDropdown,
   fetchBorrowers,
 };
 
@@ -3216,5 +3296,7 @@ export const combinedSaga = function* combinedSaga() {
     watchCancellationReasons(),
     watchCaseIds(),
     watchSaveTrialPeriod(),
+    watchBookingRejectDropdown(),
+    watchBookingSendToDocsIn(),
   ]);
 };

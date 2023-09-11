@@ -23,6 +23,7 @@ import * as R from 'ramda';
 import hotkeys from 'hotkeys-js';
 import styles from '../Dashboard/TasksAndChecklist/TasksAndChecklist.css';
 import Control from '../Dashboard/TasksAndChecklist/Controls';
+import { selectors as tombStoneSelectors } from '../../state/ducks/tombstone';
 
 const HOTKEY_V = ['v', 'V'];
 const HOTKEY_M = ['m', 'M'];
@@ -44,11 +45,47 @@ class Controls extends React.PureComponent {
   }
 
   componentDidMount() {
+    const {
+      disableSendToDocsIn, isAssigned, getModViewData, milestone,
+    } = this.props;
+    let content = R.propOr('', 'content', R.find(R.propEq('title',
+      ('Resolution Choice Type')))(getModViewData));
+    content = content.trim();
     hotkeys('g,v,m,e', (event, handler) => {
       if (event.type === 'keydown') {
         this.handleHotKeyPress(handler);
       }
     });
+    if (milestone !== 'Post Mod' && content !== 'Payment Deferral'
+    && content !== 'Payment Deferral Disaster') {
+      if (!isAssigned) {
+        disableSendToDocsIn(false);
+      } else if (isAssigned) {
+        disableSendToDocsIn(true);
+      } else {
+        disableSendToDocsIn(true);
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      isAssigned, disableSendToDocsIn, getModViewData, milestone, taskName,
+    } = this.props;
+    let content = R.propOr('', 'content', R.find(R.propEq('title', ('Resolution Choice Type')))(getModViewData));
+    content = content.trim();
+    if (prevProps.isAssigned !== isAssigned) {
+      if (milestone !== 'Post Mod' && content !== 'Payment Deferral'
+      && content !== 'Payment Deferral Disaster') {
+        if (!isAssigned && taskName !== 'Pending Buyout') {
+          disableSendToDocsIn(false);
+        } else if (isAssigned && taskName === 'Pending Buyout') {
+          disableSendToDocsIn(true);
+        } else {
+          disableSendToDocsIn(true);
+        }
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -96,8 +133,10 @@ class Controls extends React.PureComponent {
   }
 
   handleSendToDocsIn() {
-    const { onSendToDocsIn } = this.props;
-    onSendToDocsIn();
+    const { toggleDialog, groupName, taskName } = this.props;
+    if (groupName === DashboardModel.BOOKING || taskName === 'Pending Buyout') {
+      toggleDialog(true);
+    }
   }
 
   handleSendToBooking() {
@@ -294,6 +333,7 @@ Controls.defaultProps = {
   enableGetNext: false,
   enableSendToDocGen: true,
   enableSendToDocsIn: true,
+  disableSendToDocsIn: () => {},
   enableSendToBooking: true,
   enableSendToUW: true,
   enableValidate: false,
@@ -304,7 +344,6 @@ Controls.defaultProps = {
   onGetNext: () => { },
   onSentToUnderwriting: () => { },
   onSendToDocGen: () => { },
-  onSendToDocsIn: () => { },
   onSendToBooking: () => { },
   onTrialTask: () => { },
   showEndShift: false,
@@ -320,9 +359,13 @@ Controls.defaultProps = {
   showAssign: null,
   showValidate: false,
   groupName: null,
+  toggleDialog: () => {},
+  getModViewData: [],
+  milestone: '',
 };
 
 Controls.propTypes = {
+  disableSendToDocsIn: PropTypes.func,
   disableTrialTaskButton: PropTypes.bool.isRequired,
   disableValidation: PropTypes.bool.isRequired,
   dispositionCode: PropTypes.string.isRequired,
@@ -338,9 +381,17 @@ Controls.propTypes = {
     warnings: PropTypes.array,
   }).isRequired,
   evalId: PropTypes.string.isRequired,
+  getModViewData: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.any.isRequired,
+      title: PropTypes.string.isRequired,
+    }).isRequired,
+  ),
   groupName: PropTypes.string,
+  isAssigned: PropTypes.bool.isRequired,
   isFirstVisit: PropTypes.bool,
   isTrialDisable: PropTypes.bool,
+  milestone: PropTypes.string,
   onAssignToMeClick: PropTypes.func.isRequired,
   onCompleteMyReview: PropTypes.func,
   onContinueMyReview: PropTypes.func,
@@ -349,7 +400,6 @@ Controls.propTypes = {
   onGetNext: PropTypes.func,
   onSendToBooking: PropTypes.func,
   onSendToDocGen: PropTypes.func,
-  onSendToDocsIn: PropTypes.func,
   onSentToUnderwriting: PropTypes.func,
   onTrialTask: PropTypes.func,
   processId: PropTypes.string.isRequired,
@@ -367,6 +417,7 @@ Controls.propTypes = {
   showValidate: PropTypes.bool,
   taskName: PropTypes.string.isRequired,
   taskStatus: PropTypes.string.isRequired,
+  toggleDialog: PropTypes.func,
   user: PropTypes.shape({
     groupList: PropTypes.array,
     skills: PropTypes.objectOf(PropTypes.array),
@@ -403,6 +454,7 @@ const mapStateToProps = (state) => {
     enableSendToBooking: selectors.enableSendToBooking(state),
     enableSendToUW: selectors.enableSendToUW(state),
     dispositionCode: checklistSelectors.getDispositionCode(state),
+    isAssigned,
     isFirstVisit: selectors.isFirstVisit(state),
     isTrialDisable,
     showAssign: selectors.showAssign(state),
@@ -421,6 +473,8 @@ const mapStateToProps = (state) => {
     taskId: selectors.taskId(state),
     stagerTaskName: stagerSelectors.getTaskName(state),
     ficoBluePrintCode,
+    getModViewData: tombStoneSelectors.getTombstoneModViewData(state),
+    milestone: selectors.getCurrentLoanMilestone(state),
   };
 };
 
@@ -438,6 +492,7 @@ const mapDispatchToProps = dispatch => ({
   onCompleteMyReview: operations.onCompleteMyReview(dispatch),
   onTrialTask: operations.onTrialTask(dispatch),
   onAssignToMeClick: operations.onAssignToMeClick(dispatch),
+  disableSendToDocsIn: operations.toggleSendToDocsInOperation(dispatch),
 });
 
 const ControlsContainer = connect(mapStateToProps, mapDispatchToProps)(Controls);

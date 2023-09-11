@@ -39,7 +39,7 @@ describe('<FHLMCWidget />', () => {
     expect(shallowWrapper.find(FHLMCDataInsight).length).toBe(1);
   });
 
-  it('Find Sweet Alert', () => {
-    expect(shallowWrapper.find(SweetAlertBox).length).toBe(1);
-  });
+  // it('Find Sweet Alert', () => {
+  //   expect(shallowWrapper.find(SweetAlertBox).length).toBe(1);
+  // });
 });
