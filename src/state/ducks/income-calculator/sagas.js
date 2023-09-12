@@ -700,10 +700,10 @@ const lockCalculation = function* lockCalculation() {
     const evalId = yield select(dashboardSelectors.evalId);
     let response = {};
     if (checklistType === checklistTypes.INCOME) {
-      response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`,
+      response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}/${evalId}`,
         consolidation);
     } else {
-      response = yield call(Api.callPost, `/api/cmodnetcoretkams/ExpenseFinancial/lock/${loanNumber}?loginName=${loginName}`,
+      response = yield call(Api.callPost, `/api/cmodnetcoretkams/ExpenseFinancial/lock/${loanNumber}/${evalId}?loginName=${loginName}`,
         summatedBorrData);
     }
     const lockId = response && typeof (response) === 'object' ? R.propOr(null, 'lockId', response) : response;
