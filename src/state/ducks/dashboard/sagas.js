@@ -980,6 +980,8 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const loanViewData = yield (select(tombstoneSelectors.getTombstoneLoanViewData));
     const brandName = R.propOr('', 'content',
       R.find(R.propEq('title', 'Brand Name'))(loanViewData));
+    const resolutionId = yield select(selectors.resolutionId);
+    const isWestwing = yield select(selectors.showWestwingWidget);
     const request = {
       evalId,
       disposition,
@@ -992,6 +994,8 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       safeActRequire,
       loanNbr,
       brandName,
+      resolutionId,
+      isWestwing,
     };
     /*
     Note : Doc Checklist revert
