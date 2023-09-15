@@ -976,7 +976,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const checklistSubtasks = yield select(checklistSelectors.getTaskTree);
     const externalChangeSubtasks = getTaskFromProcess(checklistSubtasks, 'taskBlueprintCode', 'EXT_CHG');
     const safeActRequire = R.pathOr(false, ['value', 'safeActRequired'], R.head(externalChangeSubtasks));
-    const loanNbr = yield (select(selectors.loanNumber));
+    const loanNumber = yield (select(selectors.loanNumber));
     const loanViewData = yield (select(tombstoneSelectors.getTombstoneLoanViewData));
     const brandName = R.propOr('', 'content',
       R.find(R.propEq('title', 'Brand Name'))(loanViewData));
@@ -992,7 +992,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       wfProcessId,
       processStatus,
       safeActRequire,
-      loanNbr,
+      loanNumber,
       brandName,
       resolutionId,
       isWestwing,
@@ -1245,6 +1245,8 @@ function* saveGeneralChecklistDisposition(payload) {
     const loanViewData = yield select(tombstoneSelectors.getTombstoneLoanViewData);
     const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData));
     const userFullName = yield select(loginSelectors.getUserFullName);
+    const resolutionId = yield select(selectors.resolutionId);
+    const isWestwing = yield select(selectors.showWestwingWidget);
     // Only applicable for Second Look - Send To Underwriting and
     // Front End Underwiriting Drop Down Value
     const secondlookDropdown = getTaskFromProcess(checklist, 'taskBlueprintCode', 'SECLOOK_CHK5');
@@ -1287,6 +1289,8 @@ function* saveGeneralChecklistDisposition(payload) {
       dispositionReason,
       brandName,
       userFullName,
+      resolutionId,
+      isWestwing,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
