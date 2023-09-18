@@ -178,11 +178,6 @@ import {
   BOOKING_SENDTODOCSIN,
   SENT_TODOCSIN_RESPONSE,
   SET_POPUP_DATA,
-  FETCH_BOOKING_REJECT_DROPDOWN,
-  SAVE_BOOKING_REJECT_DROPDOWN,
-  BOOKING_SENDTODOCSIN,
-  SENT_TODOCSIN_RESPONSE,
-  SET_POPUP_DATA,
   SET_BORROWER_INFO,
 } from './types';
 // Note : Doc Checklist revert
@@ -3183,14 +3178,6 @@ function* watchCaseIds() {
 
 function* watchODMRerun() {
   yield takeEvery(ODM_RERUN_SAGA, handleODMRerun);
-}
-
-function* watchBookingRejectDropdown() {
-  yield takeEvery(FETCH_BOOKING_REJECT_DROPDOWN, fetchBookingRejectDropdown);
-}
-
-function* watchBookingSendToDocsIn() {
-  yield takeEvery(BOOKING_SENDTODOCSIN, fetchBookingSendToDocsIn);
 }
 
 function* watchBookingRejectDropdown() {
