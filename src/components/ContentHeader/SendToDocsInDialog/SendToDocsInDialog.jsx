@@ -235,7 +235,7 @@ const mapStateToProps = state => ({
   brandName: selectors.brand(state),
   processId: selectors.processId(state),
   user: loginSelectors.getUser(state),
-  taskId: selectors.taskId(state),
+  taskId: selectors.getBookingTaskId(state),
   docsInResp: selectors.getSendToDocsInResponse(state),
   evalId: selectors.evalId(state),
 });
