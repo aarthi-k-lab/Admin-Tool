@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import Validators from 'lib/Validators';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
+import * as DateUtils from '../../lib/DateUtils';
 
 
 export const NA = '-';
@@ -15,6 +16,15 @@ function generateWestWingItem(title, value) {
   };
 }
 
+function dateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
+  const dateString = DateUtils.DateFormatter(value);
+  return dateString;
+}
+
+
 function getFirstName(data) {
   const firstName = getOr('borrowerFirstName', data, NA);
   return firstName;
@@ -27,7 +37,7 @@ function getLastName(data) {
 
 function getGoodThroughDate(data) {
   const goodThroughDate = getOr('goodThroughDate', data, NA);
-  return generateWestWingItem('Good Through Date', goodThroughDate);
+  return generateWestWingItem('Good Through Date', dateFormatter(goodThroughDate));
 }
 
 function getProgramType(data) {
@@ -37,7 +47,7 @@ function getProgramType(data) {
 
 function getForbearancePlanStartDate(data) {
   const forbearancePlanStartDate = getOr('firstPaymentDueDate', data, NA);
-  return generateWestWingItem('Forbearance Plan Start Date', forbearancePlanStartDate);
+  return generateWestWingItem('Forbearance Plan Start Date', dateFormatter(forbearancePlanStartDate));
 }
 
 function getForbearancePaymentAmount(data) {
@@ -65,7 +75,6 @@ function getWestWingItems(response) {
   const {
     westWingForbearanceSods,
     westWingForbearanceTkams,
-    documents,
     westWingForbearance,
     isDataFromDataService,
     fcStageDetails,
@@ -104,7 +113,6 @@ function getWestWingItems(response) {
 
   const data = {};
   data.forbreance = forbGenerator.map(fn => fn(westWingData));
-  data.documents = documents;
   data.customerFinance = BorrIncomeExpense
     .fetchBorrIncomeExpense({ ...customerFinanceBorr, ...customerFinanceExpense });
   data.fcStageDetails = R.isNil(fcStageDetails) ? [] : fcStageDetails;
@@ -124,14 +132,12 @@ async function fetchWestWingForb(loanNumber) {
   const {
     status, isDataFromDataService, westWingForbearanceSods,
     westWingForbearanceTkams, westWingForbearance,
-    decision, comments, fcStageDetails, customerFinance,
-    documents, errorMessage,
+    decision, comments, fcStageDetails, customerFinance, errorMessage,
   } = response;
   return {
     ...getWestWingItems({
       westWingForbearanceSods,
       westWingForbearanceTkams,
-      documents,
       customerFinance,
       westWingForbearance,
       isDataFromDataService,

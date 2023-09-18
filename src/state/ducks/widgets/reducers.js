@@ -4,6 +4,7 @@ import {
   RESET_WIDGET_DATA,
   SET_WEST_WING_DATA,
   SET_WEST_WING_REPAY_FORB_DATA,
+  RESET_WEST_WING_REPAY_FORB_DATA,
 } from './types';
 
 
@@ -46,6 +47,12 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         westWingForbRepay: action.payload,
+      };
+    }
+    case RESET_WEST_WING_REPAY_FORB_DATA: {
+      return {
+        ...state,
+        westWingForbRepay: {},
       };
     }
     default:

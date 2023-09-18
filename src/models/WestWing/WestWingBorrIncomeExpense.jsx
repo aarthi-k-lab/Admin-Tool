@@ -193,7 +193,7 @@ function getDisability(data) {
 
 function getOtherIncome(data) {
   const otherIncome = getOr('otherIncome', data, NA);
-  return generateBorrIncomeItem('Other', otherIncome, NA, 'Other Montly Income');
+  return generateBorrIncomeItem('Other', otherIncome, NA, NA);
 }
 
 function getTotal(data) {

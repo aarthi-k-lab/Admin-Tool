@@ -66,6 +66,7 @@ import ChecklistErrorMessageCodes from '../../../models/ChecklistErrorMessageCod
 import consolidateValidations from '../../../lib/consolidateValidation';
 import { incTypeMap } from '../../../constants/incomeCalc';
 import { FICO_SCORE, FICO_TASK_BLUEPRINT_CODE } from '../../../constants/tableSchema';
+import { commonExports } from '../dashboard/sagas';
 
 const getTaskFromProcess = (taskObj, prop, value) => {
   if (R.propEq(prop, value)(taskObj)) {
@@ -520,6 +521,7 @@ function* addContributor(action) {
       yield call(fetchChecklistDetails, { payload: processId });
       yield put({ type: SET_BORROWERS_DATA, payload: R.propOr([], 'response', borrowersResponse) });
       yield put({ type: SET_UPDATED_ASSUMPTORS, payload: assumptors });
+      yield call(commonExports.fetchBorrowers, loanNumber);
       yield put({
         type: TOGGLE_VIEW,
       });
@@ -698,10 +700,10 @@ const lockCalculation = function* lockCalculation() {
     const evalId = yield select(dashboardSelectors.evalId);
     let response = {};
     if (checklistType === checklistTypes.INCOME) {
-      response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}`,
+      response = yield call(Api.callPost, `/api/cmodnetcoretkams/IncomeFinancial/lock/${loanNumber}/${evalId}`,
         consolidation);
     } else {
-      response = yield call(Api.callPost, `/api/cmodnetcoretkams/ExpenseFinancial/lock/${loanNumber}?loginName=${loginName}`,
+      response = yield call(Api.callPost, `/api/cmodnetcoretkams/ExpenseFinancial/lock/${loanNumber}/${evalId}?loginName=${loginName}`,
         summatedBorrData);
     }
     const lockId = response && typeof (response) === 'object' ? R.propOr(null, 'lockId', response) : response;
@@ -1107,6 +1109,7 @@ function* addContributorFico(action) {
       yield call(fetchChecklistDetails, { payload: processId });
       yield put({ type: SET_BORROWERS_DATA, payload: borrowersData });
       yield put({ type: SET_UPDATED_ASSUMPTORS, payload: assumptors });
+      yield call(commonExports.fetchBorrowers, loanNumber);
       yield put({
         type: TOGGLE_VIEW,
       });

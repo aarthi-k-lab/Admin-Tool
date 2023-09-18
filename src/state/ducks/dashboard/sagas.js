@@ -178,6 +178,11 @@ import {
   BOOKING_SENDTODOCSIN,
   SENT_TODOCSIN_RESPONSE,
   SET_POPUP_DATA,
+  FETCH_BOOKING_REJECT_DROPDOWN,
+  SAVE_BOOKING_REJECT_DROPDOWN,
+  BOOKING_SENDTODOCSIN,
+  SENT_TODOCSIN_RESPONSE,
+  SET_POPUP_DATA,
   SET_BORROWER_INFO,
 } from './types';
 // Note : Doc Checklist revert
@@ -976,10 +981,12 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const checklistSubtasks = yield select(checklistSelectors.getTaskTree);
     const externalChangeSubtasks = getTaskFromProcess(checklistSubtasks, 'taskBlueprintCode', 'EXT_CHG');
     const safeActRequire = R.pathOr(false, ['value', 'safeActRequired'], R.head(externalChangeSubtasks));
-    const loanNbr = yield (select(selectors.loanNumber));
+    const loanNumber = yield (select(selectors.loanNumber));
     const loanViewData = yield (select(tombstoneSelectors.getTombstoneLoanViewData));
     const brandName = R.propOr('', 'content',
       R.find(R.propEq('title', 'Brand Name'))(loanViewData));
+    const resolutionId = yield select(selectors.resolutionId);
+    const isWestwing = yield select(selectors.showWestwingWidget);
     const request = {
       evalId,
       disposition,
@@ -990,8 +997,10 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       wfProcessId,
       processStatus,
       safeActRequire,
-      loanNbr,
+      loanNumber,
       brandName,
+      resolutionId,
+      isWestwing,
     };
     /*
     Note : Doc Checklist revert
@@ -1241,6 +1250,8 @@ function* saveGeneralChecklistDisposition(payload) {
     const loanViewData = yield select(tombstoneSelectors.getTombstoneLoanViewData);
     const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData));
     const userFullName = yield select(loginSelectors.getUserFullName);
+    const resolutionId = yield select(selectors.resolutionId);
+    const isWestwing = yield select(selectors.showWestwingWidget);
     // Only applicable for Second Look - Send To Underwriting and
     // Front End Underwiriting Drop Down Value
     const secondlookDropdown = getTaskFromProcess(checklist, 'taskBlueprintCode', 'SECLOOK_CHK5');
@@ -1283,6 +1294,8 @@ function* saveGeneralChecklistDisposition(payload) {
       dispositionReason,
       brandName,
       userFullName,
+      resolutionId,
+      isWestwing,
     };
     const saveResponse = yield call(Api.callPost, '/api/disposition/checklistDisposition', request);
     const { tkamsValidation, skillValidation } = saveResponse;
@@ -1336,7 +1349,8 @@ function* getNext(action) {
     const groupName = yield select(selectors.groupName);
     const group = getGroup(groupName);
     const stagerTaskName = yield select(selectors.stagerTaskName);
-    const brand = (yield select(loginSelectors.isRPSGroupPresent)) ? 'RPS' : 'NSM';
+    const isRSHGroupPresent = (yield select(loginSelectors.isRSHGroupPresent));
+    const brand = isRSHGroupPresent ? 'RSH' : 'NSM';
     if (group === DashboardModel.UWSTAGER && stagerTaskName.activeTile === 'Delay Checklist') {
       yield put(checklistActions.validationDisplayAction(false));
       yield call(saveDelayChecklistDataToDB);
@@ -2572,9 +2586,9 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const exceptionReviewComments = yield select(selectors.getExceptionReviewComments);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
   const caseId = R.head(R.pluck('resolutionId', resultData));
+  let sweetAlert = null;
   let resultSet = null;
   let userNotification = null;
-  let sweetAlert = null;
   exceptionReviewRequestIndicator = R.equals(exceptionReviewRequestIndicator, 'Yes') ? 'Y' : 'N';
   try {
     const parsedData = isWidgetOpen ? R.map(d => ({
@@ -2608,6 +2622,14 @@ const submitToFhlmc = function* submitToFhlmc(action) {
         return caseData;
       }, response);
       resultSet = data;
+      const loanNumber = yield select(selectors.loanNumber);
+      const historyResponse = yield call(Api.callGet, `/api/dataservice/api/investorRequestResponse/${loanNumber}`);
+      if (historyResponse !== null) {
+        yield put({
+          type: SET_FHLMC_MOD_HISTORY,
+          payload: historyResponse,
+        });
+      }
       let message = 'Your request has been successfully sent to Freddie, please download the excel to view more details.';
       let level = 'Success';
       if (!R.isEmpty(isWidgetOpen)) {
@@ -2661,7 +2683,8 @@ const submitToFhlmc = function* submitToFhlmc(action) {
           type: ENABLE_ODM_RERUN_BUTTON,
           payload: odmRetryEligibilityIndicator === 'Eligible',
         });
-      } sweetAlert = {
+      }
+      sweetAlert = {
         level,
         status: message,
       };
@@ -2952,6 +2975,15 @@ const handleODMRerun = function* handleODMRerun() {
           status: response.message === LEVEL_SUCCESS ? ODM_RERUN_SUCCESS : response.message,
         },
       });
+
+      const loanNumber = yield select(selectors.loanNumber);
+      const historyResponse = yield call(Api.callGet, `/api/dataservice/api/investorRequestResponse/${loanNumber}`);
+      if (historyResponse !== null) {
+        yield put({
+          type: SET_FHLMC_MOD_HISTORY,
+          payload: historyResponse,
+        });
+      }
     } else {
       yield put({
         type: SET_RESULT_OPERATION,
@@ -3160,6 +3192,17 @@ function* watchBookingRejectDropdown() {
 function* watchBookingSendToDocsIn() {
   yield takeEvery(BOOKING_SENDTODOCSIN, fetchBookingSendToDocsIn);
 }
+
+function* watchBookingRejectDropdown() {
+  yield takeEvery(FETCH_BOOKING_REJECT_DROPDOWN, fetchBookingRejectDropdown);
+}
+
+function* watchBookingSendToDocsIn() {
+  yield takeEvery(BOOKING_SENDTODOCSIN, fetchBookingSendToDocsIn);
+}
+export const commonExports = {
+  fetchBorrowers,
+};
 
 export const TestExports = {
   watchODMRerun,

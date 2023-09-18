@@ -104,6 +104,7 @@ const isChecked = {
   SECONDLOOK: true,
   USERSKILLS: true,
   LOSSMITIGATION: true,
+  RSHstager: true,
 };
 
 const isCheckedFalse = {
@@ -125,6 +126,7 @@ const isCheckedFalse = {
   SECONDLOOK: true,
   USERSKILLS: true,
   LOSSMITIGATION: true,
+  RSHstager: true,
 };
 const skills = { FEUW: ['Skill14::InVESTOR', 'Skill19::MRC Onshore', 'Skill1::something', 'Skill2::nothing'] };
 

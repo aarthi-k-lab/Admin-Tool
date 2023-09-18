@@ -1,5 +1,7 @@
 import * as R from 'ramda';
-import { RPS_STAGER, RPS_STAGER_MGR } from 'constants/Groups';
+import {
+  RPS_STAGER, RPS_STAGER_MGR, RSH_STAGER, RSH_STAGER_MGR,
+} from 'constants/Groups';
 
 const getUser = state => state.user;
 const getGroups = state => (state.user && state.user.group ? state.user.group : []);
@@ -15,6 +17,9 @@ const isRPSGroupPresent = state => getGroupList(state).includes(RPS_STAGER)
   || getGroupList(state).includes(RPS_STAGER_MGR);
 const getUserFullName = state => R.path(['user', 'userDetails', 'name'], state);
 
+const isRSHGroupPresent = state => getGroupList(state).includes(RSH_STAGER)
+|| getGroupList(state).includes(RSH_STAGER_MGR);
+
 const selectors = {
   getUserPrincipalName,
   isUtilGroupPresent,
@@ -24,6 +29,7 @@ const selectors = {
   getGroupList,
   getGroups,
   getUserFullName,
+  isRSHGroupPresent,
 };
 
 export default selectors;

@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import moment from 'moment-timezone';
 import * as R from 'ramda';
 import Validators from 'lib/Validators';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
+import * as DateUtils from '../../lib/DateUtils';
 
 
 export const NA = '-';
@@ -18,15 +18,19 @@ function generateWestWingItem(title, value) {
   };
 }
 
+function rateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
+  return `${parseFloat(value * 100).toFixed(2)}%`;
+}
+
 function dateFormatter(value) {
   if (value === NA) {
     return value;
   }
-  const date = new Date(value);
-  const year = date.getUTCFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${month}/${day}/${year}`;
+  const dateString = DateUtils.DateFormatter(value);
+  return dateString;
 }
 
 function getBorrower1GrossIncome(data) {
@@ -55,7 +59,7 @@ function getCustomerIncomeSource(data) {
 }
 
 function getBorrowerExpenseIncludingMtgPmt(data) {
-  const borrowerExpenseIncludingMtgPmt = getOr('totalMonthlyDebt', data, NA);
+  const borrowerExpenseIncludingMtgPmt = getOr('frontEndExpenses', data, NA);
   return generateWestWingItem('Borrower expen. Including Mtg Pmt.', borrowerExpenseIncludingMtgPmt);
 }
 
@@ -81,7 +85,7 @@ function getModificationMaturityDate(data) {
 
 function getModInterestRate(data) {
   const modInterestRate = getOr('modInterestRate', data, NA);
-  return generateWestWingItem('MOD Interest rate', modInterestRate);
+  return generateWestWingItem('MOD Interest rate', rateFormatter(modInterestRate));
 }
 
 function getModPrincipalAndInterestPayment(data) {
@@ -186,7 +190,7 @@ function getCurrentMaturityDate(data) {
 
 function getCurrentInterestRate(data) {
   const currentInterestRate = getOr('currentInterestRate', data, NA);
-  return generateWestWingItem('Current Interest rate', currentInterestRate);
+  return generateWestWingItem('Current Interest rate', rateFormatter(currentInterestRate));
 }
 
 function getTotalPayment(data) {
@@ -419,7 +423,7 @@ function getDownPaymentPercentage(data) {
 }
 
 function getTermofTrialPlan(data) {
-  const termofTrialPlan = getOr('termofTrialPlan', data, NA);
+  const termofTrialPlan = getOr('numberTrialPayments', data, NA);
   return generateWestWingItem('Term of Trial Plan', termofTrialPlan);
 }
 
@@ -429,7 +433,7 @@ function getDifference(data) {
 }
 
 function getBorrowerTotalExpenses(data) {
-  const borrowerTotalExpenses = getOr('borrowerTotalExpenses', data, NA);
+  const borrowerTotalExpenses = getOr('totalMonthlyDebt', data, NA);
   return generateWestWingItem('Borrower Total Expenses', borrowerTotalExpenses);
 }
 
@@ -459,7 +463,7 @@ function getTrialPlanMonths(data) {
 }
 
 function getTrialPaymentAmount(data) {
-  const trialPaymentAmount = getOr('stipPaymentAmount', data, NA);
+  const trialPaymentAmount = getOr('trialPayment', data, NA);
   return generateWestWingItem('Trial Payment Amount', trialPaymentAmount);
 }
 
@@ -474,17 +478,17 @@ function getOutstandingAttorneyFeesandCosts(data) {
 }
 
 function getUPBVariance(data) {
-  const uPBVariance = getOr('uPBVariance', data, NA);
+  const uPBVariance = getOr('upbVariance', data, NA);
   return generateWestWingItem('UPB Variance', uPBVariance);
 }
 
 function getInterestRateVariance(data) {
   const interestRateVariance = getOr('interestRateVariance', data, NA);
-  return generateWestWingItem('Interest Rate Variance', interestRateVariance);
+  return generateWestWingItem('Interest Rate Variance', rateFormatter(interestRateVariance));
 }
 
 function getPIpaymentvariance(data) {
-  const pIpaymentvariance = getOr('pIpaymentvariance', data, NA);
+  const pIpaymentvariance = getOr('piPaymentVariance', data, NA);
   return generateWestWingItem('P&I payment variance', pIpaymentvariance);
 }
 

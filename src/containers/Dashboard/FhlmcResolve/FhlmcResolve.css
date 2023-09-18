@@ -150,3 +150,104 @@
   left: 2% !important;
   top: -15% !important;
 }
+
+.download-btn {
+  margin-left: auto;
+}
+
+.download-btn button {
+  margin: 0 !important;
+  font-size: 10px;
+}
+
+.download-btn button svg {
+  margin-right: -6px;
+}
+
+.request-type-container {
+  background: #F3F5F9;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 10px 0 12px 0 !important;
+}
+
+.requestCategoryDropdown {
+  font-size: 14px !important;
+  display: flex;
+  color: #4E586E;
+}
+
+.history-container {
+  margin: 10px 0 12px 0;
+}
+
+.accordian-header {
+  font-size: 18px !important;
+  color: #4E586E;
+  font-weight: 700 !important;
+}
+
+.accordian-header-subtext {
+  font-size: 12px !important;
+  color: #939299;
+  font-weight: 400 !important;
+  text-transform: capitalize;
+  margin-left: 16px !important;
+}
+
+.accordian-header-container, .accordian-header-container .MuiAccordionSummary-content {
+  width: 100%;
+  background: #F3F5F9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.flex {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.status-text{
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: white;
+  border-radius:2px;
+  margin-left: 12px !important;
+  padding: 0 4px;
+}
+
+.table-header {
+  color: #6C7586 !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
+}
+
+.table-body {
+  color: #595C61 !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
+}
+
+.absolute {
+  position: absolute;
+  right: 60px;
+}
+
+.message-field {
+  width: 40rem;
+  word-wrap: break-word !important;
+}
+
+.pagination {
+  margin-top: 2rem;
+  margin-left: 10rem;
+
+}
+
+.pagination-buttons{
+  cursor: pointer;
+  font-weight: bold !important;
+  border: .5px solid gray ;
+}

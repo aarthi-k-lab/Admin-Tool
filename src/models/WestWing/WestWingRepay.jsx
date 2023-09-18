@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import Validators from 'lib/Validators';
 import * as Api from 'lib/Api';
 import BorrIncomeExpense from './WestWingBorrIncomeExpense';
-
+import * as DateUtils from '../../lib/DateUtils';
 
 export const NA = '-';
 
@@ -15,6 +15,15 @@ function generateWestWingItem(title, value) {
   };
 }
 
+function dateFormatter(value) {
+  if (value === NA) {
+    return value;
+  }
+  const dateString = DateUtils.DateFormatter(value);
+  return dateString;
+}
+
+
 function getBorrower1GrossIncome(data) {
   const borrower1GrossIncome = getOr('borr1GrossIncome', data, NA);
   return generateWestWingItem('Borrower 1 Gross income', borrower1GrossIncome);
@@ -26,7 +35,7 @@ function getBorrower1NetIncome(data) {
 }
 
 function getBorrower2GrossIncome(data) {
-  const borrower2GrossIncome = getOr('coBorrowerGrossIncome', data, NA);
+  const borrower2GrossIncome = getOr('borr2GrossIncome', data, NA);
   return generateWestWingItem('Borrower 2 Gross income', borrower2GrossIncome);
 }
 
@@ -48,8 +57,8 @@ function getValuationType(data) {
 }
 
 function getValuationDate(data) {
-  const valuationDate = getOr('valuationDate', data, NA);
-  return generateWestWingItem('Valuation date', valuationDate);
+  const valuationDate = getOr('bpoEffectiveDate', data, NA);
+  return generateWestWingItem('Valuation date', dateFormatter(valuationDate));
 }
 
 function getCurrentValuationAmount(data) {
@@ -86,12 +95,12 @@ function getTotalDueAmount(data) {
 }
 
 function getFirstName(data) {
-  const firstName = getOr('firstName', data, NA);
+  const firstName = getOr('borrowerFirstName', data, NA);
   return firstName;
 }
 
 function getLastName(data) {
-  const lastName = getOr('lastName', data, NA);
+  const lastName = getOr('borrowerLastName', data, NA);
   return lastName;
 }
 
@@ -149,7 +158,7 @@ function getDifference(data) {
 }
 
 function getBorrowerTotalExpenses(data) {
-  const borrowerTotalExpenses = getOr('borrowerTotalExpenses', data, NA);
+  const borrowerTotalExpenses = getOr('totalMonthlyDebt', data, NA);
   return generateWestWingItem('Borrower Total Expenses', borrowerTotalExpenses);
 }
 
@@ -179,7 +188,6 @@ function getWestWingItems(response) {
   const {
     westWingRepaymentTkamsResponse,
     wwRepaymentSODSRes,
-    documents,
     westWingRepaymentDataService,
     isDataFromDataService,
     fcStageDetails,
@@ -243,7 +251,6 @@ function getWestWingItems(response) {
 
   const data = {};
   data.repayment = repaymentGenerator.map(fn => fn(westWingData));
-  data.documents = documents;
   data.customerFinance = BorrIncomeExpense
     .fetchBorrIncomeExpense({
       ...customerFinanceBorr,
@@ -262,19 +269,17 @@ function getWestWingItems(response) {
   return data;
 }
 
-async function fetchWestWingRepay(loanNumber) {
-  const response = await Api.callGet(`/api/data-aggregator/westwing/repayment/${loanNumber}`);
+async function fetchWestWingRepay(loanNumber, type) {
+  const response = await Api.callGet(`/api/data-aggregator/westwing/repayment/${loanNumber}/${type}`);
   const {
     status, isDataFromDataService, wwRepaymentSODSRes,
     westWingRepaymentTkamsResponse, westWingRepaymentDataService,
     decision, comments, fcStageDetails, customerFinance,
-    documents,
   } = response;
   return {
     ...getWestWingItems({
       westWingRepaymentTkamsResponse,
       wwRepaymentSODSRes,
-      documents,
       customerFinance,
       westWingRepaymentDataService,
       isDataFromDataService,

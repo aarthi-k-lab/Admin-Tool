@@ -7,6 +7,7 @@ import {
   TableContainer, Paper, TextField, Button, Tooltip,
 } from '@material-ui/core';
 import { operations as widgetsOperation, selectors as widgetSelectors } from 'ducks/widgets';
+import moment from 'moment-timezone';
 import BorrowerIncomeExpense from '../../../components/Widgets/WestWing/BorrowerIncomeExpense';
 import WestWingRepayment from './WestWingRepayment';
 import WestWingForbearance from './WestWingForbearance';
@@ -47,6 +48,7 @@ class WestWingCenterSection extends React.PureComponent {
         sectionToRender = <WestWingForbearance data={westWingForbRepayData} />;
         break;
       case 'Repayment Plan':
+      case 'Disaster Repayment Plan':
         sectionToRender = <WestWingRepayment data={westWingForbRepayData} />;
         break;
       default:
@@ -141,13 +143,13 @@ class WestWingCenterSection extends React.PureComponent {
                                         {row.comment}
                                       </TableCell>
                                       <TableCell align="left">
-                                        {row.comment}
+                                        {'-'}
                                       </TableCell>
                                       <TableCell align="left">
-                                        {row.addUser}
+                                        {row.audCreByNm ? row.audCreByNm : ''}
                                       </TableCell>
                                       <TableCell align="left">
-                                        {row.addTime}
+                                        {row.audCreDttm ? moment(row.audCreDttm).format('MM/DD/YYYY') : ''}
                                       </TableCell>
                                     </TableRow>
                                   ))

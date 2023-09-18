@@ -56,7 +56,7 @@ import { selectors as loginSelectors } from '../login';
 import {
   SET_UPDATED_ASSUMPTORS, TOGGLE_VIEW,
 } from '../tombstone/types';
-
+import { commonExports } from '../dashboard/sagas';
 
 function isRequiredSort(data) {
   data.sort((a, b) => b.required - a.required);
@@ -745,6 +745,7 @@ function* addContributorDocChecklist(action) {
       const assumptors = borrowersData.filter(borrower => borrower.description.includes('Assumptor')).map(({ firstName, lastName }) => `${firstName} ${lastName}`).join('\n');
       yield put({ type: SET_BORROWERS_DATA, payload: borrowersData });
       yield put({ type: SET_UPDATED_ASSUMPTORS, payload: assumptors });
+      yield call(commonExports.fetchBorrowers, loanNumber);
       yield put({
         type: TOGGLE_VIEW,
       });

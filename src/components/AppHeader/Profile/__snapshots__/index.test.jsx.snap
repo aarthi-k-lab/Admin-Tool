@@ -277,6 +277,20 @@ exports[`<Profile /> snapshot test 1`] = `
           userskills-mgr
         </p>
       </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          rshstager
+        </p>
+      </li>
+      <li>
+        <p
+          className="MuiTypography-root MuiTypography-body2"
+        >
+          rshstager-mgr
+        </p>
+      </li>
     </ol>
   </div>
   <div

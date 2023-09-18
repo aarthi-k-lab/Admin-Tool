@@ -34,6 +34,12 @@ const GENERATE_BOARDING_TEMPLATE_STATUS = 'Request will be processed in the back
 const VALIDATION_FAILURE_MSG = 'One or more entries are not valid. Please check and try again';
 
 const ENQUIRY_REQ = 'EnquiryReq';
+const CANCEL_REQ_TXT = 'Cancel Request';
+const DRAFT_REQ_TXT = 'Draft Request';
+const TPA_REQ_TXT = 'Trial Period Approve Request';
+const WA_REQ_TXT = 'Workout Approve Request';
+const ENQUIRY_REQ_TXT = 'Enquiry Call';
+const SET_REQ_TXT = 'Settlement Request';
 
 module.exports = {
   ENABLE_ODM_RERUN,
@@ -69,4 +75,12 @@ module.exports = {
   ENQUIRY_REQ,
   EXCEPTION_REQUEST,
   DISABLE_WIDGET_INVESTOR_CODES,
+  CANCEL_REQ_TXT,
+  DRAFT_REQ_TXT,
+  TPA_REQ_TXT,
+  WA_REQ_TXT,
+  ENQUIRY_REQ_TXT,
+  SET_REQ_TXT,
+
+
 };

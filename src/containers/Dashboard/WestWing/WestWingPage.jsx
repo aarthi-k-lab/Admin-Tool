@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import ContentHeader from 'components/ContentHeader';
 import Controls from 'containers/Controls';
@@ -53,6 +54,8 @@ class WestWingPage extends React.PureComponent {
 
     handleIdsCategory = (event) => {
       const idType = event.target.value;
+      const { resetWestWingForbRepay } = this.props;
+      resetWestWingForbRepay();
       this.setState({
         idType,
         ids: '',
@@ -87,6 +90,8 @@ class WestWingPage extends React.PureComponent {
 
   renderWestWingNotepadArea = () => {
     const { ids, isSubmitDisabled, idType } = this.state;
+    const { resetWestWingForbRepay } = this.props;
+    if (R.isNil(idType) || R.isEmpty(idType)) { resetWestWingForbRepay(); }
     return (
       <>
         <div styleName="status-details-parent">
@@ -218,7 +223,7 @@ WestWingPage.propTypes = {
     showConfirmButton: PropTypes.bool,
     title: PropTypes.string,
   }).isRequired,
-
+  resetWestWingForbRepay: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -229,6 +234,7 @@ const mapDispatchToProps = dispatch => ({
   fetchData: widgetsOperation.fetchWestWingFrobRepayDataOperation(dispatch),
   dispatchAction: dashboardOperations.dispatchAction(dispatch),
   clearPopupData: dashboardOperations.clearPopupData(dispatch),
+  resetWestWingForbRepay: widgetsOperation.resetWestWingForbRepayDataOperation(dispatch),
 });
 
 

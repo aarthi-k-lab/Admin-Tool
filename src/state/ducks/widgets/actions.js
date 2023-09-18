@@ -7,6 +7,7 @@ import {
   SAVE_WEST_WING_WIDGET,
   FETCH_WEST_WING_REPAY_FORB_DATA,
   SAVE_WEST_WING_REPAY_FORB_DATA,
+  RESET_WEST_WING_REPAY_FORB_DATA,
 } from './types';
 
 const widgetToggle = payload => ({
@@ -47,6 +48,11 @@ const saveWestWingFrobRepayDataAction = payload => ({
   payload,
 });
 
+const restWestWingForbRepayDataAction = payload => ({
+  type: RESET_WEST_WING_REPAY_FORB_DATA,
+  payload,
+});
+
 
 export {
   widgetToggle,
@@ -57,4 +63,5 @@ export {
   saveWestWingWidgetDataAction,
   fetchWestWingFrobRepayDataAction,
   saveWestWingFrobRepayDataAction,
+  restWestWingForbRepayDataAction,
 };

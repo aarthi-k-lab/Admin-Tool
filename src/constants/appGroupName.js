@@ -19,6 +19,7 @@ const INVSET = 'INVSET';
 const SECONDLOOK = 'SECONDLOOK';
 const WESTWING = 'LOSSMITIGATION';
 const USERSKILLS = 'USERSKILLS';
+const RSH_STAGER = 'RSHstager';
 
 const checklistGroupNames = [
   DOC_PROCESSOR,
@@ -54,6 +55,7 @@ const userGroupList = [
   SECONDLOOK,
   WESTWING,
   USERSKILLS,
+  RSH_STAGER,
 ];
 
 

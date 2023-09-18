@@ -89,19 +89,29 @@ describe('stager watcher ', () => {
   });
 });
 
-const dateValue = {
-  fromDate: '2019-01-05T00:00:00.000Z',
+const RSHDateValue = {
+  fromDate: '2023-07-31T00:00:00.000Z',
   stagerType: 'UNDERWRITER STAGER',
-  toDate: '2019-01-05T00:00:00.000Z',
+  toDate: '2023-08-21T00:00:00.000Z',
   searchTerm: null,
+  brandName: 'RSH',
+};
+
+const dateValue = {
+  fromDate: '2023-07-31T00:00:00.000Z',
+  stagerType: 'UNDERWRITER STAGER',
+  toDate: '2023-08-21T00:00:00.000Z',
+  searchTerm: null,
+  brandName: 'NSM',
 };
 
 const dateUTCValue = {
-  fromDate: '2019-01-05',
+  fromDate: '2023-07-31',
   stagerType: 'UNDERWRITER STAGER',
-  toDate: '2019-01-05',
+  toDate: '2023-08-21',
   searchTerm: null,
   azureSearchToggle: false,
+  brandName: 'RSH',
 };
 
 const mockUser = {
@@ -127,21 +137,28 @@ describe('fetchDashboardCounts - success', () => {
       .toEqual(select(selectors.getStagerStartEndDate));
   });
 
+  it('should get RSH brand name', () => {
+    expect(saga.next(RSHDateValue).value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
+
   it('call getCounts Api', () => {
-    expect(saga.next(dateValue).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
+    expect(saga.next(RSHDateValue).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', RSHDateValue));
   });
 
   it('should update with returned payload ', () => {
-    const data = { counts: [{ displayName: 'Completed', data: [{ taskName: 'Test', displayName: 'Test' }] }] };
+    const data = {};
     expect(saga.next(data).value)
       .toEqual(put({ type: SET_STAGER_DATA_COUNTS, payload: data }));
   });
+
   it('should complete', () => {
     expect(saga.next().done)
       .toEqual(true);
   });
 });
+
 describe('fetchDashboardCounts - empty user value', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
   it('should Check user ', () => {
@@ -154,6 +171,7 @@ describe('fetchDashboardCounts - empty user value', () => {
       .toEqual(true);
   });
 });
+
 describe('fetchDashboardCounts - null response', () => {
   const saga = cloneableGenerator(TestExports.fetchDashboardCounts)();
   it('should Check user ', () => {
@@ -165,15 +183,22 @@ describe('fetchDashboardCounts - null response', () => {
     expect(saga.next(mockUser).value)
       .toEqual(select(selectors.getStagerValue));
   });
+
   it('should select Stager date ', () => {
     expect(saga.next('UNDERWRITER STAGER').value)
       .toEqual(select(selectors.getStagerStartEndDate));
   });
 
-  it('call getCounts Api', () => {
-    expect(saga.next(dateValue).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue));
+  it('should get RSH brand name', () => {
+    expect(saga.next(RSHDateValue).value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
   });
+
+  it('call getCounts Api', () => {
+    expect(saga.next(RSHDateValue).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getCountsByDate', RSHDateValue));
+  });
+
   it('should complete', () => {
     expect(saga.next(null).done)
       .toEqual(true);
@@ -195,6 +220,11 @@ describe('fetchDashboardCounts - error', () => {
       .toEqual(select(selectors.getStagerStartEndDate));
   });
 
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
+
   it('should update state with empty payload', () => {
     expect(saga.throw('Error').value)
       .toEqual(put({ type: SET_STAGER_DATA_COUNTS, payload: {} }));
@@ -207,21 +237,23 @@ describe('fetchDashboardCounts - error', () => {
 describe('fetchDashboardData - success ', () => {
   const payload = {
     payload: {
+      brandName: 'RSH',
       activeSearchTerm: 'LegalFeeToOrder',
       stager: 'UNDERWRITER STAGER',
-      toDate: '2019-01-05',
-      fromDate: '2019-01-05',
+      toDate: '2023-08-21',
+      fromDate: '2023-07-31',
     },
   };
   const date = {
-    fromDate: '2019-01-05T00:00:00.000Z',
+    brandName: 'RSH',
+    fromDate: '2023-07-31T00:00:00.000Z',
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
-    toDate: '2019-01-05T00:00:00.000Z',
+    toDate: '2023-08-21T00:00:00.000Z',
   };
   const dateUtc = {
-    fromDate: '2019-01-05',
-    toDate: '2019-01-05',
+    toDate: '2023-08-21',
+    fromDate: '2023-07-31',
   };
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
 
@@ -251,6 +283,11 @@ describe('fetchDashboardData - success ', () => {
   it('get stager value', () => {
     expect(saga.next().value)
       .toEqual(select(selectors.getStagerValue));
+  });
+
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
   });
 
   it('call bpm audit data Api', () => {
@@ -300,19 +337,26 @@ describe('fetchDashboardData - empty response', () => {
     payload: {
       activeSearchTerm: 'LegalFeeToOrder',
       stager: 'UNDERWRITER STAGER',
-      toDate: '2019-01-05',
-      fromDate: '2019-01-05',
+      toDate: '2023-08-21',
+      fromDate: '2023-07-31',
     },
   };
   const date = {
-    fromDate: '2019-01-05T00:00:00.000Z',
+    fromDate: '2023-07-31T00:00:00.000Z',
     stagerType: 'UNDERWRITER STAGER',
     searchTerm: 'LegalFeeToOrder',
-    toDate: '2019-01-05T00:00:00.000Z',
+    toDate: '2023-08-21T00:00:00.000Z',
+  };
+  const RSHDate = {
+    fromDate: '2023-07-31T00:00:00.000Z',
+    stagerType: 'UNDERWRITER STAGER',
+    searchTerm: 'LegalFeeToOrder',
+    toDate: '2023-08-21T00:00:00.000Z',
+    brandName: 'RSH',
   };
   const dateUtc = {
-    fromDate: '2019-01-05',
-    toDate: '2019-01-05',
+    toDate: '2023-08-21',
+    fromDate: '2023-07-31',
   };
   const saga = cloneableGenerator(TestExports.fetchDashboardData)(payload);
 
@@ -344,9 +388,14 @@ describe('fetchDashboardData - empty response', () => {
       .toEqual(select(selectors.getStagerValue));
   });
 
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
+
   it('call bpm audit data Api', () => {
-    expect(saga.next(date).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', date));
+    expect(saga.next(RSHDate).value)
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/getDataByDate', RSHDate));
   });
   it('should update searchterm ', () => {
     expect(saga.next(null).value)
@@ -391,10 +440,14 @@ describe('fetchDownloadData - success', () => {
     expect(saga.next(dateUTCValue).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
 
   it('call downloadDataByDate Api', () => {
     expect(saga.next(false).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue }));
   });
   it('update download response in state', () => {
     expect(saga.next({ response: 'data' }).value)
@@ -425,10 +478,14 @@ describe('fetchDownloadData - null response', () => {
     expect(saga.next(dateUTCValue).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
 
   it('call downloadDataByDate Api', () => {
     expect(saga.next(false).value)
-      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue, azureSearchToggle: false }));
+      .toEqual(call(Api.callPost, 'api/stager/dashboard/downloadDataByDate', { ...dateValue }));
   });
   it('should complete', () => {
     expect(saga.next(null).done).toEqual(true);
@@ -456,7 +513,10 @@ describe('fetchDownloadData - error', () => {
     expect(saga.next(null).value)
       .toEqual(select(selectors.getAzureSearchToggle));
   });
-
+  it('should get RSH brand name', () => {
+    expect(saga.next().value)
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
+  });
   it('should update state with empty payload', () => {
     expect(saga.next(false).value)
       .toEqual(put({ type: SET_DOWNLOAD_DATA, payload: {} }));
@@ -782,13 +842,14 @@ describe('makeOrderBpmCall - error', () => {
   });
 });
 describe('makeStagerSearchLoanCall - success', () => {
-  const payload = { payload: '123456789' };
+  const payload = { payload: '123456789', brandName: 'RSH' };
   const saga = cloneableGenerator(TestExports.makeStagerSearchLoanCall)(payload);
   const result = {
-    fromDate: '2019-01-05T00:00:00.000Z',
+    fromDate: '2023-07-31T00:00:00.000Z',
     stagerType: 'UNDERWRITER STAGER',
-    toDate: '2019-01-05T00:00:00.000Z',
+    toDate: '2023-08-21T00:00:00.000Z',
     searchTerm: null,
+    brandName: 'NSM',
   };
   it('should select Stager type ', () => {
     expect(saga.next().value)
@@ -799,14 +860,21 @@ describe('makeStagerSearchLoanCall - success', () => {
       .toEqual(select(selectors.getStagerStartEndDate));
   });
 
-  it('call getCounts Api', () => {
+  it('should get RSH brand name', () => {
     expect(saga.next(result).value)
-      .toEqual(call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', { ...dateValue, loanNumber: '123456789' }));
+      .toEqual(select(loginSelectors.isRSHGroupPresent));
   });
+
+  it('call getCounts Api', () => {
+    expect(saga.next().value)
+      .toEqual(call(Api.callPost, '/api/stager/dashboard/getSearchLoanNumber', { ...result, loanNumber: '123456789' }));
+  });
+
   it('should trigger SEARCH_STAGER_LOAN_NUMBER', () => {
     expect(saga.next([]).value)
       .toEqual(put({ type: SEARCH_STAGER_LOAN_NUMBER, payload: [] }));
   });
+
   it('should trigger SET_STAGER_LOAN_NUMBER ', () => {
     expect(saga.next().value)
       .toEqual(put({ type: SET_STAGER_LOAN_NUMBER, payload: '123456789' }));
