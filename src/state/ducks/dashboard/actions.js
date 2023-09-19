@@ -96,6 +96,7 @@ import {
   RESET_DATA,
   TOGGLE_SEND_BACK_DOCSIN,
   BOOKING_SENDTODOCSIN,
+  ODM_RERUN_WIDGET,
 } from './types';
 
 
@@ -555,6 +556,11 @@ const intiateBookingSendToDocsIn = payload => ({
   payload,
 });
 
+const odmRerunFromWidgetAction = payload => ({
+  type: ODM_RERUN_WIDGET,
+  payload,
+});
+
 export {
   dismissUserNotification,
   onSubmitToFhlmcAction,
@@ -653,4 +659,5 @@ export {
   dashboardResetDataAction,
   toggleSendToDocsIn,
   intiateBookingSendToDocsIn,
+  odmRerunFromWidgetAction,
 };

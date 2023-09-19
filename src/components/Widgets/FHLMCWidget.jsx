@@ -311,8 +311,11 @@ class FHLMCWidget extends Component {
   }
 
   submitForODMRerun = () => {
-    const { odmRerunOperation } = this.props;
-    odmRerunOperation();
+    const { odmRerunOperation, requestTypeData } = this.props;
+    const payload = {
+      requestTypeData,
+    };
+    odmRerunOperation(payload);
   }
 
 
@@ -675,7 +678,7 @@ const mapDispatchToProps = dispatch => ({
   onSubmitToFhlmcRequest: operations.onSubmitToFhlmcRequest(dispatch),
   populateInvestorDropdown: operations.populateInvestorEvents(dispatch),
   setRequestTypeData: operations.setRequestTypeDataOperation(dispatch),
-  odmRerunOperation: operations.odmRerunOperation(dispatch),
+  odmRerunOperation: operations.odmRerunWidgetOperation(dispatch),
   onFhlmcModHistoryPopup: operations.onFHLMCModHistory(dispatch),
   onFhlmcBulkSubmit: operations.onFhlmcCasesSubmit(dispatch),
   onTablePopupDataClear: operations.onTablePopupDataClear(dispatch),

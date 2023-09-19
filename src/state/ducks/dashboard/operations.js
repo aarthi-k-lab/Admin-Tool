@@ -90,6 +90,7 @@ import {
   dashboardResetDataAction,
   toggleSendToDocsIn,
   intiateBookingSendToDocsIn,
+  odmRerunFromWidgetAction,
 } from './actions';
 
 import {
@@ -471,6 +472,9 @@ const odmRerunOperation = dispatch => () => {
   dispatch(odmRerunAction());
 };
 
+const odmRerunWidgetOperation = dispatch => (selectedRequestType) => {
+  dispatch(odmRerunFromWidgetAction(selectedRequestType));
+};
 const disableSaveOperation = dispatch => (payload) => {
   dispatch(disableSaveAction(payload));
 };
@@ -588,6 +592,7 @@ const operations = {
   dashboardResetDataOperation,
   toggleSendToDocsInOperation,
   initiateBookingOperation,
+  odmRerunWidgetOperation,
 };
 
 export default operations;

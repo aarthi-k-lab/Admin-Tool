@@ -43,7 +43,7 @@ class FHLMCDataInsightDownload extends React.PureComponent {
           // hasTooltip
           onClick={this.handleDownload}
           startIcon={<GetAppIcon style={{ height: '1.5rem' }} />}
-          title="DOWNLOAD REQUEST"
+          title="DOWNLOAD"
           tooltipMessage="Create an excel file with the data from this tab for your review."
           variant="text"
         />
