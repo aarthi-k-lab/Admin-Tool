@@ -19,7 +19,7 @@ function TrailDatePicker(props) {
   let isNonBetaUser = false;
   groupList.forEach((group) => {
     if (userGroups
-      && !R.equals(group, 'BETA')
+      && !R.equals(group.toLowerCase(), 'beta')
       && !R.equals(R.findIndex(R.propEq('groupName', group.toLowerCase()))(userGroups), -1)
     ) { isNonBetaUser = true; }
   });
