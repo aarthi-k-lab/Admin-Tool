@@ -181,7 +181,8 @@ import {
   SET_BORROWER_INFO,
   ODM_RERUN_WIDGET,
 } from './types';
-import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
+// Note : Doc Checklist revert
+// import { SAVE_DOC_CHECKLIST_DATA, DOC_CHK_SAVE_SUCCESS } from '../document-checklist/types';
 import DashboardModel from '../../../models/Dashboard';
 import { errorTombstoneFetch, disableFinanceCalcTabButtonAction } from './actions';
 import {
@@ -997,12 +998,14 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
       resolutionId,
       isWestwing,
     };
+    /*
+    Note : Doc Checklist revert
     if (groupName === 'PROC') {
       yield put({
         type: SAVE_DOC_CHECKLIST_DATA,
       });
       yield take(DOC_CHK_SAVE_SUCCESS);
-    }
+    } */
     const response = yield call(Api.callPost, `/api/disposition/validate-disposition?isAuto=${isAuto}`, request);
     const { tkamsValidation, skillValidation } = response;
     yield put({

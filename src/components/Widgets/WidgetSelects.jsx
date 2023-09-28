@@ -11,7 +11,8 @@ import {
   FHLMC,
   LSAMS_NOTES,
   WESTWINGWIDGET,
-  DOCUMENT_CHECKLIST,
+  // Note : Doc Checklist revert
+  // DOCUMENT_CHECKLIST,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
@@ -109,6 +110,7 @@ const widgets = [
     ],
     children: [COMMENTS],
   },
+  /* Note : Doc Checklist revert
   {
     id: DOCUMENT_CHECKLIST,
     icon: <img
@@ -118,7 +120,7 @@ const widgets = [
     />,
     visibility: [BEUW, FEUW, PROC],
     children: [COMMENTS],
-  },
+  }, */
   {
     id: WESTWING,
     icon: <img alt="WestWing" src="/static/img/WestWing icon - Normal.svg" style={{ width: '23px' }} />,
