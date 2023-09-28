@@ -107,3 +107,7 @@
   height: 2rem !important;
   color: #eee !important;
 }
+
+.income-cont-chk {
+  display: flex;
+}

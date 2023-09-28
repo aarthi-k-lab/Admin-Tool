@@ -1,0 +1,114 @@
+.indexing-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.indexing-container {
+    display: flex;
+    width: 82%;
+    margin: 1rem 0rem 0rem 1rem;
+    background-color: white;
+    border-radius: 10px;
+    flex-direction: column;
+}
+
+.btn-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    padding: 10px 14px;
+}
+
+.btn-container button {
+    font-weight: 600;
+}
+
+.btn-container button.icon-btn {
+    margin-right: 10px;
+}
+
+.btn-container button.icon-btn svg {
+    font-size: 20px;
+    font-size: 14px !important;
+    margin-right: -8px;
+}
+
+.center-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 12px;
+}
+
+h2.main-headline {
+    font-size: 14px;
+    font-weight: 900;
+    color: #4E586E;
+    margin: 16px 16px 0px 16px;
+}
+
+.documents-container {
+    margin-left: 12px;
+}
+
+.documents-container>div[class*="docMainContainer"] {
+    margin: 0px !important;
+    position: static !important;
+}
+
+.tabWidth {
+    width: 100% !important;
+}
+
+.borrowerBanner {
+    background-color: #f3f5f9 !important;
+    border-radius: 5px !important;
+    width: inherit !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.tabContainer {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.taballign {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    justify-content: space-evenly !important;
+}
+
+.borrNameDiv {
+    display: grid !important;
+    text-transform: capitalize !important;
+}
+
+.borrName {
+    font-weight: 700 !important;
+    color: #4e586e !important;
+}
+
+.borrDesc {
+    color: #939299 !important;
+}
+
+
+.borrTab {
+    width: 12.75rem !important;
+}
+
+.add-contributor-button {
+    position: relative;
+}
+
+.docListContainer {
+    padding: 1rem;
+    background-color: #f3f5f9 !important;
+    margin-top: 1rem;
+    border-radius: 10px !important;
+}

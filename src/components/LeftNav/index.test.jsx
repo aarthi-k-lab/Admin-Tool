@@ -6,7 +6,6 @@ let defaultProps ={
   isAssigned : false,
   onAutoSave : jest.fn(),
   onClearStagerTaskName : jest.fn(),
-  onClearStagerResponse : jest.fn(),
   onEndShift : jest.fn(),
   path : '',
 }
@@ -48,7 +47,7 @@ describe('<LeftNav />', () => {
     expect(handleLandingpage).toBeCalled();
   });
 
-  it('should call the onAutoSave and onClearStagerResponse function', () => {
+  it('should call the onAutoSave and onClearStagerTaskName function', () => {
     const user = {
       userDetails: {
         email: 'bernt@mrcooper.com',
@@ -59,12 +58,10 @@ describe('<LeftNav />', () => {
     const onClearStagerTaskName = jest.fn();
     const onEndShift = jest.fn();
     const onAutoSave = jest.fn();
-    const onClearStagerResponse = jest.fn();
     const handleLandingpage = jest.spyOn(TestExports.LeftNav.prototype, 'handleLandingpage');
     const props = {
       user,
       onClearStagerTaskName,
-      onClearStagerResponse,
       onAutoSave,
       onEndShift,
       evalId: '123',
@@ -79,6 +76,6 @@ describe('<LeftNav />', () => {
     wrapper.find('Link').at(4).simulate('click');
     expect(handleLandingpage).toBeCalled();
     expect(onAutoSave).toBeCalled();
-    expect(onClearStagerResponse).toBeCalled();
+    expect(onClearStagerTaskName).toBeCalled();
   });
 });

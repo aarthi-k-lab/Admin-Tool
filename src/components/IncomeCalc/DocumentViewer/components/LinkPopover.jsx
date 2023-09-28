@@ -22,7 +22,7 @@ const LinkPopover = (props) => {
   const {
     linkDocPopover, setLinkDocPopover,
     selectedBorrower, removalDocumentName, removalDocumentId,
-    checkedFilenetDocs, type, borrowerNames, handleDone,
+    checkedFilenetDocs, type, borrowerNames, handleDone, source,
   } = props;
   const [checkedBorrowers, setCheckedBorrowers] = useState([]);
 
@@ -145,7 +145,7 @@ const LinkPopover = (props) => {
                 styleName="link-pop-link-unlink-button"
                 variant="contained"
               >
-              Done
+                { (type === 'unlink' && source === 'indexer') ? 'UNLINK' : 'DONE'}
               </Button>
               <Button
                 onClick={() => setLinkDocPopover(false)}
@@ -173,6 +173,7 @@ LinkPopover.propTypes = {
   removalDocumentName: PropTypes.string.isRequired,
   selectedBorrower: PropTypes.string.isRequired,
   setLinkDocPopover: PropTypes.func.isRequired,
+  source: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   unlinkDocumentToBorrowers: PropTypes.func.isRequired,
 };

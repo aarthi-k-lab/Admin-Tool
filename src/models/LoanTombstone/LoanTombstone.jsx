@@ -377,6 +377,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     assumptorDetails,
     hardshipDetails,
   } = response;
+  const { loanMAState } = loanViewData;
   const hardshipBegindate = moment.tz(loanDetails.nextPaymentDueDate, 'America/Chicago');
   const hardshipBeginDateString = hardshipBegindate.isValid() ? hardshipBegindate.format('YYYY-MM-DD') : NA;
   let hardshipEndDateString = null;
@@ -391,6 +392,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
     brandName: R.propOr(null, 'brandName', loanDetails),
     loanType: R.pathOr(null, ['loanType'], loanDetails),
     waterfallId: R.pathOr(null, ['waterfallId'], modInfoDetails),
+    loanMAState,
     tombstoneData:
     {
       ...getTombstoneItems({

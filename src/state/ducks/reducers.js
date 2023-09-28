@@ -13,6 +13,7 @@ import { reducers as widgets } from './widgets';
 import { reducers as lsamsNotes } from './lsams-notes';
 import { reducers as documentChecklist } from './document-checklist';
 import { reducers as userSkills } from './user-skills';
+import { reducers as indexer } from './indexer';
 
 const rootReducer = combineReducers({
   appConfig,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   lsamsNotes,
   documentChecklist,
   userSkills,
+  indexer,
 });
 
 export default rootReducer;

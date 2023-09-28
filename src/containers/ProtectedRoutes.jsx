@@ -38,6 +38,7 @@ import WestWingPage from './Dashboard/WestWing/WestWingPage';
 import Processor from './Dashboard/Processor/Processor';
 import MilestoneActivity from './LoanActivity/MilestoneActivity';
 import UserSkills from './UserSkills/UserSkills';
+import Indexer from './Indexer';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -71,6 +72,7 @@ class ProtectedRoutes extends React.Component {
     this.renderWestWingPageRoute = this.renderWestWingPageRoute.bind(this);
     this.renderWestWingOrderPageRoute = this.renderWestWingOrderPageRoute.bind(this);
     this.getHiddenRoutes = this.getHiddenRoutes.bind(this);
+    this.renderIndexerRoute = this.renderIndexerRoute.bind(this);
   }
 
   componentDidMount() {
@@ -331,6 +333,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderIndexerRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasIndexerAccess(groups)
+        ? <Indexer group={DashboardModel.INDEXER} />
+        : <Redirect to="/unauthorized?error=INDEXER_NEEDED" />
+    );
+  }
+
   render() {
     const { loading, redirectPath } = this.state;
     const { expandView, location, user } = this.props;
@@ -373,6 +384,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/user-skills" render={this.renderUserSkillsPageRoute} />
           <Route path="/west-wing" render={this.renderWestWingPageRoute} />
           <Route path="/westWingOrder" render={this.renderWestWingOrderPageRoute} />
+          <Route path="/indexer" render={this.renderIndexerRoute} />
 
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

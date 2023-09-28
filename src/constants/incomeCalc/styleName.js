@@ -128,6 +128,9 @@ const taskSection = {
   wageEarnings: {
     item: 'inc-calc-borr-item',
   },
+  fixedIncome: {
+    item: 'inc-calc-borr-item',
+  },
   grossYtd: {
     item: 'sect-title-delete',
   },
@@ -217,6 +220,11 @@ const datePicker = {
 const dropDown = {
   payFreq: {
     dropdown: 'payFreq',
+    'dropdown-sect': 'displayInRow',
+    title: 'pay-freq-title',
+  },
+  teacherPaySchedule: {
+    dropdown: 'teacherPaySchedule',
     'dropdown-sect': 'displayInRow',
     title: 'pay-freq-title',
   },

@@ -603,6 +603,7 @@ class DocumentList extends React.PureComponent {
                           removalDocumentId={removalDocumentId}
                           removalDocumentName={removalDocumentName}
                           setLinkDocPopover={this.handleLinkPopover}
+                          source="docChecklist"
                           type="unlink"
                         />
                         <TagPopover

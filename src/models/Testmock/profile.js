@@ -44,6 +44,8 @@ const userGroups = [{
   groupName: 'util-mgr',
 }, {
   groupName: 'beta',
+}, {
+  groupName: 'indexer',
 }];
 
 
@@ -63,6 +65,8 @@ const userGroupsUncheckedAgent = [{
   groupName: 'trial',
 }, {
   groupName: 'util',
+}, {
+  groupName: 'indexer',
 }];
 
 const userGroupsUncheckedManager = [{
@@ -105,6 +109,7 @@ const isChecked = {
   USERSKILLS: true,
   LOSSMITIGATION: true,
   RSHstager: true,
+  INDEXER: true,
 };
 
 const isCheckedFalse = {
@@ -127,6 +132,7 @@ const isCheckedFalse = {
   USERSKILLS: true,
   LOSSMITIGATION: true,
   RSHstager: true,
+  INDEXER: true,
 };
 const skills = { FEUW: ['Skill14::InVESTOR', 'Skill19::MRC Onshore', 'Skill1::something', 'Skill2::nothing'] };
 

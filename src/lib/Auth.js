@@ -13,6 +13,7 @@ import {
   SECONDLOOK,
   USERSKILLS,
   WESTWING,
+  INDEXER,
 } from '../constants/Groups';
 import Redirect from './Redirect';
 
@@ -301,6 +302,8 @@ Auth.failureMessages = {
   LOCATION_ACCESS_FAILED: 'CURRENTLY THIS FEATURE IS NOT AVAILBLE',
   INVESTOR_SETTLEMENT_ACCESS_NEEDED: 'Investor Settlement Group Access is needed to view the Investor Settlement Dashboard.',
   SECONDLOOK_ACCESS_NEEDED: 'Second Look Group Access is needed to view the Second Look Dashboard.',
+  USERSKILLS_ACCESS_NEEDED: 'User Skills Group Access is needed to view the User Skills Dashboard.',
+  INDEXER_ACCESS_NEEDED: 'Indexer Group Access is needed to view the Indexer Dashboard.',
 };
 
 Auth.homePage = [
@@ -359,6 +362,10 @@ Auth.homePage = [
   {
     groupName: WESTWING,
     path: '/west-wing',
+  },
+  {
+    groupName: INDEXER,
+    path: '/indexer',
   },
 ];
 

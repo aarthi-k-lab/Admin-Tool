@@ -14,6 +14,7 @@ import {
   SET_SELECTED_BORROWER,
   FETCH_FICO_TABLE_DATA,
   ADD_CONTRIBUTOR_FICO,
+  SET_INCOME_VERIFICATION_STATUS,
 } from './types';
 
 
@@ -48,6 +49,11 @@ const onLockCalc = () => ({
 
 const setHistoryItem = payload => ({
   type: SET_HISTORY_ITEM,
+  payload,
+});
+
+const setVerificationStatus = payload => ({
+  type: SET_INCOME_VERIFICATION_STATUS,
   payload,
 });
 
@@ -149,6 +155,7 @@ export {
   getIncomeCalcChecklist,
   toggleHistoryView,
   setHistoryItem,
+  setVerificationStatus,
   fetchHistoryChecklist,
   storeTaskValueAction,
   fetchSelectedBorrowerData,

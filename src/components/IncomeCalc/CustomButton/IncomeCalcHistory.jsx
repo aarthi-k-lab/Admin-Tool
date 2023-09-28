@@ -2,6 +2,7 @@
 import React from 'react';
 import * as R from 'ramda';
 import moment from 'moment-timezone';
+import './CustomButton.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Icon from '@material-ui/core/Icon';
@@ -96,16 +97,24 @@ visibility
 
   render() {
     const { anchorEl } = this.state;
-    const { historyView, historyItem } = this.props;
+    const { historyView, historyItem, verificationStatus } = this.props;
     return (
       <div style={{ display: 'flex' }}>
         {historyView
           ? (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {historyItem && <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${this.getCSTDateTime(historyItem.calcDateTime)} by ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}</span>}
-              <p style={{ margin: 0 }}>Close</p>
-              <Icon onClick={this.handleCloseHistoryView} style={{ cursor: 'pointer' }}>close</Icon>
-            </div>
+            <>
+              <p styleName="verificationStatus">
+                <span>
+                  <img alt={verificationStatus} src={`/static/img/${verificationStatus}Status.png`} style={{ width: '20px', height: '20px', marginRight: '0.5rem' }} />
+                </span>
+                {verificationStatus}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {historyItem && <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${this.getCSTDateTime(historyItem.calcDateTime)} by ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}</span>}
+                <p style={{ margin: 0 }}>Close</p>
+                <Icon onClick={this.handleCloseHistoryView} style={{ cursor: 'pointer' }}>close</Icon>
+              </div>
+            </>
           ) : (
             <>
               <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${getCurrentDate()}`}</span>
@@ -147,6 +156,7 @@ IncomeCalcHistory.defaultProps = {
   historyData: null,
   historyItem: null,
   disabled: false,
+  verificationStatus: null,
 };
 
 
@@ -162,6 +172,7 @@ IncomeCalcHistory.propTypes = {
   }),
   historyView: PropTypes.bool,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
+  verificationStatus: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
@@ -169,6 +180,7 @@ const mapStateToProps = state => ({
   historyView: selectors.getHistoryView(state),
   historyItem: selectors.getHistoryItem(state),
   openWidgetList: widgetsSelectors.getOpenWidgetList(state),
+  verificationStatus: selectors.getVerificationStatus(state),
 });
 
 const mapDispatchToProps = dispatch => ({

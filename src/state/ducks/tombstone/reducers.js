@@ -26,6 +26,7 @@ import {
   SET_REASONABLE_EFFORT_HISTORY_DATA,
   SET_CFPBTABLE_DATA,
   SET_UPDATED_ASSUMPTORS,
+  SET_LOAN_MASTATE,
   SET_HARDSHIP_DATA,
   SET_UPDATED_BORR_HARDSHIP_DATA,
   SAVE_HARDSHIP_SOURCE_DROPDOWN,
@@ -294,6 +295,12 @@ const reducer = (state = loadingState, action) => {
         viewTypeData,
         selectedView: viewType,
         data: viewTypeData.loanViewData,
+      };
+    }
+    case SET_LOAN_MASTATE: {
+      return {
+        ...state,
+        loanMAState: action.payload,
       };
     }
     case SET_HARDSHIP_DATA: {

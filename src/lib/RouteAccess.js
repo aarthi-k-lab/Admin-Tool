@@ -165,8 +165,16 @@ const USER_SKILLS = {
   groups: [],
 };
 
+const INDEXER = {
+  path: '/indexer',
+  name: 'Indexer',
+  img: '/static/img/indexer.svg',
+  groups: ['allaccess', 'indexer'],
+};
+
 const links = [
   managerDashboard,
+  INDEXER,
   docProcessor,
   feuwTasksAndChecklist,
   beuwTasksAndChecklist,
@@ -299,6 +307,10 @@ function hasWestWingAccess(groups) {
   return hasGroup(WESTWING.groups, groups);
 }
 
+function hasIndexerAccess(groups) {
+  return hasGroup(INDEXER.groups, groups);
+}
+
 function getStagerGroup(groups) {
   let groupName = '';
   const stagerGroups = ['stager-mgr', 'stager', 'rpsstager-mgr', 'rpsstager'];
@@ -340,4 +352,5 @@ module.exports = {
   hasSecondLookAccess,
   hasUserSkillsAccess,
   hasWestWingAccess,
+  hasIndexerAccess,
 };

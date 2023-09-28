@@ -13,6 +13,7 @@ import { combinedSaga as widgetsSaga } from './widgets/sagas';
 import { combinedSaga as lsamsNotesSaga } from './lsams-notes/sagas';
 import { combinedSaga as documentChecklistSaga } from './document-checklist/sagas';
 import { combinedSaga as userSkillsSaga } from './user-skills/sagas';
+import { combinedSaga as indexerSaga } from './indexer/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -27,6 +28,7 @@ export default function* rootSaga() {
     incomeCalculatorSaga(),
     milestoneActivitySaga(),
     widgetsSaga(),
+    indexerSaga(),
     lsamsNotesSaga(),
     documentChecklistSaga(),
     userSkillsSaga(),

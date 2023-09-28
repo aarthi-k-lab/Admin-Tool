@@ -11,6 +11,7 @@ import {
   ERROR_LOADING_TOMBSTONE_DATA,
   FETCH_TOMBSTONE_DATA,
   SET_RFDTABLE_DATA,
+  SET_LOAN_MASTATE,
 } from './types';
 import { STORE_INVEST_CD_AND_BRAND_NM, SET_RESOLUTION_AND_INVSTR_HRCHY, SET_BRAND } from '../dashboard/types';
 import { TestExports } from './sagas';
@@ -43,6 +44,7 @@ describe('fetchTombstoneData', () => {
     resolutionId: '',
     investorHierarchy: {},
     tombstoneData: [],
+    loanMAState: 1,
   };
   it('should update LOADING DATA in store', () => {
     expect(saga.next().value)
@@ -84,9 +86,15 @@ describe('fetchTombstoneData', () => {
     expect(saga.next('NSM').value)
       .toEqual(call(LoanTombstone.fetchData, 596400243, 1161415, 'FrontEnd Review', 'FrontEnd Review', 12345, 'NSM', 78790));
   });
-
-  it('should dispatch STORE_INVEST_CD_AND_BRAND_NM', () => {
+  it('should dispatch SET_LOAN_MASTATE', () => {
     expect(saga.next(investorData).value)
+      .toEqual(put({
+        type: SET_LOAN_MASTATE,
+        payload: true,
+      }));
+  });
+  it('should dispatch STORE_INVEST_CD_AND_BRAND_NM', () => {
+    expect(saga.next().value)
       .toEqual(put({
         type: STORE_INVEST_CD_AND_BRAND_NM,
         payload: { investorCode: '', brandName: 'NSM' },

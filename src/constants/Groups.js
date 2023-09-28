@@ -22,3 +22,4 @@ export const WESTWING_MGR = 'lossmitigation-mgr';
 export const USERSKILLS = 'user-skills';
 export const RSH_STAGER = 'rshstager';
 export const RSH_STAGER_MGR = 'rshstager-mgr';
+export const INDEXER = 'indexer';

@@ -50,6 +50,7 @@ import {
   GET_REASONABLE_EFFORT_DATA_BY_ID,
   GET_CFPBTABLE_DATA,
   SET_CFPBTABLE_DATA,
+  SET_LOAN_MASTATE,
   FETCH_HARDSHIP_DATA,
   SAVE_HARDSHIP_DATA,
   SET_HARDSHIP_DATA,
@@ -137,9 +138,12 @@ function* fetchTombstoneData(payload) {
       loanNumber, evalId, group, taskName, tombstoneTaskId, brand, selectedResolutionId);
     const {
       resolutionId, investorHierarchy, tombstoneData, investorCode, brandName,
-      loanType, waterfallId, hardshipBeginDate, hardshipEndDate,
+      loanType, waterfallId, hardshipBeginDate, hardshipEndDate, loanMAState,
     } = data;
-
+    yield put({
+      type: SET_LOAN_MASTATE,
+      payload: loanMAState === 1,
+    });
     yield put({
       type: STORE_INVEST_CD_AND_BRAND_NM,
       payload: { investorCode, brandName },

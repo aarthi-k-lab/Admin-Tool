@@ -32,11 +32,23 @@
   align-items: baseline;
 }
 
+.cnsdtIncome::-webkit-scrollbar{
+  display: none;
+}
+
+.teacherPaySchedule {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
 .cnsdtIncome {
   width: 27rem;
   height: 51.5rem;
   margin-left: 2rem;
   align-items: center;
+  overflow-y: scroll;
+  min-height: 100% !important;
 }
 
 .parentDiv {
@@ -48,6 +60,15 @@
 .wageEarnings {
   margin: 1.5rem;
   padding-bottom: 2rem;
+}
+
+.fixedIncome{
+  margin: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.fixedIncome > :nth-child(2) {
+  padding-top: 3rem;
 }
 
 .rental-income-sect {
@@ -77,6 +98,10 @@
 .UnEmploymentAmt {
   background: rgb(242, 242, 242) !important;
   margin: 1rem 1.5rem;
+}
+
+.income-cont-chk {
+  display: flex;
 }
 
 .grossYtd {
@@ -528,4 +553,3 @@
   width: 53% !important;
   background-color: #f3f5f9 !important;
 }
-

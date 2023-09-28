@@ -31,7 +31,7 @@ import {
   ERROR_LOADING_TASKS, HANDLE_CHECKLIST_ITEM_CHANGE,
   STORE_CHECKLIST_ITEM_CHANGE, GET_COMPANY_LIST, SET_AUTOCOMPLETE_OPTIONS,
   REMOVE_DIRTY_CHECKLIST, SET_INCOMECALC_DATA,
-  SET_PROCESS_ID, ADD_CONTRIBUTOR, FETCH_INCOMECALC_CHECKLIST,
+  SET_PROCESS_ID, SET_INCOME_VERIFICATION_STATUS, ADD_CONTRIBUTOR, FETCH_INCOMECALC_CHECKLIST,
   PROCESS_VALIDATIONS, SET_BANNER_DATA, DUPLICATE_INCOME, STORE_INCOMECALC_HISTORY,
   CLOSE_INC_HISTORY,
   SET_MAIN_CHECKLISTID,
@@ -188,7 +188,9 @@ function* fetchHistoryChecklist(action) {
     firstName: R.nth(0, R.split('_', borrower)),
   }), borrowerList);
   const borrowerData = yield call(Api.callPost, '/api/dataservice/incomeCalc/historicalBorrowers', borrowerRequest);
+  const { verificationStatus } = yield call(Api.callGet, `api/tkams/income/borrowerIncomeData/${loanNumber}`);
   yield put({ type: SET_HISTORICAL_BORROWERS, payload: borrowerData });
+  yield put({ type: SET_INCOME_VERIFICATION_STATUS, payload: verificationStatus });
   yield put({ type: HIDE_LOADER });
 }
 

@@ -28,6 +28,8 @@ const getTombstoneModViewData = state => R.pathOr([], ['tombstone', 'viewTypeDat
 
 const getReasonableEffortData = state => R.pathOr({}, ['tombstone', 'reasonableEffortData'], state);
 
+const getLoanMAState = state => R.pathOr(false, ['tombstone', 'loanMAState'], state);
+
 const getCFPBTableData = state => R.pathOr([], ['tombstone', 'cfpbTableData'], state);
 
 const getReasonableEffortId = (state) => {
@@ -75,6 +77,7 @@ const selectors = {
   getCFPBTableData,
   getReasonableEffortId,
   getTombstoneLoanViewData,
+  getLoanMAState,
   getHardshipData,
   getUpdatedHardshipData,
   getHardshipSourceDropDownData,

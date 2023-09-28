@@ -13,7 +13,7 @@ parameters:
 trigger:
   branches:
     include:
-      - CMOD/SEPTEMBER
+      - CMOD/OCTOBER
     exclude:
       - master
   paths:

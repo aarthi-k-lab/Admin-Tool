@@ -90,6 +90,7 @@ import {
   dashboardResetDataAction,
   toggleSendToDocsIn,
   intiateBookingSendToDocsIn,
+  resetResultOperationAction,
   odmRerunFromWidgetAction,
 } from './actions';
 
@@ -495,7 +496,12 @@ const initiateBookingOperation = dispatch => (payload) => {
   dispatch(intiateBookingSendToDocsIn(payload));
 };
 
+const resetResultOperationOperation = dispatch => () => {
+  dispatch(resetResultOperationAction());
+};
+
 const operations = {
+  resetResultOperationOperation,
   openSweetAlert,
   onDismissUserNotification,
   onSubmitToFhlmcRequest,

@@ -17,6 +17,7 @@ import {
   SAVE_DROPDOWN_OPTIONS,
   SET_INCOMECALC_TOGGLE,
   SET_PROCESS_ID,
+  SET_INCOME_VERIFICATION_STATUS,
   SET_AUTOCOMPLETE_OPTIONS,
   SET_BANNER_DATA,
   STORE_INCOMECALC_HISTORY,
@@ -46,6 +47,7 @@ const defaultState = {
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
   processId: null,
+  verificationStatus: null,
   rootTaskId: null,
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
@@ -146,6 +148,12 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         processId: action.payload,
+      };
+    }
+    case SET_INCOME_VERIFICATION_STATUS: {
+      return {
+        ...state,
+        verificationStatus: action.payload,
       };
     }
     case SET_INCOMECALC_TOGGLE: {

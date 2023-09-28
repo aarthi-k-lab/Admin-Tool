@@ -96,6 +96,7 @@ import {
   RESET_DATA,
   TOGGLE_SEND_BACK_DOCSIN,
   BOOKING_SENDTODOCSIN,
+  RESET_RESULT_OPERATION,
   ODM_RERUN_WIDGET,
 } from './types';
 
@@ -556,6 +557,10 @@ const intiateBookingSendToDocsIn = payload => ({
   payload,
 });
 
+const resetResultOperationAction = () => ({
+  type: RESET_RESULT_OPERATION,
+});
+
 const odmRerunFromWidgetAction = payload => ({
   type: ODM_RERUN_WIDGET,
   payload,
@@ -659,5 +664,6 @@ export {
   dashboardResetDataAction,
   toggleSendToDocsIn,
   intiateBookingSendToDocsIn,
+  resetResultOperationAction,
   odmRerunFromWidgetAction,
 };

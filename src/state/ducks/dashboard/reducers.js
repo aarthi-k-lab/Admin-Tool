@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import {
+  SAVE_EVAL_DETAILS,
   SET_DISASTER_TYPE,
   SET_EXPAND_VIEW,
   SAVE_DISPOSITION,
@@ -128,6 +129,7 @@ import {
   SET_BORROWER_INFO,
   SHOW_WEST_WING_WIDGET,
   SET_WORKOUT_TYPE,
+  RESET_RESULT_OPERATION,
 } from './types';
 
 const reducer = (state = {
@@ -456,6 +458,12 @@ const reducer = (state = {
       return {
         ...state,
         selectedDisposition,
+      };
+    }
+    case SAVE_EVAL_DETAILS: {
+      return {
+        ...state,
+        ...action.payload,
       };
     }
     case SAVE_EVALID_LOANNUMBER: {
@@ -1268,6 +1276,17 @@ const reducer = (state = {
       return {
         ...state,
         workoutType,
+      };
+    }
+
+    case RESET_RESULT_OPERATION: {
+      return {
+        ...state,
+        resultOperation: {
+          isOpen: false,
+          status: null,
+          level: null,
+        },
       };
     }
 

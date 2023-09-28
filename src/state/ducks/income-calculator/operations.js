@@ -14,17 +14,20 @@ import {
   handleAssetVerificationLockCalculation,
   handleFicoHistory,
   handleAddContributor,
+  setVerificationStatus,
 } from './actions';
 
 const enableHistoryView = dispatch => (item) => {
   dispatch(fetchHistoryChecklist(item.taskCheckListId));
   dispatch(setHistoryItem(item));
+  dispatch(setVerificationStatus());
   dispatch(toggleHistoryView(true));
 };
 
 const closeHistoryView = dispatch => (payload) => {
   dispatch(closeIncomeHistory(payload));
   dispatch(setHistoryItem(null));
+  dispatch(setVerificationStatus(null));
   dispatch(toggleHistoryView(false));
 };
 

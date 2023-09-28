@@ -1,0 +1,5 @@
+.table-header {
+  z-index: 2;
+  position: sticky;
+  background-color: white;
+}

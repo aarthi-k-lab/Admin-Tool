@@ -11,7 +11,7 @@ import {
   FHLMC,
   LSAMS_NOTES,
   WESTWINGWIDGET,
-  // DOCUMENT_CHECKLIST,
+  DOCUMENT_CHECKLIST,
 } from 'constants/widgets';
 import CommentsWidget from './CommentsWidget';
 import TrialLetter from '../../containers/LoanActivity/TrialLetter/TrialLetter';
@@ -35,6 +35,7 @@ const {
   DOCSIN_GOBACK,
   BOOKING: BOOKING_GROUP,
   WESTWING,
+  INDEXER,
 } = DashboardModel;
 
 const widgets = [
@@ -51,7 +52,7 @@ const widgets = [
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
       BOOKING_GROUP, SEARCH_LOAN, DOCGEN_GOBACK,
-      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK,
+      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK, INDEXER,
     ],
     overlay: true,
   },
@@ -60,7 +61,7 @@ const widgets = [
     icon: <img alt="Additional Info" src="/static/img/information.png" />,
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
-      BOOKING_GROUP, SEARCH_LOAN, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK,
+      BOOKING_GROUP, SEARCH_LOAN, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK, INDEXER,
     ],
     children: [COMMENTS],
   },
@@ -104,11 +105,11 @@ const widgets = [
     visibility: [
       FEUW, BEUW, PROC, DOC_GEN, DOCS_IN, STAGER, LOAN_ACTIVITY,
       BOOKING_GROUP, SEARCH_LOAN, DOCGEN_GOBACK, DOCSIN_GOBACK,
-      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK,
+      MLSTN_PAGE, POSTMODSTAGER, UWSTAGER, INVSET, SECONDLOOK, INDEXER,
     ],
     children: [COMMENTS],
   },
-  /* {
+  {
     id: DOCUMENT_CHECKLIST,
     icon: <img
       alt="DOC CHECKLIST"
@@ -117,7 +118,7 @@ const widgets = [
     />,
     visibility: [BEUW, FEUW, PROC],
     children: [COMMENTS],
-  }, */
+  },
   {
     id: WESTWING,
     icon: <img alt="WestWing" src="/static/img/WestWing icon - Normal.svg" style={{ width: '23px' }} />,

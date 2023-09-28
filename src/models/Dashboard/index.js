@@ -36,6 +36,7 @@ const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INV
 const SECONDLOOK = 'SECONDLOOK';
 const USERSKILLS = 'USERSKILLS';
 const MILESTONE_ACTIVITY = 'MA';
+const INDEXER = 'INDEXER';
 const STAGER_VALUE = {
   UW_STAGER: 'UW_STAGER',
   DOCGEN_STAGER: 'DOCGEN_STAGER',
@@ -166,6 +167,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: INDEXER,
+    task: 'INDEXER',
+    taskCode: 'INDEXER',
+    path: '/indexer',
+    showAssignUnassign: true,
+  },
+  {
     group: '',
     task: 'Unrecognized Dashboard',
     taskCode: '',
@@ -187,6 +195,7 @@ const GROUPS = {
   '/second-look': SECONDLOOK,
   '/user-skills': USERSKILLS,
   '/westWingOrder': WESTWING,
+  '/indexer': INDEXER,
 };
 
 function getTitle(location) {
@@ -217,6 +226,8 @@ function getTitle(location) {
       return 'USER SKILLS';
     case '/westWingOrder':
       return 'WEST WING';
+    case '/indexer':
+      return 'INDEXING';
     default:
       return 'Unrecognized Dashboard';
   }
@@ -238,6 +249,7 @@ const PDD = {
 };
 
 const DashboardModel = {
+  INDEXER,
   EVENT_CATEGORY_FILTER,
   FEUW,
   BEUW,
