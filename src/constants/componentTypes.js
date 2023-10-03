@@ -24,6 +24,7 @@ const DIVIDER = 'divider';
 const INCOME_CALCULATOR = 'income-calculator';
 const EXPENSE_CALCULATOR = 'expense-calculator';
 const READ_ONLY_TEXT = 'read-only-text';
+const TABLE = 'table';
 
 const componentTypes = {
   INCOME_CALCULATOR,
@@ -52,6 +53,7 @@ const componentTypes = {
   CHECKBOX,
   READ_ONLY_TEXT,
   EXPENSE_CALCULATOR,
+  TABLE,
 };
 
 export default componentTypes;

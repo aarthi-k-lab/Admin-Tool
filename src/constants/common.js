@@ -71,8 +71,9 @@ const checklistGridColumnSize = {
     default: 2,
   },
 };
-const hideClearButton = ['sla-rules', 'income-calculator', 'expense-calculator', 'asset-verification', 'fico-checklist', 'asset-checklist'];
-const financialChecklist = ['income-calculator', 'expense-calculator', 'asset-verification', 'fico-checklist', 'asset-checklist'];
+const hideClearButton = ['sla-rules', 'income-calculator', 'expense-calculator', 'asset-verification', 'fico-checklist', 'asset-checklist', 'delay-checklist'];
+const hidePrevNextButton = ['delay-checklist'];
+const financialChecklist = ['income-calculator', 'expense-calculator', 'asset-verification', 'fico-checklist', 'asset-checklist', 'delay-checklist'];
 const checklistForms = ['fico-checklist', 'asset-checklist', 'doc-checklist'];
 
 module.exports = {
@@ -87,6 +88,7 @@ module.exports = {
   EXCEL_FORMATS,
   checklistGridColumnSize,
   hideClearButton,
+  hidePrevNextButton,
   financialChecklist,
   checklistForms,
 };

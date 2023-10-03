@@ -82,6 +82,11 @@
   margin: 0 37rem 0 0;
 }
 
+.checkListButtons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .tooltip.tooltip {
   font-size: 0.8rem;
 }

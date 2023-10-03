@@ -492,6 +492,11 @@
   padding: 6px 0 !important;
 }
 
+.checklist-form-controls {
+  padding: 1.5rem;
+  background-color: rgb(243, 245, 249) !important;
+  border-radius: 0.5rem !important;
+}
 .fico-score {
   background-color: #f3f5f9 !important;
   padding: 0 1rem 1rem 0 !important;

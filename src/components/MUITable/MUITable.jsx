@@ -15,9 +15,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
 import * as R from 'ramda';
 import './MUITable.css';
+import { connect } from 'react-redux';
+import { operations as taskOperations } from 'ducks/tasks-and-checklist';
 
 function MUITable(props) {
-  const { columns, data } = props;
+  const {
+    columns, data, processAction, operation,
+  } = props;
 
   const processData = () => data.map((item) => {
     let newObject = {};
@@ -35,22 +39,26 @@ function MUITable(props) {
   });
 
   const [currentTableFilter, setCurrentTableFilter] = React.useState({
-    initialData: processData(),
-    filteredData: processData(),
-    columnFilterIndex: R.pluck(
-      'name',
-      R.filter(R.allPass([R.pathEq(['options', 'filter'], true)]))(columns),
-    ),
+    initialData: [],
+    filteredData: [],
+    columnFilterIndex: [],
   });
-
   useEffect(() => {
     let newState = {};
+    const newData = {
+      initialData: processData(),
+      filteredData: processData(),
+      columnFilterIndex: R.pluck(
+        'name',
+        R.filter(R.allPass([R.pathEq(['options', 'filter'], true)]))(columns),
+      ),
+    };
     columns.forEach((item) => {
       if (item.options !== undefined && item.options.filter) {
         newState = R.assocPath(['filters', item.name], [], newState);
         newState[`${item.name}Filter`] = null;
         newState[`${item.name}Checkbox`] = {};
-        R.without(['', null], R.uniq(R.pluck([item.name], currentTableFilter.initialData))).forEach(
+        R.without(['', null], R.uniq(R.pluck([item.name], newData.initialData))).forEach(
           (value) => { newState[`${item.name}Checkbox`][value] = Boolean(false); },
         );
       }
@@ -58,8 +66,14 @@ function MUITable(props) {
 
     setCurrentTableFilter({
       ...newState,
-      ...currentTableFilter,
+      ...newData,
     });
+  }, [data]);
+
+  useEffect(() => {
+    if (operation) {
+      processAction(operation);
+    }
   }, []);
 
   const handleFilterCheckbox = (event, stateRef, dropdownValue) => {
@@ -317,7 +331,15 @@ function MUITable(props) {
   );
 }
 
+MUITable.defaultProps = {
+  additionalInfo: { hasTitle: false, styleName: '', disableFuture: false },
+  operation: '',
+};
+
 MUITable.propTypes = {
+  additionalInfo: PropTypes.shape({
+    actions: PropTypes.shape({}),
+  }),
   columns: PropTypes.arrayOf(PropTypes.shape({
     align: PropTypes.string,
     label: PropTypes.string,
@@ -326,6 +348,12 @@ MUITable.propTypes = {
     options: PropTypes.object,
   })).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  operation: PropTypes.string,
+  processAction: PropTypes.func.isRequired,
 };
 
-export default MUITable;
+const mapDispatchToProps = dispatch => ({
+  processAction: taskOperations.preProcessChecklistItems(dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(MUITable);

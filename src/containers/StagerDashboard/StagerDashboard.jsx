@@ -6,6 +6,7 @@ import { selectors as stagerSelectors, operations as stagerOperations } from 'du
 import CustomSnackBar from 'components/CustomSnackBar';
 import * as R from 'ramda';
 import DashboardModel from 'models/Dashboard';
+import EndShift from 'models/EndShift';
 import { selectors as loginSelectors } from 'ducks/login';
 import { selectors as notificationSelectors, operations as notificationOperations } from 'ducks/notifications';
 import moment from 'moment';
@@ -45,6 +46,7 @@ class StagerDashboard extends React.Component {
       group, onGetGroupName,
       stagerTaskName,
       onClearPostModEndShitf,
+      onEndShift,
     } = this.props;
     const { stager } = this.state;
     const datePayload = this.getDatePayload();
@@ -52,6 +54,7 @@ class StagerDashboard extends React.Component {
     triggerStagerValue(stager || getStagerValue(group));
     onGetGroupName(group);
     getDashboardCounts();
+    onEndShift(EndShift.CLEAR_DASHBOARD_DATA);
     if (!R.isEmpty(stagerTaskName) && !R.isNil(stagerTaskName)) {
       onClearPostModEndShitf();
       this.onStatusCardClick(stagerTaskName.activeTile, stagerTaskName.activeTab);
@@ -283,6 +286,7 @@ const mapDispatchToProps = dispatch => ({
   onGetGroupName: dashboardOperations.onGetGroupName(dispatch),
   onClearStagerTaskName: dashboardOperations.onClearStagerTaskName(dispatch),
   onClearPostModEndShitf: dashboardOperations.onClearPostModEndShitf(dispatch),
+  onEndShift: dashboardOperations.onEndShift(dispatch),
   triggerStartEndDate: stagerOperations.triggerStartEndDate(dispatch),
   closeSnackBar: notificationOperations.closeSnackBar(dispatch),
   onClearStagerResponse: stagerOperations.onClearStagerResponse(dispatch),
@@ -322,6 +326,7 @@ StagerDashboard.propTypes = {
   onClearSearchResponse: PropTypes.func.isRequired,
   onClearStagerResponse: PropTypes.func.isRequired,
   onClearStagerTaskName: PropTypes.func.isRequired,
+  onEndShift: PropTypes.func.isRequired,
   onGetGroupName: PropTypes.func.isRequired,
   selectedData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   snackBarData: PropTypes.shape(),

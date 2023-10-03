@@ -78,6 +78,7 @@ const getChecklistItems = state => R.compose(
     additionalInfo: R.pathOr({}, ['taskBlueprint', 'additionalInfo'], checklistItem),
     showPushData: R.pathOr(false, ['taskBlueprint', 'additionalInfo', 'showPushData'], checklistItem),
     state: R.pathOr({}, ['state'], checklistItem),
+    subTasks: R.propOr([], 'subTasks', checklistItem),
   })),
   R.pathOr([], ['tasksAndChecklist', 'checklist', 'subTasks']),
 )(state);

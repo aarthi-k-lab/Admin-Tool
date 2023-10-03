@@ -39,7 +39,7 @@ class CustomReactTable extends React.PureComponent {
       return `${pointerStyle} days-until-sla-red`;
     }
     if (value === 0) {
-      return `${pointerStyle}days-until-sla-gray`;
+      return `${pointerStyle} days-until-sla-gray`;
     }
     return `${pointerStyle} tableRow`;
   }

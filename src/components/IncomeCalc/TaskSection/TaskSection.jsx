@@ -67,7 +67,7 @@ class TaskSection extends React.PureComponent {
         styleName, customType, labels, tooltip, hasTitle, horizontalRule, heightMultiplier,
         columnSize, labelSize, actionIcon, columns, valuePath, hasLabelValue,
         iconPosition, id, labelValuePath, showErrorCount, labelValueAdornment,
-        isAccordianTitle, defaultExpanded, cnsdtType, colSpan, columnHeaders, columnLabel,
+        isAccordianTitle, defaultExpanded, cnsdtType, colSpan, columnHeaders, columnLabel, spacing,
       }, title, disabled, failureReason, onChange, accHeaderData,
     } = this.props;
     const actionValue = valuePath ? R.assocPath(valuePath, true, {}) : true;
@@ -185,6 +185,7 @@ class TaskSection extends React.PureComponent {
             <Grid
               container
               direction="row"
+              spacing={spacing}
               styleName={getStyleName('taskSection', styleName, 'grid')}
             >
               {
@@ -418,6 +419,7 @@ TaskSection.defaultProps = {
     columnHeaders: [],
     columnLabel: '',
     colSpan: [],
+    spacing: 0,
   },
   value: {},
   disabled: false,
@@ -454,6 +456,7 @@ TaskSection.propTypes = {
     position: PropTypes.string,
     selector: PropTypes.string,
     showErrorCount: PropTypes.bool,
+    spacing: PropTypes.string,
     styleName: PropTypes.string,
     taskOptions: PropTypes.arrayOf(),
     tooltip: PropTypes.arrayOf(),

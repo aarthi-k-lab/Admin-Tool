@@ -19,10 +19,11 @@ import {
   operations as incomeOperations,
 } from 'ducks/income-calculator';
 import {
-  hideClearButton, financialChecklist, checklistGridColumnSize, checklistForms,
+  hideClearButton, financialChecklist, checklistGridColumnSize, checklistForms, hidePrevNextButton,
 } from 'constants/common';
 import { operations as documentChecklistOperations } from 'ducks/document-checklist';
 import Grid from '@material-ui/core/Grid';
+import { getChecklistItems } from 'lib/checklist';
 import {
   LockCalculation,
 } from 'components/ContentHeader';
@@ -38,6 +39,9 @@ import styles from './Checklist.css';
 import SlaHeader from '../SlaHeader';
 import ConfirmationDialogBox from '../Tasks/OptionalTask/ConfirmationDialogBox';
 import HTMLElements from '../../constants/componentTypes';
+import TaskSection from '../IncomeCalc/TaskSection';
+import MUITable from '../MUITable';
+import { TABLE_SCHEMA, TABLE_DATA } from '../../constants/tableSchema';
 import { FEUW_CHECKLIST } from '../../constants/frontEndChecklist';
 import { DOC_CHECKLIST } from '../../constants/incomeCalc/DocumentList';
 
@@ -184,9 +188,14 @@ class Checklist extends React.PureComponent {
     };
   }
 
-  handleDateChange(id, taskCode) {
-    const { onChange } = this.props;
+  handleDateChange(id, taskCode, additionalInfo = {}) {
+    const { onChange, processAction } = this.props;
+    const actions = R.propOr(false, 'actions', additionalInfo);
     return (value) => {
+      if (actions) {
+        const { postProcess, postData } = actions;
+        processAction(postProcess, { ...postData, value });
+      }
       onChange(id, value, taskCode);
     };
   }
@@ -278,6 +287,13 @@ class Checklist extends React.PureComponent {
     });
   }
 
+  renderChildren(disableChecklist) {
+    return (subTasks) => {
+      const subTaksObj = getChecklistItems(subTasks, disableChecklist);
+      return subTaksObj.map(subTask => this.renderChecklistItem(subTask));
+    };
+  }
+
   renderChecklistItem({
     disabled,
     id,
@@ -289,12 +305,16 @@ class Checklist extends React.PureComponent {
     source,
     additionalInfo,
     processInstance,
+    subTasks,
+    accHeaderData,
+    failureReason,
   }) {
     const {
       RADIO_BUTTONS, MULTILINE_TEXT, TEXT, NUMBER, DATE, DROPDOWN, SLA_RULES,
       CHECKBOX, READ_ONLY_TEXT, CURRENCY, CHECKLIST_INTERFACE,
-      INCOME_CALCULATOR, EXPENSE_CALCULATOR, TASK_SECTION,
+      INCOME_CALCULATOR, EXPENSE_CALCULATOR, TASK_SECTION, TABLE,
     } = HTMLElements;
+    const { location } = this.props;
     let element = {};
     switch (type) {
       case CHECKLIST_INTERFACE:
@@ -588,13 +608,44 @@ class Checklist extends React.PureComponent {
         element = <SlaRules {...props} key={id} />;
       } break;
       case TASK_SECTION: {
+        const onChange = this.handleDateChange(id, taskCode, additionalInfo);
+        const props = {
+          title,
+          additionalInfo,
+          subTasks,
+          onChange,
+          location,
+          value,
+          disabled,
+          renderChildren: this.renderChildren(disabled),
+          failureReason,
+          source,
+          accHeaderData,
+        };
+        element = <TaskSection key={id} {...props} />;
         if ((R.equals(R.prop('customType', additionalInfo), 'fico-checklist'))) {
           return <Fico />;
         } if ((R.equals(R.prop('customType', additionalInfo), 'asset-checklist'))) {
           return <Assetverification />;
+        } if ((R.equals(R.prop('customType', additionalInfo), 'doc-checklist'))) {
+          return <DocChecklist />;
         }
-        return <DocChecklist />;
       }
+        break;
+      case TABLE: {
+        const { tableId } = additionalInfo;
+        const columns = R.propOr([], tableId, TABLE_SCHEMA);
+        const operation = R.pathOr(false, ['actions', 'preProcess'], additionalInfo);
+        const data = R.propOr([], tableId, TABLE_DATA);
+        const { [data]: tableData } = this.props;
+        const props = {
+          columns,
+          data: tableData,
+          operation,
+        };
+        element = (<MUITable {...props} />);
+      }
+        break;
       default:
         element = (
           <div key={id}>
@@ -715,7 +766,7 @@ class Checklist extends React.PureComponent {
           </Grid>
           )
         }
-          { R.isNil(addBackButton) && (
+          { R.isNil(addBackButton) && !(hidePrevNextButton.includes(checklistType)) && (
           <>
             <Grid item xs={getChecklistGridName('prev', isFinanceChecklistOrForms)}>
               <Button
@@ -821,6 +872,18 @@ Checklist.propTypes = {
   className: PropTypes.string,
   closeHistoryView: PropTypes.func.isRequired,
   currentChecklistType: PropTypes.func.isRequired,
+  delayChecklistHistory: PropTypes.arrayOf(PropTypes.shape({
+    completedByUserName: PropTypes.string,
+    completedDate: PropTypes.string,
+    delayCheckListReason: PropTypes.string,
+    evalId: PropTypes.int,
+    letterExpiryDate: PropTypes.string,
+    letterSentDate: PropTypes.string,
+    loanNumber: PropTypes.string,
+    recordCreatedByUser: PropTypes.string,
+    recordCreatedDate: PropTypes.string,
+    taskId: PropTypes.string,
+  })).isRequired,
   disabledChecklist: PropTypes.bool,
   disableNext: PropTypes.bool,
   disablePrev: PropTypes.bool,

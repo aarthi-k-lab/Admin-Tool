@@ -375,18 +375,16 @@ export const saveDelayChecklistDataToDB = function* saveDelayChecklistDataToDB()
   try {
     const evalId = yield select(dashboardSelectors.evalId);
     const user = yield select(loginSelectors.getUser);
-    const disposition = yield select(checklistSelectors.getDisposition);
+    const disposition = yield select(checklistSelectors.getDispositionCode);
     const loanNumber = yield select(dashboardSelectors.loanNumber);
     const taskId = yield select(dashboardSelectors.taskId);
     const userEmail = R.pathOr('', ['userDetails', 'email'], user);
-    const reasons = R.pathOr([], [0], disposition);
+    const delayCheckListReason = disposition || '';
     const tkamsPayload = {
       evalId: R.is(String, evalId) ? Number(evalId) : evalId,
       completedBy: userEmail,
-      reasons,
+      reasons: delayCheckListReason,
     };
-    const details = R.is(Array, reasons) && R.length(reasons) ? reasons
-      .map((rec, index) => ({ delayCheckListReason: rec, delayLineItemNumber: index + 1 })) : [];
     const CMODPayload = {
       taskId,
       evalId: R.is(String, evalId) ? Number(evalId) : evalId,
@@ -397,7 +395,7 @@ export const saveDelayChecklistDataToDB = function* saveDelayChecklistDataToDB()
       letterExpiryDate: null,
       recordCreatedByUser: userEmail,
       recordCreatedDate: '',
-      details,
+      delayCheckListReason,
     };
     yield call(Api.callPost, '/api/cmodnetcoretkams/DelayChecklist/Create', tkamsPayload);
     // TODO check if saved in TKAMS
