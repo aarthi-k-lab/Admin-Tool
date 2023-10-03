@@ -24,6 +24,7 @@ describe('<StagerDashboard />', () => {
     const triggerStartEndDate = jest.fn();
     const onGetGroupName = jest.fn();
     const closeSnackBar = jest.fn();
+    const onEndShift = jest.fn();
     const groups = ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'];
     const props = {
       getDashboardCounts,
@@ -31,6 +32,7 @@ describe('<StagerDashboard />', () => {
       triggerStartEndDate,
       onGetGroupName,
       closeSnackBar,
+      onEndShift,
       groups,
       snackBarData: {
         message: 'mock',
@@ -58,6 +60,7 @@ describe('<StagerDashboard /> simulate functionalities', () => {
   const triggerStartEndDate = jest.fn();
   const onGetGroupName = jest.fn();
   const closeSnackBar = jest.fn();
+  const onEndShift = jest.fn();
   const groups = ['feuw-mgr', 'beuw-mgr', 'stager', 'stager-mgr'];
   const props = {
     getDashboardCounts,
@@ -65,6 +68,7 @@ describe('<StagerDashboard /> simulate functionalities', () => {
     triggerStartEndDate,
     onGetGroupName,
     closeSnackBar,
+    onEndShift,
     groups,
     snackBarData: {
       message: 'mock',
