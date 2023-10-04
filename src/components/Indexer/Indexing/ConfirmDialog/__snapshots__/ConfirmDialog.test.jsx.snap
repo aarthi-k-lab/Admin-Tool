@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmDialog ConfirmDialog snapshot should take ConfirmDialog snapshot 1`] = `ShallowWrapper {}`;

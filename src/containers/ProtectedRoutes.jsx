@@ -384,7 +384,8 @@ class ProtectedRoutes extends React.Component {
           <Route path="/user-skills" render={this.renderUserSkillsPageRoute} />
           <Route path="/west-wing" render={this.renderWestWingPageRoute} />
           <Route path="/westWingOrder" render={this.renderWestWingOrderPageRoute} />
-          <Route path="/indexer" render={this.renderIndexerRoute} />
+          {/* TODO - INDEXER REVERT -  <Route path="/indexer"
+          render={this.renderIndexerRoute} /> */}
 
           <Route component={SearchLoan} exact path="/search" />
           <Route component={HomePage} />

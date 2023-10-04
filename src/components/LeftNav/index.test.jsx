@@ -56,6 +56,7 @@ describe('<LeftNav />', () => {
       },
     };
     const onClearStagerTaskName = jest.fn();
+    const onClearStagerResponse = jest.fn();
     const onEndShift = jest.fn();
     const onAutoSave = jest.fn();
     const handleLandingpage = jest.spyOn(TestExports.LeftNav.prototype, 'handleLandingpage');
@@ -68,6 +69,7 @@ describe('<LeftNav />', () => {
       enableGetNext: false,
       path: '/stager',
       isAssigned: true,
+      onClearStagerResponse,
     };
     const wrapper = shallow(
       <TestExports.LeftNav {...defaultProps} {...props} />,
@@ -77,5 +79,6 @@ describe('<LeftNav />', () => {
     expect(handleLandingpage).toBeCalled();
     expect(onAutoSave).toBeCalled();
     expect(onClearStagerTaskName).toBeCalled();
+    expect(onClearStagerResponse).toBeCalled();
   });
 });
