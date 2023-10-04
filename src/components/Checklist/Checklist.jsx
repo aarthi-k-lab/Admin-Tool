@@ -675,6 +675,7 @@ class Checklist extends React.PureComponent {
     const type = checklistType || checklistItems[0].type;
     const isFinanceChecklistOrForms = isFicoOrAssetTask ? checklistCustomType : type;
     const { AV } = HTMLElements;
+    const titleStyle = (checklistType && checklistType === 'delay-checklist') ? 'checklist-title-delay-checklist' : 'checklist-title';
     const showControlButtons = isIncomeVerification && !historyView && !disabledChecklist;
     const showCheckButton = (isIncomeVerification && !historyView
     && !disabledChecklist && checklistType !== AV
@@ -746,7 +747,7 @@ class Checklist extends React.PureComponent {
           )}
         <Grid container styleName="buttonStyle">
           <Grid item xs={getChecklistGridName('title', !R.isNil(addBackButton) ? `${isFinanceChecklistOrForms}-back` : isFinanceChecklistOrForms)}>
-            <Typography styleName={financialChecklist.includes(isFinanceChecklistOrForms) ? 'checklist-title-income-calc' : 'checklist-title'}>{title}</Typography>
+            <Typography styleName={financialChecklist.includes(isFinanceChecklistOrForms) ? 'checklist-title-income-calc' : titleStyle}>{title}</Typography>
           </Grid>
           { !R.isNil(showCheckButton) && (
           <Grid item xs={getChecklistGridName('check', isFinanceChecklistOrForms)}>
@@ -802,7 +803,7 @@ class Checklist extends React.PureComponent {
             : (
               <Paper
                 elevation={0}
-                styleName={checklistForms.includes(checklistCustomType) ? 'checklist-form-controls-ficoorasset' : 'checklist-form-controls'}
+                styleName={checklistForms.includes(checklistCustomType) || checklistForms.includes(checklistType) ? 'checklist-form-controls-ficoorasset' : 'checklist-form-controls'}
               >
                 {checklistElements}
               </Paper>

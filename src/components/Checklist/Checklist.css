@@ -69,6 +69,16 @@
   margin-left: 2rem;
 }
 
+.checklist-title-delay-checklist {
+  color: #B8B8B8;
+  font-size: 1.1rem !important;
+  text-align: justify;
+  font-weight: bold;
+  display: flex;
+  margin-top: 0.5rem;
+  margin-left: 2rem !important;
+}
+
 .clearButton.clearButton {
   flex-grow: 0;
   flex-basis: 0;

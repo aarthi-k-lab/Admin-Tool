@@ -1,8 +1,7 @@
-/* eslint-disable */
+
 import React, { Component } from 'react';
 import hotkeys from 'hotkeys-js';
 import * as R from 'ramda';
-import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -14,7 +13,9 @@ import CustomSnackBar from 'components/CustomSnackBar';
 import AdditionalInfo from 'containers/AdditionalInfo';
 import DashboardModel from 'models/Dashboard';
 import { withRouter } from 'react-router-dom';
-import { ERROR, SUCCESS, financialChecklist, checklistForms } from 'constants/common';
+import {
+  ERROR, SUCCESS, financialChecklist, checklistForms,
+} from 'constants/common';
 import UserNotification from 'components/UserNotification/UserNotification';
 import DispositionModel from 'models/Disposition';
 import ChecklistErrorMessageCodes from 'models/ChecklistErrorMessageCodes';
@@ -31,25 +32,21 @@ import componentTypes from 'constants/componentTypes';
 import IncomeCalcWidget from 'containers/IncomeCalc/IncomeCalcWidget';
 import { selectors as tombstoneSelectors } from 'ducks/tombstone';
 import Grid from '@material-ui/core/Grid';
-import RFDContent from 'components/Tombstone/TombstoneComponents/RFDContent';
 import {
   BOOKING, HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES,
-  WESTWING
+  WESTWING,
 } from 'constants/widgets';
-import { EDITABLE_FIELDS, HARDHSIP, RFD } from 'constants/loanInfoComponents';
-import getTombstonePopup from 'components/Tombstone/PopupSelect.jsx';
+import { EDITABLE_FIELDS } from 'constants/loanInfoComponents';
+import getTombstonePopup from 'components/Tombstone/PopupSelect';
+import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
+import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
+import WestWingWidget from 'components/Widgets/WestWing';
 import Popup from '../../../components/Popup';
 import MilestoneActivity from '../../LoanActivity/MilestoneActivity';
-import LSAMSNotesWidget from 'components/Widgets/LSAMSNotesWidget';
 import WidgetBuilder from '../../../components/Widgets/WidgetBuilder';
-import BookingHomePage from './BookingHomePage';
 import Navigation from './Navigation';
 import DialogCard from './DialogCard';
 import styles from './TasksAndChecklist.css';
-import CollateralContent from '../../../components/Tombstone/TombstoneComponents/CollateralContent/CollateralContent';
-import DocChecklistWidget from 'components/Widgets/DocChecklistWidget';
-import HardshipAffidavit from '../../../components/Tombstone/TombstoneComponents/HardshipAffidavit';
-import WestWingWidget from 'components/Widgets/WestWing';
 import FHLMCWidget from '../../../components/Widgets/FHLMCWidget';
 
 const { Messages: { MSG_NO_TASKS_FOUND, MSG_TASK_FETCH_ERROR } } = DashboardModel;
@@ -67,7 +64,8 @@ class TasksAndChecklist extends Component {
       }
     });
     if (R.equals(groupName, DashboardModel.BOOKING)
-      && !(R.contains(ADDITIONAL_INFO, openWidgetList) || R.contains(HISTORY, openWidgetList) || R.contains(LSAMS_NOTES, openWidgetList))) {
+      && !(R.contains(ADDITIONAL_INFO, openWidgetList)
+    || R.contains(HISTORY, openWidgetList) || R.contains(LSAMS_NOTES, openWidgetList))) {
       const payload = {
         currentWidget: BOOKING,
         openWidgetList: [BOOKING],
@@ -101,7 +99,8 @@ class TasksAndChecklist extends Component {
   shouldRenderWidgetView = () => {
     const { openWidgetList } = this.props;
     return R.any(widget => R.contains(
-      widget, [HISTORY, ADDITIONAL_INFO, FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES, WESTWING],
+      widget, [HISTORY, ADDITIONAL_INFO,
+        FINANCIAL_CALCULATOR, DOCUMENT_CHECKLIST, FHLMC, LSAMS_NOTES, WESTWING],
     ))(openWidgetList);
   }
 
@@ -217,16 +216,16 @@ class TasksAndChecklist extends Component {
       );
     }
     let styleName = 'checklist';
-    const checklistType = checklistItems && R.pathOr('',['additionalInfo', 'checklistType'],R.head(checklistItems));
-    const checklistCustomType = checklistItems && R.pathOr('',['additionalInfo', 'customType'],R.head(checklistItems));
-    if (financialChecklist.includes(checklistType) ) {
+    const checklistType = checklistItems && R.pathOr('', ['additionalInfo', 'checklistType'], R.head(checklistItems));
+    const checklistCustomType = checklistItems && R.pathOr('', ['additionalInfo', 'customType'], R.head(checklistItems));
+    if (financialChecklist.includes(checklistType)) {
       styleName = 'incomeCalc';
     }
     if (checklistItems && (R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'asset-verification')) && (R.equals(R.prop('checklistType', R.head(checklistItems).additionalInfo), 'fico-score'))) {
       styleName = 'incomeCalc-av';
     }
 
-    if(checklistForms.includes(checklistCustomType)) {
+    if (checklistForms.includes(checklistCustomType) || checklistForms.includes(checklistType)) {
       styleName = 'incomeCalc-av';
     }
     const isBookingWidgetOpen = R.contains(BOOKING, openWidgetList);
@@ -302,17 +301,17 @@ class TasksAndChecklist extends Component {
         widgetToRender = <IncomeCalcWidget />;
         break;
       case DOCUMENT_CHECKLIST:
-        widgetToRender = <DocChecklistWidget />
+        widgetToRender = <DocChecklistWidget />;
         break;
       case LSAMS_NOTES:
         widgetToRender = <LSAMSNotesWidget />;
         break;
       case WESTWING:
-        widgetToRender = <WestWingWidget />
+        widgetToRender = <WestWingWidget />;
         break;
       case FHLMC:
-        widgetToRender = <FHLMCWidget />
-        break;  
+        widgetToRender = <FHLMCWidget />;
+        break;
       default:
         widgetToRender = null;
     }
@@ -359,12 +358,12 @@ class TasksAndChecklist extends Component {
       openWidgetList,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
-    const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
+    // const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
     const dispositionMessage = R.is(Array, disposition) ? R.join(',', disposition) : disposition;
     const taskPane = R.contains(FINANCIAL_CALCULATOR, openWidgetList) ? null : <TaskPane styleName="tasks" />;
     const currentOverlay = this.shouldRenderWidgetView() ? null : (
       <>
-        {taskPane}  
+        {taskPane}
         {this.renderChecklist()}
       </>
     );
@@ -430,7 +429,6 @@ class TasksAndChecklist extends Component {
       isPostModEndShift,
       completeReviewResponse,
       history,
-      openWidgetList,
       errorBanner,
       showBanner,
       checklistCenterPaneView,
@@ -528,6 +526,7 @@ TasksAndChecklist.propTypes = {
   closeSweetAlert: PropTypes.func.isRequired,
   commentsRequired: PropTypes.bool.isRequired,
   completeReviewResponse: PropTypes.shape().isRequired,
+  dashboardResetDataOperation: PropTypes.func.isRequired,
   dataLoadStatus: PropTypes.string.isRequired,
   delayChecklistHistory: PropTypes.arrayOf(PropTypes.shape({
     completedByUserName: PropTypes.string,
