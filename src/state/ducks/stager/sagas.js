@@ -74,12 +74,6 @@ function* fetchDashboardCounts() {
       const dateValue = buildDateObj(stagerType, stagerStartEndDate, null, brandName);
       const response = yield call(Api.callPost, 'api/stager/dashboard/getCountsByDate', dateValue);
       if (response != null) {
-        if (!R.contains('beuw-mgr', user.groupList)) {
-          response.counts = response.counts.map(x => ({
-            ...x,
-            data: R.filter(data => data.displayName !== 'Delay Checklist', x.data),
-          }));
-        }
         yield put({
           type: SET_STAGER_DATA_COUNTS,
           payload: response,
