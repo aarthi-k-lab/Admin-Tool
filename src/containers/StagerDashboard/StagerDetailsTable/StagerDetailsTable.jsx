@@ -125,6 +125,7 @@ class StagerDetailsTable extends React.PureComponent {
       onOrderClick, selectedData, popupData, docGenAction,
       downloadedData, getActiveSearchTerm, getStagerValue,
       showRefreshButton, onRefreshStagerTile, userGroupList,
+      isRPSGroupPresent, isRSHGroupPresent,
     } = this.props;
     const downloadFileName = `${getStagerValue}_${getActiveSearchTerm}.csv`;
     const displayLastUpdatedDate = ['Completed', 'Ordered'];
@@ -197,8 +198,7 @@ class StagerDetailsTable extends React.PureComponent {
                     <DownloadIcon styleName="details-table-download-icon" />
                     {' DOWNLOAD'}
                   </Button>
-                  {(userGroupList.includes('stager-mgr') || userGroupList.includes('rpsstager-mgr')
-                  || userGroupList.includes('rshstager-mgr')) && showRefreshButton
+                  {(userGroupList.includes('stager-mgr') || isRPSGroupPresent || isRSHGroupPresent) && showRefreshButton
                     && (
                       <Button
                         onClick={onRefreshStagerTile}
@@ -259,6 +259,8 @@ StagerDetailsTable.propTypes = {
   getSearchStagerLoanNumber: PropTypes.string.isRequired,
   getStagerSearchResponse: PropTypes.string.isRequired,
   getStagerValue: PropTypes.string.isRequired,
+  isRPSGroupPresent: PropTypes.bool.isRequired,
+  isRSHGroupPresent: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   onCheckBoxClick: PropTypes.func.isRequired,
   onClearDocGenAction: PropTypes.func.isRequired,
@@ -288,6 +290,9 @@ const mapStateToProps = state => ({
   azureSearchToggle: stagerSelectors.getAzureSearchToggle(state),
   userGroupList: loginSelectors.getGroupList(state),
   showRefreshButton: stagerSelectors.showRefreshButton(state),
+  isRSHGroupPresent: loginSelectors.isRSHGroupPresent(state),
+  isRPSGroupPresent: loginSelectors.isRPSGroupPresent(state),
+
 });
 
 const mapDispatchToProps = dispatch => ({

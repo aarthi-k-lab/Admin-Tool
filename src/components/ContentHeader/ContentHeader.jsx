@@ -36,7 +36,7 @@ const ContentHeader = ({
   handleClick, showAddButton, group,
   onAutoSave, onEndShift, evalId,
   isAssigned, handleToggle, azureSearchToggle,
-  features, isUtilGroupPresent, toggleButton,
+  features, isUtilGroupPresent, toggleButton, isRSHGroupPresent, isRPSGroupPresent,
 }) => (
   <header styleName="content-header">
     {group === DashboardModel.POSTMODSTAGER || group === DashboardModel.UWSTAGER ? (
@@ -74,7 +74,7 @@ const ContentHeader = ({
         <AddIcon />
       </Fab>
     )}
-    {R.propOr(false, 'azureSearchToggle', features) && isUtilGroupPresent && toggleButton && (
+    {R.propOr(false, 'azureSearchToggle', features) && (isUtilGroupPresent || isRSHGroupPresent || isRPSGroupPresent) && toggleButton && (
       <>
         <h4>Azure Search</h4>
         <h4>NO</h4>
@@ -117,6 +117,8 @@ ContentHeader.propTypes = {
   handleClick: PropTypes.func,
   handleToggle: PropTypes.func.isRequired,
   isAssigned: PropTypes.bool,
+  isRPSGroupPresent: PropTypes.bool.isRequired,
+  isRSHGroupPresent: PropTypes.bool.isRequired,
   isUtilGroupPresent: PropTypes.bool.isRequired,
   onAutoSave: PropTypes.func,
   onEndShift: PropTypes.func,
@@ -132,6 +134,8 @@ const mapStateToProps = state => ({
   azureSearchToggle: stagerSelectors.getAzureSearchToggle(state),
   features: configSelectors.getFeatures(state),
   isUtilGroupPresent: loginSelectors.isUtilGroupPresent(state),
+  isRSHGroupPresent: loginSelectors.isRSHGroupPresent(state),
+  isRPSGroupPresent: loginSelectors.isRPSGroupPresent(state),
 });
 
 const mapDispatchToProps = dispatch => ({
