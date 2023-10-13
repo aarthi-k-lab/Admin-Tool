@@ -356,6 +356,7 @@ class TasksAndChecklist extends Component {
       showInstructionsDialog,
       isAssigned,
       openWidgetList,
+      stagerTaskName,
     } = this.props;
     const showDialogBox = (isAssigned && showDisposition);
     // const bookingHomepageMsg = (isAssigned === true) ? 'Booking Widget' : 'Assign to me';
@@ -367,6 +368,9 @@ class TasksAndChecklist extends Component {
         {this.renderChecklist()}
       </>
     );
+    const activeTile = R.propOr('', 'activeTile', stagerTaskName);
+    const activeTab = R.propOr('', 'activeTab', stagerTaskName);
+    const isDelayChecklistToOrderTile = (activeTile === 'Delay Checklist') && (activeTab === 'To Order');
     return (
       <section styleName={R.contains(HISTORY, openWidgetList) ? 'tasks-and-checklist-loan-audit' : 'tasks-and-checklist'}>
         {currentOverlay}
@@ -381,7 +385,7 @@ class TasksAndChecklist extends Component {
               onDialogToggle={onInstuctionDialogToggle}
               shouldShow={showDialogBox}
               showDialog={showInstructionsDialog}
-              styleName="instructions"
+              styleName={isDelayChecklistToOrderTile ? 'instructions-delayChkList' : 'instructions'}
               title="Disposition"
             />
             <Navigation
@@ -484,6 +488,7 @@ TasksAndChecklist.defaultProps = {
   ruleResultFromTaskTree: [],
   openWidgetList: [],
   checklistCenterPaneView: 'Checklist',
+  stagerTaskName: '',
 };
 
 TasksAndChecklist.propTypes = {
@@ -608,6 +613,7 @@ TasksAndChecklist.propTypes = {
   showDisposition: PropTypes.bool.isRequired,
   showInstructionsDialog: PropTypes.bool.isRequired,
   snackBarData: PropTypes.shape(),
+  stagerTaskName: PropTypes.string,
   taskFetchError: PropTypes.bool,
   taskName: PropTypes.string.isRequired,
   user: PropTypes.shape({
@@ -725,6 +731,7 @@ function mapStateToProps(state) {
     taskName: stagerSelectors.getTaskName(state),
     delayChecklistHistory: stagerSelectors.getDelayCheckListHistory(state),
     checklistCenterPaneView: tombstoneSelectors.getChecklistCenterPaneView(state),
+    stagerTaskName: dashboardSelectors.stagerTaskName(state),
   };
 }
 
