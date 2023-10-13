@@ -9,7 +9,9 @@ const incTypeMap = {
   NI: 'No Income',
 };
 
+const incTaskBluePrintCodes = ['INC_EXP', 'INCVRFN'];
 
 module.exports = {
   incTypeMap,
+  incTaskBluePrintCodes,
 };

@@ -47,7 +47,6 @@ const defaultState = {
   checklistItemsSaveQueue: [],
   checklistNavigation: {},
   processId: null,
-  verificationStatus: null,
   rootTaskId: null,
   selectedChecklist: 'nothing',
   showInstructionsDialog: false,
@@ -151,9 +150,13 @@ const reducer = (state = {}, action) => {
       };
     }
     case SET_INCOME_VERIFICATION_STATUS: {
+      const { historyItem } = state;
       return {
         ...state,
-        verificationStatus: action.payload,
+        historyItem: {
+          ...historyItem,
+          incVerStatus: action.payload,
+        },
       };
     }
     case SET_INCOMECALC_TOGGLE: {

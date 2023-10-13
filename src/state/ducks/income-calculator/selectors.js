@@ -96,8 +96,6 @@ const getTaskCheckListId = state => R.pathOr(null, ['incomeCalculator', 'taskChe
 const getHistoryView = state => R.pathOr(false, ['incomeCalculator', 'isHistoryView'], state);
 const getHistoryItem = state => R.pathOr(null, ['incomeCalculator', 'historyItem'], state);
 
-const getVerificationStatus = state => R.pathOr(null, ['incomeCalculator', 'verificationStatus'], state);
-
 const disabledChecklist = state => R.pathOr(false, ['incomeCalculator', 'disableChecklist'], state);
 
 const getMainChecklist = state => R.pathOr(false, ['incomeCalculator', 'mainChecklistId'], state);
@@ -144,7 +142,6 @@ const selectors = {
   getIncomeChecklistRefresh,
   getHistory,
   getHistoryItem,
-  getVerificationStatus,
   getTaskValues,
   getExpenseAmounts,
   getTaskBlueprintCode,

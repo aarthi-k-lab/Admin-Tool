@@ -95,20 +95,31 @@ visibility
       ));
   }
 
+  renderIncmVerfImg = () => {
+    const { historyItem } = this.props;
+    const { incVerStatus } = historyItem;
+    if (incVerStatus !== null && (incVerStatus === 'Verified' || incVerStatus === 'Stated')) {
+      return (
+        <p styleName="verificationStatus">
+          <span>
+            <img alt={incVerStatus} src={`/static/img/${incVerStatus}Status.png`} style={{ width: '20px', height: '20px', marginRight: '0.5rem' }} />
+          </span>
+          {incVerStatus}
+        </p>
+      );
+    }
+    return <></>;
+  }
+
   render() {
     const { anchorEl } = this.state;
-    const { historyView, historyItem, verificationStatus } = this.props;
+    const { historyView, historyItem } = this.props;
     return (
       <div style={{ display: 'flex' }}>
         {historyView
           ? (
             <>
-              <p styleName="verificationStatus">
-                <span>
-                  <img alt={verificationStatus} src={`/static/img/${verificationStatus}Status.png`} style={{ width: '20px', height: '20px', marginRight: '0.5rem' }} />
-                </span>
-                {verificationStatus}
-              </p>
+              {this.renderIncmVerfImg()}
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {historyItem && <span style={{ marginRight: '1.3rem' }}>{`Showing calculation done on ${this.getCSTDateTime(historyItem.calcDateTime)} by ${historyItem.calcByUserName.replace('.', ' ').replace('@mrcooper.com', '')}`}</span>}
                 <p style={{ margin: 0 }}>Close</p>
@@ -156,7 +167,6 @@ IncomeCalcHistory.defaultProps = {
   historyData: null,
   historyItem: null,
   disabled: false,
-  verificationStatus: null,
 };
 
 
@@ -169,10 +179,10 @@ IncomeCalcHistory.propTypes = {
   historyItem: PropTypes.shape({
     calcByUserName: PropTypes.string,
     calcDateTime: PropTypes.string,
+    incVerStatus: PropTypes.string,
   }),
   historyView: PropTypes.bool,
   openWidgetList: PropTypes.arrayOf(PropTypes.string),
-  verificationStatus: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
@@ -180,7 +190,6 @@ const mapStateToProps = state => ({
   historyView: selectors.getHistoryView(state),
   historyItem: selectors.getHistoryItem(state),
   openWidgetList: widgetsSelectors.getOpenWidgetList(state),
-  verificationStatus: selectors.getVerificationStatus(state),
 });
 
 const mapDispatchToProps = dispatch => ({

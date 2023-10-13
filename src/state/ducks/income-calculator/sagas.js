@@ -17,6 +17,7 @@ import { showLoader, hideLoader } from 'ducks/dashboard/actions';
 import { SUCCESS, FAILED, ERROR } from 'constants/common';
 import { DOCUMENT_CHECKLIST, FINANCIAL_CALCULATOR } from 'constants/widgets';
 import { nonSummableFields, expenseFields, checklistTypes } from 'constants/expenseCalc';
+import { incTaskBluePrintCodes } from 'constants/incomeCalc';
 import componentTypes from 'constants/componentTypes';
 import {
   ASSUMPTOR, AV, CONTRIBUTOR, FEUW_CHECKLIST,
@@ -180,18 +181,28 @@ function* fetchChecklistDetails(action) {
 function* fetchHistoryChecklist(action) {
   yield put({ type: SHOW_LOADER });
   yield call(fetchChecklistDetails, action);
+  const taskBluePrintCode = yield select(selectors.getTaskBlueprintCode);
   const borrowerList = yield select(selectors.getBorrowersList);
   const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const historyItem = yield select(selectors.getHistoryItem);
+  const lockId = R.propOr(null, 'lockId', historyItem);
+  const checklistType = taskBluePrintCode && incTaskBluePrintCodes.includes(taskBluePrintCode)
+    ? checklistTypes.INCOME : checklistTypes.EXPENSE;
   const borrowerRequest = R.map(borrower => ({
     loanNumber,
     borrowerPstnNumber: R.nth(1, R.split('_', borrower)),
     firstName: R.nth(0, R.split('_', borrower)),
   }), borrowerList);
   const borrowerData = yield call(Api.callPost, '/api/dataservice/incomeCalc/historicalBorrowers', borrowerRequest);
-  const { verificationStatus } = yield call(Api.callGet, `api/tkams/income/borrowerIncomeData/${loanNumber}`);
-  yield put({ type: SET_HISTORICAL_BORROWERS, payload: borrowerData });
-  yield put({ type: SET_INCOME_VERIFICATION_STATUS, payload: verificationStatus });
-  yield put({ type: HIDE_LOADER });
+  if (checklistType === 'INCOME') {
+    const { verificationStatus } = yield call(Api.callGet, `api/tkams/income/borrowerIncomeData/${lockId}`);
+    yield put({ type: SET_INCOME_VERIFICATION_STATUS, payload: verificationStatus });
+    yield put({ type: SET_HISTORICAL_BORROWERS, payload: borrowerData });
+    yield put({ type: HIDE_LOADER });
+  } else {
+    yield put({ type: SET_HISTORICAL_BORROWERS, payload: borrowerData });
+    yield put({ type: HIDE_LOADER });
+  }
 }
 
 function* updateBorrowerDetails() {

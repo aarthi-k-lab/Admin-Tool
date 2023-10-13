@@ -32,23 +32,23 @@
   align-items: baseline;
 }
 
-.cnsdtIncome::-webkit-scrollbar{
-  display: none;
-}
-
 .teacherPaySchedule {
   display: flex;
   align-items: baseline;
   margin-bottom: 1rem;
 }
 
+.cnsdtIncome::-webkit-scrollbar{
+  display: none;
+}
+
 .cnsdtIncome {
   width: 27rem;
   height: 51.5rem;
-  margin-left: 2rem;
+  margin-left:2rem;
   align-items: center;
-  overflow-y: scroll;
-  min-height: 100% !important;
+  overflow-y:scroll;
+  min-height:100% !important;
 }
 
 .parentDiv {
