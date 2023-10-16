@@ -246,7 +246,7 @@
 .cnsdt-net-dti {
   align-items: center;
   display: inline-flex !important;
-  width: 9rem;
+  width: 9.525rem;
   border-right: solid grey;
   border-width: thin;
 }
@@ -276,7 +276,7 @@
 .cnsdt-net-exp {
   align-items: center;
   display: inline-flex !important;
-  width: 13.5rem;
+  width: 14.3rem;
   border-bottom:  solid grey;
   border-right: solid grey;
   border-width: 0.00625rem;

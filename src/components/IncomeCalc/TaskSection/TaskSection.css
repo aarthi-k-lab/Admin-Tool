@@ -39,16 +39,21 @@
 }
 
 .cnsdtIncome::-webkit-scrollbar{
-  display: none;
+  border-radius: 0.2rem;
+  width: 5px;
 }
 
 .cnsdtIncome {
-  width: 27rem;
-  height: 51.5rem;
+  width: 29rem;
+  height: 37rem;
   margin-left:2rem;
   align-items: center;
-  overflow-y:scroll;
-  min-height:100% !important;
+  position: fixed;
+  bottom: 0.4rem;
+  overflow-y: scroll;
+  min-height: 50% !important;
+  z-index: 1; 
+  margin-bottom: 8.25rem;
 }
 
 .parentDiv {
