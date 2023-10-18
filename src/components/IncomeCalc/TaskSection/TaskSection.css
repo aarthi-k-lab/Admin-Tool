@@ -49,11 +49,9 @@
   margin-left:2rem;
   align-items: center;
   position: fixed;
-  bottom: 0.4rem;
   overflow-y: scroll;
   min-height: 50% !important;
   z-index: 1; 
-  margin-bottom: 8.25rem;
 }
 
 .parentDiv {
