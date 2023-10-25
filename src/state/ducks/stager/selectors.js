@@ -21,7 +21,6 @@ const getAzureSearchToggle = state => R.pathOr(false, ['stager', 'azureSearchTog
 const getDelayCheckList = state => R.path(['stager', 'delayCheckList'], state);
 const getDelayCheckListHistory = state => R.pathOr([], ['stager', 'delayCheckListHistory'], state);
 const showRefreshButton = state => R.contains(R.pathOr(null, ['stager', 'data', 'stagerTaskStatus'], state), ['To Order', 'Ordered']);
-const getStagerTaskType = state => R.pathOr(null, ['stager', 'data', 'stagerTaskType'], state);
 
 const selectors = {
   getAzureSearchToggle,
@@ -42,7 +41,6 @@ const selectors = {
   getDelayCheckList,
   getDelayCheckListHistory,
   showRefreshButton,
-  getStagerTaskType,
 };
 
 export default selectors;

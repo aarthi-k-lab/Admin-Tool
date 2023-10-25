@@ -196,9 +196,8 @@ class Controls extends React.PureComponent {
   }
 
   showAssignForThisGroup() {
-    const { groupName, stagerTaskType } = this.props;
-    const isDelayChecklist = stagerTaskType !== 'Delay Checklist';
-    return R.prop('showAssignUnassign', R.find(R.propEq('group', groupName), DashboardModel.GROUP_INFO)) && isDelayChecklist;
+    const { groupName } = this.props;
+    return R.prop('showAssignUnassign', R.find(R.propEq('group', groupName), DashboardModel.GROUP_INFO));
   }
 
 
@@ -416,7 +415,6 @@ Controls.propTypes = {
   showSendToUnderWritingIcon: PropTypes.bool,
   showUpdateRemedy: PropTypes.bool.isRequired,
   showValidate: PropTypes.bool,
-  stagerTaskType: PropTypes.string.isRequired,
   taskName: PropTypes.string.isRequired,
   taskStatus: PropTypes.string.isRequired,
   toggleDialog: PropTypes.func,
@@ -477,7 +475,6 @@ const mapStateToProps = (state) => {
     ficoBluePrintCode,
     getModViewData: tombStoneSelectors.getTombstoneModViewData(state),
     milestone: selectors.getCurrentLoanMilestone(state),
-    stagerTaskType: stagerSelectors.getStagerTaskType(state),
   };
 };
 
