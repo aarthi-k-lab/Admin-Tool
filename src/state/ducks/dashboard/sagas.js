@@ -1242,7 +1242,7 @@ function* saveGeneralChecklistDisposition(payload) {
     const user = yield select(loginSelectors.getUser);
     const checklist = yield select(checklistSelectors.getChecklist);
     const loanViewData = yield select(tombstoneSelectors.getTombstoneLoanViewData);
-    const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData));
+    const brandName = R.propOr('', 'content', R.find(R.propEq('title', 'Brand Name'))(loanViewData.filter(data => !R.isNil(data))));
     const userFullName = yield select(loginSelectors.getUserFullName);
     const resolutionId = yield select(selectors.resolutionId);
     const isWestwing = yield select(selectors.showWestwingWidget);
