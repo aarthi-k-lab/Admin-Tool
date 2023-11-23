@@ -125,10 +125,11 @@ Tombstone.propTypes = {
 
 
 Tombstone.getItems = function getItems(items, disableIcons) {
-  if (items && R.length(items) > 0) {
+  const tombstoneItems = items.filter(item => !R.isNil(item));
+  if (tombstoneItems && R.length(tombstoneItems) > 0) {
     const screenWidth = window.innerWidth;
-    const arrayLength = items.length;
-    return items.map(({
+    const arrayLength = tombstoneItems.length;
+    return tombstoneItems.map(({
       content, title, style, component,
     }) => (
       (

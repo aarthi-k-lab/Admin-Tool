@@ -205,17 +205,37 @@ function* fetchHistoryChecklist(action) {
   }
 }
 
+const isKickbackLoan = function* isKickbackLoan(loanNumber) {
+  const groupName = yield select(dashboardSelectors.groupName);
+  const response = yield call(Api.callGet, `/api/dataservice/api/getPreviousDisposition/${loanNumber}`);
+  if (!R.isNil(response.disposition)) {
+    const previousDispoition = response && response.disposition.toLowerCase();
+    const isFeuwKickback = !!((groupName === 'FEUW' && previousDispoition === 'sendtofrontendunderwriting'));
+    const isBeuwKickback = !!((groupName === 'BEUW' && (previousDispoition === 'sendtounderwriting'
+    || previousDispoition === 'referralvalidkb')));
+    if (isFeuwKickback || isBeuwKickback) {
+      return true;
+    }
+    return false;
+  }
+  return false;
+};
+
+
 function* updateBorrowerDetails() {
   const borrowerData = yield select(selectors.getBorrowers);
   const rootIdFEUW = yield select(taskSelectors.getRootTaskId);
+  const loanNumber = yield select(dashboardSelectors.loanNumber);
   const borrowerlist = [];
   borrowerData.map((x) => {
     borrowerlist.push(`${x.firstName}_${x.borrowerPstnNumber}`);
     return null;
   });
+  const isKickback = yield call(isKickbackLoan, loanNumber);
   const payload = {
     borrowerlist,
     rootId: rootIdFEUW,
+    isKickback,
   };
   try {
     const borrowersDetailsUpdate = yield call(Api.callPost, '/api/financial-aggregator/incomeCalc/updateChecklist', payload);

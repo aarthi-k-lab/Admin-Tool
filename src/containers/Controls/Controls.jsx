@@ -48,8 +48,9 @@ class Controls extends React.PureComponent {
     const {
       disableSendToDocsIn, isAssigned, getModViewData, milestone,
     } = this.props;
+    const modViewData = getModViewData && getModViewData.filter(item => !R.isNil(item));
     let content = R.propOr('', 'content', R.find(R.propEq('title',
-      ('Resolution Choice Type')))(getModViewData));
+      ('Resolution Choice Type')))(modViewData));
     content = content.trim();
     hotkeys('g,v,m,e', (event, handler) => {
       if (event.type === 'keydown') {
@@ -72,7 +73,8 @@ class Controls extends React.PureComponent {
     const {
       isAssigned, disableSendToDocsIn, getModViewData, milestone, taskName,
     } = this.props;
-    let content = R.propOr('', 'content', R.find(R.propEq('title', ('Resolution Choice Type')))(getModViewData));
+    const modViewData = getModViewData && getModViewData.filter(item => !R.isNil(item));
+    let content = R.propOr('', 'content', R.find(R.propEq('title', ('Resolution Choice Type')))(modViewData));
     content = content.trim();
     if (prevProps.isAssigned !== isAssigned) {
       if (milestone !== 'Post Mod' && content !== 'Payment Deferral'

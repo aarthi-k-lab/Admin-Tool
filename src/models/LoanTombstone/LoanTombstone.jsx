@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-indent */
+/* eslint-disable react/jsx-closing-tag-location */
 import React from 'react';
 import moment from 'moment-timezone';
 import Validators from 'lib/Validators';
@@ -269,6 +271,50 @@ function getFreddieIndicator(_data) {
   return generateTombstoneItem('Freddie System', freddieSystem || NA);
 }
 
+function createKickbackElement() {
+  return (
+    <div style={{
+      background: 'linear-gradient(90deg, #eb6c6b 0%, #ea4680 96.01%)',
+      color: 'white',
+      borderRadius: '2px',
+      padding: '.2rem',
+    }}
+    >
+    Kickback Case
+    </div>
+  );
+}
+
+function shouldShowKickback({ disposition, groupName }) {
+  if (!R.isNil(disposition)) {
+    const isFEUW = groupName === 'FEUW';
+    const isBEUW = groupName === 'BEUW';
+    const isSendToFrontendUnderwriting = disposition.toLowerCase() === 'sendtofrontendunderwriting';
+    const isReferralValidKB = disposition.toLowerCase() === 'referralvalidkb';
+    const isSendToUnderwriting = disposition.toLowerCase() === 'sendtounderwriting';
+
+    return (isFEUW && isSendToFrontendUnderwriting)
+  || (isBEUW && (isReferralValidKB || isSendToUnderwriting));
+  }
+  return false;
+}
+
+function getKickbackIndicator({ disposition, groupName }) {
+  if (shouldShowKickback({ disposition, groupName })) {
+    return generateTombstoneItem(createKickbackElement(), '');
+  }
+  return null;
+}
+
+function getKickbackIndicatorForLoanView(_lvd,
+  _ld, _pvd, groupName, taskname, assumptor, prevDispositionForLoanView) {
+  if (shouldShowKickback({ disposition: prevDispositionForLoanView, groupName })) {
+    return generateTombstoneItem(createKickbackElement(), '');
+  }
+  return null;
+}
+
+
 function getDelinquencyStartDate(_, loanViewData) {
   const cfbp = R.path(['delinquencyStartDate'], loanViewData);
   let dateString = NA;
@@ -293,8 +339,12 @@ function getTombstoneItems(tombstoneData) {
     loanViewData,
     assumptorDetails,
     hardshipDetails,
+    disposition,
   } = tombstoneData;
+
+
   const loanViewDataGenerator = [
+    getKickbackIndicatorForLoanView,
     getLoanNumber,
     getAssumptorDetails,
     getUPBItem,
@@ -316,6 +366,7 @@ function getTombstoneItems(tombstoneData) {
     getIOFlag,
   ];
   const modViewDataGenerator = [
+    getKickbackIndicator,
     getEvalId,
     getModCreatedDate,
     getWaterfallName,
@@ -336,7 +387,7 @@ function getTombstoneItems(tombstoneData) {
     getLatestHandOffDisposition,
   ];
   if (R.equals(groupName, DashboardModel.BEUW) || (R.equals(groupName, 'INVSET') && R.equals(taskName, 'Investor Settlement')) || R.equals(groupName, DashboardModel.DOC_GEN)) {
-    modViewDataGenerator.splice(3, 0, getFreddieIndicator);
+    modViewDataGenerator.splice(4, 0, getFreddieIndicator);
   }
   const data = {};
   data.loanViewData = loanViewDataGenerator.map(fn => fn(loanDetails,
@@ -344,7 +395,8 @@ function getTombstoneItems(tombstoneData) {
     previousDispositionDetails,
     groupName,
     taskName,
-    assumptorDetails));
+    assumptorDetails,
+    disposition));
   if (groupName !== 'SEARCH_LOAN') {
     data.modViewData = modViewDataGenerator.map(fn => fn({
       modInfoDetails,
@@ -355,9 +407,9 @@ function getTombstoneItems(tombstoneData) {
       loanDetails,
       assumptorDetails,
       hardshipDetails,
+      disposition,
     }));
   }
-
   return data;
 }
 
@@ -368,6 +420,8 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   };
 
   const response = await Api.callPost('/api/data-aggregator/tombstone/data/', payload);
+  const prevDispositonResponse = await Api.callGet(`/api/dataservice/api/getPreviousDisposition/${loanNumber}`);
+  const { disposition } = prevDispositonResponse;
   const {
     loanDetails,
     modInfoDetails,
@@ -405,6 +459,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
         loanViewData,
         assumptorDetails,
         hardshipDetails,
+        disposition,
       }),
     },
     hardshipEndDate: hardshipEndDateString,

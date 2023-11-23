@@ -55,7 +55,8 @@ class EvaluationPage extends React.PureComponent {
     const {
       group, user, isAssigned, processName, taskStatus, milestone, getModViewData,
     } = this.props;
-    let content = R.propOr('', 'content', R.find(R.propEq('title', ('Resolution Choice Type')))(getModViewData));
+    const modviewData = getModViewData.filter(item => !R.isNil(item));
+    let content = R.propOr('', 'content', R.find(R.propEq('title', ('Resolution Choice Type')))(modviewData));
     content = content.trim();
     if (group === DashboardModel.BOOKING && milestone !== 'Post Mod' && content !== 'Payment Deferral'
     && content !== 'Payment Deferral Disaster') {

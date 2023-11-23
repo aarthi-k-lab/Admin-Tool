@@ -646,7 +646,6 @@ function* fetchBorrowers(loanNumber) {
   }
 }
 
-
 function* selectEval(searchItem) {
   const evalDetails = R.propOr({}, 'payload', searchItem);
   const { taskId: bookingTaskId } = evalDetails;
@@ -980,7 +979,7 @@ const validateDisposition = function* validateDiposition(dispositionPayload) {
     const loanNumber = yield (select(selectors.loanNumber));
     const loanViewData = yield (select(tombstoneSelectors.getTombstoneLoanViewData));
     const brandName = R.propOr('', 'content',
-      R.find(R.propEq('title', 'Brand Name'))(loanViewData));
+      R.find(R.propEq('title', 'Brand Name'))(loanViewData.filter(data => !R.isNil(data))));
     const resolutionId = yield select(selectors.resolutionId);
     const isWestwing = yield select(selectors.showWestwingWidget);
     const request = {
