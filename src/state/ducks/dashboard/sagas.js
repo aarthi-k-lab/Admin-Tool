@@ -2181,7 +2181,9 @@ function* onFhlmcBulkUpload(payload) {
     caseIds, requestIdType, loanAndDisasterIds, selectedPreApprovalType,
   } = payload.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
-  const resolutionData = yield select(tombstoneSelectors.getTombstoneModViewData);
+  const tombstoneModViewData = yield select(tombstoneSelectors.getTombstoneModViewData);
+  const resolutionData = tombstoneModViewData
+  && tombstoneModViewData.filter(item => !R.isNil(item));
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
   const requestType = yield select(selectors.getRequestTypeData);
   const evalId = yield select(selectors.evalId);
@@ -2575,7 +2577,9 @@ const submitToFhlmc = function* submitToFhlmc(action) {
   const winLoginName = user.userDetails.onPremisesSamAccountName;
   const { selectedRequestType, portfolioCode } = action.payload;
   const isWidgetOpen = yield select(widgetSelectors.getCurrentWidget);
-  const resolutionData = yield select(tombstoneSelectors.getTombstoneModViewData);
+  const tombstoneModViewData = yield select(tombstoneSelectors.getTombstoneModViewData);
+  const resolutionData = tombstoneModViewData
+  && tombstoneModViewData.filter(item => !R.isNil(item));
   let exceptionReviewRequestIndicator = yield select(selectors.getExceptionReviewIndicator);
   const exceptionReviewComments = yield select(selectors.getExceptionReviewComments);
   const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
@@ -3010,7 +3014,9 @@ function* rerunOdmFromWidget(action) {
     const portfolioCode = R.pathOr('', ['portfolioCode'], portFolio);
     const resultData = yield select(selectors.resultData);
     const caseId = R.head(R.pluck('resolutionId', resultData));
-    const resolutionData = yield select(tombstoneSelectors.getTombstoneModViewData);
+    const tombstoneModViewData = yield select(tombstoneSelectors.getTombstoneModViewData);
+    const resolutionData = tombstoneModViewData
+    && tombstoneModViewData.filter(item => !R.isNil(item));
     const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
     const { selectedRequestType } = action.payload;
     const response = yield call(Api.callPost, `/api/cmodinvestor/retryOdmEligibility/${caseId}?appName=CMOD&portfolioCode=${portfolioCode}&userName=${userName}&winLoginName=${winLoginName}`);

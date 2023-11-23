@@ -94,8 +94,9 @@ import * as DateUtils from '../../../lib/DateUtils';
 function* fetchWestwingValidation() {
   try {
     const resolutionId = yield select(dashboardSelectors.resolutionId);
-
-    const resolutionData = yield select(loanTombstoneSelectors.getTombstoneModViewData);
+    const tombstoneModViewData = yield select(loanTombstoneSelectors.getTombstoneModViewData);
+    const resolutionData = tombstoneModViewData
+     && tombstoneModViewData.filter(item => !R.isNil(item));
     const resolutionChoiceType = R.prop('content', R.find(R.propEq('title', 'Resolution Choice Type'), resolutionData));
 
     const ValidateWestwing = yield call(Api.callGet, `/api/tkams/westwing/validate/${resolutionId}/${resolutionChoiceType}`);
