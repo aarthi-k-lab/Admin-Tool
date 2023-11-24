@@ -205,9 +205,9 @@ function* fetchHistoryChecklist(action) {
   }
 }
 
-const isKickbackLoan = function* isKickbackLoan(loanNumber) {
+const isKickbackLoan = function* isKickbackLoan(evalId) {
   const groupName = yield select(dashboardSelectors.groupName);
-  const response = yield call(Api.callGet, `/api/dataservice/api/getPreviousDisposition/${loanNumber}`);
+  const response = yield call(Api.callGet, `/api/dataservice/api/getPreviousDisposition/${evalId}`);
   if (!R.isNil(response.disposition)) {
     const previousDispoition = response && response.disposition.toLowerCase();
     const isFeuwKickback = !!((groupName === 'FEUW' && previousDispoition === 'sendtofrontendunderwriting'));
@@ -225,13 +225,13 @@ const isKickbackLoan = function* isKickbackLoan(loanNumber) {
 function* updateBorrowerDetails() {
   const borrowerData = yield select(selectors.getBorrowers);
   const rootIdFEUW = yield select(taskSelectors.getRootTaskId);
-  const loanNumber = yield select(dashboardSelectors.loanNumber);
+  const evalId = yield select(dashboardSelectors.evalId);
   const borrowerlist = [];
   borrowerData.map((x) => {
     borrowerlist.push(`${x.firstName}_${x.borrowerPstnNumber}`);
     return null;
   });
-  const isKickback = yield call(isKickbackLoan, loanNumber);
+  const isKickback = yield call(isKickbackLoan, evalId);
   const payload = {
     borrowerlist,
     rootId: rootIdFEUW,
