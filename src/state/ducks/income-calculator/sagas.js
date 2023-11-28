@@ -207,7 +207,7 @@ function* fetchHistoryChecklist(action) {
 
 const isKickbackLoan = function* isKickbackLoan(evalId) {
   const groupName = yield select(dashboardSelectors.groupName);
-  const response = yield call(Api.callGet, `/api/dataservice/api/getPreviousDisposition/${evalId}`);
+  const response = yield call(Api.callGet, `/api/bpm-audit/loanactivity/getPreviousDisposition/${evalId}`);
   if (!R.isNil(response.disposition)) {
     const previousDispoition = response && response.disposition.toLowerCase();
     const isFeuwKickback = !!((groupName === 'FEUW' && previousDispoition === 'sendtofrontendunderwriting'));

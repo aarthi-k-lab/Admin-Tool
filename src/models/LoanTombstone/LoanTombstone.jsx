@@ -420,7 +420,7 @@ async function fetchData(loanNumber, evalId, groupName, taskName, taskId, brand)
   };
 
   const response = await Api.callPost('/api/data-aggregator/tombstone/data/', payload);
-  const prevDispositonResponse = await Api.callGet(`/api/dataservice/api/getPreviousDisposition/${evalId}`);
+  const prevDispositonResponse = await Api.callGet(`api/bpm-audit/loanactivity/getPreviousDisposition/${evalId}`);
   const { disposition } = prevDispositonResponse;
   const {
     loanDetails,
