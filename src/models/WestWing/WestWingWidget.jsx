@@ -678,8 +678,8 @@ function getWestWingItems(response) {
   return data;
 }
 
-async function fetchWestWingWidgetData(loanNumber, evalId, resolutionId) {
-  const response = await Api.callGet(`/api/data-aggregator/westwing/fetchData/${loanNumber}/${evalId}/${resolutionId}`);
+async function fetchWestWingWidgetData(loanNumber, evalId, resolutionId, isModOnlyLoan) {
+  const response = await Api.callGet(`/api/data-aggregator/westwing/fetchData/${loanNumber}/${evalId}/${resolutionId}?isModOnlyLoan=${isModOnlyLoan}`);
   const {
     loanModificationTkams, loanModificationSods, loanModification, isDataFromDataService,
     documents, customerFinance, fcStageDetails, decision,

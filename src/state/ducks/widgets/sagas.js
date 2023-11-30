@@ -148,7 +148,9 @@ function* fetchWestWingWidgetData() {
   const loanNumber = yield select(dashboardSelectors.loanNumber);
   const resolutionId = yield select(dashboardSelectors.resolutionId);
   const evalId = yield select(dashboardSelectors.evalId);
-  const data = yield call(WestWingWidget.fetchWestWingWidgetData, loanNumber, evalId, resolutionId);
+  const isModOnlyLoan = yield select(dashboardSelectors.getIsModOnlyLoan);
+  const data = yield call(WestWingWidget.fetchWestWingWidgetData,
+    loanNumber, evalId, resolutionId, isModOnlyLoan);
   yield put({
     type: SET_WEST_WING_DATA,
     payload: data,

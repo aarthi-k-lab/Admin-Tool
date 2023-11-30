@@ -215,6 +215,8 @@ const showWestwingWidget = state => R.pathOr(false, ['dashboard', 'showWestwingW
 
 const getWorkoutType = state => R.pathOr('', ['dashboard', 'workoutType'], state);
 
+const getIsModOnlyLoan = state => R.pathOr(false, ['dashboard', 'isModOnlyLoan'], state);
+
 const selectors = {
   getCurrentLoanMilestone,
   getODMRetryEligibility,
@@ -338,6 +340,7 @@ const selectors = {
   getBorrowerInfo,
   showWestwingWidget,
   getWorkoutType,
+  getIsModOnlyLoan,
 };
 
 export default selectors;

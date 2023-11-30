@@ -130,6 +130,7 @@ import {
   SHOW_WEST_WING_WIDGET,
   SET_WORKOUT_TYPE,
   RESET_RESULT_OPERATION,
+  SET_ISMODONLY_LOAN,
 } from './types';
 
 const reducer = (state = {
@@ -1290,6 +1291,13 @@ const reducer = (state = {
       };
     }
 
+    case SET_ISMODONLY_LOAN: {
+      const isModOnlyLoan = action.payload;
+      return {
+        ...state,
+        isModOnlyLoan,
+      };
+    }
     default:
       return state;
   }

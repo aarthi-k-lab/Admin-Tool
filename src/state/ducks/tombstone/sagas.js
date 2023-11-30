@@ -72,7 +72,7 @@ import { selectors as loanTombstoneSelectors } from '.';
 import {
   SET_RESOLUTION_AND_INVSTR_HRCHY, SET_BRAND, STORE_INVEST_CD_AND_BRAND_NM,
   SET_RESULT_OPERATION, SET_POPUP_DATA, SET_LOAN_TYPE, SET_WATERFALLID, SHOW_WEST_WING_WIDGET,
-  SET_WORKOUT_TYPE,
+  SET_WORKOUT_TYPE, SET_ISMODONLY_LOAN,
 } from '../dashboard/types';
 import { PROPERTY_PRIMARY_USE } from '../../../constants/collaterlUI';
 import {
@@ -107,6 +107,10 @@ function* fetchWestwingValidation() {
     yield put({
       type: SET_WORKOUT_TYPE,
       payload: ValidateWestwing.workoutType,
+    });
+    yield put({
+      type: SET_ISMODONLY_LOAN,
+      payload: ValidateWestwing.isModOnlyLoan,
     });
   } catch (e) {
     yield put({
