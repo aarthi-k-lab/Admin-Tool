@@ -289,7 +289,8 @@ function shouldShowKickback({ disposition, groupName }) {
   if (!R.isNil(disposition)) {
     const isFEUW = groupName === 'FEUW';
     const isBEUW = groupName === 'BEUW';
-    const isSendToFrontendUnderwriting = disposition.toLowerCase() === 'sendtofrontendunderwriting';
+    const isSendToFrontendUnderwriting = (disposition.toLowerCase() === 'sendtofrontendunderwriting'
+    || disposition.toLowerCase() === 'sendtofeuw');
     const isReferralValidKB = disposition.toLowerCase() === 'referralvalidkb';
     const isSendToUnderwriting = disposition.toLowerCase() === 'sendtounderwriting';
 
