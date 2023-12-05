@@ -210,7 +210,8 @@ const isKickbackLoan = function* isKickbackLoan(evalId) {
   const response = yield call(Api.callGet, `/api/bpm-audit/loanactivity/getPreviousDisposition/${evalId}`);
   if (!R.isNil(response.disposition)) {
     const previousDispoition = response && response.disposition.toLowerCase();
-    const isFeuwKickback = !!((groupName === 'FEUW' && previousDispoition === 'sendtofrontendunderwriting'));
+    const isFeuwKickback = !!((groupName === 'FEUW' && (previousDispoition === 'sendtofrontendunderwriting'
+    || previousDispoition === 'sendtofeuw')));
     const isBeuwKickback = !!((groupName === 'BEUW' && (previousDispoition === 'sendtounderwriting'
     || previousDispoition === 'referralvalidkb')));
     if (isFeuwKickback || isBeuwKickback) {
