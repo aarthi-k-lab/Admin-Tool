@@ -1,0 +1,27 @@
+const waterfallMapping = [
+  'Non-GSE/Default Waterfall',
+  'FHA Waterfall',
+  'VA/USDA Waterfall',
+  'DHHL/PHA Waterfall',
+  'FNMA Waterfall',
+  'FHLMC Waterfall',
+  'HFS Waterfall',
+  'Special Servicing 1 Waterfall',
+  'Special Servicing 2 Waterfall',
+  'Non-GSE/Non-Delegated Waterfall',
+  'BoNY Waterfall',
+  'USAA Waterfall',
+  'Disaster Waterfall',
+  'State Alternative Review Waterfall',
+  'USAA HE Loan / HELOC',
+  'Z Deal Waterfall',
+  'Pandemic Waterfall',
+  'Payment Deferral',
+  'Metlife Waterfall',
+  'FHA Waterfall',
+  'Special Servicing 4 Waterfall',
+  'Chimera/Kah Waterfall',
+  'VA Waterfall',
+];
+
+export default waterfallMapping;

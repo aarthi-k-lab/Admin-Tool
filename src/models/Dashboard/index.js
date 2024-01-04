@@ -35,6 +35,7 @@ const DISABLE_VALIDATION_GROUPS = [LOAN_ACTIVITY, POSTMODSTAGER, UWSTAGER, ALL_S
 const DISABLE_VALIDATE_BUTTON_GROUPS = [POSTMODSTAGER, ALL_STAGER, UWSTAGER, INVSET];
 const SECONDLOOK = 'SECONDLOOK';
 const USERSKILLS = 'USERSKILLS';
+const ADMINTOOL = 'ADMINTOOL';
 const MILESTONE_ACTIVITY = 'MA';
 const INDEXER = 'INDEXER';
 const STAGER_VALUE = {
@@ -167,6 +168,13 @@ const GROUP_INFO = [
     showAssignUnassign: true,
   },
   {
+    group: ADMINTOOL,
+    task: 'ADMIN TOOL',
+    taskCode: 'ADMINTOOL',
+    path: '/admin-tool',
+    showAssignUnassign: true,
+  },
+  {
     group: INDEXER,
     task: 'INDEXER',
     taskCode: 'INDEXER',
@@ -194,6 +202,7 @@ const GROUPS = {
   '/investor-settlement': INVSET,
   '/second-look': SECONDLOOK,
   '/user-skills': USERSKILLS,
+  '/admin-tool': ADMINTOOL,
   '/westWingOrder': WESTWING,
   '/indexer': INDEXER,
 };
@@ -222,6 +231,8 @@ function getTitle(location) {
       return 'INVESTOR SETTLEMENT';
     case '/second-look':
       return 'SECOND LOOK';
+    case '/admin-tool':
+      return 'ADMIN TOOL';
     case '/user-skills':
       return 'USER SKILLS';
     case '/westWingOrder':
@@ -286,6 +297,7 @@ const DashboardModel = {
   checkShowValidation,
   checkDisableValidateButton,
   USERSKILLS,
+  ADMINTOOL,
   SECONDLOOK,
   MILESTONE_ACTIVITY,
   WESTWING,

@@ -39,6 +39,7 @@ import Processor from './Dashboard/Processor/Processor';
 import MilestoneActivity from './LoanActivity/MilestoneActivity';
 import UserSkills from './UserSkills/UserSkills';
 import Indexer from './Indexer';
+import AdminTool from './AdminTool/AdminTool';
 
 class ProtectedRoutes extends React.Component {
   constructor(props) {
@@ -333,6 +334,15 @@ class ProtectedRoutes extends React.Component {
     );
   }
 
+  renderAdminToolPageRoute() {
+    const groups = this.getGroups();
+    return (
+      RouteAccess.hasAdminToolAccess(groups)
+        ? <AdminTool />
+        : <Redirect to="/unauthorized?error=USERSKILLS_ACCESS_NEEDED" />
+    );
+  }
+
   renderIndexerRoute() {
     const groups = this.getGroups();
     return (
@@ -382,6 +392,7 @@ class ProtectedRoutes extends React.Component {
           <Route path="/second-look" render={this.renderSecondLookPageRoute} />
           <Route path="/user-skills" render={() => <UserSkills group={DashboardModel.USERSKILLS} />} />
           <Route path="/user-skills" render={this.renderUserSkillsPageRoute} />
+          <Route path="/admin-tool" render={() => <AdminTool />} />
           <Route path="/west-wing" render={this.renderWestWingPageRoute} />
           <Route path="/westWingOrder" render={this.renderWestWingOrderPageRoute} />
           {/* TODO - INDEXER REVERT -  <Route path="/indexer"

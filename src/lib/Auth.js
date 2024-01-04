@@ -360,6 +360,10 @@ Auth.homePage = [
     path: '/user-skills',
   },
   {
+    groupName: USERSKILLS,
+    path: '/admin-tool',
+  },
+  {
     groupName: WESTWING,
     path: '/west-wing',
   },

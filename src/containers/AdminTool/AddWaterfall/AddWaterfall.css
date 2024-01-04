@@ -1,0 +1,39 @@
+.text-label {
+    color: #4E586E;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 2rem;
+  }
+
+.card-container {
+    background-color: white;
+    height: 100%;
+    margin: 1rem;
+    border-radius: 1%;
+}
+
+.card {
+    padding: 1rem;
+    background-color: #F3F5F9;
+    height: fit-content;
+    margin-top: 1rem!important;
+    margin-left: 2rem!important;
+    border-radius: 5px;
+}
+
+.list-item {
+    padding-bottom: 0.75rem;
+}
+
+.drop-down {
+    width: 100%;
+    text-align: center;
+    height: 2.25rem;
+    overflow-y: auto;
+    background-color: white;
+  }
+
+  .btn {
+    background-color: #596FEB!important;
+    color: white!important;
+}

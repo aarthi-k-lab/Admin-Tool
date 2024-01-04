@@ -172,6 +172,13 @@ const INDEXER = {
   groups: ['allaccess', 'indexer'],
 };
 
+const ADMIN_TOOL = {
+  path: '/admin-tool',
+  name: 'ADMIN TOOL',
+  img: '/static/img/admin_tool.svg',
+  groups: ['allaccess'],
+};
+
 const links = [
   managerDashboard,
   // TODO - INDEXER REVERT - INDEXER,
@@ -195,6 +202,7 @@ const links = [
   SECOND_LOOK,
   USER_SKILLS,
   WESTWING,
+  ADMIN_TOOL,
 ];
 
 
@@ -307,6 +315,10 @@ function hasWestWingAccess(groups) {
   return hasGroup(WESTWING.groups, groups);
 }
 
+function hasAdminToolAccess(groups) {
+  return hasGroup(ADMIN_TOOL.groups, groups);
+}
+
 function hasIndexerAccess(groups) {
   return hasGroup(INDEXER.groups, groups);
 }
@@ -353,4 +365,5 @@ module.exports = {
   hasUserSkillsAccess,
   hasWestWingAccess,
   hasIndexerAccess,
+  hasAdminToolAccess,
 };
