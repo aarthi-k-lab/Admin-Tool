@@ -9,15 +9,17 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import PropTypes from 'prop-types';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import brandCodes from '../../../constants/admin_portal/brand';
 
-const AddWaterfall = () => {
+const AddWaterfall = ({ addWaterfall }) => {
   const [waterFallName, setWaterFallName] = useState('');
   useEffect(() => {
   }, []);
 
   const handleSave = () => {
+    addWaterfall(waterFallName);
     window.alert(`${waterFallName} added succesfully`);
   };
 
@@ -99,6 +101,7 @@ AddWaterfall.defaultProps = {
 };
 
 AddWaterfall.propTypes = {
+  addWaterfall: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => ({

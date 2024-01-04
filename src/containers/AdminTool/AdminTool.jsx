@@ -15,9 +15,15 @@ const AdminTool = () => {
   const [addWaterfallFlag, setAddWaterfallFlag] = useState(false);
   const [addWaterfallMappingFlag, setAddWaterfallMappingFlag] = useState(false);
   const [addCaseTypeFlag, setAddCaseTypeFlag] = useState(false);
+  const [waterfallOptions, setWaterFallOption] = useState(waterfall);
 
   useEffect(() => {
   }, []);
+
+  const addWaterfall = (waterFallName) => {
+    const newWaterfallOptions = [...waterfallOptions, waterFallName];
+    setWaterFallOption(newWaterfallOptions);
+  };
 
   const renderSelect = getDropDownOptions => (
     <Select styleName="drop-down">
@@ -66,7 +72,7 @@ const AdminTool = () => {
               </Button>
             </Grid>
             <Grid item xs={6}>
-              { renderSelect(waterfall) }
+              { renderSelect(waterfallOptions) }
             </Grid>
           </Grid>
           <Grid container styleName="list-item">
@@ -91,7 +97,7 @@ const AdminTool = () => {
         </Grid>
 
         { addWaterfallFlag
-        && <AddWaterfall /> }
+        && <AddWaterfall addWaterfall={addWaterfall} /> }
         { addCaseTypeFlag
         && <AddCaseType /> }
       </div>
