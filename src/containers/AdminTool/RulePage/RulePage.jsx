@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import './RulePage.css';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -31,10 +30,10 @@ const RulePage = ({ setRulesInCaseType }) => {
     <>
       <Grid elevation={0} item styleName="card" xs={3}>
         <Grid container styleName="list-item">
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <div styleName="text-label">Assign Rules for the New Case Type</div>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <Button styleName="btn">
               Create New Rule
             </Button>
@@ -253,10 +252,4 @@ RulePage.propTypes = {
   setRulesInCaseType: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = () => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RulePage);
+export default RulePage;

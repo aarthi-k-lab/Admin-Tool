@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import './Eligibilty.css';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -55,10 +54,4 @@ Eligibility.propTypes = {
   setEligibilityInCaseType: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = () => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Eligibility);
+export default Eligibility;

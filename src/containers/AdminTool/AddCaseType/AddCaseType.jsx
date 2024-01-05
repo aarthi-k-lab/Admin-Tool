@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import './AddCaseType.css';
 import { Box } from '@material-ui/core/index';
 import Grid from '@material-ui/core/Grid';
@@ -91,10 +90,10 @@ const AddCaseType = () => {
     <>
       <Grid elevation={0} item styleName="card" xs={3}>
         <Grid container styleName="list-item">
-          <Grid item xs={9}>
+          <Grid item xs={10}>
             <div styleName="text-label">Add New Case Type</div>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             {nextFlag === false
               ? (
                 <Button disabled onClick={() => handleNext()}>
@@ -211,11 +210,4 @@ AddCaseType.defaultProps = {
 AddCaseType.propTypes = {
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = () => ({
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddCaseType);
+export default AddCaseType;

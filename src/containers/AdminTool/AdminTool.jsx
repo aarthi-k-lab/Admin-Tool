@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import './AdminTool.css';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
@@ -111,11 +110,4 @@ AdminTool.defaultProps = {
 AdminTool.propTypes = {
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = () => ({
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminTool);
+export default AdminTool;

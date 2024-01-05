@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import './OverRidableGIFields.css';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -56,11 +55,4 @@ OverRidableGIFields.propTypes = {
   setOverRidableGIFieldInCaseType: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = () => ({
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(OverRidableGIFields);
+export default OverRidableGIFields;

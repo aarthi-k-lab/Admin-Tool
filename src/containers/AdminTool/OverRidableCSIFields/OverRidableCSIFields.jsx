@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import './OverRidableCSIFields.css';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -57,11 +56,4 @@ OverRidableCSIFields.propTypes = {
   setOverRidableCSIFieldInCaseType: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = () => ({
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(OverRidableCSIFields);
+export default OverRidableCSIFields;

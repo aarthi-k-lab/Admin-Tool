@@ -29,7 +29,7 @@
 .drop-down {
     width: 100%;
     text-align: center;
-    height: 2.25rem;
-    overflow-y: auto;
+    /* height: 2.25rem; */
+    /* overflow-y: auto; */
     background-color: white;
   }
